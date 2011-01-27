@@ -1,0 +1,147 @@
+function kemar2mat(irsset,irspath)
+%KEMAR2MAT converts IRs data given by our KEMAR to our mat-file based format
+%
+%   Usage: kemar2mat(irsset,irspath);
+%
+%   Input options:
+%       irsset  - IR sets measured with VariSphear and KEMAR. Currently the 
+%                 following are available:
+%                   'RAR_05m'          - HRIR of RAR with 0.5m distance
+%                   'RAR_1m'           - HRIR of RAR with 1m distance
+%                   'RAR_2m'           - HRIR of RAR with 2m distance
+%                   'RAR_3m'           - HRIR of RAR with 3m distance
+%                   'RAR3m_small'     - HRIR of RAR with 3m distance and small
+%                                         ears
+%                   'RAR3m_small2'    - HRIR of RAR with 3m distance and small
+%                                         ears. Second reference measurement.
+%                   'RAR3m_head_rot'  - HRIR of RAR with 3m distance and only
+%                                         head rotation of KEMAR
+%                 NOTE: you still have to give the matching path to the given
+%                 data set!
+%       irspath - path to the directory containing the IR data
+%
+%   KEMAR2MAT(irsset,irspath) converts the IRs data given by the irsset
+%   and stored at the given irspath in our own mat-file based format. See:
+%   https://dev.qu.tu-berlin.de/projects/sfs/wiki/IRs_mat-file_format
+
+% AUTHOR: Hagen Wierstorf
+
+
+%% ===== Checking of input  parameters ==================================
+nargmin = 2;
+nargmax = 2;
+error(nargchk(nargmin,nargmax,nargin));
+
+if ~ischar(irsset)
+    error('%s: irsset has to be a string.',upper(mfilename));
+end
+if ~ischar(irspath) || ~exist(irspath,'dir')
+    error('%s: irspath has to be a directory.',upper(mfilename));
+end
+
+
+%% ===== Computation =====================================================
+% Initialize a new IR struct
+irs = {};
+if strcmp(irsset,'RAR_05m')
+    irs.description = ...
+        ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
+         'angle: 0°; azimuth resolution: 1°. Rotation: torso. Ears: large.'];
+    irs.tag = 'HRIR';
+    irs.distance = 0.5;
+    irs.direction = correct_angle(0);
+    irs.fs = 44100;
+    outdir = 'measurements/HRIRs';
+    irfilebase = 'KEMAR_1deg_0.5m_large_ears';
+elseif strcmp(irsset,'RAR_1m')
+    irs.description = ...
+        ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
+         'angle: 0°; azimuth resolution: 1°. Rotation: torso. Ears. large.'];
+    irs.tag = 'HRIR';
+    irs.distance = 1;
+    irs.direction = correct_angle(0);
+    irs.fs = 44100;
+    outdir = 'measurements/HRIRs';
+    irfilebase = 'KEMAR_1deg_1m_large_ear';
+elseif strcmp(irsset,'RAR_2m')
+    irs.description = ...
+        ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
+         'angle: 0°; azimuth resolution: 1°. Rotation: torso. Ears. large.'];
+    irs.tag = 'HRIR';
+    irs.distance = 2;
+    irs.direction = correct_angle(0);
+    irs.fs = 44100;
+    outdir = 'measurements/HRIRs';
+    irfilebase = 'KEMAR_1deg_2m_large_ears_';
+elseif strcmp(irsset,'RAR_3m')
+    irs.description = ...
+        ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
+         'angle: 0°; azimuth resolution: 1°. Rotation: torso. Ears: large.'];
+    irs.tag = 'HRIR';
+    irs.distance = 3;
+    irs.direction = correct_angle(0);
+    irs.fs = 44100;
+    outdir = 'measurements/HRIRs';
+    irfilebase = 'KEMAR_1deg_3m_large_ears_';
+elseif strcmp(irsset,'RAR_3m_small')
+    irs.description = ...
+        ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
+         'angle: 0°; azimuth resolution: 1°. Rotation: torso. Ears: small.'];
+    irs.tag = 'HRIR';
+    irs.distance = 3;
+    irs.direction = correct_angle(0);
+    irs.fs = 44100;
+    outdir = 'measurements/HRIRs';
+    irfilebase = 'KEMAR_1deg_3m_';
+elseif strcmp(irsset,'RAR_3m_small2')
+    irs.description = ...
+        ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
+         'angle: 0°; azimuth resolution: 1°. Rotation: torso. Ears: small. ', ...
+         'Reference measurement.'];
+    irs.tag = 'HRIR';
+    irs.distance = 3;
+    irs.direction = correct_angle(0);
+    irs.fs = 44100;
+    outdir = 'measurements/HRIRs';
+    irfilebase = 'KEMAR_1deg_3m_control_';
+elseif strcmp(irsset,'RAR_3m_head_rot')
+    irs.description = ...
+        ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
+         'angle: 0°; azimuth resolution: 1°. Rotation: head. Ears: large'];
+    irs.tag = 'HRIR';
+    irs.distance = 3;
+    irs.direction = correct_angle(0);
+    irs.fs = 44100;
+    outdir = 'measurements/HRIRs';
+    irfilebase = 'KEMAR_1deg_3m_large_ears_head_rotation_';
+else
+    error('%s: the given irsset is not available.',upper(mfilename));
+end
+
+% Read the data
+for ii = 1:360
+
+    if strcmp(irsset,'RAR_3m_head_rot')
+        irfile = sprintf('%s/%s%03.0f_%i.mat',irspath,irfilebase,ii,ii-181);
+    else
+        irfile = sprintf('%s/%s%03.0f_%i.mat',irspath,irfilebase,ii,ii-1);
+    end
+
+    load(irfile);
+    irs.azimuth(ii) = correct_angle((180-ii+1)/180*pi);
+    irs.elevation(ii) = correct_angle(0);
+    irs.left(:,ii) = vspolardata.ir_ch1;
+    irs.right(:,ii) = vspolardata.ir_ch2;
+
+end
+
+% Reorder entries
+irs = correct_irs_angle_order(irs);
+
+% Create the outdir
+mkdir('measurements');
+mkdir(outdir);
+
+% Write IR mat-file
+outfile = sprintf('%s/KEMAR_%s.mat',outdir,irsset);
+save('-v7',outfile,'irs');

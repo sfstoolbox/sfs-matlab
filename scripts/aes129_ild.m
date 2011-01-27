@@ -1,0 +1,95 @@
+% Calculate the ILD for the given conditions
+%
+sprache = wavread('/home/hagen/d/data/signals/castanets.wav');
+fs = 44100;
+
+brir = wavread('brir_0m_xs0_ys1_R1_phi-60_fal2200.wav');
+sigl = conv(sprache,brir(:,1));
+sigr = conv(sprache,brir(:,2));
+L0_R1_60_ild = rmsdb(sigl)-rmsdb(sigr)
+L0_R1_60_itd = extract_itd(brir(:,1),brir(:,2),fs)
+brir = wavread('brir_1m_xs0_ys1_R1_phi-60_fal2200.wav');
+sigl = conv(sprache,brir(:,1));
+sigr = conv(sprache,brir(:,2));
+L1_R1_60_ild = rmsdb(sigl)-rmsdb(sigr)
+L1_R1_60_itd = extract_itd(brir(:,1),brir(:,2),fs)
+brir = wavread('brir_2m_xs0_ys1_R1_phi-60_fal2200.wav');
+sigl = conv(sprache,brir(:,1));
+sigr = conv(sprache,brir(:,2));
+L2_R1_60_ild =  rmsdb(sigl)-rmsdb(sigr)
+L2_R1_60_itd = extract_itd(brir(:,1),brir(:,2),fs) 
+brir = wavread('brir_4m_xs0_ys1_R1_phi-60_fal2200.wav');
+sigl = conv(sprache,brir(:,1));
+sigr = conv(sprache,brir(:,2));
+L4_R1_60_ild = rmsdb(sigl)-rmsdb(sigr) 
+L4_R1_60_itd = extract_itd(brir(:,1),brir(:,2),fs)  
+
+brir = wavread('brir_0m_xs0_ys1_R1_phi-30_fal4100.wav');
+sigl = conv(sprache,brir(:,1));
+sigr = conv(sprache,brir(:,2));
+L0_R1_30_ild = rmsdb(sigl)-rmsdb(sigr) 
+L0_R1_30_itd = extract_itd(brir(:,1),brir(:,2),fs) 
+brir = wavread('brir_1m_xs0_ys1_R1_phi-30_fal4100.wav');
+sigl = conv(sprache,brir(:,1));
+sigr = conv(sprache,brir(:,2));
+L1_R1_30_ild = rmsdb(sigl)-rmsdb(sigr) 
+L1_R1_30_itd = extract_itd(brir(:,1),brir(:,2),fs) 
+brir = wavread('brir_2m_xs0_ys1_R1_phi-30_fal4100.wav');
+sigl = conv(sprache,brir(:,1));
+sigr = conv(sprache,brir(:,2));
+L2_R1_30_ild = rmsdb(sigl)-rmsdb(sigr) 
+L2_R1_30_itd = extract_itd(brir(:,1),brir(:,2),fs) 
+brir = wavread('brir_2m_xs0_ys1_R4_phi-30_fal2100.wav');
+sigl = conv(sprache,brir(:,1));
+sigr = conv(sprache,brir(:,2));
+L4_R1_30_ild = rmsdb(sigl)-rmsdb(sigr) 
+L4_R1_30_itd = extract_itd(brir(:,1),brir(:,2),fs) 
+
+brir = wavread('brir_0m_xs0_ys1_R4_phi-60_fal1500.wav');
+sigl = conv(sprache,brir(:,1));
+sigr = conv(sprache,brir(:,2));
+L0_R4_60_ild = rmsdb(sigl)-rmsdb(sigr) 
+L0_R4_60_itd = extract_itd(brir(:,1),brir(:,2),fs) 
+brir = wavread('brir_1m_xs0_ys1_R4_phi-60_fal1500.wav');
+sigl = conv(sprache,brir(:,1));
+sigr = conv(sprache,brir(:,2));
+L1_R4_60_ild = rmsdb(sigl)-rmsdb(sigr) 
+L1_R4_60_itd = extract_itd(brir(:,1),brir(:,2),fs) 
+brir = wavread('brir_2m_xs0_ys1_R4_phi-60_fal1500.wav');
+sigl = conv(sprache,brir(:,1));
+sigr = conv(sprache,brir(:,2));
+L2_R4_60_ild = rmsdb(sigl)-rmsdb(sigr) 
+L2_R4_60_itd = extract_itd(brir(:,1),brir(:,2),fs) 
+brir = wavread('brir_10m_xs0_ys1_R4_phi-60_fal1500.wav');
+sigl = conv(sprache,brir(:,1));
+sigr = conv(sprache,brir(:,2));
+L10_R4_60_ild = rmsdb(sigl)-rmsdb(sigr) 
+L10_R4_60_itd = extract_itd(brir(:,1),brir(:,2),fs) 
+
+brir = wavread('brir_0m_xs0_ys1_R4_phi-30_fal2100.wav');
+sigl = conv(sprache,brir(:,1));
+sigr = conv(sprache,brir(:,2));
+L0_R4_30_ild = rmsdb(sigl)-rmsdb(sigr) 
+L0_R4_30_itd = extract_itd(brir(:,1),brir(:,2),fs) 
+brir = wavread('brir_1m_xs0_ys1_R4_phi-30_fal2100.wav');
+sigl = conv(sprache,brir(:,1));
+sigr = conv(sprache,brir(:,2));
+L1_R4_30_ild = rmsdb(sigl)-rmsdb(sigr) 
+L1_R4_30_itd = extract_itd(brir(:,1),brir(:,2),fs) 
+brir = wavread('brir_2m_xs0_ys1_R4_phi-30_fal2100.wav');
+sigl = conv(sprache,brir(:,1));
+sigr = conv(sprache,brir(:,2));
+L2_R4_30_ild = rmsdb(sigl)-rmsdb(sigr) 
+L2_R4_30_itd = extract_itd(brir(:,1),brir(:,2),fs) 
+brir = wavread('brir_10m_xs0_ys1_R4_phi-30_fal2100.wav');
+sigl = conv(sprache,brir(:,1));
+sigr = conv(sprache,brir(:,2));
+L10_R4_30_ild = rmsdb(sigl)-rmsdb(sigr)
+L10_R4_30_itd = extract_itd(brir(:,1),brir(:,2),fs) 
+
+brir = wavread('brir_ref_xs0_ys1_R1_phi0.wav');
+sigl = conv(sprache,brir(:,1));
+sigr = conv(sprache,brir(:,2));
+ref_ild = rmsdb(sigl)-rmsdb(sigr) 
+ref_itd = extract_itd(brir(:,1),brir(:,2),fs) 
+

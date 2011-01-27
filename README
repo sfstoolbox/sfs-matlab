@@ -1,0 +1,8 @@
+...
+
+# --- OCTAVE ---
+All the functions will also work in gnu octave (http://www.octave.org). But
+therefore some additional packages from octave-forge 
+(http://octave.sourceforge.net/) are needed:
+* audio (e.g. for wavwrite)
+* signal (e.g. for firls)

@@ -1,0 +1,28 @@
+# Documentation for the format HRIR and BRIR have to be stored to be useable
+# with SFS
+
+NOTE: in the long term we will use OpenDAFF (http://www.opendaff.org/),
+but at the moment it is not finished. Therefore I propose a simple Matlab
+struct format to use.
+
+To produce a desired IR file, you should have a look at the create_irs_mat.m file
+and add your own IR data set to it.
+
+The IR should be stored as a struct in a mat file containing the following
+properties:
+
+       Name    |      Description        |           Dimension          | Unit
+------------------------------------------------------------------------------
+.left          | left signals of IR set  | length of IR x number of IRs |
+.right         | right sign. of IR set   | length of IR x number of IRs |
+.angle         | [azimuth; elevation]    | 2 x number of IRs            | rad
+.azimuth       | azimuth angle           | 1 x number of IRs            | rad
+.elevation     | elevation angle         | 1 x number of IRs            | rad
+.distance      | measurement distance    | 1 x 1                        | m
+.direction     | direction to the source | 1 x 1                        | rad
+.fs            | sampling rate           | 1 x 1                        | Hz
+.tag           | HRIR or BRIR            | string                       |
+.description   | description for IR set  | string                       |
+
+
+

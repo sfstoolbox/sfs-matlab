@@ -48,6 +48,13 @@ if exist('L','var')
         error('%s: L has to be a positive scalar!',upper(mfilename));
     end
 end
+if exist('ls_activity','var')
+    if ~isnumeric(ls_activity) || ~isvector(ls_activity)
+        error('%s: ls_activity has to be a vector.',upper(mfilename));
+    end
+else
+    ls_activity = 1;
+end
 if nargin<nargmax
     useconfig = true;
 elseif ~isstruct(conf)

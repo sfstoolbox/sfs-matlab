@@ -123,12 +123,10 @@ end
 % Head orientation (counter clockwise, 0...2pi)
 phi = phi/180*pi;
 
-% Number of loudspeakers (round towards plus infinity)
-nLS = ceil(L/LSdist);
-
 % Loudspeaker positions (LSdir describes the directions of the LS) for a
 % linear WFS array
-[LSpos,LSdir] = LSpos_linear(X0,Y0,(nLS-1)*LSdist,nLS);
+[x0,y0,phiLS] = secondary_source_positions(L,conf);
+nLS = number_of_loudspeaker(L,conf);
 
 % === Tapering window ===
 % See in config.m if it is applied
@@ -163,21 +161,20 @@ for n=1:nLS
     %                                  y-axis
 
     % Distance between given loudspeaker and listener position [X,Y]
-    R = norm( [X-LSpos(1,n), Y-LSpos(2,n)] );
+    R = norm( [X-x0(n), Y-y0(n)] );
     % Distance between given loudspeaker and virtual source position
-    R2 = norm( [xs-LSpos(1,n), ys-LSpos(2,n)] );
+    R2 = norm( [xs-x0(n), ys-y0(n)] );
 
     % Time delay of the virtual source (at the listener position)
-    % r0 is the measurement distance for the HRIR data (see SFS_config.m)
     % t0 is a causality pre delay for the focused source, e.g. 0 for a non
     % focused point source (see SFS_config.m)
     % Check if we have a non focused source
     if ys>Y0
         % Focused source
-        tau = (R-irs.r0)/c - R2/c - t0;
+        tau = (R-irs.distance)/c - R2/c - t0;
     else
         % Virtual source behind the loudspeaker array
-        tau = (R-irs.r0)/c + R2/c;
+        tau = (R-irs.distance)/c + R2/c;
     end
     % Time delay in samples for the given loudspeaker
     dt(n) = ceil( tau*fs );
@@ -186,7 +183,7 @@ for n=1:nLS
     % === Amplitude factor ===
     % Use linear amplitude factor (see Spors et al. (2008)) and apply the
     % tapering window
-    a(n) = wfs_amplitude_linear(LSpos(1,n),LSpos(2,n),X,Y,xs,ys) * win(n);
+    a(n) = wfs_amplitude_linear(x0(n),y0(n),X,Y,xs,ys) * win(n);
 
 
     % === Secondary source angle ===
@@ -211,16 +208,16 @@ for n=1:nLS
     % For the whole area tan2 is needed.
     %
     % Vector from listener position to given loudspeaker position (cp. R)
-    % NOTE: X - LSpos(1,n) gives a negative value for loudspeaker to the
+    % NOTE: X - x0(n) gives a negative value for loudspeaker to the
     % left of the listener, therefor -dx1 is needed to get the right angle.
-    dx = [X Y]' - LSpos(:,n);
+    dx = [X Y] - [x0(n) y0(n)];
     % Angle between listener and secondary source (-pi < alpha <= pi,
     % without phi)
     % Note: phi is the orientation of the listener (see first graph)
     alpha = atan2(-dx(1),dx(2)) - phi;
     %
     % Ensure -pi <= alpha < pi
-    alpha = correct_angle(alpha);
+    alpha = correct_azimuth(alpha);
 
     % === IR interpolation ===
     % Get the desired IR.
@@ -270,12 +267,12 @@ end
 %% ===== Plot WFS parameters ============================================
 if(useplot)
     figure
-    plot(LSpos(1,:),dt);
+    plot(x0,dt);
     title('delay (taps)');
     grid on;
 
     figure
-    plot(LSpos(1,:),a);
+    plot(x0,a);
     title('amplitude');
     grid on;
 end

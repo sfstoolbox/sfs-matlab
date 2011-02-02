@@ -1,12 +1,12 @@
 function short_ir = shorten_ir(ir,fs,nsamples,conf)
-%SHORTEN_HRIR Shortens a HRIR
+%SHORTEN_IR shortens a IR
 %   Usage: short_ir = shorten_ir(ir,fs,nsamples,conf)
 %          short_ir = shorten_ir(ir,fs,nsamples)
 %
 %   Input parameters:
 %       ir          - two channel IR signal
-%       fs          - sampling rate of the target HRIR
-%       nsamples    - length of the target HRIR
+%       fs          - sampling rate of the target IR
+%       nsamples    - length of the target IR
 %       conf        - optional struct containing configuration variables
 %                     (see SFS_config for default values)
 %

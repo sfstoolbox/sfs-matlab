@@ -1,4 +1,4 @@
-function brs = ref_brs(X,Y,phi,xs,ys,irs,conf) 
+function brs = ref_brs(X,Y,phi,xs,ys,irs,conf)
 %REF_BRS Generate a BRIR for a reference source
 %   Usage: brs = ref_brs(X,Y,phi,xs,ys,irs,conf)
 %          brs = ref_brs(X,Y,phi,xs,ys,irs)
@@ -15,17 +15,17 @@ function brs = ref_brs(X,Y,phi,xs,ys,irs,conf)
 %       brs     - Binaural room impulse response (nx2 matrix)
 %
 %   REF_BRS(X,Y,phi,xs,ys,irs,conf) calculates a binaural room impulse
-%   response for a reference source (single loudspeaker) at position 
+%   response for a reference source (single loudspeaker) at position
 %   [xs,ys] and a listener located at [X,Y].
 %
 %   Geometry:
-%              
-%    x-axis                      
+%
+%    x-axis
 %       <---------------------------|----------------------------
 %                                   |
 %                 x [xs ys]         |
 %           (Single Source)         |
-%                                   |       |  
+%                                   |       |
 %                                   |       O [X Y], phi
 %                                   |    (Listener)
 %                                   |
@@ -92,7 +92,7 @@ t0 = conf.t0;                 % pre-delay for causality (focused sources)
 
 Y0 = conf.Y0;                 % y coordinate of array
 
-c = conf.c;                   % speed of sound                  
+c = conf.c;                   % speed of sound
 
 N = conf.N;                   % target length of BRS impulse responses
 
@@ -126,23 +126,22 @@ brs = zeros(N,2);
 %                                    |
 %             [xs,ys]                |
 %                x                   |
-%                 |                  |      
+%                 |                  |
 %                   | R              |
 %                     |              |
 %                       O            |
 %                      [X,Y]         |
 %                                    v
 %                                  y-axis
-%   
+%
 % Distance between single loudspeaker [xs,ys] and listener position [X,Y]
 R = norm( [X-xs, Y-ys] );
 
 % Time delay of the single source (at the listener position)
-% r0 is the measurement distance for the HRIR data (see config.m)
-% t0 is a causality pre delay for the focused source, e.g. 0 for a non 
+% t0 is a causality pre delay for the focused source, e.g. 0 for a non
 %>focused point source (see config.m)
 % Single source
-tau = ( (R-irs.r0)/c - t0 );
+tau = ( (R-irs.distance)/c - t0 );
 % Time delay in samples
 dt = ceil( tau*fs );
 
@@ -161,13 +160,13 @@ a = 1/R;
 %                       |            |
 %             [xs,ys]   |            |
 %                x   __ |            |
-%                 | -   |            |  a = alpha    
+%                 | -   |            |  a = alpha
 %                   | a |            |  cos(alpha) = dx(2)/R
 %                 R   | |            |  tan(alpha) = -dx(1)/dx(2)
 %                       O            |
 %                      [X,Y]         |
 %                                    v
-%                                  y-axis 
+%                                  y-axis
 %
 % Note: the above picture explains also that the cos(alpha) is not
 % sufficient to span the whole number of possible angles! Only 0..180°
@@ -178,21 +177,21 @@ a = 1/R;
 % NOTE: X - xs gives a negative value for a single loudspeaker to the left
 % of the listener, therefor -dx1 is needed to get the right angle.
 dx = [X Y] - [xs ys];
-% Angle between listener and single loudspeaker source (-pi < alpha <= pi, 
+% Angle between listener and single loudspeaker source (-pi < alpha <= pi,
 % without phi)
 % Note: phi is the orientation of the listener (see first graph)
-alpha = atan2(-dx(1),dx(2)) - phi; 
+alpha = atan2(-dx(1),dx(2)) - phi;
 %
 % Ensure -pi <= alpha < pi
-alpha = correct_angle(alpha);
+alpha = correct_azimuth(alpha);
 
 
 % === HRIR interpolation ===
 ir = get_ir(irs,alpha);
 
 % Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay
-brs(:,1) = [zeros(1,dt) a*ir(:,1)' zeros(1,N-dt-lenir)]';  
-brs(:,2) = [zeros(1,dt) a*ir(:,2)' zeros(1,N-dt-lenir)]'; 
+brs(:,1) = [zeros(1,dt) a*ir(:,1)' zeros(1,N-dt-lenir)]';
+brs(:,2) = [zeros(1,dt) a*ir(:,2)' zeros(1,N-dt-lenir)]';
 
 
 %% ===== Headphone compensation =========================================

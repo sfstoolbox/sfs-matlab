@@ -20,26 +20,34 @@ function irs = correct_irs_angle_order(irs)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
-nargmax = 2;
+nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
 if ~isstruct(irs)
     error('%s: irs has to be a struct!',upper(mfilename));
 end
 % Check if the given irs is in the right format
-if ~isvector(irs.azimuth) || ~isvector(irs.elevation)
-    error(['%s: the given irs is not in the right format. ', ...
-           'irs.azimuth and irs.elevation has to be avaiable.'], ...
-        upper(mfilename));
-end
+check_irs(irs);
 
 
 %% ===== Computation =====================================================
-% Reorder azimuth angle
-phi = irs.azimuth;
-[phi,idx] = sort(phi);
-irs.azimuth = irs.azimuth(idx);
-irs.elevation = irs.elevation(idx);
+% Sort azimuth angle and reorder the whole irs
+[phi,idx] = sort(irs.apparent_azimuth);
 irs.left = irs.left(:,idx);
 irs.right = irs.right(:,idx);
+irs.apparent_azimuth = irs.apparent_azimuth(idx);
+irs.apparent_elevation = irs.apparent_elevation(idx);
+if size(irs.head_azimuth)~=[1 1]
+    irs.head_azimuth = irs.head_azimuth(idx);
+end
+if size(irs.head_elevation)~=[1 1]
+    irs.head_elevation = irs.head_elevation(idx);
+end
+if size(irs.torso_azimuth)~=[1 1]
+    irs.torso_azimuth = irs.torso_azimuth(idx);
+end
+if size(irs.torso_elevation)~=[1 1]
+    irs.torso_elevation = irs.torso_elevation(idx);
+end
 
-% FIXME: Reorder elevation angles for a given azimuth angle
+%FIXME: try if it will work to reorder the whole irs afterwards regarding the
+% apparent_elevation angle

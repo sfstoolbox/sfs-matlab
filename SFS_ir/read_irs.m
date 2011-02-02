@@ -56,3 +56,5 @@ irsfile = conf.irsfile;
 % Load the mat file
 load(irsfile);
 
+% Check irs format
+check_irs(irs);

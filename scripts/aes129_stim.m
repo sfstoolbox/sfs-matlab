@@ -8,7 +8,7 @@
 %
 % The headphone compensation can be found here:
 % https://www.qu.t-labs.tu-berlin.de/audio/measurements/headphone_compensation_filters/FABIAN_AKG_K601
-% 
+%
 
 % AUTHOR: Hagen Wierstorf
 
@@ -24,9 +24,9 @@ clear all;
 %                                   |
 %                                   x [xs ys] (Focused source)
 %                                 | |
-%                               |   |       
-%                             |     |       
-%                           | alpha |  
+%                               |   |
+%                             |     |
+%                           | alpha |
 %                         | R       |
 %                       |           |
 %                     O             |
@@ -80,21 +80,21 @@ conf.hcomprfile = ...
      'FABIAN_AKG_K601_(right)_4096_min_phase_marg100_inverse.wav'];
 
 
-% === WFS === 
+% === WFS ===
 % Loudspeaker distance (m)
 conf.LSdist = 0.15;
 % Array position (m)
-conf.X0 = 0;                    
+conf.X0 = 0;
 conf.Y0 = 0;
 % Listener direction offset (defines the 0° direction of the listener,
 % default: 0° == negative y-direction)
 conf.listoffset = 0;
 % WFS preequalization-filter (true or false)
 conf.usehpre = true;
-% Lower frequency limit of preequalization filter (= frequency when 
+% Lower frequency limit of preequalization filter (= frequency when
 % subwoofer is active) (Hz)
 conf.hpreflow = 25;
-% Upper frequency limit of preequalization filter (= aliasing frequency of 
+% Upper frequency limit of preequalization filter (= aliasing frequency of
 % system) (Hz)
 %conf.hprefhigh = 2500; This is set below!
 % Use tapering window
@@ -112,21 +112,15 @@ conf.t0 = -3*1024/conf.fs;
 
 % === HRIR ===
 % HRIR dataset
-%conf.hrirsrcdir = ...
-%    'D:/data/measurements/HRIRs/FABIAN_anechoic/postprocessed/source1/';
-conf.irsfile = '~/data/measurements/HRIRs/FABIAN_anechoic.mat';
-% Measurement distance of HRIR set (m)
-conf.r0 = 2.5;
-% Angular stepsize of HRIR dataset (°)
-conf.hrirstep = 1.25;
+conf.irsfile = '/home/hagen/data/ir_databases/FABIAN_RAR.mat';
 
 
 % === BRIR ===
 % Target length of BRIR impulse responses
 conf.N = 2^14;
-% Angles for the BRS set for the SSR (first two columns of the BRIR are 0° 
-% of the listener direction, next two columns are 1°, etc. So the 
-% brsangles has to spin around the other direction, because the source 
+% Angles for the BRS set for the SSR (first two columns of the BRIR are 0°
+% of the listener direction, next two columns are 1°, etc. So the
+% brsangles has to spin around the other direction, because the source
 % moves in opposite direction to the listener direction; see wfs_brs_set)
 conf.brsangles = 360:-1:1;
 % Auralisation files
@@ -152,24 +146,24 @@ hrirs = read_irs(conf);
 % Compute BRIRs
 for ll = 1:length(L)
     for r = 1:length(R)
-        
+
         % Compute BRIR for reference single source
         brir = ref_brs(0,R(r)+1,conf.listoffset,xs,ys,hrirs,conf);
         % Auralize BRIR
         outsig = auralize_brs(brir,content);
-        
+
         % Write file
         outfile = sprintf('%sref_xs%d_ys%d_R%d_phi%d_%s.wav',outdir,xs,ys,...
                           R(r),0,content);
         wavwrite(outsig,conf.fs,16,outfile);
-        
-        
+
+
         for a = 1:length(alpha)
-            
+
             % Calculate listener positions (X,Y)
             X = R(r) * sin(-alpha(a)/180*pi) + xs;
             Y = sqrt(R(r)^2-(X-xs)^2) + ys;
-            
+
             % Set aliasing frequency for pre-equalization filter
             conf.hprefhigh = fal(a);
 
@@ -180,12 +174,12 @@ for ll = 1:length(L)
             brir = wfs_brs(X,Y,alpha(a)+conf.listoffset,xs,ys,L(ll),hrirs,conf);
             % Auralize BRIR
             outsig = auralize_brs(brir,content);
-            
+
             % Write file
             outfile = sprintf('%s%.1fm_xs%d_ys%d_R%d_phi%d_%s.wav',outdir,L(ll),...
                               xs,ys,R(r),alpha(a),content);
             wavwrite(outsig,conf.fs,16,outfile);
-            
+
         end
     end
 end

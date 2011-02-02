@@ -92,7 +92,7 @@ elseif strcmp('circle',array)
     x0 = X0 + L/2*sin(-phi);
     y0 = Y0 + L/2*cos(-phi);
     % Direction of the loudspeakers
-    phi = correct_angle(phi+pi);
+    phi = correct_azimuth(phi+pi);
 elseif strcmp('box',array)
     % === Boxed loudspeaker array ===
     % Position and direction of the loudspeakers

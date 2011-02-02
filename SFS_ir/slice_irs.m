@@ -3,7 +3,7 @@ function irspart = slice_irs(irs,idx)
 %   Usage: irspart = slice_irs(irs,idx)
 %
 %   Input parameters:
-%       irs     - HRIR/BRIR data set for the second sources
+%       irs     - IR data set
 %       idx     - idx to slice out of the IR set
 %
 %   Output parameters:
@@ -31,13 +31,24 @@ end
 if ~isvector(idx)
     error('%s: idx has to be an index vector.',upper(mfilename));
 end
-
+check_irs(irs);
 
 %% ===== Slicing the IR set ==============================================
 
+irspart = irs;
 irspart.left = irs.left(:,idx);
 irspart.right = irs.right(:,idx);
-irspart.angle = irs.angle(:,idx);
-irspart.r0 = irs.r0;
-irspart.tag = irs.tag;
-irspart.description = irs.description;
+irspart.apparent_azimuth = irs.apparent_azimuth(idx);
+irspart.apparent_elevation = irs.apparent_elevation(idx);
+if size(irs.head_azimuth)~=[1 1]
+    irspart.head_azimuth = irs.head_azimuth(idx);
+end
+if size(irs.head_elevation)~=[1 1]
+    irspart.head_elevation = irs.head_elevation(idx);
+end
+if size(irs.torso_azimuth)~=[1 1]
+    irspart.torso_azimuth = irs.torso_azimuth(idx);
+end
+if size(irs.torso_elevation)~=[1 1]
+    irspart.torso_elevation = irs.torso_elevation(idx);
+end

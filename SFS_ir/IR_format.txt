@@ -1,6 +1,10 @@
 # Documentation for the format HRIR and BRIR have to be stored to be useable
 # with SFS
 
+FIXME: The following link has to be changed if we make a public release of our HRIR data set and wanted to put the documentation for the format to the public part of the Wiki!
+For a detailed description of the format with some nice sketches have a look at:
+https://dev.qu.tu-berlin.de/projects/capture/wiki/IRs_file_format
+
 NOTE: in the long term we will use OpenDAFF (http://www.opendaff.org/),
 but at the moment it is not finished. Therefore I propose a simple Matlab
 struct format to use.
@@ -11,18 +15,23 @@ and add your own IR data set to it.
 The IR should be stored as a struct in a mat file containing the following
 properties:
 
-       Name    |      Description        |           Dimension          | Unit
-------------------------------------------------------------------------------
-.left          | left signals of IR set  | length of IR x number of IRs |
-.right         | right sign. of IR set   | length of IR x number of IRs |
-.angle         | [azimuth; elevation]    | 2 x number of IRs            | rad
-.azimuth       | azimuth angle           | 1 x number of IRs            | rad
-.elevation     | elevation angle         | 1 x number of IRs            | rad
-.distance      | measurement distance    | 1 x 1                        | m
-.direction     | direction to the source | 1 x 1                        | rad
-.fs            | sampling rate           | 1 x 1                        | Hz
-.tag           | HRIR or BRIR            | string                       |
-.description   | description for IR set  | string                       |
-
-
+|     Name            |      Description                                                     |            Dimension         |   Unit|
+--------------------------------------------------------------------------------
+| .left               | left signals of IR set                                               | length of IR x number of IRs |       |
+| .right              | right signals of IR set                                              | length of IR x number of IRs |       |
+| .source_azimuth     | azimuth of the source to the head direction                          | 1 x number of IRs            | rad   |
+| .source_elevation   | elevation of the source to the head direction                        | 1 x number of IRs            | rad   |
+| .head_azimuth       | azimuth angle of head position relative to torso                     | 1 x number of IRs            | rad   |
+| .head_elevation     | elevation angle of head position relative to torso                   | 1 x number of IRs            | rad   |
+| .torso_azimuth      | azimuth angle of torso position                                      | 1 x number of IRs            | rad   |
+| .torso_elevation    | elevation angle of torso position                                    | 1 x number of IRs            | rad   |
+| .head_position  | [x y z] position of head                                                 | 1 x 3                        | m     |
+| .head_reference | [x y z] head pointing in this direction for 0° head_azimuth              | 1 x 3                        | m     |
+| .source_position    | [x y z] position of source                                           | 1 x 3                        | m     |
+| .source_reference   | [x y z] source pointing in this direction                            | 1 x 3                        | m     |
+| .fs                 | sampling rate                                                        | 1 x 1                        | Hz    |
+| .description        | description for IR set                                               | string                       |       |
+| .loudspeaker        | used loudspeaker                                                     | string                       |       |
+| .room               | measurement room                                                     | string                       |       |
+| .head               | used dummy head                                                      | string                       |       |
 

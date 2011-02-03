@@ -53,12 +53,11 @@ delta = correct_elevation(delta);
 % Check if the IR dataset contains a measurement for the given angles
 % phi and delta. If this is not the case, interpolate the dataset for the given
 % angles.
-%idx_phi = (( irs.apparent_azimuth==phi ));
-%idx_delta = (( irs.apparent_elevation==delta ));
 
 % If we have found the both angles
-if (( idx=findrows([irs.apparent_azimuth' irs.apparent_elevation'],...
-                   [phi,delta]) ))
+if findrows([irs.apparent_azimuth' irs.apparent_elevation'],[phi,delta])
+    idx = findrows([irs.apparent_azimuth' irs.apparent_elevation'],...
+        [phi,delta]);
     if length(idx)>1
         error(['%s: the irs data set has more than one entry corresponding ',...
                'an azimuth of %f and an elevation of %f.'],...
@@ -67,7 +66,8 @@ if (( idx=findrows([irs.apparent_azimuth' irs.apparent_elevation'],...
     ir(:,1) = irs.left(:,idx);
     ir(:,2) = irs.right(:,idx);
 
-elseif (( idx=findrows(irs.apparent_elevation',delta) ))
+elseif findrows(irs.apparent_elevation',delta)
+    idx = findrows(irs.apparent_elevation',delta);
     % === Interpolation of the azimuth ===
     % Get the IR set for the elevation delta
     irs = slice_irs(irs,idx);
@@ -105,10 +105,11 @@ elseif (( idx=findrows(irs.apparent_elevation',delta) ))
     ir = ir_intpol(ir1,irs.apparent_azimuth(idx1),...
         ir2,irs.apparent_azimuth(idx2),phi);
 
-elseif (( idx=findrows(irs.apparent_azimuth',phi) ))
+elseif findrows(irs.apparent_azimuth',phi)
+    idx = findrows(irs.apparent_azimuth',phi);
     % === Interpolation of the elevation ===
     % Get the IR set for the azimuth phi
-    irs_phi = slice_irs(irs,idx);
+    irs = slice_irs(irs,idx);
 
     % Find the nearest value smaller than delta
     % Note: this requieres monotonic increasing values of delta in

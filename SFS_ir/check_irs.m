@@ -76,13 +76,13 @@ elseif size(irs.left,2)~=length(irs.apparent_elevation)
 end
 
 % Check for the right sizes of the entries for the positions
-if ~isnumeric(irs.head_position) || size(irs.head_position)~=[1 3]
+if ~isnumeric(irs.head_position) | size(irs.head_position)~=[1 3]
     error('%s: head_position needs to be a 1x3 vector.',upper(mfilename));
-elseif ~isnumeric(irs.head_reference) || size(irs.head_reference)~=[1 3]
+elseif ~isnumeric(irs.head_reference) | size(irs.head_reference)~=[1 3]
      error('%s: head_reference needs to be a 1x3 vector.',upper(mfilename));
-elseif ~isnumeric(irs.source_position) || size(irs.source_position)~=[1 3]
+elseif ~isnumeric(irs.source_position) | size(irs.source_position)~=[1 3]
      error('%s: source_position needs to be a 1x3 vector.',upper(mfilename));
-elseif ~isnumeric(irs.source_reference) || size(irs.source_reference)~=[1 3]
+elseif ~isnumeric(irs.source_reference) | size(irs.source_reference)~=[1 3]
     error('%s: source_reference needs to be a 1x3 vector.',upper(mfilename));
 end
 

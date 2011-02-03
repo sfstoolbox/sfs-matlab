@@ -97,7 +97,7 @@ elseif findrows(irs.apparent_elevation',delta)
 
     % Get the single IR corresponding to idx1
     ir1(:,1) = irs.left(:,idx1);
-    ir1(:,2) = irs.right(:,idx2);
+    ir1(:,2) = irs.right(:,idx1);
     % Get the single IR corresponding to idx2
     ir2(:,1) = irs.left(:,idx2);
     ir2(:,2) = irs.right(:,idx2);
@@ -134,7 +134,7 @@ elseif findrows(irs.apparent_azimuth',phi)
 
     % Get the single IR corresponding to idx1
     ir1(:,1) = irs.left(:,idx1);
-    ir1(:,2) = irs.right(:,idx2);
+    ir1(:,2) = irs.right(:,idx1);
     % Get the single IR corresponding to idx2
     ir2(:,1) = irs.left(:,idx2);
     ir2(:,2) = irs.right(:,idx2);

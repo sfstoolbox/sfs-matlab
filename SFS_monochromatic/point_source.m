@@ -28,37 +28,17 @@ function S = point_source(x,y,xs,ys,f,conf)
 nargmin = 5;
 nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
-
-if ~isnumeric(x)
-    error('%s: x has to be numeric!',upper(mfilename));
-end
-if ~isnumeric(y)
-    error('%s: y has to be numeric!',upper(mfilename));
-end
-if ~isnumeric(xs) || ~isscalar(xs)
-    error('%s: xs has to be a scalar!',upper(mfilename));
-end
-if ~isnumeric(ys) || ~isscalar(ys)
-    error('%s: ys has to be a scalar!',upper(mfilename));
-end
-if ~isnumeric(f) || ~isscalar(f) || f<=0
-    error('%s: f has to be a positive scalar!',upper(mfilename));
-end
+isargmatrix({x,y},{'x','y'});
+isargscalar({xs,ys},{'xs','ys'});
+isargpositivescalar({f},{'f'});
 if nargin<nargmax
-    useconfig = true;
-elseif ~isstruct(conf)
-    error('%s: conf has to be a struct.',upper(mfilename));
+    conf = SFS_config;
 else
-    useconfig = false;
+    isargstruct({conf},{'conf'});
 end
 
 
 %% ===== Configuration ==================================================
-
-% Load default configuration values
-if(useconfig)
-    conf = SFS_config;
-end
 c = conf.c;
 
 

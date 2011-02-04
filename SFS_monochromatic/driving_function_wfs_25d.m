@@ -37,43 +37,17 @@ function [D] = driving_function_wfs_25d(x0,y0,phi,xs,ys,f,src,conf)
 nargmin = 8;
 nargmax = 9;
 error(nargchk(nargmin,nargmax,nargin));
-
-if ~isnumeric(x0) || ~isscalar(x0)
-    error('%s: x0 has to be a scalar!',upper(mfilename));
-end
-if ~isnumeric(y0) || ~isscalar(y0)
-    error('%s: y0 has to be a scalar!',upper(mfilename));
-end
-if ~isnumeric(phi) || ~isscalar(phi)
-    error('%s: phi has to be a scalar!',upper(mfilename));
-end
-if ~isnumeric(xs) || ~isscalar(xs)
-    error('%s: xs has to be a scalar!',upper(mfilename));
-end
-if ~isnumeric(ys) || ~isscalar(ys)
-    error('%s: ys has to be a scalar!',upper(mfilename));
-end
-if ~isnumeric(f) || ~isscalar(f) || f<=0
-    error('%s: f has to be a positive scalar!',upper(mfilename));
-end
-if ~ischar(src)
-    error('%s: src has to be a string!',upper(mfilename));
-end
+isargscalar({x0,y0,phi,xs,ys},{'x0','y0','phi','xs','ys'});
+isargpositivescalar({f},{'f'}),
+isargchar({src},{'src'});
 if nargin<nargmax
-    useconfig = true;
-elseif ~isstruct(conf)
-    error('%s: conf has to be a struct.',upper(mfilename));
+    conf = SFS_config;
 else
-    useconfig = false;
+    isargstruct({conf},{'conf'});
 end
 
 
 %% ===== Configuration ==================================================
-
-% Load default configuration values
-if(useconfig)
-    conf = SFS_config;
-end
 
 % phase of omega
 phase = conf.phase;

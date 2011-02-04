@@ -42,46 +42,20 @@ function [x,y,P] = wave_field_monochromatic_wfs_25d(X,Y,xs,ys,L,f,src,conf)
 nargmin = 7;
 nargmax = 8;
 error(nargchk(nargmin,nargmax,nargin));
-
-if ~isnumeric(X) || ~isvector(X)
-    error('%s: X has to be a vector!',upper(mfilename));
-end
-if ~isnumeric(Y) || ~isvector(Y)
-    error('%s: Y has to be a vector!',upper(mfilename));
-end
-if ~isnumeric(xs) || ~isscalar(xs)
-    error('%s: xs has to be a scalar!',upper(mfilename));
-end
-if ~isnumeric(ys) || ~isscalar(ys)
-    error('%s: ys has to be a scalar!',upper(mfilename));
-end
-if ~isnumeric(L) || ~isscalar(L) || L<=0
-    error('%s: L has to be a positive scalar!',upper(mfilename));
-end
-if ~isnumeric(f) || ~isscalar(f) || f<=0
-    error('%s: f has to be a positive scalar!',upper(mfilename));
-end
-if ~ischar(src)
-    error('%s: src has to be a string!',upper(mfilename));
-end
+isargvector({X,Y},{'X','Y'});
+isargscalar({xs,ys},{'xs','ys'});
+isargpositivescalar({L,f},{'L','f'});
+isargchar({src},{'src'});
 if nargin<nargmax
-    useconfig = true;
-elseif ~isstruct(conf)
-    error('%s: conf has to be a struct.',upper(mfilename));
+    conf = SFS_config;
 else
-    useconfig = false;
+    isargstruct({conf},{'conf'});
 end
 
 
 %% ===== Configuration ==================================================
 
-% Load default configuration values
-if(useconfig)
-    conf = SFS_config;
-end
-
 % Array position (m)
-X0 = conf.X0;
 Y0 = conf.Y0;
 % Check if the focused source is positioned before the loudspeaker array.
 if strcmp('fs',src) && ys<=Y0

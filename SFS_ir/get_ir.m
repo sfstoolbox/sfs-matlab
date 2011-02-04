@@ -102,7 +102,7 @@ elseif findrows(irs.apparent_elevation',delta)
     ir2(:,1) = irs.left(:,idx2);
     ir2(:,2) = irs.right(:,idx2);
     % IR interpolation
-    ir = ir_intpol(ir1,irs.apparent_azimuth(idx1),...
+    ir = intpol_ir(ir1,irs.apparent_azimuth(idx1),...
         ir2,irs.apparent_azimuth(idx2),phi);
 
 elseif findrows(irs.apparent_azimuth',phi)
@@ -139,7 +139,7 @@ elseif findrows(irs.apparent_azimuth',phi)
     ir2(:,1) = irs.left(:,idx2);
     ir2(:,2) = irs.right(:,idx2);
     % IR interpolation
-    ir = ir_intpol(ir1,irs.apparent_elevation(idx1),...
+    ir = intpol_ir(ir1,irs.apparent_elevation(idx1),...
         ir2,irs.apparent_elevation(idx2),delta);
 
 else

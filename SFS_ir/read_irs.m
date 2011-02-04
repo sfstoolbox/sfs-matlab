@@ -1,54 +1,31 @@
-function irs = read_irs(conf)
+function irs = read_irs(irsfile)
 %READ_IRS Read a HRIR/BRIR dataset
-%   Usage: irs = read_irs(conf)
-%          irs = read_irs()
+%   Usage: irs = read_irs(irsfile)
 %
 %   Input parameters:
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
+%       irsfile - filename of irs mat file
 %
 %   Output paramteres:
-%       irs   - struct containing
-%           .left           - left ear HRIR signal
-%           .right          - right ear HRIR signal
-%           .angle          - azimuth and elevation angles
-%           .r0             - measurement distance of IR dataset (m)
-%           .tag            - 'HRIR' or 'BRIR'
-%           .description    - description of the IR data set
+%       irs   - irs struct. For details on the containing fields have a look at
+%               the IR_format.txt file.
 %
-%   READ_IRS(conf) loads a IR dataset as a struct containing the above mentioned
-%   fields from the mat files stored in conf.irsfile. For a description of
-%   the mat format for the IR datasets, see IR_format.txt.
+%   READ_IRS(irsfile) loads a IR dataset as a struct containing the format 
+%   specific fields. For a description of the mat format for the IR datasets, 
+%   see IR_format.txt.
 %   
-%   see also: SFS_config, wfs_brs, ref_brs, hrir_intpol, create_irs_mat
+%   see also: get_ir, intpol_ir, dummy_irs, new_irs, wfs_brs, ref_brs
 %
 
 % AUTHOR: Hagen Wierstorf
 
 
 %% ===== Checking of input  parameters ==================================
-
-if nargchk(0,1,nargin)
-    error('Wrong number of args. Usage: irs = read_irs(conf)');
+nargmin = 1;
+nargmax = 1;
+error(nargchk(nargmin,nargmax,nargin));
+if ~ischar(irsfile) || ~exist(irsfile,'file')
+    error('%s: irsfile has to be an existing and valid file.',upper(mfilename));
 end
-
-if nargin<1
-    useconfig = true;
-elseif ~isstruct(conf)
-    error('%s: conf has to be a struct.',upper(mfilename));
-else
-    useconfig = false;
-end
-
-
-%% ===== Configuration ==================================================
-
-% Load default configuration values
-if(useconfig)
-    conf = SFS_config;
-end
-
-irsfile = conf.irsfile;
 
 
 %% ===== Read IR files ================================================

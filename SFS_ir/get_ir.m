@@ -75,7 +75,7 @@ elseif findrows(irs.apparent_elevation',delta)
     % Find the nearest value smaller than phi
     % Note: this requieres monotonic increasing values of phi in
     % azimuth(idx_delta)
-    idx1 = find(irs.apparent_azimuth(idx)<phi,1,'last');
+    idx1 = find(irs.apparent_azimuth<phi,1,'last');
     if(isempty(idx1))
         % If no value is smaller than phi, use the largest value in
         % azimuth(idx_delta), because of the 0..2pi cicle
@@ -83,7 +83,7 @@ elseif findrows(irs.apparent_elevation',delta)
     end
 
     % Find the nearest value larger than phi
-    idx2 = find(irs.apparent_azimuth(idx)>phi,1,'first');
+    idx2 = find(irs.apparent_azimuth>phi,1,'first');
     if(isempty(idx2))
         % If no value is greater than phi, use the smallest value in
         % azimuth(idx_delta), because of the 0..2pi cicle
@@ -114,14 +114,14 @@ elseif findrows(irs.apparent_azimuth',phi)
     % Find the nearest value smaller than delta
     % Note: this requieres monotonic increasing values of delta in
     % irs.apparent_delta(idx)
-    idx1 = find(irs.apparent_elevation(idx)<delta,1,'last');
+    idx1 = find(irs.apparent_elevation<delta,1,'last');
     if(isempty(idx1))
         error(['%s: there is no elevation avaialble which is smaller ',...
                'than your given delta value.'],upper(mfilename));
     end
 
     % Find the nearest value larger than delta
-    idx2 = find(irs.apparent_elevation(idx)>delta,1,'first');
+    idx2 = find(irs.apparent_elevation>delta,1,'first');
     if(isempty(idx2))
         error(['%s: there is no elevation avaialble which is greater ',...
                'than your given delta value.'],upper(mfilename));

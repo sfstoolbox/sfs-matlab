@@ -6,7 +6,7 @@ function outsig = auralize_brs_file(brsfile,contentfile)
 %          outsig = auralize_brs_file(brsfile,'castanets')
 %          outsig = auralize_brs_file(brsfile,contentfile)
 %
-%   Input parameters:
+%   Input options:
 %       brsfile         - BRS file
 %       contentfile     - content file to be used for auralisation (mono).
 %                         Also the strings 'speech', 'cello' and
@@ -27,23 +27,16 @@ function outsig = auralize_brs_file(brsfile,contentfile)
 
 
 %% ===== Checking of input parameters  and configuration ================
-  
-if nargchk(1,2,nargin)
-    error(['Wrong number of args.',... 
-           'Usage: outsig = auralize_brs_file(brsfile,contentfile)']);
-end
-
-if ~exist(brsfile,'file')
-    error('%s: brsfile was not found.',upper(mfilename));
-end
+nargmin = 1:
+nargmax = 2;
+error(nargchk(nargmin,nargmax,nargin));
+isargfile({brsfile},{'brsfile'});
 
 
 %% ===== Configuration ==================================================
 
 % Load default configuration values
-%if(useconfig)
-    conf = SFS_config;
-%end
+conf = SFS_config;
 
 % Auralisation files
 speechfile = conf.speechfile;

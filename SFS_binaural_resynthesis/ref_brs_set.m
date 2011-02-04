@@ -5,7 +5,7 @@ function brs = ref_brs_set(X,Y,phi,xs,ys,irs,conf)
 %
 %   Input parameters:
 %       X,Y     - listener position (m)
-%       phi     - listener direction [head orientation] (°)
+%       phi     - listener direction [head orientation] (rad)
 %       xs,ys   - source position (m)
 %       irs     - IR data set for the second sources
 %       conf    - optional struct containing configuration variables (see
@@ -43,54 +43,25 @@ function brs = ref_brs_set(X,Y,phi,xs,ys,irs,conf)
 
 
 %% ===== Checking of input  parameters ==================================
+nargmin = 6;
+nargmax = 7;
+error(nargchk(nargmin,nargmax,nargin));
 
-if nargchk(6,7,nargin)
-    error(['Wrong number of args.',... 
-           'Usage: brs = ref_brs_set(X,Y,phi,xs,ys,irs,conf)']);
-end
+isargscalar({X,Y,phi,xs,ys},{'X','Y','phi','xs','ys'});
+isargstruct({irs},{'irs'});
+check_irs(irs);
 
-if ~isnumeric(X) || ~isscalar(X)
-    error('%s: X has to be a scalar!',upper(mfilename));
-end
-
-if ~isnumeric(Y) || ~isscalar(Y)
-    error('%s: Y has to be a scalar!',upper(mfilename));
-end
-
-if ~isnumeric(phi) || ~isscalar(phi)
-    error('%s: phi has to be a scalar!',upper(mfilename));
-end
-
-if ~isnumeric(xs) || ~isscalar(xs)
-    error('%s: xs has to be a scalar!',upper(mfilename));
-end
-
-if ~isnumeric(ys) || ~isscalar(ys)
-    error('%s: ys has to be a scalar!',upper(mfilename));
-end
-
-if ~isstruct(irs)
-    error('%s: irs has to be a struct!',upper(mfilename));
-end
-
-if nargin<7
-    useconfig = true;
-elseif ~isstruct(conf)
-    error('%s: conf has to be a struct.',upper(mfilename));
+if nargin<nargmax
+    conf = SFS_config;
 else
-    useconfig = false;
+    isargstruct({conf},{'conf'});
 end
 
 
 %% ===== Configuration ===================================================
 
-% Load default configuration values
-if(useconfig)
-    conf = SFS_config;
-end
-
-N = conf.N;                 % Target length of BRIR impulse responses
-angles = conf.brsangles;    % Angles for the BRIRs
+N = conf.N;                     % Target length of BRIR impulse responses
+angles = rad(conf.brsangles);   % Angles for the BRIRs
 
 
 %% ===== Computation =====================================================

@@ -5,7 +5,7 @@ function brs = wfs_brs(X,Y,phi,xs,ys,L,irs,conf)
 %
 %   Input parameters:
 %       X,Y     - listener position (m)
-%       phi     - listener direction [head orientation] (�)
+%       phi     - listener direction [head orientation] (rad)
 %       xs,ys   - virtual source position [ys > Y0 => focused source] (m)
 %       L       - Length of linear loudspeaker array (m)
 %       irs     - IR data set for the secondary sources
@@ -42,55 +42,23 @@ function brs = wfs_brs(X,Y,phi,xs,ys,L,irs,conf)
 
 
 %% ===== Checking of input  parameters ==================================
+nargmin = 7;
+nargmax = 8;
+error(nargchk(nargmin,nargmax,nargin));
 
-if nargchk(7,8,nargin)
-    error(['Wrong number of args.',...
-           'Usage: brs = wfs_brs(X,Y,phi,xs,ys,L,irs,conf)']);
-end
+isargscalar({X,Y,phi,xs,ys},{'X','Y','phi','xs','ys'});
+isargpositivescalar({L},{'L'});
+isargstruct({irs},{'irs'});
+check_irs(irs);
 
-if ~isnumeric(X) || ~isscalar(X)
-    error('%s: X has to be a scalar!',upper(mfilename));
-end
-
-if ~isnumeric(Y) || ~isscalar(Y)
-    error('%s: Y has to be a scalar!',upper(mfilename));
-end
-
-if ~isnumeric(phi) || ~isscalar(phi)
-    error('%s: phi has to be a scalar!',upper(mfilename));
-end
-
-if ~isnumeric(xs) || ~isscalar(xs)
-    error('%s: xs has to be a scalar!',upper(mfilename));
-end
-
-if ~isnumeric(ys) || ~isscalar(ys)
-    error('%s: ys has to be a scalar!',upper(mfilename));
-end
-
-if ~isnumeric(L) || ~isscalar(L) || L<0
-    error('%s: L has to be a positive scalar!',upper(mfilename));
-end
-
-if ~isstruct(irs)
-    error('%s: irs has to be a struct!',upper(mfilename));
-end
-
-if nargin<8
-    useconfig = true;
-elseif ~isstruct(conf)
-    error('%s: conf has to be a struct.',upper(mfilename));
+if nargin<nargmax
+    conf = SFS_config;
 else
-    useconfig = false;
+    isargstruct({conf},{'conf'});
 end
 
 
 %% ===== Configuration ==================================================
-
-% Load default configuration values
-if(useconfig)
-    conf = SFS_config;
-end
 
 fs = conf.fs;                 % sampling frequency
 t0 = conf.t0;                 % pre-delay for causality (focused sources)
@@ -120,8 +88,7 @@ end
 
 %% ===== Variables ======================================================
 
-% Head orientation (counter clockwise, 0...2pi)
-phi = phi/180*pi;
+phi = correct_azimuth(phi);
 
 % Loudspeaker positions (LSdir describes the directions of the LS) for a
 % linear WFS array

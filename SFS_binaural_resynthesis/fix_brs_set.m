@@ -17,15 +17,10 @@ function fix_brs_set(brsfile)
 
 
 %% ===== Checking of input  parameters ==================================
-
-if nargchk(1,1,nargin)
-    error(['Wrong number of args.',...
-           'Usage: fix_brs_set(brsfile)']);
-end
-
-if ~ischar(brsfile) || ~exist(brsfile,'file')
-    error('%s: brsfile has to be a file name!',upper(mfilename));
-end
+nargmin = 1;
+nargmax = 1;
+error(nargchk(nargmin,nargmax,nargin));
+isargfile({brsfile},{'brsfile'});
 
 
 %% ===== Computation =====================================================

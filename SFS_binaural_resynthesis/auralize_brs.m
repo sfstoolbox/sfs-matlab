@@ -32,24 +32,15 @@ function outsig = auralize_brs(brs,contentfile,conf)
 nargmin = 2;
 nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin));
-if ~isnumeric(brs)
-    error('%s: brs has to be numeric.',upper(mfilename));
-end
+isargmatrix({brs},{'brs'});
 if nargin<nargmax
-    useconfig = true;
-elseif ~isstruct(conf)
-    error('%s: conf has to be a struct.',upper(mfilename));
+    conf = SFS_config;
 else
-    useconfig = false;
+    isargstruct({conf},{'conf'});
 end
 
 
 %% ===== Configuration ==================================================
-
-% Load default configuration values
-if(useconfig)
-    conf = SFS_config;
-end
 
 % Sampling rate
 fs = conf.fs;

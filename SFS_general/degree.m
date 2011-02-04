@@ -3,12 +3,12 @@ function phi = degree(phi)
 %   Usage: phi = degree(phi)
 %
 %   Input options:
-%       phi - angle (rad)
+%       phi - angle, can be a scalar or matrix (rad)
 %
 %   Output options:
 %       phi - angle (degree)
 %
-%   DEGREE(phi) returns the given angle phi in degree.
+%   DEGREE(phi) returns the given angles phi in degree.
 %
 %   see also: rad
 
@@ -19,10 +19,10 @@ function phi = degree(phi)
 nargmin = 1;
 nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
-if ~isnumeric(phi) || ~isscalar(phi)
+if ~isnumeric(phi) || ~ismatrix(phi)
     error('%s: phi must be a scalar.',upper(mfilename));
 end
 
 
 %% ===== Computation =====================================================
-phi = phi/pi*180;
+phi = phi./pi*180;

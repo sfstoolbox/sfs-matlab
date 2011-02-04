@@ -29,6 +29,7 @@ if exist('addpath')
     addpath([basepath,'/SFS_analysis']);
     addpath([basepath,'/SFS_binaural_resynthesis']);
     addpath([basepath,'/SFS_general']);
+    addpath([basepath,'/SFS_helper']);
     addpath([basepath,'/SFS_ir']);
     addpath([basepath,'/SFS_monochromatic']);
     addpath([basepath,'/SFS_plotting']);
@@ -39,6 +40,7 @@ else
     path(path,[basepath,'/SFS_analysis']);
     path(path,[basepath,'/SFS_binaural_resynthesis']);
     path(path,[basepath,'/SFS_general']);
+    path(path,[basepath,'/SFS_helper']);
     path(path,[basepath,'/SFS_ir']);
     path(path,[basepath,'/SFS_monochromatic']);
     path(path,[basepath,'/SFS_plotting']);

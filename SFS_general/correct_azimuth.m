@@ -21,10 +21,7 @@ function phi = correct_azimuth(phi)
 nargmin = 1;
 nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
-
-if ~isnumeric(phi) || ~isvector(phi)
-    error('%s: phi has to be a vector!',upper(mfilename));
-end
+isargvector({phi},{'phi'});
 
 
 %% ===== Computation ====================================================

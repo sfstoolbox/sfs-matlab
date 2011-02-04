@@ -19,9 +19,7 @@ function phi = rad(phi)
 nargmin = 1;
 nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
-if ~isnumeric(phi) || ~ismatrix(phi)
-    error('%s: phi must be a scalar.',upper(mfilename));
-end
+isargmatrix({phi},{'phi'});
 
 
 %% ===== Computation =====================================================

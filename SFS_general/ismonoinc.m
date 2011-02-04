@@ -10,20 +10,16 @@ function bool = ismonoinc(x)
 %
 %   ISMONOTONIC(x) checks if the data in vector x are monotonic increasing.
 %
-%   see also: hrir_intpol
+%   see also: intpol_ir
 %
 
 % AUTHOR: Hagen Wierstorf
 
 %% ===== Checking of input  parameters ==================================
-
-if nargchk(1,1,nargin)
-    error('Wrong number of args. Usage: bool = ismonoinc(x)');
-end
-
-if ~isnumeric(x) || ~isvector(x)
-    error('%s: x has to be a vector!',upper(mfilename));
-end
+nargmin = 1;
+nargmax = 1;
+error(nargchk(nargmin,nargmax,nargin));
+isargvector({x},{'x'});
 
 
 %% ===== Computation ====================================================

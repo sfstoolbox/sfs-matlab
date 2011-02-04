@@ -34,25 +34,9 @@ function ls_activity = secondary_source_selection(x0,y0,phi,xs,ys,src)
 nargmin = 6;
 nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
-
-if ~isnumeric(x0) || ~isvector(x0)
-    error('%s: x0 has to be a vector!',upper(mfilename));
-end
-if ~isnumeric(y0) || ~isvector(y0)
-    error('%s: y0 has to be a vector!',upper(mfilename));
-end
-if ~isnumeric(phi) || ~isvector(phi)
-    error('%s: phi has to be a vector!',upper(mfilename));
-end
-if ~isnumeric(xs) || ~isscalar(xs)
-    error('%s: xs has to be a scalar!',upper(mfilename));
-end
-if ~isnumeric(ys) || ~isscalar(ys)
-    error('%s: ys has to be a scalar!',upper(mfilename));
-end
-if ~ischar(src)
-    error('%s: src has to be a string!',upper(mfilename));
-end
+isargvector({x0,y0,phi},{'x0','y0','phi'});
+isargscalar({xs,ys},{'xs','ys'});
+isargchar({src},{'src'});
 
 
 %% ===== Calculation ====================================================

@@ -22,36 +22,13 @@ function a = wfs_amplitude_linear(x0,y0,X,Y,xs,ys)
 
 
 %% ===== Checking of input  parameters ==================================
+nargmin = 6;
+nargmax = 6;
+error(nargchk(nargmin,nargmax,nargin));
+isargscalar({x0,y0,X,Y,xs,ys},{'x0','y0','X','Y','xs','ys'});
 
-if nargchk(6,6,nargin)
-    error(['Wrong number of args.',... 
-           'Usage: a = wfs_amplitude_linear(x0,y0,X,Y,xs,ys)']);
-end
 
-if ~isnumeric(x0) || ~isscalar(x0)
-    error('%s: x0 has to be a scalar!',upper(mfilename));
-end
-
-if ~isnumeric(y0) || ~isscalar(y0)
-    error('%s: y0 has to be a scalar!',upper(mfilename));
-end
-
-if ~isnumeric(X) || ~isscalar(X)
-    error('%s: X has to be a scalar!',upper(mfilename));
-end
-
-if ~isnumeric(Y) || ~isscalar(Y)
-    error('%s: Y has to be a scalar!',upper(mfilename));
-end
-
-if ~isnumeric(xs) || ~isscalar(xs)
-    error('%s: xs has to be a scalar!',upper(mfilename));
-end
-
-if ~isnumeric(ys) || ~isscalar(ys)
-    error('%s: ys has to be a scalar!',upper(mfilename));
-end
-
+%% ===== Computation =====================================================
 % Geometry
 %          [x0,y0]                [X0,Y0]
 % x-axis <-^--^--^--^--^--^--^--^--^-|-^--^--^--^--^--^--^--^--^--

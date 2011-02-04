@@ -26,30 +26,19 @@ function [nLS L] = number_of_loudspeaker(L,conf)
 
 
 %% ===== Checking of input  parameters ==================================
+nargmin = 1;
+nargmax = 2;
+error(nargchk(nargmin,nargmax,nargin)),
+isargpositivescalar({L},{'L'});
 
-if nargchk(1,2,nargin)
-    error('Wrong number of args. Usage: win = tapwin(L,conf)');
-end
-
-if ~isnumeric(L) || ~isscalar(L) || L<0
-    error('%s: L has to be a positive scalar!',upper(mfilename));
-end
-
-if nargin<2
-    useconfig = true;
-elseif ~isstruct(conf)
-    error('%s: conf has to be a struct.',upper(mfilename));
+if nargin<nargmax
+    conf = SFS_config;
 else
-    useconfig = false;
+    isargstruct({conf},{'conf'});
 end
 
 
 %% ===== Configuration ==================================================
-
-% Load default configuration values
-if(useconfig)
-    conf = SFS_config;
-end
 
 % Array type
 array = conf.array;

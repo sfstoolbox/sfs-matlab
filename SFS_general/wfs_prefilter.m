@@ -20,27 +20,17 @@ function hpre = wfs_prefilter(conf)
 
 
 %% ===== Checking of input  parameters ==================================
-
-if nargchk(0,1,nargin)
-    error('Wrong number of args. Usage: hpre = wfs_prefilter(conf)');
-end
-
-if nargin<1
-    useconfig = true;
-elseif ~isstruct(conf)
-    error('%s: conf has to be a struct.',upper(mfilename));
+nargmin = 0;
+nargmax = 1;
+error(nargchk(nargmin,nargmax,nargin));
+if nargin<nargmax
+    conf = SFS_config;
 else
-    useconfig = false;
+    isargstruct({conf},{'conf'});
 end
 
 
 %% ===== Configuration ==================================================
-
-% Load default configuration values
-if(useconfig)
-    conf = SFS_config;
-end
-
 
 fs = conf.fs;               % Sampling rate
 

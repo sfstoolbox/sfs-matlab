@@ -21,10 +21,7 @@ function delta = correct_elevation(delta)
 nargmin = 1;
 nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
-
-if ~isnumeric(delta) || ~isvector(delta)
-    error('%s: delta has to be a vector!',upper(mfilename));
-end
+isargvector({delta},{'delta'});
 
 
 %% ===== Computation ====================================================

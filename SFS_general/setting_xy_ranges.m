@@ -27,29 +27,15 @@ function [X,Y] = setting_xy_ranges(X,Y,conf)
 nargmin = 2;
 nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin));
-
-if ~isnumeric(X) || ~isvector(X)
-    error('%s: X has to be a vector!',upper(mfilename));
-end
-if ~isnumeric(Y) || ~isvector(Y)
-    error('%s: Y has to be a vector!',upper(mfilename));
-end
+isargvector({X,Y},{'X','Y'});
 if nargin<nargmax
-    useconfig = true;
-elseif ~isstruct(conf)
-    error('%s: conf has to be a struct.',upper(mfilename));
+    conf = SFS_config;
 else
-    useconfig = false;
+    isargstruct({conf},{'conf'});
 end
 
 
 %% ===== Configuration ==================================================
-
-% Load default configuration values
-if(useconfig)
-    disp('yes');
-    conf = SFS_config;
-end
 
 array = conf.array;
 lssize = conf.plot.lssize;

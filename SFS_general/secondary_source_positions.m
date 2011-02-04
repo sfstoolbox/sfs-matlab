@@ -39,25 +39,16 @@ function [x0,y0,phi] = secondary_source_positions(L,conf)
 nargmin = 1;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-
-if ~isnumeric(L) || ~isscalar(L) || L<0
-    error('%s: L has to be a positive scalar!');
-end
+isargpositivescalar({L},{'L'});
 if nargin<nargmax
-    useconfig = true;
-elseif ~isstruct(conf)
-    error('%s: conf has to be a struct.',upper(mfilename));
+    conf = SFS_config;
 else
-    useconfig = false;
+    isargstruct({conf},{'conf'});
 end
 
 
 %% ===== Configuration ==================================================
 
-% Load default configuration values
-if(useconfig)
-    conf = SFS_config;
-end
 % array type
 array = conf.array;
 % Center of the array

@@ -20,21 +20,15 @@ function irspart = slice_irs(irs,idx)
 
 
 %% ===== Checking of input  parameters ==================================
-
-if nargchk(2,2,nargin)
-    error('Wrong number of args. Usage: irspart = slice_ir(irs,idx)');
-end
-
-if ~isstruct(irs)
-    error('%s: irs has to be a struct!',upper(mfilename));
-end
-if ~isvector(idx)
-    error('%s: idx has to be an index vector.',upper(mfilename));
-end
+nargmin = 2;
+nargmax = 2;
+error(nargchk(nargmin,nargmax,nargin));
+isargstruct({irs},{'irs'});
+isargvector({idx},{'idx'});
 check_irs(irs);
 
-%% ===== Slicing the IR set ==============================================
 
+%% ===== Slicing the IR set ==============================================
 irspart = irs;
 irspart.left = irs.left(:,idx);
 irspart.right = irs.right(:,idx);

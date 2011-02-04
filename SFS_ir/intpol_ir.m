@@ -27,20 +27,13 @@ nargmin = 5;
 nargmax = 5;
 error(nargchk(nargmin,nargmax,nargin));
 
+isargscalar({beta1,beta2,alpha},{'beta1','beta2','alpha'});
+
 if ~isnumeric(ir1) || size(ir1,2)~=2
-    error('%s: ir1 has to be a samplesx2 matrix!',upper(mfilename));
-end
-if ~isnumeric(beta1) || ~isscalar(beta1)
-    error('%s: beta1 has to be a scalar!',upper(mfilename));
+    error('%s: ir1 has to be a samples x 2 matrix!',upper(mfilename));
 end
 if ~isnumeric(ir2) || size(ir2,2)~=2
     error('%s: ir2 has to be a samplesx2 matrix!',upper(mfilename));
-end
-if ~isnumeric(beta2) || ~isscalar(beta2)
-    error('%s: beta2 has to be a scalar!',upper(mfilename));
-end
-if ~isnumeric(alpha) || ~isscalar(alpha)
-    error('%s: alpha has to be a scalar!',upper(mfilename));
 end
 
 

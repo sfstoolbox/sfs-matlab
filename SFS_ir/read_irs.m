@@ -23,9 +23,7 @@ function irs = read_irs(irsfile)
 nargmin = 1;
 nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
-if ~ischar(irsfile) || ~exist(irsfile,'file')
-    error('%s: irsfile has to be an existing and valid file.',upper(mfilename));
-end
+isargfile({irsfile},{'irsfile'});
 
 
 %% ===== Read IR files ================================================

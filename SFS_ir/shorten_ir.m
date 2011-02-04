@@ -16,36 +16,30 @@ function short_ir = shorten_ir(ir,fs,nsamples,conf)
 %   SHORTEN_HRIR(ir,fs,nsamples,conf) shortens a given IR by resampling
 %   and applying a hanning window. This is useful e.g. for mobile phones.
 %
-%   see also: SFS_config, read_irs, ir_intpol
+%   see also: SFS_config, read_irs, intpol_ir
 %
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
 
 
 %% ===== Checking of input  parameters ==================================
-
 nargmin = 3;
 nargmax = 4;
-if nargchk(nargmin,nargmax,nargin)
-    error(['Wrong number of args. Usage: short_ir = '],...
-        ['shorten_ir(ir,fs,nsamples,conf)']);
+error(nargchk(nargmin,nargmax,nargin));
+
+isargpositivescalar({fs,nsamples},{'fs','nsamples'});
+if ~isnumeric(ir) || size(ir,2)~=2
+    error('%s: ir has to be an IR with samples x 2 size.',upper(mfilename));
 end
 
 if nargin<nargmax
-    useconfig = true;
-elseif ~isstruct(conf)
-    error('%s: conf has to be a struct.',upper(mfilename));
+    conf = SFS_config;
 else
-    useconfig = false;
+    isargstruct({conf},{'conf'});
 end
 
 
 %% ===== Configuration ==================================================
-
-% Load default configuration values
-if(useconfig)
-    conf = SFS_config;
-end
 
 ofs = conf.fs;  % original fs
 useplot = conf.useplot;

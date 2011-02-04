@@ -18,9 +18,8 @@ function check_irs(irs)
 nargmin = 1;
 nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
-if ~isstruct(irs)
-    error('%s: irs has to be a struct!',upper(mfilename));
-end
+
+isargstruct({irs},{'irs'});
 
 
 %% ===== Format checking =================================================

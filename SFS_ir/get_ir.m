@@ -26,17 +26,11 @@ nargmin = 2;
 nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin))
 
-if ~isstruct(irs)
-    error('%s: hrirs has to be a struct!',upper(mfilename));
-end
+isargstruct({irs},{'irs'});
 check_irs(irs);
-if ~isnumeric(phi) || ~isscalar(phi)
-    error('%s: phi has to be a scalar!',upper(mfilename));
-end
+isargscalar({phi},{'phi'});
 if nargin==nargmax
-    if ~isnumeric(delta) || ~isscalar(delta)
-        error('%s: delta has to be a scalar!',upper(mfilename));
-    end
+    isargscalar({delta},{'delta'}),
 else
     delta = 0;
 end

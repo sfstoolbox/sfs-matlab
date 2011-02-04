@@ -29,17 +29,13 @@ function outsig = auralize_brs(brs,contentfile,conf)
 
 
 %% ===== Checking of input parameters and configuration =================
-  
-if nargchk(2,3,nargin)
-    error(['Wrong number of args.',... 
-           'Usage: outsig = auralize_brs(brs,contentfile,conf)']);
-end
-
+nargmin = 2;
+nargmax = 3;
+error(nargchk(nargmin,nargmax,nargin));
 if ~isnumeric(brs)
     error('%s: brs has to be numeric.',upper(mfilename));
 end
-
-if nargin<3
+if nargin<nargmax
     useconfig = true;
 elseif ~isstruct(conf)
     error('%s: conf has to be a struct.',upper(mfilename));

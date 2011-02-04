@@ -1,8 +1,60 @@
-...
+# ===== Sound Field Synthesis (SFS) Toolbox =====
+
+The Sound Field Synthesis (SFS) Toolbox for Matlab/Octave gives you the
+possibility to play around with sound field synthesis methods like Wave Field
+Synthesis (WFS) or Higher Order Ambisonics (HOA). There are functions to
+simulate monochromatic wave fields for different secondary source
+(loudspeaker) setups, time snapshots of full band impulses emitted by the
+secondary source distributions, or even generate Binaural Room Scanning (BRS)
+stimuli stes in order to simulate WFS with the SoundScape Renderer (SSR).
+
+To start the Toolbox, have a look at the SFS_config.m file and set it up to your
+needs, than run SFS_start which will add all necessary pathes.
+
+Here is an overview over the different folders containing in the SFS Toolbox:
+
+# * scripts
+This folder contains scripts that were use to generate stimuli or test some
+settings for experiments and/or paper. In opposite to all folders beginning
+with SFS_ this folder contains ony scripts and no functions.
+
+# * SFS_analysis
+Functions to do some additional analysises of some special applications like
+extracting ITD, ILD or time of arrival for pre-echoes
+
+# * SFS_binaural_resynthesis
+Functions to create BRS sets for the SSR or a single IR to simulate different
+loudspeaker setups and sources. Also some functions to auralize the given BRS
+sets with audio material.
+
+# * SFS_general
+Diverse function, ranging from loudspeaker positions to rad <> degree
+conversion.
+
+# * SFS_helper
+Helper functions for checking of input args
+
+# * SFS_HOA_IIR
+Functions to create IIR filters for HOA
+
+# * SFS_ir
+Functions to read and generate IRs sets in our own file format. Also functions
+to get single IRs as a vector and functions to manipulate these IRs.
+
+# * SFS_monochromatic
+Functions to simulate a monochromatic wave field with WFS for plane waves,
+point sources or focused sources
+
+# * SFS_plotting
+Functions to plot diverse wave fields, etc.
+
+# * SFS_time_domain
+Functions to simulate time snapshots of impulses reproduced with WFS for plane
+waves point sources or focused sources
 
 # --- OCTAVE ---
 All the functions will also work in gnu octave (http://www.octave.org). But
-therefore some additional packages from octave-forge 
+therefore some additional packages from octave-forge
 (http://octave.sourceforge.net/) are needed:
 * audio (e.g. for wavwrite)
 * signal (e.g. for firls)

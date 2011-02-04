@@ -24,30 +24,22 @@ function [itd,idxleft,idxright] = extract_itd(insigleft,insigright,fs)
 
 
 %% ------ Checking of input parameters -----------------------------------
-
-error(nargchk(3,3,nargin));
-
-if ~isnumeric(insigleft)
-    error('%s: insigleft has to be a numeric signal!',upper(mfilename));
-end
-if ~isnumeric(insigright)
-    error('%s: insigright has to be a numeric signal!',upper(mfilename));
-end
+nargmin = 3;
+nargmax = 3;
+error(nargchk(nargmin,nargmax,nargin));
+isargmatrix({insigleft,insigright},{'insigleft','insigright'});
+isargpositivescalar({fs},{'fs'});
 if size(insigright)~=size(insigright)
     error('%s: insigleft and insigright have to be the same size!', ...
         upper(mfilename));
 end
-if ~isnumeric(fs) || ~isscalar(fs) || fs<=0
-    error('%s: fs has to be a positive scalar!',upper(mfilename));
-end
-
 
 
 %% ------ Computation ----------------------------------------------------
 
 % Extract the envelope of the input signals
-insigleft = ihcenvelope(insigleft,fs,'hilbert');
-insigright = ihcenvelope(insigright,fs,'hilbert');
+insigleft = abs(hilbert(insigleft));
+insigright = abs(hilbert(insigright));
 
 % See if we have more than one frequency channel in the insig
 itd = zeros(1,size(insigleft,2));

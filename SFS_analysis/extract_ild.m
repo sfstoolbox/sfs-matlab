@@ -21,29 +21,21 @@ function ild = extract_ild(insigleft,insigright)
 % AUTHOR: Hagen Wierstorf
 
 
-%% ------ Checking of input parameters -----------------------------------
-
-error(nargchk(2,2,nargin));
-
-if ~isnumeric(insigleft)
-    error('%s: insigleft has to be a numeric signal!',upper(mfilename));
-end
-if ~isnumeric(insigright)
-    error('%s: insigright has to be a numeric signal!',upper(mfilename));
-end
+%% ===== Checking of input parameters ====================================
+nargmin = 2;
+nargmax = 2;
+error(nargchk(nargmin,nargmax,nargin));
+isargmatrix({insigleft,insigright},{'insigleft','insigright'});
 if size(insigright)~=size(insigright)
     error('%s: insigleft and insigright have to be the same size!', ...
         upper(mfilename));
 end
 
 
-%% ------ Computation ----------------------------------------------------
+%% ===== Computation =====================================================
 
 % See if we have more than one frequency channel in the insig
 ild = zeros(1,size(insigleft,2));
 for ii = 1:size(insigleft,2)
-    
     ild(ii) = rmsdb(insigright(:,ii))-rmsdb(insigleft(:,ii));
-    
 end
-    

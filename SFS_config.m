@@ -23,10 +23,9 @@ function conf = SFS_config()
 % AUTHOR: Hagen Wierstorf
 
 %% ===== Checking of input  parameters ==================================
-
-if nargchk(0,0,nargin)
-    error('Wrong number of args. Usage: conf = SFS_config');
-end
+nargmin = 0;
+nargmax = 0;
+error(nargchk(nargmin,nargmax,nargin));
 
 
 %% ===== Configuration default values ===================================
@@ -132,8 +131,6 @@ conf.t0 = -3*1024/conf.fs;
 
 
 % === HRIR/BRIR ===
-% IR dataset
-conf.irsfile = '~/data/measurements/HRIRs/FABIAN_postprocessed_anechoic.mat';
 % Target length of BRIR impulse responses (2^14 may be enough for your
 % purposes, but for a large distance between source and listener, this will
 % be not enough to contain the desired time delay. But don't worry, SFS

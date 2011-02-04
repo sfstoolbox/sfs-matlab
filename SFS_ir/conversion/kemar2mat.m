@@ -45,7 +45,7 @@ end
 outdir = 'ir_databases';
 
 % Initialize a new IR struct
-irs = {};
+irs = new_irs();
 % Add common struct entries
 irs.fs = 44100;
 irs.loudspeaker = 'Genelec 8030A';

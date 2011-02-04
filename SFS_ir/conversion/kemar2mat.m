@@ -31,13 +31,8 @@ function kemar2mat(irsset,irspath)
 nargmin = 2;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-
-if ~ischar(irsset)
-    error('%s: irsset has to be a string.',upper(mfilename));
-end
-if ~ischar(irspath) || ~exist(irspath,'dir')
-    error('%s: irspath has to be a directory.',upper(mfilename));
-end
+isargchar({irsset},{'irsset'});
+isargdir({irspath},{'irspath'});
 
 
 %% ===== Computation =====================================================
@@ -148,8 +143,9 @@ irs = correct_irs_angle_order(irs);
 check_irs(irs);
 
 % Create the outdir
-% FIXME: this should only be done, if the directory doesn't exists!
-mkdir(outdir);
+if ~exist(outdir,'dir')
+    mkdir(outdir);
+end
 
 % Write IR mat-file
 outfile = sprintf('%s/KEMAR_%s.mat',outdir,irsset);

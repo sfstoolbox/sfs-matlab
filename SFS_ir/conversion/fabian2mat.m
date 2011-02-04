@@ -30,13 +30,8 @@ function fabian2mat(irsset,irspath)
 nargmin = 2;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-
-if ~ischar(irsset)
-    error('%s: irsset has to be a string.',upper(mfilename));
-end
-if ~ischar(irspath) || ~exist(irspath,'dir')
-    error('%s: irspath has to be a directory.',upper(mfilename));
-end
+isargchar({irsset},{'irsset'});
+isargdir({irspath},{'irspath'});
 
 
 %% ===== Computation =====================================================
@@ -207,8 +202,9 @@ end
 irs = correct_irs_angle_order(irs);
 
 % Create the outdir
-mkdir('measurements');
-mkdir(outdir);
+if ~exist(outdir,'dir')
+    mkdir(outdir);
+end
 
 % Write IR mat-file
 outfile = sprintf('%s/FABIAN_%s.mat',outdir,irsset);

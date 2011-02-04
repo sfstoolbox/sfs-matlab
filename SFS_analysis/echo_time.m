@@ -25,41 +25,17 @@ nargmin = 5;
 nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
 
-if ~isnumeric(X) || ~isscalar(X)
-    error('%s: X has to be a scalar!',upper(mfilename));
-end
-
-if ~isnumeric(Y) || ~isscalar(Y)
-    error('%s: Y has to be a scalar!',upper(mfilename));
-end
-
-if ~isnumeric(xs) || ~isscalar(xs)
-    error('%s: xs has to be a scalar!',upper(mfilename));
-end
-
-if ~isnumeric(ys) || ~isscalar(ys)
-    error('%s: ys has to be a scalar!',upper(mfilename));
-end
-
-if ~isnumeric(L) || ~isscalar(L) || L<0
-    error('%s: L has to be a positive scalar!',upper(mfilename));
-end
+isargscalar({X,Y,xs,ys},{'X','Y','xs','ys'});
+isargpositivescalar({L},{'L'});
 
 if nargin<nargmax
-    useconfig = true;
-elseif ~isstruct(conf)
-    error('%s: conf has to be a struct.',upper(mfilename));
+    conf = SFS_config;
 else
-    useconfig = false;
+    isargstruct({conf},{'conf'});
 end
 
 
 %% ===== Configuration ==================================================
-
-% Load default configuration values
-if(useconfig)
-    conf = SFS_config;
-end
 
 % Loudspeaker distance
 LSdist = conf.LSdist;
@@ -80,9 +56,10 @@ c = conf.c;
 nLS = ceil(L/LSdist);
 
 % Loudspeaker positions
-[LSpos,LSdir] = LSpos_linear(X0,Y0,(nLS-1)*LSdist,nLS);
-x0 = LSpos(1,:);
-y0 = LSpos(2,:);
+[x0,y0] = secondary_source_positions(L,conf);
+
+% Number of loudspeakers
+nLS = number_of_loudspeaker(L,conf);
 
 
 %% ===== Calculate a time axis ==========================================

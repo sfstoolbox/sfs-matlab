@@ -33,56 +33,48 @@ function plot_wavefield(x,y,P,L,ls_activity,conf)
 nargmin = 3;
 nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
-
-if ~isnumeric(x) || ~isvector(x)
-    error('%s: x has to be a vector!',upper(mfilename));
-end
-if ~isnumeric(y) || ~isvector(y)
-    error('%s: y has to be a vector!',upper(mfilename));
-end
-if ~isnumeric(P)
-    error('%s: P has to be numeric!',upper(mfilename));
-end
+isargvector(x,y);
+isargmatrix(P);
 if exist('L','var')
-    if ~isnumeric(L) || ~isscalar(L) || L<0
-        error('%s: L has to be a positive scalar!',upper(mfilename));
+    if isstruct(L)
+        conf = L;
+        clear L
+    else
+        isargpositivescalar(L);
     end
 end
 if exist('ls_activity','var')
-    if ~isnumeric(ls_activity) || ~isvector(ls_activity)
-        error('%s: ls_activity has to be a vector.',upper(mfilename));
+    if isstruct(ls_activity)
+        conf = ls_activity;
+        ls_activity = 1;
+    else
+        isargvector(ls_activity);
     end
 else
     ls_activity = 1;
 end
-if nargin<nargmax
-    useconfig = true;
-elseif ~isstruct(conf)
-    error('%s: conf has to be a struct.',upper(mfilename));
+if ~exist('conf','var')
+    conf = SFS_config;
 else
-    useconfig = false;
+    isargstruct(conf);
 end
 
 
 %% ===== Configuration ==================================================
 
-% Load default configuration values
-if(useconfig)
-    conf = SFS_config;
+% Check if we have a loudspeaker array at all
+if ~exist('L','var')
+    conf.plot.loudspeakers = 0;
 end
-
 % SFS Path
 sfspath = conf.sfspath;
-
 % Center position of array
 X0 = conf.X0;
 Y0 = conf.Y0;
 % Distance between loudspeakers
 LSdist = conf.LSdist;
-
 % Used array geometry
 array = conf.array;
-
 % Plotting
 useplot = conf.useplot;
 p.usegnuplot = conf.plot.usegnuplot;
@@ -101,7 +93,7 @@ if size(P,1)~=length(y) || size(P,2)~=length(x)
 end
 
 % Check if the array length is given, if the loudspeaker should be plotted
-if ~exist('L','var') && p.loudspeaker
+if ~exist('L','var') && p.loudspeakers
     error(['%s: the array length L has to be given in order to draw ',...
            'the loudspeakers!'],upper(mfilename));
 end

@@ -37,13 +37,13 @@ function [D] = driving_function_wfs_25d(x0,y0,phi,xs,ys,f,src,conf)
 nargmin = 8;
 nargmax = 9;
 error(nargchk(nargmin,nargmax,nargin));
-isargscalar({x0,y0,phi,xs,ys},{'x0','y0','phi','xs','ys'});
-isargpositivescalar({f},{'f'}),
-isargchar({src},{'src'});
+isargscalar(x0,y0,phi,xs,ys);
+isargpositivescalar(f);
+isargchar(src);
 if nargin<nargmax
     conf = SFS_config;
 else
-    isargstruct({conf},{'conf'});
+    isargstruct(conf);
 end
 
 

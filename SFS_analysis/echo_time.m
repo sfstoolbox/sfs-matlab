@@ -25,13 +25,13 @@ nargmin = 5;
 nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
 
-isargscalar({X,Y,xs,ys},{'X','Y','xs','ys'});
-isargpositivescalar({L},{'L'});
+isargscalar(X,Y,xs,ys);
+isargpositivescalar(L);
 
 if nargin<nargmax
     conf = SFS_config;
 else
-    isargstruct({conf},{'conf'});
+    isargstruct(conf);
 end
 
 

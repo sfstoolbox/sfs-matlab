@@ -22,7 +22,6 @@ function irs = order_irs_fields(irs)
 nargmin = 1;
 nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
-isargstruct({irs},{'irs'});
 % Disable the ordering warning, becuase we wanted to reorder the entries
 warning('off','SFS:irs_fields_order');
 check_irs(irs);

@@ -19,7 +19,7 @@ function bool = ismonoinc(x)
 nargmin = 1;
 nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector({x},{'x'});
+isargvector(x);
 
 
 %% ===== Computation ====================================================

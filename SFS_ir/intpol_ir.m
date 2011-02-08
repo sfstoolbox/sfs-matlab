@@ -27,7 +27,7 @@ nargmin = 5;
 nargmax = 5;
 error(nargchk(nargmin,nargmax,nargin));
 
-isargscalar({beta1,beta2,alpha},{'beta1','beta2','alpha'});
+isargscalar(beta1,beta2,alpha);
 
 if ~isnumeric(ir1) || size(ir1,2)~=2
     error('%s: ir1 has to be a samples x 2 matrix!',upper(mfilename));

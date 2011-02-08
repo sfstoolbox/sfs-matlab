@@ -23,7 +23,7 @@ function irs = read_irs(irsfile)
 nargmin = 1;
 nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
-isargfile({irsfile},{'irsfile'});
+isargfile(irsfile);
 
 
 %% ===== Read IR files ================================================

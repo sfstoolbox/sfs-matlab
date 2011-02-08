@@ -3,7 +3,7 @@ function phi = correct_azimuth(phi)
 %   Usage: phi = correct_azimuth(phi)
 %
 %   Input parameters:
-%       phi     - azimuth (rad). Can be a single value or a vector.
+%       phi     - azimuth (rad). Can be a single value or a matrix.
 %
 %   Output paramteres:
 %       phi     - angle between -pi and +pi-eps
@@ -21,7 +21,7 @@ function phi = correct_azimuth(phi)
 nargmin = 1;
 nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector({phi},{'phi'});
+isargmatrix(phi);
 
 
 %% ===== Computation ====================================================

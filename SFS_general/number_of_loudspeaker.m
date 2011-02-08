@@ -29,12 +29,12 @@ function [nLS L] = number_of_loudspeaker(L,conf)
 nargmin = 1;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin)),
-isargpositivescalar({L},{'L'});
+isargpositivescalar(L);
 
 if nargin<nargmax
     conf = SFS_config;
 else
-    isargstruct({conf},{'conf'});
+    isargstruct(conf);
 end
 
 

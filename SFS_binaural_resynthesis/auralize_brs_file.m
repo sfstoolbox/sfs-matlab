@@ -30,7 +30,7 @@ function outsig = auralize_brs_file(brsfile,contentfile)
 nargmin = 1:
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-isargfile({brsfile},{'brsfile'});
+isargfile(brsfile);
 
 
 %% ===== Configuration ==================================================

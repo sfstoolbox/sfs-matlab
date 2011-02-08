@@ -27,7 +27,7 @@ nargmin = 3;
 nargmax = 4;
 error(nargchk(nargmin,nargmax,nargin));
 
-isargpositivescalar({fs,nsamples},{'fs','nsamples'});
+isargpositivescalar(fs,nsamples);
 if ~isnumeric(ir) || size(ir,2)~=2
     error('%s: ir has to be an IR with samples x 2 size.',upper(mfilename));
 end
@@ -35,7 +35,7 @@ end
 if nargin<nargmax
     conf = SFS_config;
 else
-    isargstruct({conf},{'conf'});
+    isargstruct(conf);
 end
 
 

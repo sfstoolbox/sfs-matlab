@@ -28,8 +28,8 @@ function k = findcols(A, b)
 nargmin = 2;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-isargmatrix({A},{'A'});
-isargvector({b},{'b'});
+isargmatrix(A);
+isargvector(b);
 
 
 %% ===== Computation =====================================================

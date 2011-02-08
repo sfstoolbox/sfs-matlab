@@ -34,9 +34,9 @@ function ls_activity = secondary_source_selection(x0,y0,phi,xs,ys,src)
 nargmin = 6;
 nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector({x0,y0,phi},{'x0','y0','phi'});
-isargscalar({xs,ys},{'xs','ys'});
-isargchar({src},{'src'});
+isargvector(x0,y0,phi);
+isargscalar(xs,ys);
+isargchar(src);
 
 
 %% ===== Calculation ====================================================

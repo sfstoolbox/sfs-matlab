@@ -18,8 +18,7 @@ function check_irs(irs)
 nargmin = 1;
 nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
-
-isargstruct({irs},{'irs'});
+isargstruct(irs);
 
 
 %% ===== Format checking =================================================

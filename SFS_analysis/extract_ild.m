@@ -25,7 +25,7 @@ function ild = extract_ild(insigleft,insigright)
 nargmin = 2;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-isargmatrix({insigleft,insigright},{'insigleft','insigright'});
+isargmatrix(insigleft,insigright);
 if size(insigright)~=size(insigright)
     error('%s: insigleft and insigright have to be the same size!', ...
         upper(mfilename));

@@ -25,7 +25,7 @@ function a = wfs_amplitude_linear(x0,y0,X,Y,xs,ys)
 nargmin = 6;
 nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
-isargscalar({x0,y0,X,Y,xs,ys},{'x0','y0','X','Y','xs','ys'});
+isargscalar(x0,y0,X,Y,xs,ys);
 
 
 %% ===== Computation =====================================================

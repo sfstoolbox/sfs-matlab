@@ -20,7 +20,7 @@ function fix_brs_set(brsfile)
 nargmin = 1;
 nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
-isargfile({brsfile},{'brsfile'});
+isargfile(brsfile);
 
 
 %% ===== Computation =====================================================

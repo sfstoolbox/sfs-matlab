@@ -27,11 +27,11 @@ function [X,Y] = setting_xy_ranges(X,Y,conf)
 nargmin = 2;
 nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector({X,Y},{'X','Y'});
+isargvector(X,Y);
 if nargin<nargmax
     conf = SFS_config;
 else
-    isargstruct({conf},{'conf'});
+    isargstruct(conf);
 end
 
 

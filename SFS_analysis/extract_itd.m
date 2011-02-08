@@ -27,8 +27,8 @@ function [itd,idxleft,idxright] = extract_itd(insigleft,insigright,fs)
 nargmin = 3;
 nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin));
-isargmatrix({insigleft,insigright},{'insigleft','insigright'});
-isargpositivescalar({fs},{'fs'});
+isargmatrix(insigleft,insigright);
+isargpositivescalar(fs);
 if size(insigright)~=size(insigright)
     error('%s: insigleft and insigright have to be the same size!', ...
         upper(mfilename));

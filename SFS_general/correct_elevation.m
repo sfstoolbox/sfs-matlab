@@ -3,7 +3,7 @@ function delta = correct_elevation(delta)
 %   Usage: delta = correct_elevation(delta)
 %
 %   Input parameters:
-%       delta     - elevation (rad). Can be a single value or a vector.
+%       delta     - elevation (rad). Can be a single value or a matrix.
 %
 %   Output paramteres:
 %       delta     - angle between -pi/2 and +pi/2
@@ -21,7 +21,7 @@ function delta = correct_elevation(delta)
 nargmin = 1;
 nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector({delta},{'delta'});
+isargmatrix(delta);
 
 
 %% ===== Computation ====================================================

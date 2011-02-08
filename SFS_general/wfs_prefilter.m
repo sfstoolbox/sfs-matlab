@@ -26,7 +26,7 @@ error(nargchk(nargmin,nargmax,nargin));
 if nargin<nargmax
     conf = SFS_config;
 else
-    isargstruct({conf},{'conf'});
+    isargstruct(conf);
 end
 
 

@@ -28,13 +28,13 @@ function S = point_source(x,y,xs,ys,f,conf)
 nargmin = 5;
 nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
-isargmatrix({x,y},{'x','y'});
-isargscalar({xs,ys},{'xs','ys'});
-isargpositivescalar({f},{'f'});
+isargmatrix(x,y);
+isargscalar(xs,ys);
+isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
 else
-    isargstruct({conf},{'conf'});
+    isargstruct(conf);
 end
 
 

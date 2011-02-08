@@ -25,12 +25,10 @@ function ir = get_ir(irs,phi,delta)
 nargmin = 2;
 nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin))
-
-isargstruct({irs},{'irs'});
 check_irs(irs);
-isargscalar({phi},{'phi'});
+isargscalar(phi);
 if nargin==nargmax
-    isargscalar({delta},{'delta'}),
+    isargscalar(delta),
 else
     delta = 0;
 end

@@ -22,8 +22,6 @@ function irs = correct_irs_angle_order(irs)
 nargmin = 1;
 nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
-isargstruct({irs},{'irs'});
-% Check if the given irs is in the right format
 check_irs(irs);
 
 

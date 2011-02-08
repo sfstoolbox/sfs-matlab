@@ -23,8 +23,7 @@ function irspart = slice_irs(irs,idx)
 nargmin = 2;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-isargstruct({irs},{'irs'});
-isargvector({idx},{'idx'});
+isargvector(idx);
 check_irs(irs);
 
 

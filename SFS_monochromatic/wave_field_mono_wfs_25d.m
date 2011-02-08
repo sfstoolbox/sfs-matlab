@@ -42,14 +42,14 @@ function [x,y,P] = wave_field_monochromatic_wfs_25d(X,Y,xs,ys,L,f,src,conf)
 nargmin = 7;
 nargmax = 8;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector({X,Y},{'X','Y'});
-isargscalar({xs,ys},{'xs','ys'});
-isargpositivescalar({L,f},{'L','f'});
-isargchar({src},{'src'});
+isargvector(X,Y);
+isargscalar(xs,ys);
+isargpositivescalar(L,f);
+isargchar(src);
 if nargin<nargmax
     conf = SFS_config;
 else
-    isargstruct({conf},{'conf'});
+    isargstruct(conf);
 end
 
 

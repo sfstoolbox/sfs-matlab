@@ -32,11 +32,11 @@ function outsig = auralize_brs(brs,contentfile,conf)
 nargmin = 2;
 nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin));
-isargmatrix({brs},{'brs'});
+isargmatrix(brs);
 if nargin<nargmax
     conf = SFS_config;
 else
-    isargstruct({conf},{'conf'});
+    isargstruct(conf);
 end
 
 

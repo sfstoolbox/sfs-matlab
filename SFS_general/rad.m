@@ -19,7 +19,7 @@ function phi = rad(phi)
 nargmin = 1;
 nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
-isargmatrix({phi},{'phi'});
+isargmatrix(phi);
 
 
 %% ===== Computation =====================================================

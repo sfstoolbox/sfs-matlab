@@ -31,8 +31,8 @@ function kemar2mat(irsset,irspath)
 nargmin = 2;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-isargchar({irsset},{'irsset'});
-isargdir({irspath},{'irspath'});
+isargchar(irsset);
+isargdir(irspath);
 
 
 %% ===== Computation =====================================================

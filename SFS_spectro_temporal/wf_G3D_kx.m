@@ -117,7 +117,6 @@ if yref>max(y)
         upper(mfilename),max(y));
 end
 
- 
 Gkx = zeros(length(kx),length(y));
 
 if strcmp('ps',src)
@@ -200,7 +199,5 @@ G = 1*G./abs(G(xidx,yidx));
 
 %% ===== Plotting ========================================================
 if(useplot)
-    % Plot no loudspeakers
-    conf.LSdist = 0.01;
-    plot_wavefield(x,y,G,x(end),conf);
+    plot_wavefield(x,y,G,conf);
 end

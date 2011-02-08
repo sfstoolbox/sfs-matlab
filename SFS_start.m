@@ -26,6 +26,7 @@ basepath=basepath(1:end-12);
 % Add the base path and the needed sub-directories
 if exist('addpath')
     addpath(basepath);
+    addpath([basepath,'/scripts']);
     addpath([basepath,'/SFS_analysis']);
     addpath([basepath,'/SFS_binaural_resynthesis']);
     addpath([basepath,'/SFS_general']);
@@ -33,10 +34,11 @@ if exist('addpath')
     addpath([basepath,'/SFS_ir']);
     addpath([basepath,'/SFS_monochromatic']);
     addpath([basepath,'/SFS_plotting']);
-    addpath([basepath,'/scripts']);
+    addpath([basepath,'/SFS_spectro_temporal']);
     addpath([basepath,'/SFS_time_domain']);
 else
     path(path,basepath);
+    path(path,[basepath,'/scripts']);
     path(path,[basepath,'/SFS_analysis']);
     path(path,[basepath,'/SFS_binaural_resynthesis']);
     path(path,[basepath,'/SFS_general']);
@@ -44,7 +46,7 @@ else
     path(path,[basepath,'/SFS_ir']);
     path(path,[basepath,'/SFS_monochromatic']);
     path(path,[basepath,'/SFS_plotting']);
-    path(path,[basepath,'/scripts']);
+    path(path,[basepath,'/SFS_spectro_temporal']);
     path(path,[basepath,'/SFS_time_domain']);
 end
 

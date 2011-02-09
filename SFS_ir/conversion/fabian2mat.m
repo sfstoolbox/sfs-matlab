@@ -35,8 +35,16 @@ isargdir(irspath);
 
 
 %% ===== Computation =====================================================
+outdir = 'ir_databases';
+
 % Initialize a new IR struct
-irs = {};
+irs = new_irs();
+% Common fields
+irs.fs = 44100;
+irs.head_position = [0 0 0];
+irs.head_reference = [0 1 0];
+irs.source_reference = [0 0 0];
+
 if strcmp(irsset,'RAR')
     irs.description = ...
         ['Alex Lindaus anechoic measurements with FABIAN in RAR of the ',...
@@ -58,7 +66,7 @@ elseif strcmp(irsset,'Sputnik1')
         ['Alex Lindaus echoic measurements with FABIAN in Sputnik. ', ...
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
          'Rotation: head.'];
-    irs.tag = 'BRIR';
+    irs.loudspeaker = 'Fostex';
     irs.distance = 1.03;
     irs.direction = 90/180*pi;
     irs.fs = 44100;

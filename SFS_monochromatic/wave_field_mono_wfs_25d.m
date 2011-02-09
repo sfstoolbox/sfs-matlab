@@ -1,7 +1,7 @@
-function [x,y,P] = wave_field_monochromatic_wfs_25d(X,Y,xs,ys,L,f,src,conf)
-%WAVE_FIELD_MONOCHROMATIC_WFS_25D simulates a wave field for 2.5D WFS
-%   Usage: [x,y,P] = wave_field_monochromatic_wfs_25d(X,Y,xs,ys,L,f,src,conf)
-%          [x,y,P] = wave_field_monochromatic_wfs_25d(X,Y,xs,ys,L,f,src)
+function [x,y,P] = wave_field_mono_wfs_25d(X,Y,xs,ys,L,f,src,conf)
+%WAVE_FIELD_MONO_WFS_25D simulates a wave field for 2.5D WFS
+%   Usage: [x,y,P] = wave_field_mono_wfs_25d(X,Y,xs,ys,L,f,src,conf)
+%          [x,y,P] = wave_field_mono_wfs_25d(X,Y,xs,ys,L,f,src)
 %
 %   Input parameters:
 %       X           - length of the X axis (m); single value or [xmin,xmax]
@@ -22,7 +22,7 @@ function [x,y,P] = wave_field_monochromatic_wfs_25d(X,Y,xs,ys,L,f,src,conf)
 %       y           - corresponding y axis
 %       P           - Simulated wave field
 %
-%   WAVE_FIELD_MONOCHROMATIC_WFS_25D(X,Y,xs,ys,L,f,src,conf) simulates a wave 
+%   WAVE_FIELD_MONO_WFS_25D(X,Y,xs,ys,L,f,src,conf) simulates a wave 
 %   field of the given source type (src) using a WFS 2.5 dimensional driving 
 %   function in the temporal domain. This means by calculating the integral for 
 %   P with a summation.

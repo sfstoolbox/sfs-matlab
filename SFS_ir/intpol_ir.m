@@ -33,7 +33,7 @@ if ~isnumeric(ir1) || size(ir1,2)~=2
     error('%s: ir1 has to be a samples x 2 matrix!',upper(mfilename));
 end
 if ~isnumeric(ir2) || size(ir2,2)~=2
-    error('%s: ir2 has to be a samplesx2 matrix!',upper(mfilename));
+    error('%s: ir2 has to be a samples x 2 matrix!',upper(mfilename));
 end
 
 
@@ -53,9 +53,6 @@ alpha = correct_azimuth(alpha);
 if alpha==beta1 || alpha==beta2
     error('%s: no interpolation needed for the given alpha value.',...
         upper(mfilename));
-end
-if (alpha>beta1 && alpha>beta2) || (alpha<beta1 && alpha<beta2)
-    error('%s: alpha has to be between beta1 and beta2.',upper(mfilename));
 end
 if length(ir1)~=length(ir2)
     error('%s: the given IRs have not the same length.',upper(mfilename));

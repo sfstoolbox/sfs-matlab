@@ -40,10 +40,13 @@ outdir = 'ir_databases';
 % Initialize a new IR struct
 irs = new_irs();
 % Common fields
+irs.head = 'FABIAN';
 irs.fs = 44100;
 irs.head_position = [0 0 0];
 irs.head_reference = [0 1 0];
 irs.source_reference = [0 0 0];
+irs.head_elevation = NaN;
+irs.torso_elevation = NaN;
 
 if strcmp(irsset,'RAR')
     irs.description = ...
@@ -52,11 +55,11 @@ if strcmp(irsset,'RAR')
          '1.25°. NOTE: the real resolution was 2.5°; 1.25° has been ', ...
          'realized by turning the dummy head one time per hand. Rotation: ',...
          'torso.'];
-    irs.tag = 'HRIR';
+    irs.room = 'Anechoic chamber of ITA TU Berlin';
+    irs.loudspeaker = 'Genelec ?';
     irs.distance = 2.5;
-    irs.direction = 0;
-    irs.fs = 44100;
-    outdir = 'measurements/HRIRs';
+    irs.source_position = [0 2.5 0];
+    irs.head_azimuth = NaN;
     angle1 = -180;
     angle2 = 180-1.25;
     step = 1.25;
@@ -65,12 +68,12 @@ elseif strcmp(irsset,'Sputnik1')
     irs.description = ...
         ['Alex Lindaus echoic measurements with FABIAN in Sputnik. ', ...
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
-         'Rotation: head.'];
+         'Rotation: head. Source at 90 deg'];
+    irs.room = 'Sputnik of T-Labs Berlin';
     irs.loudspeaker = 'Fostex';
     irs.distance = 1.03;
-    irs.direction = 90/180*pi;
-    irs.fs = 44100;
-    outdir = 'measurements/BRIRs';
+    irs.source_position = [-1.03 0 0];
+    irs.torso_azimuth = NaN;
     angle1 = -90;
     angle2 = 90;
     step = 1;
@@ -79,12 +82,12 @@ elseif strcmp(irsset,'Sputnik2')
     irs.description = ...
         ['Alex Lindaus echoic measurements with FABIAN in Sputnik. ', ...
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
-         'Rotation: head.'];
-    irs.tag = 'BRIR';
+         'Rotation: head. Source at 47 deg'];
+    irs.room = 'Sputnik of T-Labs Berlin';
+    irs.loudspeaker = 'Fostex';
     irs.distance = 1.96;
-    irs.direction = 47/180*pi;
-    irs.fs = 44100;
-    outdir = 'measurements/BRIRs';
+    irs.source_position = [-1.4335 1.3367 0];
+    irs.torso_azimuth = NaN;
     angle1 = -90;
     angle2 = 90;
     step = 1;
@@ -93,12 +96,12 @@ elseif strcmp(irsset,'Sputnik3')
     irs.description = ...
         ['Alex Lindaus echoic measurements with FABIAN in Sputnik. ', ...
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
-         'Rotation: head.'];
-    irs.tag = 'BRIR';
+         'Rotation: head. Source at 24 deg'];
+    irs.room = 'Sputnik of T-Labs Berlin';
+    irs.loudspeaker = 'Fostex';
     irs.distance = 2.27;
-    irs.direction = 24/180*pi;
-    irs.fs = 44100;
-    outdir = 'measurements/BRIRs';
+    irs.source_position = [-0.92329 2.0737 0];
+    irs.torso_azimuth = NaN;
     angle1 = -90;
     angle2 = 90;
     step = 1;
@@ -107,12 +110,12 @@ elseif strcmp(irsset,'Sputnik4')
     irs.description = ...
         ['Alex Lindaus echoic measurements with FABIAN in Sputnik. ', ...
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
-         'Rotation: head.'];
-    irs.tag = 'BRIR';
+         'Rotation: head. Source at 11 deg'];
+    irs.room = 'Sputnik of T-Labs Berlin';
+    irs.loudspeaker = 'Fostex';
     irs.distance = 2.86;
-    irs.direction = 11/180*pi;
-    irs.fs = 44100;
-    outdir = 'measurements/BRIRs';
+    irs.source_position = [-0.54571 2.8075 0];
+    irs.torso_azimuth = NaN;
     angle1 = -90;
     angle2 = 90;
     step = 1;
@@ -121,12 +124,12 @@ elseif strcmp(irsset,'Sputnik5')
     irs.description = ...
         ['Alex Lindaus echoic measurements with FABIAN in Sputnik. ', ...
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
-         'Rotation: head.'];
-    irs.tag = 'BRIR';
+         'Rotation: head. Source at -12 deg'];
+    irs.room = 'Sputnik of T-Labs Berlin';
+    irs.loudspeaker = 'Fostex';
     irs.distance = 2.92;
-    irs.direction = -12/180*pi;
-    irs.fs = 44100;
-    outdir = 'measurements/BRIRs';
+    irs.source_position = [0.60710 2.8562 0];
+    irs.torso_azimuth = NaN;
     angle1 = -90;
     angle2 = 90;
     step = 1;
@@ -135,12 +138,12 @@ elseif strcmp(irsset,'Sputnik6')
     irs.description = ...
         ['Alex Lindaus echoic measurements with FABIAN in Sputnik. ', ...
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
-         'Rotation: head.'];
-    irs.tag = 'BRIR';
+         'Rotation: head. Source at -33 deg'];
+    irs.room = 'Sputnik of T-Labs Berlin';
+    irs.loudspeaker = 'Fostex';
     irs.distance = 2.41;
-    irs.direction = -33/180*pi;
-    irs.fs = 44100;
-    outdir = 'measurements/BRIRs';
+    irs.source_position = [1.3126 2.0212 0];
+    irs.torso_azimuth = NaN;
     angle1 = -90;
     angle2 = 90;
     step = 1;
@@ -149,12 +152,12 @@ elseif strcmp(irsset,'Sputnik7')
     irs.description = ...
         ['Alex Lindaus echoic measurements with FABIAN in Sputnik. ', ...
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
-         'Rotation: head.'];
-    irs.tag = 'BRIR';
+         'Rotation: head. Source at -56 deg'];
+    irs.room = 'Sputnik of T-Labs Berlin';
+    irs.loudspeaker = 'Fostex';
     irs.distance = 2.02;
-    irs.direction = -56/180*pi;
-    irs.fs = 44100;
-    outdir = 'measurements/BRIRs';
+    irs.source_position = [1.6747 1.1296 0];
+    irs.torso_azimuth = NaN;
     angle1 = -90;
     angle2 = 90;
     step = 1;
@@ -163,12 +166,12 @@ elseif strcmp(irsset,'Sputnik8')
     irs.description = ...
         ['Alex Lindaus echoic measurements with FABIAN in Sputnik. ', ...
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
-         'Rotation: head.'];
-    irs.tag = 'BRIR';
+         'Rotation: head. Source at -90 deg'];
+    irs.room = 'Sputnik of T-Labs Berlin';
+    irs.loudspeaker = 'Fostex';
     irs.distance = 1.04;
-    irs.direction = -90/180*pi;
-    irs.fs = 44100;
-    outdir = 'measurements/BRIRs';
+    irs.source_position = [1.04 0 0];
+    irs.torso_azimuth = NaN;
     angle1 = -90;
     angle2 = 90;
     step = 1;
@@ -187,18 +190,22 @@ for phi = angle1:step:angle2
         else
             irfile = sprintf('%s/P%05.0f.wav',irspath,100*phi);
         end
+        irs.torso_azimuth(idx) = -correct_azimuth(rad(phi));
     else
         if phi<0
             irfile = sprintf('%s/P00_N%03.0f.wav',irspath,-10*phi);
         else
             irfile = sprintf('%s/P00_P%03.0f.wav',irspath,10*phi);
         end
+        irs.head_azimuth(idx) = -correct_azimuth(rad(phi));
     end
 
     ir = wavread(irfile);
 
-    irs.elevation(idx) = correct_angle(0);
-    irs.azimuth(idx) = correct_angle(phi/180*pi);
+    irs.apparent_elevation(idx) = correct_elevation(0);
+    irs.apparent_azimuth(idx) = ...
+        correct_azimuth(rad(phi)-atan2(irs.source_position(1),...
+        irs.source_position(2)));
     irs.left(:,idx) = ir(1:irlength,1);
     irs.right(:,idx) = ir(1:irlength,2);
 
@@ -206,8 +213,10 @@ for phi = angle1:step:angle2
 
 end
 
+check_irs(irs);
 % Reorder entries
 irs = correct_irs_angle_order(irs);
+irs = order_irs_fields(irs);
 
 % Create the outdir
 if ~exist(outdir,'dir')

@@ -91,7 +91,7 @@ end
 
 % Check distance
 if ~isnumeric(irs.distance) || ...
-    irs.distance~=norm(irs.head_position-irs.source_position)
+    irs.distance-norm(irs.head_position-irs.source_position)>0.0001
     error('%s: distance has to be norm(head_position-source_position).',...
         upper(mfilename));
 end

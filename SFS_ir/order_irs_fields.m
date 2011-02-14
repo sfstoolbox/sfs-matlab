@@ -47,14 +47,14 @@ else
     for ii = 1:length(ref_fields)
         for jj = 1:length(fields)
             if strcmp(fields{jj},ref_fields{ii})
-                idx = [idx jj];
+                idx = [idx,jj];
             end
         end
     end
     % Get the indices for additional fields
     for jj = 1:length(fields)
         if ~any(idx==jj)
-            idx = [idx jj];
+            idx = [idx,jj];
         end
     end
     sorted_fields = fields(idx);

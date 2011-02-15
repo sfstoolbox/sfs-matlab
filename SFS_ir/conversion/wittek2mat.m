@@ -51,7 +51,7 @@ for phi = 0:1:359
     irs.apparent_azimuth(idx) = correct_azimuth(rad(phi));
     irs.apparent_elevation(idx) = correct_elevation(0);
     irs.torso_azimuth(idx) = -correct_azimuth(rad(phi));
-    % FIXME: hrtf is of class data. How do I handle this?
+    % FIXME: hrtf is of class data, this will give an error only in Octave
     irs.left(:,idx) = hrtf.data(:,1);
     irs.right(:,idx) = hrtf.data(:,2);
     idx = idx+1;
@@ -71,5 +71,5 @@ if ~exist(outdir,'dir')
 end
 
 % Write IR mat-file
-outfile = sprintf('%s/KEMAR_Wittek.mat',outdir);
+outfile = sprintf('%s/KEMARWittek_Studio_1m.mat',outdir);
 save('-v7',outfile,'irs');

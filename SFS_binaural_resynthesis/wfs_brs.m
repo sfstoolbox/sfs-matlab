@@ -114,6 +114,7 @@ dt = zeros(1,nLS);
 a = zeros(1,nLS);
 
 % Create a BRIR for every single loudspeaker
+warning('off','SFS:irs_intpol');
 for n=1:nLS
 
     if strcmp('pw',src)
@@ -213,6 +214,7 @@ for n=1:nLS
                              zeros(1,N-dt(n)-lenir)]';
 
 end
+warning('on','SFS:irs_intpol');
 
 
 %% ===== Pre-equalization ===============================================

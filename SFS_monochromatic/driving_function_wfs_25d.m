@@ -140,10 +140,10 @@ if(ls_activity)
         % NOTE: the phase term e^(-i phase) is only there in order to be able to
         %       simulate different time steps
         %
-        D = -g0/(2*pi) * ( sqrt(omega/(1i*c)) + sqrt(1i*c/omega) / ...
-            sqrt((x0-xs)^2+(y0-ys)^2) ) * ...
-            (y0-ys)/((x0-xs)^2+(y0-ys)^2) * ...
-            exp(-1i*omega/c*sqrt((x0-xs)^2+(y0-ys)^2)) * exp(-1i*phase);
+        %D = -g0/(2*pi) * ( sqrt(omega/(1i*c)) + sqrt(1i*c/omega) / ...
+        %    sqrt((x0-xs)^2+(y0-ys)^2) ) * ...
+        %    (y0-ys)/((x0-xs)^2+(y0-ys)^2) * ...
+        %    exp(-1i*omega/c*sqrt((x0-xs)^2+(y0-ys)^2)) * exp(-1i*phase);
         %
         % ----------------------------------------------------------------
         % Alternative Driving Functions for a focused source:
@@ -167,17 +167,17 @@ if(ls_activity)
         % and the large argument approximation of the driving function above.
         % This results in the "traditional" driving function, derived in
         % Verheijen1997 (see Spors2009).
-        %                        ___
-        %                 g0    |i w|    y0-ys
-        % D_25D(x0,w) = - --- _ |---  ------------- e^(-i w/c |x0-xs|)
-        %                 2pi  \| c   |x0-xs|^(3/2)
+        %                     _____
+        %                    |i w  |    y0-ys
+        % D_25D(x0,w) = g0 _ |-----  ------------- e^(-i w/c |x0-xs|)
+        %                   \|2pi c  |x0-xs|^(3/2)
         %
         % NOTE: the phase term e^(-i phase) is only there in order to be able to
         %       simulate different time steps
         %
-        %D = -g0/(2*pi) * sqrt(1i*omega/c) * ...
-        %    (y0-ys)/(sqrt((x0-xs)^2+(y0-ys)^2))^(3/2) * ...
-        %    exp(-1i*omega/c*sqrt((x0-xs)^2+(y0-ys)^2)) * exp(-1i*phase);
+        D = g0 * sqrt(1i*omega/(2*pi*c)) * ...
+            (y0-ys)/(sqrt((x0-xs)^2+(y0-ys)^2))^(3/2) * ...
+            exp(-1i*omega/c*sqrt((x0-xs)^2+(y0-ys)^2)) * exp(-1i*phase);
         %
     else
         % No such source type for the driving function

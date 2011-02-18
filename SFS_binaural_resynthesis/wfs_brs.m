@@ -1,13 +1,16 @@
-function brs = wfs_brs(X,Y,phi,xs,ys,L,irs,conf)
+function brs = wfs_brs(X,Y,phi,xs,ys,L,src,irs,conf)
 %WFS_BRS Generate a BRIR for WFS
-%   Usage: brs = wfs_brs(X,Y,phi,xs,ys,L,irs,conf)
-%          brs = wfs_brs(X,Y,phi,xs,ys,L,irs)
+%   Usage: brs = wfs_brs(X,Y,phi,xs,ys,L,src,irs,conf)
+%          brs = wfs_brs(X,Y,phi,xs,ys,L,src,irs)
 %
 %   Input parameters:
 %       X,Y     - listener position (m)
 %       phi     - listener direction [head orientation] (rad)
 %       xs,ys   - virtual source position [ys > Y0 => focused source] (m)
 %       L       - Length of linear loudspeaker array (m)
+%       src     - source type: 'pw' -plane wave
+%                              'ps' - point source
+%                              'fs' - focused source
 %       irs     - IR data set for the secondary sources
 %       conf    - optional struct containing configuration variables (see
 %                 SFS_config for default values)
@@ -15,7 +18,7 @@ function brs = wfs_brs(X,Y,phi,xs,ys,L,irs,conf)
 %   Output parameters:
 %       brs     - Binaural room impulse response (nx2 matrix)
 %
-%   WFS_BRS(X,Y,phi,xs,ys,L,irs,conf) calculates a binaural room impulse
+%   WFS_BRS(X,Y,phi,xs,ys,L,irs,src,conf) calculates a binaural room impulse
 %   response for a virtual source at [xs,ys] for a linear WFS array and the
 %   listener located at [X,Y].
 %
@@ -42,12 +45,13 @@ function brs = wfs_brs(X,Y,phi,xs,ys,L,irs,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 7;
-nargmax = 8;
+nargmin = 8;
+nargmax = 9;
 error(nargchk(nargmin,nargmax,nargin));
 
 isargscalar(X,Y,phi,xs,ys);
 isargpositivescalar(L);
+isargchar(src);
 check_irs(irs);
 
 if nargin<nargmax
@@ -112,44 +116,47 @@ a = zeros(1,nLS);
 % Create a BRIR for every single loudspeaker
 for n=1:nLS
 
-    % === Relative distances ===
-    %
-    %           LSpos(:,n)            [X0 Y0]
-    % x-axis <-^--^--^--^--^--^--^--^--^-|-^--^--^--^--^--^--^--^--^--
-    %             |                      |
-    %         R2 |  |                    |
-    %           |     | R                |
-    %          x        |                |
-    %       [xs,ys]       |              |
-    %                       O            |
-    %                      [X,Y]         |
-    %                                    v
-    %                                  y-axis
+    if strcmp('pw',src)
+        to_be_implemented;
+    elseif strcmp('ps',src) || strcmp('fs',src)
 
-    % Distance between given loudspeaker and listener position [X,Y]
-    R = norm( [X-x0(n), Y-y0(n)] );
-    % Distance between given loudspeaker and virtual source position
-    R2 = norm( [xs-x0(n), ys-y0(n)] );
+        % === Relative distances ===
+        %
+        %           LSpos(:,n)            [X0 Y0]
+        % x-axis <-^--^--^--^--^--^--^--^--^-|-^--^--^--^--^--^--^--^--^--
+        %             |                      |
+        %         R2 |  |                    |
+        %           |     | R                |
+        %          x        |                |
+        %       [xs,ys]       |              |
+        %                       O            |
+        %                      [X,Y]         |
+        %                                    v
+        %                                  y-axis
 
-    % Time delay of the virtual source (at the listener position)
-    % t0 is a causality pre delay for the focused source, e.g. 0 for a non
-    % focused point source (see SFS_config.m)
-    % Check if we have a non focused source
-    if ys>Y0
-        % Focused source
-        tau = (R-irs.distance)/c - R2/c - t0;
+        % Time delay of the virtual source (at the listener position)
+        % t0 is a causality pre delay for the focused source, e.g. 0 for a non
+        % focused point source (see SFS_config.m)
+        % Check if we have a non focused source
+        if ys>Y0
+            % Focused source
+            tau = (norm([X Y]-[x0(n) y0(n)]) - irs.distance)/c - ...
+                norm([xs ys]-[x0(n) y0(n)])/c - t0;
+        else
+            % Virtual source behind the loudspeaker array
+            tau = (norm([X Y]-[x0(n) y0(n)])-irs.distance)/c + ...
+                norm([xs ys]-[x0(n) y0(n)])/c;
+        end
+        % Time delay in samples for the given loudspeaker
+        dt(n) = ceil( tau*fs );
     else
-        % Virtual source behind the loudspeaker array
-        tau = (R-irs.distance)/c + R2/c;
+        error('%s: src has to be one of "pw", "ps", "fs"!',upper(mfilename));
     end
-    % Time delay in samples for the given loudspeaker
-    dt(n) = ceil( tau*fs );
-
 
     % === Amplitude factor ===
     % Use linear amplitude factor (see Spors et al. (2008)) and apply the
     % tapering window
-    a(n) = wfs_amplitude_linear(x0(n),y0(n),X,Y,xs,ys) * win(n);
+    a(n) = wfs_amplitude(x0(n),y0(n),X,Y,xs,ys,src) * win(n);
 
 
     % === Secondary source angle ===

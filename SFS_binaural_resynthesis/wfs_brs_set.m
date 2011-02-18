@@ -1,13 +1,16 @@
-function brs = wfs_brs_set(X,Y,phi,xs,ys,L,irs,conf)
+function brs = wfs_brs_set(X,Y,phi,xs,ys,L,src,irs,conf)
 %WFS_BRS_SET generates a BRS set for the SoundScapeRenderer
-%   Usage: brs = wfs_brs_set(X,Y,phi,xs,ys,L,irs,outdir,conf)
-%          brs = wfs_brs_set(X,Y,phi,xs,ys,L,irs,outdir)
+%   Usage: brs = wfs_brs_set(X,Y,phi,xs,ys,L,src,irs,conf)
+%          brs = wfs_brs_set(X,Y,phi,xs,ys,L,src,irs)
 %
 %   Input parameters:
 %       X,Y     - listener position (m)
 %       phi     - listener direction [head orientation] (rad)
 %       xs,ys   - virtual source position [ys > Y0 => focused source] (m)
 %       L       - Length of linear loudspeaker array (m)
+%       src     - source type: 'pw' - plane wave
+%                              'ps' - point source
+%                              'fs' - focused source
 %       irs     - IR data set for the second sources
 %       conf    - optional struct containing configuration variables (see
 %                 SFS_config for default values)
@@ -73,6 +76,6 @@ brs = zeros(N,2*length(angles));
 % Generate a BRIR set for all given angles
 for i = 1:length(angles)
     % Compute BRS for a linear WFS system
-    brs(:,(i-1)*2+1:i*2) = wfs_brs(X,Y,angles(i)+phi,xs,ys,L,irs,conf);
+    brs(:,(i-1)*2+1:i*2) = wfs_brs(X,Y,angles(i)+phi,xs,ys,L,src,irs,conf);
 end
 

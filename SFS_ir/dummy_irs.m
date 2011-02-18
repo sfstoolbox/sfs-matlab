@@ -21,7 +21,7 @@ ir = zeros(nsamples,1);
 ir(300) = 1;
 
 irs = new_irs();
-for ii=0:360
+for ii=0:359
     irs.left(:,ii+1) = ir;
     irs.right(:,ii+1) = ir;
     irs.apparent_azimuth(ii+1) = correct_azimuth(ii/180*pi);

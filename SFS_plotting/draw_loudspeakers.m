@@ -22,39 +22,22 @@ function [] = draw_loudspeakers(x0,y0,phi,ls_activity,conf)
 nargmin = 3;
 nargmax = 5;
 error(nargchk(nargmin,nargmax,nargin));
-
-if ~isnumeric(x0) || ~isvector(x0)
-    error('%s: x0 has to be a vector!',upper(mfilename));
-end
-if ~isnumeric(y0) || ~isvector(y0)
-    error('%s: y0 has to be a vector!',upper(mfilename));
-end
-if ~isnumeric(phi) || ~isvector(phi)
-    error('%s: phi has to be a vector!',upper(mfilename));
-end
+isargvector(x0,y0,phi)
 nLS = length(phi);
 if(nargin<nargmax-1)
     ls_activity = zeros(1,nLS);
 elseif(length(ls_activity)==1)
     ls_activity = ls_activity*ones(1,nLS);
 end
-if ~isnumeric(ls_activity) || ~isvector(ls_activity)
-    error('%s: ls_activity has to be a vector!',upper(mfilename));
-end
+isargvector(ls_activity);
 if nargin<nargmax
-    useconfig = true;
-elseif ~isstruct(conf)
-    error('%s: conf has to be a struct.',upper(mfilename));
+    conf = SFS_config;
 else
-    useconfig = false;
+    isargstruct(conf);
 end
 
 
 %% ===== Configuration ===================================================
-% Load default configuration values
-if(useconfig)
-    conf = SFS_config;
-end
 p.realloudspeakers = conf.plot.realloudspeakers;
 p.lssize = conf.plot.lssize;
 

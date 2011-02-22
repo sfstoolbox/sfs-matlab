@@ -1,18 +1,24 @@
-# gp_draw_loudspeakers
-
+#!/usr/bin/gnuplot
+#
+#
 # AUTHOR: Hagen Wierstorf
+set macros
+file = '"$0"'
 
-if (!exists("dLS")) dLS = 0;
+# Store current terminal and choose a dummy terminal
+set term push
+set term dumb
+#set output '/dev/null'
 
-# x-Dimension of loudspeaker
-b = 0.084
-# draw the rectangular object of the loufspeaker
-set object dLS+1 rect from x0_start-b/2+dLS*LSdist,-0.1 to \
-    x0_start+b/2+dLS*LSdist,-0.045 front
-set object dLS+1 rect fc rgb "black" fillstyle solid 1.0
-# draw the triangular object of the loudspeaker
-set arrow dLS+1 from x0_start+dLS*LSdist,0 to x0_start+dLS*LSdist,-0.05 front head
-set arrow dLS+1 filled lc rgb "black"
-set arrow dLS+1 size 0.075,45
-dLS = dLS+1
-if(dLS<nLS) reread; else dLS = 0
+# Function to create the right call function
+f(u,v,w,x) = \
+    sprintf('call "gp_set_loudspeakers.gnu" "%f" "%f" "%f" "%f";',u,v,w,x);
+# Initialize command string
+CMD = ''
+# Do a dummy plot to read the loudspeaker position data
+plot @file u 1:(CMD = CMD.f($$0+1,$$1,$$2,$$3))
+# Execute the loudspeaker drawing command
+eval(CMD)
+
+# Restore the terminal
+set term pop

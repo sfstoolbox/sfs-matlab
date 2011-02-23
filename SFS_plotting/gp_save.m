@@ -19,19 +19,13 @@ function gp_save(file,x,y,header)
 %% ===== Checking of input  parameters ==================================
 error(nargchk(3,4,nargin));
 
-if ~ischar(file)
-    error('%s: file has to be a string!',upper(mfilename));
-end
-if ~isnumeric(x) || ~isvector(x)
-    error('%s: x has to be a vector!',upper(mfilename));
-end
-if ~isnumeric(y) || ~ismatrix(y)
-    error('%s: y has to be a vector!',upper(mfilename));
-end
+isargchar(file);
+isargvector(x);
+isargmatrix(y);
 if ~exist('header','var')
     header = '';
-elseif ~ischar(header)
-    error('%s: header has to be a string!',upper(mfilename));
+else
+    isargchar(header);
 end
 
 

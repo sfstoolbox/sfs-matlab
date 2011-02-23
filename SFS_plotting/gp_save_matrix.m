@@ -18,7 +18,7 @@ function gp_save_matrix(file,x,y,M)
 
 %% ===== Checking of input  parameters ==================================
 error(nargchk(4,4,nargin));
-isargfile(file);
+isargchar(file);
 isargvector(x,y);
 isargmatrix(M);
 

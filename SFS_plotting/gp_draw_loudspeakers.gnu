@@ -5,10 +5,9 @@
 set macros
 file = '"$0"'
 
-# Store current terminal and choose a dummy terminal
-set term push
-set term dumb
-#set output '/dev/null'
+# Set the output of the following plot to a table in order to achieve that is it
+# not shown in the current terminal
+set table '/dev/null'
 
 # Function to create the right call function
 add_loudspeaker(u,v,w,x) = \
@@ -21,4 +20,4 @@ plot @file u 1:(CMD = CMD.add_loudspeaker($$0+1,$$1,$$2,$$3))
 eval(CMD)
 
 # Restore the terminal
-set term pop
+unset table

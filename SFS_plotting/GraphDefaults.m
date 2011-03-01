@@ -82,7 +82,7 @@ switch lower(p_type)
         set(0,'DefaultLineLineWidth',2);
         figsize(10.98,7.74);
         fontsize(16);
-        fontname('Times');
+        %fontname('Times');
 
     case 'paper'
         set(0,'DefaultLineLineWidth',2);

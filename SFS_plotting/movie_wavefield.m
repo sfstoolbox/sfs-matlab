@@ -80,11 +80,15 @@ tmpdir = conf.tmpdir;
 % linear WFS array
 nLS = fix(L/LSdist)+1;
 [LSpos,LSdir] = LSpos_linear(X0,Y0,(nLS-1)*LSdist,nLS);
+[x0,y0,phi] = secondary_source_positions(L,conf);
 
 
 %% ===== Plotting ========================================================
 
 if(usegnuplot)
+
+    % Store the wave field and the loudspeaker positions
+
     % Generate the Gnuplot command line
     cmd = sprintf(['gnuplot<<EOC\n', ...
         'set loadpath "%s/SFS_plotting"\n', ...

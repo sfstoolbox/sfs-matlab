@@ -34,8 +34,8 @@ function [D] = driving_function_wfs_25d(x0,y0,phi,xs,ys,f,src,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 8;
-nargmax = 9;
+nargmin = 7;
+nargmax = 8;
 error(nargchk(nargmin,nargmax,nargin));
 isargscalar(x0,y0,phi,xs,ys);
 isargpositivescalar(f);
@@ -51,13 +51,8 @@ end
 
 % phase of omega
 phase = conf.phase;
-
 % yref
 yref = conf.yref;
-
-% Plotting result
-useplot = conf.useplot;
-
 % Speed of sound
 c = conf.c;
 
@@ -185,9 +180,4 @@ if(ls_activity)
     end
 else
     D = 0;
-end
-
-% ===== Plotting =========================================================
-if(useplot)
-    figure; plot(D)
 end

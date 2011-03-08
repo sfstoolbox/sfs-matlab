@@ -1,5 +1,5 @@
 function t = echo_time(X,Y,xs,ys,L,conf)
-%ECHO_TIME time of occurence of echo for a linear WFS array
+%ECHO_TIME time of occurence of first echo for a linear WFS array
 %   Usage: echo_time(X,Y,xs,ys,L,conf)
 %          echo_time(X,Y,xs,ys,L)
 %
@@ -98,7 +98,3 @@ end
 % Adjust the time, so the virtual source arrives at time 0 at the listener
 % position and use only the minimum time (focused sources).
 t = min(t-1.*t2 - norm([xs ys]-[X Y])/c);
-
-
-
-

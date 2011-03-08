@@ -1,4 +1,4 @@
-function [alpha,a,t] = echo_direction(X,Y,phi,xs,ys,L,conf)
+function [alpha,a,t] = echo_direction(X,Y,phi,xs,ys,L,src,conf)
 %ECHO_DIRECTION directions of the echos for a linear WFS array
 %   Usage: [alpha,a,t] = echo_direction(X,Y,phi,xs,ys,L,conf)
 %          [alpha,a,t] = echo_direction(X,Y,phi,xs,ys,L)
@@ -7,15 +7,19 @@ function [alpha,a,t] = echo_direction(X,Y,phi,xs,ys,L,conf)
 %       X,Y,phi - listener position and direction
 %       xs,ys   - virtual source position
 %       L       - length of the linear loudspeaker array
+%       src     - used source model:
+%                   'pw' - plane wave
+%                   'ps' - point source
+%                   'fs' - focused source
 %       conf    - optional struct containing configuration variables (see
 %                 SFS_config for default values)
 %
 %   Output parameters:
-%       alpha   - angle of incident for every echo (in °) 
+%       alpha   - angle of incident for every echo (in deg) 
 %       a       - amplitudes of the echos
 %       t       - time of the echos (s)
 %
-%   ECHO_DIRECTION(X,Y,phi,xs,ys,L) calculates the direction of the echos 
+%   ECHO_DIRECTION(X,Y,phi,xs,ys,src,L) calculates the direction of the echos 
 %   (due to aliasing artifacts) arriving from the loudspeakers for a linear
 %   WFS array (length L) at the given listener position [X Y] for the given 
 %   virtual source [xs ys] and given array length L.
@@ -25,18 +29,13 @@ function [alpha,a,t] = echo_direction(X,Y,phi,xs,ys,L,conf)
 
 % AUTHOR: Hagen Wierstorf, Sascha Spors
 
-% TODO: 
-%   * check if we have the right start time of the virtual source
-
 
 %% ===== Checking of input parameters ====================================
-nargmin = 6;
-nargmax = 7;
+nargmin = 7;
+nargmax = 8;
 error(nargchk(nargmin,nargmax,nargin));
-
 isargscalar(X,Y,phi,xs,ys);
 isargpositivescalar(L);
-
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -48,14 +47,8 @@ end
 
 % Loudspeaker distance
 LSdist = conf.LSdist;
-
 % Speed of sound
 c = conf.c;
-
-% Bandwidth of Dirac pulse
-%f = fix(fs/2);
-%k = 2*pi*f/c;
-
 % use plotting?
 useplot = conf.useplot;
 % Use gnuplot?
@@ -70,58 +63,14 @@ outfiledB = sprintf('direction_L%i_xs%i_ys%i_X%.1f_Y%.1f_dB.txt',...
                     L,xs,ys,X,Y);
 
 % Loudspeaker positions
-[x0,y0] = secondary_source_positions(L,conf);
+[x0,y0,phiLS] = secondary_source_positions(L,conf);
 
 % Number of loudspeaker
 nLS = number_of_loudspeaker(L,conf);
 
-
 % === Design tapering window ===
 % See SFS_config if it is applied
 win = tapwin(L,conf);
-
-
-%% ===== Calculate a time axis ==========================================
-
-% Geometry
-%           x0(:,i)               [X0 Y0]
-% x-axis <-^--^--^--^--^--^--^--^--^-|-^--^--^--^--^--^--^--^--^--
-%             |                      |
-%         R2 |  |                    |
-%           |     | R                |      
-%          x        |                |
-%       [xs,ys]       |              |
-%                       O            |
-%                      [X,Y]         |
-%                                    v
-%                                  y-axis
-%
-% Distance between x0 and listener: R
-% Distance between x0 and virtual source: R2
-
-% Calculate arrival times at the virtual source position of the waves 
-% emitted by the second sources
-LStimes = zeros(nLS,1);
-for ii = 1:nLS
-    % Distance between x0 and virtual source
-    R2 = norm([xs; ys] - [x0(ii); y0(ii)]);
-    % Time between x0 and virtual source
-    LStimes(ii) = R2/c;
-end
-
-% Start time of virtual source
-% First loudspeaker signal for virtual source, last signal for focused
-% sources.
-if ys > 0
-    xstime = max(LStimes);
-else
-    xstime = min(LStimes);
-end
-
-% Change order of the time vector, so the virtual source arrives at time 0 
-% at the listener position.
-t = -1.*LStimes - norm([xs ys]-[X Y])/c;
-
 
 %% ===== Calculate direction of the echos ===============================
 
@@ -145,13 +94,18 @@ alpha = zeros(nLS,1);
 a = zeros(nLS,1);
 v = zeros(nLS,2);
 vdB = zeros(nLS,2);
+t = zeros(nLS,1);
 for ii = 1:nLS
 
-    % Distance between x0 and listener (see Geometry)
-    R = norm([X Y] - [x0(ii) y0(ii)]);
+    % Get time delay and weighting factor for a single echo
+    [weight,delay] = ...
+        driving_function_imp_wfs_25d(x0(ii),y0(ii),phiLS(ii),xs,ys,src,conf);
 
     % === Time, in which pre-echos occur ===
-    t(ii) = R/c + t(ii);
+    t(ii) = norm([X Y]-[x0(ii) y0(ii)])/c + delay - norm([X Y]-[xs ys])/c;
+
+    % === Applying tapering window to the amplitude
+    a(ii) = weight * win(ii);
 
     % === Direction of the echos (in radian) ===
     % Vector from listener position to given loudspeaker position (cp. R)
@@ -162,11 +116,6 @@ for ii = 1:nLS
     % without phi)
     % Note: phi is the orientation of the listener (see first graph)
     alpha(ii) = atan2(-dx(1),dx(2)) - rad(phi);
-
-    % === Amplitude factor ===
-    % Use linear amplitude factor (see Spors et al. (2008)) and apply the
-    % tapering window
-    a(ii) = wfs_amplitude_linear(x0(ii),y0(ii),X,Y,xs,ys) * win(ii);
 
     % === Direction and amplitude in vector notation ===
     % Rotation matrix (see: http://en.wikipedia.org/wiki/Rotation_matrix)

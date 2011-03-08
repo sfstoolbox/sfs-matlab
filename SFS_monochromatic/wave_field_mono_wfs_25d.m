@@ -1,4 +1,4 @@
-function [x,y,P] = wave_field_mono_wfs_25d(X,Y,xs,ys,L,f,src,conf)
+function [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,ys,L,f,src,conf)
 %WAVE_FIELD_MONO_WFS_25D simulates a wave field for 2.5D WFS
 %   Usage: [x,y,P] = wave_field_mono_wfs_25d(X,Y,xs,ys,L,f,src,conf)
 %          [x,y,P] = wave_field_mono_wfs_25d(X,Y,xs,ys,L,f,src)
@@ -55,21 +55,6 @@ end
 
 %% ===== Configuration ==================================================
 
-% Array position (m)
-Y0 = conf.Y0;
-% Check if the focused source is positioned before the loudspeaker array.
-if strcmp('fs',src) && ys<=Y0
-    error('%s: ys has to be greater than Y0 for a focused source.', ...
-        upper(mfilename));
-elseif strcmp('ps',src) && ys>=Y0
-    error('%s: ys has to be smaller than Y0 for a point source.', ...
-        upper(mfilename));
-end
-
-% Reference position for the amplitude (correct reproduction of amplitude
-% at y = yref).
-yref = conf.yref;
-
 % xy resolution
 xysamples = conf.xysamples;
 
@@ -89,24 +74,18 @@ y = linspace(Y(1),Y(2),xysamples);
 
 %% ===== Computation ====================================================
 
-% Check if yref is in the given y space
-if yref>max(y)
-    error('%s: yref has be smaller than max(y) = %.2f',...
-        upper(mfilename),max(y));
-end
-
-
 % Calculate the wave field in time-frequency domain
 %
-% Get the position of the loudspeakers
+% Get the position of the loudspeakers and its activity
 [x0,y0,phi] = secondary_source_positions(L,conf);
+ls_activity = secondary_source_selection(x0,y0,phi,xs,ys,src);
+% Generate tapering window
+win = tapwin(L,ls_activity,conf);
+ls_activity = ls_activity .* win;
 % Create a x-y-grid to avoid a loop
 [X,Y] = meshgrid(x,y);
 % Initialize empty wave field
 P = zeros(length(y),length(x));
-% Generate tapering window
-% NOTE: if you have disabled tapering window, this will give you back ones()
-win = tapwin(L,conf);
 % Integration over secondary source positions
 for ii = 1:length(x0)
 
@@ -118,7 +97,7 @@ for ii = 1:length(x0)
 
     % ====================================================================
     % Driving function D(x0,omega)
-    D = driving_function_wfs_25d(x0(ii),y0(ii),phi(ii),xs,ys,f,src,conf);
+    D = driving_function_mono_wfs_25d(x0(ii),y0(ii),phi(ii),xs,ys,f,src,conf);
 
     % ====================================================================
     % Integration
@@ -135,15 +114,11 @@ for ii = 1:length(x0)
 
 end
 
-% === Scale signal (at xs,yref) ===
-% Find index
-[a,xidx] = find(x>xs,1);
-[a,yidx] = find(y>yref,1);
-% Scale signal to 1
-P = 1*P/abs(P(yidx,xidx));
+% === Scale signal (at [xref yref]) ===
+P = norm_wave_field(P,x,y,conf);
 
 
 % ===== Plotting =========================================================
 if(useplot)
-    plot_wavefield(x,y,P,L,1,conf);
+    plot_wavefield(x,y,P,L,ls_activity,conf);
 end

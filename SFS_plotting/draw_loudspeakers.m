@@ -84,7 +84,11 @@ else
         v02(2,:) = vr2(2,:) + y0(n);
 
         if(ls_activity(n)>0)
-            fc = [(1-ls_activity(n)) (1-ls_activity(n)) (1-ls_activity(n))];
+            % Scale the color. sc = 1 => black. sc = 0.5 0> gray.
+            sc = 0.5;
+            fc = [(1-sc*ls_activity(n)), ...
+                  (1-sc*ls_activity(n)), ...
+                  (1-sc*ls_activity(n))];
             %fc = [ls_activity(n) ls_activity(n) ls_activity(n)];
 
             fill(v01(1,:),v01(2,:),fc);

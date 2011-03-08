@@ -1,7 +1,7 @@
-function brs = ref_brs_set(X,Y,phi,xs,ys,irs,conf)
-%REF_BRS_SET generates a BRS set for the SoundScapeRenderer
-%   Usage: brs = ref_brs_set(X,Y,phi,xs,ys,irs,conf)
-%          brs = ref_brs_set(X,Y,phi,xs,ys,irs,)
+function brs = brs_set_point_source(X,Y,phi,xs,ys,irs,conf)
+%BRS_SET_POINT_SOURCE generates a BRS set for use with the SoundScapeRenderer
+%   Usage: brs = brs_set_wfs_25d(X,Y,phi,xs,ys,irs,conf)
+%          brs = brs_set_wfs_25d(X,Y,phi,xs,ys,irs,)
 %
 %   Input parameters:
 %       X,Y     - listener position (m)
@@ -15,7 +15,7 @@ function brs = ref_brs_set(X,Y,phi,xs,ys,irs,conf)
 %       brs     - conf.N x 2*nangles matrix containing all brs (2
 %                 channels) for every angles of the BRS set
 %
-%   REF_BRS_SET(X,Y,phi,xs,ys,irs,conf) prepares a BRS set for 
+%   BRS_SET_POINT_SOURCE(X,Y,phi,xs,ys,irs,conf) prepares a BRS set for 
 %   a reference source (single point source) for the given listener 
 %   position.
 %   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
@@ -68,9 +68,8 @@ angles = rad(conf.brsangles);   % Angles for the BRIRs
 % Initial values
 brs = zeros(N,2*length(angles));
 
-% Generate a BRIR set for all given angles
+% Generate a BRS set for all given angles
 for i = 1:length(angles)
-    % Compute BRS for a reference (single loudspeaker at [xs,ys])
-    brs(:,(i-1)*2+1:i*2) = ref_brs(X,Y,angles(i)+phi,xs,ys,irs,conf);
+    % Compute BRIR for a reference (single loudspeaker at [xs,ys])
+    brs(:,(i-1)*2+1:i*2) = brs_point_source(X,Y,angles(i)+phi,xs,ys,irs,conf);
 end
-

@@ -1,7 +1,7 @@
-function brs = ref_brs(X,Y,phi,xs,ys,irs,conf)
-%REF_BRS Generate a BRIR for a reference source
-%   Usage: brs = ref_brs(X,Y,phi,xs,ys,irs,conf)
-%          brs = ref_brs(X,Y,phi,xs,ys,irs)
+function brir = brs_point_source(X,Y,phi,xs,ys,irs,conf)
+%BRS_POINT_SOURCE Generate a BRIR for a point source
+%   Usage: brs = brs_point_source(X,Y,phi,xs,ys,irs,conf)
+%          brs = brs_point_source(X,Y,phi,xs,ys,irs)
 %
 %   Options:
 %       X,Y     - listener position (m)
@@ -12,9 +12,9 @@ function brs = ref_brs(X,Y,phi,xs,ys,irs,conf)
 %                 SFS_config for default values)
 %
 %   Output:
-%       brs     - Binaural room impulse response (nx2 matrix)
+%       brir    - Binaural room impulse response (nx2 matrix)
 %
-%   REF_BRS(X,Y,phi,xs,ys,irs,conf) calculates a binaural room impulse
+%   BRS_POINT_SOURCE(X,Y,phi,xs,ys,irs,conf) calculates a binaural room impulse
 %   response for a reference source (single loudspeaker) at position
 %   [xs,ys] and a listener located at [X,Y].
 %
@@ -34,7 +34,7 @@ function brs = ref_brs(X,Y,phi,xs,ys,irs,conf)
 %                                   |
 %                                   v y-axis
 %
-% see also: SFS_config, wfs_brs, auralize_brs, ref_brs_set
+% see also: SFS_config, brs_wfs_25d, auralize_brs, brs_set_point_source
 %
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
@@ -87,7 +87,7 @@ lenir = length(irs.left(:,1));
 %% ===== BRIR ===========================================================
 
 % Initial values
-brs = zeros(N,2);
+brir = zeros(N,2);
 
 % === Relative distances ===
 %
@@ -159,8 +159,8 @@ alpha = correct_azimuth(alpha);
 ir = get_ir(irs,alpha);
 
 % Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay
-brs(:,1) = [zeros(1,dt) a*ir(:,1)' zeros(1,N-dt-lenir)]';
-brs(:,2) = [zeros(1,dt) a*ir(:,2)' zeros(1,N-dt-lenir)]';
+brir(:,1) = [zeros(1,dt) a*ir(:,1)' zeros(1,N-dt-lenir)]';
+brir(:,2) = [zeros(1,dt) a*ir(:,2)' zeros(1,N-dt-lenir)]';
 
 
 %% ===== Headphone compensation =========================================
@@ -170,7 +170,7 @@ if(usehcomp)
     hcompr = wavread(hcomprfile);
     hcomp = [hcompl hcompr];
     % Apply filter
-    brs(:,1) = conv(hcomp(:,1),brs(1:end-length(hcomp)+1,1));
-    brs(:,2) = conv(hcomp(:,2),brs(1:end-length(hcomp)+1,2));
+    brir(:,1) = conv(hcomp(:,1),brir(1:end-length(hcomp)+1,1));
+    brir(:,2) = conv(hcomp(:,2),brir(1:end-length(hcomp)+1,2));
 end
 

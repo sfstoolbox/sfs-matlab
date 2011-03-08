@@ -70,12 +70,8 @@ end
 [X,Y] = meshgrid(x,y);
 % Source model for a point source G(x,omega)
 P = point_source(X,Y,xs,ys,f);
-% Scale signal (at xs,yref)
-% Find index
-[a,xidx] = find(x>xs,1);
-[a,yidx] = find(y>yref,1);
-% Scale signal to 1
-P = 1*P/abs(P(yidx,xidx));
+% Scale signal (at yref)
+P = norm_wave_field(P,x,y,yref);
 
 
 % ===== Plotting =========================================================

@@ -1,7 +1,7 @@
-function brs = wfs_brs(X,Y,phi,xs,ys,L,src,irs,conf)
-%WFS_BRS Generate a BRIR for WFS
-%   Usage: brs = wfs_brs(X,Y,phi,xs,ys,L,src,irs,conf)
-%          brs = wfs_brs(X,Y,phi,xs,ys,L,src,irs)
+function brs = brs_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
+%BRS_WFS_25D Generate a BRIR for WFS
+%   Usage: brir = brs_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
+%          brir = brs_wfs_25d(X,Y,phi,xs,ys,L,src,irs)
 %
 %   Input parameters:
 %       X,Y     - listener position (m)
@@ -16,9 +16,10 @@ function brs = wfs_brs(X,Y,phi,xs,ys,L,src,irs,conf)
 %                 SFS_config for default values)
 %
 %   Output parameters:
-%       brs     - Binaural room impulse response (nx2 matrix)
+%       brir    - Binaural room impulse response for the desired WFS array
+%                 (nx2 matrix)
 %
-%   WFS_BRS(X,Y,phi,xs,ys,L,irs,src,conf) calculates a binaural room impulse
+%   BRS_WFS_25D(X,Y,phi,xs,ys,L,irs,src,conf) calculates a binaural room impulse
 %   response for a virtual source at [xs,ys] for a linear WFS array and the
 %   listener located at [X,Y].
 %
@@ -96,7 +97,8 @@ phi = correct_azimuth(phi);
 % Loudspeaker positions (LSdir describes the directions of the LS) for a
 % linear WFS array
 [x0,y0,phiLS] = secondary_source_positions(L,conf);
-nLS = number_of_loudspeaker(L,conf);
+nLS = length(x0);
+
 
 % === Tapering window ===
 % See in config.m if it is applied
@@ -109,7 +111,7 @@ lenir = length(irs.left(:,1));
 %% ===== BRIR ===========================================================
 
 % Initial values
-brs = zeros(N,2);
+brir = zeros(N,2);
 dt = zeros(1,nLS);
 a = zeros(1,nLS);
 
@@ -117,47 +119,27 @@ a = zeros(1,nLS);
 warning('off','SFS:irs_intpol');
 for n=1:nLS
 
-    if strcmp('pw',src)
-        to_be_implemented;
-    elseif strcmp('ps',src) || strcmp('fs',src)
-
-        % === Relative distances ===
-        %
-        %           LSpos(:,n)            [X0 Y0]
-        % x-axis <-^--^--^--^--^--^--^--^--^-|-^--^--^--^--^--^--^--^--^--
-        %             |                      |
-        %         R2 |  |                    |
-        %           |     | R                |
-        %          x        |                |
-        %       [xs,ys]       |              |
-        %                       O            |
-        %                      [X,Y]         |
-        %                                    v
-        %                                  y-axis
-
-        % Time delay of the virtual source (at the listener position)
-        % t0 is a causality pre delay for the focused source, e.g. 0 for a non
-        % focused point source (see SFS_config.m)
-        % Check if we have a non focused source
-        if ys>Y0
-            % Focused source
-            tau = (norm([X Y]-[x0(n) y0(n)]) - irs.distance)/c - ...
-                norm([xs ys]-[x0(n) y0(n)])/c - t0;
-        else
-            % Virtual source behind the loudspeaker array
-            tau = (norm([X Y]-[x0(n) y0(n)])-irs.distance)/c + ...
-                norm([xs ys]-[x0(n) y0(n)])/c;
-        end
-        % Time delay in samples for the given loudspeaker
-        dt(n) = ceil( tau*fs );
+    % ====================================================================
+    % Driving function to get weighting and delaying
+    [a(n),delay] = ...
+        driving_function_imp_wfs_25d(x0(n),y0(n),phiLS(n),xs,ys,src,conf);
+    % Time delay of the virtual source (at the listener position)
+    % t0 is a causality pre delay for the focused source, e.g. 0 for a non
+    % focused point source (see SFS_config.m)
+    % Check if we have a non focused source
+    if strcmp('fs',src)
+        % Focused source
+        tau = (norm([X Y]-[x0(n) y0(n)]) - irs.distance)/c + delay - t0;
     else
-        error('%s: src has to be one of "pw", "ps", "fs"!',upper(mfilename));
+        % Virtual source behind the loudspeaker array
+        tau = (norm([X Y]-[x0(n) y0(n)])-irs.distance)/c + delay;
     end
+    % Time delay in samples for the given loudspeaker
+    dt(n) = ceil( tau*fs );
 
-    % === Amplitude factor ===
-    % Use linear amplitude factor (see Spors et al. (2008)) and apply the
-    % tapering window
-    a(n) = wfs_amplitude(x0(n),y0(n),X,Y,xs,ys,src) * win(n);
+
+    % === Secondary source model: Greens function ===
+    g = 1/(4*pi*norm([x0(n) y0(n)]-[X Y]));
 
 
     % === Secondary source angle ===
@@ -177,7 +159,7 @@ for n=1:nLS
     %                                  y-axis
     %
     % Note: the above picture explains also that the cos(alpha) is not
-    % sufficient to span the whole number of possible angles! Only 0..180�
+    % sufficient to span the whole number of possible angles! Only 0..180 deg
     % is covered by acos!
     % For the whole area tan2 is needed.
     %
@@ -206,11 +188,11 @@ for n=1:nLS
     end
 
     % Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay
-    brs(:,1) = brs(:,1) + [zeros(1,dt(n)) ...
-                             a(n)*ir(:,1)' ...
+    brir(:,1) = brir(:,1) + [zeros(1,dt(n)) ...
+                             a(n)*win(n)*g*ir(:,1)' ...
                              zeros(1,N-dt(n)-lenir)]';
-    brs(:,2) = brs(:,2) + [zeros(1,dt(n)) ...
-                             a(n)*ir(:,2)' ...
+    brir(:,2) = brir(:,2) + [zeros(1,dt(n)) ...
+                             a(n)*win(n)*g*ir(:,2)' ...
                              zeros(1,N-dt(n)-lenir)]';
 
 end
@@ -222,8 +204,8 @@ if(usehpre)
     % Generate WFS preequalization-filter
     hpre = wfs_prefilter(conf);
     % Apply filter
-    brs(:,1) = conv(hpre,brs(1:end-length(hpre)+1,1));
-    brs(:,2) = conv(hpre,brs(1:end-length(hpre)+1,2));
+    brir(:,1) = conv(hpre,brir(1:end-length(hpre)+1,1));
+    brir(:,2) = conv(hpre,brir(1:end-length(hpre)+1,2));
 end
 
 
@@ -234,8 +216,8 @@ if(usehcomp)
     hcompr = wavread(hcomprfile);
     hcomp = [hcompl hcompr];
     % Apply filter
-    brs(:,1) = conv(hcomp(:,1),brs(1:end-length(hcomp)+1,1));
-    brs(:,2) = conv(hcomp(:,2),brs(1:end-length(hcomp)+1,2));
+    brir(:,1) = conv(hcomp(:,1),brir(1:end-length(hcomp)+1,1));
+    brir(:,2) = conv(hcomp(:,2),brir(1:end-length(hcomp)+1,2));
 end
 
 

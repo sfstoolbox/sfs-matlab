@@ -29,10 +29,14 @@ function [x0,y0,phi] = secondary_source_positions(L,conf)
 %                                   |
 %                                   v y-axis
 %
-% see also: wfs_brs
+% see also: secondary_source_selection, tapwin
 %
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
+
+% NOTE: If you wanted to add a new type of loudspeaker array, do it in a way,
+% that the loudspeakers are ordered in a way, that one can go around for closed
+% arrays. Otherwise the tapering window function will not work properly.
 
 
 %% ===== Checking of input  parameters ==================================
@@ -89,16 +93,16 @@ elseif strcmp('box',array)
     % Position and direction of the loudspeakers
     x0(1:nLS/4) = X0 + linspace(-L/2,L/2,nLS/4);
     y0(1:nLS/4) = Y0 + ones(1,nLS/4) * L/2 + LSdist;
-    phi(1:nLS/4) = 0*ones(1,nLS/4);
-    x0(2*nLS/4+1:3*nLS/4) = X0 + linspace(-L/2,L/2,nLS/4);
-    y0(2*nLS/4+1:3*nLS/4) = Y0 - ones(1,nLS/4) * L/2 - LSdist;
-    phi(2*nLS/4+1:3*nLS/4) = pi*ones(1,nLS/4);
+    phi(1:nLS/4) = pi*ones(1,nLS/4);
     x0(nLS/4+1:2*nLS/4) = X0 + ones(1,nLS/4) * L/2 + LSdist;
-    y0(nLS/4+1:2*nLS/4) = Y0 + linspace(-L/2,L/2,nLS/4);
-    phi(nLS/4+1:2*nLS/4) = -pi/2*ones(1,nLS/4);
+    y0(nLS/4+1:2*nLS/4) = Y0 + linspace(L/2,-L/2,nLS/4);
+    phi(nLS/4+1:2*nLS/4) = pi/2*ones(1,nLS/4);
+    x0(2*nLS/4+1:3*nLS/4) = X0 + linspace(L/2,-L/2,nLS/4);
+    y0(2*nLS/4+1:3*nLS/4) = Y0 - ones(1,nLS/4) * L/2 - LSdist;
+    phi(2*nLS/4+1:3*nLS/4) = 0*ones(1,nLS/4);
     x0(3*nLS/4+1:nLS) = X0 - ones(1,nLS/4) * L/2 - LSdist;
     y0(3*nLS/4+1:nLS) = Y0 + linspace(-L/2,L/2,nLS/4);
-    phi(3*nLS/4+1:nLS) = pi/2*ones(1,nLS/4);
+    phi(3*nLS/4+1:nLS) = -pi/2*ones(1,nLS/4);
 elseif strcmp('U',array)
     to_be_implemented(mfilename);
 elseif strcmp('custom',array)

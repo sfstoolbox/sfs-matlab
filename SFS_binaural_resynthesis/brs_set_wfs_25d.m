@@ -1,7 +1,7 @@
-function brs = wfs_brs_set(X,Y,phi,xs,ys,L,src,irs,conf)
-%WFS_BRS_SET generates a BRS set for the SoundScapeRenderer
-%   Usage: brs = wfs_brs_set(X,Y,phi,xs,ys,L,src,irs,conf)
-%          brs = wfs_brs_set(X,Y,phi,xs,ys,L,src,irs)
+function brs = brs_set_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
+%BRS_SET_WFS_25D generates a BRS set for use with the SoundScapeRenderer
+%   Usage: brs = brs_set_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
+%          brs = brs_set_wfs_25d(X,Y,phi,xs,ys,L,src,irs)
 %
 %   Input parameters:
 %       X,Y     - listener position (m)
@@ -19,7 +19,7 @@ function brs = wfs_brs_set(X,Y,phi,xs,ys,L,src,irs,conf)
 %       brs     - conf.N x 2*nangles matrix containing all brs (2
 %                 channels) for every angles of the BRS set
 %
-%   WFS_BRS_SET(X,Y,phi,xs,ys,L,irs,conf) prepares a BRS set for 
+%   BRS_SET_WFS_25D(X,Y,phi,xs,ys,L,irs,conf) prepares a BRS set for 
 %   a virtual source at [xs ys] for a linear WFS array and the given 
 %   listener position.
 %   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
@@ -73,9 +73,8 @@ angles = rad(conf.brsangles);   % Angles for the BRIRs
 % Initial values
 brs = zeros(N,2*length(angles));
 
-% Generate a BRIR set for all given angles
+% Generate a BRS set for all given angles
 for i = 1:length(angles)
-    % Compute BRS for a linear WFS system
-    brs(:,(i-1)*2+1:i*2) = wfs_brs(X,Y,angles(i)+phi,xs,ys,L,src,irs,conf);
+    % Compute BRIR for the desired WFS system
+    brs(:,(i-1)*2+1:i*2) = brs_wfs_25d(X,Y,angles(i)+phi,xs,ys,L,src,irs,conf);
 end
-

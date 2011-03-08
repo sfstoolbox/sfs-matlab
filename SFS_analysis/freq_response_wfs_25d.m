@@ -111,7 +111,8 @@ for ii = 1:length(f)
 
         % ================================================================
         % Driving function D(x0,omega)
-        D = driving_function_wfs_25d(x0(n),y0(n),phi(n),xs,ys,f(ii),src,conf);
+        D = driving_function_mono_wfs_25d(...
+            x0(n),y0(n),phi(n),xs,ys,f(ii),src,conf);
 
         % ================================================================
         % Integration

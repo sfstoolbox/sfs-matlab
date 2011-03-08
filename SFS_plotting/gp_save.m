@@ -35,14 +35,10 @@ end
 [x1,x2] = size(x);
 if x1<x2
     x = x';
-end
-[y1,y2] = size(y);
-if y1<y2 && y1~=size(x,1)
     y = y';
-    tmp=y1; y1=y2; y2=tmp;
 end
 % Check if the data has the same length
-if length(x)~=y1
+if size(x,1)~=size(y,1)
     error('%s: x, y has to have the same length!',upper(mfilename));
 end
 

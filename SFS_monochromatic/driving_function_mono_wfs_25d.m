@@ -1,11 +1,12 @@
-function [D] = driving_function_wfs_25d(x0,y0,phi,xs,ys,f,src,conf)
-%DRIVING_FUNCTION_WFS_25D returns the driving signal D for 2.5D WFS
-%   Usage: D = driving_function_wfs_25d(x0,y0,phi,xs,ys,f,src,conf)
-%          D = driving_function_wfs_25d(x0,y0,phi,xs,ys,f,src)
+function [D] = driving_function_mono_wfs_25d(x0,y0,phi,xs,ys,f,src,conf)
+%DRIVING_FUNCTION_MONO_WFS_25D returns the driving signal D for 2.5D WFS
+%   Usage: D = driving_function_mono_wfs_25d(x0,y0,phi,xs,ys,f,src,conf)
+%          D = driving_function_mono_wfs_25d(x0,y0,phi,xs,ys,f,src)
 %
 %   Input parameters:
 %       x0,y0,phi   - position and direction of the secondary source (m)
-%       xs,ys       - position of point source or direction of plane wave (m)
+%       xs,ys       - position of virtual source or direction of plane wave (m)
+%       f           - frequency of the monochromatic source (Hz)
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs, ys are the direction of the
 %                                plane wave in this case)
@@ -16,8 +17,8 @@ function [D] = driving_function_wfs_25d(x0,y0,phi,xs,ys,f,src,conf)
 %   Output parameters:
 %       D           - driving function signal (1x1)
 %
-%   DRIVING_FUNCTION_WFS_25D(x0,y0,phi,xs,ys,f,src,conf) returns the driving signal
-%   for the given secondary source and desired sourcei type (src).
+%   DRIVING_FUNCTION_MONO_WFS_25D(x0,y0,phi,xs,ys,f,src,conf) returns the
+%   driving signal for the given secondary source and desired source type (src).
 %   The driving signal is calculated for the WFS 2.5 dimensional case in the
 %   temporal domain.
 %
@@ -28,7 +29,8 @@ function [D] = driving_function_wfs_25d(x0,y0,phi,xs,ys,f,src,conf)
 %           2.5-Dimensional Wave Field Synthesis (AES128)
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: plot_wavefield, wf_SDM_25D
+%   see also: plot_wavefield, wave_field_mono_wfs_25d,
+%             driving_function_imp_wfs_25d
 
 % AUTHOR: Hagen Wierstorf
 
@@ -51,7 +53,8 @@ end
 
 % phase of omega
 phase = conf.phase;
-% yref
+% [xref yref]
+xref = conf.xref;
 yref = conf.yref;
 % Speed of sound
 c = conf.c;
@@ -69,42 +72,47 @@ omega = 2*pi*f;
 % Activity of secondary sources
 ls_activity = secondary_source_selection(x0,y0,phi,xs,ys,src);
 if(ls_activity)
+
+    % Direction of secondary sources
+    nx0 = -sin(phi);
+    ny0 = cos(phi);
+
+    % Constant amplitude factor g0
+    g0 = sqrt(2*pi*norm([xref yref]-[x0 y0]));
+
     if strcmp('pw',src)
 
         % ===== PLANE WAVE ===============================================
-        % Constant pre-equalization factor g0
-        g0 = sqrt(2*pi*abs(yref-y0));
         % Use the position of the source as the direction vector for a plane
         % wave
-        nx0 = xs / sqrt(xs^2+ys^2);
-        ny0 = ys / sqrt(xs^2+ys^2);
+        nxs = xs / sqrt(xs^2+ys^2);
+        nys = ys / sqrt(xs^2+ys^2);
         %
         % ----------------------------------------------------------------
         % D_25D using a plane wave as source model
-        %                             ___
-        %                            | w |
-        % D_25D(x0,w) = 2 g0 n_ky0 _ |---  e^(i w/c nk x0)
-        %                           \|i c
+        %                                   ___
+        %                                  | w |
+        % D_25D(x0,w) = 2 g0 n(xs) n(x0) _ |---  e^(i w/c n(xs) x0)
+        %                                 \|i c
         %
         % NOTE: the phase term e^(-i phase) is only there in order to be able to
         %       simulate different time steps
         %
-        D = 2*g0*ny0*sqrt(omega/(1i*c)) * e^(1i*omega/c*(nx0*x0+ny0*y0)) * ...
+        D = 2*g0*[nxs nys]*[nx0 ny0]' * sqrt(omega/(1i*c)) * ...
+            e^(1i*omega/c*(nxs*x0+nys*y0)) * ...
             exp(-1i*phase);
 
 
     elseif strcmp('ps',src)
 
         % ===== POINT SOURCE =============================================
-        % Constant pre-equalization factor g0
-        g0 = sqrt(2*pi*abs(yref-y0));
         %
         % ----------------------------------------------------------------
         % D_25D using a point source as source model
         %
         % D_25D(x0,w) =
         %             ___       ___
-        %    g0  /   | w |     |i c|    1    \    y0-ys
+        %    g0  /   | w |     |i c|    1    \  (x0-xs)nk
         %   ---  | _ |---  - _ |---  ------- |  --------- e^(i w/c |x0-xs|)
         %   2pi  \  \|i c     \| w   |x0-xs| /  |x0-xs|^2
         %
@@ -113,22 +121,19 @@ if(ls_activity)
         %
         D = g0/(2*pi) * ( sqrt(omega/(1i*c)) - sqrt(1i*c/omega) / ...
             sqrt((x0-xs)^2+(y0-ys)^2) ) * ...
-            (y0-ys)/((x0-xs)^2+(y0-ys)^2) * ...
+            ([x0 y0]-[xs ys])*[nx0 ny0]' / ((x0-xs)^2+(y0-ys)^2) * ...
             exp(1i*omega/c*sqrt((x0-xs)^2+(y0-ys)^2)) * exp(-1i*phase);
 
     elseif strcmp('fs',src)
 
         % ===== FOCUSED SOURCE ===========================================
         %
-        % Constant pre-equalization factor g0 (see Spors2009)
-        g0 = sqrt(2*pi*abs(yref-y0));
-        %
         % ----------------------------------------------------------------
         % D_25D using a point sink as source model
         %
         % D_25D(x0,w) =
         %             ___       ___
-        %   -g0  /   | w |     |i c|    1    \    y0-ys
+        %   -g0  /   | w |     |i c|    1    \  (x0-xs)nk
         %   ---  | _ |---  + _ |---  ------- |  --------- e^(-i w/c |x0-xs|)
         %   2pi  \  \|i c     \| w   |x0-xs| /  |x0-xs|^2
         %
@@ -137,7 +142,7 @@ if(ls_activity)
         %
         %D = -g0/(2*pi) * ( sqrt(omega/(1i*c)) + sqrt(1i*c/omega) / ...
         %    sqrt((x0-xs)^2+(y0-ys)^2) ) * ...
-        %    (y0-ys)/((x0-xs)^2+(y0-ys)^2) * ...
+        %    ([x0 y0]-[xs ys])*[nx0 ny0]' / ((x0-xs)^2+(y0-ys)^2) * ...
         %    exp(-1i*omega/c*sqrt((x0-xs)^2+(y0-ys)^2)) * exp(-1i*phase);
         %
         % ----------------------------------------------------------------
@@ -146,15 +151,16 @@ if(ls_activity)
         % D_25D using a line sink with point source amplitude characteristics as
         % source (see Spors2009).
         %
-        %                   iw  y0-ys    (2)/ w         \
-        % D_25D(x0,w) = -g0 -- -------  H1  | - |x0-xs| |
-        %                   2c |x0-xs|      \ c         /
+        %                   iw (x0-xs)nk   (2)/ w         \
+        % D_25D(x0,w) = -g0 -- --------- H1  | - |x0-xs| |
+        %                   2c |x0-xs|        \ c         /
         %
         % NOTE: the phase term e^(-i phase) is only there in order to be able to
         %       simulate different time steps
         %
         %D = -g0 * 1i*omega/(2*c) * ...
-        %    (y0-ys)/(sqrt((x0-xs)^2+(y0-ys)^2) )^(3/2) * ...
+        %    ([x0 y0]-[xs ys])*[nx0 ny0]' / ...
+        %    (sqrt((x0-xs)^2+(y0-ys)^2) )^(3/2) * ...
         %    besselh(1,2,omega/c*sqrt((x0-xs)^2+(y0-ys)^2)) * exp(-1i*phase);
         %
         % --------------------------------------------------------------------
@@ -163,7 +169,7 @@ if(ls_activity)
         % This results in the "traditional" driving function, derived in
         % Verheijen1997 (see Spors2009).
         %                     _____
-        %                    |i w  |    y0-ys
+        %                    |i w  |   (x0-xs)nk
         % D_25D(x0,w) = g0 _ |-----  ------------- e^(-i w/c |x0-xs|)
         %                   \|2pi c  |x0-xs|^(3/2)
         %
@@ -171,7 +177,8 @@ if(ls_activity)
         %       simulate different time steps
         %
         D = g0 * sqrt(1i*omega/(2*pi*c)) * ...
-            (y0-ys)/(sqrt((x0-xs)^2+(y0-ys)^2))^(3/2) * ...
+            ([x0 y0]-[xs ys])*[nx0 ny0]' / ...
+            (sqrt((x0-xs)^2+(y0-ys)^2))^(3/2) * ...
             exp(-1i*omega/c*sqrt((x0-xs)^2+(y0-ys)^2)) * exp(-1i*phase);
         %
     else

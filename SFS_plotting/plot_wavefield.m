@@ -1,4 +1,4 @@
-function plot_wavefield(x,y,P,L,ls_activity,conf)
+function plot_wavefield(x,y,P,varargin)
 %PLOT_WAVEFIELD plot the given wavefield
 %   Usage: plot_wavefield(x,y,P,L,ls_activity,conf)
 %          plot_wavefield(x,y,P,L,ls_activity)
@@ -31,32 +31,27 @@ function plot_wavefield(x,y,P,L,ls_activity,conf)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;
-nargmax = 6;
+nargmax = 7;
 error(nargchk(nargmin,nargmax,nargin));
 isargvector(x,y);
 isargmatrix(P);
-if exist('L','var')
-    if isstruct(L)
-        conf = L;
-        clear L
-    else
-        isargpositivescalar(L);
+% Setting default values and check varargin parameters
+ls_activity = 1;
+outfile = 'wavefield.plot';
+for ii = 1:length(varargin)
+    if isstruct(varargin{ii})
+        conf = varargin{ii};
+    elseif ischar(varargin{ii})
+        outfile = varargin{ii};
+    elseif isscalar(varargin{ii}) && varargin{ii}>0 && ~exist('L','var')
+        L = varargin{ii};
+        if ii+1<=length(varargin) && isvector(varargin{ii})
+            ls_activity = varargin{ii+1};
+        end
     end
-end
-if exist('ls_activity','var')
-    if isstruct(ls_activity)
-        conf = ls_activity;
-        ls_activity = 1;
-    else
-        isargvector(ls_activity);
-    end
-else
-    ls_activity = 1;
 end
 if ~exist('conf','var')
     conf = SFS_config;
-else
-    isargstruct(conf);
 end
 
 
@@ -66,8 +61,9 @@ end
 if ~exist('L','var')
     conf.plot.loudspeakers = 0;
 end
-% SFS Path
-sfspath = conf.sfspath;
+
+% Tmp dir  
+tmpdir = conf.tmpdir;
 % Center position of array
 X0 = conf.X0;
 Y0 = conf.Y0;
@@ -78,11 +74,14 @@ array = conf.array;
 % Plotting
 useplot = conf.useplot;
 p.usegnuplot = conf.plot.usegnuplot;
+p.cmd = conf.plot.cmd;
 p.usedb = conf.plot.usedb;
 p.mode = conf.plot.mode;
-p.outfile = conf.plot.outfile;
+p.size = conf.plot.size;
 p.caxis = conf.plot.caxis;
 p.loudspeakers = conf.plot.loudspeakers;
+p.realloudspeakers = conf.plot.realloudspeakers;
+p.lssize = conf.plot.lssize;
 
 
 %% ===== Calculation =====================================================
@@ -98,20 +97,19 @@ if ~exist('L','var') && p.loudspeakers
            'the loudspeakers!'],upper(mfilename));
 end
 
-% FIXME: this has also to be checked for the other array geometries!
-if strcmp('linear',array)
-    % Replace the wave field with zeros for y<0
-    % Find y<0
-    idx = (( y<0 ));
-    % Set wave field to zero in this area
-    P(idx,:) = 0;
+if(p.usedb)
+    % Check if we have any activity in the wave field
+    if max(abs(P(:)))~=0
+        % For the dB case scale the signal maximum to 0 dB
+        P = P./max(abs(P(:)));
+    end
 end
 
 
 %% ===== Plotting ========================================================
 
 if ~(p.usegnuplot)
-    % === Plot the wave field with Matlab/Octave ===
+    % ===== Plot the wave field with Matlab/Octave =======================
     %
     % Create a new figure
     figure;
@@ -119,7 +117,7 @@ if ~(p.usegnuplot)
 
     if(p.usedb)
         % Plot the amplitude of the wave field in dB
-        imagesc(x,y,20*log10(abs(P)),[-35 5]);
+        imagesc(x,y,20*log10(abs(P)),[-35 0]);
         % Set the limits of the colormap and add a colorbar
         caxis(p.caxis);
         h = colorbar;
@@ -237,72 +235,179 @@ if ~(p.usegnuplot)
     end
 
     if strcmp('png',p.mode)
-        print([p.outfile,'.png'],'-dpng','-S640,480');
+        print(outfile,'-dpng','-S640,480');
+        close;
     elseif strcmp('paper',p.mode)
-        print([p.outfile,'.eps'],'-deps','-S320,240');
-    elseif ~strcmp('monitor',p.mode)
-        error('%s: unkown print mode: %s!',upper(mfilename),p.mode);
+        print(outfile,'-deps','-S320,240');
+        close;
     end
 
 else
 
-    % === Plot the wave field using Gnuplot ===
-    % Data file name
-    datafile = 'wavefield.dat';
+    % ===== Plot the wave field using Gnuplot ============================
 
-    % Save the data for plotting with Gnuplot
-    % NOTE: we have to transpose the wave field P, because the x and y values
-    % are stored in a different way for Gnupot.
-    gp_save_matrix(datafile,x,y,real(P'))
-
-    % Check if we have used a loudspeaker array that is larger than the listener
-    % area. If so, reduce the array length in order to avoid Gnuplot from
-    % drawing loudspeakers out of the graph.
-    % FIXME: check this for the different array forms we have!
-    if L>abs(x(1)-x(end))
-        L = abs(x(1)-x(end));
+    % tmp dir for storing temporary files
+    if ~exist(tmpdir,'dir')
+        mkdir(tmpdir);
     end
-    % Loudspeaker positions and directions
-    [x0,y0,phi] = secondary_source_positions(L,conf);
-    nLS = length(x0);
 
-    % Check if we should plot the loudspeakers. If not set their distance to a
-    % value <0.1 in order to avoid the plotting by Gnuplot
+    % Generate a random number string for the tmp files
+    rn = sprintf('%04.0f',10000*rand);
+    % Data file name
+    datafile = sprintf('%s/wavefield%s.dat',tmpdir,rn);
+    % Loudspeaker positions file name
+    lsfile = sprintf('%s/loudspeakers%s.txt',tmpdir,rn);
+
+    % Check if we should plot the loudspeakers.
     if(p.loudspeakers)
-        gp_LSdist = LSdist;
+        % Loudspeaker positions and directions
+        [x0,y0,phi] = secondary_source_positions(L,conf);
+
+        % FIXME: I think the following code is not neccessary
+        % check if we have loudspeakers outside of the desired plotting region and
+        % remove them in order to don't mess up the graph
+        %idx = (( x0<x(1) || x0>x(end) || y0<y(1) || y0>y(end) ));
+        %x0(idx) = NaN;
+        %y0(idx) = NaN;
+        %phi(idx) = NaN;
+
         if  LSdist<= 0.01
             warning(['%s: the given loudspeaker distance is to small. ',...
                     'Disabling plotting of the loudspeakers'],upper(mfilename));
+            p.loudspeakers = 0;
+        else
+            % fixing the length of ls_activity
+            if length(ls_activity)==1
+                ls_activity = repmat(ls_activity,size(x0));
+            end
+            % Storing loudspeaker positions and activity
+            gp_save(lsfile,x0,[y0;phi;ls_activity]);
         end
+    end
+
+    % Check if we should handle the wave field in dB
+    if p.usedb
+        % Save the data for plotting with Gnuplot
+        gp_save_matrix(datafile,x,y,db(real(P)));
+        if p.caxis else
+            p.caxis = [-35,0];
+        end
+        cbtics = 5;
     else
-        gp_LSdist = 0.01;
+        % Save the data for plotting with Gnuplot
+        gp_save_matrix(datafile,x,y,real(P));
+        if p.caxis else
+            p.caxis = [-1,1];
+        end
+        cbtics = 1;
     end
 
     if strcmp('paper',p.mode)
-    % Generate the Gnuplot command line
+        %% === Paper ===
+        % Therefore we use the tikz terminal of Gnuplot, see:
+        % FIXME: link to a blog entry
+        % NOTE: for the tikz terminal the set t line can#t end with a ;, we need
+        % a \n!
         cmd = sprintf(['gnuplot<<EOC\n', ...
-            'set loadpath "%s/SFS_plotting"\n', ...
-            'call "gplatex_plot_wavefield.gnu" "%f" "%f" "%f" "%f" ', ...
-        '"%f" "%f" "%f" "%s" "%s"\nEOC\n', ...
-            'epstopdf %s.eps'], ...
-            sfspath,x(1),x(end),y(1),y(end),nLS,gp_LSdist,x0(1),datafile, ...
-        outfile,outfile);
+            'set t tikz size %fcm,%fcm\n', ...
+            'set output ''%s'';', ...
+            'set style line 1 lc rgb ''#000000'' pt 2 ps 2 lw 2;', ...
+            'unset key;', ...
+            'set size ratio -1;', ...
+            'set border linewidth 2;', ...
+            'set colorbox;', ...
+            'set palette gray negative;', ...
+            'set xrange [%f:%f];', ...
+            'set yrange [%f:%f];', ...
+            'set cbrange [%f:%f];', ...
+            'set tics scale 0.5;', ...
+            'set xtics 1;', ...
+            'set ytics 1;', ...
+            'set cbtics %f;', ...
+            'set format ''$%%g$'';', ...
+            'set xlabel ''$x (m)$'';', ...
+            'set ylabel ''$y (m)$'';', ...
+            '%s;'], ...
+            p.size(1),p.size(2),outfile,x(1),x(end),y(1),y(end), ...
+            p.caxis(1),p.caxis(2),cbtics,p.cmd);
     elseif strcmp('monitor',p.mode)
         cmd = sprintf(['gnuplot<<EOC\n', ...
-            'set loadpath "%s/SFS_plotting"\n', ...
-            'call "gp_plot_wavefield.gnu" "%f" "%f" "%f" "%f" ', ...
-        '"%f" "%f" "%f" "%s"\nEOC\n'], ...
-        sfspath,x(1),x(end),y(1),y(end),nLS,gp_LSdist,x0(1),datafile);
+            'set t wxt size 700,524 enhanced font ''Verdana,14'' persist;', ...
+            'set style line 1 lc rgb ''#000000'' pt 2 ps 2 lw 2;', ...
+            'unset key;', ...
+            'set size ratio -1;', ...
+            'set border linewidth 2;', ...
+            'set colorbox;', ...
+            'set palette gray negative;', ...
+            'set xrange [%f:%f];', ...
+            'set yrange [%f:%f];', ...
+            'set cbrange [%f:%f];', ...
+            'set tics scale 0.75;', ...
+            'set xtics 1;', ...
+            'set ytics 1;', ...
+            'set cbtics %f;', ...
+            'set xlabel ''x (m)'';', ...
+            'set ylabel ''y (m)'';', ...
+            '%s;'], ...
+            x(1),x(end),y(1),y(end),p.caxis(1),p.caxis(2),cbtics,p.cmd);
     elseif strcmp('png',p.mode)
-        to_be_implemented;
+        cmd = sprintf(['gnuplot<<EOC\n', ...
+            'set t pngcairo size %fcm,%fcm enhanced font ''Verdana,12'';', ...
+            'set output ''%s'';', ...
+            'set style line 1 lc rgb ''#000000'' pt 2 ps 2 lw 2;', ...
+            'unset key;', ...
+            'set size ratio -1;', ...
+            'set border linewidth 1.5;', ...
+            'set colorbox;', ...
+            'set palette gray negative;', ...
+            'set xrange [%f:%f];', ...
+            'set yrange [%f:%f];', ...
+            'set cbrange [%f:%f];', ...
+            'set tics scale 0.5;', ...
+            'set xtics 1;', ...
+            'set ytics 1;', ...
+            'set cbtics %f;', ...
+            'set xlabel ''x (m)'';', ...
+            'set ylabel ''y (m)'';', ...
+            '%s;'], ...
+            p.size(1),p.size(2),outfile,x(1),x(end),y(1),y(end), ...
+            p.caxis(1),p.caxis(2),cbtics,p.cmd);
     else
         error('%s: %s is not a valid plotting mode!',upper(mfilename),p.mode);
+    end
+
+    % Adding loudspeaker drawing and plotting of the wave field
+    if p.loudspeakers && p.realloudspeakers
+        % Plotting real loudspeaker symbols
+        cmd = sprintf(['%s', ...
+            'call ''gp_draw_loudspeakers.gnu'' ''%s'' ''%f'';', ...
+            'plot ''%s'' binary matrix with image', ...
+            '\nEOC\n'], ...
+            cmd,lsfile,p.lssize,datafile);
+    elseif p.loudspeakers
+        % Plotting only points at the loudspeaker positions
+        cmd = sprintf(['%s', ...
+            'plot ''%s'' binary matrix with image, ', ...
+            '     ''%s'' u 1:2 w points ls 1', ...
+            '\nEOC\n'], ...
+            cmd,datafile,lsfile);
+    else
+        % plotting no loudspeakers at all
+        cmd = sprintf(['%s', ...
+            'plot ''%s'' binary matrix with image', ...
+            '\nEOC\n'], ...
+            cmd,datafile);
     end
 
     % Start Gnuplot for plotting the data
     system(cmd);
 
-    % Remove data file
-    delete(datafile);
+    % Remove tmp files
+    if exist(datafile,'file')
+        delete(datafile);
+    end
+    if exist(lsfile,'file')
+        %delete(lsfile);
+    end
 
 end

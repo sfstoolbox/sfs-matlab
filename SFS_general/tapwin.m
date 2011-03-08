@@ -1,31 +1,44 @@
-function win = tapwin(L,conf)
+function win = tapwin(L,ls_activity,conf)
 %TAPWIN generate a tapering window for a linear WFS array
-%   Usage: win = tapwin(L,conf)
+%   Usage: win = tapwin(L,ls_activity,conf)
+%          win = tapwin(L,conf)
 %          win = tapwin(L)
 %
 %   Input parameters:
-%       L       - length of the loudspeaker array (m)
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
+%       L           - length of the loudspeaker array (m)
+%       ls_activity - vector containing the activity of the loudspeakers from 
+%                     0..1
+%       conf        - optional struct containing configuration variables (see
+%                     SFS_config for default values)
 %
 %   Output parameters:
 %       win     - tapering window (1xnLS)
 %
-%   TAPWIN(L,conf) generates a tapering window for a linear WFS loudspeaker
-%   array with a length of L.
+%   TAPWIN(L,ls_activity,conf) generates a tapering window for a linear WFS
+%   loudspeaker array with a length of L.
 %
-%   see also: wfs_brs
-%
+%   see also: wfs_brs, secondary_source_selection
 
 % AUTHOR: Hagen Wierstorf, Sascha Spors
 
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
-nargmax = 2;
+nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin));
 isargpositivescalar(L);
-if nargin<nargmax
+if ~exist('ls_activity','var')
+    % If no explicit loudspeaker activity is given mark all speakers as active
+    ls_activity = ones(1,number_of_loudspeaker(L,conf));
+else
+    if isstruct(ls_activity)
+        conf = ls_activity;
+        ls_activity = ones(1,number_of_loudspeaker(L,conf));
+    else
+        isargvector(ls_activity);
+    end
+end
+if ~exist('conf','var')
     conf = SFS_config;
 else
     isargstruct(conf);
@@ -33,31 +46,34 @@ end
 
 
 %% ===== Configuration ==================================================
-
-% Apply tapering window?
 usetapwin = conf.usetapwin;
 tapwinlen = conf.tapwinlen;
-% Loudspeaker distance
 LSdist = conf.LSdist;
-
-% Number of loudspeaker
-nLS = number_of_loudspeaker(L,conf);
 
 
 %% ===== Calculation ====================================================
-%
+% Generate a hanning window and split it to the two edges of the array as shown
+% below.
 %    ------------------------------------------------------------
 %   |                                                            |
 % _|                                                              |_
 %
-if(usetapwin)
+% This procedure becomes more complicated if not all speakers are active and if
+% we have a circular array or any other closed loudspeaker array. The code below
+% can handle all cases, where the active loudspeaker have no gaps.
+%
+% Find active loudspeaker and create only a window for these loudspeakers
+idx = (( ls_activity>0 ));
+nLS = length(ls_activity(idx));
+win = zeros(1,nLS);
 
-    % Length of window (ca. 30%, note: this will be splitted to the right
-    % and left site of the array)
-    %lenwin = ceil(tapwinlen*nLS)+1
+if(usetapwin)
+    % Length of window (given by the value of tapwinlen). The window will be
+    % splitted to both sides of the loudspeaker array.
     lenwin = round(tapwinlen*nLS)+2;
     %
-    % Check if we have a to short window
+    % Check if we have a to short window to apply it in a useful way. This can
+    % be the case for very short loudspeaker arrays (as used in Wierstorf2010). 
     if lenwin<4
         win = ones(1,nLS);
     else
@@ -82,5 +98,29 @@ if(usetapwin)
     end
 else
     % If you want to use no tapering window:
-    win=ones(1,nLS);
+    win = ones(1,nLS);
+end
+
+% If we have non active loudspeaker we have to move the tapering window to the
+% right position. Also we have to check for closed arrays.
+if length(ls_activity)~=length(ls_activity(idx))
+    % Look for the first inactive and for the first active loudspeaker
+    idx1 = find(ls_activity==0,1,'first');
+    idx2 = find(ls_activity==1,1,'first');
+    if idx1~=1
+        % If the first loudspeaker is active we apply the window from here on
+        % until the first inactive. If there were additional active loudspeakers
+        % at the end we know that we have a close array and the rest of the
+        % window is applied at the end in a way that the tapering window will be
+        % corect.
+        win = [win(end-idx1+2:end), ...
+               zeros(1,length(ls_activity)-length(ls_activity(idx))), ...
+               win(1:end-idx1+1)];
+    else
+        % If we have an inactive loudspeaker at the beginning place the window
+        % in the middle.
+        win = [zeros(1,length(1:idx2-1)), ...
+               win, ...
+               zeros(1,length(ls_activity)-length(win)-length(1:idx2-1))];
+    end
 end

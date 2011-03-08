@@ -31,7 +31,6 @@ error(nargchk(nargmin,nargmax,nargin));
 %% ===== Configuration default values ===================================
 
 % ===== Path settings ===========================
-conf.sfspath = '/home/hagen/svn/sfs';
 conf.tmpdir = '/tmp/sfs';
 
 
@@ -75,9 +74,11 @@ conf.phi = [];
 % SFS functions (so if you change this value to 90, your other angles have
 % to change -90).
 conf.listoffset = 0;
-% y position for amplitude calculation
+% [xref yref]
 % NOTE: the amplitude will be correct at the line parallel to the x-axis given
-% at the y position (this is a 2.5D property of WFS)
+% at the y position for a line array (this is a 2.5D property of WFS)
+% Thi point is also used to scale the wave field to 1 at this point.
+conf.xref = 0;
 conf.yref = 2;
 %
 % ===== Pre-Equalization =====
@@ -173,8 +174,6 @@ conf.plot.usegnuplot = false;
 %   'paper'     - eps output in conf.plot.outfile
 %   'png'       - png output in conf.plot.outfile
 conf.plot.mode = 'monitor';
-% Outfile for the 'paper' and 'png' plot modes
-conf.plot.outfile = 'sfs';
 % Plot amplitudes in dB (e.g. wavefield plots)
 conf.plot.usedb = false;
 % caxis settings (leave blank, if you would use the default values of the given
@@ -183,6 +182,11 @@ conf.plot.caxis = '';
 % Plot loudspeakers in the wave field plots
 conf.plot.loudspeakers = true;
 % Use real loudspeakers symbols (otherwise crosses are used)
-conf.plot.realloudspeakers = false;
-% Size of the loudspeaker
-conf.plot.lssize = 0.1;
+conf.plot.realloudspeakers = true;
+% Size of the loudspeaker 
+% FIXME: Gnuplot ignores the loudspeaker size at the moment
+conf.plot.lssize = conf.LSdist;
+% Size of the plot
+conf.plot.size = [16,11.55];
+% Additional plot command
+conf.plot.cmd = '';

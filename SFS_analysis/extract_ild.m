@@ -15,8 +15,6 @@ function ild = extract_ild(insigleft,insigright)
 %   EXTRACTILD(insigleft,insigright) extractes the ILD between the left and
 %   right signal(s) by subtracting the dB value of the left signal(s) from
 %   the dB value of the right signal(s). 
-%
-%R gaik1993
 
 % AUTHOR: Hagen Wierstorf
 
@@ -37,5 +35,5 @@ end
 % See if we have more than one frequency channel in the insig
 ild = zeros(1,size(insigleft,2));
 for ii = 1:size(insigleft,2)
-    ild(ii) = rmsdb(insigright(:,ii))-rmsdb(insigleft(:,ii));
+    ild(ii) = db(rms(insigright(:,ii)))-db(rms(insigleft(:,ii)));
 end

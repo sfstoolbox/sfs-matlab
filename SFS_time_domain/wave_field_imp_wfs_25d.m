@@ -121,7 +121,7 @@ for sample = frame;
         % FIXME: I should check, that I can combine the two delta functions in
         % the way I have done it here.
         % Calculate maximum time delay possible for the given axis size
-        maxt = round(sqrt((X(end,end)-X(1,1))^2 + (Y(end,end)-Y(1,1))^2)/c*fs);
+        maxt = round(L/c*fs);
         % Add some additional offset
         maxt = maxt+500;
         % Create a time axis for the interpolation

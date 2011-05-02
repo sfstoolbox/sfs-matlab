@@ -19,13 +19,9 @@ function plot_ild(ild,phi)
 nargmin = 1;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-if ~isnumeric(ild) || ~isvector(ild)
-    error('%s: ild has to be a vector!',upper(mfilename));
-end
+isargvector(ild);
 if nargin==nargmax
-    if ~isnumeric(phi) || ~isvector(phi)
-        error('%s: phi has to be a vector!',upper(mfilename));
-    end
+    isargvector(phi);
     if length(ild)~=length(phi)
         error('%s: phi has to have the same length as ild!',upper(mfilename));
     end
@@ -37,6 +33,6 @@ end
 %% ===== Plotting ========================================================
 figure;
 plot(phi,ild);
-axis([phi(1),phi(end),-1,1]);
+axis([phi(1),phi(end),-30,30]);
 xlabel('phi (°)');
 ylabel('ILD (dB)')

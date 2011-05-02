@@ -85,14 +85,14 @@ if ls_activity>0
         r = norm([x0 y0]-[xs ys]);
         % Delay and amplitude weight
         delay = r/c;
-        weight = g0/(2*pi)*([xs ys]-[x0 y0])*[nx0 ny0]'*r^(-3/2);
+        weight = g0/(2*pi)*([x0 y0]-[xs ys])*[nx0 ny0]'*r^(-3/2);
     elseif strcmp('fs',src)
         % Focused source
         % Distance between loudspeaker and virtual source
         r = norm([x0 y0]-[xs ys]);
         % Delay and amplitude weight
         delay =  -r/c;
-        weight = g0/(2*pi)*([xs ys]-[x0 y0])*[nx0 ny0]'*r^(-3/2);
+        weight = g0/(2*pi)*([x0 y0]-[xs ys])*[nx0 ny0]'*r^(-3/2);
     else
         error('%s: %s is not a known source type.',upper(mfilename),src);
     end

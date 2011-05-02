@@ -19,13 +19,9 @@ function plot_itd(itd,phi)
 nargmin = 1;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-if ~isnumeric(itd) || ~isvector(itd)
-    error('%s: itd has to be a vector!',upper(mfilename));
-end
+isargvector(itd);
 if nargin==nargmax
-    if ~isnumeric(phi) || ~isvector(phi)
-        error('%s: phi has to be a vector!',upper(mfilename));
-    end
+    isargvector(phi);
     if length(itd)~=length(phi)
         error('%s: phi has to have the same length as itd!',upper(mfilename));
     end

@@ -26,8 +26,9 @@ error(nargchk(nargmin,nargmax,nargin));
 irs = struct;
 irs.description = 'Reference implementation of the irs struct.';
 irs.head = 'dummy';             % Used dummy head
+irs.ears = 'dummy';             % Used dummy head ears
 irs.room = 'dummy';             % Used room
-irs.loudspeaker = 'dummy';      % Used loudsoeaker
+irs.source = 'dummy';           % Used loudsoeaker
 irs.distance = 1;               % Distance between head and source. NOTE: this
                                 %>has to be norm(head_position-source_position)
 irs.fs = 44100;                 % Sampling rate

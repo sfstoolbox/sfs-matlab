@@ -23,6 +23,7 @@ isargmatrix(P);
 
 %% ===== Computation =====================================================
 if max(abs(P(:)))==0
-    warning(['The activity in the simulated wave field is zero. ',...
-             'Maybe you should use another time frame conf.frame.']);
+    warning('SFS:check_wave_field',...
+        ['The activity in the simulated wave field is zero. ',...
+         'Maybe you should use another time frame conf.frame.']);
 end

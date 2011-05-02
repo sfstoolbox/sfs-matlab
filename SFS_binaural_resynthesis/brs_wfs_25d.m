@@ -1,4 +1,4 @@
-function brs = brs_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
+function brir = brs_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
 %BRS_WFS_25D Generate a BRIR for WFS
 %   Usage: brir = brs_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
 %          brir = brs_wfs_25d(X,Y,phi,xs,ys,L,src,irs)
@@ -129,10 +129,12 @@ for n=1:nLS
     % Check if we have a non focused source
     if strcmp('fs',src)
         % Focused source
-        tau = (norm([X Y]-[x0(n) y0(n)]) - irs.distance)/c + delay - t0;
+        %tau = (norm([X Y]-[x0(n) y0(n)]) - irs.distance)/c + delay - t0;
+        tau = norm([X Y]-[x0(n) y0(n)])/c + delay - t0;
     else
         % Virtual source behind the loudspeaker array
-        tau = (norm([X Y]-[x0(n) y0(n)])-irs.distance)/c + delay;
+        %tau = (norm([X Y]-[x0(n) y0(n)])-irs.distance)/c + delay;
+        tau = norm([X Y]-[x0(n) y0(n)])/c + delay;
     end
     % Time delay in samples for the given loudspeaker
     dt(n) = ceil( tau*fs );

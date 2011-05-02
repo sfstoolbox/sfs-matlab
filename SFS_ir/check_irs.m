@@ -99,10 +99,12 @@ end
 % Check string entries
 if ~ischar(irs.description)
     error('%s: description needs to be a string.',upper(mfilename));
-elseif ~ischar(irs.loudspeaker)
+elseif ~ischar(irs.source)
     error('%s: loudspeaker needs to be a string.',upper(mfilename));
 elseif ~ischar(irs.room)
     error('%s: room needs to be a string.',upper(mfilename));
 elseif ~ischar(irs.head)
     error('%s: head needs to be a string.',upper(mfilename));
+elseif ~ischar(irs.ears)
+    error('%s: ears needs to be a string.',upper(mfilename));
 end

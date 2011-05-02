@@ -26,13 +26,13 @@ if ($#==2) lssize = $1; else lssize = 0.1
 set table '/dev/null'
 
 # Function to create the right call function
-add_loudspeaker(u,v,w,x,y) = \
-    sprintf('call "gp_set_loudspeakers.gnu" "%f" "%f" "%f" "%f" "%f" "%f";',\
-    u,v,w,x,y,lssize);
+add_loudspeaker(v,w,x,y) = \
+    sprintf('call "gp_set_loudspeaker.gnu" "%f" "%f" "%f" "%f" "%f";',\
+    v,w,x,y,lssize);
 # Initialize command string
 CMD = ''
 # Do a dummy plot to read the loudspeaker position data
-plot @file u 1:(CMD = CMD.add_loudspeaker($$0+1,$$1,$$2,$$3,$$4))
+plot @file u 1:(CMD = CMD.add_loudspeaker($$1,$$2,$$3,$$4))
 # Execute the loudspeaker drawing command
 eval(CMD)
 

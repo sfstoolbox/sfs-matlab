@@ -83,12 +83,6 @@ usehpre = conf.usehpre;       % Apply WFS pre-filter?
 
 useplot = conf.useplot;       % Plot results?
 
-% Check if the listener position is in front of the loudspeaker array
-if Y<=Y0
-    error(['%s: The listener position Y is located behind the'...
-           'loudspeaker (Y0)'],upper(mfilename));
-end
-
 
 %% ===== Variables ======================================================
 
@@ -101,7 +95,7 @@ nLS = length(x0);
 
 
 % === Tapering window ===
-% See in config.m if it is applied
+% See in SFS_config.m if it is applied
 win = tapwin(L,conf);
 
 % === HRIRs ===

@@ -73,11 +73,6 @@ hcomprfile = conf.hcomprfile; % Headphone compensation file right
 
 %% ===== variables ======================================================
 
-% Check if we have a non focused source
-if ys<Y0
-    t0 = 0;
-end
-
 phi = correct_azimuth(phi);
 
 % HRIRs
@@ -106,9 +101,13 @@ brir = zeros(N,2);
 % Distance between single loudspeaker [xs,ys] and listener position [X,Y]
 R = norm( [X-xs, Y-ys] );
 
+% Check if we have to apply the causality pre-delay
+if R>=irs.distance
+    t0 = 0;
+end
 % Time delay of the single source (at the listener position)
-% t0 is a causality pre delay for the focused source, e.g. 0 for a non
-%>focused point source (see config.m)
+% t0 is a causality pre delay for source, that are nearer than the distance of
+% the IR set (see config.m).
 % Single source
 tau = ( (R-irs.distance)/c - t0 );
 % Time delay in samples
@@ -117,8 +116,9 @@ dt = ceil( tau*fs );
 
 % === Amplitude factor ===
 % The 1/R term is for the decreasing of the sound on its way from
-% the loudspeaker to the listener (R).
-a = 1/R;
+% the loudspeaker to the listener (R). It accounts for the distance that is
+% already present in the IR dataset.
+a = (1/R)/(1/irs.distance);
 
 
 % === Secondary source angle ===

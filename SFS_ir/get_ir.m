@@ -28,7 +28,7 @@ error(nargchk(nargmin,nargmax,nargin))
 check_irs(irs);
 isargscalar(phi);
 if nargin==nargmax
-    isargscalar(delta),
+    isargscalar(delta);
 else
     delta = 0;
 end

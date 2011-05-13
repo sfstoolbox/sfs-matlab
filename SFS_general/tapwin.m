@@ -15,7 +15,7 @@ function win = tapwin(L,ls_activity,conf)
 %       win     - tapering window (1xnLS)
 %
 %   TAPWIN(L,ls_activity,conf) generates a tapering window for a linear WFS
-%   loudspeaker array with a length of L. The window is created from a suqared
+%   loudspeaker array with a length of L. The window is created from a squared
 %   Hann window.
 %
 %   see also: wfs_brs, secondary_source_selection, hann

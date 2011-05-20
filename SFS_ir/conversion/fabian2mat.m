@@ -50,6 +50,7 @@ outdir = 'ir_databases';
 irs = new_irs();
 % Common fields
 irs.head = 'FABIAN';
+irs.ears = 'FABIAN';
 irs.fs = 44100;
 irs.head_position = [0 0 0];
 irs.head_reference = [0 1 0];
@@ -65,7 +66,7 @@ if strcmp(irsset,'RAR')
          'realized by turning the dummy head one time per hand. Rotation: ',...
          'torso.'];
     irs.room = 'Anechoic chamber of ITA TU Berlin';
-    irs.loudspeaker = 'Genelec ?';
+    irs.source = 'Genelec ?';
     irs.distance = 2.5;
     irs.source_position = [0 2.5 0];
     irs.head_azimuth = NaN;
@@ -79,7 +80,7 @@ elseif strcmp(irsset,'Sputnik1')
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
          'Rotation: head. Source at 90 deg'];
     irs.room = 'Sputnik of T-Labs Berlin';
-    irs.loudspeaker = 'Fostex';
+    irs.source = 'Fostex';
     irs.distance = 1.03;
     irs.source_position = [-1.03 0 0];
     irs.torso_azimuth = NaN;
@@ -93,7 +94,7 @@ elseif strcmp(irsset,'Sputnik2')
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
          'Rotation: head. Source at 47 deg'];
     irs.room = 'Sputnik of T-Labs Berlin';
-    irs.loudspeaker = 'Fostex';
+    irs.source = 'Fostex';
     irs.distance = 1.96;
     irs.source_position = [-1.4335 1.3367 0];
     irs.torso_azimuth = NaN;
@@ -107,7 +108,7 @@ elseif strcmp(irsset,'Sputnik3')
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
          'Rotation: head. Source at 24 deg'];
     irs.room = 'Sputnik of T-Labs Berlin';
-    irs.loudspeaker = 'Fostex';
+    irs.source = 'Fostex';
     irs.distance = 2.27;
     irs.source_position = [-0.92329 2.0737 0];
     irs.torso_azimuth = NaN;
@@ -121,7 +122,7 @@ elseif strcmp(irsset,'Sputnik4')
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
          'Rotation: head. Source at 11 deg'];
     irs.room = 'Sputnik of T-Labs Berlin';
-    irs.loudspeaker = 'Fostex';
+    irs.source = 'Fostex';
     irs.distance = 2.86;
     irs.source_position = [-0.54571 2.8075 0];
     irs.torso_azimuth = NaN;
@@ -135,7 +136,7 @@ elseif strcmp(irsset,'Sputnik5')
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
          'Rotation: head. Source at -12 deg'];
     irs.room = 'Sputnik of T-Labs Berlin';
-    irs.loudspeaker = 'Fostex';
+    irs.source = 'Fostex';
     irs.distance = 2.92;
     irs.source_position = [0.60710 2.8562 0];
     irs.torso_azimuth = NaN;
@@ -149,7 +150,7 @@ elseif strcmp(irsset,'Sputnik6')
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
          'Rotation: head. Source at -33 deg'];
     irs.room = 'Sputnik of T-Labs Berlin';
-    irs.loudspeaker = 'Fostex';
+    irs.source = 'Fostex';
     irs.distance = 2.41;
     irs.source_position = [1.3126 2.0212 0];
     irs.torso_azimuth = NaN;
@@ -163,7 +164,7 @@ elseif strcmp(irsset,'Sputnik7')
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
          'Rotation: head. Source at -56 deg'];
     irs.room = 'Sputnik of T-Labs Berlin';
-    irs.loudspeaker = 'Fostex';
+    irs.source = 'Fostex';
     irs.distance = 2.02;
     irs.source_position = [1.6747 1.1296 0];
     irs.torso_azimuth = NaN;
@@ -177,7 +178,7 @@ elseif strcmp(irsset,'Sputnik8')
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
          'Rotation: head. Source at -90 deg'];
     irs.room = 'Sputnik of T-Labs Berlin';
-    irs.loudspeaker = 'Fostex';
+    irs.source = 'Fostex';
     irs.distance = 1.04;
     irs.source_position = [1.04 0 0];
     irs.torso_azimuth = NaN;
@@ -191,7 +192,7 @@ elseif strcmp(irsset,'audimax_front')
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
          'Rotation: head. Source at 0 deg'];
     irs.room = 'Audimax of T-Labs Berlin';
-    irs.loudspeaker = '';
+    irs.source = 'Meyer UPL-1';
     irs.distance = 1;
     irs.source_position = [0 1 0];
     irs.torso_azimuth = NaN;
@@ -205,7 +206,7 @@ elseif strcmp(irsset,'audimax_back')
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
          'Rotation: head. Source at 0 deg'];
     irs.room = 'Audimax of T-Labs Berlin';
-    irs.loudspeaker = '';
+    irs.source = 'Meyer UPL-1';
     irs.distance = 1;
     irs.source_position = [0 1 0];
     irs.torso_azimuth = NaN;
@@ -219,7 +220,7 @@ elseif strcmp(irsset,'burgtheater_front')
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
          'Rotation: head. Source at 0 deg'];
     irs.room = 'Burgtheater';
-    irs.loudspeaker = '';
+    irs.source = 'Meyer UPL-1';
     irs.distance = 1;
     irs.source_position = [0 1 0];
     irs.torso_azimuth = NaN;
@@ -233,7 +234,7 @@ elseif strcmp(irsset,'burgtheater_back')
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
          'Rotation: head. Source at 0 deg'];
     irs.room = 'Burgtheater';
-    irs.loudspeaker = '';
+    irs.source = 'Meyer UPL-1';
     irs.distance = 1;
     irs.source_position = [0 1 0];
     irs.torso_azimuth = NaN;
@@ -247,7 +248,7 @@ elseif strcmp(irsset,'friedrichstadtpalast_front')
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
          'Rotation: head. Source at 0 deg'];
     irs.room = 'Friedrichstadtpalast';
-    irs.loudspeaker = '';
+    irs.source = 'Meyer UPL-1';
     irs.distance = 1;
     irs.source_position = [0 1 0];
     irs.torso_azimuth = NaN;
@@ -261,7 +262,7 @@ elseif strcmp(irsset,'friedrichstadtpalast_back')
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
          'Rotation: head. Source at 0 deg'];
     irs.room = 'Friedrichstadtpalast';
-    irs.loudspeaker = '';
+    irs.source = 'Meyer UPL-1';
     irs.distance = 1;
     irs.source_position = [0 1 0];
     irs.torso_azimuth = NaN;
@@ -275,7 +276,7 @@ elseif strcmp(irsset,'udk_kammersaal_front')
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
          'Rotation: head. Source at 0 deg'];
     irs.room = 'UdK Kammersaal';
-    irs.loudspeaker = '';
+    irs.source = 'Meyer UPL-1';
     irs.distance = 1;
     irs.source_position = [0 1 0];
     irs.torso_azimuth = NaN;
@@ -289,7 +290,7 @@ elseif strcmp(irsset,'udk_kammersaal_back')
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
          'Rotation: head. Source at 0 deg'];
     irs.room = 'UdK Kammersaal';
-    irs.loudspeaker = '';
+    irs.source = 'Meyer UPL-1';
     irs.distance = 1;
     irs.source_position = [0 1 0];
     irs.torso_azimuth = NaN;
@@ -303,7 +304,7 @@ elseif strcmp(irsset,'studio_sweet_spot')
          'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
          'Rotation: head. Source at 0 deg'];
     irs.room = 'Studio';
-    irs.loudspeaker = '';
+    irs.source = 'Meyer UPL-1';
     irs.distance = 1;
     irs.source_position = [0 1 0];
     irs.torso_azimuth = NaN;
@@ -359,5 +360,5 @@ if ~exist(outdir,'dir')
 end
 
 % Write IR mat-file
-outfile = sprintf('%s/FABIAN_%s.mat',outdir,irsset);
+outfile = sprintf('%s/TU_FABIAN_%s.mat',outdir,irsset);
 save('-v7',outfile,'irs');

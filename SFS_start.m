@@ -35,7 +35,6 @@ if exist('addpath')
     addpath([basepath,'/SFS_monochromatic']);
     addpath([basepath,'/SFS_octave']);
     addpath([basepath,'/SFS_plotting']);
-    addpath([basepath,'/SFS_spectro_temporal']);
     addpath([basepath,'/SFS_time_domain']);
 else
     path(path,basepath);
@@ -48,7 +47,6 @@ else
     path(path,[basepath,'/SFS_monochromatic']);
     path(path,[basepath,'/SFS_octave']);
     path(path,[basepath,'/SFS_plotting']);
-    path(path,[basepath,'/SFS_spectro_temporal']);
     path(path,[basepath,'/SFS_time_domain']);
 end
 

@@ -50,10 +50,10 @@ beta1 = correct_azimuth(beta1);
 beta2 = correct_azimuth(beta2);
 alpha = correct_azimuth(alpha);
 
-if alpha==beta1 || alpha==beta2
-    error('%s: no interpolation needed for the given alpha value.',...
-        upper(mfilename));
-end
+%if alpha==beta1 || alpha==beta2
+%    error('%s: no interpolation needed for the given alpha value.',...
+%        upper(mfilename));
+%end
 if length(ir1)~=length(ir2)
     error('%s: the given IRs have not the same length.',upper(mfilename));
 end

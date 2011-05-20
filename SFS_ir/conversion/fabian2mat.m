@@ -6,15 +6,24 @@ function fabian2mat(irsset,irspath)
 %   Input options:
 %       irsset  - IR sets measured with FABIAN. Currently the following are
 %                 available:
-%                   'RAR'       - HRIR of RAr of TU Berlin
-%                   'Sputnik1'  - BRIR of Sputnik with source at 90°
-%                   'Sputnik2'  - BRIR of Sputnik with source at 47°
-%                   'Sputnik3'  - BRIR of Sputnik with source at 24°
-%                   'Sputnik4'  - BRIR of Sputnik with source at 11°
-%                   'Sputnik5'  - BRIR of Sputnik with source at -12°
-%                   'Sputnik6'  - BRIR of Sputnik with source at -33°
-%                   'Sputnik7'  - BRIR of Sputnik with source at -56°
-%                   'Sputnik8'  - BRIR of Sputnik with source at -90°
+%                   'RAR'         - HRIR of RAr of TU Berlin
+%                   'Sputnik1'    - BRIR of Sputnik with source at 90°
+%                   'Sputnik2'    - BRIR of Sputnik with source at 47°
+%                   'Sputnik3'    - BRIR of Sputnik with source at 24°
+%                   'Sputnik4'    - BRIR of Sputnik with source at 11°
+%                   'Sputnik5'    - BRIR of Sputnik with source at -12°
+%                   'Sputnik6'    - BRIR of Sputnik with source at -33°
+%                   'Sputnik7'    - BRIR of Sputnik with source at -56°
+%                   'Sputnik8'    - BRIR of Sputnik with source at -90°
+%                   'audimax_front'
+%                   'audimax_back'
+%                   'burgtheater_front'
+%                   'burgtheater_back'
+%                   'friedrichstadtpalast_front'
+%                   'friedrichstadtpalast_back'
+%                   'udk_kammersaal_front'
+%                   'udk_kammersaal_back'
+%                   'studio_sweet_spot'
 %                 NOTE: you still have to give the matching path to the given
 %                 data set!
 %       irspath - path to the directory containing the IR data
@@ -176,6 +185,132 @@ elseif strcmp(irsset,'Sputnik8')
     angle2 = 90;
     step = 1;
     irlength = 44100;
+elseif strcmp(irsset,'audimax_front')
+    irs.description = ...
+        ['Alex Lindaus measurements with FABIAN in Audimax. ', ...
+         'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
+         'Rotation: head. Source at 0 deg'];
+    irs.room = 'Audimax of T-Labs Berlin';
+    irs.loudspeaker = '';
+    irs.distance = 1;
+    irs.source_position = [0 1 0];
+    irs.torso_azimuth = NaN;
+    angle1 = -80;
+    angle2 = 80;
+    step = 1;
+    irlength = 262144;
+elseif strcmp(irsset,'audimax_back')
+    irs.description = ...
+        ['Alex Lindaus measurements with FABIAN in Audimax. ', ...
+         'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
+         'Rotation: head. Source at 0 deg'];
+    irs.room = 'Audimax of T-Labs Berlin';
+    irs.loudspeaker = '';
+    irs.distance = 1;
+    irs.source_position = [0 1 0];
+    irs.torso_azimuth = NaN;
+    angle1 = -80;
+    angle2 = 80;
+    step = 1;
+    irlength = 262144;
+elseif strcmp(irsset,'burgtheater_front')
+    irs.description = ...
+        ['Alex Lindaus measurements with FABIAN in Burgtheater. ', ...
+         'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
+         'Rotation: head. Source at 0 deg'];
+    irs.room = 'Burgtheater';
+    irs.loudspeaker = '';
+    irs.distance = 1;
+    irs.source_position = [0 1 0];
+    irs.torso_azimuth = NaN;
+    angle1 = -76;
+    angle2 = 76;
+    step = 2;
+    irlength = 262144;
+elseif strcmp(irsset,'burgtheater_back')
+    irs.description = ...
+        ['Alex Lindaus measurements with FABIAN in Burgtheater. ', ...
+         'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
+         'Rotation: head. Source at 0 deg'];
+    irs.room = 'Burgtheater';
+    irs.loudspeaker = '';
+    irs.distance = 1;
+    irs.source_position = [0 1 0];
+    irs.torso_azimuth = NaN;
+    angle1 = -76;
+    angle2 = 76;
+    step = 2;
+    irlength = 262144;
+elseif strcmp(irsset,'friedrichstadtpalast_front')
+    irs.description = ...
+        ['Alex Lindaus measurements with FABIAN in Friedrichstadtpalast. ', ...
+         'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
+         'Rotation: head. Source at 0 deg'];
+    irs.room = 'Friedrichstadtpalast';
+    irs.loudspeaker = '';
+    irs.distance = 1;
+    irs.source_position = [0 1 0];
+    irs.torso_azimuth = NaN;
+    angle1 = -76;
+    angle2 = 76;
+    step = 2;
+    irlength = 262144;
+elseif strcmp(irsset,'friedrichstadtpalast_back')
+    irs.description = ...
+        ['Alex Lindaus measurements with FABIAN in Friedrichstadtpalast. ', ...
+         'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
+         'Rotation: head. Source at 0 deg'];
+    irs.room = 'Friedrichstadtpalast';
+    irs.loudspeaker = '';
+    irs.distance = 1;
+    irs.source_position = [0 1 0];
+    irs.torso_azimuth = NaN;
+    angle1 = -76;
+    angle2 = 76;
+    step = 2;
+    irlength = 262144;
+elseif strcmp(irsset,'udk_kammersaal_front')
+    irs.description = ...
+        ['Alex Lindaus measurements with FABIAN in Kammersaal of UdK. ', ...
+         'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
+         'Rotation: head. Source at 0 deg'];
+    irs.room = 'UdK Kammersaal';
+    irs.loudspeaker = '';
+    irs.distance = 1;
+    irs.source_position = [0 1 0];
+    irs.torso_azimuth = NaN;
+    angle1 = -76;
+    angle2 = 76;
+    step = 2;
+    irlength = 65536;
+elseif strcmp(irsset,'udk_kammersaal_back')
+    irs.description = ...
+        ['Alex Lindaus measurements with FABIAN in Kammersaal of UdK. ', ...
+         'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
+         'Rotation: head. Source at 0 deg'];
+    irs.room = 'UdK Kammersaal';
+    irs.loudspeaker = '';
+    irs.distance = 1;
+    irs.source_position = [0 1 0];
+    irs.torso_azimuth = NaN;
+    angle1 = -76;
+    angle2 = 76;
+    step = 2;
+    irlength = 65536;
+elseif strcmp(irsset,'studio_sweet_spot')
+    irs.description = ...
+        ['Alex Lindaus measurements with FABIAN in Studio of TU Berlin. ', ...
+         'Used elevation angle: 0 deg; azimuth resolution: 1 deg. ', ...
+         'Rotation: head. Source at 0 deg'];
+    irs.room = 'Studio';
+    irs.loudspeaker = '';
+    irs.distance = 1;
+    irs.source_position = [0 1 0];
+    irs.torso_azimuth = NaN;
+    angle1 = -75;
+    angle2 = 75;
+    step = 1;
+    irlength = 33450;
 else
     error('%s: the given irsset is not available.',upper(mfilename));
 end

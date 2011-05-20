@@ -154,7 +154,6 @@ alpha = atan2(-dx(1),dx(2)) - phi;
 % Ensure -pi <= alpha < pi
 alpha = correct_azimuth(alpha);
 
-
 % === HRIR interpolation ===
 ir = get_ir(irs,alpha);
 

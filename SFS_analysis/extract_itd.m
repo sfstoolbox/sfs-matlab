@@ -1,6 +1,6 @@
 function [itd,idxleft,idxright] = extract_itd(insigleft,insigright,fs)
 %EXTRACTITD Extract the ITD between the two given signals
-%   Usage: itd = extractitd(insigleft,insigright)
+%   Usage: itd = extractitd(insigleft,insigrighti,fs)
 %
 %   Input parameters:
 %       insigleft   - left ear signal. This can also be a matrix containing
@@ -13,7 +13,7 @@ function [itd,idxleft,idxright] = extract_itd(insigleft,insigright,fs)
 %                     given signals or a vector with values for every
 %                     frequency band
 %
-%   EXTRACTITD(insigleft,insigright) extractes the ITD between the left and
+%   EXTRACTITD(insigleft,insigright,fs) extractes the ITD between the left and
 %   right signal(s) by using an edge detection algorithm to identify the
 %   first non-zero entry in both IRs and then calculating the time
 %   difference.
@@ -48,7 +48,7 @@ idxright = itd;
 for ii = 1:size(insigleft,2)
 
     % Treshold after sandvad1994 (5% of maximum in each IR)
-    % NOTE: I have changed it to 10%
+    % NOTE: I have changed it to 20%
     tresholdleft = 0.10 * max(insigleft(:,ii));
     tresholdright = 0.10 * max(insigright(:,ii));
     % Ten fold upsampling (after lindau2010) to have a smoother output

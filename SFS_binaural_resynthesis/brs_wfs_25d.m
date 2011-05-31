@@ -193,14 +193,7 @@ warning('on','SFS:irs_intpol');
 
 
 %% ===== Pre-equalization ===============================================
-if(usehpre)
-    % Generate WFS preequalization-filter
-    hpre = wfs_prefilter(conf);
-    % Apply filter
-    brir(:,1) = conv(hpre,brir(1:end-length(hpre)+1,1));
-    brir(:,2) = conv(hpre,brir(1:end-length(hpre)+1,2));
-end
-
+brir = wfs_preequalization(brir,conf);
 
 %% ===== Headphone compensation =========================================
 brir = compensate_headphone(brir,conf);

@@ -163,13 +163,4 @@ brir(:,2) = [zeros(1,dt) a*ir(:,2)' zeros(1,N-dt-lenir)]';
 
 
 %% ===== Headphone compensation =========================================
-if(usehcomp)
-    % Read headphone compensation filter
-    hcompl = wavread(hcomplfile);
-    hcompr = wavread(hcomprfile);
-    hcomp = [hcompl hcompr];
-    % Apply filter
-    brir(:,1) = conv(hcomp(:,1),brir(1:end-length(hcomp)+1,1));
-    brir(:,2) = conv(hcomp(:,2),brir(1:end-length(hcomp)+1,2));
-end
-
+brir = compensate_headphone(brir,conf);

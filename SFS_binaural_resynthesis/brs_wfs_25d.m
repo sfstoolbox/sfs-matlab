@@ -67,13 +67,9 @@ end
 
 fs = conf.fs;                 % sampling frequency
 t0 = conf.t0;                 % pre-delay for causality (focused sources)
-
-dx0 = conf.dx0;               % loudspeaker distance
 c = conf.c;                   % speed of sound
-
 X0 = conf.X0;                 % array position
 Y0 = conf.Y0;
-
 N = conf.N;                   % target length of BRS impulse responses
 
 usehcomp = conf.usehcomp;     % Apply headphone compensation?
@@ -207,15 +203,7 @@ end
 
 
 %% ===== Headphone compensation =========================================
-if(usehcomp)
-    % Read headphone compensation filter
-    hcompl = wavread(hcomplfile);
-    hcompr = wavread(hcomprfile);
-    hcomp = [hcompl hcompr];
-    % Apply filter
-    brir(:,1) = conv(hcomp(:,1),brir(1:end-length(hcomp)+1,1));
-    brir(:,2) = conv(hcomp(:,2),brir(1:end-length(hcomp)+1,2));
-end
+brir = compensate_headphone(brir,conf);
 
 
 %% ===== Plot WFS parameters ============================================

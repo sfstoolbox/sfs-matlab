@@ -56,10 +56,6 @@ end
 X0 = conf.X0;
 Y0 = conf.Y0;
 
-% Loudspeaker distcane
-% NOTE: if dLS <= dx, than we have a continous loudspeaker
-dLS = conf.LSdist;
-
 % Reference position for the amplitude (correct reproduction of amplitude
 % at y = yref).
 yref = conf.yref;

@@ -59,7 +59,7 @@ array = conf.array;
 X0 = conf.X0;
 Y0 = conf.Y0;
 % Loudspeaker distance
-LSdist = conf.LSdist;
+dx0 = conf.dx0;
 
 %% ===== Calculation ====================================================
 
@@ -92,15 +92,15 @@ elseif strcmp('box',array)
     % === Boxed loudspeaker array ===
     % Position and direction of the loudspeakers
     x0(1:nLS/4) = X0 + linspace(-L/2,L/2,nLS/4);
-    y0(1:nLS/4) = Y0 + ones(1,nLS/4) * L/2 + LSdist;
+    y0(1:nLS/4) = Y0 + ones(1,nLS/4) * L/2 + dx0;
     phi(1:nLS/4) = pi*ones(1,nLS/4);
-    x0(nLS/4+1:2*nLS/4) = X0 + ones(1,nLS/4) * L/2 + LSdist;
+    x0(nLS/4+1:2*nLS/4) = X0 + ones(1,nLS/4) * L/2 + dx0;
     y0(nLS/4+1:2*nLS/4) = Y0 + linspace(L/2,-L/2,nLS/4);
     phi(nLS/4+1:2*nLS/4) = pi/2*ones(1,nLS/4);
     x0(2*nLS/4+1:3*nLS/4) = X0 + linspace(L/2,-L/2,nLS/4);
-    y0(2*nLS/4+1:3*nLS/4) = Y0 - ones(1,nLS/4) * L/2 - LSdist;
+    y0(2*nLS/4+1:3*nLS/4) = Y0 - ones(1,nLS/4) * L/2 - dx0;
     phi(2*nLS/4+1:3*nLS/4) = 0*ones(1,nLS/4);
-    x0(3*nLS/4+1:nLS) = X0 - ones(1,nLS/4) * L/2 - LSdist;
+    x0(3*nLS/4+1:nLS) = X0 - ones(1,nLS/4) * L/2 - dx0;
     y0(3*nLS/4+1:nLS) = Y0 + linspace(-L/2,L/2,nLS/4);
     phi(3*nLS/4+1:nLS) = -pi/2*ones(1,nLS/4);
 elseif strcmp('U',array)

@@ -79,7 +79,7 @@ conf.hcomprfile = ...
 
 % === WFS === 
 % Loudspeaker distance (m)
-conf.LSdist = 0.15;
+conf.dx0 = 0.15;
 % Array position (m)
 conf.X0 = 0;                    
 conf.Y0 = 0;

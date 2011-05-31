@@ -68,7 +68,7 @@ tmpdir = conf.tmpdir;
 X0 = conf.X0;
 Y0 = conf.Y0;
 % Distance between loudspeakers
-LSdist = conf.LSdist;
+dx0 = conf.dx0;
 % Used array geometry
 array = conf.array;
 % Plotting
@@ -227,7 +227,7 @@ if ~(p.usegnuplot)
 
     % Add loudspeaker to the plot
     if(p.loudspeakers)
-        if LSdist<=0.01
+        if dx0<=0.01
             warning(['%s: the given loudspeaker distance is to small. ',...
                      'Disabling plotting of the loudspeakers'],upper(mfilename));
         else
@@ -275,7 +275,7 @@ else
         %y0(idx) = NaN;
         %phi(idx) = NaN;
 
-        if  LSdist<= 0.01
+        if  dx0<= 0.01
             warning(['%s: the given loudspeaker distance is to small. ',...
                     'Disabling plotting of the loudspeakers'],upper(mfilename));
             p.loudspeakers = 0;

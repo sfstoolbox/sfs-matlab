@@ -11,13 +11,13 @@ function [nLS L] = number_of_loudspeaker(L,conf)
 %   Output parameters:
 %       nLS     - number of needed loudspeaker
 %       L       - real length of the loudspeaker array (correspnding to
-%                 conf.LSdist)
+%                 conf.dx0)
 %
 %   NUMBER_OF_LOUDSPEAKER(L,conf) calculates the number of needed loudspeaker for
-%   the given array length L, using the config loudspeaker distance conf.LSdist.
+%   the given array length L, using the config loudspeaker distance conf.dx0.
 %   Also the real length L of such a loudspeaker array will returned. This is
 %   neccessary because the user given length L is probably not compatible to the
-%   given value conf.LSdist.
+%   given value conf.dx0.
 %
 %   see also: secondary_source_positions
 %
@@ -44,29 +44,29 @@ end
 array = conf.array;
 
 % Loudspeaker distance
-dLS = conf.LSdist;
+dx0 = conf.dx0;
 
 %% ===== Calculation ====================================================
 %
 if strcmp('linear',array)
     % Number of loudspeaker
-    nLS = fix(L/dLS)+1;
+    nLS = fix(L/dx0)+1;
     % Corresponding size of loudspeaker array
-    L = (nLS-1)*dLS;
+    L = (nLS-1)*dx0;
 elseif strcmp('circle',array)
     % L is the radius!
     % Perimeter of the circle
     P = pi*L;
     % Number of loudspeakers
-    nLS = fix(P/dLS)+1;
+    nLS = fix(P/dx0)+1;
     % Corresponding size of loudspeaker array
-    L = ((nLS-1)*dLS)/pi;
+    L = ((nLS-1)*dx0)/pi;
 elseif strcmp('box',array)
     % FIXME: check what will happened with the loudspeakers on the edges!
     % Number of loudspeakers
-    nLS = 4*(fix(L/dLS)+1);
+    nLS = 4*(fix(L/dx0)+1);
     % Corresponding size of loudspeaker array
-    L = (nLS/4-1)*dLS;
+    L = (nLS/4-1)*dx0;
 else
     error('%s: %s is a unknown array type.',upper(mfilename),array);
 end

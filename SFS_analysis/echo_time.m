@@ -38,7 +38,7 @@ end
 %% ===== Configuration ==================================================
 
 % Loudspeaker distance
-LSdist = conf.LSdist;
+dx0 = conf.dx0;
 % Array center position
 X0 = conf.X0;
 Y0 = conf.Y0;
@@ -53,7 +53,7 @@ c = conf.c;
 
 %% ===== Variables ======================================================
 % Number of loudspeaker (round towards plus infinity)
-nLS = ceil(L/LSdist);
+nLS = ceil(L/dx0);
 
 % Loudspeaker positions
 [x0,y0] = secondary_source_positions(L,conf);

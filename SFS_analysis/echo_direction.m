@@ -46,7 +46,7 @@ end
 %% ===== Configuration ===================================================
 
 % Loudspeaker distance
-LSdist = conf.LSdist;
+dx0 = conf.dx0;
 % Speed of sound
 c = conf.c;
 % use plotting?

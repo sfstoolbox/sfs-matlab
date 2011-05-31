@@ -49,7 +49,6 @@ end
 %% ===== Configuration ==================================================
 usetapwin = conf.usetapwin;
 tapwinlen = conf.tapwinlen;
-LSdist = conf.LSdist;
 
 
 %% ===== Calculation ====================================================

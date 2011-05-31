@@ -6,6 +6,7 @@ function brir = brs_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
 %   Input parameters:
 %       X,Y     - listener position (m)
 %       phi     - listener direction [head orientation] (rad)
+%                 0 means the head is oriented towards the x-axis.
 %       xs,ys   - virtual source position [ys > Y0 => focused source] (m)
 %       L       - Length of linear loudspeaker array (m)
 %       src     - source type: 'pw' -plane wave
@@ -39,7 +40,7 @@ function brir = brs_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
 %                                   |
 %                                   v y-axis
 %
-% see also: SFS_config, LSpos_linear, ref_brs, auralize_brs, wfs_brs_set
+% see also: brsset_wfs_25d, brs_point_source, auralize_brs
 %
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
@@ -67,7 +68,7 @@ end
 fs = conf.fs;                 % sampling frequency
 t0 = conf.t0;                 % pre-delay for causality (focused sources)
 
-LSdist = conf.LSdist;         % loudspeaker distance
+dx0 = conf.dx0;               % loudspeaker distance
 c = conf.c;                   % speed of sound
 
 X0 = conf.X0;                 % array position

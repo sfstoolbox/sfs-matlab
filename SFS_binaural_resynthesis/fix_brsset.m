@@ -10,7 +10,7 @@ function fix_brs_set(brsfile)
 %   but the source shouldn't move. Hopefully this script fixes this 
 %   behavior.
 
-% see also: ref_brs_set, wfs_brs_set
+% see also: brsset_point_source, brsset_wfs_25d
 %
 
 % AUTHOR: Hagen Wierstorf

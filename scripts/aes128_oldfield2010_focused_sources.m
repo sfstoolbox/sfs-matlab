@@ -119,9 +119,6 @@ conf.dx0 = 0.135;
 % Array position (m)
 conf.X0 = 0;                    
 conf.Y0 = -1.5;
-% Listener direction offset (defines the 0° direction of the listener,
-% default: 0° == negative y-direction)
-conf.listoffset = 0;
 conf.yref = 1.3;
 % WFS preequalization-filter (true or false)
 conf.usehpre = true;

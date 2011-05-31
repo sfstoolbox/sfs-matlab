@@ -23,12 +23,6 @@ conf.dx0 = 0.15;
 % Array position (m)
 conf.X0 = 0;                    
 conf.Y0 = 0;
-% Listener direction offset (defines the 0° direction of the listener,
-% default: 0° == negative y-direction)
-% This value is the reference direction for every angle value given to the
-% SFS functions (so if you change this value to 90, your other angles have 
-% to change -90).
-conf.listoffset = 0;
 % WFS preequalization-filter (true or false)
 conf.usehpre = false;
 % Lower frequency limit of preequalization filter (= frequency when 

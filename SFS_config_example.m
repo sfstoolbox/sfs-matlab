@@ -15,11 +15,6 @@ function conf = SFS_config()
 %   see also:
 %
 
-%   FIXME:
-%       * can the hpre.fhigh (aliasing frequency) be calculated, or should
-%         it be set by hand? (Bug #10)
-%         UPDATE: one should be able to calculate this using diffraction theory
-
 % AUTHOR: Hagen Wierstorf
 
 %% ===== Checking of input  parameters ==================================
@@ -46,13 +41,9 @@ conf.c = 343;
 conf.usehcomp = true;
 % Headphone compensation file for left and right ear.
 conf.hcomplfile = ...
-    ['~/data/measurements/headphone_compensation_filters/'...
-     'FABIAN_AKG_K601/'...
-     'FABIAN_AKG_K601_(left)_4096_min_phase_marg100_inverse.wav'];
+    '~/data/ir_databases/headphone_compensations/TU_FABIAN_AKGK601_hcompl.wav';
 conf.hcomprfile = ...
-    ['~/data/measurements/headphone_compensation_filters/'...
-     'FABIAN_AKG_K601/'...
-     'FABIAN_AKG_K601_(right)_4096_min_phase_marg100_inverse.wav'];
+    '~/data/ir_databases/headphone_compensations/TU_FABIAN_AKGK601_hcompr.wav';
 
 
 % ===== WFS =====================================
@@ -68,15 +59,21 @@ conf.array = 'linear';
 conf.x0 = [];
 conf.y0 = [];
 conf.phi = [];
-% Listener direction offset (defines the 0° direction of the listener,
-% default: 0° == negative y-direction)
-% This value is the reference direction for every angle value given to the
-% SFS functions (so if you change this value to 90, your other angles have
-% to change -90).
-conf.listoffset = 0;
-% [xref yref]
-% NOTE: the amplitude will be correct at the line parallel to the x-axis given
-% at the y position for a line array (this is a 2.5D property of WFS)
+% FIXME:
+% * this entry is deprecated.
+% * should i also fix the angle handling in SFS in general? For HRIR etc. 0
+% means in the same direction as the y-axis. For the brs sets it means in the
+% opposite direction. In addition the mathematical definition of 0° means in the
+% direction of the x-axis.
+%% Listener direction offset (defines the 0° direction of the listener,
+%% default: 0° == negative y-direction)
+%% This value is the reference direction for every angle value given to the
+%% SFS functions (so if you change this value to 90, your other angles have
+%% to change -90).
+%conf.listoffset = 0;
+%
+% The amplitude will be correct at the point [xref yref] for 2.5D
+% synthesis.
 % Thi point is also used to scale the wave field to 1 at this point.
 conf.xref = 0;
 conf.yref = 2;
@@ -140,14 +137,16 @@ conf.N = 2^15;
 % Angles for the BRS set for the SSR (first two columns of the BRIR are 0° of
 % the listener direction, next two columns are -1°, etc. So the brsangles has
 
-% to spin around the other direction, because the source moves in opposite
-% direction to the listener direction; see wfs_brs_set)
-% NOTE: This has changed recently. Our old approach uses a angle notation that
-% has had a counterwise rotation for positive values. The new one uses a
-% counterclockwise notation (as in Mathematics) for positive values.
-% The old brsangles notation was therefore: conf.brsangles = 360:-1:1;
+% To use a dynamic binaural simulation together with the SoundScape Renderer
+% (SSR) and a headtracker, brs sets can be created. If these sets should be
+% used in BRS mode of the SSR, the angles have to be:
+% conf.brsangles = 0:1:359;
+% If the brs set should be used as HRIRs for the SSR, the angles have to be:
+% conf.brsangles = 360:-1:1;
 conf.brsangles = 0:1:359;
 % Auralisation files
+% These files are used for the auralization of impulse responses by the
+% auralize_brs function.
 conf.speechfile = '~/data/signals/goesa_sentence.wav';
 conf.cellofile = '~/data/signals/cello.wav';
 conf.castanetsfile = '~/data/signals/castanets.wav';
@@ -185,7 +184,7 @@ conf.plot.loudspeakers = true;
 conf.plot.realloudspeakers = true;
 % Size of the loudspeaker 
 % FIXME: Gnuplot ignores the loudspeaker size at the moment
-conf.plot.lssize = conf.LSdist;
+conf.plot.lssize = conf.dx0;
 % Size of the plot
 conf.plot.size = [16,11.55];
 % Additional plot command

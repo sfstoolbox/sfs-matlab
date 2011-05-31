@@ -84,9 +84,6 @@ conf.dx0 = 0.15;
 % Array position (m)
 conf.X0 = 0;                    
 conf.Y0 = 0;
-% Listener direction offset (defines the 0° direction of the listener,
-% default: 0° == negative y-direction)
-conf.listoffset = 0;
 % WFS preequalization-filter (true or false)
 conf.usehpre = true;
 % Lower frequency limit of preequalization filter (= frequency when 
@@ -141,7 +138,7 @@ conf.usegnuplot = false;
 hrirs = read_irs(conf);
 
 % Compute BRIR for reference single source
-brir = ref_brs_set(0,R+1,conf.listoffset,xs,ys,hrirs,conf);
+brir = ref_brs_set(0,R+1,0,xs,ys,hrirs,conf);
 
 % Scale BRIR output (|BRIR|<1)
 %brir = 0.95*brir/max(abs(brir(:)));
@@ -175,7 +172,7 @@ wavwrite(brir,conf.fs,16,outfile);
 %        end
 %        
 %        % Calculate BRIR
-%        brir = wfs_brs_set(X,Y,alpha(a)+conf.listoffset,xs,ys,L(l),hrirs,conf);
+%        brir = wfs_brs_set(X,Y,alpha(a),xs,ys,L(l),hrirs,conf);
 %        
 %        % Scale BRIR output (|BRIR|<1) using the first channel (0°)
 %        brir = brir ./ max([rms(brir(:,1)) rms(brir(:,2))]) .* 0.001;

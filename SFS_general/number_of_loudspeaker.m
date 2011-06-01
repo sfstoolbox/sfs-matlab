@@ -54,11 +54,12 @@ if strcmp('linear',array)
     % Corresponding size of loudspeaker array
     L = (nLS-1)*dx0;
 elseif strcmp('circle',array)
-    % L is the radius!
+    % L is the diameter!
     % Perimeter of the circle
     P = pi*L;
     % Number of loudspeakers
-    nLS = fix(P/dx0)+1;
+    %nLS = fix(P/dx0)+1;
+    nLS = round(P/dx0);
     % Corresponding size of loudspeaker array
     L = ((nLS-1)*dx0)/pi;
 elseif strcmp('box',array)

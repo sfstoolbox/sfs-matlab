@@ -83,7 +83,7 @@ if strcmp('linear',array)
 elseif strcmp('circle',array)
     % === Circular loudspeaker array ===
     % Positions of the loudspeaker
-    phi = linspace(-pi,(1-2/nLS)*pi,nLS);
+    phi = linspace(0,(2-2/nLS)*pi,nLS);
     x0 = X0 + L/2*sin(-phi);
     y0 = Y0 + L/2*cos(-phi);
     % Direction of the loudspeakers

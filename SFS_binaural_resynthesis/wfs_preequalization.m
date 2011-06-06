@@ -1,19 +1,19 @@
-function brir = wfs_preequalization(brir,conf)
+function ir = wfs_preequalization(ir,conf)
 %WFS_PREEQUALIZATION applies a pre-equalization filter for WFS
-%   Usage: brir = wfs_prefilter(brir,conf)
-%          brir = wfs_prefilter(brir)
+%   Usage: ir = wfs_prefilter(ir,conf)
+%          ir = wfs_prefilter(ir)
 
 %
 %   Input parameters:
-%       brir    - BRIR to which the pre-equalization filter should be applied
+%       ir      - IR to which the pre-equalization filter should be applied
 %       conf    - optional struct containing configuration variables (see
 %                 SFS_config for default values)
 %
 %   Output:
-%       brir    - BRIR with applied pre-equalization 
+%       ir      - IR with applied pre-equalization 
 %
-%   WFS_PREEQUALIZATION(brir,conf) applies the pre-equalization filter for
-%   Wave Field Synthesis to the given BRIR.
+%   WFS_PREEQUALIZATION(ir,conf) applies the pre-equalization filter for
+%   Wave Field Synthesis to the given impulse response.
 %
 %   see also: wfs_prefilter, SFS_config, brs_wfs_25d
 
@@ -24,7 +24,7 @@ function brir = wfs_preequalization(brir,conf)
 nargmin = 1;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-isargmatrix(brir);
+isargmatrix(ir);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -44,5 +44,6 @@ end
 % Get the filter
 hpre = wfs_prefilter(conf);
 % Apply the filter
-brir(:,1) = conv(hpre,brir(1:end-length(hpre)+1,1));
-brir(:,2) = conv(hpre,brir(1:end-length(hpre)+1,2));
+for ii = 1:size(ir,2)
+    ir(:,ii) = conv(hpre,ir(1:end-length(hpre)+1,ii));
+end

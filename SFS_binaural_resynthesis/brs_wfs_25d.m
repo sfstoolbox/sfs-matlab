@@ -21,7 +21,7 @@ function brir = brs_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
 %                 (nx2 matrix)
 %
 %   BRS_WFS_25D(X,Y,phi,xs,ys,L,irs,src,conf) calculates a binaural room impulse
-%   response for a virtual source at [xs,ys] for a linear WFS array and the
+%   response for a virtual source at [xs,ys] for a virtual WFS array and a
 %   listener located at [X,Y].
 %
 %   Geometry:
@@ -68,16 +68,7 @@ end
 fs = conf.fs;                 % sampling frequency
 t0 = conf.t0;                 % pre-delay for causality (focused sources)
 c = conf.c;                   % speed of sound
-X0 = conf.X0;                 % array position
-Y0 = conf.Y0;
 N = conf.N;                   % target length of BRS impulse responses
-
-usehcomp = conf.usehcomp;     % Apply headphone compensation?
-hcomplfile = conf.hcomplfile; % Headphone compensation file left
-hcomprfile = conf.hcomprfile; % Headphone compensation file right
-
-usehpre = conf.usehpre;       % Apply WFS pre-filter?
-
 useplot = conf.useplot;       % Plot results?
 
 

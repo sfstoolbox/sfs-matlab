@@ -84,9 +84,10 @@ if contentfs~=fs
     content = resample(content,fs,contentfs);
 end
 
-% Convolve the two (uses only the first channel from the content file!)
-outsig(:,1) = conv(brs(:,1),content);
-outsig(:,2) = conv(brs(:,2),content);
+% Convolve the two
+for ii = 1:size(brs,2)
+    outsig(:,ii) = conv(brs(:,ii),content);
+end
 
 % Scale output
 outsig = 0.95*outsig/max(abs(outsig(:)));

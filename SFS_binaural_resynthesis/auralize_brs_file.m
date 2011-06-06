@@ -81,8 +81,9 @@ if contentfs ~= brsfs
 end
 
 % Convolve the two
-outsig(:,1) = conv(brs(:,1),content);
-outsig(:,2) = conv(brs(:,2),content);
+for ii = 1:size(brs,2)
+    outsig(:,ii) = conv(brs(:,ii),content);
+end
 
 % Scale output
 outsig = 0.95*outsig/max(abs(outsig(:)));

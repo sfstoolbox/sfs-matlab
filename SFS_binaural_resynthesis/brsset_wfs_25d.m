@@ -74,7 +74,8 @@ angles = rad(conf.brsangles);   % Angles for the BRIRs
 brs = zeros(N,2*length(angles));
 
 % Generate a BRS set for all given angles
-for i = 1:length(angles)
+for ii = 1:length(angles)
     % Compute BRIR for the desired WFS system
-    brs(:,(i-1)*2+1:i*2) = brs_wfs_25d(X,Y,angles(i)+phi,xs,ys,L,src,irs,conf);
+    brs(:,(ii-1)*2+1:ii*2) = ...
+        brs_wfs_25d(X,Y,angles(ii)+phi,xs,ys,L,src,irs,conf);
 end

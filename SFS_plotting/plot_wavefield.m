@@ -101,7 +101,7 @@ if(p.usedb)
     % Check if we have any activity in the wave field
     if max(abs(P(:)))~=0
         % For the dB case scale the signal maximum to 0 dB
-        P = P./max(abs(P(:)));
+        %P = P./max(abs(P(:)));
     else
         % If we have only zeros in the wave field set the field to eps to avoid
         % problems with log(0).

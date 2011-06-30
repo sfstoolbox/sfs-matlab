@@ -1,17 +1,17 @@
 function P = norm_wave_field(P,x,y,conf)
 %NORM_WAVE_FIELD normalizes the wave field to 1 at xref,yref
-%   Usage: P = norm_wave_field(P,x,y,yref)
+%   Usage: P = norm_wave_field(P,x,y,conf)
 %
 %   Input options:
 %       P       - wave field
 %       x,y     - vectors conatining the x- and y-axis values
-%       yref    - yref coordinate for normalization
+%       conf    - optional configuration struct
 %
 %   Output options:
 %       P       - normalized wave field
 %
 %   NORM_WAVE_FIELD(P,x,y,yref) normalizes the given wave field P to 1 at
-%   the position x/2,yref.
+%   the position conf.xref,conf.yref.
 %
 %   see also: wave_field_mono_wfs_25d
 

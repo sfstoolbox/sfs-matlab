@@ -71,7 +71,7 @@ end
 % Source model for a point source G(x,omega)
 P = point_source(X,Y,xs,ys,f);
 % Scale signal (at yref)
-P = norm_wave_field(P,x,y,yref);
+P = norm_wave_field(P,x,y,conf);
 
 
 % ===== Plotting =========================================================

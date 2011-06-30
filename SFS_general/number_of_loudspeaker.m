@@ -1,7 +1,7 @@
-function [nLS L] = number_of_loudspeaker(L,conf)
+function [nLS,L] = number_of_loudspeaker(L,conf)
 %NUMBER_OF_LOUDSPEAKER calculate the number of loudspeaker for a linear WFS array
-%   Usage: nLS = number_of_loudspeaker(L,conf)
-%          nLS = number_of_loudspeaker(L)
+%   Usage: [nLS,L] = number_of_loudspeaker(L,conf)
+%          [nLS,L] = number_of_loudspeaker(L)
 %
 %   Input parameters:
 %       L       - length of the loudspeaker array (m)
@@ -10,7 +10,7 @@ function [nLS L] = number_of_loudspeaker(L,conf)
 %
 %   Output parameters:
 %       nLS     - number of needed loudspeaker
-%       L       - real length of the loudspeaker array (correspnding to
+%       L       - real length of the loudspeaker array (corresponding to
 %                 conf.dx0)
 %
 %   NUMBER_OF_LOUDSPEAKER(L,conf) calculates the number of needed loudspeaker for
@@ -61,7 +61,7 @@ elseif strcmp('circle',array)
     %nLS = fix(P/dx0)+1;
     nLS = round(P/dx0);
     % Corresponding size of loudspeaker array
-    L = ((nLS-1)*dx0)/pi;
+    L = (nLS*dx0)/pi;
 elseif strcmp('box',array)
     % FIXME: check what will happened with the loudspeakers on the edges!
     % Number of loudspeakers

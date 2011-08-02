@@ -6,7 +6,6 @@ function fabian2mat(irsset,irspath)
 %   Input options:
 %       irsset  - IR sets measured with FABIAN. Currently the following are
 %                 available:
-%
 %                   'RAR'         - HRIR of RAr of TU Berlin
 %                   'Sputnik1'    - BRIR of Sputnik with source at 90°
 %                   'Sputnik2'    - BRIR of Sputnik with source at 47°

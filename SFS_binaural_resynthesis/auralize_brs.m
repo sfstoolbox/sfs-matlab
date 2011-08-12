@@ -15,10 +15,10 @@ function outsig = auralize_brs(brs,contentfile,conf)
 %                         'castanets' are possible, then these contents
 %                         will be used to auralise the BRS.
 %
-%   AURALIZE_BRS(brs,contentfile) convolves the first two channels of the given 
-%   BRS with the given contentfile and returns the resulting outsig as a 
+%   AURALIZE_BRS(brs,contentfile) convolves the first two channels of the given
+%   BRS with the given contentfile and returns the resulting outsig as a
 %   auralisation of the BRS. If instead of an explicite contentfile only a
-%   string containig 'speech', 'cello' or 'castanets' is given, the 
+%   string containig 'speech', 'cello' or 'castanets' is given, the
 %   corresponding contentfile is used. If no contentfile is given the
 %   castanets contentfile is used.
 %

@@ -119,7 +119,12 @@ for n=1:nLS
         tau = norm([X Y]-[x0(n) y0(n)])/c + delay;
     end
     % Time delay in samples for the given loudspeaker
-    dt(n) = ceil( tau*fs );
+    % NOTE: I added some offset, because we can't get negative
+    dt(n) = ceil( tau*fs ) + 300;
+    if dt(n)<0
+        error('%s: the time delay dt(n) = %i has to be positive.', ...
+            upper(mfilename),dt(n));
+    end
 
 
     % === Secondary source model: Greens function ===

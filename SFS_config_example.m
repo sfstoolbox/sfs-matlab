@@ -182,7 +182,7 @@ conf.plot.caxis = '';
 conf.plot.loudspeakers = true;
 % Use real loudspeakers symbols (otherwise crosses are used)
 conf.plot.realloudspeakers = true;
-% Size of the loudspeaker 
+% Size of the loudspeaker
 % FIXME: Gnuplot ignores the loudspeaker size at the moment
 conf.plot.lssize = conf.dx0;
 % Size of the plot

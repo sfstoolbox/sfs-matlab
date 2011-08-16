@@ -151,7 +151,7 @@ end
 % Create different sets by using a fixed head position and the different sources
 % as "simulated" head movements.
 % NOTE: this kind of data set are of course needed in order to simulate the
-% circular loudspeaker array!
+% circular loudspeaker array in BRS sets!
 irs.head_azimuth = [];
 irs.apparent_azimuth = [];
 irs.apparent_elevation = [];

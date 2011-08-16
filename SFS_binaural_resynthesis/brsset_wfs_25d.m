@@ -1,7 +1,7 @@
-function brs = brs_set_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
+function brs = brsset_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
 %BRS_SET_WFS_25D generates a BRS set for use with the SoundScapeRenderer
-%   Usage: brs = brs_set_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
-%          brs = brs_set_wfs_25d(X,Y,phi,xs,ys,L,src,irs)
+%   Usage: brs = brsset_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
+%          brs = brsset_wfs_25d(X,Y,phi,xs,ys,L,src,irs)
 %
 %   Input parameters:
 %       X,Y     - listener position (m)
@@ -19,8 +19,8 @@ function brs = brs_set_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
 %       brs     - conf.N x 2*nangles matrix containing all brs (2
 %                 channels) for every angles of the BRS set
 %
-%   BRS_SET_WFS_25D(X,Y,phi,xs,ys,L,irs,conf) prepares a BRS set for 
-%   a virtual source at [xs ys] for a linear WFS array and the given 
+%   BRSSET_WFS_25D(X,Y,phi,xs,ys,L,irs,conf) prepares a BRS set for
+%   a virtual source at [xs ys] for a linear WFS array and the given
 %   listener position.
 %   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
 %   http://www.tu-berlin.de/?id=ssr
@@ -32,7 +32,7 @@ function brs = brs_set_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
 %                                   |
 %                 x [xs ys]         |
 %           (Single Source)         |
-%                                   |        | 
+%                                   |        |
 %                                   |        O [X Y], phi
 %                                   |    (Listener)
 %                                   |

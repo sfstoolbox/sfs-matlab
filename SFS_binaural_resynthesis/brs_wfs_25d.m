@@ -184,6 +184,13 @@ for n=1:nLS
                              a(n)*win(n)*g*ir(:,2)' ...
                              zeros(1,N-dt(n)-lenir)]';
 
+    %figure;
+    %title('IR');
+    %plot([zeros(1,dt(n)) a(n)*win(n)*g*ir(:,1)' zeros(1,N-dt(n)-lenir)]');
+    %figure;
+    %title('BRIR');
+    %plot(brir(:,1));
+
 end
 warning('on','SFS:irs_intpol');
 

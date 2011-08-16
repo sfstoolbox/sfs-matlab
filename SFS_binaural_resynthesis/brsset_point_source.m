@@ -1,7 +1,7 @@
-function brs = brs_set_point_source(X,Y,phi,xs,ys,irs,conf)
-%BRS_SET_POINT_SOURCE generates a BRS set for use with the SoundScapeRenderer
-%   Usage: brs = brs_set_wfs_25d(X,Y,phi,xs,ys,irs,conf)
-%          brs = brs_set_wfs_25d(X,Y,phi,xs,ys,irs,)
+function brs = brsset_point_source(X,Y,phi,xs,ys,irs,conf)
+%BRSSET_POINT_SOURCE generates a BRS set for use with the SoundScapeRenderer
+%   Usage: brs = brsset_wfs_25d(X,Y,phi,xs,ys,irs,conf)
+%          brs = brsset_wfs_25d(X,Y,phi,xs,ys,irs,)
 %
 %   Input parameters:
 %       X,Y     - listener position (m)
@@ -15,8 +15,8 @@ function brs = brs_set_point_source(X,Y,phi,xs,ys,irs,conf)
 %       brs     - conf.N x 2*nangles matrix containing all brs (2
 %                 channels) for every angles of the BRS set
 %
-%   BRS_SET_POINT_SOURCE(X,Y,phi,xs,ys,irs,conf) prepares a BRS set for 
-%   a reference source (single point source) for the given listener 
+%   BRSSET_POINT_SOURCE(X,Y,phi,xs,ys,irs,conf) prepares a BRS set for
+%   a reference source (single point source) for the given listener
 %   position.
 %   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
 %   http://www.tu-berlin.de/?id=ssr
@@ -28,7 +28,7 @@ function brs = brs_set_point_source(X,Y,phi,xs,ys,irs,conf)
 %                                   |
 %                 x [xs ys]         |
 %           (Single Source)         |
-%                                   |        | 
+%                                   |        |
 %                                   |        O [X Y], phi
 %                                   |    (Listener)
 %                                   |

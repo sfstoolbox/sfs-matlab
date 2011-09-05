@@ -9,19 +9,17 @@
 %% ===== Variables ======================================================
 
 % IR set to use
-irset = 'Wittek_Studio_echoic';
-%irset = 'FABIAN_postprocessed_anechoic';
+%irset = '~/data/ir_databases/Wittek_KEMAR/Wittek_KEMAR_studio_src1_0deg.mat';
+irset = '~/data/ir_databases/QU_KEMAR/QU_KEMAR_anechoic_AKGK601_3m.mat';
 % Target sampling rate
 fs = 22050;
 % Target length
 nsamples = 128;
-% Target angles
-angles = (360:-1:1)/180*pi;
-
 % File to save the BRS set
-outfile = 'D:\data\measurements\BRIRs\android_128_Wittek_Studio_echoic_brs.wav';
-%outfile = 'D:\data\measurements\HRIRs\android_128_FABIAN_pinta_anechoic_brs.wav';
+outfile = sprintf('~/data/measurements/BRIRs/android_%i_KEMAR_headphone_comp_brs.wav', ...
+    nsamples);
 
+irs = read_irs(irset);
 
 %% ===== Configuration ==================================================
 
@@ -33,7 +31,7 @@ conf = SFS_config;
 conf.fs = 44100;
 % Speed of sound (m/s)
 conf.c = 343;
-
+angles = rad(conf.brsangles);
 
 % === Plotting ===
 % Plot the results etc.
@@ -44,7 +42,7 @@ conf.usegnuplot = false;
 
 %% ===== Computation ====================================================
 
-irs = create_android_irs_mat(irset,nsamples,fs,conf);
+irs = create_android_irs_mat(irs,nsamples,fs,conf);
 brs = zeros(nsamples,2*length(angles));
 
 % Generate a set of short IR

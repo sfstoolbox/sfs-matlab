@@ -40,11 +40,10 @@ function brir = brs_point_source(X,Y,phi,xs,ys,irs,conf)
 % AUTHOR: Sascha Spors, Hagen Wierstorf
 
 
-%% ===== Checking of input  parameters ==================================
+%% ===== Checking of input parameters ====================================
 nargmin = 6;
 nargmax = 7;
 error(nargchk(nargmin,nargmax,nargin));
-
 isargscalar(X,Y,phi,xs,ys);
 check_irs(irs);
 
@@ -55,7 +54,7 @@ else
 end
 
 
-%% ===== Configuration ==================================================
+%% ===== Configuration ===================================================
 
 fs = conf.fs;                 % sampling frequency
 t0 = conf.t0;                 % pre-delay for causality (focused sources)
@@ -71,7 +70,7 @@ hcomplfile = conf.hcomplfile; % Headphone compensation file left
 hcomprfile = conf.hcomprfile; % Headphone compensation file right
 
 
-%% ===== variables ======================================================
+%% ===== variables =======================================================
 
 phi = correct_azimuth(phi);
 
@@ -79,7 +78,7 @@ phi = correct_azimuth(phi);
 lenir = length(irs.left(:,1));
 
 
-%% ===== BRIR ===========================================================
+%% ===== BRIR ============================================================
 
 % Initial values
 brir = zeros(N,2);
@@ -157,10 +156,14 @@ alpha = correct_azimuth(alpha);
 % === HRIR interpolation ===
 ir = get_ir(irs,alpha);
 
+% Check if we have enough samples (conf.N)
+if N<lenir+dt
+    error('Use a larger conf.N value, you need at least %i',lenir+dt);
+end
 % Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay
 brir(:,1) = [zeros(1,dt) a*ir(:,1)' zeros(1,N-dt-lenir)]';
 brir(:,2) = [zeros(1,dt) a*ir(:,2)' zeros(1,N-dt-lenir)]';
 
 
-%% ===== Headphone compensation =========================================
+%% ===== Headphone compensation ==========================================
 brir = compensate_headphone(brir,conf);

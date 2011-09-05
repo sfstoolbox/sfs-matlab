@@ -11,7 +11,8 @@ function [D] = driving_function_mono_wfs_2d(x0,y0,phi,xs,ys,f,src,conf)
 %                         'pw' - plane wave (xs, ys are the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
-%                         'fs' - focused source
+%                         'ls' - line source
+%                         'fs' - focused line source
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -101,9 +102,27 @@ if(ls_activity)
 
     elseif strcmp('ps',src)
 
-        % ===== LINE SOURCE =============================================
+        % ===== POINT SOURCE =============================================
         %
-        % D_2D using a line source 
+        % D_2D using a point source
+        %
+        %                1  / iw      1    \  (x0-xs)nk
+        % D_2D(x0,w) =  --- | -- - ------- |  --------- e^(i w/c |x0-xs|)
+        %               2pi \  c   |x0-xs| /  |x0-xs|^2
+        %
+        % NOTE: the phase term e^(-i phase) is only there in order to be able to
+        %       simulate different time steps
+        %
+        D = 1/(2*pi) * ( (1i*omega)/c - 1/sqrt((x0-xs)^2+(y0-ys)^2) ) * ...
+            ([x0 y0]-[xs ys])*[nx0 ny0]' / ((x0-xs)^2+(y0-ys)^2) * ...
+            exp(1i*omega/c*sqrt((x0-xs)^2+(y0-ys)^2)) * exp(-1i*phase);
+        %
+
+    elseif strcmp('ls',src)
+
+        % ===== LINE SOURCE ==============================================
+        %
+        % D_2D using a line source
         %
         %                 iw (x0-xs)nk  (1)/ w         \
         % D_2D(x0,w) =  - -- --------- H1  | - |x0-xs| |

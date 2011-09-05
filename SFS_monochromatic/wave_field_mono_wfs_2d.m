@@ -22,9 +22,9 @@ function [x,y,P,ls_activity] = wave_field_mono_wfs_2d(X,Y,xs,ys,L,f,src,conf)
 %       y           - corresponding y axis
 %       P           - Simulated wave field
 %
-%   WAVE_FIELD_MONO_WFS_2D(X,Y,xs,ys,L,f,src,conf) simulates a wave 
-%   field of the given source type (src) using a WFS 2 dimensional driving 
-%   function in the temporal domain. This means by calculating the integral for 
+%   WAVE_FIELD_MONO_WFS_2D(X,Y,xs,ys,L,f,src,conf) simulates a wave
+%   field of the given source type (src) using a WFS 2 dimensional driving
+%   function in the temporal domain. This means by calculating the integral for
 %   P with a summation.
 %   To plot the result use plot_wavefield(x,y,P).
 %
@@ -33,7 +33,7 @@ function [x,y,P,ls_activity] = wave_field_mono_wfs_2d(X,Y,xs,ys,L,f,src,conf)
 %           Wave Field Synthesis (AES127)
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: plot_wavefield, driving_function_mono_wfs_2d 
+%   see also: plot_wavefield, driving_function_mono_wfs_2d
 
 % AUTHOR: Hagen Wierstorf
 

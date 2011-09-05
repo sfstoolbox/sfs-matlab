@@ -45,7 +45,21 @@ if(usehcomp)
     hcompl = wavread(hcomplfile);
     hcompr = wavread(hcomprfile);
     hcomp = [hcompl hcompr];
+    % Check if the BRIR has the right length for the filter
+    if length(brir(:,1))<length(hcompl)
+        warning(['The length of the used IR is shorter than the headphone ', ...
+            'compensation filter.']);
+    end
     % Apply filter
-    brir(:,1) = conv(hcomp(:,1),brir(1:end-length(hcomp)+1,1));
-    brir(:,2) = conv(hcomp(:,2),brir(1:end-length(hcomp)+1,2));
+    % The following is the original code from Sascha, but it will work only if
+    % the length of the IR is sufficient greater than the length of the
+    % headphone compensation filter.
+    %brir(:,1) = conv(hcomp(:,1),brir(1:end-length(hcomp)+1,1));
+    %brir(:,2) = conv(hcomp(:,2),brir(1:end-length(hcomp)+1,2));
+    % Therefore we use this one
+    tmp1 = conv(hcomp(:,1),brir(:,1));
+    tmp2 = conv(hcomp(:,2),brir(:,2));
+    len = length(brir(:,1));
+    brir(:,1) = tmp1(1:len);
+    brir(:,2) = tmp2(1:len);
 end

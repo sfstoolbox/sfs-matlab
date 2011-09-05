@@ -1,5 +1,5 @@
 function ls_activity = secondary_source_selection(x0,y0,phi,xs,ys,src)
-%SECONDARY_SOURCE_SELECTION selects which secondary sources are active 
+%SECONDARY_SOURCE_SELECTION selects which secondary sources are active
 %
 %   Usage: ls_activity = secondary_source_selection(x0,y0,phi,xs,ys,src)
 %
@@ -58,7 +58,7 @@ if strcmp('pw',src)
     nys = ys / sqrt(xs^2+ys^2);
     ls_activity = (( nxs.*nx0 + nys.*ny0 > 0 ));
 
-elseif strcmp('ps',src)
+elseif strcmp('ps',src) || strcmp('ls',src)
     % === Point source ===
     % secondary source selection (Spors 2008)
     %

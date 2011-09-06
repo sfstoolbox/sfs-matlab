@@ -25,20 +25,20 @@ function brir = brs_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
 %   listener located at [X,Y].
 %
 %   Geometry:
-%              |---      Loudspeaker array length     ---|
-%    x-axis                      [X0 Y0] (Array center)
-%       <------^--^--^--^--^--^--^--^--^--^--^--^--^--^--^-------
-%                                   |
-%                 x [xs ys]         |
-%           (Virtual Source)        |
-%                                   |        |
-%                                   |        O [X Y], phi
-%                                   |    (Listener)
-%                                   |
-%                                   |
-%                                   |
-%                                   |
-%                                   v y-axis
+%                               y-axis
+%                                 ^
+%                                 |
+%                                 |
+%                                 |    (Listener)
+%                                 |        O [X Y], phi=-pi/2
+%                                 |        |
+%                                 |
+%                  o [xs ys]      |
+%             (Virtual Source)    |
+%                                 |
+%     -------v--v--v--v--v--v--v--v--v--v--v--v--v--v--v------> x-axis
+%                              [X0 Y0] (Array center)
+%            |---      Loudspeaker array length     ---|
 %
 % see also: brsset_wfs_25d, brs_point_source, auralize_brs
 %
@@ -76,17 +76,14 @@ useplot = conf.useplot;       % Plot results?
 
 phi = correct_azimuth(phi);
 
-% Loudspeaker positions (LSdir describes the directions of the LS) for a
-% linear WFS array
+% Loudspeaker positions (phiLS describes the directions of the loudspeakers)
 [x0,y0,phiLS] = secondary_source_positions(L,conf);
 nLS = length(x0);
 
-
 % === Tapering window ===
-% See in SFS_config.m if it is applied
 win = tapwin(L,conf);
 
-% === HRIRs ===
+% === IRs ===
 lenir = length(irs.left(:,1));
 
 
@@ -106,17 +103,17 @@ for n=1:nLS
     [a(n),delay] = ...
         driving_function_imp_wfs_25d(x0(n),y0(n),phiLS(n),xs,ys,src,conf);
     % Time delay of the virtual source (at the listener position)
-    % t0 is a causality pre delay for the focused source, e.g. 0 for a non
+    % t0 is a causality pre delay for a focused source, e.g. 0 for a non
     % focused point source (see SFS_config.m)
+    % Define an offset to ensure |[X-Y]-[x0 y0]|-irs.distance+offset > 0
+    offset = 3; % in m
     % Check if we have a non focused source
     if strcmp('fs',src)
         % Focused source
-        %tau = (norm([X Y]-[x0(n) y0(n)]) - irs.distance)/c + delay - t0;
-        tau = norm([X Y]-[x0(n) y0(n)])/c + delay - t0;
+        tau = (norm([X Y]-[x0(n) y0(n)])-irs.distance+offset)/c + delay - t0;
     else
         % Virtual source behind the loudspeaker array
-        %tau = (norm([X Y]-[x0(n) y0(n)])-irs.distance)/c + delay;
-        tau = norm([X Y]-[x0(n) y0(n)])/c + delay;
+        tau = (norm([X Y]-[x0(n) y0(n)])-irs.distance+offset)/c + delay;
     end
     % Time delay in samples for the given loudspeaker
     % NOTE: I added some offset, because we can't get negative
@@ -125,41 +122,35 @@ for n=1:nLS
         error('%s: the time delay dt(n) = %i has to be positive.', ...
             upper(mfilename),dt(n));
     end
-
+    if dt(n)<0
+        error('%s: the time delay dt(n) = %i has to be positive.', ...
+            upper(mfilename),dt(n));
+    end
 
     % === Secondary source model: Greens function ===
-    g = 1/(4*pi*norm([x0(n) y0(n)]-[X Y]));
-
+    g = 1/(4*pi*norm([X Y]-[x0(n) y0(n)]));
 
     % === Secondary source angle ===
     % Calculate the angle between the given loudspeaker and the listener.
     % This is needed for the HRIR dataset.
     %
-    %          LSpos -dx(1)           [X0 Y0]
-    % x-axis <-^--^--^--^--^--^--^--^--^-|-^--^--^--^--^--^--^--^--^-
-    %             |         |            |
-    %               |       |            |
-    %               R | _---| dx(2)      |
-    %                   | a |            |  a = alpha
-    %                     | |            |  cos(alpha) = dx(2)/R
-    %                       O            |  tan(alpha) = -dx(1)/dx(2)
-    %                      [X,Y]         |
-    %                                    v
-    %                                  y-axis
+    %                             y-axis
+    %                               ^
+    %                               |
+    %                               |
+    %                               |
+    %            [X Y], phi=0       |
+    %              O------------    |  a = alpha
+    %               \ a |           |  tan(alpha) = (y0-Y)/(x0-X)
+    %                \ /            |
+    %                 \             |
+    %                  \            |
+    %   -------v--v--v--v--v--v--v--v--v--v--v--v--v--v--v------> x-axis
+    %                [x0 y0]
     %
-    % Note: the above picture explains also that the cos(alpha) is not
-    % sufficient to span the whole number of possible angles! Only 0..180 deg
-    % is covered by acos!
-    % For the whole area tan2 is needed.
-    %
-    % Vector from listener position to given loudspeaker position (cp. R)
-    % NOTE: X - x0(n) gives a negative value for loudspeaker to the
-    % left of the listener, therefor -dx1 is needed to get the right angle.
-    dx = [X Y] - [x0(n) y0(n)];
-    % Angle between listener and secondary source (-pi < alpha <= pi,
-    % without phi)
+    % Angle between listener and secondary source (-pi < alpha <= pi)
     % Note: phi is the orientation of the listener (see first graph)
-    alpha = atan2(-dx(1),dx(2)) - phi;
+    alpha = atan2(y0(n)-Y,x0(n)-X) - phi;
     %
     % Ensure -pi <= alpha < pi
     alpha = correct_azimuth(alpha);
@@ -169,11 +160,9 @@ for n=1:nLS
     % If needed interpolate the given IR set
     ir = get_ir(irs,alpha);
 
-    % Check if the length of the BRIR (conf.N) is long enough for the
-    % needed time delay dt(n)
-    if N<(dt(n)+lenir)
-        error(['%s: The length of the BRIR conf.N is not large enough ' ...
-               'to handle the needed time delay dt(n).'],upper(mfilename));
+    % Check if we have enough samples (conf.N)
+    if N<lenir+dt(n)
+        error('Use a larger conf.N value, you need at least %i',lenir+dt(n));
     end
 
     % Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay
@@ -214,4 +203,3 @@ if(useplot)
     title('amplitude');
     grid on;
 end
-

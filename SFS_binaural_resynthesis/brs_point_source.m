@@ -16,25 +16,28 @@ function brir = brs_point_source(X,Y,phi,xs,ys,irs,conf)
 %
 %   BRS_POINT_SOURCE(X,Y,phi,xs,ys,irs,conf) calculates a binaural room impulse
 %   response for a reference source (single loudspeaker) at position
-%   [xs,ys] and a listener located at [X,Y].
+%   [xs,ys] and a listener located at [X,Y] and looking into direction phi.
+%   Whereby at phi = 0 the listener is looking in the direction of the x-axis,
+%   like the angle is normally defined in Mathematics.
 %
 %   Geometry:
 %
-%    x-axis
-%       <---------------------------|----------------------------
+%                                 y-axis
+%                                   ^
 %                                   |
-%                 x [xs ys]         |
-%           (Single Source)         |
+%                                   |
+%                                   |
+%                                   |    listener
+%                                   |       O [X Y], phi=-pi/2
 %                                   |       |
-%                                   |       O [X Y], phi
-%                                   |    (Listener)
+%               source              |
+%                 o [xs ys]         |
 %                                   |
 %                                   |
-%                                   |
-%                                   |
-%                                   v y-axis
+%       ----------------------------|---------------------------> x-axis
 %
-% see also: SFS_config, brs_wfs_25d, auralize_brs, brs_set_point_source
+%
+% see also: SFS_config, brs_wfs_25d, auralize_brs, brsset_point_source
 %
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
@@ -58,13 +61,9 @@ end
 
 fs = conf.fs;                 % sampling frequency
 t0 = conf.t0;                 % pre-delay for causality (focused sources)
-
 Y0 = conf.Y0;                 % y coordinate of array
-
 c = conf.c;                   % speed of sound
-
 N = conf.N;                   % target length of BRS impulse responses
-
 usehcomp = conf.usehcomp;     % Apply headphone compensation?
 hcomplfile = conf.hcomplfile; % Headphone compensation file left
 hcomprfile = conf.hcomprfile; % Headphone compensation file right
@@ -83,72 +82,42 @@ lenir = length(irs.left(:,1));
 % Initial values
 brir = zeros(N,2);
 
-% === Relative distances ===
-%
-% x-axis <---------------------------|---------------------------
-%                                    |
-%             [xs,ys]                |
-%                x                   |
-%                 |                  |
-%                   | R              |
-%                     |              |
-%                       O            |
-%                      [X,Y]         |
-%                                    v
-%                                  y-axis
+% === Relative distances and time delay ===
 %
 % Distance between single loudspeaker [xs,ys] and listener position [X,Y]
-R = norm( [X-xs, Y-ys] );
-
-% Check if we have to apply the causality pre-delay
-if R>=irs.distance
-    t0 = 0;
-end
+R = norm([X Y]-[xs ys]);
 % Time delay of the single source (at the listener position)
-% t0 is a causality pre delay for source, that are nearer than the distance of
-% the IR set (see config.m).
-% Single source
-tau = ( (R-irs.distance)/c - t0 );
+% Define an offset to ensure R-irs.distance+offset > 0
+offset = 3; % in m
+tau = (R-irs.distance+offset)/c;
 % Time delay in samples
 dt = ceil( tau*fs );
-
 
 % === Amplitude factor ===
 % The 1/R term is for the decreasing of the sound on its way from
 % the loudspeaker to the listener (R). It accounts for the distance that is
 % already present in the IR dataset.
-a = (1/R)/(1/irs.distance);
-
+a = (1/R) / (1/irs.distance);
 
 % === Secondary source angle ===
 % Calculate the angle between the given loudspeaker and the listener.
 % This is needed for the HRIR dataset.
 %
-% x-axis <---------------------------|---------------------------
-%                       |            |
-%             [xs,ys]   |            |
-%                x   __ |            |
-%                 | -   |            |  a = alpha
-%                   | a |            |  cos(alpha) = dx(2)/R
-%                 R   | |            |  tan(alpha) = -dx(1)/dx(2)
-%                       O            |
-%                      [X,Y]         |
-%                                    v
-%                                  y-axis
+%                                 y-axis
+%                                    ^
+%                                    |
+%               [X,Y], phi = 0       |
+%                 O--------          |
+%                  \ a |             |
+%                   \ /              |  a = alpha
+%                    \               |  tan(alpha) = (ys-Y)/(xs-X)
+%                     o              |
+%                  [xs,ys]           |
+%        ----------------------------|--------------------------> x-axis
 %
-% Note: the above picture explains also that the cos(alpha) is not
-% sufficient to span the whole number of possible angles! Only 0..180°
-% is covered by acos!
-% For the whole area tan2 is needed.
-%
-% Vector from listener position to single loudspeaker position (cp. R)
-% NOTE: X - xs gives a negative value for a single loudspeaker to the left
-% of the listener, therefor -dx1 is needed to get the right angle.
-dx = [X Y] - [xs ys];
-% Angle between listener and single loudspeaker source (-pi < alpha <= pi,
-% without phi)
-% Note: phi is the orientation of the listener (see first graph)
-alpha = atan2(-dx(1),dx(2)) - phi;
+% Angle between listener and source (-pi < alpha <= pi)
+% NOTE: phi is the orientation of the listener (see first graph)
+alpha = atan2(ys-Y,xs-X) - phi;
 %
 % Ensure -pi <= alpha < pi
 alpha = correct_azimuth(alpha);

@@ -26,20 +26,20 @@ function brs = brsset_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
 %   http://www.tu-berlin.de/?id=ssr
 %
 %   Geometry:
-%              |---      Loudspeaker array length     ---|
-%    x-axis                      [X0 Y0] (Array center)
-%       <------^--^--^--^--^--^--^--^--^--^--^--^--^--^--^-------
-%                                   |
-%                 x [xs ys]         |
-%           (Single Source)         |
-%                                   |        |
-%                                   |        O [X Y], phi
-%                                   |    (Listener)
-%                                   |
-%                                   |
-%                                   |
-%                                   |
-%                                   v y-axis
+%                               y-axis
+%                                 ^
+%                                 |
+%                                 |
+%                                 |    (Listener)
+%                                 |        O [X Y], phi=-pi/2
+%                                 |        |
+%                                 |
+%                  o [xs ys]      |
+%             (Virtual Source)    |
+%                                 |
+%     -------v--v--v--v--v--v--v--v--v--v--v--v--v--v--v------> x-axis
+%                              [X0 Y0] (Array center)
+%            |---      Loudspeaker array length     ---|
 %
 %   see also: SFS_config, wfs_brs, ref_brs_set
 

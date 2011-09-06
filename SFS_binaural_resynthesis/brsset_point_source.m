@@ -22,20 +22,20 @@ function brs = brsset_point_source(X,Y,phi,xs,ys,irs,conf)
 %   http://www.tu-berlin.de/?id=ssr
 %
 %   Geometry:
-%              |---      Loudspeaker array length     ---|
-%    x-axis                      [X0 Y0] (Array center)
-%       <------^--^--^--^--^--^--^--^--^--^--^--^--^--^--^-------
-%                                   |
-%                 x [xs ys]         |
-%           (Single Source)         |
-%                                   |        |
-%                                   |        O [X Y], phi
-%                                   |    (Listener)
+%
+%                                 y-axis
+%                                   ^
 %                                   |
 %                                   |
 %                                   |
+%                                   |    listener
+%                                   |       O [X Y], phi=-pi/2
+%                                   |       |
+%               source              |
+%                 o [xs ys]         |
 %                                   |
-%                                   v y-axis
+%                                   |
+%       ----------------------------|---------------------------> x-axis
 %
 %   see also: SFS_config, wfs_brs, ref_brs_set
 

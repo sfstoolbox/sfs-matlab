@@ -36,7 +36,7 @@ MS = zeros(length(x)+1,length(y)+1);
 MS(1,1) = length(x);
 MS(1,2:end) = y;
 MS(2:end,1) = x;
-MS(2:end,2:end) = M'
+MS(2:end,2:end) = M';
 
 % Write data into the file
 fid = fopen(file,'w');

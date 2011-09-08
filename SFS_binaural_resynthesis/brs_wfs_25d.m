@@ -110,10 +110,20 @@ for n=1:nls
     % Check if we have a non focused source
     if strcmp('fs',src)
         % Focused source
-        tau = (norm([X Y]-[x0(n) y0(n)])-irs.distance+offset)/c + delay - t0;
+        if length(irs.distance)>1
+            tau = (norm([X Y]-[x0(n) y0(n)]) - ...
+                irs.distance(n)+offset)/c + delay - t0;
+        else
+            tau = (norm([X Y]-[x0(n) y0(n)]) - ...
+                irs.distance+offset)/c + delay - t0;
+        end
     else
         % Virtual source behind the loudspeaker array
-        tau = (norm([X Y]-[x0(n) y0(n)])-irs.distance+offset)/c + delay;
+        if length(irs.distance)>1
+            tau = (norm([X Y]-[x0(n) y0(n)])-irs.distance(n)+offset)/c + delay;
+        else
+            tau = (norm([X Y]-[x0(n) y0(n)])-irs.distance+offset)/c + delay;
+        end
     end
     % Time delay in samples for the given loudspeaker
     % NOTE: I added some offset, because we can't get negative

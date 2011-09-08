@@ -285,7 +285,8 @@ else
                 ls_activity = repmat(ls_activity,size(x0));
             end
             % Storing loudspeaker positions and activity
-            gp_save(lsfile,x0,[y0;phi;ls_activity]);
+            [x0,y0,phi,ls_activity] = column_vector(x0,y0,phi,ls_activity);
+            gp_save(lsfile,x0,[y0 phi ls_activity]);
         end
     end
 

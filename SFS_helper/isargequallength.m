@@ -1,13 +1,14 @@
-function isequallength(x1,varargin)
-%ISEQUALSIZE tests if the given arrays have the same size
-%   Usage: isequallength(x1,x2,...)
+function isargequallength(x1,varargin)
+%ISARGEQUALSIZE tests if the given arrays have the same size
+%   Usage: isargequallength(x1,x2,...)
 %
 %   Input options:
 %       x1,x2,...   - matrices to test
 %
-%   ISEQUALLENGTH(x1,x2,...) tests if all given arrays have the same size.
+%   ISARGEQUALLENGTH(x1,x2,...) tests if all given arigs have the same size.
+%   Reports an error otherwise.
 %
-%   see also: isequalsize
+%   see also: isargequalsize
 
 % AUTHOR: Hagen Wierstorf
 

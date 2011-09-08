@@ -55,22 +55,10 @@ conf.Y0 = 0;
 % Array geometry
 % Possible values are: 'linear', 'box', 'circle', 'U', 'custom'
 conf.array = 'linear';
-% Vector containing custom loudspeaker positions
+% Vector containing custom loudspeaker positions.
 conf.x0 = [];
 conf.y0 = [];
 conf.phi = [];
-% FIXME:
-% * this entry is deprecated.
-% * should i also fix the angle handling in SFS in general? For HRIR etc. 0
-% means in the same direction as the y-axis. For the brs sets it means in the
-% opposite direction. In addition the mathematical definition of 0° means in the
-% direction of the x-axis.
-%% Listener direction offset (defines the 0° direction of the listener,
-%% default: 0° == negative y-direction)
-%% This value is the reference direction for every angle value given to the
-%% SFS functions (so if you change this value to 90, your other angles have
-%% to change -90).
-%conf.listoffset = 0;
 %
 % The amplitude will be correct at the point [xref yref] for 2.5D
 % synthesis.

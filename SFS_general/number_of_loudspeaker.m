@@ -1,7 +1,7 @@
-function [nLS,L] = number_of_loudspeaker(L,conf)
+function [nls,L] = number_of_loudspeaker(L,conf)
 %NUMBER_OF_LOUDSPEAKER calculate the number of loudspeaker for a linear WFS array
-%   Usage: [nLS,L] = number_of_loudspeaker(L,conf)
-%          [nLS,L] = number_of_loudspeaker(L)
+%   Usage: [nls,L] = number_of_loudspeaker(L,conf)
+%          [nls,L] = number_of_loudspeaker(L)
 %
 %   Input parameters:
 %       L       - length of the loudspeaker array (m)
@@ -9,7 +9,7 @@ function [nLS,L] = number_of_loudspeaker(L,conf)
 %                 SFS_config for default values)
 %
 %   Output parameters:
-%       nLS     - number of needed loudspeaker
+%       nls     - number of needed loudspeaker
 %       L       - real length of the loudspeaker array (corresponding to
 %                 conf.dx0)
 %
@@ -42,32 +42,42 @@ end
 
 % Array type
 array = conf.array;
-
 % Loudspeaker distance
 dx0 = conf.dx0;
+% Predefined loudspeaker positions
+x0 = conf.x0;
+y0 = conf.y0;
+phi = conf.phi;
+
 
 %% ===== Calculation ====================================================
 %
-if strcmp('linear',array)
+% Check if we have given loudspeaker positions
+if length(x0>0)
+    isargvector(conf.x0,conf.y0,conf.phi);
+    isargequallength(conf.x0,conf.y0,conf.phi);
+    nls = length(x0);
+    L = L;
+elseif strcmp('linear',array)
     % Number of loudspeaker
-    nLS = fix(L/dx0)+1;
+    nls = fix(L/dx0)+1;
     % Corresponding size of loudspeaker array
-    L = (nLS-1)*dx0;
+    L = (nls-1)*dx0;
 elseif strcmp('circle',array)
     % L is the diameter!
     % Perimeter of the circle
     P = pi*L;
     % Number of loudspeakers
-    %nLS = fix(P/dx0)+1;
-    nLS = round(P/dx0);
+    %nls = fix(P/dx0)+1;
+    nls = round(P/dx0);
     % Corresponding size of loudspeaker array
-    L = (nLS*dx0)/pi;
+    L = (nls*dx0)/pi;
 elseif strcmp('box',array)
     % FIXME: check what will happened with the loudspeakers on the edges!
     % Number of loudspeakers
-    nLS = 4*(fix(L/dx0)+1);
+    nls = 4*(fix(L/dx0)+1);
     % Corresponding size of loudspeaker array
-    L = (nLS/4-1)*dx0;
+    L = (nls/4-1)*dx0;
 else
     error('%s: %s is a unknown array type.',upper(mfilename),array);
 end

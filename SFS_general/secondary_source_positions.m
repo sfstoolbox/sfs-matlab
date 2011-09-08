@@ -1,5 +1,5 @@
 function [x0,y0,phi] = secondary_source_positions(L,conf)
-%SECONDARY_SOURCE_POSITIONS Generates the loudspeaker positions and directions 
+%SECONDARY_SOURCE_POSITIONS Generates the loudspeaker positions and directions
 %for the given loudspeaker array
 %   Usage: [x0,y0,phi] = secondary_source_positions(L,conf)
 %          [x0,y0,phi] = secondary_source_positions(L)
@@ -17,17 +17,18 @@ function [x0,y0,phi] = secondary_source_positions(L,conf)
 %   positions [x0,y0] and their directions phi for the given (conf.array)
 %   loudspeaker array
 %
-%   Geometry (for the linear array):     
-%    x-axis                   
-%       <--------------------------------------------------------
+%   Geometry (for the linear array):
+%
+%                                y-axis
+%                                   ^
 %                                   |
-%          LS (Loudspeaker)         | 
+%                                   |
+%                                   |
+%          v--v--v--v--v--v--v--v--v|-v--v
 %          |           [X0 Y0]      |
-%          ^--^--^--^--^--^--^--^--^|-^--^                    
-%                   (Array Center)  |
+%    (Loudspeaker)  (Array center)  |
 %                                   |
-%                                   |
-%                                   v y-axis
+%       --------------------------------------------------------> x-axis
 %
 % see also: secondary_source_selection, tapwin
 %
@@ -39,7 +40,7 @@ function [x0,y0,phi] = secondary_source_positions(L,conf)
 % arrays. Otherwise the tapering window function will not work properly.
 
 
-%% ===== Checking of input  parameters ==================================
+%% ===== Checking of input  parameters ===================================
 nargmin = 1;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
@@ -51,7 +52,7 @@ else
 end
 
 
-%% ===== Configuration ==================================================
+%% ===== Configuration ===================================================
 
 % array type
 array = conf.array;
@@ -60,30 +61,43 @@ X0 = conf.X0;
 Y0 = conf.Y0;
 % Loudspeaker distance
 dx0 = conf.dx0;
+% Given loudspeaker positions
+x0 = conf.x0;
+y0 = conf.y0;
+phi = conf.phi;
 
-%% ===== Calculation ====================================================
+
+%% ===== Calculation =====================================================
+
+% Check if we have already predefined loudspeaker positions
+if length(x0)>0
+    isargvector(conf.x0,conf.y0,conf.phi);
+    isargequallength(conf.x0,conf.y0,conf.phi);
+    % If we have predefined loudspeaker positions leave this function
+    return
+end
 
 % Get the number of used loudspeaker
-[nLS, L] = number_of_loudspeaker(L,conf);
+[nls, L] = number_of_loudspeaker(L,conf);
 
 if strcmp('linear',array)
     % === Linear loudspeaker array ===
     % Positions of the loudspeakers
-    x0 = X0 + linspace(-L/2,L/2,nLS);
-    y0 = Y0 * ones(1,nLS);
+    x0 = X0 + linspace(-L/2,L/2,nls);
+    y0 = Y0 * ones(1,nls);
     % === Add jitter to the loudspeaker positions ===
     %x0(1) = X0-size/2;
-    %x0(nLS) = X0+size/2;
-    %for ii=2:nLS-1
-    %    jitter = size/(4*nLS) * randn;
-    %    x0(ii) = X0-size/2+(ii-1)*size/nLS + jitter;
+    %x0(nls) = X0+size/2;
+    %for ii=2:nls-1
+    %    jitter = size/(4*nls) * randn;
+    %    x0(ii) = X0-size/2+(ii-1)*size/nls + jitter;
     %end
     % Direction (orientation) of the loudspeaker
-    phi = zeros(1,nLS);
+    phi = zeros(1,nls);
 elseif strcmp('circle',array)
     % === Circular loudspeaker array ===
     % Positions of the loudspeaker
-    phi = linspace(0,(2-2/nLS)*pi,nLS);
+    phi = linspace(0,(2-2/nls)*pi,nls);
     x0 = X0 + L/2*sin(-phi);
     y0 = Y0 + L/2*cos(-phi);
     % Direction of the loudspeakers
@@ -91,18 +105,18 @@ elseif strcmp('circle',array)
 elseif strcmp('box',array)
     % === Boxed loudspeaker array ===
     % Position and direction of the loudspeakers
-    x0(1:nLS/4) = X0 + linspace(-L/2,L/2,nLS/4);
-    y0(1:nLS/4) = Y0 + ones(1,nLS/4) * L/2 + dx0;
-    phi(1:nLS/4) = pi*ones(1,nLS/4);
-    x0(nLS/4+1:2*nLS/4) = X0 + ones(1,nLS/4) * L/2 + dx0;
-    y0(nLS/4+1:2*nLS/4) = Y0 + linspace(L/2,-L/2,nLS/4);
-    phi(nLS/4+1:2*nLS/4) = pi/2*ones(1,nLS/4);
-    x0(2*nLS/4+1:3*nLS/4) = X0 + linspace(L/2,-L/2,nLS/4);
-    y0(2*nLS/4+1:3*nLS/4) = Y0 - ones(1,nLS/4) * L/2 - dx0;
-    phi(2*nLS/4+1:3*nLS/4) = 0*ones(1,nLS/4);
-    x0(3*nLS/4+1:nLS) = X0 - ones(1,nLS/4) * L/2 - dx0;
-    y0(3*nLS/4+1:nLS) = Y0 + linspace(-L/2,L/2,nLS/4);
-    phi(3*nLS/4+1:nLS) = -pi/2*ones(1,nLS/4);
+    x0(1:nls/4) = X0 + linspace(-L/2,L/2,nls/4);
+    y0(1:nls/4) = Y0 + ones(1,nls/4) * L/2 + dx0;
+    phi(1:nls/4) = pi*ones(1,nls/4);
+    x0(nls/4+1:2*nls/4) = X0 + ones(1,nls/4) * L/2 + dx0;
+    y0(nls/4+1:2*nls/4) = Y0 + linspace(L/2,-L/2,nls/4);
+    phi(nls/4+1:2*nls/4) = pi/2*ones(1,nls/4);
+    x0(2*nls/4+1:3*nls/4) = X0 + linspace(L/2,-L/2,nls/4);
+    y0(2*nls/4+1:3*nls/4) = Y0 - ones(1,nls/4) * L/2 - dx0;
+    phi(2*nls/4+1:3*nls/4) = 0*ones(1,nls/4);
+    x0(3*nls/4+1:nls) = X0 - ones(1,nls/4) * L/2 - dx0;
+    y0(3*nls/4+1:nls) = Y0 + linspace(-L/2,L/2,nls/4);
+    phi(3*nls/4+1:nls) = -pi/2*ones(1,nls/4);
 elseif strcmp('U',array)
     to_be_implemented(mfilename);
 elseif strcmp('custom',array)

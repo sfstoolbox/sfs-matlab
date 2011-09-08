@@ -32,17 +32,23 @@ irs.left = irs.left(:,idx);
 irs.right = irs.right(:,idx);
 irs.apparent_azimuth = irs.apparent_azimuth(idx);
 irs.apparent_elevation = irs.apparent_elevation(idx);
-if size(irs.head_azimuth)~=[1 1]
+if ~isequal(size(irs.head_azimuth),[1 1])
     irs.head_azimuth = irs.head_azimuth(idx);
 end
-if size(irs.head_elevation)~=[1 1]
+if ~isequal(size(irs.head_elevation),[1 1])
     irs.head_elevation = irs.head_elevation(idx);
 end
-if size(irs.torso_azimuth)~=[1 1]
+if ~isequal(size(irs.torso_azimuth),[1 1])
     irs.torso_azimuth = irs.torso_azimuth(idx);
 end
-if size(irs.torso_elevation)~=[1 1]
+if ~isequal(size(irs.torso_elevation),[1 1])
     irs.torso_elevation = irs.torso_elevation(idx);
+end
+if ~isequal(size(irs.distance),[1 1])
+    irs.distance = irs.distance(idx);
+end
+if ~isequal(size(irs.source_position),[3 1])
+    irs.source_position = irs.source_position(:,idx);
 end
 
 %FIXME: try if it will work to reorder the whole irs afterwards regarding the

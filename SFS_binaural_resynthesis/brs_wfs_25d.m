@@ -78,7 +78,7 @@ phi = correct_azimuth(phi);
 
 % Loudspeaker positions (phiLS describes the directions of the loudspeakers)
 [x0,y0,phiLS] = secondary_source_positions(L,conf);
-nLS = length(x0);
+nls = length(x0);
 
 % === Tapering window ===
 win = tapwin(L,conf);
@@ -91,12 +91,12 @@ lenir = length(irs.left(:,1));
 
 % Initial values
 brir = zeros(N,2);
-dt = zeros(1,nLS);
-a = zeros(1,nLS);
+dt = zeros(1,nls);
+a = zeros(1,nls);
 
 % Create a BRIR for every single loudspeaker
 warning('off','SFS:irs_intpol');
-for n=1:nLS
+for n=1:nls
 
     % ====================================================================
     % Driving function to get weighting and delaying

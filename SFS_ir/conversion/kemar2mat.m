@@ -47,9 +47,9 @@ irs.loudspeaker = 'Genelec 8030A';
 irs.room = 'Anechoic chamber ITA TU Berlin';
 irs.head_elevation = NaN;
 irs.torso_elevation = NaN;
-irs.head_position = [0 0 0];
-irs.head_reference = [0 1 0];
-irs.source_reference = [0 0 0];
+irs.head_position = [0 0 0]';
+irs.head_reference = [0 1 0]';
+irs.source_reference = [0 0 0]';
 
 if strcmp(irsset,'RAR_05m')
     % irs struct entries
@@ -57,7 +57,7 @@ if strcmp(irsset,'RAR_05m')
         ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
          'angle: 0°; azimuth resolution: 1°. Rotation: torso. Ears: large.'];
     irs.head = 'KEMAR, large ears';
-    irs.source_position = [0 0.5 0];
+    irs.source_position = [0 0.5 0]';
     irs.head_azimuth = NaN;
     irfilebase = 'KEMAR_1deg_0.5m_large_ears';
 elseif strcmp(irsset,'RAR_1m')
@@ -148,5 +148,5 @@ if ~exist(outdir,'dir')
 end
 
 % Write IR mat-file
-outfile = sprintf('%s/KEMAR_%s.mat',outdir,irsset);
+outfile = sprintf('%s/QU_KEMAR_%s.mat',outdir,irsset);
 save('-v7',outfile,'irs');

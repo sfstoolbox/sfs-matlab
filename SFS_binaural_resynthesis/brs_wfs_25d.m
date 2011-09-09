@@ -98,44 +98,6 @@ a = zeros(1,nls);
 warning('off','SFS:irs_intpol');
 for n=1:nls
 
-    % ====================================================================
-    % Driving function to get weighting and delaying
-    [a(n),delay] = ...
-        driving_function_imp_wfs_25d(x0(n),y0(n),phiLS(n),xs,ys,src,conf);
-    % Time delay of the virtual source (at the listener position)
-    % t0 is a causality pre delay for a focused source, e.g. 0 for a non
-    % focused point source (see SFS_config.m)
-    % Define an offset to ensure |[X-Y]-[x0 y0]|-irs.distance+offset > 0
-    offset = 3; % in m
-    % Check if we have a non focused source
-    if strcmp('fs',src)
-        % Focused source
-        if length(irs.distance)>1
-            tau = (norm([X Y]-[x0(n) y0(n)]) - ...
-                irs.distance(n)+offset)/c + delay - t0;
-        else
-            tau = (norm([X Y]-[x0(n) y0(n)]) - ...
-                irs.distance+offset)/c + delay - t0;
-        end
-    else
-        % Virtual source behind the loudspeaker array
-        if length(irs.distance)>1
-            tau = (norm([X Y]-[x0(n) y0(n)])-irs.distance(n)+offset)/c + delay;
-        else
-            tau = (norm([X Y]-[x0(n) y0(n)])-irs.distance+offset)/c + delay;
-        end
-    end
-    % Time delay in samples for the given loudspeaker
-    % NOTE: I added some offset, because we can't get negative
-    dt(n) = ceil( tau*fs ) + 300;
-    if dt(n)<0
-        error('%s: the time delay dt(n) = %i has to be positive.', ...
-            upper(mfilename),dt(n));
-    end
-    if dt(n)<0
-        error('%s: the time delay dt(n) = %i has to be positive.', ...
-            upper(mfilename),dt(n));
-    end
 
     % === Secondary source model: Greens function ===
     g = 1/(4*pi*norm([X Y]-[x0(n) y0(n)]));
@@ -169,6 +131,32 @@ for n=1:nls
     % Get the desired IR.
     % If needed interpolate the given IR set
     ir = get_ir(irs,alpha);
+    ir_distance = get_ir_distance(irs,alpha);
+
+    % ====================================================================
+    % Driving function to get weighting and delaying
+    [a(n),delay] = ...
+        driving_function_imp_wfs_25d(x0(n),y0(n),phiLS(n),xs,ys,src,conf);
+    % Time delay of the virtual source (at the listener position)
+    % t0 is a causality pre delay for a focused source, e.g. 0 for a non
+    % focused point source (see SFS_config.m)
+    % Define an offset to ensure |[X-Y]-[x0 y0]|-irs.distance+offset > 0
+    offset = 3; % in m
+    % Check if we have a non focused source
+    if strcmp('fs',src)
+        % Focused source
+        tau = (norm([X Y]-[x0(n) y0(n)]) - ir_distance+offset)/c + delay - t0;
+    else
+        % Virtual source behind the loudspeaker array
+        tau = (norm([X Y]-[x0(n) y0(n)]) - ir_distance+offset)/c + delay;
+    end
+    % Time delay in samples for the given loudspeaker
+    % NOTE: I added some offset, because we can't get negative
+    dt(n) = ceil( tau*fs ) + 300;
+    if dt(n)<0
+        error('%s: the time delay dt(n) = %i has to be positive.', ...
+            upper(mfilename),dt(n));
+    end
 
     % Check if we have enough samples (conf.N)
     if N<lenir+dt(n)

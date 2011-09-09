@@ -74,14 +74,14 @@ elseif size(irs.left,2)~=length(irs.apparent_elevation)
 end
 
 % Check for the right sizes of the entries for the positions
-if ~isnumeric(irs.head_position) | size(irs.head_position)~=[1 3]
-    error('%s: head_position needs to be a 1x3 vector.',upper(mfilename));
-elseif ~isnumeric(irs.head_reference) | size(irs.head_reference)~=[1 3]
-     error('%s: head_reference needs to be a 1x3 vector.',upper(mfilename));
-%elseif ~isnumeric(irs.source_position) | size(irs.source_position)~=[1 3]
-%     error('%s: source_position needs to be a 1x3 vector.',upper(mfilename));
-%elseif ~isnumeric(irs.source_reference) | size(irs.source_reference)~=[1 3]
-%    error('%s: source_reference needs to be a 1x3 vector.',upper(mfilename));
+if ~isnumeric(irs.head_position) | size(irs.head_position)~=[3 1]
+    error('%s: head_position needs to be a 3x1 vector.',upper(mfilename));
+elseif ~isnumeric(irs.head_reference) | size(irs.head_reference)~=[3 1]
+     error('%s: head_reference needs to be a 3x1 vector.',upper(mfilename));
+elseif ~isnumeric(irs.source_position) | size(irs.source_position,1)~=3
+     error('%s: source_position needs to be a 3xn vector.',upper(mfilename));
+elseif ~isnumeric(irs.source_reference) | size(irs.source_reference,1)~=3
+    error('%s: source_reference needs to be a 3xn vector.',upper(mfilename));
 end
 
 % Check sampling rate
@@ -90,7 +90,7 @@ if ~isnumeric(irs.fs) || irs.fs<=0
 end
 
 % Check distance
-if isequal(size(irs.distance),[1 1])
+if isscalar(irs.distance)
     if ~isnumeric(irs.distance) || ...
         irs.distance-norm(irs.head_position-irs.source_position)>0.0001
         error('%s: distance has to be norm(head_position-source_position).',...
@@ -100,8 +100,7 @@ else
     for ii = 1:length(irs.distance)
         if ~isnumeric(irs.distance(ii)) || ...
                 irs.distance(ii) - ...
-                norm(column_vector(irs.head_position) - ...
-                irs.source_position(:,ii))>0.0001
+                norm(irs.head_position - irs.source_position(:,ii))>0.0001
             error(...
                 '%s: distance has to be norm(head_position-source_position).',...
                 upper(mfilename));

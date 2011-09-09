@@ -32,11 +32,11 @@ irs.source = 'dummy';           % Used loudsoeaker
 irs.distance = 1;               % Distance between head and source. NOTE: this
                                 %>has to be norm(head_position-source_position)
 irs.fs = 44100;                 % Sampling rate
-irs.head_position = [0 0 0];    % Position of head
-irs.head_reference = [0 1 0];   % Position to which the head is pointing.
+irs.head_position = [0 0 0]';   % Position of head
+irs.head_reference = [0 1 0]';  % Position to which the head is pointing.
                                 %>head_direction = head_reference-head_position
-irs.source_position = [0 1 0];  % Position of loudspeaker source
-irs.source_reference = [0 0 0]; % Position to which the source is pointing.
+irs.source_position = [0 1 0]'; % Position of loudspeaker source
+irs.source_reference = [0 0 0]';% Position to which the source is pointing.
                                 %>source_direction =
                                 %>source_reference-source_position
 irs.head_azimuth = NaN;         % Head azimuth (NaN if no rotation took place)

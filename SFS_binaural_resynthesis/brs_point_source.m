@@ -82,23 +82,6 @@ lenir = length(irs.left(:,1));
 % Initial values
 brir = zeros(N,2);
 
-% === Relative distances and time delay ===
-%
-% Distance between single loudspeaker [xs,ys] and listener position [X,Y]
-R = norm([X Y]-[xs ys]);
-% Time delay of the single source (at the listener position)
-% Define an offset to ensure R-irs.distance+offset > 0
-offset = 3; % in m
-tau = (R-irs.distance+offset)/c;
-% Time delay in samples
-dt = ceil( tau*fs );
-
-% === Amplitude factor ===
-% The 1/R term is for the decreasing of the sound on its way from
-% the loudspeaker to the listener (R). It accounts for the distance that is
-% already present in the IR dataset.
-a = (1/R) / (1/irs.distance);
-
 % === Secondary source angle ===
 % Calculate the angle between the given loudspeaker and the listener.
 % This is needed for the HRIR dataset.
@@ -124,6 +107,23 @@ alpha = correct_azimuth(alpha);
 
 % === HRIR interpolation ===
 ir = get_ir(irs,alpha);
+ir_distance = get_ir_distance(irs,alpha);
+
+% === Relative distances and time delay ===
+% Distance between single loudspeaker [xs,ys] and listener position [X,Y]
+R = norm([X Y]-[xs ys]);
+% Time delay of the single source (at the listener position)
+% Define an offset to ensure R-irs.distance+offset > 0
+offset = 3; % in m
+tau = (R-ir_distance+offset)/c;
+% Time delay in samples
+dt = ceil( tau*fs );
+
+% === Amplitude factor ===
+% The 1/R term is for the decreasing of the sound on its way from
+% the loudspeaker to the listener (R). It accounts for the distance that is
+% already present in the IR dataset.
+a = (1/R) / (1/ir_distance);
 
 % Check if we have enough samples (conf.N)
 if N<lenir+dt

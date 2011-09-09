@@ -47,7 +47,8 @@ end
 if ~isequal(size(irs.distance),[1 1])
     irs.distance = irs.distance(idx);
 end
-if ~isequal(size(irs.source_position),[3 1])
+if ~(isequal(size(irs.source_position),[3 1]) || ...
+        isequal(size(irs.source_position),[1 3]))
     irs.source_position = irs.source_position(:,idx);
 end
 

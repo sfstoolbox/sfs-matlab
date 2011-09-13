@@ -16,6 +16,12 @@ function kemar2mat(irsset,irspath)
 %                                         ears. Second reference measurement.
 %                   'RAR3m_head_rot'  - HRIR of RAR with 3m distance and only
 %                                         head rotation of KEMAR
+%					'Auditorium3_1_src1' - HRIR of Auditorium3 in TEL20 and Audio Source 1 and session 1
+%					'Auditorium3_1_src2' - HRIR of Auditorium3 in TEL20 and Audio Source 2 and session 1
+%					'Auditorium3_1_src3' - HRIR of Auditorium3 in TEL20 and Audio Source 3 and session 1
+%					'Auditorium3_2_src1' - HRIR of Auditorium3 in TEL20 and Audio Source 1 and session 2
+%					'Auditorium3_2_src2' - HRIR of Auditorium3 in TEL20 and Audio Source 2 and session 2
+%					'Auditorium3_2_src3' - HRIR of Auditorium3 in TEL20 and Audio Source 3 and session 2
 %                 NOTE: you still have to give the matching path to the given
 %                 data set!
 %       irspath - path to the directory containing the IR data
@@ -41,74 +47,109 @@ outdir = 'ir_databases';
 
 % Initialize a new IR struct
 irs = new_irs();
+
 % Add common struct entries
 irs.fs = 44100;
 irs.loudspeaker = 'Genelec 8030A';
-irs.room = 'Anechoic chamber ITA TU Berlin';
 irs.head_elevation = NaN;
 irs.torso_elevation = NaN;
 irs.head_position = [0 0 0]';
 irs.head_reference = [0 1 0]';
 irs.source_reference = [0 0 0]';
 
+
+
+
+
 if strcmp(irsset,'RAR_05m')
     % irs struct entries
     irs.description = ...
         ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
-         'angle: 0°; azimuth resolution: 1°. Rotation: torso. Ears: large.'];
-    irs.head = 'KEMAR, large ears';
+         'angle: 0°; azimuth resolution: 1°. Rotation: torso.'];
+    irs.head = 'KEMAR';
+	irs.ears = large;
+	irs.room = 'Anechoic chamber ITA TU Berlin';
     irs.source_position = [0 0.5 0]';
     irs.head_azimuth = NaN;
+
     irfilebase = 'KEMAR_1deg_0.5m_large_ears';
+
 elseif strcmp(irsset,'RAR_1m')
     irs.description = ...
         ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
-         'angle: 0°; azimuth resolution: 1°. Rotation: torso. Ears. large.'];
-    irs.head = 'KEMAR, large ears';
+         'angle: 0°; azimuth resolution: 1°. Rotation: torso.'];
+    irs.head = 'KEMAR';
+	irs.ears = large;	
     irs.source_position = [0 1 0];
     irs.head_azimuth = NaN;
+	irs.room = 'Anechoic chamber ITA TU Berlin';
     irfilebase = 'KEMAR_1deg_1m_large_ear';
-elseif strcmp(irsset,'RAR_2m')
+
+	elseif strcmp(irsset,'RAR_2m')
     irs.description = ...
         ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
-         'angle: 0°; azimuth resolution: 1°. Rotation: torso. Ears. large.'];
-    irs.head = 'KEMAR, large ears';
+         'angle: 0°; azimuth resolution: 1°. Rotation: torso.'];
+    irs.head = 'KEMAR';
+	irs.ears = large;
     irs.source_position = [0 2 0];
     irs.head_azimuth = NaN;
+	irs.room = 'Anechoic chamber ITA TU Berlin';
     irfilebase = 'KEMAR_1deg_2m_large_ears_';
-elseif strcmp(irsset,'RAR_3m')
+
+	elseif strcmp(irsset,'RAR_3m')
     irs.description = ...
         ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
-         'angle: 0°; azimuth resolution: 1°. Rotation: torso. Ears: large.'];
-    irs.head = 'KEMAR, large ears';
+         'angle: 0°; azimuth resolution: 1°. Rotation: torso.'];
+    irs.head = 'KEMAR';
+	irs.ears = large;
     irs.source_position = [0 3 0];
     irs.head_azimuth = NaN;
+	irs.room = 'Anechoic chamber ITA TU Berlin';
     irfilebase = 'KEMAR_1deg_3m_large_ears_';
-elseif strcmp(irsset,'RAR_3m_small')
+
+	elseif strcmp(irsset,'RAR_3m_small')
     irs.description = ...
         ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
-         'angle: 0°; azimuth resolution: 1°. Rotation: torso. Ears: small.'];
-    irs.head = 'KEMAR, small ears';
+         'angle: 0°; azimuth resolution: 1°. Rotation: torso.'];
+    irs.head = 'KEMAR';
+	irs.ears = small;
     irs.source_position = [0 3 0];
     irs.head_azimuth = NaN;
+	irs.ears = small;
+	irs.room = 'Anechoic chamber ITA TU Berlin';
     irfilebase = 'KEMAR_1deg_3m_';
-elseif strcmp(irsset,'RAR_3m_small2')
+
+	elseif strcmp(irsset,'RAR_3m_small2')
     irs.description = ...
         ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
-         'angle: 0°; azimuth resolution: 1°. Rotation: torso. Ears: small. ', ...
+         'angle: 0°; azimuth resolution: 1°. Rotation: torso. ', ...
          'Reference measurement.'];
-    irs.head = 'KEMAR, small ears';
+    irs.head = 'KEMAR';
+	irs.ears = small;
     irs.source_position = [0 3 0];
     irs.head_azimuth = NaN;
+	irs.room = 'Anechoic chamber ITA TU Berlin';
     irfilebase = 'KEMAR_1deg_3m_control_';
-elseif strcmp(irsset,'RAR_3m_head_rot')
+
+	elseif strcmp(irsset,'RAR_3m_head_rot')
     irs.description = ...
         ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
-         'angle: 0°; azimuth resolution: 1°. Rotation: head. Ears: large'];
-    irs.head = 'KEMAR, large ears';
+         'angle: 0°; azimuth resolution: 1°. Rotation: head.'];
+    irs.head = 'KEMAR';
+	irs.ears = large;
     irs.source_position = [0 3 0];
     irs.torso_azimuth = NaN;
+	irs.room = 'Anechoic chamber ITA TU Berlin';
     irfilebase = 'KEMAR_1deg_3m_large_ears_head_rotation_';
+	
+	elseif strcmp(irsset,'Auditorium3_1_src1')
+    irs.description = ...
+        ['KEMAR measurement in Auditorium3 in TEL-building of the TU Berlin. Used elevation ', ...
+         'angle: 0°; azimuth resolution: 1°. Rotation: head. ,room height = 3 m'];	
+    irs.head = 'KEMAR';
+	irs.ears = large;
+	irs.room = 'Auditorium3 in TEL-building (Telefunken-Hochhaus) Berlin';
+
 else
     error('%s: the given irsset is not available.',upper(mfilename));
 end
@@ -149,4 +190,4 @@ end
 
 % Write IR mat-file
 outfile = sprintf('%s/QU_KEMAR_%s.mat',outdir,irsset);
-save('-v7',outfile,'irs');
+save('-v6',outfile,'irs'); 									%v6 is used for the Windows-Version of Octave, better use v7

@@ -33,7 +33,7 @@ warning('on','SFS:irs_fields_order');
 %% ===== Computation =====================================================
 % Get the reference implementation of the irs format and reorder the fields of
 % the given irs according to the reference implementation.
-ref_irs = new_irs();
+[ref_irs,opt_fields] = new_irs();
 % Get fields
 ref_fields = fieldnames(ref_irs);
 % Get the fields for the given irs
@@ -42,7 +42,15 @@ fields = fieldnames(irs);
 if length(ref_fields)==length(fields)
     irs = orderfields(irs,ref_fields);
 else
-   % Get the indices of the positions of the ref_fields in the given irs
+    % Remove unneeded optional fields from the reference
+    idx = [];
+    for ii = 1:length(ref_fields)
+        if ~isfield(irs,ref_fields{ii}) && strcmp(opt_fields,ref_fields{ii})
+            idx = [idx ii];
+        end
+    end
+    ref_fields(idx) = [];
+    % Get the indices of the positions of the ref_fields in the given irs
     idx = [];
     for ii = 1:length(ref_fields)
         for jj = 1:length(fields)

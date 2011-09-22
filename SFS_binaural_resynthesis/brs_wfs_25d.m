@@ -79,9 +79,9 @@ phi = correct_azimuth(phi);
 % Loudspeaker positions (phiLS describes the directions of the loudspeakers)
 [x0,y0,phiLS] = secondary_source_positions(L,conf);
 nls = length(x0);
-
-% === Tapering window ===
-win = tapwin(L,conf);
+ls_activity = secondary_source_selection(x0,y0,phiLS,xs,ys,src);
+% generate tapering window
+win = tapwin(L,ls_activity,conf);
 
 % === IRs ===
 lenir = length(irs.left(:,1));

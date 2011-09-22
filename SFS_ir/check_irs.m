@@ -24,19 +24,28 @@ isargstruct(irs);
 %% ===== Format checking =================================================
 
 % Check for the right field entries in the given irs struct
-% Get a reference implementation of a irs
-ref_irs = new_irs();
+% Get a reference implementation of a irs and optional fields of this reference
+% irs
+[ref_irs,opt_fields] = new_irs();
 % Get fields of reference implementation
 ref_fields = fieldnames(ref_irs);
 % Get the fields for the given irs
 fields = fieldnames(irs);
-% Check if all needed fields are present
+idx = [];
 for ii = 1:length(ref_fields)
-    if ~isfield(irs,ref_fields{ii})
+    % Check if all needed fields are present
+    if ~isfield(irs,ref_fields{ii}) && ~strcmp(opt_fields,ref_fields{ii})
         error('%s: The given irs misses the field: %s!',...
             upper(mfilename),ref_fields{ii});
     end
+    % Get unneeded optional fields
+    if ~isfield(irs,ref_fields{ii}) && strcmp(opt_fields,ref_fields{ii})
+        idx = [idx ii];
+    end
 end
+% Remove unneeded optional fields
+ref_fields(idx) = [];
+
 % Check if the order of the fields is standard conform to new_irs()
 for ii = 1:length(ref_fields)
     if ~strcmp(fields{ii},ref_fields{ii})
@@ -82,6 +91,10 @@ elseif ~isnumeric(irs.source_position) | size(irs.source_position,1)~=3
      error('%s: source_position needs to be a 3xn vector.',upper(mfilename));
 elseif ~isnumeric(irs.source_reference) | size(irs.source_reference,1)~=3
     error('%s: source_reference needs to be a 3xn vector.',upper(mfilename));
+elseif isfield(irs,'room_corners')
+    if size(irs.room_corners,1)~=3
+        error('%s: room_corners needs to be a 3xn vector.',upper(mfilename));
+    end
 end
 
 % Check sampling rate

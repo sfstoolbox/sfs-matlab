@@ -1,5 +1,5 @@
 function win = tapwin(L,ls_activity,conf)
-%TAPWIN generate a tapering window for a linear WFS array
+%TAPWIN generate a tapering window for a loudspeaker array
 %   Usage: win = tapwin(L,ls_activity,conf)
 %          win = tapwin(L,conf)
 %          win = tapwin(L)
@@ -16,9 +16,10 @@ function win = tapwin(L,ls_activity,conf)
 %
 %   TAPWIN(L,ls_activity,conf) generates a tapering window for a linear WFS
 %   loudspeaker array with a length of L. The window is created from a squared
-%   Hann window.
+%   Hann window. For circular arrays it is necessary to apply the ls_activity
+%   option. 
 %
-%   see also: wfs_brs, secondary_source_selection, hann
+%   see also: brs_wfs_25d, secondary_source_selection, hann
 
 % AUTHOR: Hagen Wierstorf, Sascha Spors
 
@@ -29,6 +30,11 @@ nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin));
 isargpositivescalar(L);
 if ~exist('ls_activity','var')
+    if strcmp(conf.array,'circle')
+        error(['%s: For circular arrays tapwin needs the ls_activity. ', ...
+            'If you have really all loudspeakers activce use ', ...
+            'conf.tapwin=0.'],upper(mfilename));
+    end
     % If no explicit loudspeaker activity is given mark all speakers as active
     ls_activity = ones(1,number_of_loudspeaker(L,conf));
 else

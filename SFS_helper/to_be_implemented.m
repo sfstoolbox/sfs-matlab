@@ -16,7 +16,7 @@ function to_be_implemented(mfile)
 %% ===== Checking of input parameters ====================================
 nargmin = 0;
 nargmax = 1;
-error(nargchk(nargmin,nargmax,nargin);
+error(nargchk(nargmin,nargmax,nargin));
 
 
 %% ===== Main ============================================================

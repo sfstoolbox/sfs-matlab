@@ -11,10 +11,13 @@
 %% ===== Variables ======================================================
 
 %irset = '~/data/ir_databases/Wittek_KEMAR/Wittek_KEMAR_studio_src1_0deg.mat';
-irset = '~/data/ir_databases/QU_KEMAR/QU_KEMAR_anechoic_AKGK601_3m.mat';
+irset = '~/svn/capture/data/ir_databases/Wittek_KEMAR/Wittek_KEMAR_studio_src1_0deg.mat';
 fs = 22050;
-nsamples = 256;
-outdir = sprintf('~/data/measurements/BRIRs/android_%i_KEMAR_headphone_comp',nsamples);
+nsamples = 128;
+outdir = sprintf('~/data/measurements/BRIRs/android_%i_Wittek',nsamples);
+if ~exist(outdir,'dir')
+    mkdir(outdir);
+end
 
 irs = read_irs(irset);
 angles = irs.apparent_azimuth;
@@ -41,14 +44,14 @@ for ii = 1:length(angles)
     pstr = sprintf('%s/HRIR_left_%d.dat',outdir,round(angles(ii)/pi*180));
     fid=fopen(pstr,'w');
     %fprintf(fid,'%d\r\n',short_hrirs(1:nsamples,ii,1));
-    fwrite(fid,ir(:,1),'double');
+    fwrite(fid,ir(:,1),'float32');
     fclose(fid);
     
     % Right HRIR signal
     pstr = sprintf('%s/HRIR_right_%d.dat',outdir,round(angles(ii)/pi*180));
     fid=fopen(pstr,'w');
     %fprintf(fid,'%d\r\n',short_hrirs(1:nsamples,ii,2));
-    fwrite(fid,ir(:,2),'double');
+    fwrite(fid,ir(:,2),'float32');
     fclose(fid);
     
 end

@@ -50,15 +50,12 @@ irs = new_irs();
 
 % Add common struct entries
 irs.fs = 44100;
-irs.loudspeaker = 'Genelec 8030A';
+irs.source = 'Genelec 8030A';
 irs.head_elevation = NaN;
 irs.torso_elevation = NaN;
 irs.head_position = [0 0 0]';
 irs.head_reference = [0 1 0]';
 irs.source_reference = [0 0 0]';
-
-
-
 
 
 if strcmp(irsset,'RAR_05m')
@@ -67,7 +64,7 @@ if strcmp(irsset,'RAR_05m')
         ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
          'angle: 0°; azimuth resolution: 1°. Rotation: torso.'];
     irs.head = 'KEMAR';
-	irs.ears = large;
+	irs.ears = 'large';
 	irs.room = 'Anechoic chamber ITA TU Berlin';
     irs.source_position = [0 0.5 0]';
     irs.head_azimuth = NaN;
@@ -79,8 +76,8 @@ elseif strcmp(irsset,'RAR_1m')
         ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
          'angle: 0°; azimuth resolution: 1°. Rotation: torso.'];
     irs.head = 'KEMAR';
-	irs.ears = large;	
-    irs.source_position = [0 1 0];
+	irs.ears = 'large';	
+    irs.source_position = [0 1 0]';
     irs.head_azimuth = NaN;
 	irs.room = 'Anechoic chamber ITA TU Berlin';
     irfilebase = 'KEMAR_1deg_1m_large_ear';
@@ -90,8 +87,8 @@ elseif strcmp(irsset,'RAR_1m')
         ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
          'angle: 0°; azimuth resolution: 1°. Rotation: torso.'];
     irs.head = 'KEMAR';
-	irs.ears = large;
-    irs.source_position = [0 2 0];
+	irs.ears = 'large';
+    irs.source_position = [0 2 0]';
     irs.head_azimuth = NaN;
 	irs.room = 'Anechoic chamber ITA TU Berlin';
     irfilebase = 'KEMAR_1deg_2m_large_ears_';
@@ -101,8 +98,8 @@ elseif strcmp(irsset,'RAR_1m')
         ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
          'angle: 0°; azimuth resolution: 1°. Rotation: torso.'];
     irs.head = 'KEMAR';
-	irs.ears = large;
-    irs.source_position = [0 3 0];
+	irs.ears = 'large';
+    irs.source_position = [0 3 0]';
     irs.head_azimuth = NaN;
 	irs.room = 'Anechoic chamber ITA TU Berlin';
     irfilebase = 'KEMAR_1deg_3m_large_ears_';
@@ -112,8 +109,8 @@ elseif strcmp(irsset,'RAR_1m')
         ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
          'angle: 0°; azimuth resolution: 1°. Rotation: torso.'];
     irs.head = 'KEMAR';
-	irs.ears = small;
-    irs.source_position = [0 3 0];
+	irs.ears = 'small';
+    irs.source_position = [0 3 0]';
     irs.head_azimuth = NaN;
 	irs.ears = small;
 	irs.room = 'Anechoic chamber ITA TU Berlin';
@@ -125,8 +122,8 @@ elseif strcmp(irsset,'RAR_1m')
          'angle: 0°; azimuth resolution: 1°. Rotation: torso. ', ...
          'Reference measurement.'];
     irs.head = 'KEMAR';
-	irs.ears = small;
-    irs.source_position = [0 3 0];
+	irs.ears = 'small';
+    irs.source_position = [0 3 0]';
     irs.head_azimuth = NaN;
 	irs.room = 'Anechoic chamber ITA TU Berlin';
     irfilebase = 'KEMAR_1deg_3m_control_';
@@ -136,46 +133,91 @@ elseif strcmp(irsset,'RAR_1m')
         ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
          'angle: 0°; azimuth resolution: 1°. Rotation: head.'];
     irs.head = 'KEMAR';
-	irs.ears = large;
-    irs.source_position = [0 3 0];
+	irs.ears = 'large';
+    irs.source_position = [0 3 0]';
     irs.torso_azimuth = NaN;
 	irs.room = 'Anechoic chamber ITA TU Berlin';
     irfilebase = 'KEMAR_1deg_3m_large_ears_head_rotation_';
 	
-	elseif strcmp(irsset,'Auditorium3_1_src1')
+	elseif strncmpi(irsset,'Auditorium3',11)
     irs.description = ...
         ['KEMAR measurement in Auditorium3 in TEL-building of the TU Berlin. Used elevation ', ...
-         'angle: 0°; azimuth resolution: 1°. Rotation: head. ,room height = 3 m'];	
+         'angle: 0°; azimuth resolution: 1°. Rotation: head. ,room height = 3 m',];	
     irs.head = 'KEMAR';
-	irs.ears = large;
+	irs.ears = 'large';
+	irs.torso_azimuth = NaN;
 	irs.room = 'Auditorium3 in TEL-building (Telefunken-Hochhaus) Berlin';
-
+	irs.room_corners = [-5 -4 -1.7;
+						5 -4 -1.7;
+						4.5 5.3 -1.7;
+						-3.6 5.3 -1.7;
+						-5 -4 1.3;
+						5 -4 1.3;
+						4.5 5.3 1.3;
+						-3.6 5.3 1.3;				
+						]';
+	if strcmp(irsset,'Auditorium3_1_src1')	
+		irs.source_position = [0   3.97 -0.05]';		
+		irfilebase = '2011-06-30_15-24-43_src1_head';
+	elseif strcmp(irsset,'Auditorium3_1_src2')	
+		irs.source_position = [4.3 3.42 -0.05]';
+		irfilebase = '2011-06-30_15-24-43_src2_head';
+	elseif strcmp(irsset,'Auditorium3_1_src3')	
+		irs.source_position = [2.2 -1.94 -0.1]';	
+		irfilebase = '2011-06-30_15-24-43_src3_head';
+	elseif strcmp(irsset,'Auditorium3_2_src1')	
+		irs.source_position = [0   1.5 -0.1]';	
+		irfilebase = '2011-06-30_17-53-16_src1_head';	
+	elseif strcmp(irsset,'Auditorium3_2_src2')	
+		irs.source_position = [-0.75 1.299 -0.1]';	
+		irfilebase = '2011-06-30_17-53-16_src2_head';	
+	elseif strcmp(irsset,'Auditorium3_2_src3')	
+		irs.source_position = [ 0.75 1.299 -0.1]';	
+		irfilebase = '2011-06-30_17-53-16_src3_head';
+	end
 else
     error('%s: the given irsset is not available.',upper(mfilename));
 end
+
+
 
 % Calculate the distance between head and source
 irs.distance = norm(irs.head_position-irs.source_position);
 
 % Read the data
+
+if strncmpi(irsset,'Auditorium3',11)
+for ii = -90:90
+		irfile = sprintf('%s/%s%+1.3f.mat',irspath,irfilebase,ii);
+		load(irfile);
+		irs.head_azimuth(ii+91) = correct_azimuth(rad(ii));
+        direction = irs.head_position - irs.source_position;
+        [THETA, PHI, R] = cart2sph(direction(1),direction(2),direction(3)); 
+		THETA = THETA + 1.5708;
+		THETA = -THETA;
+ 		irs.apparent_azimuth(ii+91) = correct_azimuth(deg2rad(round(rad2deg(-rad(ii)-THETA))));
+		irs.apparent_elevation(ii+91) = correct_azimuth(round(PHI));
+		irs.left(:,ii+91) = data.ir(:,1);
+		irs.right(:,ii+91) = data.ir(:,2);
+    end
+else
 for ii = 1:360
 
-    if strcmp(irsset,'RAR_3m_head_rot')
-        irfile = sprintf('%s/%s%03.0f_%i.mat',irspath,irfilebase,ii,ii-181);
-        irs.head_azimuth(ii) = correct_azimuth(-(180-ii+1)/180*pi);
-    else
-        irfile = sprintf('%s/%s%03.0f_%i.mat',irspath,irfilebase,ii,ii-1);
-        irs.torso_azimuth(ii) = correct_azimuth(-(180-ii+1)/180*pi);
-    end
-
-    load(irfile);
-    irs.apparent_azimuth(ii) = correct_azimuth((180-ii+1)/180*pi);
-    irs.apparent_elevation(ii) = correct_azimuth(0);
-    irs.left(:,ii) = vspolardata.ir_ch1;
-    irs.right(:,ii) = vspolardata.ir_ch2;
-
+		if strcmp(irsset,'RAR_3m_head_rot')
+			irfile = sprintf('%s/%s%03.0f_%i.mat',irspath,irfilebase,ii,ii-181);
+			irs.head_azimuth(ii) = correct_azimuth(-(180-ii+1)/180*pi);
+		else
+			irfile = sprintf('%s/%s%03.0f_%i.mat',irspath,irfilebase,ii,ii-1);
+			irs.torso_azimuth(ii) = correct_azimuth(-(180-ii+1)/180*pi);
+		end
+	
+		load(irfile);
+		irs.apparent_azimuth(ii) = correct_azimuth((180-ii+1)/180*pi);
+		irs.apparent_elevation(ii) = correct_azimuth(0);
+		irs.left(:,ii) = vspolardata.ir_ch1;
+		irs.right(:,ii) = vspolardata.ir_ch2;
+	end
 end
-
 % Reorder fields
 irs = order_irs_fields(irs);
 % Reorder entries

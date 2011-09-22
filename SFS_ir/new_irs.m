@@ -1,10 +1,12 @@
-function irs = new_irs()
+function [irs,opt_fields] = new_irs()
 %NEW_IRS creates an empty irs struct in the right format
 %
 %   Usage: irs = new_irs()
 %
 %   Output options
-%       irs - irs struct in the desired format 
+%       irs         - irs struct in the desired format
+%       opt_fields  - cell array containing which of the fields in the returning
+%                     irs struct are optional
 %
 %   NEW_IRS() creates a irs struct in the format we have defined for the IR data
 %   sets. This function creates a reference implementation of the format. So
@@ -22,12 +24,15 @@ error(nargchk(nargmin,nargmax,nargin));
 
 
 %% ===== Computation =====================================================
+% the following fields are only optional
+opt_fields = {'room_corners'};
 % create our reference irs struct
 irs = struct;
 irs.description = 'Reference implementation of the irs struct.';
 irs.head = 'dummy';             % Used dummy head
 irs.ears = 'dummy';             % Used dummy head ears
 irs.room = 'dummy';             % Used room
+irs.room_corners = [0 0 0]';    % corners of the used room
 irs.source = 'dummy';           % Used loudsoeaker
 irs.distance = 1;               % Distance between head and source. NOTE: this
                                 %>has to be norm(head_position-source_position)

@@ -48,7 +48,7 @@ idxright = itd;
 for ii = 1:size(insigleft,2)
 
     % Treshold after sandvad1994 (5% of maximum in each IR)
-    % NOTE: I have changed it to 20%
+    % NOTE: I have changed it to 10%
     tresholdleft = 0.10 * max(insigleft(:,ii));
     tresholdright = 0.10 * max(insigright(:,ii));
     % Ten fold upsampling (after lindau2010) to have a smoother output

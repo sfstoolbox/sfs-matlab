@@ -55,11 +55,12 @@ useplot = conf.useplot;       % Plot results?
 % Loudspeaker positions (LSdir describes the directions of the LS) for a
 % linear WFS array
 [x0,y0,phiLS] = secondary_source_positions(L,conf);
-nLS = length(x0);
+nls = length(x0);
+ls_activity = secondary_source_selection(x0,y0,phiLS,xs,ys,src);
 
 % === Tapering window ===
 % See in SFS_config.m if it is applied
-win = tapwin(L,conf);
+win = tapwin(L,ls_activity,conf);
 
 
 %% ===== IR =============================================================
@@ -71,12 +72,12 @@ dirac(300) = 1;
 lenir = length(dirac);
 
 % Initial values
-ir = zeros(N,nLS);
-dt = zeros(1,nLS);
-a = zeros(1,nLS);
+ir = zeros(N,nls);
+dt = zeros(1,nls);
+a = zeros(1,nls);
 
 % Create a IR for every single loudspeaker
-for n=1:nLS
+for n=1:nls
 
     % ====================================================================
     % Driving function to get weighting and delaying

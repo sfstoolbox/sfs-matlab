@@ -57,9 +57,7 @@ useplot = conf.useplot;       % Plot results?
 [x0,y0,phiLS] = secondary_source_positions(L,conf);
 nls = length(x0);
 ls_activity = secondary_source_selection(x0,y0,phiLS,xs,ys,src);
-
-% === Tapering window ===
-% See in SFS_config.m if it is applied
+% generate tapering window
 win = tapwin(L,ls_activity,conf);
 
 

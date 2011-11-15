@@ -100,7 +100,7 @@ brir = zeros(N,2);
 %
 % Angle between listener and source (-pi < alpha <= pi)
 % NOTE: phi is the orientation of the listener (see first graph)
-alpha = atan2(ys-Y,xs-X) - phi;
+alpha = cart2sph(xs-X,ys-Y,0) - phi;
 %
 % Ensure -pi <= alpha < pi
 alpha = correct_azimuth(alpha);

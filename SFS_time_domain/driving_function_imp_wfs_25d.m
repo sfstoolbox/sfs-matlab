@@ -62,23 +62,17 @@ g0 = sqrt(2*pi*norm([xref yref]-[x0 y0]));
 if ls_activity>0
 
     % Direction of secondary sources
-    nx0 = -sin(phi);
-    ny0 = cos(phi);
+    [nx0,ny0] = sph2cart(phi,0,1);
 
     if strcmp('pw',src)
         % === Plane wave ===
-
         % Direction of plane wave
         nxs = xs / sqrt(xs^2+ys^2);
         nys = ys / sqrt(xs^2+ys^2);
-        theta = -1*atan2(nxs,nys);
-
-        % delay in secs
-        delay = (nxs*x0 + nys*y0)/c;
-        % Amplitude
+        % Delay and amplitude weight
         % NOTE: <n_pw,n(x0)> is the same as the cosinus between their angle
-        weight = 2*g0*cos(theta - phi);
-
+        delay = 1/c * [nxs nys]*[x0 y0]';
+        weight = 2*g0 * [nxs nys]*[nx0 ny0]';
     elseif strcmp('ps',src)
         % === Point source ===
         % Distance between loudspeaker and virtual source
@@ -87,7 +81,7 @@ if ls_activity>0
         delay = r/c;
         weight = g0/(2*pi)*([x0 y0]-[xs ys])*[nx0 ny0]'*r^(-3/2);
     elseif strcmp('fs',src)
-        % Focused source
+        % === Focused source ===
         % Distance between loudspeaker and virtual source
         r = norm([x0 y0]-[xs ys]);
         % Delay and amplitude weight

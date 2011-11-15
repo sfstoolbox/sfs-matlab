@@ -21,7 +21,7 @@ if ($#!=3) print 'gp_set_head needs 3 input parameters'; exit
 # Getting the input parameters
 x = $0
 y = $1
-phi = $2
+phi = $2+pi/2
 
 # Initialize an object number
 if (!exists("object_number")) object_number = 1;

@@ -24,7 +24,7 @@ if ($#!=5) print 'gp_set_loudspeakers needs 5 input parameters'; exit
 # Getting the input parameters
 x0 = $0
 y0 = $1
-p = $2+pi/2.0
+p = $2
 activity = $3
 lssize = $4
 

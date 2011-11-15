@@ -66,7 +66,7 @@ else
 
         % Rotation matrix (orientation of the speakers)
         % R = [cos(phi(n)) -sin(phi(n));sin(phi(n)) cos(phi(n))];
-        R = rotation_matrix(phi(n)+pi/2);
+        R = rotation_matrix(phi(n));
 
         for k=1:length(v1)
             vr1(:,k) = R * v1(:,k);

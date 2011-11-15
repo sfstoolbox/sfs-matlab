@@ -74,8 +74,7 @@ ls_activity = secondary_source_selection(x0,y0,phi,xs,ys,src);
 if(ls_activity)
 
     % Direction of secondary sources
-    nx0 = -sin(phi);
-    ny0 = cos(phi);
+    [nx0,ny0] = sph2cart(phi,0,1);
 
     % Constant amplitude factor g0
     g0 = sqrt(2*pi*norm([xref yref]-[x0 y0]));

@@ -42,8 +42,7 @@ isargchar(src);
 %% ===== Calculation ====================================================
 
 % Direction of secondary sources
-nx0 = -sin(phi);
-ny0 = cos(phi);
+[nx0,ny0] = sph2cart(phi,0,1);
 
 if strcmp('pw',src)
     % === Plane wave ===

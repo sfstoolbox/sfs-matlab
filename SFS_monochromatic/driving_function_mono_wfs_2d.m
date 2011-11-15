@@ -75,8 +75,7 @@ ls_activity = secondary_source_selection(x0,y0,phi,xs,ys,src);
 if(ls_activity)
 
     % Direction of secondary sources
-    nx0 = -sin(phi);
-    ny0 = cos(phi);
+    [nx0,ny0] = sph2cart(phi,0,1);
 
 
     if strcmp('pw',src)

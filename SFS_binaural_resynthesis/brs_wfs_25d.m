@@ -122,7 +122,7 @@ for n=1:nls
     %
     % Angle between listener and secondary source (-pi < alpha <= pi)
     % Note: phi is the orientation of the listener (see first graph)
-    alpha = atan2(y0(n)-Y,x0(n)-X) - phi;
+    alpha = cart2sph(x0(n)-X,y0(n)-Y,0) - phi;
     %
     % Ensure -pi <= alpha < pi
     alpha = correct_azimuth(alpha);

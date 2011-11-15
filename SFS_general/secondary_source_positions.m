@@ -93,30 +93,32 @@ if strcmp('linear',array)
     %    x0(ii) = X0-size/2+(ii-1)*size/nls + jitter;
     %end
     % Direction (orientation) of the loudspeaker
-    phi = zeros(1,nls);
+    % Default: pointing in y-direction
+    phi = ones(1,nls)*pi/2;
 elseif strcmp('circle',array)
     % === Circular loudspeaker array ===
     % Positions of the loudspeaker
-    phi = linspace(0,(2-2/nls)*pi,nls);
-    x0 = X0 + L/2*sin(-phi);
-    y0 = Y0 + L/2*cos(-phi);
-    % Direction of the loudspeakers
+    phi = linspace(0,(2-2/nls)*pi,nls); % 0..2pi
+    [x0,y0] = sph2cart(phi,0,L/2);
+    % Direction of the loudspeakers (it should pointing to the center, therefore
+    % +pi)
     phi = correct_azimuth(phi+pi);
 elseif strcmp('box',array)
     % === Boxed loudspeaker array ===
     % Position and direction of the loudspeakers
+    % FIXME: nls/4 can be another value than an integer
     x0(1:nls/4) = X0 + linspace(-L/2,L/2,nls/4);
     y0(1:nls/4) = Y0 + ones(1,nls/4) * L/2 + dx0;
-    phi(1:nls/4) = pi*ones(1,nls/4);
+    phi(1:nls/4) = -pi/2 * ones(1,nls/4);
     x0(nls/4+1:2*nls/4) = X0 + ones(1,nls/4) * L/2 + dx0;
     y0(nls/4+1:2*nls/4) = Y0 + linspace(L/2,-L/2,nls/4);
-    phi(nls/4+1:2*nls/4) = pi/2*ones(1,nls/4);
+    phi(nls/4+1:2*nls/4) = pi * ones(1,nls/4);
     x0(2*nls/4+1:3*nls/4) = X0 + linspace(L/2,-L/2,nls/4);
     y0(2*nls/4+1:3*nls/4) = Y0 - ones(1,nls/4) * L/2 - dx0;
-    phi(2*nls/4+1:3*nls/4) = 0*ones(1,nls/4);
+    phi(2*nls/4+1:3*nls/4) = pi/2 * ones(1,nls/4);
     x0(3*nls/4+1:nls) = X0 - ones(1,nls/4) * L/2 - dx0;
     y0(3*nls/4+1:nls) = Y0 + linspace(-L/2,L/2,nls/4);
-    phi(3*nls/4+1:nls) = -pi/2*ones(1,nls/4);
+    phi(3*nls/4+1:nls) = 0 * ones(1,nls/4);
 elseif strcmp('U',array)
     to_be_implemented(mfilename);
 elseif strcmp('custom',array)

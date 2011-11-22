@@ -55,7 +55,7 @@ if strcmp('pw',src)
     % Direction of plane wave
     nxs = xs / sqrt(xs^2+ys^2);
     nys = ys / sqrt(xs^2+ys^2);
-    ls_activity = (( nxs.*nx0 + nys.*ny0 > 0 ));
+    ls_activity = double( (( nxs.*nx0 + nys.*ny0 > 0 )) );
 
 elseif strcmp('ps',src) || strcmp('ls',src)
     % === Point source ===
@@ -65,7 +65,7 @@ elseif strcmp('ps',src) || strcmp('ls',src)
     % a = <
     %      \ 0, else
     %
-    ls_activity = (( (x0-xs).*nx0 + (y0-ys).*ny0 > 0 ));
+    ls_activity = double( (( (x0-xs).*nx0 + (y0-ys).*ny0 > 0 )) );
 
 elseif strcmp('fs',src)
     % === Focused source ===
@@ -74,7 +74,7 @@ elseif strcmp('fs',src)
     %      / 1, if <xs-x0,n_x0> > 0
     % a = <
     %      \ 0, else
-    ls_activity = (( (xs-x0).*nx0 + (ys-y0).*ny0 > 0 ));
+    ls_activity = double( (( (xs-x0).*nx0 + (ys-y0).*ny0 > 0 )) );
 else
     error('%s: %s is not a supported source type!',upper(mfilename),src);
 end

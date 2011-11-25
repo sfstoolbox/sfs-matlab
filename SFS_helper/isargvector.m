@@ -15,7 +15,7 @@ function isargvector(varargin)
 
 %% ===== Checking for vector =============================================
 for ii = 1:nargin
-    if ~isnumeric(varargin{ii}) || ~isvector(varargin{ii})
+    if ~isvector(varargin{ii})
         error('%s need to be a vector.',inputname(ii));
     end
 end

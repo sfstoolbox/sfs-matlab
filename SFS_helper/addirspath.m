@@ -1,6 +1,5 @@
 function addirspath(basepath)
 %ADDIRSPATH adds the directory containing irs files to the path
-%
 %   Usage: addirspath(basepath)
 %
 %   Input options:

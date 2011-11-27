@@ -24,6 +24,8 @@ function outsig = auralize_brs(brs,contentfile,conf)
 %
 %   see also: auralize_brs_file, wfs_brs
 %
+% FIXME: change this file to auralize_ir and allow also direct signal as
+% input
 
 % AUTHOR: Hagen Wierstorf
 
@@ -54,6 +56,9 @@ pinknoisefile = conf.pinknoisefile;
 
 if nargin<2 || strcmp(contentfile,'castanets')
     contentfile = castanetsfile;
+elseif isvector(contentfile)
+    content = contentfile;
+    contentfs = conf.fs;
 elseif strcmp(contentfile,'speech')
     contentfile = speechfile;
 elseif strcmp(contentfile,'cello')
@@ -64,15 +69,17 @@ elseif strcmp(contentfile,'pinknoise')
     contentfile = pinknoisefile;
 end
 
-if ~exist(contentfile,'file')
-    error('%s: contentfile was not found.',upper(mfilename));
-end
+%if ~exist(contentfile,'file')
+%    error('%s: contentfile was not found.',upper(mfilename));
+%end
 
 
 %% ===== Computation ====================================================
 
 % Read the content file
-[content,contentfs,contentnbit] = wavread(contentfile);
+if ~exist('content','var')
+    [content,contentfs,contentnbit] = wavread(contentfile);
+end
 
 % Check if the content vector has the right format
 if ~isvector(content)

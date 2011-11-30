@@ -4,13 +4,14 @@ function plot_itd(itd,phi)
 %          plot_itd(itd)
 %
 %   Input options:
-%       itd -   vector with given ITD values (e.g. crfeated with extract_itd)
+%       itd -   vector with given ITD values (e.g. crfeated with
+%               interaural_time_difference)
 %       phi -   corresponding angles (optional, default: -180°..179°)
 %
 %   PLOT_ITD(itd,phi) creates a figure with the given ITD values and add
 %   corresponding labels etc.
 %
-%   see also: extract_itd, plot_ild
+%   see also: interaural_time_difference, plot_ild
 
 % AUTHOR: Hagen Wierstorf
 

@@ -4,13 +4,14 @@ function plot_ild(ild,phi)
 %          plot_ild(ild)
 %
 %   Input options:
-%       ild -   vector with given ILD values (e.g. crfeated with extract_ild)
+%       ild -   vector with given ILD values (e.g. created with
+%               interaural_level_difference)
 %       phi -   corresponding angles (optional, default: -180°..179°)
 %
 %   PLOT_ILD(ild,phi) creates a figure with the given ILD values and add
 %   corresponding labels etc.
 %
-%   see also: extract_ild, plot_itd
+%   see also: interaural_level_difference, plot_itd
 
 % AUTHOR: Hagen Wierstorf
 

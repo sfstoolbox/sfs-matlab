@@ -17,8 +17,8 @@ for ii = 1:length(files)
     figure; plot(irs.left(1:1500,100),'b-',irs.right(1:1500,100),'r-');
 
     % Extract ITD and ILD
-    %itd = extract_itd(irs.left,irs.right,irs.fs);
-    ild = extract_ild(irs.left,irs.right);
+    %itd = interaural_time_difference(irs.left,irs.right,irs.fs);
+    ild = interaural_level_difference(irs.left,irs.right);
     %plot_itd(itd);
     angle1 = degree(irs.apparent_azimuth(1))
     angle2 = degree(irs.apparent_azimuth(end))

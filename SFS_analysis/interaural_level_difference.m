@@ -1,6 +1,6 @@
-function ild = extract_ild(insigleft,insigright)
-%EXTRACTILD Extract the ILD between the two given signals
-%   Usage: ild = extractild(insigleft,insigright)
+function ild = interaural_level_difference(insigleft,insigright)
+%INTERAURAL_LEVEL_DIFFERENCE Extract the ILD between the two given signals
+%   Usage: ild = interaural_level_difference(insigleft,insigright)
 %
 %   Input parameters:
 %       insigleft   - left ear signal. This can also be a matrix containing
@@ -12,9 +12,11 @@ function ild = extract_ild(insigleft,insigright)
 %                     given signals or a vector with values for every
 %                     frequency band
 %
-%   EXTRACTILD(insigleft,insigright) extractes the ILD between the left and
-%   right signal(s) by subtracting the dB value of the left signal(s) from
-%   the dB value of the right signal(s). 
+%   INTERAURAL_LEVEL_DIFFERENCE(insigleft,insigright) extractes the ILD
+%   between the left and right signal(s) by subtracting the dB value of
+%   the left signal(s) from the dB value of the right signal(s).
+%
+%   see also: interaural_time_difference
 
 % AUTHOR: Hagen Wierstorf
 
@@ -31,7 +33,6 @@ end
 
 
 %% ===== Computation =====================================================
-
 % See if we have more than one frequency channel in the insig
 ild = zeros(1,size(insigleft,2));
 for ii = 1:size(insigleft,2)

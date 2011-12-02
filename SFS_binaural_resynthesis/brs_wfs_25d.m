@@ -40,7 +40,7 @@ function brir = brs_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
 %                              [X0 Y0] (Array center)
 %            |---      Loudspeaker array length     ---|
 %
-% see also: brsset_wfs_25d, brs_point_source, auralize_brs
+% see also: brsset_wfs_25d, brs_point_source, auralize_ir
 %
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf

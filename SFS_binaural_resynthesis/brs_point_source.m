@@ -37,7 +37,7 @@ function brir = brs_point_source(X,Y,phi,xs,ys,irs,conf)
 %       ----------------------------|---------------------------> x-axis
 %
 %
-% see also: SFS_config, brs_wfs_25d, auralize_brs, brsset_point_source
+% see also: SFS_config, brs_wfs_25d, auralize_ir, brsset_point_source
 %
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf

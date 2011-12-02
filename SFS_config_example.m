@@ -134,7 +134,7 @@ conf.N = 2^15;
 conf.brsangles = 0:1:359;
 % Auralisation files
 % These files are used for the auralization of impulse responses by the
-% auralize_brs function.
+% auralize_ir function.
 conf.speechfile = '~/data/signals/goesa_sentence.wav';
 conf.cellofile = '~/data/signals/cello.wav';
 conf.castanetsfile = '~/data/signals/castanets.wav';

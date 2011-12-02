@@ -1,7 +1,7 @@
 function outsig = auralize_ir(ir,content,conf)
 %AURALIZE_IR Auralizes a impulse response with an audio file
-%   Usage: outsig = auralize_brs(brs,[file,sig,'content'],conf)
-%          outsig = auralize_brs(brs,[file,sig,'content'])
+%   Usage: outsig = auralize_ir(ir,[file,sig,'content'],conf)
+%          outsig = auralize_ir(ir,[file,sig,'content'])
 %
 %   Input parameters:
 %       ir              - impulse response (IR). Also an binaural room scanning

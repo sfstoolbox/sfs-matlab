@@ -123,7 +123,9 @@ if ~(p.usegnuplot)
         % Plot the amplitude of the wave field in dB
         imagesc(x,y,20*log10(abs(P)),[-35 0]);
         % Set the limits of the colormap and add a colorbar
-        caxis(p.caxis);
+        if length(p.caxis)==2
+            caxis(p.caxis);
+        end
         h = colorbar;
         ylabel(h,'Amplitude (dB)');
         % Get the font size and name of the figure and adjust the colorbar
@@ -138,7 +140,9 @@ if ~(p.usegnuplot)
         % Plot the wave field
         imagesc(x,y,real(P),[-1 1]);
         % Set the limits of the colormap and add a colorbar
-        caxis(p.caxis);
+        if length(p.caxis)==2
+            caxis(p.caxis);
+        end
         colorbar;
     end
 

@@ -1,6 +1,7 @@
 function [X,Y] = setting_xy_ranges(X,Y,conf)
 %SETTING_XY_RANGES sets the ranges of the X and Y axes in the wave field
-%simulations
+%   simulations
+%
 %   Usage: [X,Y] = setting_xy_ranges(X,Y,conf)
 %          [X,Y] = setting_xy_ranges(X,Y)
 %
@@ -19,9 +20,11 @@ function [X,Y] = setting_xy_ranges(X,Y,conf)
 %   and will be -0.1 for a linear array and -Y/2 for a circular array.
 %
 %   see also: wave_field_time_domain, wave_field_monochromatic_wfs_25d
+%
 
 % AUTHOR: Hagen Wierstorf
 
+% FIXME: this has to be updated to work for 3D
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 2;
@@ -36,7 +39,6 @@ end
 
 
 %% ===== Configuration ==================================================
-
 array = conf.array;
 lssize = conf.plot.lssize;
 

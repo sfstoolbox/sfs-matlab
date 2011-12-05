@@ -1,12 +1,14 @@
-function [alpha,a,t] = echo_direction(X,Y,phi,xs,ys,L,src,conf)
-%ECHO_DIRECTION directions of the echos for a linear WFS array
-%   Usage: [alpha,a,t] = echo_direction(X,Y,phi,xs,ys,L,conf)
-%          [alpha,a,t] = echo_direction(X,Y,phi,xs,ys,L)
+function [alpha,a,t] = wave_front_direction(X,phi,xs,L,src,conf)
+%WAVE_FRONT_DIRECTION returns direction, amplitude and time of the single wave
+%   fronts for WFS
+%
+%   Usage: [alpha,a,t] = wave_front_direction(X,phi,xs,L,conf)
+%          [alpha,a,t] = wave_front_direction(X,phi,xs,L)
 %
 %   Input parameters:
-%       X,Y,phi - listener position and direction
-%       xs,ys   - virtual source position
-%       L       - length of the linear loudspeaker array
+%       X,phi   - listener position and direction (m),(rad)
+%       xs      - virtual source position (m)
+%       L       - length of the linear loudspeaker array (m)
 %       src     - used source model:
 %                   'pw' - plane wave
 %                   'ps' - point source
@@ -15,27 +17,29 @@ function [alpha,a,t] = echo_direction(X,Y,phi,xs,ys,L,src,conf)
 %                 SFS_config for default values)
 %
 %   Output parameters:
-%       alpha   - angle of incident for every echo (in deg) 
+%       alpha   - angle of incident for every echo (rad) 
 %       a       - amplitudes of the echos
-%       t       - time of the echos (s)
+%       t       - time of the wave fronts (s)
 %
-%   ECHO_DIRECTION(X,Y,phi,xs,ys,src,L) calculates the direction of the echos 
-%   (due to aliasing artifacts) arriving from the loudspeakers for a linear
-%   WFS array (length L) at the given listener position [X Y] for the given 
-%   virtual source [xs ys] and given array length L.
+%   WAVE_FRONT_DIRECTION(X,phi,xs,src,L) calculates the direction of the single wave
+%   fronts (due to aliasing artifacts) arriving from the loudspeakers for a
+%   WFS array at the given listener position X for the given virtual source
+%   xs and given array length L.
 %
-%   see also: wfs_brs, wfs_amplitude_linear
+%   see also: brs_wfs_25d
 %
 
 % AUTHOR: Hagen Wierstorf, Sascha Spors
 
 
 %% ===== Checking of input parameters ====================================
-nargmin = 7;
-nargmax = 8;
+nargmin = 5;
+nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
-isargscalar(X,Y,phi,xs,ys);
+[X,xs] = position_vector(X,xs);
+isargscalar(phi);
 isargpositivescalar(L);
+
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -44,7 +48,6 @@ end
 
 
 %% ===== Configuration ===================================================
-
 % Loudspeaker distance
 dx0 = conf.dx0;
 % Speed of sound
@@ -56,17 +59,17 @@ usegnuplot = conf.plot.usegnuplot;
 
 
 %% ===== Variables =======================================================
-
+phi = correct_azimuth(phi);
 % name of the data file to store the result
-outfile = sprintf('direction_L%i_xs%i_ys%i_X%.1f_Y%.1f.txt',L,xs,ys,X,Y);
+outfile = sprintf('direction_L%i_xs%i_ys%i_X%.1f_Y%.1f.txt', ...
+    L,xs(1),xs(2),X(1),X(2));
 outfiledB = sprintf('direction_L%i_xs%i_ys%i_X%.1f_Y%.1f_dB.txt',...
-                    L,xs,ys,X,Y);
+                    L,xs(1),xs(2),X(1),X(2));
 
 % Loudspeaker positions
-[x0,y0,phiLS] = secondary_source_positions(L,conf);
-
+x0 = secondary_source_positions(L,conf);
 % Number of loudspeaker
-nLS = number_of_loudspeaker(L,conf);
+nls = number_of_loudspeaker(L,conf);
 
 % === Design tapering window ===
 % See SFS_config if it is applied
@@ -75,52 +78,48 @@ win = tapwin(L,conf);
 %% ===== Calculate direction of the echos ===============================
 
 % Geometry
-%           x0(:,i)               [X0,Y0]
+%           x0(ii,:)                 X0
 % x-axis <-^--^--^--^--^--^--^--^--^-|-^--^--^--^--^--^--^--^--^--
 %             |                      |
 %         R2 |  |                    |
 %           |     | R                |      
 %          x        |                |
-%       [xs,ys]       |              |
+%         xs          |              |
 %                       O            |
-%                      [X,Y]         |
+%                       X            |
 %                                    v
 %                                  y-axis
 %
 % Distance between x0 and listener: R
 % Distance between x0 and virtual source: R2
 
-alpha = zeros(nLS,1);
-a = zeros(nLS,1);
-v = zeros(nLS,2);
-vdB = zeros(nLS,2);
-t = zeros(nLS,1);
-for ii = 1:nLS
+alpha = zeros(nls,1);
+a = zeros(nls,1);
+v = zeros(nls,2);
+vdB = zeros(nls,2);
+t = zeros(nls,1);
+for ii = 1:nls
 
     % Get time delay and weighting factor for a single echo
     [weight,delay] = ...
-        driving_function_imp_wfs_25d(x0(ii),y0(ii),phiLS(ii),xs,ys,src,conf);
+        driving_function_imp_wfs_25d(x0(ii,:),xs,src,conf);
 
     % === Time, in which pre-echos occur ===
-    t(ii) = norm([X Y]-[x0(ii) y0(ii)])/c + delay - norm([X Y]-[xs ys])/c;
+    t(ii) = norm(X-x0(ii,1:3))/c + delay - norm(X-xs)/c;
 
     % === Applying tapering window to the amplitude
     a(ii) = weight * win(ii);
 
-    % === Direction of the echos (in radian) ===
-    % Vector from listener position to given loudspeaker position (cp. R)
-    % NOTE: X - x0(n) gives a negative value for loudspeaker to the
-    % left of the listener, therefor -dx1 is needed to get the right angle.
-    dx = [X Y] - [x0(ii) y0(ii)];
+    % === Direction of the wave fronts (in radian) ===
     % Angle between listener and secondary source (-pi < alpha <= pi, 
     % without phi)
     % Note: phi is the orientation of the listener (see first graph)
-    alpha(ii) = atan2(-dx(1),dx(2)) - rad(phi);
+    alpha(ii) = cart2sph(x0(n,1)-X(1),x0(n,2)-X(2),0) - phi;
 
     % === Direction and amplitude in vector notation ===
     % Rotation matrix (see: http://en.wikipedia.org/wiki/Rotation_matrix)
-    %RM = [cos(alpha(i)) -sin(alpha(i)); ...
-    %      sin(alpha(i)) cos(alpha(i))];
+    % RM = [cos(alpha(i)) -sin(alpha(i)); ...
+    %       sin(alpha(i)) cos(alpha(i))];
     RM = rotation_matrix(alpha(ii),'counterclockwise');
     % Vector notation of angle and amplitude (in x,y coordinates)
     v(ii,:) = a(ii) .* (RM * [0 1]');
@@ -132,7 +131,6 @@ for ii = 1:nLS
     vdB(ii,:) = (20*log10(a(ii))+100) .* (RM * [0 1]');
 end
 
-alpha = degree(alpha);
 
 %% ===== Plotting =======================================================
 if(useplot)
@@ -150,13 +148,13 @@ if(usegnuplot)
     % definition at t = 0
     A = sum(a);
     % Calculate the direction of the virtual source pulse (rad)
-    alpha_ds = atan2(-(X-xs),Y-ys) - rad(phi);
+    alpha_ds = cart2sph(xs(1)-X(1),xs(2)-X(2),0) - phi;
     RM_ds = rotation_matrix(alpha_ds,'counterclockwise');
     X_ds = A .* (RM_ds * [0 1]');
     X_dsdB = (20*log10(A)+100) .* (RM_ds * [0 1]');
 
     % Position of the listener
-    Xn = X.*ones(nLS,1);
+    Xn = X(1).*ones(nls,1);
     % Open file for storing results
     fid = fopen(outfile,'w');
     fiddB = fopen(outfiledB,'w');
@@ -172,6 +170,6 @@ if(usegnuplot)
     fprintf(fiddB,'#X\tt\tx\ty\tA\n');
     fprintf(fid,'%f\t%f\t%f\t%f\n',gnuM');
     fprintf(fiddB,'%f\t%f\t%f\t%f\t%f\n',[gnudB'; (20*log10(a')+100)]);
-    fprintf(fid,'\n\n%f\t0\t%f\t%f\t%f',X,X_ds(1),X_ds(2),A);
-    fprintf(fiddB,'\n\n%f\t0\t%f\t%f\t%f',X,X_dsdB(1),X_dsdB(2),20*log10(A)+100);
+    fprintf(fid,'\n\n%f\t0\t%f\t%f\t%f',X(1),X_ds(1),X_ds(2),A);
+    fprintf(fiddB,'\n\n%f\t0\t%f\t%f\t%f',X(1),X_dsdB(1),X_dsdB(2),20*log10(A)+100);
 end

@@ -1,5 +1,6 @@
 function [itd,idxleft,idxright] = interaural_time_difference(insigleft,insigright,fs,mode,fit)
 %INTERAURAL_TIME_DIFFERENCE Extract the ITD between the two given signals
+%
 %   Usage: itd = interaural_time_difference(insigleft,insigright,fs)
 %   	   itd = interaural_time_difference(insigleft,insigright,fs,mode)
 %

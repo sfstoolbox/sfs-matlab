@@ -1,5 +1,6 @@
 function bool = ismonoinc(x)
-%ISMONOINC Checks if the data of x are monotonic increasing
+%ISMONOINC checks if the data of x are monotonic increasing
+%
 %   Usage: bool = ismonoinc(x)
 %
 %   Input parameter:
@@ -30,5 +31,3 @@ for i = 2:length(x)
         return;
     end
 end
-
-

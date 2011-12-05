@@ -33,17 +33,16 @@ end
 
 %% ===== Configuration ===================================================
 xref = conf.xref;
-yref = conf.yref;
 
 
 %% ===== Computation =====================================================
-% Use the half of the x axis and yref
-[a,xidx] = find(x>xref,1);
-[a,yidx] = find(y>yref,1);
-if isempty(xidx) || abs(x(xidx)-xref)>0.1
+% Use the half of the x axis and xref
+[a,xidx] = find(x>xref(1),1);
+[a,yidx] = find(y>xref(2),1);
+if isempty(xidx) || abs(x(xidx)-xref(1))>0.1
     error('%s: your used xref is out of your X boundaries',upper(mfilename));
 end
-if isempty(yidx) || abs(y(yidx)-yref)>0.1
+if isempty(yidx) || abs(y(yidx)-xref(2))>0.1
     error('%s: your used yref is out of your Y boundaries',upper(mfilename));
 end
 % Scale signal to 1

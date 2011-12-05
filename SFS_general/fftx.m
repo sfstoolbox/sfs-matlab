@@ -2,6 +2,8 @@ function [ out ] = fftx( varargin )
 %FFTX Spatial fourier transform
 %   Detailed explanation goes here
 
+% FIXME: maybe this function is obsolete?
+
 if nargin == 1
     input_data = varargin{1};
     points     = [];

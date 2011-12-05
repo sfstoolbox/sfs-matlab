@@ -1,19 +1,19 @@
-function S = point_source(x,y,xs,ys,f,conf)
+function S = point_source(x,y,xs,f,conf)
 %POINT_SOURCE returns the Green's function for a point source
-%   Usage: S = point_source(x,y,x0,y0,omega,conf)
-%          S = point_source(x,y,x0,y0,omega)
+%   Usage: S = point_source(x,y,x0,omega,conf)
+%          S = point_source(x,y,x0,omega)
 %
 %   Input options:
 %       x,y     - x,y points for which the Green's function should be calculated
-%       xs,ys   - position of the point source
+%       xs      - position of the point source
 %       f       - frequency of the point source
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       S       - Wave field of a point source located at x0,y0
 %
-%   POINT_SOURCE(x,y,xs,ys,f) calculates the wave field of a point source
-%   located at xs,ys for the given points x,y and the frequency f. The wave
+%   POINT_SOURCE(x,y,xs,f) calculates the wave field of a point source
+%   located at xs for the given points x,y and the frequency f. The wave
 %   field is calculated by the Greens function.
 %
 %   References:
@@ -25,11 +25,11 @@ function S = point_source(x,y,xs,ys,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 6;
+nargmin = 4;
+nargmax = 5;
 error(nargchk(nargmin,nargmax,nargin));
 isargmatrix(x,y);
-isargscalar(xs,ys);
+isargposition(xs);
 isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
@@ -52,5 +52,5 @@ omega = 2*pi*f;
 %
 % see: Williams1999, p. 198
 %
-S = 1/(4*pi) * exp(1i*omega/c.*sqrt((x-xs).^2+(y-ys).^2)) ./ ...
-        sqrt((x-xs).^2+(y-ys).^2);
+S = 1/(4*pi) * exp(1i*omega/c.*sqrt((x-xs(1)).^2+(y-xs(2)).^2)) ./ ...
+        sqrt((x-xs(1)).^2+(y-xs(2)).^2);

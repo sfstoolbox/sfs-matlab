@@ -1,14 +1,13 @@
-function [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,ys,L,src,conf)
+function [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,L,src,conf)
 %WAVE_FIELD_IMP_WFS_25D returns the wave field in time domain of an impulse
 %
-%   Usage: [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,ys,L,src,conf)
-%          [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,ys,L,src)
+%   Usage: [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,L,src,conf)
+%          [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,L,src)
 %
 %   Input options:
 %       X           - length of the X axis (m); single value or [xmin,xmax]
 %       Y           - length of the Y axis (m); single value or [ymin,ymax]
-%       xs          - x position of point source (m)
-%       ys          - y position of point source (m)
+%       xs          - position of point source (m)
 %       L           - array length (m)
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs, ys are the direction of the
@@ -22,7 +21,7 @@ function [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,ys,L,src,conf)
 %       p           - wave field (length(y) x length(x))
 %       ls_activity - activity of the secondary sources
 %       
-%   WAVE_FIELD_IMP_WFS_25D(X,Y,xs,ys,L,src,conf) simulates a wave 
+%   WAVE_FIELD_IMP_WFS_25D(X,Y,xs,L,src,conf) simulates a wave 
 %   field of the given source type (src) using a WFS 2.5 dimensional driving 
 %   function with a delay line.
 %   To plot the result use plot_wavefield(x,y,P).
@@ -34,11 +33,12 @@ function [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,ys,L,src,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 7;
+nargmin = 5;
+nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
 isargvector(X,Y);
-isargscalar(xs,ys);
+isargposition(xs);
+xs = position_vector(xs);
 isargpositivescalar(L);
 isargchar(src);
 if nargin<nargmax
@@ -49,7 +49,6 @@ end
 
 
 %% ===== Configuration ==================================================
-
 % xy resolution
 xysamples = conf.xysamples;
 % Plotting result
@@ -79,10 +78,9 @@ frame = conf.frame;
 % Setting the x- and y-axis
 [X,Y] = setting_xy_ranges(X,Y,conf);
 
-% Get loudspeaker positions, number of loudspeakers and their activity
-[x0,y0,phi] = secondary_source_positions(L,conf);
-nLS = length(x0);
-ls_activity = secondary_source_selection(x0,y0,phi,xs,ys,src);
+% Get secondary sources
+x0 = secondary_source_positions(L,conf);
+ls_activity = secondary_source_selection(x0,xs,src);
 % Generate tapering window
 win = tapwin(L,ls_activity,conf);
 ls_activity = ls_activity .* win;
@@ -90,24 +88,23 @@ ls_activity = ls_activity .* win;
 % Spatial grid
 x = linspace(X(1),X(2),xysamples);
 y = linspace(Y(1),Y(2),xysamples);
-[X,Y] = meshgrid(x,y);
+[xx,yy] = meshgrid(x,y);
 
 % Simulation for the given frame(s)
 for sample = frame;
     % Initialize empty wave field
     p = zeros(length(y),length(x));
     % Integration over loudspeaker
-    for l = 1:nLS
+    for l = 1:size(x0,1)
 
         % ================================================================
         % Driving function d2.5D(x0,t)
-        [weight,delay] = driving_function_imp_wfs_25d(...
-            x0(l),y0(l),phi(l),xs,ys,src,conf);
+        [weight,delay] = driving_function_imp_wfs_25d(x0(l,:),xs,src,conf);
 
         % ================================================================
         % Secondary source model: Greens function g3D(x,t)
         % Distance of secondary source to receiver position
-        r = sqrt((X-x0(l)).^2 + (Y-y0(l)).^2);
+        r = sqrt((xx-x0(l,1)).^2 + (yy-x0(l,2)).^2);
         % Greens function for a 3D monopole
         g = 1./(4*pi*r);
 

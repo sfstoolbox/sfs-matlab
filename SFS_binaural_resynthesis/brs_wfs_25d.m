@@ -1,13 +1,13 @@
-function brir = brs_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
+function brir = brs_wfs_25d(X,phi,xs,L,src,irs,conf)
 %BRS_WFS_25D Generate a BRIR for WFS
-%   Usage: brir = brs_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
-%          brir = brs_wfs_25d(X,Y,phi,xs,ys,L,src,irs)
+%   Usage: brir = brs_wfs_25d(X,phi,xs,L,src,irs,conf)
+%          brir = brs_wfs_25d(X,phi,xs,L,src,irs)
 %
 %   Input parameters:
-%       X,Y     - listener position (m)
+%       X       - listener position (m)
 %       phi     - listener direction [head orientation] (rad)
 %                 0 means the head is oriented towards the x-axis.
-%       xs,ys   - virtual source position [ys > Y0 => focused source] (m)
+%       xs      - virtual source position [ys > Y0 => focused source] (m)
 %       L       - Length of linear loudspeaker array (m)
 %       src     - source type: 'pw' -plane wave
 %                              'ps' - point source
@@ -20,9 +20,9 @@ function brir = brs_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
 %       brir    - Binaural room impulse response for the desired WFS array
 %                 (nx2 matrix)
 %
-%   BRS_WFS_25D(X,Y,phi,xs,ys,L,irs,src,conf) calculates a binaural room impulse
-%   response for a virtual source at [xs,ys] for a virtual WFS array and a
-%   listener located at [X,Y].
+%   BRS_WFS_25D(X,phi,xs,L,irs,src,conf) calculates a binaural room impulse
+%   response for a virtual source at xs for a virtual WFS array and a
+%   listener located at X.
 %
 %   Geometry:
 %                               y-axis
@@ -30,14 +30,14 @@ function brir = brs_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
 %                                 |
 %                                 |
 %                                 |    (Listener)
-%                                 |        O [X Y], phi=-pi/2
+%                                 |        O X, phi=-pi/2
 %                                 |        |
 %                                 |
-%                  o [xs ys]      |
+%                  o xs           |
 %             (Virtual Source)    |
 %                                 |
 %     -------v--v--v--v--v--v--v--v--v--v--v--v--v--v--v------> x-axis
-%                              [X0 Y0] (Array center)
+%                                 X0 (Array center)
 %            |---      Loudspeaker array length     ---|
 %
 % see also: brsset_wfs_25d, brs_point_source, auralize_ir
@@ -47,11 +47,11 @@ function brir = brs_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 8;
-nargmax = 9;
+nargmin = 6;
+nargmax = 7;
 error(nargchk(nargmin,nargmax,nargin));
-
-isargscalar(X,Y,phi,xs,ys);
+[X,xs] = position_vector(X,xs);
+isargscalar(phi);
 isargpositivescalar(L);
 isargchar(src);
 check_irs(irs);
@@ -64,7 +64,6 @@ end
 
 
 %% ===== Configuration ==================================================
-
 fs = conf.fs;                 % sampling frequency
 t0 = conf.t0;                 % pre-delay for causality (focused sources)
 c = conf.c;                   % speed of sound
@@ -77,9 +76,9 @@ useplot = conf.useplot;       % Plot results?
 phi = correct_azimuth(phi);
 
 % Loudspeaker positions (phiLS describes the directions of the loudspeakers)
-[x0,y0,phiLS] = secondary_source_positions(L,conf);
-nls = length(x0);
-ls_activity = secondary_source_selection(x0,y0,phiLS,xs,ys,src);
+x0 = secondary_source_positions(L,conf);
+nls = size(x0,1);
+ls_activity = secondary_source_selection(x0,xs,src);
 % generate tapering window
 win = tapwin(L,ls_activity,conf);
 
@@ -88,7 +87,6 @@ lenir = length(irs.left(:,1));
 
 
 %% ===== BRIR ===========================================================
-
 % Initial values
 brir = zeros(N,2);
 dt = zeros(1,nls);
@@ -100,7 +98,7 @@ for n=1:nls
 
 
     % === Secondary source model: Greens function ===
-    g = 1/(4*pi*norm([X Y]-[x0(n) y0(n)]));
+    g = 1/(4*pi*norm(X-x0(n,1:3)));
 
     % === Secondary source angle ===
     % Calculate the angle between the given loudspeaker and the listener.
@@ -122,7 +120,7 @@ for n=1:nls
     %
     % Angle between listener and secondary source (-pi < alpha <= pi)
     % Note: phi is the orientation of the listener (see first graph)
-    alpha = cart2sph(x0(n)-X,y0(n)-Y,0) - phi;
+    alpha = cart2sph(x0(n,1)-X(1),x0(n,2)-X(2),0) - phi;
     %
     % Ensure -pi <= alpha < pi
     alpha = correct_azimuth(alpha);
@@ -136,7 +134,7 @@ for n=1:nls
     % ====================================================================
     % Driving function to get weighting and delaying
     [a(n),delay] = ...
-        driving_function_imp_wfs_25d(x0(n),y0(n),phiLS(n),xs,ys,src,conf);
+        driving_function_imp_wfs_25d(x0(n,:),xs,src,conf);
     % Time delay of the virtual source (at the listener position)
     % t0 is a causality pre delay for a focused source, e.g. 0 for a non
     % focused point source (see SFS_config.m)
@@ -145,10 +143,10 @@ for n=1:nls
     % Check if we have a non focused source
     if strcmp('fs',src)
         % Focused source
-        tau = (norm([X Y]-[x0(n) y0(n)]) - ir_distance+offset)/c + delay - t0;
+        tau = (norm(X-x0(n,1:3)) - ir_distance+offset)/c + delay - t0;
     else
         % Virtual source behind the loudspeaker array
-        tau = (norm([X Y]-[x0(n) y0(n)]) - ir_distance+offset)/c + delay;
+        tau = (norm(X-x0(n,1:3)) - ir_distance+offset)/c + delay;
     end
     % Time delay in samples for the given loudspeaker
     % NOTE: I added some offset, because we can't get negative
@@ -192,12 +190,12 @@ brir = compensate_headphone(brir,conf);
 %% ===== Plot WFS parameters ============================================
 if(useplot)
     figure
-    plot(x0,dt);
+    plot(x0(:,1),dt);
     title('delay (taps)');
     grid on;
 
     figure
-    plot(x0,a);
+    plot(x0(:,1),a);
     title('amplitude');
     grid on;
 end

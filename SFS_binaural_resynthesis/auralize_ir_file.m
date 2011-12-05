@@ -4,16 +4,18 @@ function outsig = auralize_ir_file(irfile,content,conf)
 %          outsig = auralize_ir_file(brsfile,[file,signal,'content'])
 %
 %   Input options:
-%       irfile          - file containing impulse response (IR)
-%       content         - content file or signal vector to be used for auralisation (mono,
-%                         if it contains more than one channel, only the
-%                         first will be used).
-%                         Also predefined content can be used by applying the
-%                         one of the following strings:
-%                         'speech', 'noise', 'pinknoise', 'cello', 'castanets'.
-%                         Then these contents will be used to auralise the IR.
-%                         The corresponding content files are specified in
-%                         SFS_config.
+%       irfile  - file containing impulse response (IR)
+%       content - content file or signal vector to be used for auralisation (mono,
+%                 if it contains more than one channel, only the
+%                 first will be used).
+%                 Also predefined content can be used by applying the
+%                 one of the following strings:
+%                 'speech', 'noise', 'pinknoise', 'cello', 'castanets'.
+%                 Then these contents will be used to auralise the IR.
+%                 The corresponding content files are specified in
+%                 SFS_config.
+%       conf    - optional struct containing configuration variables (see
+%                 SFS_config for default values)
 %
 %   AURALIZE_IR_FILE(irfile,content) convolves the first two channels of
 %   the given impulse response file with the given content and returns the resulting

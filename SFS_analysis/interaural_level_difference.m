@@ -1,5 +1,6 @@
 function ild = interaural_level_difference(insigleft,insigright)
 %INTERAURAL_LEVEL_DIFFERENCE Extract the ILD between the two given signals
+%
 %   Usage: ild = interaural_level_difference(insigleft,insigright)
 %
 %   Input parameters:

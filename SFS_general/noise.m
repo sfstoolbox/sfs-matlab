@@ -1,5 +1,6 @@
 function outsig = noise(samples,nsigs,noisetype)
 %NOISE creates a white noise signal
+%
 %   Usage: outsig = noise(samples,nsigs,type)
 %          outsig = noise(samples,nsigs)
 %          outsig = noise(samples)
@@ -87,4 +88,4 @@ switch noisetype
 end
 
 % Scale output noise signal
-outsig = outsig ./ (max(abs(outsig))+eps);
+outsig = norm_signal(outsig);

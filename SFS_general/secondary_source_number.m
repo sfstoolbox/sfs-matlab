@@ -1,5 +1,7 @@
 function [nls,L] = secondary_source_number(L,conf)
-%SECONDARY_SOURCE_NUMBER calculate the number of loudspeaker for a linear WFS array
+%SECONDARY_SOURCE_NUMBER calculate the number of secondary sources for the
+%   given array size
+%
 %   Usage: [nls,L] = secondary_source_number(L,conf)
 %          [nls,L] = secondary_source_number(L)
 %
@@ -43,21 +45,18 @@ end
 
 % Array type
 array = conf.array;
-% Loudspeaker distance
+% Distance between secondary sources
 dx0 = conf.dx0;
-% Predefined loudspeaker positions
+% Predefined secondary sources
 x0 = conf.x0;
-y0 = conf.y0;
-phi = conf.phi;
 
 
 %% ===== Calculation ====================================================
 %
-% Check if we have given loudspeaker positions
+% Check if we have given secondary sources
 if length(x0>0)
-    isargvector(conf.x0,conf.y0,conf.phi);
-    isargequallength(conf.x0,conf.y0,conf.phi);
-    nls = length(x0);
+    isargsecondarysource(x0);
+    nls = size(x0,1);
     L = L;
 elseif strcmp('linear',array)
     % Number of loudspeaker

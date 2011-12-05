@@ -1,19 +1,24 @@
-function [amplitude,phase,f] = easyfft(insig,fs)
-%EASYFFT Calculates the FFT of a signal
-%   Usage: [amplitude,phase,f] = easyfft(insig,fs)
+function [amplitude,phase,f] = easyfft(sig,conf)
+%EASYFFT calculates the FFT of a signal and returns the corresponding frequency
+%   axis
+%
+%   Usage: [amplitude,phase,f] = easyfft(sig,conf)
+%          [amplitude,phase,f] = easyfft(sig)
 %
 %   Input parameters:
-%       insig       - one channel audio waveform
-%       fs          - sampling rate (this value is used to calculate an 
-%                     appropriate frequency axis)
+%       sig         - one channel audio waveform
+%       conf        - optional struct containing configuration variables (see
+%                     SFS_config for default values)
 %
 %   Output parameters:
 %       amplitude   - amplitude spectrum of the input signal
 %       phase       - phase spectrum of the input signal
 %       f           - corresponding frequency axis for the amplitude 
-%                     spectrum (=> plot(f,amplitude)
+%                     spectrum (=> plot(f,amplitude) (Hz)
 %
-%   EASYFFT(insig,fs) calculates the fft of the given signal.
+%   EASYFFT(sig) calculates the amplitude and phase of the sig spectrum by using
+%   the fast Fourier transformation. In addition to the amplitude and phase, the
+%   corresponding frequency axis for a plot is returned.
 %
 %   see also: easyifft, fft
 %
@@ -22,22 +27,24 @@ function [amplitude,phase,f] = easyfft(insig,fs)
 
 
 %% ===== Check input arguments ===========================================
-nargmin = 2;
+nargmin = 1;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector(insig)
-if size(insig,2) > 1
-   % Transpose
-   insig = insig';
-end;
+sig = column_vector(sig);
+
+if nargin<nargmax
+    conf = SFS_config;
+else
+    isargstruct(conf);
+end
 
 
 %% ===== Calcualate spectrum =============================================
 % Generate fast fourier transformation (=> complex output)
-compspec = fft(insig);
+compspec = fft(sig);
 
 % Length of the signal => number of points of fft
-samples = length(insig);
+samples = length(sig);
 
 % Get amplitude and phase spectra (and use only the first half of the
 %>spectrum (Nyquist))

@@ -1,11 +1,11 @@
-function [D] = driving_function_mono_wfs_2d(x0,y0,phi,xs,ys,f,src,conf)
+function [D] = driving_function_mono_wfs_2d(x0,xs,f,src,conf)
 %DRIVING_FUNCTION_MONO_WFS_2D returns the driving signal D for 2D WFS
-%   Usage: D = driving_function_mono_wfs_2d(x0,y0,phi,xs,ys,f,src,conf)
-%          D = driving_function_mono_wfs_2d(x0,y0,phi,xs,ys,f,src)
+%   Usage: D = driving_function_mono_wfs_2d(x0,xs,f,src,conf)
+%          D = driving_function_mono_wfs_2d(x0,xs,f,src)
 %
 %   Input parameters:
-%       x0,y0,phi   - position and direction of the secondary source (m)
-%       xs,ys       - position of virtual source or direction of plane wave (m)
+%       x0          - position and direction of the secondary source (m)
+%       xs          - position of virtual source or direction of plane wave (m)
 %       f           - frequency of the monochromatic source (Hz)
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs, ys are the direction of the
@@ -18,7 +18,7 @@ function [D] = driving_function_mono_wfs_2d(x0,y0,phi,xs,ys,f,src,conf)
 %   Output parameters:
 %       D           - driving function signal (1x1)
 %
-%   DRIVING_FUNCTION_MONO_WFS_2D(x0,y0,phi,xs,ys,f,src,conf) returns the
+%   DRIVING_FUNCTION_MONO_WFS_2D(x0,xs,f,src,conf) returns the
 %   driving signal for the given secondary source and desired source type (src).
 %   The driving signal is calculated for the WFS 2 dimensional case in the
 %   temporal domain.
@@ -37,10 +37,12 @@ function [D] = driving_function_mono_wfs_2d(x0,y0,phi,xs,ys,f,src,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 7;
-nargmax = 8;
+nargmin = 4;
+nargmax = 5;
 error(nargchk(nargmin,nargmax,nargin));
-isargscalar(x0,y0,phi,xs,ys);
+isargsecondarysource(x0);
+isargposition(xs);
+xs = position_vector(xs);
 isargpositivescalar(f);
 isargchar(src);
 if nargin<nargmax
@@ -56,7 +58,6 @@ end
 phase = conf.phase;
 % [xref yref]
 xref = conf.xref;
-yref = conf.yref;
 % Speed of sound
 c = conf.c;
 
@@ -71,11 +72,12 @@ omega = 2*pi*f;
 
 % Driving function D(x0,omega)
 % Activity of secondary sources
-ls_activity = secondary_source_selection(x0,y0,phi,xs,ys,src);
+ls_activity = secondary_source_selection(x0,xs,src);
 if(ls_activity)
 
-    % Direction of secondary sources
-    [nx0,ny0] = sph2cart(phi,0,1);
+    % Direction and position of secondary sources
+    nx0 = secondary_source_direction(x0);
+    x0 = x0(1:3);
 
 
     if strcmp('pw',src)
@@ -83,8 +85,7 @@ if(ls_activity)
         % ===== PLANE WAVE ===============================================
         % Use the position of the source as the direction vector for a plane
         % wave
-        nxs = xs / sqrt(xs^2+ys^2);
-        nys = ys / sqrt(xs^2+ys^2);
+        nxs = xs / norm(xs);
         %
         % ----------------------------------------------------------------
         % D_2D using a plane wave as source model
@@ -94,8 +95,7 @@ if(ls_activity)
         % NOTE: the phase term e^(-i phase) is only there in order to be able to
         %       simulate different time steps
         %
-        D = 2*1i*omega/c*[nxs nys]*[nx0 ny0]' * ...
-            exp(1i*omega/c*(nxs*x0+nys*y0)) * ...
+        D = 2*1i*omega/c*nxs*nx0' * exp(1i*omega/c*(nxs*x0')) * ...
             exp(-1i*phase);
         %
 
@@ -112,9 +112,9 @@ if(ls_activity)
         % NOTE: the phase term e^(-i phase) is only there in order to be able to
         %       simulate different time steps
         %
-        D = 1/(2*pi) * ( (1i*omega)/c - 1/sqrt((x0-xs)^2+(y0-ys)^2) ) * ...
-            ([x0 y0]-[xs ys])*[nx0 ny0]' / ((x0-xs)^2+(y0-ys)^2) * ...
-            exp(1i*omega/c*sqrt((x0-xs)^2+(y0-ys)^2)) * exp(-1i*phase);
+        D = 1/(2*pi) * ( (1i*omega)/c - 1/norm(x0-xs) ) * ...
+            (x0-xs)*nx0' / norm(x0-xs)^2 * exp(1i*omega/c*norm(x0-xs)) * ...
+            exp(-1i*phase);
         %
 
     elseif strcmp('ls',src)
@@ -130,10 +130,8 @@ if(ls_activity)
         % NOTE: the phase term e^(-i phase) is only there in order to be able to
         %       simulate different time steps
         %
-        D = -1i*omega/(2*c) * ...
-            ([x0 y0]-[xs ys])*[nx0 ny0]' / ...
-            (sqrt((x0-xs)^2+(y0-ys)^2) )^(3/2) * ...
-            besselh(1,1,omega/c*sqrt((x0-xs)^2+(y0-ys)^2)) * exp(-1i*phase);
+        D = -1i*omega/(2*c) * (x0-xs)*nx0' / norm(x0-xs)^(3/2) * ...
+            besselh(1,1,omega/c*norm(x0-xs)) * exp(-1i*phase);
         %
 
     elseif strcmp('fs',src)
@@ -149,10 +147,8 @@ if(ls_activity)
         % NOTE: the phase term e^(-i phase) is only there in order to be able to
         %       simulate different time steps
         %
-        D = -1i*omega/(2*c) * ...
-            ([x0 y0]-[xs ys])*[nx0 ny0]' / ...
-            (sqrt((x0-xs)^2+(y0-ys)^2) )^(3/2) * ...
-            besselh(1,2,omega/c*sqrt((x0-xs)^2+(y0-ys)^2)) * exp(-1i*phase);
+        D = -1i*omega/(2*c) * (x0-xs)*nx0' / norm(x0-xs)^(3/2) * ...
+            besselh(1,2,omega/c*norm(x0-xs)) * exp(-1i*phase);
         %
     else
         % No such source type for the driving function

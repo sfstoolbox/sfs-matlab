@@ -1,5 +1,6 @@
 function phi = rad(phi)
 %RAD returns the given angle in radians
+%
 %   Usage: phi = rad(phi)
 %
 %   Input options:

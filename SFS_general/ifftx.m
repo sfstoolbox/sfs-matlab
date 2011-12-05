@@ -2,6 +2,8 @@ function [ out ] = ifftx( varargin )
 %IFFTX Inverse spatial fourier transform
 %   Detailed explanation goes here
 
+% FIXME: maybe this function is obsolete?
+
 if nargin == 1
     input_data = varargin{1};
     points     = [];

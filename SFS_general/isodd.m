@@ -1,5 +1,6 @@
 function bool = isodd(number)
-%ISODD True for odd integer
+%ISODD true for odd integer
+%
 %   Usage: bool = isodd(number)
 %
 %   Input parameters:

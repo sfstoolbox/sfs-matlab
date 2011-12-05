@@ -66,7 +66,6 @@ end
 tmpdir = conf.tmpdir;
 % Center position of array
 X0 = conf.X0;
-Y0 = conf.Y0;
 % Distance between loudspeakers
 dx0 = conf.dx0;
 % Used array geometry
@@ -235,9 +234,9 @@ if ~(p.usegnuplot)
             warning(['%s: the given loudspeaker distance is to small. ',...
                      'Disabling plotting of the loudspeakers'],upper(mfilename));
         else
-            [x0,y0,phi] = secondary_source_positions(L,conf);
+            x0 = secondary_source_positions(L,conf);
             hold on;
-            draw_loudspeakers(x0,y0,phi,ls_activity,conf);
+            draw_loudspeakers(x0,ls_activity,conf);
             hold off;
         end
     end

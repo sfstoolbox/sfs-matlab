@@ -1,5 +1,6 @@
 function bool = iseven(number)
-%ISEVEN True for even integer
+%ISEVEN true for even integer
+%
 %   Usage: bool = iseven(number)
 %
 %   Input parameters:

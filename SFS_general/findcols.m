@@ -1,12 +1,13 @@
 function k = findcols(A, b)
-%FINDCOLS Find indices of a given column within a matrix.
+%FINDCOLS finds indices of a given column within a matrix.
+%
 %   Usage: idx = findcols(A,b)
 %
-%   Input options:
+%   Input parameters:
 %       A   - matrix
 %       b   - colum to search for in A
 %
-%   output options:
+%   output parameters:
 %       idx - indices of found columns in matrix
 %
 %   FINDCOLS(A, b) returns a row vector with the indices of the columns
@@ -19,7 +20,8 @@ function k = findcols(A, b)
 %      find( all( A == repmat(b, 1, size(A, 2)), 1 ) )
 %      find( all( A == b(:,ones(size(A, 2), 1)), 1 ) )
 %
-%   See also find, findrows.
+%   See also: find, findrows
+%
 
 % AUTHOR: Peter John Acklam, Hagen Wierstorf
 

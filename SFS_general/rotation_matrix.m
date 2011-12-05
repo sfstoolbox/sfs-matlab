@@ -1,5 +1,6 @@
 function R = rotation_matrix(phi,orientation)
-%ROTATION_MATRIX Returns a 2D rotation matrix for the given angle
+%ROTATION_MATRIX returns a 2D rotation matrix for the given angle
+%
 %   Usage: R = rotation_matrix(phi)
 %          R = rotation_matrix(phi,'counterclockwise')
 %          R = rotation_matrix(phi,'clockwise')

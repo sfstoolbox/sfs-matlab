@@ -1,10 +1,11 @@
-function ir = generic_wfs_25d(xs,ys,L,src,conf)
+function ir = generic_wfs_25d(xs,L,src,conf)
 %GENRIC_WFS_25D Generate a IR for the generic renderer of the SSR
-%   Usage: ir = generic_wfs_25d(xs,ys,L,src,conf)
-%          ir = generic_wfs_25d(xs,ys,L,src)
+%
+%   Usage: ir = generic_wfs_25d(xs,L,src,conf)
+%          ir = generic_wfs_25d(xs,L,src)
 %
 %   Input parameters:
-%       xs,ys   - virtual source position [ys > Y0 => focused source] (m)
+%       xs      - virtual source position [ys > Y0 => focused source] (m)
 %       L       - Length of linear loudspeaker array (m)
 %       src     - source type: 'pw' -plane wave
 %                              'ps' - point source
@@ -16,11 +17,12 @@ function ir = generic_wfs_25d(xs,ys,L,src,conf)
 %       ir      - Impulse response for the desired WFS array loudspeaker
 %                 (nx1)
 %
-%   GENERIC_WFS_25D(xs,ys,L,src,conf) calculates an impulse
-%   response for a virtual source at [xs,ys] for the loudspeakers of a WFS
-%   array.
+%   GENERIC_WFS_25D(xs,L,src,conf) calculates an impulse
+%   response for a virtual source at xs for the loudspeakers of a WFS
+%   array. every loudspeaker of the array is represented by one column in
+%   the impulse response.
 %
-% see also: brs_wfs_25d, brs_point_source, auralize_brs
+% see also: brs_wfs_25d, brs_point_source, auralize_ir
 %
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
@@ -30,8 +32,7 @@ function ir = generic_wfs_25d(xs,ys,L,src,conf)
 nargmin = 4;
 nargmax = 5;
 error(nargchk(nargmin,nargmax,nargin));
-
-isargscalar(xs,ys);
+xs = position_vector(xs);
 isargpositivescalar(L);
 isargchar(src);
 
@@ -43,7 +44,6 @@ end
 
 
 %% ===== Configuration ==================================================
-
 fs = conf.fs;                 % sampling frequency
 c = conf.c;                   % speed of sound
 N = conf.N;                   % target length of BRS impulse responses
@@ -51,12 +51,10 @@ useplot = conf.useplot;       % Plot results?
 
 
 %% ===== Variables ======================================================
-
-% Loudspeaker positions (LSdir describes the directions of the LS) for a
-% linear WFS array
-[x0,y0,phiLS] = secondary_source_positions(L,conf);
+% Secondary sources
+x0 = secondary_source_positions(L,conf);
 nls = length(x0);
-ls_activity = secondary_source_selection(x0,y0,phiLS,xs,ys,src);
+ls_activity = secondary_source_selection(x0,xs,src);
 % generate tapering window
 win = tapwin(L,ls_activity,conf);
 
@@ -80,7 +78,7 @@ for n=1:nls
     % ====================================================================
     % Driving function to get weighting and delaying
     [a(n),delay] = ...
-        driving_function_imp_wfs_25d(x0(n),y0(n),phiLS(n),xs,ys,src,conf);
+        driving_function_imp_wfs_25d(x0(n,:),xs,src,conf);
     % Time delay in samples for the given loudspeaker
     dt(n) = ceil( delay*fs ) + 500;
 
@@ -103,12 +101,12 @@ ir = wfs_preequalization(ir,conf);
 %% ===== Plot WFS parameters =============================================
 if(useplot)
     figure
-    plot(x0,dt);
+    plot(x0(:,1),dt);
     title('delay (taps)');
     grid on;
 
     figure
-    plot(x0,a);
+    plot(x0(:,1),a);
     title('amplitude');
     grid on;
 end

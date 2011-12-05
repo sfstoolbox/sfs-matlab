@@ -1,13 +1,12 @@
-function [x,y,P] = wave_field_mono_line_source(X,Y,xs,ys,f,conf)
+function [x,y,P] = wave_field_mono_line_source(X,Y,xs,f,conf)
 %WAVE_FIELD_MONO_LINE_SOURCE simulates a wave field for a line source
-%   Usage: [x,y,P] = wave_field_mono_line_source(X,Y,xs,ys,f,conf)
-%          [x,y,P] = wave_field_mono_line_source(X,Y,xs,ys,f)
+%   Usage: [x,y,P] = wave_field_mono_line_source(X,Y,xs,f,conf)
+%          [x,y,P] = wave_field_mono_line_source(X,Y,xs,f)
 %
 %   Input parameters:
 %       X           - length of the X axis (m); single value or [xmin,xmax]
 %       Y           - length of the Y axis (m); single value or [ymin,ymax]
-%       xs          - x position of point source (m)
-%       ys          - y position of point source (m)
+%       xs          - position of line source (m)
 %       f           - monochromatic frequency (Hz)
 %       conf        - optional configuration struct (see SFS_config)
 %
@@ -16,8 +15,8 @@ function [x,y,P] = wave_field_mono_line_source(X,Y,xs,ys,f,conf)
 %       y           - corresponding y axis
 %       P           - Simulated wave field
 %
-%   WAVE_FIELD_MONO_LINE_SOURCE(X,Y,xs,ys,f,conf) simulates a wave 
-%   field of a line source positioned at xs,ys. 
+%   WAVE_FIELD_MONO_LINE_SOURCE(X,Y,xs,f,conf) simulates a wave 
+%   field of a line source positioned at xs. 
 %   To plot the result use plot_wavefield(x,y,P).
 %
 %   References:
@@ -29,11 +28,12 @@ function [x,y,P] = wave_field_mono_line_source(X,Y,xs,ys,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 6;
+nargmin = 4;
+nargmax = 5;
 error(nargchk(nargmin,nargmax,nargin));
 isargvector(X,Y);
-isargscalar(xs,ys);
+isargposition(xs);
+xs = position_vector(xs);
 isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
@@ -45,7 +45,7 @@ end
 %% ===== Configuration ==================================================
 % Reference position for the amplitude (correct reproduction of amplitude
 % at y = yref).
-yref = conf.yref;
+xref = conf.xref;
 % xy resolution
 xysamples = conf.xysamples;
 % Plotting result
@@ -62,14 +62,15 @@ y = linspace(Y(1),Y(2),xysamples);
 
 %% ===== Computation ====================================================
 % Check if yref is in the given y space
-if yref>max(y)
-    error('%s: yref has be smaller than max(y) = %.2f',...
-        upper(mfilename),max(y));
-end
+% FIXME: write a function to check xref position
+%if yref>max(y)
+%    error('%s: yref has be smaller than max(y) = %.2f',...
+%        upper(mfilename),max(y));
+%end
 % Create a x-y-grid to avoid a loop
-[X,Y] = meshgrid(x,y);
+[xx,yy] = meshgrid(x,y);
 % Source model for a line source G_2D(x,omega)
-P = line_source(X,Y,xs,ys,f);
+P = line_source(xx,yy,xs,f);
 % Scale signal (at yref)
 P = norm_wave_field(P,x,y,conf);
 

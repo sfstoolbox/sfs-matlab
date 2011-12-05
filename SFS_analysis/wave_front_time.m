@@ -1,31 +1,31 @@
-function t = echo_time(X,Y,xs,ys,L,conf)
-%ECHO_TIME time of occurence of first echo for a linear WFS array
-%   Usage: echo_time(X,Y,xs,ys,L,conf)
-%          echo_time(X,Y,xs,ys,L)
+function t = wave_front_time(X,xs,L,conf)
+%WAVE_FRONT_TIME time of occurence of first echo for a linear WFS array
+%   Usage: wave_front_time(X,xs,L,conf)
+%          wave_front_time(X,xs,L)
 %
 %   Input parameters:
-%       X,Y     - listener position
-%       xs,ys   - position of the virtual source
+%       X       - listener position (m)
+%       xs      - position of the virtual source (m)
 %       L       - length of the linear loudspeaker array
 %       conf    - optional struct containing configuration variables (see
 %                 SFS_config for default values)
 %
-%   ECHO_TIME(X,Y,xs,ys,L) calculates the time of occuring of the first
+%   WAVE_FRONT_TIME(X,xs,L) calculates the time of occuring of the first
 %   echo (focused sources) resp. the last echo (virtual point source) at the
-%   listener position X,Y for a given point source location xs,ys and a 
+%   listener position X for a given point source location xs and a 
 %   linear WFS loudspeaker array with a length of L.
 %
-%   see also: plot_echo_times
+%   see also: wave_front_direction, plot_wave_front_times
 %
 
 % AUTHOR: Hagen Wierstorf
 
-%% ===== Checking of input  parameters ==================================
+
+%% ===== Checking of input parameters ===================================
 nargmin = 5;
 nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
-
-isargscalar(X,Y,xs,ys);
+[X,xs] = position_vector(X,xs);
 isargpositivescalar(L);
 
 if nargin<nargmax
@@ -36,44 +36,36 @@ end
 
 
 %% ===== Configuration ==================================================
-
 % Loudspeaker distance
 dx0 = conf.dx0;
 % Array center position
 X0 = conf.X0;
-Y0 = conf.Y0;
-
 % Speed of sound
 c = conf.c;
-
 % Bandwidth of Dirac pulse
 %f = fix(fs/2);
 %k = 2*pi*f/c;
 
 
 %% ===== Variables ======================================================
-% Number of loudspeaker (round towards plus infinity)
-nLS = ceil(L/dx0);
-
 % Loudspeaker positions
-[x0,y0] = secondary_source_positions(L,conf);
-
+x0 = secondary_source_positions(L,conf);
 % Number of loudspeakers
-nLS = number_of_loudspeaker(L,conf);
+nls = size(x0,1);
 
 
 %% ===== Calculate a time axis ==========================================
 
 % Geometry
-%          [x0 y0]                [X0 Y0]
+%          x0(ii,:)                  X0
 % x-axis <-^--^--^--^--^--^--^--^--^-|-^--^--^--^--^--^--^--^--^--
 %             |                      |
 %         R2 |  |                    |
 %           |     | R                |      
 %          x        |                |
-%       [xs,ys]       |              |
+%         xs          |              |
 %                       O            |
-%                      [X,Y]         |
+%                       X            |
 %                                    v
 %                                  y-axis
 %
@@ -82,19 +74,15 @@ nLS = number_of_loudspeaker(L,conf);
 
 % Calculate arrival times at the virtual source position of the waves 
 % emitted by the secondary sources
-t2 = zeros(nLS,1);
-t = zeros(nLS,1);
-for i = 1:nLS
-    % Distance between secondary sources and virtual source
-    R2 = norm([x0(i) y0(i)] - [xs ys]);
-    % Distance between secondary sources and listener
-    R = norm([x0(i) y0(i)] - [X Y]);
+t2 = zeros(nls,1);
+t = zeros(nls,1);
+for i = 1:nls
     % Time between secondary sources and virtual source
-    t2(i) = R2/c;
+    t2(ii) = norm(x0(ii,1:3)-xs)/c;
     % === Time, in which pre-echos occur ===
-    t(i) = R/c;
+    t(ii) = norm(x0(ii,1:3)-X)/c;
 end
 
 % Adjust the time, so the virtual source arrives at time 0 at the listener
 % position and use only the minimum time (focused sources).
-t = min(t-1.*t2 - norm([xs ys]-[X Y])/c);
+t = min(t-1.*t2 - norm(xs-X)/c);

@@ -1,5 +1,6 @@
 function varargout = column_vector(varargin)
 %COLUMN_VECTOR make a column vector from the given vector
+%
 %   Usage: [x1,x2,...] = column_vector(x1,x2,...)
 %
 %   Input parameters:

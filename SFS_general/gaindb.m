@@ -1,5 +1,6 @@
 function inoutsig = gaindb(inoutsig,gn)
-%GAINDB  Increase/decrease level of signal
+%GAINDB  increases/decreases level of signal by given gain
+%
 %   Usage:  outsig = gaindb(insig,gn);
 %
 %   Input parameters:

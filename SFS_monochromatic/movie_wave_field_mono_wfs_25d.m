@@ -1,13 +1,12 @@
-function movie_wave_field_mono_wfs_25d(X,Y,xs,ys,L,f,src,outfile,conf)
+function movie_wave_field_mono_wfs_25d(X,Y,xs,L,f,src,outfile,conf)
 %MOVIE_WAVE_FIELD_MONO_WFS_25D generates movie a 2.5D WFS wave field
-%   Usage: movie_wave_field_mono_wfs_25d(X,Y,xs,ys,L,f,src,outfile,conf)
-%          movie_wave_field_mono_wfs_25d(X,Y,xs,ys,L,f,src,outfile)
+%   Usage: movie_wave_field_mono_wfs_25d(X,Y,xs,L,f,src,outfile,conf)
+%          movie_wave_field_mono_wfs_25d(X,Y,xs,L,f,src,outfile)
 %
 %   Input parameters:
 %       X           - length of the X axis (m); single value or [xmin,xmax]
 %       Y           - length of the Y axis (m); single value or [ymin,ymax]
-%       xs          - x position of point source (m)
-%       ys          - y position of point source (m)
+%       xs          - position of point source (m)
 %       L           - array length (m)
 %       f           - monochromatic frequency (Hz)
 %       src         - sourcetype of the virtual source:
@@ -18,8 +17,8 @@ function movie_wave_field_mono_wfs_25d(X,Y,xs,ys,L,f,src,outfile,conf)
 %       outfile     - name for the movie file
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   MOVIE_WAVE_FIELD_MONO_WFS_25D(X,Y,xs,ys,L,f,src,outfile,conf) generates a
-%   movie of simulations of a wave field of the given source positioned at xs, ys
+%   MOVIE_WAVE_FIELD_MONO_WFS_25D(X,Y,xs,L,f,src,outfile,conf) generates a
+%   movie of simulations of a wave field of the given source positioned at xs
 %   using a WFS 2.5 dimensional driving function in the temporal domain with
 %   different phase.
 %
@@ -29,11 +28,12 @@ function movie_wave_field_mono_wfs_25d(X,Y,xs,ys,L,f,src,outfile,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 8;
-nargmax = 9;
+nargmin = 7;
+nargmax = 8;
 error(nargchk(nargmin,nargmax,nargin));
 isargvector(X,Y);
-isargscalar(xs,ys);
+isargposition(xs);
+xs = position_vector(xs);
 isargpositivescalar(L,f);
 isargchar(src,outfile);
 if nargin<nargmax
@@ -60,9 +60,9 @@ for ii = 1:length(phase)-1
     conf.phase = phase(ii);
     conf.useplot = 0;
     % Calculate wave field for the given phase
-    [x,y,P] = wave_field_mono_wfs_25d(X,Y,xs,ys,L,f,src,conf);
-    [x0,y0,phi] = secondary_source_positions(L,conf);
-    ls_activity = secondary_source_selection(x0,y0,phi,xs,ys,src);
+    [x,y,P] = wave_field_mono_wfs_25d(X,Y,xs,L,f,src,conf);
+    x0 = secondary_source_positions(L,conf);
+    ls_activity = secondary_source_selection(x0,xs,src);
     % Generate tapering window
     win = tapwin(L,ls_activity,conf);
     ls_activity = ls_activity .* win;

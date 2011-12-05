@@ -1,13 +1,13 @@
-function [x,y,P,ls_activity] = wave_field_mono_wfs_2d(X,Y,xs,ys,L,f,src,conf)
+function [x,y,P,ls_activity] = wave_field_mono_wfs_2d(X,Y,xs,L,f,src,conf)
 %WAVE_FIELD_MONO_WFS_25D simulates a wave field for 2D WFS
-%   Usage: [x,y,P] = wave_field_mono_wfs_2d(X,Y,xs,ys,L,f,src,conf)
-%          [x,y,P] = wave_field_mono_wfs_2d(X,Y,xs,ys,L,f,src)
+%
+%   Usage: [x,y,P] = wave_field_mono_wfs_2d(X,Y,xs,L,f,src,conf)
+%          [x,y,P] = wave_field_mono_wfs_2d(X,Y,xs,L,f,src)
 %
 %   Input parameters:
 %       X           - length of the X axis (m); single value or [xmin,xmax]
 %       Y           - length of the Y axis (m); single value or [ymin,ymax]
-%       xs          - x position of point source (m)
-%       ys          - y position of point source (m)
+%       xs          - position of point source (m)
 %       L           - array length (m)
 %       f           - monochromatic frequency (Hz)
 %       src         - source type of the virtual source
@@ -22,7 +22,7 @@ function [x,y,P,ls_activity] = wave_field_mono_wfs_2d(X,Y,xs,ys,L,f,src,conf)
 %       y           - corresponding y axis
 %       P           - Simulated wave field
 %
-%   WAVE_FIELD_MONO_WFS_2D(X,Y,xs,ys,L,f,src,conf) simulates a wave
+%   WAVE_FIELD_MONO_WFS_2D(X,Y,xs,L,f,src,conf) simulates a wave
 %   field of the given source type (src) using a WFS 2 dimensional driving
 %   function in the temporal domain. This means by calculating the integral for
 %   P with a summation.
@@ -39,11 +39,12 @@ function [x,y,P,ls_activity] = wave_field_mono_wfs_2d(X,Y,xs,ys,L,f,src,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 7;
-nargmax = 8;
+nargmin = 6;
+nargmax = 7;
 error(nargchk(nargmin,nargmax,nargin));
 isargvector(X,Y);
-isargscalar(xs,ys);
+isargposition(xs);
+xs = position_vector(xs);
 isargpositivescalar(L,f);
 isargchar(src);
 if nargin<nargmax
@@ -54,7 +55,6 @@ end
 
 
 %% ===== Configuration ==================================================
-
 % xy resolution
 xysamples = conf.xysamples;
 % loudspeaker distance
@@ -64,10 +64,8 @@ useplot = conf.useplot;
 
 
 %% ===== Variables ======================================================
-
 % Setting x- and y-axis
 [X,Y] = setting_xy_ranges(X,Y,conf);
-
 % Geometry
 x = linspace(X(1),X(2),xysamples);
 y = linspace(Y(1),Y(2),xysamples);
@@ -78,15 +76,18 @@ y = linspace(Y(1),Y(2),xysamples);
 % Calculate the wave field in time-frequency domain
 %
 % Get the position of the loudspeakers and its activity
-[x0,y0,phi] = secondary_source_positions(L,conf);
-ls_activity = secondary_source_selection(x0,y0,phi,xs,ys,src);
+x0 = secondary_source_positions(L,conf);
+ls_activity = secondary_source_selection(x0,xs,src);
 % Generate tapering window
 win = tapwin(L,ls_activity,conf);
 ls_activity = ls_activity .* win;
 % Create a x-y-grid to avoid a loop
-[X,Y] = meshgrid(x,y);
+[xx,yy] = meshgrid(x,y);
 % Initialize empty wave field
 P = zeros(length(y),length(x));
+% Use only active secondary sources
+x0 = x0(ls_activity>0,:);
+win = win(ls_activity>0);
 % Integration over secondary source positions
 for ii = 1:length(x0)
 
@@ -94,11 +95,11 @@ for ii = 1:length(x0)
     % Secondary source model G(x-x0,omega)
     % This is the model for the loudspeakers we apply. We use line sources
     % for 2D synthesis.
-    G = line_source(X,Y,x0(ii),y0(ii),f);
+    G = line_source(X,Y,x0(ii,:),f);
 
     % ====================================================================
     % Driving function D(x0,omega)
-    D = driving_function_mono_wfs_2d(x0(ii),y0(ii),phi(ii),xs,ys,f,src,conf);
+    D = driving_function_mono_wfs_2d(x0(ii,:),xs,f,src,conf);
 
     % ====================================================================
     % Integration
@@ -115,7 +116,7 @@ for ii = 1:length(x0)
 
 end
 
-% === Scale signal (at [xref yref]) ===
+% === Scale signal (at xref) ===
 P = norm_wave_field(P,x,y,conf);
 
 

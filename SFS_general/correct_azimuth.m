@@ -1,5 +1,6 @@
 function phi = correct_azimuth(phi)
-%CORRECT_AZIMUTH ensures correct values for azimuth angles 
+%CORRECT_AZIMUTH ensures correct values for azimuth angles
+%
 %   Usage: phi = correct_azimuth(phi)
 %
 %   Input parameters:

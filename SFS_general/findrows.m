@@ -1,12 +1,13 @@
 function k = findrows(A, b)
-%FINDROWS Find indices of a given row within a matrix.
+%FINDROWS finds indices of a given row within a matrix.
+%
 %   Usage: idx = findrows(A,b)
 %
-%   Input options:
+%   Input parameters:
 %       A   - matrix
 %       b   - vector to find in A
 %
-%   Output options:
+%   Output parameters:
 %       idx - indices of found columns in A
 %
 %   FINDROWS(A,b) returns a column vector with the indices of the rows
@@ -19,7 +20,8 @@ function k = findrows(A, b)
 %      find( all( A == repmat(b, size(A, 1), 1), 2 ) )
 %      find( all( A == b(ones(size(A, 1), 1),:), 2 ) )
 %
-%   See also find, findcols.
+%   See also: find, findcols
+%
 
 %   AUTHOR: Peter John Acklam, Hagen Wierstorf
 

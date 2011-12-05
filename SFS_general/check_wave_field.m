@@ -1,6 +1,8 @@
 function check_wave_field(P)
-%CHECK_WAVE_FIELD checks if we have any activity in the wave field
-%   Usage: bool = check_wave_field(P,x,y,yref)
+%CHECK_WAVE_FIELD checks if we have any activity in the wave field and returns a
+%   warning otherwise.
+%
+%   Usage: check_wave_field(P)
 %
 %   Input parameters:
 %       P       - wave field
@@ -10,6 +12,7 @@ function check_wave_field(P)
 %   is not the case it returns a warning.
 %
 %   see also: wave_field_imp_wfs_25d, norm_wave_field
+%
 
 % AUTHOR: Hagen Wierstorf
 

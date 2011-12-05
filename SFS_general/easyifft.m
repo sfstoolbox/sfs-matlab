@@ -1,5 +1,6 @@
 function outsig = easyifft(amplitude,phase)
-%EASYIFFT Calculates the inverse FFT
+%EASYIFFT calculates the inverse FFT
+%
 %   Usage: outsig = easyifft(amplitude,phase)
 %
 %   Input parameters:
@@ -22,14 +23,7 @@ function outsig = easyifft(amplitude,phase)
 nargmin = 2;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector(amplitude,phase);
-% Transpose if necessary
-if size(amplitude, 2) > 1
-   amplitude = amplitude';
-end
-if size(phase, 2) > 1
-    phase = phase';
-end
+[amplitude,phase] = column_vector(amplitude,phase);
 
 
 %% ===== Regenerating wave form from spectrum ============================

@@ -1,5 +1,6 @@
 function varargout = row_vector(varargin)
 %ROW_VECTOR make a row vector from the given vector
+%
 %   Usage: [x1,x2,...] = row_vector(x1,x2,...)
 %
 %   Input parameters:

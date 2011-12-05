@@ -1,33 +1,36 @@
-function [] = draw_loudspeakers(x0,y0,phi,ls_activity,conf)
+function draw_loudspeakers(x0,ls_activity,conf)
 %DRAW_LOUDSPEAKERS draws loudspeaker symbols or "x" at the given positions
 %
-%   Usage: draw_loudspeakers(x0,y0,phi,ls_activity,conf)
-%          draw_loudspeakers(x0,y0,phi,ls_activity)
-%          draw_loudspeakers(x0,y0,phi)
+%   Usage: draw_loudspeakers(x0,ls_activity,conf)
+%          draw_loudspeakers(x0,ls_activity)
+%          draw_loudspeakers(x0)
 %
 %   Input options:
-%       x0,y0       - positions of the loudspeakers (m)
-%       phi         - directions of the loudspeaker (rad)
+%       x0          - positions and directions of the loudspeakers (m)
 %       ls_activity - activity of the loudspeaker
 %       conf        - optional struct containing configuration variables (see
 %                     SFS_config for default values)
 %
-%   DRAW_LOUDSPEAKERS(x0,y0,phi,ls_activity) draws loudspeaker symbols at
+%   DRAW_LOUDSPEAKERS(x0,ls_activity) draws loudspeaker symbols at
 %   the given secondary source positions. The loudspeaker symbols are pointing
-%   in the direction given by phi.
+%   in their given direction.
 %
+%   see also: plot_wavefield
+%
+
 % AUTHOR: Sascha Spors, Hagen Wierstorf
 
+
 %% ===== Checking of input parameter =====================================
-nargmin = 3;
-nargmax = 5;
+nargmin = 1;
+nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector(x0,y0,phi)
-nLS = length(phi);
+isargsecondarysource(x0)
+nls = size(x0,1);
 if(nargin<nargmax-1)
-    ls_activity = zeros(1,nLS);
+    ls_activity = zeros(nls,1);
 elseif(length(ls_activity)==1)
-    ls_activity = ls_activity*ones(1,nLS);
+    ls_activity = ls_activity*ones(nls,1);
 end
 isargvector(ls_activity);
 if nargin<nargmax
@@ -45,7 +48,7 @@ p.lssize = conf.plot.lssize;
 %% ===== Plotting ========================================================
 % Plot only "x" at the loudspeaker positions
 if(~p.realloudspeakers)
-    plot(x0(ls_activity>0),y0(ls_activity>0),'wx','linewidth',1,...
+    plot(x0(ls_activity>0,1),x0(ls_activity>0,2),'wx','linewidth',1,...
         'Color',[.01 .01 .01]);
 else
 
@@ -62,11 +65,14 @@ else
     hold on;
 
     % draw loudspeakers
-    for n=1:nLS
+    for n=1:nls
+
+        % Get the azimuth direction of the secondary sources
+        phi = cart2pol(x0(n,4)-x0(n,1),x0(n,5)-x0(n,2));
 
         % Rotation matrix (orientation of the speakers)
         % R = [cos(phi(n)) -sin(phi(n));sin(phi(n)) cos(phi(n))];
-        R = rotation_matrix(phi(n));
+        R = rotation_matrix(phi);
 
         for k=1:length(v1)
             vr1(:,k) = R * v1(:,k);
@@ -77,11 +83,11 @@ else
         end
 
         % shift
-        v01(1,:) = vr1(1,:) + x0(n);
-        v01(2,:) = vr1(2,:) + y0(n);
+        v01(1,:) = vr1(1,:) + x0(n,1);
+        v01(2,:) = vr1(2,:) + x0(n,2);
 
-        v02(1,:) = vr2(1,:) + x0(n);
-        v02(2,:) = vr2(2,:) + y0(n);
+        v02(1,:) = vr2(1,:) + x0(n,1);
+        v02(2,:) = vr2(2,:) + x0(n,2);
 
         if(ls_activity(n)>0)
             % Scale the color. sc = 1 => black. sc = 0.5 0> gray.

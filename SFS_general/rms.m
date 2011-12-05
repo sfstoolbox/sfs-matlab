@@ -1,5 +1,6 @@
 function y = rms(insig,options)
-%RMS RMS value of signal
+%RMS returns the root mean square of the signal
+%
 %   Usage: y = rms(insig);
 %          y = rms(insig,'ac');
 %

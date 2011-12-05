@@ -1,12 +1,12 @@
-function brs = brsset_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
+function brs = brsset_wfs_25d(X,phi,xs,L,src,irs,conf)
 %BRS_SET_WFS_25D generates a BRS set for use with the SoundScapeRenderer
-%   Usage: brs = brsset_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
-%          brs = brsset_wfs_25d(X,Y,phi,xs,ys,L,src,irs)
+%   Usage: brs = brsset_wfs_25d(X,phi,xs,L,src,irs,conf)
+%          brs = brsset_wfs_25d(X,phi,xs,L,src,irs)
 %
 %   Input parameters:
-%       X,Y     - listener position (m)
+%       X       - listener position (m)
 %       phi     - listener direction [head orientation] (rad)
-%       xs,ys   - virtual source position [ys > Y0 => focused source] (m)
+%       xs      - virtual source position [ys > Y0 => focused source] (m)
 %       L       - Length of linear loudspeaker array (m)
 %       src     - source type: 'pw' - plane wave
 %                              'ps' - point source
@@ -19,8 +19,8 @@ function brs = brsset_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
 %       brs     - conf.N x 2*nangles matrix containing all brs (2
 %                 channels) for every angles of the BRS set
 %
-%   BRSSET_WFS_25D(X,Y,phi,xs,ys,L,irs,conf) prepares a BRS set for
-%   a virtual source at [xs ys] for a linear WFS array and the given
+%   BRSSET_WFS_25D(X,phi,xs,L,irs,conf) prepares a BRS set for
+%   a virtual source at xs for a linear WFS array and the given
 %   listener position.
 %   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
 %   http://www.tu-berlin.de/?id=ssr
@@ -31,27 +31,27 @@ function brs = brsset_wfs_25d(X,Y,phi,xs,ys,L,src,irs,conf)
 %                                 |
 %                                 |
 %                                 |    (Listener)
-%                                 |        O [X Y], phi=-pi/2
+%                                 |        O X, phi=-pi/2
 %                                 |        |
 %                                 |
-%                  o [xs ys]      |
+%                  o xs           |
 %             (Virtual Source)    |
 %                                 |
 %     -------v--v--v--v--v--v--v--v--v--v--v--v--v--v--v------> x-axis
-%                              [X0 Y0] (Array center)
+%                                 X0 (Array center)
 %            |---      Loudspeaker array length     ---|
 %
-%   see also: SFS_config, wfs_brs, ref_brs_set
+%   see also: SFS_config, brs_wfs_25d, brs_point_source
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 7;
-nargmax = 8;
+nargmin = 5;
+nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
-
-isargscalar(X,Y,phi,xs,ys);
+[X,xs] = position_vector(X,xs);
+isargscalar(phi);
 isargpositivescalar(L);
 check_irs(irs);
 
@@ -63,13 +63,11 @@ end
 
 
 %% ===== Configuration ===================================================
-
 N = conf.N;                     % Target length of BRIR impulse responses
 angles = rad(conf.brsangles);   % Angles for the BRIRs
 
 
 %% ===== Computation =====================================================
-
 % Initial values
 brs = zeros(N,2*length(angles));
 
@@ -77,5 +75,5 @@ brs = zeros(N,2*length(angles));
 for ii = 1:length(angles)
     % Compute BRIR for the desired WFS system
     brs(:,(ii-1)*2+1:ii*2) = ...
-        brs_wfs_25d(X,Y,angles(ii)+phi,xs,ys,L,src,irs,conf);
+        brs_wfs_25d(X,angles(ii)+phi,xs,L,src,irs,conf);
 end

@@ -1,5 +1,6 @@
 function brir = compensate_headphone(brir,conf)
 %COMPENSATE_HEADPHONE applies a headphone compensation to the BRIR
+%
 %   Usage: brir = compensate_headphone(brir,conf)
 %          brir = compensate_headphone(brir)
 %
@@ -17,6 +18,7 @@ function brir = compensate_headphone(brir,conf)
 %   The compensation is only applied, if the conf.usehcomp value is not false.
 %
 %   see also: SFS_config, brs_wfs_25d
+%
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
 

@@ -1,5 +1,6 @@
 function win = hanningwin(onset,offset,nsamples)
 %HANNINGWIN generates a hanning window with on and off ramp
+%
 %   Usage: win = hanningwin(onset,offset,nsamples)
 %
 %   Input parameters:

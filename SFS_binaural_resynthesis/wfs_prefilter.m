@@ -1,8 +1,9 @@
 function hpre = wfs_prefilter(conf)
 %WFS_PREFILTER creates a pre-equalization filter for WFS
+%
 %   Usage: hpre = wfs_prefilter(conf)
 %          hpre = wfs_prefilter()
-
+%
 %
 %   Input parameters:
 %       conf    - optional struct containing configuration variables (see
@@ -15,6 +16,7 @@ function hpre = wfs_prefilter(conf)
 %   Wave  Field Synthesis (from conf.hpreflow to conf.hprefhigh, see SFS_config).
 %
 %   see also: wfs_preequalization, SFS_config, brs_wfs_25d
+%
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
 
@@ -31,7 +33,6 @@ end
 
 
 %% ===== Configuration ==================================================
-
 fs = conf.fs;               % Sampling rate
 flow = conf.hpreflow;       % Lower frequency limit of preequalization 
                             % filter (= frequency when subwoofer is active)    
@@ -44,14 +45,11 @@ useplot = conf.useplot;     % Plot results?
 
 % Number of coefficients for filter
 Nfilt=128;
-
 % Frequency axis
 f = linspace(0,fs/2,fs/10);
-
 % Find indices for frequncies in f smaller and nearest to fhigh and flow
 idxfhigh = max(find(f<fhigh));
 idxflow = max(find(f<flow));
-
 % Initialize response
 H = ones(1,length(f));
 
@@ -72,7 +70,6 @@ hpre = hpre(1:end-1);
 
 
 %% ===== Plot resulting filter characteristics ==========================
-
 if(useplot)
     Hfilt = fftshift(fft(hpre));
     Hfilt = Hfilt(Nfilt/2+1:end);
@@ -97,7 +94,6 @@ end
 
 
 %% ===== Save filter coefficients =======================================
-
 if(0)
     fname = sprintf('wfs_prefilter_%d_%d_%d.wav',flow,fhigh,fs);
     disp(['Wrote pre-equalization filter into file: ' fname]);

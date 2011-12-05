@@ -1,5 +1,6 @@
 function delta = correct_elevation(delta)
-%CORRECT_ELEVATION ensures correct values for elevation angles 
+%CORRECT_ELEVATION ensures correct values for elevation angles
+%
 %   Usage: delta = correct_elevation(delta)
 %
 %   Input parameters:

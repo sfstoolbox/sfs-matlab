@@ -1,5 +1,6 @@
 function win = tapwin(L,ls_activity,conf)
 %TAPWIN generate a tapering window for a loudspeaker array
+%
 %   Usage: win = tapwin(L,ls_activity,conf)
 %          win = tapwin(L,conf)
 %          win = tapwin(L)
@@ -12,7 +13,7 @@ function win = tapwin(L,ls_activity,conf)
 %                     SFS_config for default values)
 %
 %   Output parameters:
-%       win     - tapering window (1xnLS)
+%       win     - tapering window (nlsx1)
 %
 %   TAPWIN(L,ls_activity,conf) generates a tapering window for a linear WFS
 %   loudspeaker array with a length of L. The window is created from a squared
@@ -70,18 +71,18 @@ tapwinlen = conf.tapwinlen;
 %
 % Find active loudspeaker and create only a window for these loudspeakers
 idx = (( ls_activity>0 ));
-nLS = length(ls_activity(idx));
-win = zeros(1,nLS);
+nls = length(ls_activity(idx));
+win = zeros(1,nls);
 
 if(usetapwin)
     % Length of window (given by the value of tapwinlen). The window will be
     % splitted to both sides of the loudspeaker array.
-    lenwin = round(tapwinlen*nLS)+2;
+    lenwin = round(tapwinlen*nls)+2;
     %
     % Check if we have a to short window to apply it in a useful way. This can
     % be the case for very short loudspeaker arrays (as used in Wierstorf2010). 
     if lenwin<4
-        win = ones(1,nLS);
+        win = ones(1,nls);
     else
         % Create a squared Hann window with length lenwin
         %    -
@@ -96,20 +97,20 @@ if(usetapwin)
         % length!
         %if iseven(lenwin)
         %    win = [hannwin(2:ceil(end/2))' ...
-        %           ones(1,nLS-lenwin+2) ...
+        %           ones(1,nls-lenwin+2) ...
         %           hannwin(ceil(end/2)+1:end-1)'];
         %else
         %    win = [hannwin(2:ceil(lenwin/2))' ...
-        %           ones(1,nLS-lenwin+3) ...
+        %           ones(1,nls-lenwin+3) ...
         %           hannwin(ceil(lenwin/2)+1:lenwin-1)'];
         %end
         win = [hannwin(2:ceil(end/2))' ...
-               ones(1,nLS-lenwin+2) ...
+               ones(1,nls-lenwin+2) ...
                hannwin(ceil(end/2)+1:end-1)'];
     end
 else
     % If you want to use no tapering window:
-    win = ones(1,nLS);
+    win = ones(1,nls);
 end
 
 % If we have non active loudspeaker we have to move the tapering window to the
@@ -135,3 +136,4 @@ if length(ls_activity)~=length(ls_activity(idx))
                zeros(1,length(ls_activity)-length(win)-length(1:idx2-1))];
     end
 end
+win = column_vector(win);

@@ -1,5 +1,6 @@
 function phi = degree(phi)
 %DEGREE returns the given angle in degree
+%
 %   Usage: phi = degree(phi)
 %
 %   Input options:
@@ -11,6 +12,7 @@ function phi = degree(phi)
 %   DEGREE(phi) returns the given angles phi in degree.
 %
 %   see also: rad
+%
 
 % AUTHOR: Hagen Wierstorf
 

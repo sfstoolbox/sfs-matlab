@@ -39,7 +39,7 @@ end
 % Loudspeaker distance
 dx0 = conf.dx0;
 % Array center position
-X0 = conf.X0;
+X0 = position_vector(conf.X0);
 % Speed of sound
 c = conf.c;
 % Bandwidth of Dirac pulse

@@ -65,7 +65,7 @@ end
 % Tmp dir  
 tmpdir = conf.tmpdir;
 % Center position of array
-X0 = conf.X0;
+X0 = position_vector(conf.X0);
 % Distance between loudspeakers
 dx0 = conf.dx0;
 % Used array geometry
@@ -120,7 +120,7 @@ if ~(p.usegnuplot)
 
     if(p.usedb)
         % Plot the amplitude of the wave field in dB
-        imagesc(x,y,20*log10(abs(P)),[-35 0]);
+        imagesc(x,y,20*log10(abs(P)),[-45 0]);
         % Set the limits of the colormap and add a colorbar
         if length(p.caxis)==2
             caxis(p.caxis);
@@ -298,7 +298,7 @@ else
         % Save the data for plotting with Gnuplot
         gp_save_matrix(datafile,x,y,db(abs(P)));
         if p.caxis else
-            p.caxis = [-35,0];
+            p.caxis = [-45,0];
         end
         cbtics = 5;
     else

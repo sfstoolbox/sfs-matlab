@@ -59,14 +59,14 @@ end
 
 
 %% ===== Configuration ===================================================
-fs = conf.fs;                 % sampling frequency
-t0 = conf.t0;                 % pre-delay for causality (focused sources)
-X0 = conf.X0;                 % center coordinate of array
-c = conf.c;                   % speed of sound
-N = conf.N;                   % target length of BRS impulse responses
-usehcomp = conf.usehcomp;     % Apply headphone compensation?
-hcomplfile = conf.hcomplfile; % Headphone compensation file left
-hcomprfile = conf.hcomprfile; % Headphone compensation file right
+fs = conf.fs;                  % sampling frequency
+t0 = conf.t0;                  % pre-delay for causality (focused sources)
+X0 = position_vector(conf.X0); % center coordinate of array
+c = conf.c;                    % speed of sound
+N = conf.N;                    % target length of BRS impulse responses
+usehcomp = conf.usehcomp;      % Apply headphone compensation?
+hcomplfile = conf.hcomplfile;  % Headphone compensation file left
+hcomprfile = conf.hcomprfile;  % Headphone compensation file right
 
 
 %% ===== Variables =======================================================

@@ -53,7 +53,7 @@ end
 
 %% ===== Configuration ==================================================
 % Array position (m)
-X0 = conf.X0;
+X0 = position_vector(conf.X0);
 % Reference position for the amplitude (correct reproduction of amplitude
 % at y = yref).
 yref = conf.yref;

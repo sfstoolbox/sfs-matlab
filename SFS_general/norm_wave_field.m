@@ -32,7 +32,7 @@ end
 
 
 %% ===== Configuration ===================================================
-xref = conf.xref;
+xref = position_vector(conf.xref);
 
 
 %% ===== Computation =====================================================

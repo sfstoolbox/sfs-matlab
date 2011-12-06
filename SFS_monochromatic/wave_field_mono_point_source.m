@@ -35,6 +35,7 @@ isargvector(X,Y);
 isargposition(xs);
 xs = position_vector(xs);
 isargpositivescalar(f);
+
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -43,35 +44,23 @@ end
 
 
 %% ===== Configuration ==================================================
-% Reference position for the amplitude (correct reproduction of amplitude
-% at y = yref).
-xref = conf.xref;
 % xy resolution
 xysamples = conf.xysamples;
 % Plotting result
 useplot = conf.useplot;
 
 
-%% ===== Variables ======================================================
+%% ===== Computation ====================================================
 % Setting x- and y-axis
 [X,Y] = setting_xy_ranges(X,Y,conf);
 % Geometry
 x = linspace(X(1),X(2),xysamples);
 y = linspace(Y(1),Y(2),xysamples);
-
-
-%% ===== Computation ====================================================
-% Check if yref is in the given y space
-% FIXME: write function to check the xref vector
-%if yref>max(y)
-%    error('%s: yref has be smaller than max(y) = %.2f',...
-%        upper(mfilename),max(y));
-%end
 % Create a x-y-grid to avoid a loop
 [xx,yy] = meshgrid(x,y);
 % Source model for a point source G(x,omega)
 P = point_source(xx,yy,xs,f);
-% Scale signal (at yref)
+% Scale signal (at xref)
 P = norm_wave_field(P,x,y,conf);
 
 

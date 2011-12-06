@@ -56,8 +56,6 @@ end
 
 % phase of omega
 phase = conf.phase;
-% [xref yref]
-xref = conf.xref;
 % Speed of sound
 c = conf.c;
 

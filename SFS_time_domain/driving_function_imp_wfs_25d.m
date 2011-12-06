@@ -49,7 +49,7 @@ fs = conf.fs;
 c = conf.c;
 % Array type
 array = conf.array;
-xref = conf.xref;
+xref = position_vector(conf.xref);
 
 
 %% ===== Computation =====================================================

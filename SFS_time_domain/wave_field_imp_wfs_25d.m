@@ -37,10 +37,10 @@ nargmin = 5;
 nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
 isargvector(X,Y);
-isargposition(xs);
 xs = position_vector(xs);
 isargpositivescalar(L);
 isargchar(src);
+
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -90,62 +90,84 @@ x = linspace(X(1),X(2),xysamples);
 y = linspace(Y(1),Y(2),xysamples);
 [xx,yy] = meshgrid(x,y);
 
-% Simulation for the given frame(s)
-for sample = frame;
-    % Initialize empty wave field
-    p = zeros(length(y),length(x));
-    % Integration over loudspeaker
-    for l = 1:size(x0,1)
+% Use only active secondary sources
+x0 = x0(ls_activity>0,:);
+nls = size(x0,1);
+win = win(ls_activity>0);
 
-        % ================================================================
-        % Driving function d2.5D(x0,t)
-        [weight,delay] = driving_function_imp_wfs_25d(x0(l,:),xs,src,conf);
+% In a first loop calculate the weight and delay values.
+% This is done in an extra loop, because all delay values are needed to
+% calculate the time frame to use for the wave field
+delay = zeros(nls,1);
+weight = zeros(nls,1);
+for ii = 1:nls
+    % ================================================================
+    % Driving function d2.5D(x0,t)
+    [weight(ii),delay(ii)] = driving_function_imp_wfs_25d(x0(ii,:),xs,src,conf);
+end
 
-        % ================================================================
-        % Secondary source model: Greens function g3D(x,t)
-        % Distance of secondary source to receiver position
-        r = sqrt((xx-x0(l,1)).^2 + (yy-x0(l,2)).^2);
-        % Greens function for a 3D monopole
-        g = 1./(4*pi*r);
-
-        % ================================================================
-        % Driving function
-        % NOTE: the interpolation is taking part because of the problem with the
-        % sharp delta time points from the driving function and from the greens
-        % function. Because we sample the time there is most often no overlap
-        % between the two delta functions and the resulting wave field would be
-        % zero.
-        % FIXME: I should check, that I can combine the two delta functions in
-        % the way I have done it here.
-        % Calculate maximum time delay possible for the given axis size
-        maxt = round(L/c*fs);
-        % Add some additional offset
-        maxt = maxt+500;
-        % Create a time axis for the interpolation
-        t = sample-maxt:sample+maxt;
-        % create a driving function
-        d = zeros(size(t));
-        d(maxt+1) = weight * win(l);
-        % Interpolate the driving function for the given delay time steps given
-        % by the delta function from d, combined with the time steps given by
-        % g.
-        d = interp1(t,d,r/c*fs+delay*fs);
-
-        % ================================================================
-        % Wave field p(x,t)
-        p = p + d .* g;
-
+% If no explizit time frame is given calculate one
+if isempty(frame)
+    % Use only those delay for the calculation, that correspond to secondray
+    % sources within the shown listening area
+    idx = abs(x0(:,1))<max(abs(X(:))) && abs(x0(:,2))<max(abs(Y(:)));
+    % If we haven#t found any idx, use all entries
+    if isempty(idx)
+        idx = ones(nls,1);
     end
+    % Get frame
+    frame = max(round(delay(idx)*fs)) + 100;
+end
+
+% In a second loop simulate the wave field
+% Initialize empty wave field
+p = zeros(length(y),length(x));
+% Integration over loudspeaker
+for ii = 1:nls
+
+    % ================================================================
+    % Secondary source model: Greens function g3D(x,t)
+    % Distance of secondary source to receiver position
+    r = sqrt((xx-x0(ii,1)).^2 + (yy-x0(ii,2)).^2);
+    % Greens function for a 3D monopole
+    g = 1./(4*pi*r);
+
+    % ================================================================
+    % Driving function
+    % NOTE: the interpolation is taking part because of the problem with the
+    % sharp delta time points from the driving function and from the greens
+    % function. Because we sample the time there is most often no overlap
+    % between the two delta functions and the resulting wave field would be
+    % zero.
+    % FIXME: I should check, that I can combine the two delta functions in
+    % the way I have done it here.
+    % Calculate maximum time delay possible for the given axis size
+    maxt = round(L/c*fs);
+    % Add some additional offset
+    maxt = maxt+500;
+    % Create a time axis for the interpolation
+    t = frame-maxt:frame+maxt;
+    % create a driving function
+    d = zeros(size(t));
+    d(maxt+1) = weight(ii) * win(ii);
+    % Interpolate the driving function for the given delay time steps given
+    % by the delta function from d, combined with the time steps given by
+    % g.
+    d = interp1(t,d,r/c*fs+delay(ii)*fs);
+
+    % ================================================================
+    % Wave field p(x,t)
+    p = p + d .* g;
+
+end
 
 
-    % === Checking of wave field ===
-    check_wave_field(p);
+% === Checking of wave field ===
+check_wave_field(p,frame);
 
 
-    % === Plotting ===
-    if (useplot)
-        conf.plot.usedb = 1;
-        plot_wavefield(x,y,p,L,ls_activity,conf);
-    end
-
+% === Plotting ===
+if (useplot)
+    conf.plot.usedb = 1;
+    plot_wavefield(x,y,p,L,ls_activity,conf);
 end

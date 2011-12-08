@@ -72,8 +72,8 @@ for ii = 1:size(insigleft,2)
 if strcmp ( mode,'hilbert') |strcmp ( mode,'simple')
     % Treshold after sandvad1994 (5% of maximum in each IR)
     % NOTE: I have changed it to 10%
-    tresholdleft = 0.15 * max(abs(insigleft(:,ii)));
-    tresholdright = 0.15 * max(abs(insigright(:,ii)));
+    tresholdleft = 0.10 * max(abs(insigleft(:,ii)));
+    tresholdright = 0.10 * max(abs(insigright(:,ii)));
     % Ten fold upsampling (after lindau2010) to have a smoother output
 
     resampleft = resample(insigleft(:,ii),10*fs,fs);

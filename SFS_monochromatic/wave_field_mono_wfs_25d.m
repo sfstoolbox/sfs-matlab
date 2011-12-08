@@ -1,7 +1,8 @@
 function [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,L,f,src,conf)
 %WAVE_FIELD_MONO_WFS_25D simulates a wave field for 2.5D WFS
-%   Usage: [x,y,P] = wave_field_mono_wfs_25d(X,Y,xs,L,f,src,conf)
-%          [x,y,P] = wave_field_mono_wfs_25d(X,Y,xs,L,f,src)
+%
+%   Usage: [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,ys,L,f,src,conf)
+%          [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,ys,L,f,src)
 %
 %   Input parameters:
 %       X           - length of the X axis (m); single value or [xmin,xmax]
@@ -20,6 +21,7 @@ function [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,L,f,src,conf)
 %       x           - corresponding x axis
 %       y           - corresponding y axis
 %       P           - Simulated wave field
+%       ls_activity - activity of the secondary sources (see plot_wavefield)
 %
 %   WAVE_FIELD_MONO_WFS_25D(X,Y,xs,L,f,src,conf) simulates a wave 
 %   field of the given source type (src) using a WFS 2.5 dimensional driving 

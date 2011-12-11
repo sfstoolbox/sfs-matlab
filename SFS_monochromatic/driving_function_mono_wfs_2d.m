@@ -1,5 +1,6 @@
 function [D] = driving_function_mono_wfs_2d(x0,xs,f,src,conf)
 %DRIVING_FUNCTION_MONO_WFS_2D returns the driving signal D for 2D WFS
+%
 %   Usage: D = driving_function_mono_wfs_2d(x0,xs,f,src,conf)
 %          D = driving_function_mono_wfs_2d(x0,xs,f,src)
 %
@@ -41,7 +42,6 @@ nargmin = 4;
 nargmax = 5;
 error(nargchk(nargmin,nargmax,nargin));
 isargsecondarysource(x0);
-isargposition(xs);
 xs = position_vector(xs);
 isargpositivescalar(f);
 isargchar(src);
@@ -53,7 +53,6 @@ end
 
 
 %% ===== Configuration ==================================================
-
 % phase of omega
 phase = conf.phase;
 % Speed of sound
@@ -61,12 +60,10 @@ c = conf.c;
 
 
 %% ===== Computation ====================================================
-
 % Calculate the driving function in time-frequency domain
 %
 % Omega
 omega = 2*pi*f;
-
 
 % Driving function D(x0,omega)
 % Activity of secondary sources
@@ -76,7 +73,6 @@ if(ls_activity)
     % Direction and position of secondary sources
     nx0 = secondary_source_direction(x0);
     x0 = x0(1:3);
-
 
     if strcmp('pw',src)
 

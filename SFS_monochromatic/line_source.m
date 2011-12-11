@@ -1,4 +1,4 @@
-function S = line_source(x,y,xs,ys,f,conf)
+function S = line_source(x,y,xs,f,conf)
 %LINE_SOURCE returns the Green's function for a line source
 %   Usage: S = line_source(x,y,xs,ys,omega,conf)
 %          S = line_source(x,y,xs,ys,omega)
@@ -12,7 +12,7 @@ function S = line_source(x,y,xs,ys,f,conf)
 %   Output parameters:
 %       S        - Wave field of a point source located at xs,ys
 %
-%   LINE_SOURCE(x,y,xs,ys,f) calculates the wave field of a line source
+%   LINE_SOURCE(x,y,xs,f) calculates the wave field of a line source
 %   located at xs,ys for the given points x,y and the frequency f. The wave
 %   field is calculated by the Greens function.
 %
@@ -25,11 +25,11 @@ function S = line_source(x,y,xs,ys,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 6;
+nargmin = 4;
+nargmax = 5;
 error(nargchk(nargmin,nargmax,nargin));
 isargmatrix(x,y);
-isargscalar(xs,ys);
+xs = position_vector(xs);
 isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
@@ -52,4 +52,5 @@ omega = 2*pi*f;
 %
 % see: Williams1999, p. 266
 %
-S = 1i/4 * besselh(0,1,omega/c*sqrt((x-xs).^2+(y-ys).^2));
+S = 1i/4 * besselh(0,1,omega/c* ...
+    sqrt( (x-xs(1)).^2 + (y-xs(2)).^2 ));

@@ -43,7 +43,6 @@ nargmin = 6;
 nargmax = 7;
 error(nargchk(nargmin,nargmax,nargin));
 isargvector(X,Y);
-isargposition(xs);
 xs = position_vector(xs);
 isargpositivescalar(L,f);
 isargchar(src);
@@ -95,7 +94,7 @@ for ii = 1:length(x0)
     % Secondary source model G(x-x0,omega)
     % This is the model for the loudspeakers we apply. We use line sources
     % for 2D synthesis.
-    G = line_source(X,Y,x0(ii,:),f);
+    G = line_source(xx,yy,x0(ii,1:3),f);
 
     % ====================================================================
     % Driving function D(x0,omega)

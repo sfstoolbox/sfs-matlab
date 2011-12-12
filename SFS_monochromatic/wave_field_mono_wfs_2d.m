@@ -115,6 +115,16 @@ for ii = 1:length(x0)
 
 end
 
+% === Primary source correction ===
+if(0)
+    omega = 2*pi*f;
+    c = conf.c;
+    xref = position_vector(conf.xref);
+    C = exp(-1i*(omega/c*norm(xref-xs) - pi/2)) / ...
+    ( pi*norm(xref-xs)*besselh(0,2,omega/c*norm(xref-xs)) )
+    P = P .* C;
+end
+
 % === Scale signal (at xref) ===
 P = norm_wave_field(P,x,y,conf);
 

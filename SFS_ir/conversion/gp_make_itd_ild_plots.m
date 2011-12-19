@@ -22,8 +22,8 @@ data_sets = { ...
 for ii = 1:size(data_sets,1)
     conf.irsfile = ['measurements/',data_sets{ii,2},'s/',data_sets{ii,1},'.mat'];
     irs = read_irs(conf);
-    itd = extract_itd(irs.left,irs.right,irs.fs);
-    ild = extract_ild(irs.left,irs.right);
+    itd = interaural_time_difference(irs.left,irs.right,irs.fs);
+    ild = interaural_level_difference(irs.left,irs.right);
     gp_save('itd.txt',irs.azimuth/pi*180,itd);
     gp_save('ild.txt',irs.azimuth/pi*180,ild);
     % Plot ITD

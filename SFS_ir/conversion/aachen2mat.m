@@ -82,22 +82,23 @@ end
 	
 	
 i=15;
+j=0;
 while i <= 180
 	airpar.azimuth = i;
 	airpar.channel = 1;
 	[h_left,air_info] = load_air(airpar);
 	airpar.channel = 0;
 	[h_right,air_info] = load_air(airpar);
-	irs.left(:,i/15) = h_left;
-	irs.right(:,i/15) = h_right;
+	irs.left(:,i/15+j) = h_left;
+	irs.right(:,i/15+j) = h_right;
 	irs.room = air_info.room;
-    irs.head_azimuth(i/15) = correct_azimuth(rad(360-i+90));
- 	irs.apparent_azimuth(i/15) = correct_azimuth(rad(360-i+90));
-	irs.apparent_elevation(i/15) = 0;
+    irs.head_azimuth(i/15+j) = correct_azimuth(rad(360-i+90));
+ 	irs.apparent_azimuth(i/15+j) = correct_azimuth(rad(360-i+90));
+	irs.apparent_elevation(i/15+j) = 0;
 	i=i+15;
 	if i ==30 & irs.distance ~= 3;
 		i = i+ 15;
-		a = 0
+		j = -1
 	end
 end
 

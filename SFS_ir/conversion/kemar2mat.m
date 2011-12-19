@@ -74,6 +74,8 @@ irs.head = 'KEMAR 45BA';
 irs.fs = 44100;
 irs.head_elevation = NaN;
 irs.torso_elevation = NaN;
+irlength = 2048;    % this is suitable for an anechoic chamber, change this for
+                    % real rooms in the corresponding if-section
 
 
 %% ===== RAR ============================================================
@@ -105,15 +107,6 @@ if strncmpi(irsset,'RAR',3)
         irs.source_position = [0 1 0]';
         irs.head_azimuth = NaN;
         irfilebase = 'KEMAR_1deg_1m_large_ear';
-
-    elseif strcmp(irsset,'RAR_2m')
-        irs.description = ...
-            ['KEMAR measurement in RAR of the TU Berlin. Used elevation ', ...
-             'angle: 0°; azimuth resolution: 1°. Rotation: torso.'];
-        irs.ears = 'large';
-        irs.source_position = [0 2 0]';
-        irs.head_azimuth = NaN;
-        irfilebase = 'KEMAR_1deg_2m_large_ears_';
 
     elseif strcmp(irsset,'RAR_3m')
         irs.description = ...
@@ -308,14 +301,14 @@ elseif strncmpi(irsset,'array',5)
         sources = sources13;
         irs.description = 'HRIR of a 1.8m loudspeaker array with dx0=0.15';
         irfilebase =  '2011-10-04_21-51-48_src';
+    else
+        error('%s: The given irsset is unknown.',upper(mfilename));
     end
 
 
 else
     error('%s: the given irsset is not available.',upper(mfilename));
 end
-
-
 
 
 %% ===== Read the data ==================================================
@@ -338,6 +331,8 @@ if strncmpi(irsset,'RAR',3)
         irs.left(:,jj) = vspolardata.ir_ch1(1:irlength);
         irs.right(:,jj) = vspolardata.ir_ch2(1:irlength);
     end
+    % Save irs
+    save_irs_without_position(irs,outdir,irsset);
 
 % Auditorium3
 elseif strncmpi(irsset,'Auditorium3',11)
@@ -348,7 +343,7 @@ elseif strncmpi(irsset,'Auditorium3',11)
         irs.source_reference  = cell2mat(sources(ii,3))';
         
         for jj = -90:90
-            irfile = sprintf('%s/%s_src%i_head%+1.3f.mat',irspath,irfilebase,jj);
+            irfile = sprintf('%s/%s_src%i_head%+1.3f.mat',irspath,irfilebase,ii,jj);
             load(irfile);
             irs.head_azimuth(jj+91) = correct_azimuth(rad(jj));
             direction = irs.head_position - irs.source_position;
@@ -362,40 +357,47 @@ elseif strncmpi(irsset,'Auditorium3',11)
 
         % Save irs
         name = sprintf('%s_src%i',irsset,ii);
-        save(irs,outdir,name);
+        save_irs_with_position(irs,outdir,name);
     end
 
 % Loudspeaker array in RAR
 elseif strncmpi(irsset,'array',5)
     % Iterate over sources
-    for ii = cell2mat(sources(:,1))'
+    for ii = 1:length(cell2mat(sources(:,1)))
         irs.source_position = cell2mat(sources(ii,2))';
         irs.source_reference  = cell2mat(sources(ii,3))';
 
         if strncmpi(irsset,'array_R1_phi30',14) | strncmpi(irsset,'array_R4_phi30',14)
-            offset = 30;
             angle1 = -75;
             angle2 =  75;
         elseif strncmpi(irsset,'array_R1_phi60',14)
-            offset = 60;
             angle1 = -75;
             angle2 =  75;
         else
-            offset = 0;
             angle1 = -180;
             angle2 =  179;
         end
 
-        direction = irs.head_position - irs.source_position;
-        [phi, theta, r] = cart2sph(direction(1),direction(2),direction(3));
-        offset = offset + phi;
+        % calculating the offset in direction, coming from the head not to be
+        % placed in front of the box
+        headtosource_direction = irs.head_position - irs.source_position;
+        [phi, theta, R] = ...
+            cart2sph(headtosource_direction(1),headtosource_direction(2), ...
+                headtosource_direction(3));
+        offset = phi -pi/2;
+        % calculating the offset in direction, coming from the head not facing
+        % the box
+        head_direction = irs.head_position - irs.head_reference;
+        [phi, theta, R] = ...
+            cart2sph(head_direction(1),head_direction(2),head_direction(3));
+        offset = offset + pi/2  - phi;
 
         for jj = angle1:angle2
             irfile = sprintf('%s/%s%i_torso%+06.1f.mat',irspath,irfilebase,ii,jj);
             load(irfile);
 
             irs.head_azimuth(jj-angle1+1) = correct_azimuth(rad(jj));
-            irs.apparent_azimuth(jj-angle1+1) = correct_azimuth(rad(-jj+offset));
+            irs.apparent_azimuth(jj-angle1+1) = correct_azimuth(rad(-jj)+offset);
             irs.apparent_elevation(jj-angle1+1) = 0;
 
             irs.left(:,jj-angle1+1) = data.ir(1:irlength,1);
@@ -403,15 +405,15 @@ elseif strncmpi(irsset,'array',5)
         end
 
         % Save irs
-        name = sprintf('%s_src%i',irsset,ii);
-        save_irs(irs,outdir,name);
+        name = sprintf('%s_src%02.0f',irsset,ii);
+        save_irs_with_position(irs,outdir,name);
     end
 end
 
 
 %% Helper functions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function save_irs(irs,outdir,irsset)
+function save_irs_without_position(irs,outdir,irsset)
 
     % Calculate the distance between head and source
     irs.distance = norm(irs.head_position-irs.source_position);
@@ -429,10 +431,33 @@ function save_irs(irs,outdir,irsset)
     end
 
     % Write IR mat-file
-    xs = irs.source_position + irs.head_position;
-    outfile = sprintf('%s/QU_KEMAR_%s_xs%.3f_ys%.3f.mat', ...
+    xs = irs.source_position - irs.head_position;
+    outfile = sprintf('%s/QU_KEMAR_%s.mat',outdir,irsset);
+    save_irs(irs,outfile);
+
+end
+
+function save_irs_with_position(irs,outdir,irsset)
+
+    % Calculate the distance between head and source
+    irs.distance = norm(irs.head_position-irs.source_position);
+
+    % Reorder fields
+    irs = order_irs_fields(irs);
+    % Reorder entries
+    irs = correct_irs_angle_order(irs);
+    % Check irs format
+    check_irs(irs);
+
+    % Create the outdir
+    if ~exist(outdir,'dir')
+        mkdir(outdir);
+    end
+
+    % Write IR mat-file
+    xs = irs.head_position - irs.source_position;
+    outfile = sprintf('%s/QU_KEMAR_%s_xs%+.3f_ys%+.3f.mat', ...
         outdir,irsset,xs(1),xs(2));
-    %v6 is used for the Windows-Version of Octave, better use v7
-    save('-v6',outfile,'irs');
+    save_irs(irs,outfile);
 
 end

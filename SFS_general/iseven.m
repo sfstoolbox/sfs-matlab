@@ -21,7 +21,7 @@ function bool = iseven(number)
 nargmin = 1;
 nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
-isargmatrix(number)
+isargmatrix(number);
 
 
 %% ===== Computation =====================================================

@@ -268,7 +268,7 @@ else
     % Check if we should plot the loudspeakers.
     if(p.loudspeakers)
         % Loudspeaker positions and directions
-        [x0,y0,phi] = secondary_source_positions(L,conf);
+        x0 = secondary_source_positions(L,conf);
 
         % FIXME: I think the following code is not neccessary
         % check if we have loudspeakers outside of the desired plotting region and
@@ -288,7 +288,7 @@ else
                 ls_activity = repmat(ls_activity,size(x0));
             end
             % Storing loudspeaker positions and activity
-            [x0,y0,phi,ls_activity] = column_vector(x0,y0,phi,ls_activity);
+            [x0,y0,phi,ls_activity] = column_vector(x0(:,1),x0(:,2),phi(:,3),ls_activity);
             gp_save(lsfile,x0,[y0 phi ls_activity]);
         end
     end

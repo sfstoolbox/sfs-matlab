@@ -27,6 +27,6 @@ isargchar(outfile);
 %% ===== Save IR file ===================================================
 
 % Save as mat file
-% If -v7 doesn't worj use -v6, but note this won't use any compression of your
+% If -v7 doesn't work use -v6, but note this won't use any compression of your
 % data
 save('-v7',outfile,'irs');

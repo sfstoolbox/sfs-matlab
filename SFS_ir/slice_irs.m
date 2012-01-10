@@ -45,3 +45,12 @@ end
 if size(irs.torso_elevation)~=[1 1]
     irspart.torso_elevation = irs.torso_elevation(idx);
 end
+if size(irs.distance)~=[1 1]
+    irspart.distance = irs.distance(idx);
+end
+if size(irs.source_position)~=[3 1]
+    irspart.source_position = irs.source_position(idx);
+end
+if size(irs.source_reference)~=[3 1]
+    irspart.source_reference = irs.source_reference(idx);
+end

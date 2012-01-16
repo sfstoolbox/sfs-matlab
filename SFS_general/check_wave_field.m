@@ -27,9 +27,11 @@ isargscalar(frame);
 
 
 %% ===== Computation =====================================================
-if max(abs(P(:)))==0 || isnan(P(:))
+if max(abs(P(:)))==0 
+    if isnan(P(:))
     warning('SFS:check_wave_field',...
         ['The activity in the simulated wave field is zero. ',...
          'Maybe you should use another time frame than %i. ', ...
          'You can set the time frame with conf.frame.'],frame);
+    end
 end

@@ -110,7 +110,7 @@ end
 if isempty(frame)
     % Use only those delay for the calculation, that correspond to secondray
     % sources within the shown listening area
-    idx = abs(x0(:,1))<max(abs(X(:))) && abs(x0(:,2))<max(abs(Y(:)));
+    idx = abs(x0(:,1))<max(abs(X(:))) & abs(x0(:,2))<max(abs(Y(:)));
     % If we haven#t found any idx, use all entries
     if isempty(idx)
         idx = ones(nls,1);

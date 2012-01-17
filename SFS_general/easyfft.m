@@ -38,6 +38,9 @@ else
     isargstruct(conf);
 end
 
+%% ===== Configuration ===================================================
+fs = conf.fs;
+
 
 %% ===== Calcualate spectrum =============================================
 % Generate fast fourier transformation (=> complex output)

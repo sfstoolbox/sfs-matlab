@@ -26,10 +26,12 @@ function [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,L,src,conf)
 %   function with a delay line.
 %   To plot the result use plot_wavefield(x,y,P).
 %   NOTE: the pre-equalization filter is not integrated in this function at the
-%   moment. But the main effect of this filter is to broaden the impulse a
-%   little bit.
+%   moment.
 
 % AUTHOR: Hagen Wierstorf, Sascha Spors
+% $LastChangedDate:
+% $LastChangedRevision:
+% $LastChangedBy:
 
 
 %% ===== Checking of input  parameters ==================================
@@ -59,7 +61,8 @@ c = conf.c;
 fs = conf.fs;
 % Time frame to simulate 
 frame = conf.frame;
-
+% Use pre-equalization filter
+usehpre = conf.usehpre;
 
 %% ===== Computation =====================================================
 
@@ -108,7 +111,7 @@ end
 
 % If no explizit time frame is given calculate one
 if isempty(frame)
-    % Use only those delay for the calculation, that correspond to secondray
+    % Use only those delays for the calculation, that correspond to secondary
     % sources within the shown listening area
     idx = abs(x0(:,1))<max(abs(X(:))) & abs(x0(:,2))<max(abs(Y(:)));
     % If we haven#t found any idx, use all entries
@@ -127,16 +130,16 @@ for ii = 1:nls
 
     % ================================================================
     % Secondary source model: Greens function g3D(x,t)
-    % Distance of secondary source to receiver position
+    % distance of secondary source to receiver position
     r = sqrt((xx-x0(ii,1)).^2 + (yy-x0(ii,2)).^2);
-    % Greens function for a 3D monopole
+    % amplitude decay for a 3D monopole
     g = 1./(4*pi*r);
 
     % ================================================================
     % Driving function
     % NOTE: the interpolation is taking part because of the problem with the
     % sharp delta time points from the driving function and from the greens
-    % function. Because we sample the time there is most often no overlap
+    % function. Because we sample in time there is most often no overlap
     % between the two delta functions and the resulting wave field would be
     % zero.
     % FIXME: I should check, that I can combine the two delta functions in

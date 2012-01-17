@@ -29,9 +29,9 @@ function [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,L,src,conf)
 %   moment.
 
 % AUTHOR: Hagen Wierstorf, Sascha Spors
-% $LastChangedDate:
-% $LastChangedRevision:
-% $LastChangedBy:
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

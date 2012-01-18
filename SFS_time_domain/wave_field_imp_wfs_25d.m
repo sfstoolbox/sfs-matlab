@@ -110,7 +110,7 @@ for ii = 1:nls
     % ================================================================
     % Driving function d2.5D(x0,t)
     [weight(ii),delay(ii)] = driving_function_imp_wfs_25d(x0(ii,:),xs,src,conf);
-    % temporal discretization w.r.t. sampling rate of delay
+    % temporal discretization w.r.t. sampling rate
     delay(ii) = round(delay(ii)*fs)/fs;
 end
 
@@ -119,7 +119,7 @@ if isempty(frame)
     % Use only those delays for the calculation, that correspond to secondary
     % sources within the shown listening area
     idx = abs(x0(:,1))<max(abs(X(:))) & abs(x0(:,2))<max(abs(Y(:)));
-    % If we haven#t found any idx, use all entries
+    % If we haven't found any idx, use all entries
     if isempty(idx)
         idx = ones(nls,1);
     end
@@ -166,7 +166,7 @@ for ii = 1:nls
     % Interpolate the driving function for the given delay time steps given
     % by the delta function from d, combined with the time steps given by
     % g.
-    d = interp1(t,d,r/c*fs+delay(ii)*fs);
+    d = interp1(t,d,r/c*fs+delay(ii)*fs,'spline');
 
     % ================================================================
     % Wave field p(x,t)

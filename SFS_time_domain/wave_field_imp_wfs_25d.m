@@ -25,8 +25,6 @@ function [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,L,src,conf)
 %   field of the given source type (src) using a WFS 2.5 dimensional driving 
 %   function with a delay line.
 %   To plot the result use plot_wavefield(x,y,P).
-%   NOTE: the pre-equalization filter is not integrated in this function at the
-%   moment.
 
 % AUTHOR: Hagen Wierstorf, Sascha Spors
 % $LastChangedDate$
@@ -98,6 +96,11 @@ x0 = x0(ls_activity>0,:);
 nls = size(x0,1);
 win = win(ls_activity>0);
 
+% Calculate pre-equalization filter
+if(usehpre)
+    hpre=wfs_prefilter(conf);
+end
+    
 % In a first loop calculate the weight and delay values.
 % This is done in an extra loop, because all delay values are needed to
 % calculate the time frame to use for the wave field
@@ -107,6 +110,8 @@ for ii = 1:nls
     % ================================================================
     % Driving function d2.5D(x0,t)
     [weight(ii),delay(ii)] = driving_function_imp_wfs_25d(x0(ii,:),xs,src,conf);
+    % temporal discretization w.r.t. sampling rate of delay
+    delay(ii) = round(delay(ii)*fs)/fs;
 end
 
 % If no explizit time frame is given calculate one
@@ -151,8 +156,13 @@ for ii = 1:nls
     % Create a time axis for the interpolation
     t = frame-maxt:frame+maxt;
     % create a driving function
-    d = zeros(size(t));
-    d(maxt+1) = weight(ii) * win(ii);
+    if(usehpre)
+        d = zeros(size(t));
+        d(maxt-length(hpre)/2:maxt+length(hpre)/2-1) = weight(ii) * win(ii) .* hpre;
+    else
+        d = zeros(size(t));
+        d(maxt+1) = weight(ii) * win(ii);
+    end
     % Interpolate the driving function for the given delay time steps given
     % by the delta function from d, combined with the time steps given by
     % g.

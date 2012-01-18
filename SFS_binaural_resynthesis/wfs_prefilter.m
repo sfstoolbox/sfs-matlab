@@ -19,6 +19,10 @@ function hpre = wfs_prefilter(conf)
 %
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
+
 
 
 %% ===== Checking of input  parameters ==================================
@@ -67,35 +71,3 @@ hpre = firls(Nfilt,2*f/fs,H);
 
 % Truncate length to power of 2
 hpre = hpre(1:end-1);
-
-
-%% ===== Plot resulting filter characteristics ==========================
-if(useplot)
-    Hfilt = fftshift(fft(hpre));
-    Hfilt = Hfilt(Nfilt/2+1:end);
-    f2 = linspace(0,fs/2,length(Hfilt));
-
-    figure
-    plot(f,20*log10(abs(H)));
-    hold on
-    plot(f2,20*log10(abs(Hfilt)),'ro-');
-    hold off
-
-    grid on
-    xlabel('frequency -> [Hz]');
-    ylabel('magnitude response -> [dB]');
-    legend('desired response','filter response','Location','SouthEast');
-    axis([0 2*fhigh -20 2]);
-
-
-    figure
-    freqz(hpre,1,[],fs)
-end
-
-
-%% ===== Save filter coefficients =======================================
-if(0)
-    fname = sprintf('wfs_prefilter_%d_%d_%d.wav',flow,fhigh,fs);
-    disp(['Wrote pre-equalization filter into file: ' fname]);
-    wavwrite(hpre,fs,fname);
-end

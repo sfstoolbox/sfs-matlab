@@ -31,7 +31,7 @@ function Y = db(X,U,R)
 
 %   Author(s): D. Orofino
 %   Copyright 1988-2008 The MathWorks, Inc.
-%   $Revision: 1.7.4.5 $  $Date: 2008/09/13 07:14:14 $
+%   $Revision$  $Date$
 
 if nargin==1,
    % U='voltage'; R=1;

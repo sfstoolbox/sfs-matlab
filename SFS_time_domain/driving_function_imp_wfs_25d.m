@@ -50,6 +50,8 @@ c = conf.c;
 % Array type
 array = conf.array;
 xref = position_vector(conf.xref);
+% quantized delays
+quantdelay = conf.quantdelay;
 
 
 %% ===== Computation =====================================================
@@ -91,6 +93,12 @@ if ls_activity>0
     else
         error('%s: %s is not a known source type.',upper(mfilename),src);
     end
+    
+    % temporal quantization w.r.t. sampling rate
+    if(quantdelay)
+        delay = round(delay*fs/quantdelay)/(fs/quantdelay)
+    end
+    
 else
     delay = 0;
     weight = 0;

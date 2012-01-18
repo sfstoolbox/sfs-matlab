@@ -56,6 +56,8 @@ conf.tmpdir = '/tmp/sfs';
 conf.fs = 44100; % Hz
 % Speed of sound
 conf.c = 343; % m/s
+% temporal quantization of delays w.r.t. sampling rate
+conf.quantdelay = 0;
 
 
 % ===== Simulations =============================

@@ -31,7 +31,6 @@ function [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,L,src,conf)
 % $LastChangedRevision$
 % $LastChangedBy$
 
-
 %% ===== Checking of input  parameters ==================================
 nargmin = 5;
 nargmax = 6;
@@ -110,8 +109,6 @@ for ii = 1:nls
     % ================================================================
     % Driving function d2.5D(x0,t)
     [weight(ii),delay(ii)] = driving_function_imp_wfs_25d(x0(ii,:),xs,src,conf);
-    % temporal discretization w.r.t. sampling rate
-    delay(ii) = round(delay(ii)*fs)/fs;
 end
 
 % If no explizit time frame is given calculate one
@@ -166,7 +163,7 @@ for ii = 1:nls
     % Interpolate the driving function for the given delay time steps given
     % by the delta function from d, combined with the time steps given by
     % g.
-    d = interp1(t,d,r/c*fs+delay(ii)*fs,'spline');
+    d = interp1(t,d,r/c*fs+delay(ii)*fs,'cubic');
 
     % ================================================================
     % Wave field p(x,t)

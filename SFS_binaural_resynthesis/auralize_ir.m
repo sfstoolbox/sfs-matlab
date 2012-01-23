@@ -55,23 +55,26 @@ pinknoisefile = conf.pinknoisefile;
 
 
 %% ===== Get the right content ==========================================
-if isvector(content)
+if isvector(content) & isnumeric(content)
     contentfs = conf.fs;
-elseif strcmp(content,'castanets')
-    contentfile = castanetsfile;
-elseif strcmp(content,'speech')
-    contentfile = speechfile;
-elseif strcmp(content,'cello')
-    contentfile = cellofile;
-elseif strcmp(content,'noise')
-    contentfile = noisefile;
-elseif strcmp(content,'pinknoise')
-    contentfile = pinknoisefile;
-elseif ~exist(content,'file')
-    error('%s: %s file was not found.',upper(mfilename),content);
 else
+    if strcmp(content,'castanets')
+        contentfile = castanetsfile;
+    elseif strcmp(content,'speech')
+        contentfile = speechfile;
+    elseif strcmp(content,'cello')
+        contentfile = cellofile;
+    elseif strcmp(content,'noise')
+        contentfile = noisefile;
+    elseif strcmp(content,'pinknoise')
+        contentfile = pinknoisefile;
+    elseif ~exist(content,'file')
+        error('%s: %s file was not found.',upper(mfilename),content);
+    else
+        contentfile = content;
+    end
     % Read the content file
-    [content,contentfs] = wavread(content);
+    [content,contentfs] = wavread(contentfile);
 end
 
 

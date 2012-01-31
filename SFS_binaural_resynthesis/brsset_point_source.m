@@ -1,7 +1,7 @@
 function brs = brsset_point_source(X,phi,xs,irs,conf)
 %BRSSET_POINT_SOURCE generates a BRS set for use with the SoundScapeRenderer
-%   Usage: brs = brsset_wfs_25d(X,phi,xs,irs,conf)
-%          brs = brsset_wfs_25d(X,phi,xs,irs,)
+%   Usage: brs = brsset_point_source(X,phi,xs,irs,conf)
+%          brs = brsset_point_source(X,phi,xs,irs,)
 %
 %   Input parameters:
 %       X       - listener position (m)

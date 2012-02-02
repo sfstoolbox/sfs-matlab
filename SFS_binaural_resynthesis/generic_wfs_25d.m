@@ -29,8 +29,8 @@ function ir = generic_wfs_25d(xs,L,src,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
+nargmin = 3;
+nargmax = 4;
 error(nargchk(nargmin,nargmax,nargin));
 xs = position_vector(xs);
 isargpositivescalar(L);
@@ -66,7 +66,6 @@ win = tapwin(L,ls_activity,conf);
 dirac = zeros(1024,1);
 dirac(300) = 1;
 lenir = length(dirac);
-
 % Initial values
 ir = zeros(N,nls);
 dt = zeros(1,nls);

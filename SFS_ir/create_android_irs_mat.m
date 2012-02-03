@@ -45,7 +45,7 @@ short_irs.left = zeros(nsamples,length(angles));
 short_irs.right = zeros(nsamples,length(angles));
 for ii = 1:length(angles)
     ir = get_ir(irs,angles(ii));
-    tmp = shorten_ir(ir,fs,nsamples,conf);
+    tmp = reduce_ir(ir,fs,nsamples,conf);
     short_irs.left(:,ii) = tmp(:,1);
     short_irs.right(:,ii) = tmp(:,2);
 end

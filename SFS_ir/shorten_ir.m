@@ -1,20 +1,16 @@
-function short_ir = shorten_ir(ir,fs,nsamples,conf)
+function ir = shorten_ir(ir,nsamples)
 %SHORTEN_IR shortens a IR
-%   Usage: short_ir = shorten_ir(ir,fs,nsamples,conf)
-%          short_ir = shorten_ir(ir,fs,nsamples)
+%   Usage: ir = shorten_ir(ir,nsamples)
 %
 %   Input parameters:
-%       ir          - two channel IR signal
-%       fs          - sampling rate of the target IR
+%       ir          - IR signal with length x channels
 %       nsamples    - length of the target IR
-%       conf        - optional struct containing configuration variables
-%                     (see SFS_config for default values)
 %
 %   Output paramteres:
-%       short_ir    - two channel IR signal
+%       ir          - IR signal with nsamples x n
 %
-%   SHORTEN_HRIR(ir,fs,nsamples,conf) shortens a given IR by resampling
-%   and applying a hanning window. This is useful e.g. for mobile phones.
+%   SHORTEN_HRIR(ir,nsamples) shortens a given IR to the given number of samples
+%   nsamples and applying a 5% long hanning window.
 %
 %   see also: SFS_config, read_irs, intpol_ir
 %
@@ -23,64 +19,15 @@ function short_ir = shorten_ir(ir,fs,nsamples,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
-nargmax = 4;
+nargmin = 2;
+nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-
-isargpositivescalar(fs,nsamples);
-if ~isnumeric(ir) || size(ir,2)~=2
-    error('%s: ir has to be an IR with samples x 2 size.',upper(mfilename));
-end
-
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
-
-
-%% ===== Configuration ==================================================
-
-ofs = conf.fs;  % original fs
-useplot = conf.useplot;
+isargpositivescalar(nsamples);
 
 
 %% ===== Computation ====================================================
 
-% Resample HRIR
-if ofs~=fs
-    resamp_ir(:,1) = resample(ir(:,1),fs,ofs);
-    resamp_ir(:,2) = resample(ir(:,2),fs,ofs);
-else
-    resamp_ir = ir;
-end
+% Window IR
+win = hanningwin(0,ceil(0.05*nsamples),nsamples);
 
-% Window HRIR
-win = hanningwin(ceil(0.15*nsamples),ceil(0.10*nsamples),nsamples).^2;
-
-% Find maximum of resampled HRIR
-% Find maximum in each channel and calculate the mean of the index
-[a,idx1] = max(abs(resamp_ir(:,1)));
-[a,idx2] = max(abs(resamp_ir(:,2)));
-idx = round((idx1+idx2)/2);
-
-% Cut the HRIR around the maximum
-% Leading zeros before idx
-offset = 24;
-short_ir(1:nsamples,1) = ...
-    resamp_ir(idx-offset:idx+nsamples-offset-1,1) .* win;
-short_ir(1:nsamples,2) = ...
-    resamp_ir(idx-offset:idx+nsamples-offset-1,2) .* win;
-
-
-%% ===== Plotting =======================================================
-
-if(useplot)
-    figure
-    plot(resamp_ir(:,1),'-b'); hold on;
-    plot(resamp_ir(:,2),'-r');
-    figure
-    plot(short_ir(:,1),'-b'); hold on;
-    plot(short_ir(:,2),'r-');
-end
-
+ir = ir(1:nsamples,:) .* repmat(win,[1 size(ir,2)]);

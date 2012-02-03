@@ -48,8 +48,12 @@ useplot = conf.useplot;
 %% ===== Computation ====================================================
 
 % Resample HRIR
-resamp_ir(:,1) = resample(ir(:,1),fs,ofs);
-resamp_ir(:,2) = resample(ir(:,2),fs,ofs);
+if ofs~=fs
+    resamp_ir(:,1) = resample(ir(:,1),fs,ofs);
+    resamp_ir(:,2) = resample(ir(:,2),fs,ofs);
+else
+    resamp_ir = ir;
+end
 
 % Window HRIR
 win = hanningwin(ceil(0.15*nsamples),ceil(0.10*nsamples),nsamples).^2;

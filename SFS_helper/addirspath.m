@@ -1,29 +1,34 @@
-function addirspath(basepath)
-%ADDIRSPATH adds the directory containing irs files to the path
-%   Usage: addirspath(basepath)
+function addirspath(varargin)
+%ADDIRSPATH adds directories containing irs files to the path
+%   Usage: addirspath(varargin)
 %
-%   Input options:
-%       basepath - path where the databases are located. Default:
-%                  ~/svn/ir_databases
+%   Input parameters:
+%       varargin - path or pathe containing irs data sets. 
+%                  Default: '~/svn/ir_databases' and '~/svn/measurements'
 %
-%   ADDIRSPATH(basepath) add basepath and its subdirectories to the path. If
-%   basepath is omitted, ~/svn/ir_databases is used.
+%   ADDIRSPATH(varargin) adds the given directorysand its subdirectories to
+%   the path. If no directory is given, '~/svn/ir_databases' and 
+%   '~/svn/measurements' are added.
 
 % AUTHOR: Hagen Wierstorf
 
 
 % ===== Checking of input parameters ====================================
 nargmin = 0;
-nargmax = 1;
+nargmax = inf;
 error(nargchk(nargmin,nargmax,nargin));
 if nargin==nargmin
-    basepath = '~/svn/ir_databases';
+    dirs{1} = '~/svn/ir_databases';
+    dirs{2} = '~/svn/measurements';
 else
-    isargdir(basepath);
+    isargdir(char(varargin));
+    dirs = varargin;
 end
 
 
 %% ===== Adding pathes ==================================================
 % FIXME: this adds also all .svn subdirectories!
-path = genpath(basepath);
-addpath(path,'-end');
+for ii = 1:length(dirs)
+    path = genpath(dirs{ii});
+    addpath(path,'-end');
+end

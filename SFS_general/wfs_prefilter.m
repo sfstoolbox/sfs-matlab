@@ -42,7 +42,6 @@ flow = conf.hpreflow;       % Lower frequency limit of preequalization
                             % filter (= frequency when subwoofer is active)    
 fhigh = conf.hprefhigh;     % Upper frequency limit of preequalization 
                             % filter (= aliasing frequency of system)
-useplot = conf.useplot;     % Plot results?
 
 
 %% ===== Variables ======================================================

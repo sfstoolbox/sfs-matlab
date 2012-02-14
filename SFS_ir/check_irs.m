@@ -83,8 +83,6 @@ elseif size(irs.left,2)~=length(irs.apparent_elevation)
 end
 
 % Check for the right sizes of the entries for the positions
-% TODO: this works not correctly with our old databases, so I will disable it in
-% trunk, until I have fixed all databases
 if ~isnumeric(irs.head_position) | size(irs.head_position)~=[3 1]
     error('%s: head_position needs to be a 3x1 vector.',upper(mfilename));
 elseif ~isnumeric(irs.head_reference) | size(irs.head_reference)~=[3 1]

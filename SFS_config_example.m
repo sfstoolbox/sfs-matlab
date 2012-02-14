@@ -18,6 +18,12 @@ function conf = SFS_config()
 
 % AUTHOR: Hagen Wierstorf
 
+% Last changed
+% $Date$
+% $Revision$
+% $Author$
+
+
 %% ===== Checking of input  parameters ==================================
 nargmin = 0;
 nargmax = 0;

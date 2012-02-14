@@ -17,11 +17,9 @@ function conf = SFS_config()
 %
 
 % AUTHOR: Hagen Wierstorf
-
-% Last changed
-% $Date$
-% $Revision$
-% $Author$
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

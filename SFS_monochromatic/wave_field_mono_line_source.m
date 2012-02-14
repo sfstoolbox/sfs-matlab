@@ -25,6 +25,9 @@ function [x,y,P] = wave_field_mono_line_source(X,Y,xs,f,conf)
 %   see also: plot_wavefield, wave_field_imp_point_source 
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

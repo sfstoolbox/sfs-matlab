@@ -27,6 +27,9 @@ function ls_activity = secondary_source_selection(x0,xs,src)
 %
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

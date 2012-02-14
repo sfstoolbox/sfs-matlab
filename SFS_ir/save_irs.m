@@ -14,6 +14,9 @@ function save_irs(irs,outfile)
 %
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

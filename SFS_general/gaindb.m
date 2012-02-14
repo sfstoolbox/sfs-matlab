@@ -15,7 +15,10 @@ function inoutsig = gaindb(inoutsig,gn)
 %   See also: rms, db, setleveldb
 %
 
-%   AUTHOR: Hagen Wierstorf, Peter L. Soendergaard
+% AUTHOR: Hagen Wierstorf, Peter L. Soendergaard
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking input parameters =======================================

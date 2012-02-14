@@ -13,6 +13,9 @@ function isargcoord(varargin)
 %   see also: isargvector
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking for vector =============================================

@@ -11,6 +11,10 @@ function [] = draw_head(X,Y,phi)
 %   symbol is pointing in the direction given by phi.
 %
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
+
 
 %% ===== Checking of input parameter =====================================
 nargmin = 3;

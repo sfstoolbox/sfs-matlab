@@ -18,6 +18,9 @@ function irs = create_android_irs_mat(irs,nsamples,fs,conf)
 %
 
 % AUTHOR: Hagen Wierstorf, Sascha Spors
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

@@ -14,6 +14,10 @@
 #   see also: gp_set_loudspeaker
 
 # AUTHOR: Hagen Wierstorf
+# $LastChangedDate$
+# $LastChangedRevision$
+# $LastChangedBy$
+
 
 # Checking if we have enough input parameters
 if ($#!=3) print 'gp_set_head needs 3 input parameters'; exit

@@ -26,6 +26,9 @@ function [nls,L] = secondary_source_number(L,conf)
 %
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

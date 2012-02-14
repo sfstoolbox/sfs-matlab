@@ -24,6 +24,9 @@ function movie_wave_field_imp_wfs_25d(X,Y,xs,L,src,outfile,conf)
 %   see also: wave_field_imp_wfs_25d, plot_wavefield, generate_movie
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

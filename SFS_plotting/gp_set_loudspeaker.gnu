@@ -17,6 +17,10 @@
 #   see also: gp_draw_loudspeakers, gp_set_head
 
 # AUTHOR: Hagen Wierstorf
+# $LastChangedDate$
+# $LastChangedRevision$
+# $LastChangedBy$
+
 
 # Checking if we have enough input parameters
 if ($#!=5) print 'gp_set_loudspeakers needs 5 input parameters'; exit

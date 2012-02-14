@@ -11,6 +11,9 @@ function addirspath(varargin)
 %   '~/svn/measurements' are added.
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 % ===== Checking of input parameters ====================================

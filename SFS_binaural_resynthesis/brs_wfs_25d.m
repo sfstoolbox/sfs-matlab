@@ -44,6 +44,9 @@ function brir = brs_wfs_25d(X,phi,xs,L,src,irs,conf)
 %
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

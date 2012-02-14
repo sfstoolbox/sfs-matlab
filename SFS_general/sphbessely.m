@@ -15,6 +15,9 @@ function out = sphbessely(nu,z)
 %   see also: sphbesselh, sphbesselj
 %
 % AUTHOR: Jens Ahrens
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking input parameters =======================================

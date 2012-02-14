@@ -11,6 +11,9 @@ function isargequallength(x1,varargin)
 %   see also: isargequalsize
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ===================================

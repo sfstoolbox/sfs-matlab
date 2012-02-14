@@ -8,6 +8,9 @@ function versionnumber = SFS_version()
 %   See also: SFS_start, SFS_config
 
 % AUTHOR: Hagen Wierstor
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Configuration ===================================================

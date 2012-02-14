@@ -20,6 +20,9 @@ function ild = interaural_level_difference(insigleft,insigright)
 %   see also: interaural_time_difference
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input parameters ====================================

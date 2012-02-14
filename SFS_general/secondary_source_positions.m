@@ -38,6 +38,9 @@ function x0 = secondary_source_positions(L,conf)
 %
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 % NOTE: If you wanted to add a new type of loudspeaker array, do it in a way,
 % that the loudspeakers are ordered in a way, that one can go around for closed

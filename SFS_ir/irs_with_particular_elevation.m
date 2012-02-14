@@ -20,6 +20,9 @@ function irs = irs_with_particular_elevation(irs,delta)
 %   see also: slice_irs, new_irs
 
 % AUTHOR: Lars-Erik Riechert, Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

@@ -20,6 +20,9 @@ function ir = intpol_ir(ir1,beta1,ir2,beta2,alpha)
 %
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

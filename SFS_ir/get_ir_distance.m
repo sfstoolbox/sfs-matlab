@@ -19,6 +19,9 @@ function d = get_ir_distance(irs,phi,delta)
 %
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

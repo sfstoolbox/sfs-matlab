@@ -11,6 +11,9 @@ function isargmatrix(varargin)
 %   see also: isargvector, isargscalar
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking for matrix =============================================

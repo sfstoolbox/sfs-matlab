@@ -20,6 +20,9 @@ function short_ir = shorten_ir(ir,fs,nsamples,conf)
 %
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

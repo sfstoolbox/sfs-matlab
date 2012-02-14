@@ -11,6 +11,9 @@ function isargfile(varargin)
 %   see also: isargdir
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking for file =============================================

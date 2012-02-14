@@ -12,6 +12,9 @@ function print_png(filename)
 %   see also: print_eps
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

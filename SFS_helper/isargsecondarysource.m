@@ -15,6 +15,9 @@ function isargsecondarysource(varargin)
 %
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking for vector =============================================

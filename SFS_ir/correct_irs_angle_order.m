@@ -16,6 +16,9 @@ function irs = correct_irs_angle_order(irs)
 %   See also: ir_intpol
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

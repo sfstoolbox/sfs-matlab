@@ -21,6 +21,10 @@ function R = rotation_matrix(phi,orientation)
 %
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
+
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
@@ -36,7 +40,6 @@ end
 
 
 %% ===== Computation ====================================================
-
 % Rotation matrix (see: http://en.wikipedia.org/wiki/Rotation_matrix)
 switch orientation
     case 'counterclockwise'

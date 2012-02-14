@@ -44,6 +44,10 @@ function irs = create_irs_mat(irset)
 %
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
+
 
 %% ===== Configuration ==================================================
 % Path to the QU files

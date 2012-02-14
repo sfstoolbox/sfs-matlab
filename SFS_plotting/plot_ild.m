@@ -14,6 +14,9 @@ function plot_ild(ild,phi)
 %   see also: interaural_level_difference, plot_itd
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input parameters ====================================

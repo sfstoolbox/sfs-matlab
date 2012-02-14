@@ -34,6 +34,9 @@ function outsig = noise(samples,nsigs,noisetype)
 %   see also: click, irn
 
 % AUTHOR: Hagen Wierstorf, Peter Soendergaard
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking input parameters =======================================

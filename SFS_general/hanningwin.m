@@ -16,6 +16,9 @@ function win = hanningwin(onset,offset,nsamples)
 %
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking input parameters =======================================

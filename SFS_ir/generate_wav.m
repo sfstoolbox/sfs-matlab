@@ -7,6 +7,9 @@
 %  the whole hemisphere with equiangular resolution
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 % get files

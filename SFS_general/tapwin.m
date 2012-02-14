@@ -23,6 +23,9 @@ function win = tapwin(L,ls_activity,conf)
 %   see also: brs_wfs_25d, secondary_source_selection, hann
 
 % AUTHOR: Hagen Wierstorf, Sascha Spors
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

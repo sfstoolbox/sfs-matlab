@@ -11,6 +11,9 @@ function irs = dummy_irs()
 %   See also: new_irs, IR_format.txt
 
 %   AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Computation =====================================================

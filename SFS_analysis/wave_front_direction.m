@@ -30,6 +30,9 @@ function [alpha,a,t] = wave_front_direction(X,phi,xs,L,src,conf)
 %
 
 % AUTHOR: Hagen Wierstorf, Sascha Spors
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input parameters ====================================

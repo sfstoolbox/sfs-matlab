@@ -11,6 +11,9 @@ function isargnumeric(varargin)
 %   see also: isargscalar
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking for numeric value ======================================

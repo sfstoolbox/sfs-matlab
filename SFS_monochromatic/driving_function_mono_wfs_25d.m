@@ -33,6 +33,9 @@ function [D] = driving_function_mono_wfs_25d(x0,xs,f,src,conf)
 %             driving_function_imp_wfs_25d
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

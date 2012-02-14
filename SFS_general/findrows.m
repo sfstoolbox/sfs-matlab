@@ -23,7 +23,10 @@ function k = findrows(A, b)
 %   See also: find, findcols
 %
 
-%   AUTHOR: Peter John Acklam, Hagen Wierstorf
+% AUTHOR: Peter John Acklam, Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input parameters ====================================

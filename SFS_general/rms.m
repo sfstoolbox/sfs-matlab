@@ -25,10 +25,13 @@ function y = rms(insig,options)
 %                        N n=1
 %
 
-%   AUTHOR : Hagen Wierstorf, Peter L. Soendergaard
+% AUTHOR : Hagen Wierstorf, Peter L. Soendergaard
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
-% ------ Checking of input parameters ---------
+%% ===== Checking of input parameters ====================================
 nargmin = 1;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
@@ -37,11 +40,10 @@ if (nargin==1) || (~ischar(options))
   options='';
 end
 
-% ------ Computation --------------------------
 
+%% ===== Computation =====================================================
 % It is better to use 'norm' instead of explicitly summing the squares, as
 % norm (hopefully) attempts to avoid numerical overflow.
-
 switch(lower(options))
     case 'ac'
         y = norm(insig-mean(insig))/sqrt(length(insig));

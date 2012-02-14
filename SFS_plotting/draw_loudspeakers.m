@@ -19,6 +19,9 @@ function draw_loudspeakers(x0,ls_activity,conf)
 %
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input parameter =====================================

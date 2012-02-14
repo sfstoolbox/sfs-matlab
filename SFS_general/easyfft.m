@@ -24,6 +24,9 @@ function [amplitude,phase,f] = easyfft(sig,conf)
 %
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Check input arguments ===========================================

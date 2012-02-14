@@ -11,6 +11,9 @@ function isargnegativescalar(varargin)
 %   see also: isargscalar, isargpositivescalar
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking for scalar =============================================

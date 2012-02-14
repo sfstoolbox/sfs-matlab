@@ -28,6 +28,9 @@ function outsig = auralize_ir(ir,content,conf)
 %   see also: auralize_ir_file, brs_wfs_25d, brs_point_source
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input parameters and configuration =================

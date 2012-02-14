@@ -15,6 +15,9 @@ function [irs,opt_fields] = new_irs()
 %   See also: check_irs, IR_format.txt
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

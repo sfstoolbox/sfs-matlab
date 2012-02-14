@@ -36,6 +36,9 @@ function [x,y,P,ls_activity] = wave_field_mono_wfs_2d(X,Y,xs,L,f,src,conf)
 %   see also: plot_wavefield, driving_function_mono_wfs_2d
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

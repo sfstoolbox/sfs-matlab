@@ -14,6 +14,9 @@ function plot_itd(itd,phi)
 %   see also: interaural_time_difference, plot_ild
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input parameters ====================================

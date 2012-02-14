@@ -14,6 +14,9 @@ function phi = rad(phi)
 %   see also: degree
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input parameters ====================================

@@ -17,6 +17,9 @@ function outsig = easyifft(amplitude,phase)
 %
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking input arguments ========================================

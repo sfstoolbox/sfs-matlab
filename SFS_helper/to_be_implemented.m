@@ -12,6 +12,10 @@ function to_be_implemented(mfile)
 %   code functionality has to be implemented yet.
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
+
 
 %% ===== Checking of input parameters ====================================
 nargmin = 0;

@@ -18,6 +18,9 @@ function ir = wfs_preequalization(ir,conf)
 %   see also: wfs_prefilter, SFS_config, brs_wfs_25d
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input parameters ====================================

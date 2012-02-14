@@ -14,6 +14,10 @@ function matlab_version_missing(mfile)
 %   Gnuplot.
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
+
 
 %% ===== Checking of input parameters ====================================
 error(nargchk(0,1,nargin)

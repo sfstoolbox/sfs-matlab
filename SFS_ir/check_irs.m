@@ -12,6 +12,9 @@ function check_irs(irs)
 %   See also: new_irs, IR_format.txt
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

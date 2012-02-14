@@ -23,8 +23,12 @@ function [X,Y] = setting_xy_ranges(X,Y,conf)
 %
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 % FIXME: this has to be updated to work for 3D
+
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 2;

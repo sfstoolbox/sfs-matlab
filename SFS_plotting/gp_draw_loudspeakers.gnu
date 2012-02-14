@@ -15,6 +15,10 @@
 #   see also: gp_set_loudspeakers
 
 # AUTHOR: Hagen Wierstorf
+# $LastChangedDate$
+# $LastChangedRevision$
+# $LastChangedBy$
+
 
 # getting the input parameters
 set macros

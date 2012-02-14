@@ -10,6 +10,9 @@ function fontname(fname)
 %   See also: GraphDefaults, fontsize
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

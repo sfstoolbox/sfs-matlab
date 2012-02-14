@@ -11,6 +11,9 @@ function isargstruct(varargin)
 %   see also: isargchar
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking for struct =============================================

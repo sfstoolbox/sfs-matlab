@@ -24,6 +24,9 @@ function k = findcols(A, b)
 %
 
 % AUTHOR: Peter John Acklam, Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input parameters ====================================

@@ -15,6 +15,10 @@ function bool = ismonoinc(x)
 %
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
+
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;

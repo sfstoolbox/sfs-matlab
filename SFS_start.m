@@ -8,6 +8,9 @@ function SFS_start()
 %   See also: SFS_config, SFS_version
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Configuration ===================================================

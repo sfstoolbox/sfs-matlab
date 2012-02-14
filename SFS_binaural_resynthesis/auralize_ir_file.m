@@ -27,6 +27,9 @@ function outsig = auralize_ir_file(irfile,content,conf)
 %
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input parameters and configuration =================

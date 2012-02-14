@@ -25,6 +25,9 @@ function movie_wave_field_mono_wfs_25d(X,Y,xs,L,f,src,outfile,conf)
 %   see also: wave_field_mono_wfs_25d, plot_wavefield
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

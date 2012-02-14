@@ -18,6 +18,9 @@ function irs = order_irs_fields(irs)
 %   See also: new_irs, check_irs, IR_format.txt
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

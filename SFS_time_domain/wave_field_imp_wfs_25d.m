@@ -31,6 +31,7 @@ function [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,L,src,conf)
 % $LastChangedRevision$
 % $LastChangedBy$
 
+
 %% ===== Checking of input  parameters ==================================
 nargmin = 5;
 nargmax = 6;

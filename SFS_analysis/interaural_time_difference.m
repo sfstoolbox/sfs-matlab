@@ -32,6 +32,9 @@ function [itd,idxleft,idxright] = interaural_time_difference(insigleft,insigrigh
 %R gaik1993, sandvad1994, lindau2010
 
 % AUTHOR: Hagen Wierstorf,Lars-Erik Riechert
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input parameters ===================================

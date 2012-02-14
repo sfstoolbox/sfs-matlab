@@ -5,6 +5,10 @@
 %
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
+
 
 %% ===== Create custom metadata ==========================================
 metadata = [];

@@ -22,6 +22,9 @@ function S = point_source(x,y,xs,f,conf)
 %   see also: line_source
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

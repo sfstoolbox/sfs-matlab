@@ -44,6 +44,9 @@ function brs = brsset_wfs_25d(X,phi,xs,L,src,irs,conf)
 %   see also: SFS_config, brs_wfs_25d, brs_point_source
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

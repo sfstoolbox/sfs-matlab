@@ -16,6 +16,9 @@ function P = norm_wave_field(P,x,y,conf)
 %   see also: wave_field_mono_wfs_25d
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input parameters ====================================

@@ -34,6 +34,9 @@ function [f,S] = freq_response_wfs_25d(X,xs,L,src,conf)
 %
 
 % AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================

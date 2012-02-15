@@ -3,20 +3,30 @@
 
 clear all
 
+
+% parameters
 c=343;
 fs=44100;
 
-order=28;    %  max order of spherical Hankel function
+P=56;       % number of loudspeakers
 
 r_ps=3;
 theta_ps=0;
-%theta_ps=-pi/2;
 
 R=1.5;
 
 N=1024;
 N0=100;
 
+
+% variables
+
+if(isodd(P))
+    order=(P+1)/2;    %  max order of spherical Hankel function
+else
+    order=floor((P+1)/2);
+end
+    
 f=linspace(0,fs/2,N);
 k=2*pi*f/c;
 k(1)=k(2);
@@ -37,10 +47,15 @@ for n=-order:order
     d(n+order+1,:)=dm(abs(n)+1,:) .* exp(-1i*n*theta_ps);
 end
 
+% remove highest negative modal part for a even number of loudspeakers
+if(iseven(P))
+   d=d(2:end,:); 
+end
+
 if(1)
     % inverse Fourier transformation
     %d=ifftshift(d,1);
-    d=circshift(d,[+order+1 0]);
+    d=circshift(d,[order+1 0]);
     d=(2*order+1)*ifft(d,[],1);
     d=d';
 else

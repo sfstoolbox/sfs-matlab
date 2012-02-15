@@ -1,5 +1,5 @@
 % NFC-HOA driving function using IIR implementation
-% S.Spors, 28.4.2011
+% S.Spors, 15.2.2011
 
 clear all
 
@@ -25,11 +25,10 @@ k(1)=k(2);
 % compute impulse responses of modal filters
 dm=zeros(order+1,N);
 for n=1:order
-    df=HOA25D_modal_filter_ps(R,r_ps,n,fs);
-    %df=HOA25D_modal_filter_pw(R,n,fs);
-    dm(n+1,:) = df.filter([zeros(1,N0) 1 zeros(1,N-1-N0)]);
+    %df=HOA25D_modal_filter_ps(R,r_ps,n-1,fs);
+    df=HOA25D_modal_filter_pw(R,n-1,fs);
+    dm(n,:) = df.filter([zeros(1,N0) 1 zeros(1,N-1-N0)]);
 end
-dm(1,:)=0;
 
 % compute input signal for IFFT
 d=zeros(2*order+1,N);
@@ -38,7 +37,7 @@ for n=-order:order
     d(n+order+1,:)=dm(abs(n)+1,:) .* exp(-1i*n*theta_ps);
 end
 
-if(0)
+if(1)
     % inverse Fourier transformation
     %d=ifftshift(d,1);
     d=circshift(d,[+order+1 0]);

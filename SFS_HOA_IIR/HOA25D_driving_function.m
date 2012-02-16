@@ -34,7 +34,7 @@ k(1)=k(2);
 
 % compute impulse responses of modal filters
 dm=zeros(order+1,N);
-for n=1:order
+for n=1:order+1
     %df=HOA25D_modal_filter_ps(R,r_ps,n-1,fs);
     df=HOA25D_modal_filter_pw(R,n-1,fs);
     dm(n,:) = df.filter([zeros(1,N0) 1 zeros(1,N-1-N0)]);

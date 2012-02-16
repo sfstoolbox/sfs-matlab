@@ -1,7 +1,7 @@
 function x0 = secondary_source_positions(L,conf)
 %SECONDARY_SOURCE_POSITIONS Generates the positions and directions of the
 %   secondary sources
-%   
+%
 %   Usage: x0 = secondary_source_positions(L,conf)
 %          x0 = secondary_source_positions(L)
 %
@@ -105,6 +105,7 @@ elseif strcmp('circle',array)
     % === Circular array ===
     % Positions of the secondary sources
     phi = linspace(0,(2-2/nls)*pi,nls)'; % 0..2pi
+    %phi = linspace(pi/2,(5/2-2/nls)*pi,nls)'; % pi/2..5/2pi, Pinta
     theta = zeros(nls,1);
     [cx,cy,cz] = sph2cart(phi,theta,L/2);
     x0(:,1:3) = [cx,cy,cz] + repmat(X0,nls,1);

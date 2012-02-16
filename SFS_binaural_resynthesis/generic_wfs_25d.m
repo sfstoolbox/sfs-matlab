@@ -30,6 +30,11 @@ function ir = generic_wfs_25d(xs,L,src,conf)
 % $LastChangedRevision$
 % $LastChangedBy$
 
+% FIXME: at the moment the first loudspeaker of your array has to on the x-axis
+% (which means phi=0). If you have another setup (like we have in Pinta) you
+% have to manually edit the secondary_source_positions.m function in order to
+% get the first loudspeaker at the desired location.
+
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;

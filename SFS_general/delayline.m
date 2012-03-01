@@ -1,7 +1,7 @@
 function [s] =  delayline(s,dt,weight,conf)
 %DELAYLINE implements a (fractional) weighting delay line
 %
-%   Usage: s = delayline(s,dt,weight,hf)
+%   Usage: s = delayline(s,dt,weight,conf)
 %          
 %
 %
@@ -29,11 +29,43 @@ function [s] =  delayline(s,dt,weight,conf)
 fracdelay = conf.fracdelay;
 method = conf.fracdelay_method;
 
+rfactor=10;         % resample factor
+Lls=30;             % length of least-squares factional delay filter
+
 %% ===== Computation =====================================================    
-if(fracdelay==0)
+if(fracdelay)
+    
+    conf2.fracdelay=0;
+    conf2.fracdelay_method='';
+
+    switch method
+
+    case 'resample'
+       s2 = resample(s,rfactor,1);
+       s2 = delayline(s2,rfactor*dt,weight,conf2);
+       s = resample(s2,1,rfactor);
+
+    case 'least_squares'
+        idt=floor(dt);
+        s = delayline(s,idt,weight,conf2);
+
+        if(abs(dt-idt)>0)
+            h = hgls2(Lls,dt-idt,0.90);
+            s = conv(s,h);
+            s = s(Lls/2:end-Lls/2);
+        end
+
+    otherwise
+        disp('Delayline: Unknown fractional delay method');
+
+    end
+    
+else
+% from here on integer delays are considered
     idt=round(dt);
 
     if(idt==0)
+        s = weight*s;
         return;
     end
 
@@ -42,37 +74,6 @@ if(fracdelay==0)
     else
         s = [weight*s(-idt+1:end) zeros(1,-idt)];
     end
-return;    
-end
 
-% from here on fractional delays are considered
-conf2.fracdelay=0;
-conf2.fracdelay_method='';
-
-switch method
-   
-    case 'resample'
-       rfactor=10;
-       s2 = resample(s,rfactor,1);
-       s2 = delayline(s2,rfactor*dt,weight,conf2);
-       s = resample(s2,1,rfactor);
-       
-    case 'lagrange'
-        idt=floor(dt);
-        s = delayline(s,idt,weight,conf2);
-        
-        if(abs(dt-idt)>0)
-            L=30;
-            %h = hlagr2(L,dt-idt);
-            h = hgls2(L,dt-idt,0.90);
-            s = conv(s,h);
-            s = s(L/2:end-L/2);
-            
-            %s = [s(L/2:end) zeros(1,L/2)];
-        end
-    
-    otherwise
-        disp('Delayline: Unknown fractional delay method');
-    
 end
 

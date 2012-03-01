@@ -9,24 +9,28 @@ clear all;
 
 %% ===== Configuration ==================================================
 
-% config struct
-conf.fracdelay = 1;
-conf.fracdelay_method = 'lagrange';
+% delays to evaluate
+%dt=[-1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
+%dt=[0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
+%dt=[-5 -2.5 0 2.5 5];
+dt=1*[0 0.01 0.02 0.03 0.04 0.05 0.06 0.07 0.08 0.09 0.1];
 
-% length of signal
+% parameters for delayline
+conf.fracdelay = 1;
+conf.fracdelay_method = 'least_squares';
+
+% length of input signal
 L=256;
+
+% create frequency axis
 w = (0:1:(L-1))/L; 
 wpi = w*pi;
 wpi2=wpi(2:L);
 
-% delays to evaluate
-dt=[-1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
-dt=[0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
-dt=[-5 -2.5 0 2.5 5];
-
 % set up input signal
 insig = zeros(1,L);
 insig(L/2) = 1;
+
 
 %% ===== Computation =====================================================
 for n=1:length(dt)
@@ -38,6 +42,7 @@ for n=1:length(dt)
     
     phasdel(:,n) = uwphase(2:L,n)./wpi2';
 end
+
 
 
 %% ===== Plotting =====================================================

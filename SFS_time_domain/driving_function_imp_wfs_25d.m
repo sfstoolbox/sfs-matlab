@@ -39,7 +39,7 @@ isargposition(xs);
 xs = position_vector(xs);
 isargchar(src);
 if nargin<nargmax
-    conf = SFS_config;;
+    conf = SFS_config;
 else
     isargstruct(conf);
 end
@@ -53,8 +53,6 @@ c = conf.c;
 % Array type
 array = conf.array;
 xref = position_vector(conf.xref);
-% quantized delays
-quantdelay = conf.quantdelay;
 
 
 %% ===== Computation =====================================================
@@ -95,11 +93,6 @@ if ls_activity>0
         weight = g0/(2*pi)*(x0-xs)*nx0'*r^(-3/2);
     else
         error('%s: %s is not a known source type.',upper(mfilename),src);
-    end
-    
-    % temporal quantization w.r.t. sampling rate
-    if(quantdelay)
-        delay = round(delay*fs/quantdelay)/(fs/quantdelay)
     end
     
 else

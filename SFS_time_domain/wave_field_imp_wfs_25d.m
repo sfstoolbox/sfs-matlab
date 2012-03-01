@@ -96,10 +96,29 @@ x0 = x0(ls_activity>0,:);
 nls = size(x0,1);
 win = win(ls_activity>0);
 
-% Calculate pre-equalization filter
+% Calculate maximum time delay possible for the given axis size
+maxt = round(sqrt((X(1)-X(2))^2+(Y(1)-Y(2))^2)/c*fs);
+% Add some additional offset
+aoffset=100;
+maxt = frame+maxt+aoffset;
+% Create time axis for field interpolation
+t = 0:maxt;
+
+% Calculate pre-equalization filter if required
 if(usehpre)
     hpre=wfs_prefilter(conf);
 end
+
+% Calculate driving function prototype
+if(usehpre)
+    d = [zeros(1,aoffset) hpre zeros(1,length(t)-length(hpre)-aoffset)];
+else
+    d = [zeros(1,aoffset) 1 zeros(1,length(t)-1-aoffset)];
+end
+
+% Apply bandbass filter to the prototype
+%d=bandpass(d,conf);
+%figure; freqz(d);
     
 % In a first loop calculate the weight and delay values.
 % This is done in an extra loop, because all delay values are needed to
@@ -111,6 +130,9 @@ for ii = 1:nls
     % Driving function d2.5D(x0,t)
     [weight(ii),delay(ii)] = driving_function_imp_wfs_25d(x0(ii,:),xs,src,conf);
 end
+
+dmin=min(delay);
+
 
 % If no explizit time frame is given calculate one
 if isempty(frame)
@@ -125,9 +147,13 @@ if isempty(frame)
     frame = max(round(delay(idx)*fs)) + 100;
 end
 
+
 % In a second loop simulate the wave field
 % Initialize empty wave field
 p = zeros(length(y),length(x));
+
+dds = zeros(nls,length(d));
+
 % Integration over loudspeaker
 for ii = 1:nls
 
@@ -139,37 +165,35 @@ for ii = 1:nls
     g = 1./(4*pi*r);
 
     % ================================================================
-    % Driving function
+    % Shift and weight prototype driving function
+    % - less delay in driving function is more propagation time in sound
+    %   field, hence the sign of the delay has to be reversed in the 
+    %   argument of the delayline function
+    % - the proagation time from the source to the nearest secondary source 
+    %   is removed
+    % - the main pulse in the driving function is shifted by aoffset and
+    %   frame
+    ds = delayline(d,frame-(delay(ii)-dmin)*fs,weight(ii)*win(ii),conf);
+    
+    
+    % save driving functions (debug)
+    dds(ii,:)=ds;
+    
+    % Interpolate the driving function w.r.t. the propagation delay from
+    % the secondary sources to a field point.
     % NOTE: the interpolation is taking part because of the problem with the
     % sharp delta time points from the driving function and from the greens
     % function. Because we sample in time there is most often no overlap
     % between the two delta functions and the resulting wave field would be
     % zero.
-    % FIXME: I should check, that I can combine the two delta functions in
-    % the way I have done it here.
-    % Calculate maximum time delay possible for the given axis size
-    maxt = round(L/c*fs);
-    % Add some additional offset
-    maxt = maxt+500;
-    % Create a time axis for the interpolation
-    t = frame-maxt:frame+maxt;
-    % create a driving function
-    if(usehpre)
-        d = zeros(size(t));
-        d(maxt-length(hpre)/2:maxt+length(hpre)/2-1) = weight(ii) * win(ii) .* hpre;
-    else
-        d = zeros(size(t));
-        d(maxt+1) = weight(ii) * win(ii);
-    end
-    % Interpolate the driving function for the given delay time steps given
-    % by the delta function from d, combined with the time steps given by
-    % g.
-    d = interp1(t,d,r/c*fs+delay(ii)*fs,'cubic');
+    ds = interp1(t,ds,r/c*fs,'cubic');
+    %ds = interp1(t,ds,r/c*fs,'spline');
+    %ds = interp1(t,ds,r/c*fs,'nearest');
 
     % ================================================================
     % Wave field p(x,t)
-    p = p + d .* g;
-
+    p = p + ds .* g;
+    
 end
 
 
@@ -181,4 +205,11 @@ check_wave_field(p,frame);
 if (useplot)
     conf.plot.usedb = 1;
     plot_wavefield(x,y,p,L,ls_activity,conf);
+end
+
+if(1)
+    figure; imagesc(db(dds));
+    figure; plot(win);
+    figure; plot(delay*fs);
+    figure; plot(weight);
 end

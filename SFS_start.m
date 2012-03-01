@@ -39,6 +39,7 @@ if exist('addpath')
     addpath([basepath,'/SFS_octave']);
     addpath([basepath,'/SFS_plotting']);
     addpath([basepath,'/SFS_time_domain']);
+    addpath([basepath,'/validation']);
 else
     path(path,basepath);
     path(path,[basepath,'/scripts']);
@@ -51,6 +52,7 @@ else
     path(path,[basepath,'/SFS_octave']);
     path(path,[basepath,'/SFS_plotting']);
     path(path,[basepath,'/SFS_time_domain']);
+    path(path,[basepath,'/validation']);
 end
 
 

@@ -64,7 +64,7 @@ pinknoisefile = conf.pinknoisefile;
 
 
 %% ===== Get the right content ==========================================
-if isvector(content) & isnumeric(content)
+if ismatrix(content) & isnumeric(content)
     contentfs = conf.fs;
 else
     if strcmp(content,'castanets')

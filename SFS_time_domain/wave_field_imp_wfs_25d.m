@@ -62,6 +62,9 @@ frame = conf.frame;
 % Use pre-equalization filter
 usehpre = conf.usehpre;
 
+% debug mode
+debug=0;
+
 %% ===== Computation =====================================================
 
 % Check if virtual source is positioned at the right position.
@@ -99,8 +102,8 @@ win = win(ls_activity>0);
 % Calculate maximum time delay possible for the given axis size
 maxt = round(sqrt((X(1)-X(2))^2+(Y(1)-Y(2))^2)/c*fs);
 % Add some additional offset
-aoffset=100;
-maxt = frame+maxt+aoffset;
+aoffset=0;
+maxt = maxt+aoffset;
 % Create time axis for field interpolation
 t = 0:maxt;
 
@@ -152,8 +155,10 @@ end
 % Initialize empty wave field
 p = zeros(length(y),length(x));
 
-dds = zeros(nls,length(d));
-
+if(debug)
+    dds = zeros(nls,length(d));
+end
+    
 % Integration over loudspeaker
 for ii = 1:nls
 
@@ -177,7 +182,9 @@ for ii = 1:nls
     
     
     % save driving functions (debug)
-    dds(ii,:)=ds;
+    if(debug)
+        dds(ii,:)=ds;
+    end
     
     % Interpolate the driving function w.r.t. the propagation delay from
     % the secondary sources to a field point.
@@ -207,9 +214,10 @@ if (useplot)
     plot_wavefield(x,y,p,L,ls_activity,conf);
 end
 
-if(1)
-    figure; imagesc(db(dds));
-    figure; plot(win);
-    figure; plot(delay*fs);
-    figure; plot(weight);
+% some debug stuff
+if(debug)
+    figure; imagesc(db(dds)); title('driving functions');
+    figure; plot(win); title('tapering window');
+    figure; plot(delay*fs); title('delay (samples)');
+    figure; plot(weight); title('weight');
 end

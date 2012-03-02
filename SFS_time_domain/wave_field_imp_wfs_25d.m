@@ -179,7 +179,7 @@ for ii = 1:nls
     % - the main pulse in the driving function is shifted by aoffset and
     %   frame
     ds = delayline(d,frame-(delay(ii)-dmin)*fs,weight(ii)*win(ii),conf);
-    
+    t = 1:length(ds);
     
     % save driving functions (debug)
     if(debug)

@@ -61,7 +61,7 @@ conf.fs = 44100; % Hz
 % Speed of sound
 conf.c = 343; % m/s
 % use fractional delays for delay lines
-conf.fracdelay = 0;
+conf.usefracdelay = 0;
 conf.fracdelay_method = 'least_squares';
 
 

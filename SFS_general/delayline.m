@@ -26,7 +26,7 @@ function [s] =  delayline(s,dt,weight,conf)
 
 
 %% ===== Configuration ==================================================
-fracdelay = conf.fracdelay;
+fracdelay = conf.usefracdelay;
 method = conf.fracdelay_method;
 
 rfactor=10;         % resample factor

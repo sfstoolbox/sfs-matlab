@@ -35,7 +35,7 @@ Lls=30;             % length of least-squares factional delay filter
 %% ===== Computation =====================================================    
 if(fracdelay)
     
-    conf2.fracdelay=0;
+    conf2.usefracdelay=0;
     conf2.fracdelay_method='';
 
     switch method

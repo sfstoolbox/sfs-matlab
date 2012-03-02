@@ -17,7 +17,8 @@ dt=1*[0 0.01 0.02 0.03 0.04 0.05 0.06 0.07 0.08 0.09 0.1];
 
 % parameters for delayline
 conf.fracdelay = 1;
-conf.fracdelay_method = 'least_squares';
+%conf.fracdelay_method = 'least_squares';
+%conf.fracdelay_method = 'resample';
 
 % length of input signal
 L=256;

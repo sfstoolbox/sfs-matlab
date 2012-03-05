@@ -63,7 +63,7 @@ frame = conf.frame;
 usehpre = conf.usehpre;
 
 % debug mode
-debug=0;
+debug=1;
 
 %% ===== Computation =====================================================
 
@@ -101,8 +101,8 @@ win = win(ls_activity>0);
 
 % Calculate maximum time delay possible for the given axis size
 maxt = round(sqrt((X(1)-X(2))^2+(Y(1)-Y(2))^2)/c*fs);
-% Add some additional offset
-aoffset=0;
+% Add some additional pre-offset
+aoffset=128;
 maxt = maxt+aoffset;
 % Create time axis for field interpolation
 t = 0:maxt;
@@ -120,8 +120,10 @@ else
 end
 
 % Apply bandbass filter to the prototype
-%d=bandpass(d,conf);
-%figure; freqz(d);
+if(0)
+    d=bandpass(d,conf);
+    figure; freqz(d,1,[],fs);
+end
     
 % In a first loop calculate the weight and delay values.
 % This is done in an extra loop, because all delay values are needed to
@@ -179,24 +181,22 @@ for ii = 1:nls
     % - the main pulse in the driving function is shifted by aoffset and
     %   frame
     ds = delayline(d,frame-(delay(ii)-dmin)*fs,weight(ii)*win(ii),conf);
-    t = 1:length(ds);
     
-    % save driving functions (debug)
+    % remember driving functions (debug)
     if(debug)
-        dds(ii,:)=ds;
+        dds(ii,1:length(ds))=ds;
     end
     
     % Interpolate the driving function w.r.t. the propagation delay from
     % the secondary sources to a field point.
-    % NOTE: the interpolation is taking part because of the problem with the
-    % sharp delta time points from the driving function and from the greens
-    % function. Because we sample in time there is most often no overlap
-    % between the two delta functions and the resulting wave field would be
-    % zero.
-    ds = interp1(t,ds,r/c*fs,'cubic');
-    %ds = interp1(t,ds,r/c*fs,'spline');
+    % NOTE: the interpolation is required to account for the frcational
+    % delay times from the loudspeakers to the field points
+    t = 1:length(ds);
+    ds = interp1(t,ds,r/c*fs,'spline');
+    %ds = interp1(t,ds,r/c*fs,'cubic');
+    %ds = interp1(t,ds,r/c*fs,'linear');
     %ds = interp1(t,ds,r/c*fs,'nearest');
-
+    
     % ================================================================
     % Wave field p(x,t)
     p = p + ds .* g;
@@ -216,8 +216,8 @@ end
 
 % some debug stuff
 if(debug)
-    figure; imagesc(db(dds)); title('driving functions');
-    figure; plot(win); title('tapering window');
-    figure; plot(delay*fs); title('delay (samples)');
-    figure; plot(weight); title('weight');
+    figure; imagesc(db(dds)); title('driving functions'); caxis([-100 0]); colorbar;
+    % figure; plot(win); title('tapering window');
+    % figure; plot(delay*fs); title('delay (samples)');
+    % figure; plot(weight); title('weight');
 end

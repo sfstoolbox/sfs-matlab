@@ -109,15 +109,12 @@ t = 0:maxt;
 
 % Calculate pre-equalization filter if required
 if(usehpre)
-    hpre=wfs_prefilter(conf);
-end
-
-% Calculate driving function prototype
-if(usehpre)
-    d = [zeros(1,aoffset) hpre zeros(1,length(t)-length(hpre)-aoffset)];
+    hpre = wfs_prefilter(conf);
 else
-    d = [zeros(1,aoffset) 1 zeros(1,length(t)-1-aoffset)];
+    hpre = 1;
 end
+% Calculate driving function prototype
+d = [zeros(1,aoffset) hpre zeros(1,length(t)-length(hpre)-aoffset)];
 
 % Apply bandbass filter to the prototype
 if(0)

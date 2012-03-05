@@ -164,6 +164,7 @@ for n=1:nls
         error('Use a larger conf.N value, you need at least %i',lenir+dt(n));
     end
 
+    a(n)*win(n)
     % Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay
     brir(:,1) = brir(:,1) + [zeros(1,dt(n)) ...
                              a(n)*win(n)*g*ir(:,1)' ...

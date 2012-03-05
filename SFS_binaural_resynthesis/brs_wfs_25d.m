@@ -1,4 +1,4 @@
-function brir = brs_wfs_25d(X,phi,xs,L,src,irs,conf)
+function [brir,brir2] = brs_wfs_25d(X,phi,xs,L,src,irs,conf)
 %BRS_WFS_25D Generate a BRIR for WFS
 %   Usage: brir = brs_wfs_25d(X,phi,xs,L,src,irs,conf)
 %          brir = brs_wfs_25d(X,phi,xs,L,src,irs)
@@ -92,6 +92,7 @@ lenir = length(irs.left(:,1));
 %% ===== BRIR ===========================================================
 % Initial values
 brir = zeros(N,2);
+brir2 = zeros(4096,2);
 dt = zeros(1,nls);
 a = zeros(1,nls);
 
@@ -164,8 +165,9 @@ for n=1:nls
         error('Use a larger conf.N value, you need at least %i',lenir+dt(n));
     end
 
-    a(n)*win(n)
     % Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay
+    brir2(:,1) = brir2(:,1) + delayline(ir(:,1)',dt(n),a(n)*win(n)*g,conf)';
+    brir2(:,2) = brir2(:,2) + delayline(ir(:,2)',dt(n),a(n)*win(n)*g,conf)';
     brir(:,1) = brir(:,1) + [zeros(1,dt(n)) ...
                              a(n)*win(n)*g*ir(:,1)' ...
                              zeros(1,N-dt(n)-lenir)]';

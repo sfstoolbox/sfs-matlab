@@ -29,7 +29,7 @@ function [s] =  delayline(s,dt,weight,conf)
 fracdelay = conf.usefracdelay;
 method = conf.fracdelay_method;
 
-rfactor=10;         % resample factor
+rfactor=200;         % resample factor (1/stepsize of fractional delays)
 Lls=30;             % length of least-squares factional delay filter
 
 %% ===== Computation =====================================================    
@@ -51,10 +51,21 @@ if(fracdelay)
 
         if(abs(dt-idt)>0)
             h = hgls2(Lls,dt-idt,0.90);
+            
+            %[IP,wprot] = iniheq2(Lls,0.90);
+            %h = heqrip2(Lls,dt-idt,wprot,IP);
+            
             s = conv(s,h);
             s = s(Lls/2:end-Lls/2);
         end
 
+        case 'interp1'
+            idt=floor(dt);
+            s = delayline(s,idt,weight,conf2);
+            
+            t=1:length(s);
+            s = interp1(t,s,-(dt-idt)+t,'spline');
+        
     otherwise
         disp('Delayline: Unknown fractional delay method');
 

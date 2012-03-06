@@ -24,7 +24,7 @@ function [s] =  bandpass(s,conf)
 nargmin = 1;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector(sig);
+isargvector(s);
 if nargin<nargmax
     conf = SFS_config;
 else

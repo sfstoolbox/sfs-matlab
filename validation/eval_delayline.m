@@ -12,13 +12,15 @@ clear all;
 % delays to evaluate
 %dt=[-1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
 %dt=[0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
-%dt=[-5 -2.5 0 2.5 5];
-dt=1*[0 0.01 0.02 0.03 0.04 0.05 0.06 0.07 0.08 0.09 0.1];
+dt=[-5 -2.5 0 2.5 5];
+%dt=1*[0 0.01 0.02 0.03 0.04 0.05 0.06 0.07 0.08 0.09 0.1];
+%dt=linspace(0,2,200);
 
 % parameters for delayline
-conf.fracdelay = 1;
+conf.usefracdelay = 1;
 %conf.fracdelay_method = 'least_squares';
 %conf.fracdelay_method = 'resample';
+conf.fracdelay_method = 'interp1';
 
 % length of input signal
 L=256;
@@ -67,7 +69,11 @@ grid on;
 
 % impluse response
 figure;
-plot(t(L/2-10:L/2+10),outsig(L/2-10:L/2+10,:));
-ylabel('amplitude');
-xlabel('samples');
+%plot(t(L/2-10:L/2+10),outsig(L/2-10:L/2+10,:));
+imagesc(dt,t(L/2-50:L/2+50),db(outsig(L/2-50:L/2+50,:)));
+caxis([-100 10]);
+ylabel('samples');
+xlabel('delay');
+turn_imagesc;
+colorbar;
 grid on;

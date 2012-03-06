@@ -117,7 +117,7 @@ end
 d = [zeros(1,aoffset) hpre zeros(1,length(t)-length(hpre)-aoffset)];
 
 % Apply bandbass filter to the prototype
-if(0)
+if(1)
     d=bandpass(d,conf);
     figure; freqz(d,1,[],fs);
 end

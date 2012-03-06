@@ -29,7 +29,7 @@ function [s] =  delayline(s,dt,weight,conf)
 fracdelay = conf.usefracdelay;
 method = conf.fracdelay_method;
 
-rfactor=200;         % resample factor (1/stepsize of fractional delays)
+rfactor=100;         % resample factor (1/stepsize of fractional delays)
 Lls=30;             % length of least-squares factional delay filter
 
 %% ===== Computation =====================================================    

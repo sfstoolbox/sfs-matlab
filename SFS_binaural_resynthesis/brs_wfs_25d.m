@@ -1,4 +1,4 @@
-function [brir,brir2] = brs_wfs_25d(X,phi,xs,L,src,irs,conf)
+function [brir] = brs_wfs_25d(X,phi,xs,L,src,irs,conf)
 %BRS_WFS_25D Generate a BRIR for WFS
 %   Usage: brir = brs_wfs_25d(X,phi,xs,L,src,irs,conf)
 %          brir = brs_wfs_25d(X,phi,xs,L,src,irs)
@@ -8,7 +8,7 @@ function [brir,brir2] = brs_wfs_25d(X,phi,xs,L,src,irs,conf)
 %       phi     - listener direction [head orientation] (rad)
 %                 0 means the head is oriented towards the x-axis.
 %       xs      - virtual source position [ys > Y0 => focused source] (m)
-%       L       - Length of linear loudspeaker array (m)
+%       L       - Length of loudspeaker array (m)
 %       src     - source type: 'pw' -plane wave
 %                              'ps' - point source
 %                              'fs' - focused source
@@ -92,7 +92,6 @@ lenir = length(irs.left(:,1));
 %% ===== BRIR ===========================================================
 % Initial values
 brir = zeros(N,2);
-brir2 = zeros(4096,2);
 dt = zeros(1,nls);
 a = zeros(1,nls);
 
@@ -134,11 +133,17 @@ for n=1:nls
     % If needed interpolate the given IR set
     ir = get_ir(irs,alpha);
     ir_distance = get_ir_distance(irs,alpha);
+    
+    % append zeros or truncate IRs to target length
+    if(lenir<N)
+        ir=cat(1,ir,zeros(N-lenir,2));
+    else
+        ir=ir(1:N,:);
+    end
 
     % ====================================================================
     % Driving function to get weighting and delaying
-    [a(n),delay] = ...
-        driving_function_imp_wfs_25d(x0(n,:),xs,src,conf);
+    [a(n),delay] = driving_function_imp_wfs_25d(x0(n,:),xs,src,conf);
     % Time delay of the virtual source (at the listener position)
     % t0 is a causality pre delay for a focused source, e.g. 0 for a non
     % focused point source (see SFS_config.m)
@@ -154,7 +159,7 @@ for n=1:nls
     end
     % Time delay in samples for the given loudspeaker
     % NOTE: I added some offset, because we can't get negative
-    dt(n) = ceil( tau*fs ) + 300;
+    dt(n) = (tau*fs) + 300;
     if dt(n)<0
         error('%s: the time delay dt(n) = %i has to be positive.', ...
             upper(mfilename),dt(n));
@@ -166,14 +171,8 @@ for n=1:nls
     end
 
     % Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay
-    brir2(:,1) = brir2(:,1) + delayline(ir(:,1)',dt(n),a(n)*win(n)*g,conf)';
-    brir2(:,2) = brir2(:,2) + delayline(ir(:,2)',dt(n),a(n)*win(n)*g,conf)';
-    brir(:,1) = brir(:,1) + [zeros(1,dt(n)) ...
-                             a(n)*win(n)*g*ir(:,1)' ...
-                             zeros(1,N-dt(n)-lenir)]';
-    brir(:,2) = brir(:,2) + [zeros(1,dt(n)) ...
-                             a(n)*win(n)*g*ir(:,2)' ...
-                             zeros(1,N-dt(n)-lenir)]';
+    brir(:,1) = brir(:,1) + delayline(ir(:,1)',dt(n),a(n)*win(n)*g,conf)';
+    brir(:,2) = brir(:,2) + delayline(ir(:,2)',dt(n),a(n)*win(n)*g,conf)';
 
     %figure;
     %title('IR');

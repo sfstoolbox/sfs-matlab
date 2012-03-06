@@ -50,8 +50,8 @@ function brs = brsset_wfs_25d(X,phi,xs,L,src,irs,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 6;
+nargmin = 6;
+nargmax = 7;
 error(nargchk(nargmin,nargmax,nargin));
 [X,xs] = position_vector(X,xs);
 isargscalar(phi);

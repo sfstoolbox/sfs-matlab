@@ -28,7 +28,7 @@ function ir = get_ir(irs,phi,delta)
 nargmin = 2;
 nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin))
-check_irs(irs);
+%check_irs(irs);
 isargscalar(phi);
 if nargin==nargmax
     isargscalar(delta);

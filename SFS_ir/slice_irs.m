@@ -27,7 +27,7 @@ nargmin = 2;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
 isargvector(idx);
-check_irs(irs);
+%check_irs(irs);
 
 
 %% ===== Slicing the IR set ==============================================

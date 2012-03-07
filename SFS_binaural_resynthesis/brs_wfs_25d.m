@@ -57,7 +57,7 @@ error(nargchk(nargmin,nargmax,nargin));
 isargscalar(phi);
 isargpositivescalar(L);
 isargchar(src);
-check_irs(irs);
+%check_irs(irs);
 
 if nargin<nargmax
     conf = SFS_config;
@@ -159,7 +159,7 @@ for n=1:nls
     end
     % Time delay in samples for the given loudspeaker
     % NOTE: I added some offset, because we can't get negative
-    dt(n) = (tau*fs) + 300;
+    dt(n) = (tau*fs) + 0;
     if dt(n)<0
         error('%s: the time delay dt(n) = %i has to be positive.', ...
             upper(mfilename),dt(n));
@@ -167,7 +167,7 @@ for n=1:nls
 
     % Check if we have enough samples (conf.N)
     if N<lenir+dt(n)
-        error('Use a larger conf.N value, you need at least %i',lenir+dt(n));
+        %error('Use a larger conf.N value, you need at least %i',lenir+dt(n));
     end
 
     % Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay

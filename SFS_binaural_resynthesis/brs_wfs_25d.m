@@ -53,16 +53,15 @@ function [brir] = brs_wfs_25d(X,phi,xs,L,src,irs,conf)
 nargmin = 6;
 nargmax = 7;
 error(nargchk(nargmin,nargmax,nargin));
-[X,xs] = position_vector(X,xs);
-isargscalar(phi);
-isargpositivescalar(L);
-isargchar(src);
-%check_irs(irs);
-
-if nargin<nargmax
+if nargin==nargmax-1
     conf = SFS_config;
-else
-    isargstruct(conf);
+end
+[X,xs] = position_vector(X,xs);
+if conf.debug
+    isargscalar(phi);
+    isargpositivescalar(L);
+    isargchar(src);
+    check_irs(irs);
 end
 
 
@@ -76,7 +75,7 @@ useplot = conf.useplot;       % Plot results?
 
 %% ===== Variables ======================================================
 
-phi = correct_azimuth(phi);
+phi = correct_azimuth(phi,conf);
 
 % Loudspeaker positions (phiLS describes the directions of the loudspeakers)
 x0 = secondary_source_positions(L,conf);
@@ -126,13 +125,13 @@ for n=1:nls
     alpha = cart2sph(x0(n,1)-X(1),x0(n,2)-X(2),0) - phi;
     %
     % Ensure -pi <= alpha < pi
-    alpha = correct_azimuth(alpha);
+    alpha = correct_azimuth(alpha,conf);
 
     % === IR interpolation ===
     % Get the desired IR.
     % If needed interpolate the given IR set
-    ir = get_ir(irs,alpha);
-    ir_distance = get_ir_distance(irs,alpha);
+    ir = get_ir(irs,alpha,0,conf);
+    ir_distance = get_ir_distance(irs,alpha,0,conf);
     
     % append zeros or truncate IRs to target length
     if(lenir<N)

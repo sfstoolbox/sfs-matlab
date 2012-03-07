@@ -1,12 +1,15 @@
-function ir = get_ir(irs,phi,delta)
+function ir = get_ir(irs,phi,delta,conf)
 %GET_IR returns a IR for the given apparent angle
-%   Usage: ir = get_ir(irs,phi,delta)
+%   Usage: ir = get_ir(irs,phi,delta,conf)
+%          ir = get_ir(irs,phi,delta)
 %          ir = get_ir(irs,phi)
 %
 %   Input parameters:
 %       irs     - IR data set
 %       phi     - azimuth angle for the desired IR (rad)
 %       delta   - elevation angle for the desired IR (rad)
+%       conf    - optional struct containing configuration variables (see
+%                 SFS_config for default values)
 %
 %   Output parameters:
 %       ir      - IR for the given angles (length of IR x 2)
@@ -26,14 +29,17 @@ function ir = get_ir(irs,phi,delta)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 2;
-nargmax = 3;
+nargmax = 4;
 error(nargchk(nargmin,nargmax,nargin))
-%check_irs(irs);
-isargscalar(phi);
-if nargin==nargmax
-    isargscalar(delta);
-else
+if nargin==nargmax-1
+    conf = SFS_config;
+elseif nargin==nargmax-2
     delta = 0;
+    conf = SFS_config;
+end
+if conf.debug
+    check_irs(irs);
+    isargscalar(phi,delta);
 end
 
 
@@ -41,8 +47,8 @@ end
 
 % === Check the given angles ===
 % Ensure -pi <= phi < pi and -pi/2 <= delta <= pi/2
-phi = correct_azimuth(phi);
-delta = correct_elevation(delta);
+phi = correct_azimuth(phi,conf);
+delta = correct_elevation(delta,conf);
 
 % === IR interpolation ===
 % Check if the IR dataset contains a measurement for the given angles
@@ -53,12 +59,14 @@ delta = correct_elevation(delta);
 % Precision of the conformance of the given angle and the desired one
 prec = 10; % which is 0.1 degree
 if findrows(...
-    round(degree(prec*[irs.apparent_azimuth' irs.apparent_elevation'])),...
-    round(degree(prec*[phi,delta])))
+    round(degree(prec*[irs.apparent_azimuth' irs.apparent_elevation'], ...
+        conf)),...
+    round(degree(prec*[phi,delta],conf)))
 
     idx = findrows(...
-        round(degree(prec*[irs.apparent_azimuth' irs.apparent_elevation'])),...
-        round(degree(prec*[phi,delta])));
+        round(degree(prec*[irs.apparent_azimuth' irs.apparent_elevation'], ...
+            conf)),...
+        round(degree(prec*[phi,delta],conf)));
     if length(idx)>1
         error(['%s: the irs data set has more than one entry corresponding ',...
                'an azimuth of %f and an elevation of %f.'],...
@@ -68,10 +76,10 @@ if findrows(...
     ir(:,2) = irs.right(:,idx);
 
 elseif findrows(irs.apparent_elevation',delta)
-    idx = findrows(irs.apparent_elevation',delta);
+    idx = findrows(irs.apparent_elevation',delta,conf);
     % === Interpolation of the azimuth ===
     % Get the IR set for the elevation delta
-    irs = slice_irs(irs,idx);
+    irs = slice_irs(irs,idx,conf);
 
     % Find the nearest value smaller than phi
     % Note: this requieres monotonic increasing values of phi in
@@ -105,17 +113,17 @@ elseif findrows(irs.apparent_elevation',delta)
     warning('SFS:irs_intpol',...
         ['doing IR interpolation with the angles beta1 = ',...
         '%.1f deg and beta2 = %.1f deg.'],...
-        degree(irs.apparent_azimuth(idx1)),...
-        degree(irs.apparent_azimuth(idx2)));
+        degree(irs.apparent_azimuth(idx1),conf),...
+        degree(irs.apparent_azimuth(idx2),conf));
     % IR interpolation
     ir = intpol_ir(ir1,irs.apparent_azimuth(idx1),...
-        ir2,irs.apparent_azimuth(idx2),phi);
+        ir2,irs.apparent_azimuth(idx2),phi,conf);
 
 elseif findrows(irs.apparent_azimuth',phi)
-    idx = findrows(irs.apparent_azimuth',phi);
+    idx = findrows(irs.apparent_azimuth',phi,conf);
     % === Interpolation of the elevation ===
     % Get the IR set for the azimuth phi
-    irs = slice_irs(irs,idx);
+    irs = slice_irs(irs,idx,conf);
 
     % Find the nearest value smaller than delta
     % Note: this requieres monotonic increasing values of delta in
@@ -148,10 +156,10 @@ elseif findrows(irs.apparent_azimuth',phi)
     warning('SFS:irs_intpol',...
         ['doing IR interpolation with the angles beta1 = ',...
         '%.1f deg and beta2 = %.1f deg.'],...
-        degree(irs.apparent_elevation(idx1)),...
-        degree(irs.apparent_elevation(idx2)));
+        degree(irs.apparent_elevation(idx1),conf),...
+        degree(irs.apparent_elevation(idx2),conf));
     ir = intpol_ir(ir1,irs.apparent_elevation(idx1),...
-        ir2,irs.apparent_elevation(idx2),delta);
+        ir2,irs.apparent_elevation(idx2),delta,conf);
 
 else
     error(['%s: at the moment interpolation for azimuth and elevation ',...

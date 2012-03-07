@@ -1,10 +1,13 @@
-function delta = correct_elevation(delta)
+function delta = correct_elevation(delta,conf)
 %CORRECT_ELEVATION ensures correct values for elevation angles
 %
-%   Usage: delta = correct_elevation(delta)
+%   Usage: delta = correct_elevation(delta,conf)
+%          delta = correct_elevation(delta)
 %
 %   Input parameters:
 %       delta     - elevation (rad). Can be a single value or a matrix.
+%       conf    - optional struct containing configuration variables (see
+%                 SFS_config for default values)
 %
 %   Output paramteres:
 %       delta     - angle between -pi/2 and +pi/2
@@ -23,9 +26,14 @@ function delta = correct_elevation(delta)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
-nargmax = 1;
+nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-isargmatrix(delta);
+if nargin==nargmax-1
+    conf = SFS_config;
+end
+if conf.debug
+    isargmatrix(delta);
+end
 
 
 %% ===== Computation ====================================================

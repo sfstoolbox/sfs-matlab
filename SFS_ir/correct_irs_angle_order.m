@@ -1,13 +1,16 @@
-function irs = correct_irs_angle_order(irs)
+function irs = correct_irs_angle_order(irs,conf)
 %CORRECT_IRS_ANGLE_ORDER reorders the angle entries of a irs to be increasing
 %
-%   Usage: irs = correct_irs_angle_order(irs)
+%   Usage: irs = correct_irs_angle_order(irs,conf)
+%          irs = correct_irs_angle_order(irs)
 %
 %   Input options
-%       irs - irs struct
+%       irs     - irs struct
+%       conf    - optional struct containing configuration variables (see
+%                 SFS_config for default values)
 %
 %   Output options
-%       irs - irs struct with corrected angle ordering
+%       irs     - irs struct with corrected angle ordering
 %
 %   CORRECT_IRS_ANGLE_ORDER(irs) corrects the order of the azimuth and elevation
 %   entries to be increasing over the whole range. This is needed for the
@@ -23,9 +26,14 @@ function irs = correct_irs_angle_order(irs)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
-nargmax = 1;
+nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-check_irs(irs);
+if nargin==nargmax-1
+    conf = SFS_config;
+end
+if conf.debug
+    check_irs(irs);
+end
 
 
 %% ===== Computation =====================================================

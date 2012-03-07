@@ -1,16 +1,18 @@
-function k = findcols(A, b)
+function k = findcols(A,b,conf)
 %FINDCOLS finds indices of a given column within a matrix.
 %
 %   Usage: idx = findcols(A,b)
 %
 %   Input parameters:
-%       A   - matrix
-%       b   - colum to search for in A
+%       A       - matrix
+%       b       - colum to search for in A
+%       conf    - optional struct containing configuration variables (see
+%                 SFS_config for default values)
 %
 %   output parameters:
-%       idx - indices of found columns in matrix
+%       idx     - indices of found columns in matrix
 %
-%   FINDCOLS(A, b) returns a row vector with the indices of the columns
+%   FINDCOLS(A,b) returns a row vector with the indices of the columns
 %   in the matrix A that are identical to the column vector b.  If no
 %   columns in A are identical to b, an empty vector is returned.
 %
@@ -31,10 +33,15 @@ function k = findcols(A, b)
 
 %% ===== Checking of input parameters ====================================
 nargmin = 2;
-nargmax = 2;
+nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin));
-isargmatrix(A);
-isargvector(b);
+if nargin==nargmax-1
+    conf = SFS_config;
+end
+if conf.debug
+    isargmatrix(A);
+    isargvector(b);
+end
 
 
 %% ===== Computation =====================================================

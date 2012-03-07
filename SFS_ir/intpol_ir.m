@@ -1,6 +1,8 @@
-function ir = intpol_ir(ir1,beta1,ir2,beta2,alpha)
+function ir = intpol_ir(ir1,beta1,ir2,beta2,alpha,conf)
 %INTPOL_IR interpolates two given IRs for the given angle
-%   Usage: ir = intpol_ir(ir1,beta1,ir2,beta2,alpha)
+%   Usage: ir = intpol_ir(ir1,beta1,ir2,beta2,alpha,conf)
+%          ir = intpol_ir(ir1,beta1,ir2,beta2,alpha)
+
 %
 %   Input parameters:
 %       ir1     - IR with lower angle
@@ -8,6 +10,8 @@ function ir = intpol_ir(ir1,beta1,ir2,beta2,alpha)
 %       ir2     - IR with bigger angle
 %       beta2   - angle of ir2 (rad)
 %       alpha   - angle of the desired IR (rad)
+%       conf    - optional struct containing configuration variables (see
+%                 SFS_config for default values)
 %
 %   Output parameters:
 %       ir      - IR for the given angle alpha (length(IR1),2)
@@ -27,16 +31,19 @@ function ir = intpol_ir(ir1,beta1,ir2,beta2,alpha)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 5;
-nargmax = 5;
+nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
-
-isargscalar(beta1,beta2,alpha);
-
-if ~isnumeric(ir1) || size(ir1,2)~=2
-    error('%s: ir1 has to be a samples x 2 matrix!',upper(mfilename));
+if nargin==nargmax-1
+    conf = SFS_config;
 end
-if ~isnumeric(ir2) || size(ir2,2)~=2
-    error('%s: ir2 has to be a samples x 2 matrix!',upper(mfilename));
+if conf.debug
+    isargscalar(beta1,beta2,alpha);
+    if ~isnumeric(ir1) || size(ir1,2)~=2
+        error('%s: ir1 has to be a samples x 2 matrix!',upper(mfilename));
+    end
+    if ~isnumeric(ir2) || size(ir2,2)~=2
+        error('%s: ir2 has to be a samples x 2 matrix!',upper(mfilename));
+    end
 end
 
 
@@ -49,9 +56,9 @@ if beta1==beta2
 end
 
 % Correct the given angles
-beta1 = correct_azimuth(beta1);
-beta2 = correct_azimuth(beta2);
-alpha = correct_azimuth(alpha);
+beta1 = correct_azimuth(beta1,conf);
+beta2 = correct_azimuth(beta2,conf);
+alpha = correct_azimuth(alpha,conf);
 
 %if alpha==beta1 || alpha==beta2
 %    error('%s: no interpolation needed for the given alpha value.',...

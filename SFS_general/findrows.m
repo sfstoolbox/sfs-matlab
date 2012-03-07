@@ -1,14 +1,16 @@
-function k = findrows(A, b)
+function k = findrows(A,b,conf)
 %FINDROWS finds indices of a given row within a matrix.
 %
 %   Usage: idx = findrows(A,b)
 %
 %   Input parameters:
-%       A   - matrix
-%       b   - vector to find in A
+%       A       - matrix
+%       b       - vector to find in A
+%       conf    - optional struct containing configuration variables (see
+%                 SFS_config for default values)
 %
 %   Output parameters:
-%       idx - indices of found columns in A
+%       idx     - indices of found columns in A
 %
 %   FINDROWS(A,b) returns a column vector with the indices of the rows
 %   in the matrix A that are identical to the row vector b.  If no rows
@@ -31,10 +33,15 @@ function k = findrows(A, b)
 
 %% ===== Checking of input parameters ====================================
 nargmin = 2;
-nargmax = 2;
+nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin));
-isargmatrix(A);
-isargvector(b);
+if nargin==nargmax-1
+    conf = SFS_config;
+end
+if conf.debug
+    isargmatrix(A);
+    isargvector(b);
+end
 
 
 %% ===== Computation =====================================================

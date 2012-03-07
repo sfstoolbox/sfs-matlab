@@ -32,7 +32,7 @@ error(nargchk(nargmin,nargmax,nargin));
 
 % ===== Table of Content ========================
 %
-% - Path
+% - Misc
 % - Audio
 % - Simulations
 % - Secondary Sources
@@ -51,8 +51,13 @@ error(nargchk(nargmin,nargmax,nargin));
 %
 
 
-% ===== Path ====================================
+% ===== Misc ====================================
 conf.tmpdir = '/tmp/sfs';
+% Debugging level. We are supporting 3 levels:
+%   0 - checking none of the given input parameters (for CPU demanding tasks)
+%   1 - checking of input parameters
+%   2 - show any interim result
+conf.debug = 1;
 
 
 % ===== Audio ===================================

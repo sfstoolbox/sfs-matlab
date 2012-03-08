@@ -28,7 +28,7 @@ function phi = correct_azimuth(phi,conf)
 nargmin = 1;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-if nargin==nargmax-1
+if nargin==(nargmax-1)
     conf = SFS_config;
 end
 if conf.debug

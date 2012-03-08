@@ -39,7 +39,7 @@ end
 %% ===== Computation ====================================================
 
 % Ensure -pi <= delta <= pi
-delta = correct_azimuth(delta);
+delta = correct_azimuth(delta,conf);
 
 % Ensure -pi/2 <= delta <= pi/2
 delta(delta<-pi/2) = -delta(delta<-pi/2) - pi;

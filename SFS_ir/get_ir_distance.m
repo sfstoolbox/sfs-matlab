@@ -47,8 +47,8 @@ end
 
 % === Check the given angles ===
 % Ensure -pi <= phi < pi and -pi/2 <= delta <= pi/2
-phi = correct_azimuth(phi);
-delta = correct_elevation(delta);
+phi = correct_azimuth(phi,conf);
+delta = correct_elevation(delta,conf);
 
 % Check if we have only one distance for the whole irs set and return that
 % value

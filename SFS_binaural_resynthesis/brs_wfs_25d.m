@@ -75,7 +75,7 @@ useplot = conf.useplot;       % Plot results?
 
 %% ===== Variables ======================================================
 
-phi = correct_azimuth(phi,conf);
+phi = correct_azimuth(phi);
 
 % Loudspeaker positions (phiLS describes the directions of the loudspeakers)
 x0 = secondary_source_positions(L,conf);
@@ -125,7 +125,7 @@ for n=1:nls
     alpha = cart2sph(x0(n,1)-X(1),x0(n,2)-X(2),0) - phi;
     %
     % Ensure -pi <= alpha < pi
-    alpha = correct_azimuth(alpha,conf);
+    alpha = correct_azimuth(alpha);
 
     % === IR interpolation ===
     % Get the desired IR.

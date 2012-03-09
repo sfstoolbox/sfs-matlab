@@ -47,8 +47,8 @@ end
 
 % === Check the given angles ===
 % Ensure -pi <= phi < pi and -pi/2 <= delta <= pi/2
-phi = correct_azimuth(phi,conf);
-delta = correct_elevation(delta,conf);
+phi = correct_azimuth(phi);
+delta = correct_elevation(delta);
 
 % === IR interpolation ===
 % Check if the IR dataset contains a measurement for the given angles
@@ -59,9 +59,8 @@ delta = correct_elevation(delta,conf);
 % Precision of the conformance of the given angle and the desired one
 prec = 10; % which is 0.1 degree
 idx = findrows(...
-        round(degree(prec*[irs.apparent_azimuth' irs.apparent_elevation'], ...
-            conf)),...
-        round(degree(prec*[phi,delta],conf)),conf);
+        round(degree(prec*[irs.apparent_azimuth' irs.apparent_elevation'])),...
+        round(degree(prec*[phi,delta],conf)));
     
 if idx    
     if length(idx)>1
@@ -153,8 +152,8 @@ elseif findrows(irs.apparent_azimuth',phi)
     warning('SFS:irs_intpol',...
         ['doing IR interpolation with the angles beta1 = ',...
         '%.1f deg and beta2 = %.1f deg.'],...
-        degree(irs.apparent_elevation(idx1),conf),...
-        degree(irs.apparent_elevation(idx2),conf));
+        degree(irs.apparent_elevation(idx1)),...
+        degree(irs.apparent_elevation(idx2)));
     ir = intpol_ir(ir1,irs.apparent_elevation(idx1),...
         ir2,irs.apparent_elevation(idx2),delta,conf);
 

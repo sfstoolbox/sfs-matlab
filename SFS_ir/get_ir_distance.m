@@ -47,8 +47,8 @@ end
 
 % === Check the given angles ===
 % Ensure -pi <= phi < pi and -pi/2 <= delta <= pi/2
-phi = correct_azimuth(phi,conf);
-delta = correct_elevation(delta,conf);
+phi = correct_azimuth(phi);
+delta = correct_elevation(delta);
 
 % Check if we have only one distance for the whole irs set and return that
 % value
@@ -80,7 +80,7 @@ elseif findrows(irs.apparent_elevation',delta)
     idx = findrows(irs.apparent_elevation',delta);
     % === Interpolation of the azimuth ===
     % Get the IR set for the elevation delta
-    irs = slice_irs(irs,idx);
+    irs = slice_irs(irs,idx,conf);
 
     % Find the nearest value smaller than phi
     % Note: this requieres monotonic increasing values of phi in
@@ -123,7 +123,7 @@ elseif findrows(irs.apparent_azimuth',phi)
     idx = findrows(irs.apparent_azimuth',phi);
     % === Interpolation of the elevation ===
     % Get the IR set for the azimuth phi
-    irs = slice_irs(irs,idx);
+    irs = slice_irs(irs,idx,conf);
 
     % Find the nearest value smaller than delta
     % Note: this requieres monotonic increasing values of delta in

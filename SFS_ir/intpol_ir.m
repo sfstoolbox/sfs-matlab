@@ -56,9 +56,9 @@ if beta1==beta2
 end
 
 % Correct the given angles
-beta1 = correct_azimuth(beta1,conf);
-beta2 = correct_azimuth(beta2,conf);
-alpha = correct_azimuth(alpha,conf);
+beta1 = correct_azimuth(beta1);
+beta2 = correct_azimuth(beta2);
+alpha = correct_azimuth(alpha);
 
 %if alpha==beta1 || alpha==beta2
 %    error('%s: no interpolation needed for the given alpha value.',...

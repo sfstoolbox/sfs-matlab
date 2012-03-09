@@ -1,13 +1,10 @@
-function phi = correct_azimuth(phi,conf)
+function phi = correct_azimuth(phi)
 %CORRECT_AZIMUTH ensures correct values for azimuth angles
 %
-%   Usage: phi = correct_azimuth(phi,conf)
-%          phi = correct_azimuth(phi)
+%   Usage: phi = correct_azimuth(phi)
 %
 %   Input parameters:
 %       phi     - azimuth (rad). Can be a single value or a matrix.
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
 %
 %   Output paramteres:
 %       phi     - angle between -pi and +pi-eps
@@ -26,14 +23,8 @@ function phi = correct_azimuth(phi,conf)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
-nargmax = 2;
+nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
-if nargin==(nargmax-1)
-    conf = SFS_config;
-end
-if conf.debug
-    isargmatrix(phi);
-end
 
 
 %% ===== Computation ====================================================

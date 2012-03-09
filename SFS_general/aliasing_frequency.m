@@ -32,11 +32,11 @@ function fal = aliasing_frequency(dx0,conf)
 nargmin = 1;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-isargpositivescalar(dx0);
-
-if nargin<nargmax
+if nargin==nargmax-1
     conf = SFS_config;
-else
+end
+if conf.debug
+    isargpositivescalar(dx0);
     isargstruct(conf);
 end
 

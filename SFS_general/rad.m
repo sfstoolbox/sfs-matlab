@@ -1,13 +1,10 @@
-function phi = rad(phi,conf)
+function phi = rad(phi)
 %RAD returns the given angle in radians
 %
-%   Usage: phi = rad(phi,conf)
-%          phi = rad(phi)
+%   Usage: phi = rad(phi)
 %
 %   Input options:
 %       phi     - angle, can be a scalar or matrix (degree)
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
 %
 %   Output options:
 %       phi     - angle (rad)
@@ -24,14 +21,8 @@ function phi = rad(phi,conf)
 
 %% ===== Checking of input parameters ====================================
 nargmin = 1;
-nargmax = 2;
+nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
-if nargin==nargmax-1
-    conf = SFS_config;
-end
-if conf.debug
-    isargmatrix(phi);
-end
 
 
 %% ===== Computation =====================================================

@@ -1,13 +1,10 @@
-function phi = degree(phi,conf)
+function phi = degree(phi)
 %DEGREE returns the given angle in degree
 %
-%   Usage: phi = degree(phi,conf)
-%          phi = degree(phi)
+%   Usage: phi = degree(phi)
 %
 %   Input options:
 %       phi     - angle, can be a scalar or matrix (rad)
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
 %
 %   Output options:
 %       phi     - angle (degree)
@@ -25,14 +22,8 @@ function phi = degree(phi,conf)
 
 %% ===== Checking of input parameters ====================================
 nargmin = 1;
-nargmax = 2;
+nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
-if nargin==nargmax-1
-    conf = SFS_config;
-end
-if conf.debug
-    isargmatrix(phi);
-end
 
 
 %% ===== Computation =====================================================

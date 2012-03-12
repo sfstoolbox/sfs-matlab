@@ -1,3 +1,24 @@
+This is the source distribution of Sound Field Synthesis-Toolbox (SFS) licensed
+under the GPLv3+. Please consult the file COPYING for more information about
+this license.
+ 
+The wiki at http://dev.qu.tu-berlin.de/projects/sfs/wiki contains relevant
+informations about the SFS, including installation instructions and a detailed
+usage tutorial. Additional installation instructions can be found in the file
+INSTALL.
+
+For questions, bug reports and feature requests:
+
+FIXME: add mail adress
+Contact: mail@tu-berlin.de
+Website: http://dev.qu.tu-berlin.de/projects/sfs
+
+Copyright (c) 2010-2012 Quality & Usability Lab
+                        Deutsche Telekom Laboratories, TU Berlin
+                        Ernst-Reuter-Platz 7, 10587 Berlin, Germany
+
+FIXME: merge with old README
+
 # ===== Sound Field Synthesis (SFS) Toolbox =====
 
 The Sound Field Synthesis (SFS) Toolbox for Matlab/Octave gives you the

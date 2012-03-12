@@ -32,16 +32,16 @@ end
 usefracdelay = conf.usefracdelay;
 fracdelay_method = conf.fracdelay_method;
 
-rfactor=100; % resample factor (1/stepsize of fractional delays)
-Lls=30;      % length of least-squares factional delay filter
+rfactor = 100; % resample factor (1/stepsize of fractional delays)
+Lls = 30;      % length of least-squares factional delay filter
 
 
 %% ===== Computation =====================================================    
 if(usefracdelay)
  
     % Defining a temporary conf struct for recursive calling of delayline
-    conf2.usefracdelay=0;
-    conf2.fracdelay_method='';
+    conf2.usefracdelay = 0;
+    conf2.fracdelay_method = '';
 
     switch fracdelay_method
     case 'resample'
@@ -50,7 +50,7 @@ if(usefracdelay)
        sig = resample(sig2,1,rfactor);
 
     case 'least_squares'
-        idt=floor(dt);
+        idt = floor(dt);
         sig = delayline(sig,idt,weight,conf2);
         if(abs(dt-idt)>0)
             % FIXME: add this function to Toolbox, or display URL for download
@@ -62,9 +62,9 @@ if(usefracdelay)
         end
 
     case 'interp1'
-        idt=floor(dt);
+        idt = floor(dt);
         sig = delayline(sig,idt,weight,conf2);
-        t=1:length(sig);
+        t = 1:length(sig);
         sig = interp1(t,sig,-(dt-idt)+t,'spline');
         
     otherwise
@@ -73,7 +73,7 @@ if(usefracdelay)
     
 else
     % from here on integer delays are considered
-    idt=round(dt);
+    idt = round(dt);
     % handle positive or negative delays
     if idt>=0
         sig = [zeros(1,idt) weight*sig(1:end-idt)];

@@ -1,15 +1,13 @@
-function d = get_ir_distance(irs,phi,delta,conf)
+function d = get_ir_distance(irs,phi,delta)
 %GET_IR_DISTANCE returns the distance for the given apparent angle
-%   Usage: ir = get_ir_distance(irs,phi,delta,conf)
-%          ir = get_ir_distance(irs,phi,delta)
+%
+%   Usage: ir = get_ir_distance(irs,phi,delta)
 %          ir = get_ir_distance(irs,phi)
 %
 %   Input parameters:
 %       irs     - IR data set
 %       phi     - azimuth angle for the desired IR (rad)
 %       delta   - elevation angle for the desired IR (rad)
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
 %
 %   Output parameters:
 %       d       - distace for the given angles
@@ -29,17 +27,10 @@ function d = get_ir_distance(irs,phi,delta,conf)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 2;
-nargmax = 4;
+nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin))
 if nargin==nargmax-1
-    conf = SFS_config;
-elseif nargin==nargmax-2
     delta = 0;
-    conf = SFS_config;
-end
-if conf.debug
-    check_irs(irs);
-    isargscalar(phi,delta);
 end
 
 
@@ -80,7 +71,7 @@ elseif findrows(irs.apparent_elevation',delta)
     idx = findrows(irs.apparent_elevation',delta);
     % === Interpolation of the azimuth ===
     % Get the IR set for the elevation delta
-    irs = slice_irs(irs,idx,conf);
+    irs = slice_irs(irs,idx);
 
     % Find the nearest value smaller than phi
     % Note: this requieres monotonic increasing values of phi in
@@ -123,7 +114,7 @@ elseif findrows(irs.apparent_azimuth',phi)
     idx = findrows(irs.apparent_azimuth',phi);
     % === Interpolation of the elevation ===
     % Get the IR set for the azimuth phi
-    irs = slice_irs(irs,idx,conf);
+    irs = slice_irs(irs,idx);
 
     % Find the nearest value smaller than delta
     % Note: this requieres monotonic increasing values of delta in

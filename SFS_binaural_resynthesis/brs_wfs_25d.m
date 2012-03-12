@@ -130,8 +130,8 @@ for n=1:nls
     % === IR interpolation ===
     % Get the desired IR.
     % If needed interpolate the given IR set
-    ir = get_ir(irs,alpha,0,conf);
-    ir_distance = get_ir_distance(irs,alpha,0,conf);
+    ir = get_ir(irs,alpha,0);
+    ir_distance = get_ir_distance(irs,alpha,0);
     
     % append zeros or truncate IRs to target length
     if(lenir<N)

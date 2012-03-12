@@ -1,15 +1,13 @@
-function ir = get_ir(irs,phi,delta,conf)
+function ir = get_ir(irs,phi,delta)
 %GET_IR returns a IR for the given apparent angle
-%   Usage: ir = get_ir(irs,phi,delta,conf)
-%          ir = get_ir(irs,phi,delta)
+%
+%   Usage: ir = get_ir(irs,phi,delta)
 %          ir = get_ir(irs,phi)
 %
 %   Input parameters:
 %       irs     - IR data set
 %       phi     - azimuth angle for the desired IR (rad)
 %       delta   - elevation angle for the desired IR (rad)
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
 %
 %   Output parameters:
 %       ir      - IR for the given angles (length of IR x 2)
@@ -26,21 +24,23 @@ function ir = get_ir(irs,phi,delta,conf)
 % $LastChangedRevision$
 % $LastChangedBy$
 
+% FIXME: implement deactivation of interpolation and returning nearest
+% neighbor
+
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 2;
-nargmax = 4;
+nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin))
 if nargin==nargmax-1
-    conf = SFS_config;
-elseif nargin==nargmax-2
     delta = 0;
-    conf = SFS_config;
 end
-if conf.debug
-    check_irs(irs);
-    isargscalar(phi,delta);
-end
+
+
+%% ===== Configuration ==================================================
+% Precission of the wanted angle. If a IR within the given precission could be
+% found no interpolation is applied.
+prec = 0.1; % degree
 
 
 %% ===== Computation ====================================================
@@ -55,13 +55,10 @@ delta = correct_elevation(delta);
 % phi and delta. If this is not the case, interpolate the dataset for the given
 % angles.
 
-% If we have found the both angles
-% Precision of the conformance of the given angle and the desired one
-prec = 10; % which is 0.1 degree
+% If azimuth and elevation could be found
 idx = findrows(...
-        round(degree(prec*[irs.apparent_azimuth' irs.apparent_elevation'])),...
-        round(degree(prec*[phi,delta])));
-    
+    roundto([irs.apparent_azimuth' irs.apparent_elevation'],prec),...
+    roundto([phi,delta],prec));
 if idx    
     if length(idx)>1
         error(['%s: the irs data set has more than one entry corresponding ',...
@@ -71,11 +68,12 @@ if idx
     ir(:,1) = irs.left(:,idx);
     ir(:,2) = irs.right(:,idx);
 
+% If only elevation angle could be found
 elseif findrows(irs.apparent_elevation',delta)
-    idx = findrows(irs.apparent_elevation',delta,conf);
+    idx = findrows(irs.apparent_elevation',delta);
     % === Interpolation of the azimuth ===
     % Get the IR set for the elevation delta
-    irs = slice_irs(irs,idx,conf);
+    irs = slice_irs(irs,idx);
 
     % Find the nearest value smaller than phi
     % Note: this requieres monotonic increasing values of phi in
@@ -113,13 +111,14 @@ elseif findrows(irs.apparent_elevation',delta)
         degree(irs.apparent_azimuth(idx2)));
     % IR interpolation
     ir = intpol_ir(ir1,irs.apparent_azimuth(idx1),...
-        ir2,irs.apparent_azimuth(idx2),phi,conf);
+        ir2,irs.apparent_azimuth(idx2),phi);
 
+% if only azimuth angle could be found
 elseif findrows(irs.apparent_azimuth',phi)
-    idx = findrows(irs.apparent_azimuth',phi,conf);
+    idx = findrows(irs.apparent_azimuth',phi);
     % === Interpolation of the elevation ===
     % Get the IR set for the azimuth phi
-    irs = slice_irs(irs,idx,conf);
+    irs = slice_irs(irs,idx);
 
     % Find the nearest value smaller than delta
     % Note: this requieres monotonic increasing values of delta in
@@ -155,11 +154,18 @@ elseif findrows(irs.apparent_azimuth',phi)
         degree(irs.apparent_elevation(idx1)),...
         degree(irs.apparent_elevation(idx2)));
     ir = intpol_ir(ir1,irs.apparent_elevation(idx1),...
-        ir2,irs.apparent_elevation(idx2),delta,conf);
+        ir2,irs.apparent_elevation(idx2),delta);
 
 else
     error(['%s: at the moment interpolation for azimuth and elevation ',...
            'angles at the same time is currently not supported. ',...
            'Please choose an azimuth angle or an elevation angle, ',...
            'which is in the IR data set.'],upper(mfilename));
+end
+
+
+%% ===== Subfunctions ====================================================
+% round the input matrix m to the given precission prec in degree
+function m = roundto(m,prec)
+    m = round(degree(m)/prec)*prec;
 end

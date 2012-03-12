@@ -1,7 +1,7 @@
-function irspart = slice_irs(irs,idx,conf)
+function irspart = slice_irs(irs,idx)
 %SLICE_IRS returns a part of an IRs set given by idx
-%   Usage: irspart = slice_irs(irs,idx,conf)
-%          irspart = slice_irs(irs,idx)
+%
+%   Usage: irspart = slice_irs(irs,idx)
 %
 %   Input parameters:
 %       irs     - IR data set
@@ -27,15 +27,8 @@ function irspart = slice_irs(irs,idx,conf)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 2;
-nargmax = 3;
+nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-if nargin==nargmax-1
-    conf = SFS_config;
-end
-if conf.debug
-    isargvector(idx);
-    check_irs(irs);
-end
 
 
 %% ===== Slicing the IR set ==============================================

@@ -17,7 +17,6 @@ function d = get_ir_distance(irs,phi,delta)
 %   interpolation is applied to create the desired angles.
 %
 %   see also: get_ir, read_irs, slice_irs, ir_intpol
-%
 
 % AUTHOR: Hagen Wierstorf
 % $LastChangedDate$
@@ -56,19 +55,22 @@ end
 % If we have found the both angles
 % Precision of the conformance of the given angle and the desired one
 prec = 1000; % which is ca. 0.1 degree
-if findrows(round(prec*[irs.apparent_azimuth' irs.apparent_elevation']),...
-        round(prec*[phi,delta]))
-    idx = findrows(round(prec*[irs.apparent_azimuth' irs.apparent_elevation']),...
-        round(prec*[phi,delta]));
+
+% If azimuth and elevation could be found
+if (( idx = findrows(...
+    roundto([irs.apparent_azimuth' irs.apparent_elevation'],prec),...
+    roundto([phi,delta],prec)) ))
     if length(idx)>1
         error(['%s: the irs data set has more than one entry corresponding ',...
-               'an azimuth of %f and an elevation of %f.'],...
-            upper(mfilename),phi,delta);
+               'an azimuth of %.3f and an elevation of %.3f.'],...
+            upper(mfilename),degree(phi),dgree(delta));
     end
     d = irs.distance(idx);
 
-elseif findrows(irs.apparent_elevation',delta)
-    idx = findrows(irs.apparent_elevation',delta);
+% If only the elevation angle is found
+elseif (( idx = findrows(roundto(irs.apparent_elevation',prec), ...
+                         roundto(delta,prec)) ))
+
     % === Interpolation of the azimuth ===
     % Get the IR set for the elevation delta
     irs = slice_irs(irs,idx);
@@ -110,8 +112,9 @@ elseif findrows(irs.apparent_elevation',delta)
         (irs.apparent_azimuth(idx2)-irs.apparent_azimuth(idx1)) * ...
         (phi-irs.apparent_azimuth(idx1));
 
-elseif findrows(irs.apparent_azimuth',phi)
-    idx = findrows(irs.apparent_azimuth',phi);
+% If only the azimuth angle is found
+elseif (( idx = findrows(roundto(irs.apparent_azimuth',prec), ...
+                         rounto(phi,prec)) ))
     % === Interpolation of the elevation ===
     % Get the IR set for the azimuth phi
     irs = slice_irs(irs,idx);
@@ -156,4 +159,11 @@ else
            'angles at the same time is currently not supported. ',...
            'Please choose an azimuth angle or an elevation angle, ',...
            'which is in the IR data set.'],upper(mfilename));
+end
+
+
+%% ===== Subfunctions ====================================================
+% round the input matrix m to the given precission prec in degree
+function m = roundto(m,prec)
+    m = round(degree(m)/prec)*prec;
 end

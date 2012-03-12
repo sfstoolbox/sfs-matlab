@@ -17,7 +17,6 @@ function ir = get_ir(irs,phi,delta)
 %   interpolation is applied to create the desired angles.
 %
 %   see also: read_irs, slice_irs, ir_intpol
-%
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
 % $LastChangedDate$
@@ -56,21 +55,20 @@ delta = correct_elevation(delta);
 % angles.
 
 % If azimuth and elevation could be found
-idx = findrows(...
+if (( idx = findrows(...
     roundto([irs.apparent_azimuth' irs.apparent_elevation'],prec),...
-    roundto([phi,delta],prec));
-if idx    
+    roundto([phi,delta],prec)) ))
     if length(idx)>1
         error(['%s: the irs data set has more than one entry corresponding ',...
-               'an azimuth of %f and an elevation of %f.'],...
-            upper(mfilename),phi,delta);
+               'an azimuth of %.3f deg and an elevation of %.3f deg.'],...
+            upper(mfilename),degree(phi),degree(delta));
     end
     ir(:,1) = irs.left(:,idx);
     ir(:,2) = irs.right(:,idx);
 
 % If only elevation angle could be found
-elseif findrows(irs.apparent_elevation',delta)
-    idx = findrows(irs.apparent_elevation',delta);
+elseif (( idx = findrows(roundto(irs.apparent_elevation',prec), ...
+                         roundto(delta,prec)) ))
     % === Interpolation of the azimuth ===
     % Get the IR set for the elevation delta
     irs = slice_irs(irs,idx);
@@ -114,8 +112,8 @@ elseif findrows(irs.apparent_elevation',delta)
         ir2,irs.apparent_azimuth(idx2),phi);
 
 % if only azimuth angle could be found
-elseif findrows(irs.apparent_azimuth',phi)
-    idx = findrows(irs.apparent_azimuth',phi);
+elseif (( idx = findrows(roundto(irs.apparent_azimuth',prec),...
+                         roundto(phi,prec)) ))
     % === Interpolation of the elevation ===
     % Get the IR set for the azimuth phi
     irs = slice_irs(irs,idx);

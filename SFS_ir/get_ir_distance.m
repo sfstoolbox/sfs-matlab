@@ -59,7 +59,7 @@ prec = 1000; % which is ca. 0.1 degree
 % If azimuth and elevation could be found
 idx = findrows(...
     roundto([irs.apparent_azimuth' irs.apparent_elevation'],prec),...
-    roundto([phi,delta],prec))
+    roundto([phi,delta],prec));
 if idx
     if length(idx)>1
         error(['%s: the irs data set has more than one entry corresponding ',...
@@ -166,7 +166,7 @@ else
            'Please choose an azimuth angle or an elevation angle, ',...
            'which is in the IR data set.'],upper(mfilename));
 end
-
+end % of main function
 
 %% ===== Subfunctions ====================================================
 % round the input matrix m to the given precission prec in degree

@@ -36,7 +36,7 @@ isargpositivescalar(L);
 if ~exist('ls_activity','var')
     if strcmp(conf.array,'circle')
         error(['%s: For circular arrays tapwin needs the ls_activity. ', ...
-            'If you have really all loudspeakers activce use ', ...
+            'If you have really all loudspeakers active use ', ...
             'conf.tapwin=0.'],upper(mfilename));
     end
     % If no explicit loudspeaker activity is given mark all speakers as active
@@ -117,26 +117,27 @@ else
 end
 
 % If we have non active loudspeaker we have to move the tapering window to the
-% right position. Also we have to check for closed arrays.
-if length(ls_activity)~=length(ls_activity(idx))
-    % Look for the first inactive and for the first active loudspeaker
-    idx1 = find(ls_activity==0,1,'first');
-    idx2 = find(ls_activity==1,1,'first');
-    if idx1~=1
-        % If the first loudspeaker is active we apply the window from here on
-        % until the first inactive. If there were additional active loudspeakers
-        % at the end we know that we have a close array and the rest of the
-        % window is applied at the end in a way that the tapering window will be
-        % corect.
-        win = [win(end-idx1+2:end), ...
-               zeros(1,length(ls_activity)-length(ls_activity(idx))), ...
-               win(1:end-idx1+1)];
-    else
-        % If we have an inactive loudspeaker at the beginning place the window
-        % in the middle.
-        win = [zeros(1,length(1:idx2-1)), ...
-               win, ...
-               zeros(1,length(ls_activity)-length(win)-length(1:idx2-1))];
-    end
-end
+        % right position. Also we have to check for closed arrays.
+        if length(ls_activity)~=length(ls_activity(idx))
+            % Look for the first inactive and for the first active loudspeaker
+            idx1 = find(ls_activity==0,1,'first');
+            idx2 = find(ls_activity==1,1,'first');
+            if idx1~=1
+                % If the first loudspeaker is active we apply the window from here on
+                % until the first inactive. If there were additional active loudspeakers
+                % at the end we know that we have a close array and the rest of the
+                % window is applied at the end in a way that the tapering window will be
+                % corect.
+                win = [win(end-idx1+2:end), ...
+                       zeros(1,length(ls_activity)-length(ls_activity(idx))), ...
+                       win(1:end-idx1+1)];
+            else
+                % If we have an inactive loudspeaker at the beginning place the window
+                % in the middle.
+                win = [zeros(1,length(1:idx2-1)), ...
+                       win, ...
+                       zeros(1,length(ls_activity)-length(win)-length(1:idx2-1))];
+            end
+        end
+
 win = column_vector(win);

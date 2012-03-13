@@ -86,8 +86,11 @@ idx = find(f>20000,1);
 f = f(1:idx);
 
 S = zeros(1,length(f));
+
+% Activity of secondary sources
+ls_activity = secondary_source_selection(x0,xs,src);
 % Tapering window
-win = tapwin(L,conf);
+win = tapwin(L,ls_activity,conf);
 % Get the result for all frequencies
 for ii = 1:length(f)
     P = 0;
@@ -98,7 +101,7 @@ for ii = 1:length(f)
         % Secondary source model
         % This is the model for the loudspeakers we apply. We use closed cabinet
         % loudspeakers and therefore the 3D Green's function is our model.
-        G = point_source(X,x0(n,1:3),f(ii));
+        G = point_source(X(1),X(2),x0(n,1:3),f(ii),conf);
 
         % ================================================================
         % Driving function D(x0,omega)

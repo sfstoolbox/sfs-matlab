@@ -120,6 +120,8 @@ conf.N = 2^15; % samples
 conf.brsangles = 0:1:359; % degree
 %
 % === Auralisation ===
+% FIXME: what files can we provide for free. Or should I remove this completly
+% from the open source release?
 % These files are used for the auralization of impulse responses by the
 % auralize_ir() function.
 conf.speechfile = '~/data/signals/goesa_sentence.wav';

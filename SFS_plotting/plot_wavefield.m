@@ -443,11 +443,12 @@ else
     system(cmd);
 
     % Remove tmp files
+    % FIXME: add the possibility to store these data
     if exist(datafile,'file')
-        delete(datafile);
+        %delete(datafile);
     end
     if exist(lsfile,'file')
-        delete(lsfile);
+        %delete(lsfile);
     end
 
 end

@@ -1,5 +1,6 @@
 function plot_wavefield(x,y,P,varargin)
 %PLOT_WAVEFIELD plot the given wavefield
+%
 %   Usage: plot_wavefield(x,y,P,L,ls_activity,conf)
 %          plot_wavefield(x,y,P,L,ls_activity)
 %          plot_wavefield(x,y,P)
@@ -23,8 +24,7 @@ function plot_wavefield(x,y,P,varargin)
 %   added to the plot at their real positions. But only if distance between them
 %   is larger than 10cm.
 %
-%   see also: wf_WFS_25D, wf_SDM_25D
-%
+%   see also: 
 
 % AUTHOR: Hagen Wierstorf
 % $LastChangedDate$
@@ -291,7 +291,8 @@ else
                 ls_activity = repmat(ls_activity,size(x0));
             end
             % Storing loudspeaker positions and activity
-            [x0,y0,phi,ls_activity] = column_vector(x0(:,1),x0(:,2),phi(:,3),ls_activity);
+            phi = cart2pol(x0(:,4)-x0(:,1),x0(:,5)-x0(:,2));
+            [x0,y0,phi,ls_activity] = column_vector(x0(:,1),x0(:,2),phi,ls_activity);
             gp_save(lsfile,x0,[y0 phi ls_activity]);
         end
     end

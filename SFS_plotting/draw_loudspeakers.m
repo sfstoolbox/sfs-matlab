@@ -16,7 +16,6 @@ function draw_loudspeakers(x0,ls_activity,conf)
 %   in their given direction.
 %
 %   see also: plot_wavefield
-%
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
 % $LastChangedDate$
@@ -30,9 +29,9 @@ nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin));
 isargsecondarysource(x0)
 nls = size(x0,1);
-if(nargin<nargmax-1)
+if nargin<nargmax-1
     ls_activity = zeros(nls,1);
-elseif(length(ls_activity)==1)
+elseif length(ls_activity)==1
     ls_activity = ls_activity*ones(nls,1);
 end
 isargvector(ls_activity);

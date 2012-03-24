@@ -207,6 +207,9 @@ conf.plot.lssize = conf.dx0; % m
 conf.plot.size = [16,11.55]; % cm
 % Additional plot command
 conf.plot.cmd = '';
+% output of plot (file or screen)
+conf.plot.usefile = 0;
+conf.plot.file = 'sfs';
 %
 % === Gnuplot ===
 % Use gnuplot

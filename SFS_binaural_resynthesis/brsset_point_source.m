@@ -71,7 +71,10 @@ angles = rad(conf.brsangles);   % Angles for the BRIRs
 brs = zeros(N,2*length(angles));
 
 % Generate a BRS set for all given angles
+warning('off','SFS:irs_intpol');
 for i = 1:length(angles)
     % Compute BRIR for a reference (single loudspeaker at xs)
     brs(:,(i-1)*2+1:i*2) = brs_point_source(X,angles(i)+phi,xs,irs,conf);
 end
+warning('on','SFS:irs_intpol');
+

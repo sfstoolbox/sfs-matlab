@@ -123,9 +123,16 @@ dt = ceil( tau*fs );
 % already present in the IR dataset.
 a = (1/norm(X-xs)) / (1/ir_distance);
 
+% FIXME: this could go in an extra function
+% append zeros or truncate IRs to target length
+if(lenir<N-dt)
+    ir=cat(1,ir,zeros(N-lenir,2));
+else
+    ir=ir(1:N-dt,:);
+end
 % Check if we have enough samples (conf.N)
 if N<lenir+dt
-    error('Use a larger conf.N value, you need at least %i',lenir+dt);
+    %error('Use a larger conf.N value, you need at least %i',lenir+dt);
 end
 % Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay
 brir(:,1) = [zeros(1,dt) a*ir(:,1)' zeros(1,N-dt-lenir)]';

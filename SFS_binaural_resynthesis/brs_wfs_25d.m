@@ -132,15 +132,8 @@ for n=1:nls
     % If needed interpolate the given IR set
     ir = get_ir(irs,alpha,0);
     ir_distance = get_ir_distance(irs,alpha,0);
-    
-    % append zeros or truncate IRs to target length
-    if(lenir<N)
-        ir=cat(1,ir,zeros(N-lenir,2));
-    else
-        ir=ir(1:N,:);
-    end
 
-    % ====================================================================
+    % === Amplitude and delay ===
     % Driving function to get weighting and delaying
     [a(n),delay] = driving_function_imp_wfs_25d(x0(n,:),xs,src,conf);
     % Time delay of the virtual source (at the listener position)
@@ -164,21 +157,14 @@ for n=1:nls
             upper(mfilename),dt(n));
     end
 
-    % Check if we have enough samples (conf.N)
-    if N<lenir+dt(n)
-        %error('Use a larger conf.N value, you need at least %i',lenir+dt(n));
-    end
+    % === Trim IR ===
+    % FIXME: check if this is still working, because in the old version the IR
+    % was always fixed to a length with dt=0.
+    ir = fix_ir_length(ir,N,dt);
 
     % Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay
     brir(:,1) = brir(:,1) + delayline(ir(:,1)',dt(n),a(n)*win(n)*g,conf)';
     brir(:,2) = brir(:,2) + delayline(ir(:,2)',dt(n),a(n)*win(n)*g,conf)';
-
-    %figure;
-    %title('IR');
-    %plot([zeros(1,dt(n)) a(n)*win(n)*g*ir(:,1)' zeros(1,N-dt(n)-lenir)]');
-    %figure;
-    %title('BRIR');
-    %plot(brir(:,1));
 
 end
 warning('on','SFS:irs_intpol');

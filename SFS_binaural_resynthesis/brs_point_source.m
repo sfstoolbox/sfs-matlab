@@ -101,11 +101,10 @@ brir = zeros(N,2);
 % Angle between listener and source (-pi < alpha <= pi)
 % NOTE: phi is the orientation of the listener (see first graph)
 alpha = cart2sph(xs(1)-X(1),xs(2)-X(2),0) - phi;
-%
 % Ensure -pi <= alpha < pi
 alpha = correct_azimuth(alpha);
 
-% === HRIR interpolation ===
+% === IR interpolation ===
 ir = get_ir(irs,alpha);
 ir_distance = get_ir_distance(irs,alpha);
 
@@ -115,28 +114,22 @@ ir_distance = get_ir_distance(irs,alpha);
 offset = 3; % in m
 tau = (norm(X-xs)-ir_distance+offset)/c;
 % Time delay in samples
-dt = ceil( tau*fs );
+delay = ceil( tau*fs );
 
 % === Amplitude factor ===
 % The 1/norm(X-xs) term is for the decreasing of the sound on its way from
 % the loudspeaker (xs) to the listener (X). It accounts for the distance that is
 % already present in the IR dataset.
-a = (1/norm(X-xs)) / (1/ir_distance);
+amplitude = (1/norm(X-xs)) / (1/ir_distance);
 
-% FIXME: this could go in an extra function
-% append zeros or truncate IRs to target length
-if(lenir<N-dt)
-    ir=cat(1,ir,zeros(N-lenir,2));
-else
-    ir=ir(1:N-dt,:);
-end
-% Check if we have enough samples (conf.N)
-if N<lenir+dt
-    %error('Use a larger conf.N value, you need at least %i',lenir+dt);
-end
-% Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay
-brir(:,1) = [zeros(1,dt) a*ir(:,1)' zeros(1,N-dt-lenir)]';
-brir(:,2) = [zeros(1,dt) a*ir(:,2)' zeros(1,N-dt-lenir)]';
+% === Trim IR ===
+% make sure the IR has the right length
+ir = fix_ir_length(ir,N,delay);
+
+% === Calculate BRIR ===
+% Add the point source with the corresponding time delay and amplitude
+brir(:,1) = delayline(ir(:,1)',delay,amplitude,conf)';
+brir(:,2) = delayline(ir(:,2)',delay,amplitude,conf)';
 
 
 %% ===== Headphone compensation ==========================================

@@ -1,9 +1,7 @@
 function draw_loudspeakers(x0,ls_activity,conf)
 %DRAW_LOUDSPEAKERS draws loudspeaker symbols or "x" at the given positions
 %
-%   Usage: draw_loudspeakers(x0,ls_activity,conf)
-%          draw_loudspeakers(x0,ls_activity)
-%          draw_loudspeakers(x0)
+%   Usage: draw_loudspeakers(x0,ls_activity,[conf])
 %
 %   Input options:
 %       x0          - positions and directions of the loudspeakers (m)
@@ -16,6 +14,33 @@ function draw_loudspeakers(x0,ls_activity,conf)
 %   in their given direction.
 %
 %   see also: plot_wavefield
+
+%*****************************************************************************
+% Copyright (c) 2010-2012 Quality & Usability Lab                            *
+%                         Deutsche Telekom Laboratories, TU Berlin           *
+%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+%                                                                            *
+% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+%                                                                            *
+% The SFS is free software:  you can redistribute it and/or modify it  under *
+% the terms of the  GNU  General  Public  License  as published by the  Free *
+% Software Foundation, either version 3 of the License,  or (at your option) *
+% any later version.                                                         *
+%                                                                            *
+% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
+% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
+% FOR A PARTICULAR PURPOSE.                                                  *
+% See the GNU General Public License for more details.                       *
+%                                                                            *
+% You should  have received a copy  of the GNU General Public License  along *
+% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+%                                                                            *
+% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
+% ambisonics.                                                                * 
+%                                                                            *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+%*****************************************************************************
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
 % $LastChangedDate$
@@ -70,7 +95,7 @@ else
     for n=1:nls
 
         % Get the azimuth direction of the secondary sources
-        phi = cart2pol(x0(n,4)-x0(n,1),x0(n,5)-x0(n,2));
+        phi = cart2pol(x0(n,4),x0(n,5));
 
         % Rotation matrix (orientation of the speakers)
         % R = [cos(phi(n)) -sin(phi(n));sin(phi(n)) cos(phi(n))];
@@ -87,28 +112,24 @@ else
         % shift
         v01(1,:) = vr1(1,:) + x0(n,1);
         v01(2,:) = vr1(2,:) + x0(n,2);
-
         v02(1,:) = vr2(1,:) + x0(n,1);
         v02(2,:) = vr2(2,:) + x0(n,2);
 
         if(ls_activity(n)>0)
-            % Scale the color. sc = 1 => black. sc = 0.5 0> gray.
+            % Set fill color for active loudspeakers
+            % Scale the color. sc = 1 => black. sc = 0.5 => gray.
             sc = 0.5;
             fc = [(1-sc*ls_activity(n)), ...
                   (1-sc*ls_activity(n)), ...
                   (1-sc*ls_activity(n))];
-            %fc = [ls_activity(n) ls_activity(n) ls_activity(n)];
-
-            fill(v01(1,:),v01(2,:),fc);
-            fill(v02(1,:),v02(2,:),fc);
         else
-            h=line(v01(1,:),v01(2,:));
-            set(h,'Color','k');
-            %set(h,'Color',[.99 .99 .99]);
-            h=line(v02(1,:),v02(2,:));
-            set(h,'Color','k');
-            %set(h,'Color',[.99 .99 .99]);
+            % set fill color to white for inactive loudspeakers
+            fc = [1,1,1];
         end
+        
+        % Draw speakers
+        fill(v01(1,:),v01(2,:),fc);
+        fill(v02(1,:),v02(2,:),fc);
 
     end
 

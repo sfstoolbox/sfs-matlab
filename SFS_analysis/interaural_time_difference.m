@@ -1,8 +1,7 @@
 function [itd,idxleft,idxright] = interaural_time_difference(insigleft,insigright,fs,mode,fit)
 %INTERAURAL_TIME_DIFFERENCE Extract the ITD between the two given signals
 %
-%   Usage: itd = interaural_time_difference(insigleft,insigright,fs)
-%          itd = interaural_time_difference(insigleft,insigright,fs,mode)
+%   Usage: itd = interaural_time_difference(insigleft,insigright,fs,[mode])
 %
 %   Input parameters:
 %       insigleft   - left ear signal. This can also be a matrix containing
@@ -29,12 +28,42 @@ function [itd,idxleft,idxright] = interaural_time_difference(insigleft,insigrigh
 %   the left and right signal(s) by using an edge detection algorithm to identify
 %   the first non-zero entry in both IRs and then calculating the time difference.
 %
-%R gaik1993, sandvad1994, lindau2010
+%   References:
+%   FIXME: put the references for gaik1993, sandvad1994, lindau2010
+
+%*****************************************************************************
+% Copyright (c) 2010-2012 Quality & Usability Lab                            *
+%                         Deutsche Telekom Laboratories, TU Berlin           *
+%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+%                                                                            *
+% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+%                                                                            *
+% The SFS is free software:  you can redistribute it and/or modify it  under *
+% the terms of the  GNU  General  Public  License  as published by the  Free *
+% Software Foundation, either version 3 of the License,  or (at your option) *
+% any later version.                                                         *
+%                                                                            *
+% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
+% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
+% FOR A PARTICULAR PURPOSE.                                                  *
+% See the GNU General Public License for more details.                       *
+%                                                                            *
+% You should  have received a copy  of the GNU General Public License  along *
+% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+%                                                                            *
+% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
+% ambisonics.                                                                * 
+%                                                                            *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+%*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf,Lars-Erik Riechert
 % $LastChangedDate$
 % $LastChangedRevision$
 % $LastChangedBy$
+
+% FIXME: clean up and test this function
 
 
 %% ===== Checking of input parameters ===================================
@@ -72,7 +101,7 @@ itd = zeros(1,size(insigleft,2));
 itdold =0;
 jminold=0;
 for ii = 1:size(insigleft,2)
-if strcmp ( mode,'hilbert') |strcmp ( mode,'simple')
+if strcmp( mode,'hilbert') || strcmp( mode,'simple')
     % Treshold after sandvad1994 (5% of maximum in each IR)
     % NOTE: I have changed it to 10%
     tresholdleft = 0.10 * max(abs(insigleft(:,ii)));
@@ -164,12 +193,10 @@ elseif strncmp ( mode,'int',3)
         if ((sumdif < difmin) & abs(((-stretch+j)/fs)-itdold)<fit   ) | j==1
             jmin = j;
             difmin=sumdif;
-            difi=dif;
             itd(ii) = (-stretch+j)/fs;
         end
     end
     itdold=itd(ii);
-    jminold=jmin;
 
     if 0 %mod(ii,30)==0                                                                 %plots the signals for the given angels
         newright = zeros(1,l+2*stretch);

@@ -1,22 +1,46 @@
 function hpre = wfs_prefilter(conf)
 %WFS_PREFILTER creates a pre-equalization filter for WFS
 %
-%   Usage: hpre = wfs_prefilter(conf)
-%          hpre = wfs_prefilter()
-%
+%   Usage: hpre = wfs_prefilter([conf])
 %
 %   Input parameters:
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
+%       conf - optional struct containing configuration variables (see
+%              SFS_config for default values)
 %
-%   Output:
-%       hpre    - pre-equalization filter
+%   Output parameters:
+%       hpre - pre-equalization filter
 %
 %   WFS_PREFILTER(conf) calculates a sqrt(j k) pre-equalization filter for
-%   Wave  Field Synthesis (from conf.hpreflow to conf.hprefhigh, see SFS_config).
+%   Wave Field Synthesis (from conf.hpreflow to conf.hprefhigh, see SFS_config).
 %
 %   see also: wfs_preequalization, SFS_config, brs_wfs_25d
-%
+
+%*****************************************************************************
+% Copyright (c) 2010-2012 Quality & Usability Lab                            *
+%                         Deutsche Telekom Laboratories, TU Berlin           *
+%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+%                                                                            *
+% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+%                                                                            *
+% The SFS is free software:  you can redistribute it and/or modify it  under *
+% the terms of the  GNU  General  Public  License  as published by the  Free *
+% Software Foundation, either version 3 of the License,  or (at your option) *
+% any later version.                                                         *
+%                                                                            *
+% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
+% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
+% FOR A PARTICULAR PURPOSE.                                                  *
+% See the GNU General Public License for more details.                       *
+%                                                                            *
+% You should  have received a copy  of the GNU General Public License  along *
+% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+%                                                                            *
+% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
+% ambisonics.                                                                * 
+%                                                                            *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+%*****************************************************************************
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
 % $LastChangedDate$
@@ -50,7 +74,7 @@ fhigh = conf.hprefhigh;     % Upper frequency limit of preequalization
 Nfilt=128;
 % Frequency axis
 f = linspace(0,fs/2,fs/10);
-% Find indices for frequncies in f smaller and nearest to fhigh and flow
+% Find indices for frequencies in f smaller and nearest to fhigh and flow
 idxfhigh = max(find(f<fhigh));
 idxflow = max(find(f<flow));
 % Initialize response

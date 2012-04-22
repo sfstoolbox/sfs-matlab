@@ -2,6 +2,8 @@ function h=figsize(x,y);
 % function h=figsize(x,y);
 % Creates a new figure with x and y dimensions in cm
 
+% FIXME: check if function can be removed
+
 if nargin==0
   x=10;
   y=10;

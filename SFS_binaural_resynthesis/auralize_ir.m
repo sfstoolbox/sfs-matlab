@@ -1,9 +1,7 @@
 function outsig = auralize_ir(ir,content,usenorm,conf)
 %AURALIZE_IR auralizes an impulse response with an audio file/signal
 %
-%   Usage: outsig = auralize_ir(ir,[file,sig,'content'],normalize,conf)
-%          outsig = auralize_ir(ir,[file,sig,'content'],normalize)
-%          outsig = auralize_ir(ir,[file,sig,'content'])
+%   Usage: outsig = auralize_ir(ir,[[[content],normalize],conf])
 %
 %   Input parameters:
 %       ir        - impulse response (IR). Also an binaural room scanning
@@ -29,6 +27,33 @@ function outsig = auralize_ir(ir,content,usenorm,conf)
 %   corresponding content file is used.
 %
 %   see also: auralize_ir_file, brs_wfs_25d, brs_point_source
+
+%*****************************************************************************
+% Copyright (c) 2010-2012 Quality & Usability Lab                            *
+%                         Deutsche Telekom Laboratories, TU Berlin           *
+%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+%                                                                            *
+% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+%                                                                            *
+% The SFS is free software:  you can redistribute it and/or modify it  under *
+% the terms of the  GNU  General  Public  License  as published by the  Free *
+% Software Foundation, either version 3 of the License,  or (at your option) *
+% any later version.                                                         *
+%                                                                            *
+% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
+% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
+% FOR A PARTICULAR PURPOSE.                                                  *
+% See the GNU General Public License for more details.                       *
+%                                                                            *
+% You should  have received a copy  of the GNU General Public License  along *
+% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+%                                                                            *
+% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
+% ambisonics.                                                                * 
+%                                                                            *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+%*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf
 % $LastChangedDate$
@@ -64,7 +89,7 @@ pinknoisefile = conf.pinknoisefile;
 
 
 %% ===== Get the right content ==========================================
-if ismatrix(content) & isnumeric(content)
+if ismatrix(content) && isnumeric(content)
     contentfs = conf.fs;
 else
     if strcmp(content,'castanets')

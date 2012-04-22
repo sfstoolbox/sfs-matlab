@@ -1,21 +1,21 @@
-function sig =  bandpass(sig,conf)
-%BANDPASS filters a signal by a bandpass
+function n = direction_vector(x1,x2)
+%DIRECTION_VECTOR returns a unit vector pointing from x1 to x2
 %
-%   Usage: sig = bandpass(sig,[conf])
-%          
+%   Usage: n = direction_vector(x1,x2)
+%
 %   Input parameters:
-%       sig  - input signal (vector)
-%       conf - optional struct containing configuration variables (see
-%              SFS_config for default values)
+%       x1  - starting point
+%       x2  - ending point
 %
 %   Output parameters:
-%       sig  - filtered signal
+%       n   - unit vector pointing in the direction from x1 to x2
 %
-%   BANDPASS(sig) filters the given signal with a bandpass filter
-%   with ...
-%   FIXME: @Sascha add the rest of the comment
+%   DIRECTION_VECTOR(x1,x2) calculates the unit vector pointing from the
+%   n-dimensional point x1 to the n-dimensional point x2. The vectors x1
+%   and x2 can each be stored in a matrix containing m different direction
+%   vectors.
 %
-%   see also: wave_field_imp_wfs_25d
+%   see also: secondary_source_positions
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -44,35 +44,23 @@ function sig =  bandpass(sig,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Sascha Spors
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
+% AUTHOR: Hagen Wierstorf
+% $LastChangedDate: $
+% $LastChangedRevision: $
+% $LastChangedBy: $
 
 
-%% ===== Checking of input  parameters ==================================
-nargmin = 1;
+%% ===== Checking of input  parameters ===================================
+nargmin = 2;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector(sig);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
+if size(x1)~=size(x2)
+    error('%s: x1 and x2 had to have the same size.',upper(mfilename));
 end
 
 
-%% ===== Configuration ==================================================
-fs = conf.fs;
-N = 256;
-
-
-%% ===== Computation =====================================================    
-% design bandpass filter
-Hf = [0 2*10/fs 2*20/fs 2*18000/fs 2*20000/fs 1]; 
-Hm = [0 0 1 1 0 0];
-b = fir2(N,Hf,Hm);
-% filter signal
-sig = conv(sig,b);
-% compensate for delay & truncate result
-sig = sig(N/2:end-(N/2)-1);
+%% ==== Main =============================================================
+n = zeros(size(x1));
+for ii=1:size(x1,1)
+    n(ii,:) = (x2(ii,:)-x1(ii,:)) / norm(x2(ii,:)-x1(ii,:));
+end

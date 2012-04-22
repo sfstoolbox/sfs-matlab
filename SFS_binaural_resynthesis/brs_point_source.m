@@ -1,9 +1,9 @@
 function brir = brs_point_source(X,phi,xs,irs,conf)
 %BRS_POINT_SOURCE Generate a BRIR for a point source
-%   Usage: brs = brs_point_source(X,phi,xs,irs,conf)
-%          brs = brs_point_source(X,phi,xs,irs)
 %
-%   Options:
+%   Usage: brs = brs_point_source(X,phi,xs,irs,[conf])
+%
+%   Input parameters:
 %       X       - listener position (m)
 %       phi     - listener direction [head orientation] (rad)
 %       xs      - source position (m)
@@ -11,7 +11,7 @@ function brir = brs_point_source(X,phi,xs,irs,conf)
 %       conf    - optional struct containing configuration variables (see
 %                 SFS_config for default values)
 %
-%   Output:
+%   Output parameters:
 %       brir    - Binaural room impulse response (nx2 matrix)
 %
 %   BRS_POINT_SOURCE(X,phi,xs,irs,conf) calculates a binaural room impulse
@@ -38,7 +38,33 @@ function brir = brs_point_source(X,phi,xs,irs,conf)
 %
 %
 % see also: SFS_config, brs_wfs_25d, auralize_ir, brsset_point_source
-%
+
+%*****************************************************************************
+% Copyright (c) 2010-2012 Quality & Usability Lab                            *
+%                         Deutsche Telekom Laboratories, TU Berlin           *
+%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+%                                                                            *
+% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+%                                                                            *
+% The SFS is free software:  you can redistribute it and/or modify it  under *
+% the terms of the  GNU  General  Public  License  as published by the  Free *
+% Software Foundation, either version 3 of the License,  or (at your option) *
+% any later version.                                                         *
+%                                                                            *
+% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
+% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
+% FOR A PARTICULAR PURPOSE.                                                  *
+% See the GNU General Public License for more details.                       *
+%                                                                            *
+% You should  have received a copy  of the GNU General Public License  along *
+% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+%                                                                            *
+% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
+% ambisonics.                                                                * 
+%                                                                            *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+%*****************************************************************************
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
 % $LastChangedDate$
@@ -53,7 +79,6 @@ error(nargchk(nargmin,nargmax,nargin));
 [X,xs] = position_vector(X,xs);
 isargscalar(phi);
 check_irs(irs);
-
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -63,19 +88,12 @@ end
 
 %% ===== Configuration ===================================================
 fs = conf.fs;                  % sampling frequency
-t0 = conf.t0;                  % pre-delay for causality (focused sources)
-X0 = position_vector(conf.X0); % center coordinate of array
 c = conf.c;                    % speed of sound
 N = conf.N;                    % target length of BRS impulse responses
-usehcomp = conf.usehcomp;      % Apply headphone compensation?
-hcomplfile = conf.hcomplfile;  % Headphone compensation file left
-hcomprfile = conf.hcomprfile;  % Headphone compensation file right
 
 
 %% ===== Variables =======================================================
 phi = correct_azimuth(phi);
-% HRIRs
-lenir = length(irs.left(:,1));
 
 
 %% ===== BRIR ============================================================

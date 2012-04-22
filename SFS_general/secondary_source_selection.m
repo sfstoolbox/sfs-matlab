@@ -11,7 +11,6 @@ function ls_activity = secondary_source_selection(x0,xs,src)
 %                              plane wave in this case)
 %                       'ps' - point source
 %                       'fs' - focused source
-%       conf        - configuration struct
 %
 %   Output options:
 %       ls_activity - index of the active secondary sources
@@ -24,7 +23,33 @@ function ls_activity = secondary_source_selection(x0,xs,src)
 %       Revisited", in 124th AES Convention, Amsterdam, 2008
 %
 % see also: secondary_source_positions, secondary_source_number, tapwin
-%
+
+%*****************************************************************************
+% Copyright (c) 2010-2012 Quality & Usability Lab                            *
+%                         Deutsche Telekom Laboratories, TU Berlin           *
+%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+%                                                                            *
+% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+%                                                                            *
+% The SFS is free software:  you can redistribute it and/or modify it  under *
+% the terms of the  GNU  General  Public  License  as published by the  Free *
+% Software Foundation, either version 3 of the License,  or (at your option) *
+% any later version.                                                         *
+%                                                                            *
+% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
+% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
+% FOR A PARTICULAR PURPOSE.                                                  *
+% See the GNU General Public License for more details.                       *
+%                                                                            *
+% You should  have received a copy  of the GNU General Public License  along *
+% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+%                                                                            *
+% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
+% ambisonics.                                                                * 
+%                                                                            *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+%*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf
 % $LastChangedDate$
@@ -36,18 +61,16 @@ function ls_activity = secondary_source_selection(x0,xs,src)
 nargmin = 3;
 nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin));
-isargsecondarysource(x0)
+isargsecondarysource(x0);
 isargposition(xs);
 xs = position_vector(xs);
 isargchar(src);
 
 
 %% ===== Calculation ====================================================
-
 % Position and direction of secondary sources
-nx0 = secondary_source_direction(x0);
+nx0 = x0(:,4:6);
 x0 = x0(:,1:3);
-
 % Make the size of the xs position the same as the number of secondary sources
 % in order to allow x0-xs
 % First we have to get the direction of a plane wave
@@ -83,6 +106,8 @@ elseif strcmp('fs',src)
     %      / 1, if <xs-x0,n_x0> > 0
     % a = <
     %      \ 0, else
+    % FIXME: focused sources are not working correctly at the moment with
+    % circular and boxed shaped arrays
     ls_activity = double( diag((xs-x0)*nx0') > 0 );
 else
     error('%s: %s is not a supported source type!',upper(mfilename),src);

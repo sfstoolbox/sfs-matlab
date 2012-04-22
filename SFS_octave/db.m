@@ -1,67 +1,63 @@
-function Y = db(X,U,R)
+function sig = db(sig)
 %DB Convert to decibels.
-%   DB(X) converts the elements of X to decibel units
-%   across a 1 Ohm load.  The elements of X are assumed
-%   to represent voltage measurements.
+%   DB(X) converts sig to decibel units
 %
-%   DB(X,U) indicates the units of the elements in X,
-%   and may be 'power', 'voltage' or any portion of
-%   either unit string.  If omitted, U='voltage'.
+%   Input parameters:
+%       sig - signal to convert to dB
 %
-%   DB(X,R) indicates a measurement reference load of
-%   R Ohms.  If omitted, R=1 Ohm.  Note that R is only
-%   needed for the conversion of voltage measurements,
-%   and is ignored if U is 'power'.
+%   Output parameters:
+%       sig - converted signal
 %
-%   DB(X,U,R) specifies both a unit string and a
-%   reference load.
+%   DB(sig) converts the given signal to dB by applaying 20*log10.
 %
-%   EXAMPLES:
-%       
-%   % Example 1:Convert 0.1 volt to dB (1 Ohm ref.)
-%               db(.1)           % -20 dB
+%   FIXME: check if the result is the same as the db function implemented
+%   in Matlab!
 %
-%   % Example 2:Convert sqrt(.5)=0.7071 volts to dB (50 Ohm ref.)
-%               db(sqrt(.5),50)  % -20 dB
-%
-%   % Example 3:Convert 1 mW to dB
-%               db(1e-3,'power') % -30 dB
-%
-%   See also ABS, ANGLE.
+%   see also: rms
 
-%   Author(s): D. Orofino
-%   Copyright 1988-2008 The MathWorks, Inc.
-%   $Revision$  $Date$
+%*****************************************************************************
+% Copyright (c) 2010-2012 Quality & Usability Lab                            *
+%                         Deutsche Telekom Laboratories, TU Berlin           *
+%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+%                                                                            *
+% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+%                                                                            *
+% The SFS is free software:  you can redistribute it and/or modify it  under *
+% the terms of the  GNU  General  Public  License  as published by the  Free *
+% Software Foundation, either version 3 of the License,  or (at your option) *
+% any later version.                                                         *
+%                                                                            *
+% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
+% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
+% FOR A PARTICULAR PURPOSE.                                                  *
+% See the GNU General Public License for more details.                       *
+%                                                                            *
+% You should  have received a copy  of the GNU General Public License  along *
+% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+%                                                                            *
+% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
+% ambisonics.                                                                * 
+%                                                                            *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+%*****************************************************************************
 
-if nargin==1,
-   % U='voltage'; R=1;
-   X=abs(X).^2;
-else
-   if nargin==2,
-      if ~ischar(U),
-         R=U; U='voltage';
-      else
-         R=1;
-      end
-   end
-   idx=find(strncmpi(U,{'power','voltage'}, length(U)));
-   if length(idx)~=1,
-      error(generatemsgid('InvalidEnum'),'Units must be ''power'' or ''voltage''.');
-   end
-   if idx == 1,
-      if any(X<0),
-         error(generatemsgid('MustBePositive'),'Power cannot be negative.');
-      end
-   else
-      X=abs(X).^2./R;
-   end
-end
+% AUTHOR: Hagen Wierstorf
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
+
+%% ===== Checking of input parameters ====================================
+nargmin = 1;
+nargmax = 1;
+error(nargchk(nargmin,nargmax,nargin));
+isargmatrix(sig);
+
+
+%% ===== Calculation =====================================================
 % We want to guarantee that the result is an integer
 % if X is a negative power of 10.  To do so, we force
 % some rounding of precision by adding 300-300.
-
-Y = (10.*log10(X)+300)-300;
-
-% [EOF] db.m
+sig = (20.*log10(sig)+300)-300;
 

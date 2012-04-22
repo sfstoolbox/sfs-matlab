@@ -1,6 +1,7 @@
 % formats MATLAB figures for various publication types
 % S.Spors / 23.06.04
 
+% FIXME: is this function needed anymore?
 function GraphDefaults(p_type)
 
 % FIXME: this needs documentation for the avaiable figure sizes.

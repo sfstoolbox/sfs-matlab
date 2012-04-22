@@ -54,10 +54,9 @@ error(nargchk(nargmin,nargmax,nargin));
 % ===== Misc ====================================
 conf.tmpdir = '/tmp/sfs';
 % Debugging level. We are supporting 3 levels:
-%   0 - checking none of the given input parameters (for CPU demanding tasks)
-%   1 - checking of input parameters
-%   2 - show any interim result
-conf.debug = 1;
+%   0 - normal mode
+%   1 - debug modus, showing interim results and plots
+conf.debug = 0;
 
 
 % ===== Audio ===================================

@@ -37,7 +37,7 @@ function phi = rad(phi)
 % field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
 % ambisonics.                                                                * 
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs                  mail@tu-berlin.de *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf

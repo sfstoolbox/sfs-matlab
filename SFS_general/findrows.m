@@ -28,6 +28,7 @@ function k = findrows(A,b)
 % $LastChangedRevision$
 % $LastChangedBy$
 
+% FIXME: have a look regarding the license
 
 %% ===== Checking of input parameters ====================================
 nargmin = 2;

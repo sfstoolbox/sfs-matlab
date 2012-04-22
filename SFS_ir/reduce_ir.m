@@ -1,7 +1,7 @@
-function short_ir = shorten_ir(ir,fs,nsamples,conf)
-%SHORTEN_IR shortens a IR
-%   Usage: short_ir = shorten_ir(ir,fs,nsamples,conf)
-%          short_ir = shorten_ir(ir,fs,nsamples)
+function ir = reduce_ir(ir,fs,nsamples,conf)
+%REDUCE_IR resamples and shortens a IR
+%
+%   Usage: ir = reduce_ir(ir,fs,nsamples,[conf])
 %
 %   Input parameters:
 %       ir          - two channel IR signal
@@ -11,13 +11,39 @@ function short_ir = shorten_ir(ir,fs,nsamples,conf)
 %                     (see SFS_config for default values)
 %
 %   Output paramteres:
-%       short_ir    - two channel IR signal
+%       ir          - two channel IR signal
 %
-%   SHORTEN_HRIR(ir,fs,nsamples,conf) shortens a given IR by resampling
-%   and applying a hanning window. This is useful e.g. for mobile phones.
+%   REDUCE_IR(ir,fs,nsamples,conf) shortens and resamples a given IR.
+%   This can be useful for mobile phones.
 %
-%   see also: SFS_config, read_irs, intpol_ir
-%
+%   see also: SFS_config, read_irs, intpol_ir, shorten_ir
+
+%*****************************************************************************
+% Copyright (c) 2010-2012 Quality & Usability Lab                            *
+%                         Deutsche Telekom Laboratories, TU Berlin           *
+%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+%                                                                            *
+% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+%                                                                            *
+% The SFS is free software:  you can redistribute it and/or modify it  under *
+% the terms of the  GNU  General  Public  License  as published by the  Free *
+% Software Foundation, either version 3 of the License,  or (at your option) *
+% any later version.                                                         *
+%                                                                            *
+% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
+% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
+% FOR A PARTICULAR PURPOSE.                                                  *
+% See the GNU General Public License for more details.                       *
+%                                                                            *
+% You should  have received a copy  of the GNU General Public License  along *
+% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+%                                                                            *
+% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
+% ambisonics.                                                                * 
+%                                                                            *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+%*****************************************************************************
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
 % $LastChangedDate$
@@ -29,12 +55,10 @@ function short_ir = shorten_ir(ir,fs,nsamples,conf)
 nargmin = 3;
 nargmax = 4;
 error(nargchk(nargmin,nargmax,nargin));
-
 isargpositivescalar(fs,nsamples);
 if ~isnumeric(ir) || size(ir,2)~=2
     error('%s: ir has to be an IR with samples x 2 size.',upper(mfilename));
 end
-
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -43,13 +67,11 @@ end
 
 
 %% ===== Configuration ==================================================
-
 ofs = conf.fs;  % original fs
 useplot = conf.useplot;
 
 
 %% ===== Computation ====================================================
-
 % Resample HRIR
 if ofs~=fs
     resamp_ir(:,1) = resample(ir(:,1),fs,ofs);

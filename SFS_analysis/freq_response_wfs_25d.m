@@ -1,8 +1,7 @@
 function [f,S] = freq_response_wfs_25d(X,xs,L,src,conf)
 %FREQ_RESPONSE_WFS_25D simulates the frequency response for 2.5D WFS
 %
-%   Usage: [f,S] = freq_response_wfs_25d(X,xs,L,src,conf)
-%          [f,S] = freq_response_wfs_25d(X,xs,L,src)
+%   Usage: [f,S] = freq_response_wfs_25d(X,xs,L,src,[conf])
 %
 %   Input parameters:
 %       X           - listener position (m)
@@ -31,7 +30,33 @@ function [f,S] = freq_response_wfs_25d(X,xs,L,src,conf)
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
 %   see also: wave_field_mono_wfs_25d, wave_field_time_domain_wfs_25d
-%
+
+%*****************************************************************************
+% Copyright (c) 2010-2012 Quality & Usability Lab                            *
+%                         Deutsche Telekom Laboratories, TU Berlin           *
+%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+%                                                                            *
+% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+%                                                                            *
+% The SFS is free software:  you can redistribute it and/or modify it  under *
+% the terms of the  GNU  General  Public  License  as published by the  Free *
+% Software Foundation, either version 3 of the License,  or (at your option) *
+% any later version.                                                         *
+%                                                                            *
+% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
+% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
+% FOR A PARTICULAR PURPOSE.                                                  *
+% See the GNU General Public License for more details.                       *
+%                                                                            *
+% You should  have received a copy  of the GNU General Public License  along *
+% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+%                                                                            *
+% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
+% ambisonics.                                                                * 
+%                                                                            *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+%*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf
 % $LastChangedDate$
@@ -55,21 +80,8 @@ end
 
 
 %% ===== Configuration ==================================================
-% Array position (m)
-X0 = position_vector(conf.X0);
-% Reference position for the amplitude (correct reproduction of amplitude
-% at y = yref).
-yref = conf.yref;
-% Use tapering window?
-usetapwin = conf.usetapwin;
-% xy resolution
-xysamples = conf.xysamples;
-% Phase of the wave field
-phase = conf.phase;
 % Plotting result
 useplot = conf.useplot;
-% Speed of sound
-c = conf.c;
 
 
 %% ===== Computation ====================================================

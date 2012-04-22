@@ -1,6 +1,7 @@
 % appends a colorbar with title to the current figure
 % S.Spors / 24.9.2004
 
+% FIXME: this function is not for the public yet
 function []=tcolorbar(titlel,titlet)
 
 hcbar = colorbar;

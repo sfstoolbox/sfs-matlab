@@ -1,8 +1,7 @@
 function [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,L,src,conf)
 %WAVE_FIELD_IMP_WFS_25D returns the wave field in time domain of an impulse
 %
-%   Usage: [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,L,src,conf)
-%          [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,L,src)
+%   Usage: [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,L,src,[conf])
 %
 %   Input options:
 %       X           - length of the X axis (m); single value or [xmin,xmax]
@@ -21,10 +20,39 @@ function [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,L,src,conf)
 %       p           - wave field (length(y) x length(x))
 %       ls_activity - activity of the secondary sources
 %       
-%   WAVE_FIELD_IMP_WFS_25D(X,Y,xs,L,src,conf) simulates a wave 
-%   field of the given source type (src) using a WFS 2.5 dimensional driving 
-%   function with a delay line.
-%   To plot the result use plot_wavefield(x,y,P).
+%   WAVE_FIELD_IMP_WFS_25D(X,Y,xs,L,src,conf) simulates a wave field of the
+%   given source type (src) using a WFS 2.5 dimensional driving function with
+%   a delay line.
+%   To plot the result use:
+%   conf.plot.usedb = 1;
+%   plot_wavefield(x,y,p,L,ls_activity,conf);
+
+%*****************************************************************************
+% Copyright (c) 2010-2012 Quality & Usability Lab                            *
+%                         Deutsche Telekom Laboratories, TU Berlin           *
+%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+%                                                                            *
+% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+%                                                                            *
+% The SFS is free software:  you can redistribute it and/or modify it  under *
+% the terms of the  GNU  General  Public  License  as published by the  Free *
+% Software Foundation, either version 3 of the License,  or (at your option) *
+% any later version.                                                         *
+%                                                                            *
+% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
+% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
+% FOR A PARTICULAR PURPOSE.                                                  *
+% See the GNU General Public License for more details.                       *
+%                                                                            *
+% You should  have received a copy  of the GNU General Public License  along *
+% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+%                                                                            *
+% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
+% ambisonics.                                                                * 
+%                                                                            *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+%*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf, Sascha Spors
 % $LastChangedDate$
@@ -61,24 +89,11 @@ fs = conf.fs;
 frame = conf.frame;
 % Use pre-equalization filter
 usehpre = conf.usehpre;
+% Debug mode
+debug = conf.debug;
 
-% debug mode
-debug=1;
 
 %% ===== Computation =====================================================
-
-% Check if virtual source is positioned at the right position.
-%FIXME: this has to be done for all possible array forms!
-%       Put it in an extra function
-%check_geometry(xs,ys,L,X0,Y0,src);
-%if strcmp('fs',src) && ys<=Y0
-%    error('%s: ys has to be greater than Y0 for a focused source.', ...
-%        upper(mfilename));
-%elseif strcmp('ps',src) && ys>=Y0
-%    error('%s: ys has to be smaller than Y0 for a point source.', ...
-%        upper(mfilename));
-%end
-
 % Setting the x- and y-axis
 [X,Y] = setting_xy_ranges(X,Y,conf);
 
@@ -108,7 +123,7 @@ maxt = maxt+aoffset;
 t = 0:maxt;
 
 % Calculate pre-equalization filter if required
-if(usehpre)
+if usehpre
     hpre = wfs_prefilter(conf);
 else
     hpre = 1;
@@ -117,14 +132,16 @@ end
 d = [zeros(1,aoffset) hpre zeros(1,length(t)-length(hpre)-aoffset)];
 
 % Apply bandbass filter to the prototype
-if(1)
-    d=bandpass(d,conf);
+d=bandpass(d,conf);
+if debug
     figure; freqz(d,1,[],fs);
 end
     
 % In a first loop calculate the weight and delay values.
 % This is done in an extra loop, because all delay values are needed to
 % calculate the time frame to use for the wave field
+% FIXME: the calculation of the right frame is not working correctly at the
+% moment.
 delay = zeros(nls,1);
 weight = zeros(nls,1);
 for ii = 1:nls
@@ -132,9 +149,7 @@ for ii = 1:nls
     % Driving function d2.5D(x0,t)
     [weight(ii),delay(ii)] = driving_function_imp_wfs_25d(x0(ii,:),xs,src,conf);
 end
-
 dmin=min(delay);
-
 
 % If no explizit time frame is given calculate one
 if isempty(frame)
@@ -154,7 +169,7 @@ end
 % Initialize empty wave field
 p = zeros(length(y),length(x));
 
-if(debug)
+if debug
     dds = zeros(nls,length(d));
 end
     
@@ -180,8 +195,8 @@ for ii = 1:nls
     ds = delayline(d,frame-(delay(ii)-dmin)*fs,weight(ii)*win(ii),conf);
     
     % remember driving functions (debug)
-    if(debug)
-        dds(ii,1:length(ds))=ds;
+    if debug
+        dds(ii,1:length(ds)) = ds;
     end
     
     % Interpolate the driving function w.r.t. the propagation delay from
@@ -200,10 +215,8 @@ for ii = 1:nls
     
 end
 
-
 % === Checking of wave field ===
 check_wave_field(p,frame);
-
 
 % === Plotting ===
 if (useplot)
@@ -212,7 +225,7 @@ if (useplot)
 end
 
 % some debug stuff
-if(debug)
+if debug
     figure; imagesc(db(dds)); title('driving functions'); caxis([-100 0]); colorbar;
     % figure; plot(win); title('tapering window');
     % figure; plot(delay*fs); title('delay (samples)');

@@ -86,8 +86,6 @@ c = conf.c;
 fs = conf.fs;
 % Time frame to simulate 
 frame = conf.frame;
-% Use pre-equalization filter
-usehpre = conf.usehpre;
 % Debug mode
 debug = conf.debug;
 
@@ -98,20 +96,13 @@ debug = conf.debug;
 
 % Get secondary sources
 x0 = secondary_source_positions(L,conf);
-ls_activity = secondary_source_selection(x0,xs,src);
-% Generate tapering window
-win = tapwin(L,ls_activity,conf);
-ls_activity = ls_activity .* win;
+nls = size(x0,1);
 
 % Spatial grid
 x = linspace(X(1),X(2),xysamples);
 y = linspace(Y(1),Y(2),xysamples);
 [xx,yy] = meshgrid(x,y);
 
-% Use only active secondary sources
-x0 = x0(ls_activity>0,:);
-nls = size(x0,1);
-win = win(ls_activity>0);
 
 % Calculate maximum time delay possible for the given axis size
 maxt = round(sqrt((X(1)-X(2))^2+(Y(1)-Y(2))^2)/c*fs);
@@ -121,55 +112,17 @@ maxt = maxt+aoffset;
 % Create time axis for field interpolation
 t = 0:maxt;
 
-% Calculate pre-equalization filter if required
-if usehpre
-    hpre = wfs_prefilter(conf);
-else
-    hpre = 1;
-end
-% Calculate driving function prototype
-d = [zeros(1,aoffset) hpre zeros(1,length(t)-length(hpre)-aoffset)];
 
-% Apply bandbass filter to the prototype
+% Calculate driving function
+[d] = driving_function_imp_nfchoa_25d(x0,xs,src,conf);
+
+% Apply bandbass filter
 if(0)
     d=bandpass(d,conf);
 end
-    
-% In a first loop calculate the weight and delay values.
-% This is done in an extra loop, because all delay values are needed to
-% calculate the time frame to use for the wave field
-% FIXME: the calculation of the right frame is not working correctly at the
-% moment.
-delay = zeros(nls,1);
-weight = zeros(nls,1);
-for ii = 1:nls
-    % ================================================================
-    % Driving function d2.5D(x0,t)
-    [weight(ii),delay(ii)] = driving_function_imp_wfs_25d(x0(ii,:),xs,src,conf);
-end
-dmin=min(delay);
 
-% If no explizit time frame is given calculate one
-if isempty(frame)
-    % Use only those delays for the calculation, that correspond to secondary
-    % sources within the shown listening area
-    idx = abs(x0(:,1))<max(abs(X(:))) & abs(x0(:,2))<max(abs(Y(:)));
-    % If we haven't found any idx, use all entries
-    if isempty(idx)
-        idx = ones(nls,1);
-    end
-    % Get frame
-    frame = max(round(delay(idx)*fs)) + 100;
-end
-
-
-% In a second loop simulate the wave field
 % Initialize empty wave field
 p = zeros(length(y),length(x));
-
-if debug
-    dds = zeros(nls,length(d));
-end
     
 % Integration over loudspeaker
 for ii = 1:nls
@@ -182,20 +135,9 @@ for ii = 1:nls
     g = 1./(4*pi*r);
 
     % ================================================================
-    % Shift and weight prototype driving function
-    % - less delay in driving function is more propagation time in sound
-    %   field, hence the sign of the delay has to be reversed in the 
-    %   argument of the delayline function
-    % - the proagation time from the source to the nearest secondary source 
-    %   is removed
-    % - the main pulse in the driving function is shifted by aoffset and
-    %   frame
-    ds = delayline(d,frame-(delay(ii)-dmin)*fs,weight(ii)*win(ii),conf);
+    % Shift driving function
+    ds = delayline(d(:,ii)',frame,1,conf)';
     
-    % remember driving functions (debug)
-    if debug
-        dds(ii,1:length(ds)) = ds;
-    end
     
     % Interpolate the driving function w.r.t. the propagation delay from
     % the secondary sources to a field point.
@@ -219,12 +161,13 @@ check_wave_field(p,frame);
 % === Plotting ===
 if (useplot)
     conf.plot.usedb = 1;
+    ls_activity=1;
     plot_wavefield(x,y,p,L,ls_activity,conf);
 end
 
 % some debug stuff
 if debug
-    figure; imagesc(db(dds)); title('driving functions'); caxis([-100 0]); colorbar;
+    figure; imagesc(db(d)); title('driving functions'); caxis([-100 0]); colorbar;
     % figure; plot(win); title('tapering window');
     % figure; plot(delay*fs); title('delay (samples)');
     % figure; plot(weight); title('weight');

@@ -12,7 +12,7 @@ function ir = get_ir(irs,phi,delta)
 %       ir      - IR for the given angles (length of IR x 2)
 %
 %   GET_IR(irs,phi,delta) returns a single IR set for the given angles phi and
-%   delta. If the desired angles are not present in the IR data set an 
+%   delta. If the desired angles are not present in the IR data set an
 %   interpolation is applied to create the desired angles.
 %
 %   see also: read_irs, slice_irs, ir_intpol
@@ -38,10 +38,10 @@ function ir = get_ir(irs,phi,delta)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
@@ -98,7 +98,7 @@ elseif findrows(roundto(irs.apparent_elevation',prec), ...
                 roundto(delta,prec))
     idx = findrows(roundto(irs.apparent_elevation',prec), ...
                    roundto(delta,prec));
-    
+
     % === Interpolation of the azimuth ===
     % Get the IR set for the elevation delta
     irs = slice_irs(irs,idx);

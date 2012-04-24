@@ -12,7 +12,7 @@ function t = wave_front_time(X,xs,L,conf)
 %
 %   WAVE_FRONT_TIME(X,xs,L) calculates the time of occuring of the first
 %   echo (focused sources) resp. the last echo (virtual point source) at the
-%   listener position X for a given point source location xs and a 
+%   listener position X for a given point source location xs and a
 %   linear WFS loudspeaker array with a length of L.
 %
 %   see also: wave_front_direction, plot_wave_front_times
@@ -83,7 +83,7 @@ nls = size(x0,1);
 % x-axis <-^--^--^--^--^--^--^--^--^-|-^--^--^--^--^--^--^--^--^--
 %             |                      |
 %         R2 |  |                    |
-%           |     | R                |      
+%           |     | R                |
 %          x        |                |
 %         xs          |              |
 %                       O            |
@@ -94,7 +94,7 @@ nls = size(x0,1);
 % Distance between secondary source and listener: R
 % Distance between secondary source and virtual source: R2
 
-% Calculate arrival times at the virtual source position of the waves 
+% Calculate arrival times at the virtual source position of the waves
 % emitted by the secondary sources
 t2 = zeros(nls,1);
 t = zeros(nls,1);

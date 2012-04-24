@@ -22,9 +22,9 @@ function [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,L,f,src,conf)
 %       P           - Simulated wave field
 %       ls_activity - activity of the secondary sources (see plot_wavefield)
 %
-%   WAVE_FIELD_MONO_WFS_25D(X,Y,xs,L,f,src,conf) simulates a wave 
-%   field of the given source type (src) using a WFS 2.5 dimensional driving 
-%   function in the temporal domain. This means by calculating the integral for 
+%   WAVE_FIELD_MONO_WFS_25D(X,Y,xs,L,f,src,conf) simulates a wave
+%   field of the given source type (src) using a WFS 2.5 dimensional driving
+%   function in the temporal domain. This means by calculating the integral for
 %   P with a summation.
 %   To plot the result use plot_wavefield(x,y,P).
 %
@@ -56,10 +56,10 @@ function [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,L,f,src,conf)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf

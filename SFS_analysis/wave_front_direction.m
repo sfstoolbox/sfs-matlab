@@ -16,7 +16,7 @@ function [alpha,a,t] = wave_front_direction(X,phi,xs,L,src,conf)
 %                 SFS_config for default values)
 %
 %   Output parameters:
-%       alpha   - angle of incident for every echo (rad) 
+%       alpha   - angle of incident for every echo (rad)
 %       a       - amplitudes of the echos
 %       t       - time of the wave fronts (s)
 %
@@ -108,7 +108,7 @@ win = tapwin(L,conf);
 % x-axis <-^--^--^--^--^--^--^--^--^-|-^--^--^--^--^--^--^--^--^--
 %             |                      |
 %         R2 |  |                    |
-%           |     | R                |      
+%           |     | R                |
 %          x        |                |
 %         xs          |              |
 %                       O            |
@@ -137,7 +137,7 @@ for ii = 1:nls
     a(ii) = weight * win(ii);
 
     % === Direction of the wave fronts (in radian) ===
-    % Angle between listener and secondary source (-pi < alpha <= pi, 
+    % Angle between listener and secondary source (-pi < alpha <= pi,
     % without phi)
     % Note: phi is the orientation of the listener (see first graph)
     alpha(ii) = cart2sph(x0(n,1)-X(1),x0(n,2)-X(2),0) - phi;
@@ -170,7 +170,7 @@ if(usegnuplot)
 
     % === Amplitude and direction of the direct sound from the virtual
     % source ===
-    % Calculate amplitude for the virtual source (which arrives per 
+    % Calculate amplitude for the virtual source (which arrives per
     % definition at t = 0
     A = sum(a);
     % Calculate the direction of the virtual source pulse (rad)

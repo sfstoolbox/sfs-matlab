@@ -10,10 +10,10 @@ function irs = read_irs(irsfile)
 %       irs   - irs struct. For details on the containing fields have a look at
 %               the IR_format.txt file.
 %
-%   READ_IRS(irsfile) loads a IR dataset as a struct containing the format 
-%   specific fields. For a description of the mat format for the IR datasets, 
+%   READ_IRS(irsfile) loads a IR dataset as a struct containing the format
+%   specific fields. For a description of the mat format for the IR datasets,
 %   see IR_format.txt.
-%   
+%
 %   see also: get_ir, intpol_ir, dummy_irs, new_irs, brs_wfs_25d,
 %       brs_point_source
 
@@ -38,10 +38,10 @@ function irs = read_irs(irsfile)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf

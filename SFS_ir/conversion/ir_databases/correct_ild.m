@@ -13,7 +13,7 @@ end
 
 % Correct ILD and save irs sets
 ild_dev = mean(ild0)
-%ild_dev = -2.00;
+%ild_dev = 1.25;
 for ii = 1:length(files)
     irs = read_irs(files(ii).name);
     irs.right = gaindb(irs.right,-ild_dev);

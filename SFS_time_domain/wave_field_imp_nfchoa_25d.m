@@ -18,7 +18,7 @@ function [x,y,p,ls_activity,dds] = wave_field_imp_nfchoa_25d(X,Y,xs,L,src,conf)
 %       x,y         - x- and y-axis of the wave field
 %       p           - wave field (length(y) x length(x))
 %       ls_activity - activity of the secondary sources
-%       
+%
 %   WAVE_FIELD_IMP_NFCHOA_25D(X,Y,xs,L,src,conf) simulates a wave field of the
 %   given source type (src) using a NFC-HOA 2.5 dimensional driving
 %   function.
@@ -47,10 +47,10 @@ function [x,y,p,ls_activity,dds] = wave_field_imp_nfchoa_25d(X,Y,xs,L,src,conf)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Sascha Spors
@@ -84,7 +84,7 @@ useplot = conf.useplot;
 c = conf.c;
 % Sampling rate
 fs = conf.fs;
-% Time frame to simulate 
+% Time frame to simulate
 frame = conf.frame;
 % Debug mode
 debug = conf.debug;
@@ -123,7 +123,7 @@ end
 
 % Initialize empty wave field
 p = zeros(length(y),length(x));
-    
+
 % Integration over loudspeaker
 for ii = 1:nls
 
@@ -137,8 +137,8 @@ for ii = 1:nls
     % ================================================================
     % Shift driving function
     ds = delayline(d(:,ii)',frame,1,conf)';
-    
-    
+
+
     % Interpolate the driving function w.r.t. the propagation delay from
     % the secondary sources to a field point.
     % NOTE: the interpolation is required to account for the frcational
@@ -148,11 +148,11 @@ for ii = 1:nls
     %ds = interp1(t,ds,r/c*fs,'cubic');
     %ds = interp1(t,ds,r/c*fs,'linear');
     %ds = interp1(t,ds,r/c*fs,'nearest');
-    
+
     % ================================================================
     % Wave field p(x,t)
     p = p + ds .* g;
-    
+
 end
 
 % === Checking of wave field ===

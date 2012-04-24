@@ -32,10 +32,10 @@ function check_irs(irs)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf
@@ -96,7 +96,7 @@ elseif ~isnumeric(irs.torso_elevation) || ~isvector(irs.torso_elevation)
     error('%s: torso_elevation needs to be a vector.',upper(mfilename));
 end
 
-% Check for the right number of entries for the signals and apparent angles 
+% Check for the right number of entries for the signals and apparent angles
 if size(irs.left,2)~=size(irs.right,2)
     error(['%s: the number of entries for the left ear signal is not ',...
            'consistent with the number of entries in the right channel.'],...

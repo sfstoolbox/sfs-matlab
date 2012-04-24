@@ -19,7 +19,7 @@ function [x,y,p,ls_activity,dds] = wave_field_imp_wfs_25d(X,Y,xs,L,src,conf)
 %       x,y         - x- and y-axis of the wave field
 %       p           - wave field (length(y) x length(x))
 %       ls_activity - activity of the secondary sources
-%       
+%
 %   WAVE_FIELD_IMP_WFS_25D(X,Y,xs,L,src,conf) simulates a wave field of the
 %   given source type (src) using a WFS 2.5 dimensional driving function with
 %   a delay line.
@@ -48,10 +48,10 @@ function [x,y,p,ls_activity,dds] = wave_field_imp_wfs_25d(X,Y,xs,L,src,conf)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf, Sascha Spors
@@ -85,7 +85,7 @@ useplot = conf.useplot;
 c = conf.c;
 % Sampling rate
 fs = conf.fs;
-% Time frame to simulate 
+% Time frame to simulate
 frame = conf.frame;
 % Use pre-equalization filter
 usehpre = conf.usehpre;
@@ -135,7 +135,7 @@ d = [zeros(1,aoffset) hpre zeros(1,length(t)-length(hpre)-aoffset)];
 if(0)
     d=bandpass(d,conf);
 end
-    
+
 % In a first loop calculate the weight and delay values.
 % This is done in an extra loop, because all delay values are needed to
 % calculate the time frame to use for the wave field
@@ -171,7 +171,7 @@ p = zeros(length(y),length(x));
 if debug
     dds = zeros(nls,length(d));
 end
-    
+
 % Integration over loudspeaker
 for ii = 1:nls
 
@@ -185,19 +185,19 @@ for ii = 1:nls
     % ================================================================
     % Shift and weight prototype driving function
     % - less delay in driving function is more propagation time in sound
-    %   field, hence the sign of the delay has to be reversed in the 
+    %   field, hence the sign of the delay has to be reversed in the
     %   argument of the delayline function
-    % - the proagation time from the source to the nearest secondary source 
+    % - the proagation time from the source to the nearest secondary source
     %   is removed
     % - the main pulse in the driving function is shifted by aoffset and
     %   frame
     ds = delayline(d,frame-(delay(ii)-dmin)*fs,weight(ii)*win(ii),conf);
-    
+
     % remember driving functions (debug)
     if debug
         dds(ii,1:length(ds)) = ds;
     end
-    
+
     % Interpolate the driving function w.r.t. the propagation delay from
     % the secondary sources to a field point.
     % NOTE: the interpolation is required to account for the frcational
@@ -207,11 +207,11 @@ for ii = 1:nls
     %ds = interp1(t,ds,r/c*fs,'cubic');
     %ds = interp1(t,ds,r/c*fs,'linear');
     %ds = interp1(t,ds,r/c*fs,'nearest');
-    
+
     % ================================================================
     % Wave field p(x,t)
     p = p + ds .* g;
-    
+
 end
 
 % === Checking of wave field ===

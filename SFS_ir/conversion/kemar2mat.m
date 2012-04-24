@@ -305,6 +305,63 @@ elseif strncmpi(irsset,'array',5)
         error('%s: The given irsset is unknown.',upper(mfilename));
     end
 
+%% ===== loudspeaker array in Calypso =======================================
+% see: svn/capture/data/2011-09-30_Calypso_loudspeaker_array
+elseif strncmpi(irsset,'calypso',7)
+    % Common settings
+    irs.ears = 'large with AKGK601 on it';
+    irs.room = 'Room Calypso, 15th floor Telefunken building, T-Labs, TU Berlin';
+    irs.room_corners = [
+         3.20 -2.12 -1.22;
+        -2.45 -2.12 -1.22;
+        -2.45  3.00 -1.22;
+         3.20  3.00 -1.22;
+    ]';
+    irs.torso_azimuth = NaN;
+    irs.head_reference = [0 1 0]';
+    irs.head_position  = [0 0 0]';
+    irlength = 4096;
+    angle1 = -90;
+    angle2 = 90;
+    % Two loudspeaker arrays have been measured. One with a loudspeaker at x0 =
+    % 0m, resulting in a total of 13 loudspeaker and one with the loudspeakers
+    % at the position in between resulting in a total of 12 loudspeakers.
+    sources = {
+        1, [-1.33 1.5 0], [-1.33 0 0], 'Fostex PM0.4';
+        2, [-1.18 1.5 0], [-1.18 0 0], 'Fostex PM0.4';
+        3, [-1.04 1.5 0], [-1.04 0 0], 'Fostex PM0.4';
+        4, [-0.89 1.5 0], [-0.89 0 0], 'Fostex PM0.4';
+        5, [-0.75 1.5 0], [-0.75 0 0], 'Fostex PM0.4';
+        6, [-0.60 1.5 0], [-0.60 0 0], 'Fostex PM0.4';
+        7, [-0.45 1.5 0], [-0.45 0 0], 'Fostex PM0.4';
+        8, [-0.30 1.5 0], [-0.30 0 0], 'Fostex PM0.4';
+        9, [-0.15 1.5 0], [-0.15 0 0], 'Fostex PM0.4';
+       10, [ 0.00 1.5 0], [ 0.00 0 0], 'Fostex PM0.4';
+       11, [ 0.15 1.5 0], [ 0.15 0 0], 'Fostex PM0.4';
+       12, [ 0.30 1.5 0], [ 0.30 0 0], 'Fostex PM0.4';
+       13, [ 0.45 1.5 0], [ 0.45 0 0], 'Fostex PM0.4';
+       14, [ 0.61 1.5 0], [ 0.61 0 0], 'Fostex PM0.4';
+       15, [ 0.76 1.5 0], [ 0.76 0 0], 'Fostex PM0.4n';
+       16, [ 0.91 1.5 0], [ 0.91 0 0], 'Fostex PM0.4n';
+       17, [ 1.06 1.5 0], [ 1.06 0 0], 'Fostex PM0.4n';
+       18, [ 1.21 1.5 0], [ 1.21 0 0], 'Fostex PM0.4n';
+       19, [ 1.36 1.5 0], [ 1.36 0 0], 'Fostex PM0.4n';
+    };
+
+    if strcmp(irsset,'calypso_akg')
+        irs.ears = 'large with AKGK601 on it';
+        irs.description = ['BRIRs of a loudspeaker array with 15cm ', ...
+            'distance between the speakers and 19 loudspeakers overall. ', ...
+            'The headphone AKGK601 was mounted on the dummy head.'];
+        irfilebase = '2012-03-31_21-43-28';
+    elseif strcmp(irsset,'calypso')
+        irs.ears = 'large';
+        irs.description = ['BRIRs of a loudspeaker array with 15cm distance ',
+            'between the speakers and 19 loudspeakers overall'];
+        irfilebase = '';
+    else
+        error('%s: The given irsset is unknown.',upper(mfilename));
+    end
 
 else
     error('%s: the given irsset is not available.',upper(mfilename));
@@ -398,6 +455,40 @@ elseif strncmpi(irsset,'array',5)
 
             irs.head_azimuth(jj-angle1+1) = correct_azimuth(rad(jj));
             irs.apparent_azimuth(jj-angle1+1) = correct_azimuth(rad(-jj)+offset);
+            irs.apparent_elevation(jj-angle1+1) = 0;
+
+            irs.left(:,jj-angle1+1) = data.ir(1:irlength,1);
+            irs.right(:,jj-angle1+1) = data.ir(1:irlength,2);
+        end
+
+        % Save irs
+        name = sprintf('%s_src%02.0f',irsset,ii);
+        save_irs_with_position(irs,outdir,name);
+    end
+
+    
+% Loudspeaker array in Calypso
+elseif strncmpi(irsset,'calypso',5)
+    % Iterate over sources
+    for ii = 1:length(cell2mat(sources(:,1)))
+        irs.source = sources{ii,4};
+        irs.source_position = cell2mat(sources(ii,2))';
+        irs.source_reference  = cell2mat(sources(ii,3))';
+
+        % calculating the offset in direction, coming from the head not to be
+        % placed in front of the box
+        headtosource_direction = irs.head_position - irs.source_position;
+        [phi, theta, R] = ...
+            cart2sph(headtosource_direction(1),headtosource_direction(2), ...
+                headtosource_direction(3));
+        phi = phi - pi/2;
+
+        for jj = angle1:angle2
+            irfile = sprintf('%s/%s_src%i_head%+06.1f.mat',irspath,irfilebase,ii,jj);
+            load(irfile);
+
+            irs.head_azimuth(jj-angle1+1) = correct_azimuth(data.head_azimuth);
+            irs.apparent_azimuth(jj-angle1+1) = correct_azimuth(data.apparent_azimuth);
             irs.apparent_elevation(jj-angle1+1) = 0;
 
             irs.left(:,jj-angle1+1) = data.ir(1:irlength,1);

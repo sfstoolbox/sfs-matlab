@@ -34,10 +34,10 @@ function brs = extrapolate_farfield_hrtfset(phi,irs,conf)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
@@ -106,18 +106,18 @@ end
 %% ===== Computation =====================================================
 % Generate a BRS set for all given angles
 for ii = 1:length(angles)
-    
+
     % variables
     brir = zeros(N,2);
     % FIXME: this works only for plane waves (xs/src is ignored)
     xs = -[cos(angles(ii)) sin(angles(ii))];
-    
+
     % calculate active virtual speakers
     ls_activity = secondary_source_selection(x0,xs,'pw');
-    
+
     % generate tapering window
     win = tapwin(L,ls_activity,conf);
-    
+
     % sum up contributions from individual virtual speakers
     aidx=find(ls_activity>0);
     for l=aidx'
@@ -125,15 +125,15 @@ for ii = 1:length(angles)
         [a,delay] = driving_function_imp_wfs_25d(x0(l,:),xs,'pw',conf);
         dt = delay*fs + round(R/conf.c*fs);
         w=a*win(l);
-        
+
         % delay and weight HRTFs
         brir(:,1) = brir(:,1) + delayline(irs.left(:,l)',dt,w,conf)';
         brir(:,2) = brir(:,2) + delayline(irs.right(:,l)',dt,w,conf)';
     end
-    
+
     brir(:,1)=brir(:,1)*10^(Af(ii)/20);
     brir(:,2)=brir(:,2)*10^(-Af(ii)/20);
-    
+
     % store result to output variable
     brs(:,(ii-1)*2+1:ii*2) = brir;
 end

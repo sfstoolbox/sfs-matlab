@@ -9,7 +9,7 @@ function gp_save(file,x,y,header)
 %       y       - y axis values [vector or matrix]
 %       header  - header comment added before the data
 %
-%   GP_SAVE(file,x,y,header) saves the values of x and y in a text file in a 
+%   GP_SAVE(file,x,y,header) saves the values of x and y in a text file in a
 %   format useable by Gnuplot
 %
 %   see also: gp_save_matrix
@@ -35,10 +35,10 @@ function gp_save(file,x,y,header)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf

@@ -17,9 +17,9 @@ function [f,S] = freq_response_wfs_25d(X,xs,L,src,conf)
 %       f           - corresponding frequency (x) axis
 %       S           - simulated frequency response
 %
-%   FREQ_RESPONSE_WFS_25D(X,xs,L,src,conf) simulates the frequency 
-%   response of the wave field at the given position X. The wave field is 
-%   simulated for the given source type (src) using a WFS 2.5 dimensional 
+%   FREQ_RESPONSE_WFS_25D(X,xs,L,src,conf) simulates the frequency
+%   response of the wave field at the given position X. The wave field is
+%   simulated for the given source type (src) using a WFS 2.5 dimensional
 %   driving function in the temporal domain.
 %
 %   References:

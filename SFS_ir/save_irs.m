@@ -7,10 +7,10 @@ function save_irs(irs,outfile)
 %       irs     - irs struct
 %       irsfile - filename of irs mat file
 %
-%   SAVE_IRS(irs,irsfile) saves a IR dataset as a struct containing the format 
-%   specific fields. For a description of the mat format for the IR datasets, 
+%   SAVE_IRS(irs,irsfile) saves a IR dataset as a struct containing the format
+%   specific fields. For a description of the mat format for the IR datasets,
 %   see IR_format.txt.
-%   
+%
 %   see also: read_irs, get_ir, intpol_ir, dummy_irs, new_irs
 
 %*****************************************************************************
@@ -34,10 +34,10 @@ function save_irs(irs,outfile)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf

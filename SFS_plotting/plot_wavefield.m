@@ -7,7 +7,7 @@ function plot_wavefield(x,y,P,varargin)
 %       x,y         - vectors for the x- and y-axis
 %       P           - matrix containing the wavefield in the format P = P(y,x)
 %       L           - array length. If this is given and the distance between the
-%                     loudspeaker is greater than 10cm the loudspeaker are added 
+%                     loudspeaker is greater than 10cm the loudspeaker are added
 %                     to the plot at their real positions.
 %       ls_activity - activity of the single loudspeakers. If all loudspeakers
 %                     should be active, you can simply set it to 1. Otherwise a
@@ -16,7 +16,7 @@ function plot_wavefield(x,y,P,varargin)
 %       conf        - optional struct containing configuration variables (see
 %                     SFS_config for default values)
 %
-%   PLOT_WAVEFIELD(x,y,P,L,ls_activity) plots the wavefield P in dependence of 
+%   PLOT_WAVEFIELD(x,y,P,L,ls_activity) plots the wavefield P in dependence of
 %   the x and y axes. Therefore the wavefield is normalized to 1 at its center
 %   position P(end/2,end/2). For a given array length L also the loudspeaker are
 %   added to the plot at their real positions. But only if distance between them
@@ -45,10 +45,10 @@ function plot_wavefield(x,y,P,varargin)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf
@@ -91,7 +91,7 @@ if ~exist('L','var')
     conf.plot.loudspeakers = 0;
 end
 
-% Tmp dir  
+% Tmp dir
 tmpdir = conf.tmpdir;
 % Center position of array
 X0 = position_vector(conf.X0);

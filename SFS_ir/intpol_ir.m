@@ -13,8 +13,8 @@ function ir = intpol_ir(ir1,beta1,ir2,beta2,alpha)
 %   Output parameters:
 %       ir      - IR for the given angle alpha (length(IR1),2)
 %
-%   INTPOL_IR(ir1,beta1,ir2,beta2,alpha) interpolates the two given IRs ir1 and 
-%   ir2 with their corresponding angles beta1 and beta2 for the given angle 
+%   INTPOL_IR(ir1,beta1,ir2,beta2,alpha) interpolates the two given IRs ir1 and
+%   ir2 with their corresponding angles beta1 and beta2 for the given angle
 %   alpha and returns an interpolated IR.
 %
 %   see also: get_ir, shorten_ir, read_irs
@@ -40,10 +40,10 @@ function ir = intpol_ir(ir1,beta1,ir2,beta2,alpha)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf

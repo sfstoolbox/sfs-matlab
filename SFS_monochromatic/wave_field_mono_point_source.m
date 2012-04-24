@@ -15,14 +15,14 @@ function [x,y,P] = wave_field_mono_point_source(X,Y,xs,f,conf)
 %       y           - corresponding y axis
 %       P           - Simulated wave field
 %
-%   WAVE_FIELD_MONO_POINT_SOURCE(X,Y,xs,f,conf) simulates a wave 
-%   field of a point source positioned at xs. 
+%   WAVE_FIELD_MONO_POINT_SOURCE(X,Y,xs,f,conf) simulates a wave
+%   field of a point source positioned at xs.
 %   To plot the result use plot_wavefield(x,y,P).
 %
 %   References:
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: plot_wavefield, wave_field_imp_point_source 
+%   see also: plot_wavefield, wave_field_imp_point_source
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -45,10 +45,10 @@ function [x,y,P] = wave_field_mono_point_source(X,Y,xs,f,conf)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf

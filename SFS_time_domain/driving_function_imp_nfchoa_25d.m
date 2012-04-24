@@ -16,7 +16,7 @@ function [d] = driving_function_imp_nfchoa_25d(x0,xs,src,conf)
 %       d  - matrix of driving signals
 %
 %   DRIVING_FUNCTION_IMP_NFCHOA_25D(x0,xs,src,conf) returns the
-%   driving function of 2.5D NFC-HOA for the given source type and position, 
+%   driving function of 2.5D NFC-HOA for the given source type and position,
 %    and loudspeaker positions.
 %
 %   see also:
@@ -42,10 +42,10 @@ function [d] = driving_function_imp_nfchoa_25d(x0,xs,src,conf)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Sascha Spors
@@ -87,10 +87,10 @@ end
 [theta_src, r_src] = cart2pol(xs(1),xs(2));
 
 %% ===== Computation =====================================================
-    
+
 % compute impulse responses of modal filters
 dm=zeros(order+1,N);
-    
+
 if strcmp('pw',src)
     % === Plane wave ===
     for n=1:order+1
@@ -106,7 +106,7 @@ elseif strcmp('ps',src)
 else
     error('%s: %s is not a known source type.',upper(mfilename),src);
 end
-    
+
 
 % compute input signal for IFFT
 d=zeros(2*order+1,N);
@@ -116,14 +116,14 @@ for n=-order:order
 end
 
 if(iseven(nLS))
-   d=d(2:end,:); 
+   d=d(2:end,:);
 end
 
 % spatial IFFT
 d=circshift(d,[order+1 0]);
 d=(2*order+1)*ifft(d,[],1);
 d=d';
-    
-    
-    
+
+
+
 end

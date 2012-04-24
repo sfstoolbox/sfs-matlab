@@ -10,10 +10,10 @@ function irspart = slice_irs(irs,idx)
 %                 SFS_config for default values)
 %
 %   Output parameters:
-%       irspart - HRIR/BRIR containing only the part of the original IR set 
+%       irspart - HRIR/BRIR containing only the part of the original IR set
 %                 given by idx
 %
-%   SLICE_IRS(irs,idx) returns a part of the IR set irs given by idx. The new 
+%   SLICE_IRS(irs,idx) returns a part of the IR set irs given by idx. The new
 %   part is a full IR set containing all the necessary struct elements.
 %
 %   see also: get_ir, read_irs
@@ -39,10 +39,10 @@ function irspart = slice_irs(irs,idx)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf

@@ -9,8 +9,8 @@ function matlab_version_missing(mfile)
 %                 mfilename!
 %
 %   MATLAB_VERSION_MISSING(mfile) results in an error that indicates that the
-%   desired plot functionality has to be implemented in Matlab. This is the 
-%   case for a some heavier plotting functions that are first implemented using 
+%   desired plot functionality has to be implemented in Matlab. This is the
+%   case for a some heavier plotting functions that are first implemented using
 %   Gnuplot.
 
 %*****************************************************************************
@@ -34,10 +34,10 @@ function matlab_version_missing(mfile)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf
@@ -48,7 +48,7 @@ function matlab_version_missing(mfile)
 
 %% ===== Checking of input parameters ====================================
 error(nargchk(0,1,nargin)
-if exist('mfile','var') 
+if exist('mfile','var')
     if ~ischar(mfile)
         error('%s: mfile has to be a string.',upper(mfilename));
     end

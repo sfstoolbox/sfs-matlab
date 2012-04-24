@@ -44,10 +44,10 @@ function [weight,delay] = driving_function_imp_wfs_25d(x0,xs,src,conf)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf
@@ -88,11 +88,11 @@ if ls_activity>0
 
     % Constant amplitude factor
     g0 = sqrt(2*pi*norm(xref-x0));
-    
+
     if strcmp('pw',src)
         % === Plane wave ===
         % Direction of plane wave
-        nxs = xs / norm(xs); 
+        nxs = xs / norm(xs);
         % Delay and amplitude weight
         % NOTE: <n_pw,n(x0)> is the same as the cosinus between their angle
         delay = 1/c * nxs*x0';
@@ -116,7 +116,7 @@ if ls_activity>0
     else
         error('%s: %s is not a known source type.',upper(mfilename),src);
     end
-    
+
 else
     delay = 0;
     weight = 0;

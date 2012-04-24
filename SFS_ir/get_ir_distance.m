@@ -12,7 +12,7 @@ function d = get_ir_distance(irs,phi,delta)
 %       d       - distace for the given angles
 %
 %   GET_IR_DISTANCE(irs,phi,delta) returns the distance for the given angles
-%   phi and delta. If the desired angles are not present in the IR data set an 
+%   phi and delta. If the desired angles are not present in the IR data set an
 %   interpolation is applied to create the desired angles.
 %
 %   see also: get_ir, read_irs, slice_irs, ir_intpol
@@ -38,10 +38,10 @@ function d = get_ir_distance(irs,phi,delta)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf

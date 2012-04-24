@@ -36,10 +36,10 @@ function hpre = wfs_prefilter(conf)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Sascha Spors, Hagen Wierstorf
@@ -62,9 +62,9 @@ end
 
 %% ===== Configuration ==================================================
 fs = conf.fs;               % Sampling rate
-flow = conf.hpreflow;       % Lower frequency limit of preequalization 
-                            % filter (= frequency when subwoofer is active)    
-fhigh = conf.hprefhigh;     % Upper frequency limit of preequalization 
+flow = conf.hpreflow;       % Lower frequency limit of preequalization
+                            % filter (= frequency when subwoofer is active)
+fhigh = conf.hprefhigh;     % Upper frequency limit of preequalization
                             % filter (= aliasing frequency of system)
 
 

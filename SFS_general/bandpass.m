@@ -2,7 +2,7 @@ function sig =  bandpass(sig,conf)
 %BANDPASS filters a signal by a bandpass
 %
 %   Usage: sig = bandpass(sig,[conf])
-%          
+%
 %   Input parameters:
 %       sig  - input signal (vector)
 %       conf - optional struct containing configuration variables (see
@@ -38,10 +38,10 @@ function sig =  bandpass(sig,conf)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Sascha Spors
@@ -67,9 +67,9 @@ fs = conf.fs;
 N = 128;
 
 
-%% ===== Computation =====================================================    
+%% ===== Computation =====================================================
 % design bandpass filter
-Hf = [0 2*10/fs 2*20/fs 2*18000/fs 2*20000/fs 1]; 
+Hf = [0 2*10/fs 2*20/fs 2*18000/fs 2*20000/fs 1];
 Hm = [0 0 1 1 0 0];
 b = fir2(N,Hf,Hm);
 % filter signal

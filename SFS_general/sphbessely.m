@@ -11,7 +11,7 @@ function out = sphbessely(nu,z)
 %   Output parameters:
 %       out - value of bessel function at point z
 %
-%   SPHBESSELY(nu,z) spherical bessel function of order nu, frist type, and 
+%   SPHBESSELY(nu,z) spherical bessel function of order nu, frist type, and
 %   argument z
 %
 %   see also: sphbesselh, sphbesselj
@@ -37,10 +37,10 @@ function out = sphbessely(nu,z)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Jens Ahrens

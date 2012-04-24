@@ -9,7 +9,7 @@ function phi = correct_azimuth(phi)
 %   Output paramteres:
 %       phi     - angle between -pi and +pi-eps
 %
-%   CORRECT_AZIMUTH(phi) returns a value for azimuth phi between 
+%   CORRECT_AZIMUTH(phi) returns a value for azimuth phi between
 %   -pi and +pi-eps.
 %
 %   see also: correct_elevation, read_irs, get_ir
@@ -35,10 +35,10 @@ function phi = correct_azimuth(phi)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf

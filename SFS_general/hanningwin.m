@@ -4,12 +4,12 @@ function win = hanningwin(onset,offset,nsamples)
 %   Usage: win = hanningwin(onset,offset,nsamples)
 %
 %   Input parameters:
-%       onset		- onset in samples (0 for no onset)
-%       offset		- offset in samples (0 for no offset)
+%       onset       - onset in samples (0 for no onset)
+%       offset      - offset in samples (0 for no offset)
 %       nsamples    - length of the whole window (including on- and offset)
 %
 %   Output parameters:
-%       win         - a hanning window (nsamples x 1) for multiplication 
+%       win         - a hanning window (nsamples x 1) for multiplication
 %                     with the desired signal to be windowed
 %
 %   see also: click
@@ -35,10 +35,10 @@ function win = hanningwin(onset,offset,nsamples)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf
@@ -70,7 +70,7 @@ offset=ceil(offset);
 %       #         #
 %       #         #
 %      #           #
-%     #             # 
+%     #             #
 %   ##               ##
 % ##                   ##
 %

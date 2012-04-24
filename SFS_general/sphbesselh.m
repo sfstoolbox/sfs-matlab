@@ -11,7 +11,7 @@ function out = sphbesselh(nu,k,z)
 %   Output parameters:
 %       out - value of hankel function at point z
 %
-%   SPHBESSELH(nu,k,z) spherical hankel function of order nu, kind k, and 
+%   SPHBESSELH(nu,k,z) spherical hankel function of order nu, kind k, and
 %   argument z
 %
 %   see also: sphbesselj, sphbessely
@@ -37,10 +37,10 @@ function out = sphbesselh(nu,k,z)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Jens Ahrens

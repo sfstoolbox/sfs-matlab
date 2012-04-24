@@ -12,7 +12,7 @@ function [amplitude,phase,f] = easyfft(sig,conf)
 %   Output parameters:
 %       amplitude   - amplitude spectrum of the input signal
 %       phase       - phase spectrum of the input signal
-%       f           - corresponding frequency axis for the amplitude 
+%       f           - corresponding frequency axis for the amplitude
 %                     spectrum (=> plot(f,amplitude) (Hz)
 %
 %   EASYFFT(sig) calculates the amplitude and phase of the sig spectrum by using
@@ -42,10 +42,10 @@ function [amplitude,phase,f] = easyfft(sig,conf)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf
@@ -82,7 +82,7 @@ samples = length(sig);
 amplitude = abs(compspec(1:ceil(samples/2)));
 phase = angle(compspec(1:ceil(samples/2)));
 
-% Scale the amplitude (factor two, because we have cut off one half and 
+% Scale the amplitude (factor two, because we have cut off one half and
 %>divide by number of samples)
 amplitude = 2*amplitude / samples;
 

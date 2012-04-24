@@ -2,7 +2,7 @@ function sig = delayline(sig,dt,weight,conf)
 %DELAYLINE implements a (fractional) weighting delay line
 %
 %   Usage: sig = delayline(sig,dt,weight,[conf])
-%          
+%
 %   Input parameter:
 %       sig     - input signal (vector)
 %       dt      - delay (samples)
@@ -41,10 +41,10 @@ function sig = delayline(sig,dt,weight,conf)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Sascha Spors
@@ -70,9 +70,9 @@ rfactor = 100; % resample factor (1/stepsize of fractional delays)
 Lls = 30;      % length of least-squares factional delay filter
 
 
-%% ===== Computation =====================================================    
+%% ===== Computation =====================================================
 if(usefracdelay)
- 
+
     % Defining a temporary conf struct for recursive calling of delayline
     conf2.usefracdelay = 0;
     conf2.fracdelay_method = '';
@@ -100,11 +100,11 @@ if(usefracdelay)
         sig = delayline(sig,idt,weight,conf2);
         t = 1:length(sig);
         sig = interp1(t,sig,-(dt-idt)+t,'spline');
-        
+
     otherwise
         disp('Delayline: Unknown fractional delay method');
     end
-    
+
 else
     % from here on integer delays are considered
     idt = round(dt);

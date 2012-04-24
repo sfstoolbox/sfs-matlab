@@ -5,7 +5,7 @@ function win = tapwin(L,ls_activity,conf)
 %
 %   Input parameters:
 %       L           - length of the loudspeaker array (m)
-%       ls_activity - vector containing the activity of the loudspeakers from 
+%       ls_activity - vector containing the activity of the loudspeakers from
 %                     0..1
 %       conf        - optional struct containing configuration variables (see
 %                     SFS_config for default values)
@@ -16,7 +16,7 @@ function win = tapwin(L,ls_activity,conf)
 %   TAPWIN(L,ls_activity,conf) generates a tapering window for a linear WFS
 %   loudspeaker array with a length of L. The window is created from a squared
 %   Hann window. For circular arrays it is necessary to apply the ls_activity
-%   option. 
+%   option.
 %
 %   see also: brs_wfs_25d, secondary_source_selection, hann
 
@@ -41,10 +41,10 @@ function win = tapwin(L,ls_activity,conf)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf, Sascha Spors
@@ -111,7 +111,7 @@ if(usetapwin)
     lenwin = round(tapwinlen*nls)+2;
     %
     % Check if we have a to short window to apply it in a useful way. This can
-    % be the case for very short loudspeaker arrays (as used in Wierstorf2010). 
+    % be the case for very short loudspeaker arrays (as used in Wierstorf2010).
     if lenwin<4
         win = ones(1,nls);
     else

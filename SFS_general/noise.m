@@ -13,7 +13,7 @@ function outsig = noise(samples,nsigs,noisetype)
 %                         'brown'
 %
 %   Output parameters:
-%       outsig  - samples x nsigs white noise signal, default: nsigs = 1. 
+%       outsig  - samples x nsigs white noise signal, default: nsigs = 1.
 %
 %   NOISE(samples,nsigs,type) generate a noise signal of type with a length of
 %   samples and nsigs columns. The default value is nsigs = 1; the default value
@@ -26,7 +26,7 @@ function outsig = noise(samples,nsigs,noisetype)
 %
 %       randn('state',sum(100*clock));  % in Matlab < 7.7
 %
-%       s = RandStream.create('mt19937ar','seed',sum(100*clock)); 
+%       s = RandStream.create('mt19937ar','seed',sum(100*clock));
 %       RandStream.setDefaultStream(s);     % in Matlab >= 7.7
 %
 %   see also: click, irn
@@ -52,10 +52,10 @@ function outsig = noise(samples,nsigs,noisetype)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf, Peter Soendergaard

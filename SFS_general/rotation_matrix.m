@@ -9,7 +9,7 @@ function R = rotation_matrix(phi,orientation)
 %                     'counterclockwise' (default: 'counterclockwise')
 %
 %   Output parameters:
-%       R       - 2x2 rotation matrix to apply to your vector to rotate: 
+%       R       - 2x2 rotation matrix to apply to your vector to rotate:
 %                 R*y
 %
 %   ROTATION_MATRIX(phi,orientation) returns a rotation matrix R, which is
@@ -38,10 +38,10 @@ function R = rotation_matrix(phi,orientation)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf

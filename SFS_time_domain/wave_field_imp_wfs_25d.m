@@ -150,21 +150,6 @@ for ii = 1:nls
 end
 dmin=min(delay);
 
-<<<<<<< .mine
-% remove parts with equal delay
-if(1)
-   sweight=weight;
-   weight(75:106)=0;
-   weight(91)=sweight(91);
-   weight(81)=sweight(81);
-   weight(77)=sweight(77);
-   weight(101)=sweight(101);
-   weight(105)=sweight(105);
-end
-
-=======
->>>>>>> .r693
-
 % If no explizit time frame is given calculate one
 if isempty(frame)
     % Use only those delays for the calculation, that correspond to secondary

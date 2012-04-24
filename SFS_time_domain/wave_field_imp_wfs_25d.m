@@ -1,4 +1,4 @@
-function [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,L,src,conf)
+function [x,y,p,ls_activity,dds] = wave_field_imp_wfs_25d(X,Y,xs,L,src,conf)
 %WAVE_FIELD_IMP_WFS_25D returns the wave field in time domain of an impulse
 %
 %   Usage: [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,L,src,[conf])
@@ -132,9 +132,8 @@ end
 d = [zeros(1,aoffset) hpre zeros(1,length(t)-length(hpre)-aoffset)];
 
 % Apply bandbass filter to the prototype
-d=bandpass(d,conf);
-if debug
-    figure; freqz(d,1,[],fs);
+if(0)
+    d=bandpass(d,conf);
 end
     
 % In a first loop calculate the weight and delay values.
@@ -150,6 +149,21 @@ for ii = 1:nls
     [weight(ii),delay(ii)] = driving_function_imp_wfs_25d(x0(ii,:),xs,src,conf);
 end
 dmin=min(delay);
+
+<<<<<<< .mine
+% remove parts with equal delay
+if(1)
+   sweight=weight;
+   weight(75:106)=0;
+   weight(91)=sweight(91);
+   weight(81)=sweight(81);
+   weight(77)=sweight(77);
+   weight(101)=sweight(101);
+   weight(105)=sweight(105);
+end
+
+=======
+>>>>>>> .r693
 
 % If no explizit time frame is given calculate one
 if isempty(frame)

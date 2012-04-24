@@ -1,15 +1,11 @@
-function brs = extrapolate_hrtfset(phi,xs,src,irs,conf)
-%EXTRAPOLATE_HRTFSET extrapolates a given HRTF dataset
+function brs = extrapolate_farfield_hrtfset(phi,irs,conf)
+%EXTRAPOLATE_FARFIELD_HRTFSET far-field extrapolation of a given HRTF dataset
 %
-%   Usage: brs = extrapolate_hrtfset(phi,xs,L,src,irs,[conf])
+%   Usage: brs = extrapolate_farfield_hrtfset(phi,xs,L,src,irs,[conf])
 %
 %   Input parameters:
 %       phi     - listener direction [head orientation] (rad)
-%       xs      - virtual source position [ys > Y0 => focused source] (m)
-%       src     - source type: 'pw' - plane wave
-%                              'ps' - point source
-%                              'fs' - focused source
-%       irs     - IR data set for the second sources
+%       irs     - IR data set for the virtual secondary sources
 %       conf    - optional struct containing configuration variables (see
 %                 SFS_config for default values)
 %
@@ -44,8 +40,7 @@ function brs = extrapolate_hrtfset(phi,xs,src,irs,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
 %*****************************************************************************
 
-% FIXME: this works only for plane waves (xs/src is ignored)
-%        remove xs?
+
 % FIXME: return not a BRS but a irs in irs format
 
 % AUTHOR: Sascha Spors
@@ -55,10 +50,9 @@ function brs = extrapolate_hrtfset(phi,xs,src,irs,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
+nargmin = 2;
+nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin));
-xs = position_vector(xs);
 isargscalar(phi);
 check_irs(irs);
 
@@ -88,6 +82,8 @@ conf.dx0=2*pi*R/nls;
 conf.xref = [0 0 0];
 conf.x0=zeros(nls,6);
 conf.x0(:,1:2)=[R*cos(irs.apparent_azimuth) ; R*sin(irs.apparent_azimuth)]';
+conf.x0(:,4:6)=direction_vector(conf.x0(:,1:3),repmat(conf.xref,nls,1));
+
 
 x0 = secondary_source_positions(L,conf);
 
@@ -117,7 +113,7 @@ for ii = 1:length(angles)
     xs = -[cos(angles(ii)) sin(angles(ii))];
     
     % calculate active virtual speakers
-    ls_activity = secondary_source_selection(x0,xs,src);
+    ls_activity = secondary_source_selection(x0,xs,'pw');
     
     % generate tapering window
     win = tapwin(L,ls_activity,conf);
@@ -126,8 +122,8 @@ for ii = 1:length(angles)
     aidx=find(ls_activity>0);
     for l=aidx'
         % Driving function to get weighting and delaying
-        [a,delay] = driving_function_imp_wfs_25d(x0(l,:),xs,src,conf);
-        dt = delay*fs + R/conf.c*fs;
+        [a,delay] = driving_function_imp_wfs_25d(x0(l,:),xs,'pw',conf);
+        dt = delay*fs + round(R/conf.c*fs);
         w=a*win(l);
         
         % delay and weight HRTFs
@@ -140,7 +136,6 @@ for ii = 1:length(angles)
     
     % store result to output variable
     brs(:,(ii-1)*2+1:ii*2) = brir;
-    %plot(brir); pause(0.1);
 end
 
 %% ===== Pre-equalization ===============================================

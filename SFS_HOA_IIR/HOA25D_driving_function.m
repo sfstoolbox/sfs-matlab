@@ -8,12 +8,12 @@ clear all
 c=343;
 fs=44100;
 
-P=56;       % number of loudspeakers
+P=57;       % number of loudspeakers
 
 r_ps=3;
 theta_ps=0;
 
-R=1.5;
+R=0.5;
 
 N=1024;
 N0=100;
@@ -22,7 +22,7 @@ N0=100;
 % variables
 
 if(isodd(P))
-    order=(P+1)/2;    %  max order of spherical Hankel function
+    order=(P-1)/2;    %  max order of spherical Hankel function
 else
     order=floor((P+1)/2);
 end
@@ -78,7 +78,8 @@ t=1/fs*1000*(1:size(d,1));
 d=d/max(abs(d(:)));
 
 figure
-imagesc(1:(2*order+1),t,db(abs(d)));
+%imagesc(1:(2*order+1),t,db(abs(d)));
+imagesc(db(abs(d)));
 turn_imagesc;
 caxis([-100 0]);
 tcolorbar('','dB');

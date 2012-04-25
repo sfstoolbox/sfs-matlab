@@ -100,17 +100,18 @@ y = linspace(Y(1),Y(2),xysamples);
 [xx,yy] = meshgrid(x,y);
 
 
-% Calculate maximum time delay possible for the given axis size
-maxt = round(sqrt((X(1)-X(2))^2+(Y(1)-Y(2))^2)/c*fs);
-% Add some additional pre-offset
-aoffset=128;
-maxt = maxt+aoffset;
-% Create time axis for field interpolation
-t = 0:maxt;
-
-
 % Calculate driving function
 [d] = driving_function_imp_nfchoa_25d(x0,xs,src,conf);
+
+% time reversal of driving function due to propagation of sound
+% later parts of the driving function are emitted later by secondary
+% sources
+d = d(end:-1:1,:);
+
+% shift driving function
+for ii = 1:nls
+    d(:,ii) = delayline(d(:,ii)',-size(d,1)+frame,1,conf)';
+end
 
 % Apply bandbass filter
 if(0)
@@ -131,13 +132,11 @@ for ii = 1:nls
     g = 1./(4*pi*r);
 
     % ================================================================
-    % Shift driving function
-    ds = delayline(d(:,ii)',frame,1,conf)';
-
+    ds = d(:,ii);
 
     % Interpolate the driving function w.r.t. the propagation delay from
     % the secondary sources to a field point.
-    % NOTE: the interpolation is required to account for the frcational
+    % NOTE: the interpolation is required to account for the fractional
     % delay times from the loudspeakers to the field points
     t = 1:length(ds);
     ds = interp1(t,ds,r/c*fs,'spline');

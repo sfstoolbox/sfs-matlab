@@ -234,7 +234,7 @@ title('WFS 2.5D box shaped array, plane wave [0.5,1], mono-frequent');
 % spatio-temporal impulse response
 [x,y,p_wfs25d_box_pw,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,L,src,conf);
 title('WFS 2.5D box shaped array, plane wave [0.5,1], impulse response');
-% Line source
+% point source
 src = 'ps';
 xs = [0.5,2];
 % mono-frequent
@@ -252,3 +252,35 @@ title('WFS 2.5D box shaped array, focused source [0.5,0.5], mono-frequent');
 % spatio-temporal impulse response
 [x,y,p_wfs25d_box_fs,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,L,src,conf);
 title('WFS 2.5D box shaped array, focused source [0.5,0.5], impulse response');
+
+
+%% ===== NFC-HOA 2.5D ========================================================
+% === Circular array ===
+conf.array = 'circle';
+conf.dx0 = 0.15;
+conf.useplot = 1;
+X = [-2,2];
+Y = [-2,2];
+conf.xref = [0,0];
+conf.frame = 200;
+% Plane wave
+src = 'pw';
+xs = [0.5,1];
+% mono-frequent
+%[x,y,P_nfchoa25d_circular_pw,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,L,f,src,conf);
+%title('WFS 2.5D circular array, plane wave [0.5,1], mono-frequent');
+% spatio-temporal impulse response
+[x,y,p_nfchoa25d_circular_pw,ls_activity] = wave_field_imp_nfchoa_25d(X,Y,xs,L,src,conf);
+title('NFC-HOA 2.5D circular array, plane wave [0.5,1], impulse response');
+
+% point source
+src = 'ps';
+xs = [0.5,2];
+% mono-frequent
+%[x,y,P_nfchoa25d_circular_ps,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,L,f,src,conf);
+%title('WFS 2.5D circular array, point source [0.5,2], mono-frequent');
+% spatio-temporal impulse response
+[x,y,p_nfchoa25d_circular_ps,ls_activity] = wave_field_imp_nfchoa_25d(X,Y,xs,L,src,conf);
+title('NFC-HOA 2.5D circular array, point source [0.5,2], impulse response');
+
+

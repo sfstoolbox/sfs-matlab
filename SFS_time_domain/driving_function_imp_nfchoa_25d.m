@@ -76,10 +76,10 @@ xref = position_vector(conf.xref);
 R = norm(xref-x0(1,1:3));
 nLS = size(x0,1);
 N = conf.N;
-N0 = 100;       % pre-delay
+N0 = 0;       % pre-delay
 
 if(isodd(nLS))
-    order=(nLS+1)/2;    %  max order of spherical harmonics
+    order=(nLS-1)/2;    %  max order of spherical harmonics
 else
     order=floor((nLS+1)/2);
 end
@@ -97,11 +97,13 @@ if strcmp('pw',src)
         df=modal_filter_pw_nfchoa_25d(R,n-1,fs);
         dm(n,:) = df.filter([zeros(1,N0) 1 zeros(1,N-1-N0)]);
     end
-
-
+    
 elseif strcmp('ps',src)
     % === Point source ===
-
+    for n=1:order+1
+        df=modal_filter_ps_nfchoa_25d(R,r_src,n-1,fs);
+        dm(n,:) = df.filter([zeros(1,N0) 1 zeros(1,N-1-N0)]);
+    end
 
 else
     error('%s: %s is not a known source type.',upper(mfilename),src);
@@ -123,7 +125,5 @@ end
 d=circshift(d,[order+1 0]);
 d=(2*order+1)*ifft(d,[],1);
 d=d';
-
-
 
 end

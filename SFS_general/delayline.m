@@ -109,6 +109,12 @@ if(usefracdelay)
 else
     % from here on integer delays are considered
     idt = round(dt);
+    
+    % handling of too long delay values (returns vector of zeros)
+    if(abs(idt)>length(sig))
+        idt=length(sig);
+    end
+    
     % handle positive or negative delays
     if idt>=0
         sig = [zeros(1,idt) weight*sig(1:end-idt)];

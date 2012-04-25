@@ -90,9 +90,7 @@ useplot = conf.useplot;
 
 
 %% ===== Variables ======================================================
-% Setting x- and y-axis
-[X,Y] = setting_xy_ranges(X,Y,conf);
-% Geometry
+% Getting values for x- and y-axis
 x = linspace(X(1),X(2),xysamples);
 y = linspace(Y(1),Y(2),xysamples);
 
@@ -105,7 +103,7 @@ y = linspace(Y(1),Y(2),xysamples);
 x0 = secondary_source_positions(L,conf);
 ls_activity = secondary_source_selection(x0,xs,src);
 % Generate tapering window
-win = tapwin(L,ls_activity,conf);
+win = tapering_window(L,ls_activity,conf);
 ls_activity = ls_activity .* win;
 % Create a x-y-grid to avoid a loop
 [xx,yy] = meshgrid(x,y);
@@ -143,7 +141,9 @@ for ii = 1:length(x0)
 end
 
 % === Primary source correction ===
-% FIXME: ref Völk
+% This is not implemented yet. Have a look at
+% Völk, F., Lindner, F., & Fastl, H. (2011). Primary Source Correction (PSC) in
+% Wave Field Synthesis. ICSA
 if(0)
     omega = 2*pi*f;
     c = conf.c;

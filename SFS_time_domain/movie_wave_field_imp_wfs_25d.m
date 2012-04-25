@@ -95,7 +95,7 @@ for ii = 1:length(frame)-1
     x0 = secondary_source_positions(L,conf);
     ls_activity = secondary_source_selection(x0,xs,src);
     % Generate tapering window
-    win = tapwin(L,ls_activity,conf);
+    win = tapering_window(L,ls_activity,conf);
     ls_activity = ls_activity .* win;
 
     % === Save temporary data ===

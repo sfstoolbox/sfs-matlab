@@ -89,7 +89,7 @@ x0 = secondary_source_positions(L,conf);
 nls = length(x0);
 ls_activity = secondary_source_selection(x0,xs,src);
 % generate tapering window
-win = tapwin(L,ls_activity,conf);
+win = tapering_window(L,ls_activity,conf);
 
 
 %% ===== IR =============================================================

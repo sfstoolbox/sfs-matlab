@@ -9,9 +9,10 @@ function kemarmit2mat(irspath)
 %   KEMARMIT2MAT(irspath) converts the IRs data given by the KEMAR MIT
 %   measurement and stored at the given irspath in our own mat-file based 
 %   format. See:
-%   https://dev.qu.tu-berlin.de/projects/sfs/wiki/IRs_mat-file_format
+%   https://dev.qu.tu-berlin.de/projects/measurements/wiki/IRs_file_format
 %
-%   FIXME: add url for MIT data set
+%   The MIT HRTF data base can be found here:
+%   http://sound.media.mit.edu/resources/KEMAR.html
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *

@@ -58,7 +58,6 @@ end
 
 
 %% ===== Adding pathes ==================================================
-% FIXME: this adds also all .svn subdirectories!
 for ii = 1:length(dirs)
     path = genpath(dirs{ii});
     addpath(path,'-end');

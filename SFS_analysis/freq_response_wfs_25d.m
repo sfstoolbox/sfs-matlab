@@ -102,7 +102,7 @@ S = zeros(1,length(f));
 % Activity of secondary sources
 ls_activity = secondary_source_selection(x0,xs,src);
 % Tapering window
-win = tapwin(L,ls_activity,conf);
+win = tapering_window(L,ls_activity,conf);
 % Get the result for all frequencies
 for ii = 1:length(f)
     P = 0;

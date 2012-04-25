@@ -55,7 +55,6 @@ isargscalar(frame);
 
 
 %% ===== Computation =====================================================
-% FIXME: check if all works with Octave
 if max(abs(P(:)))==0 || all(isnan(P(:)))
     warning('SFS:check_wave_field',...
         ['The activity in the simulated wave field is zero. ',...

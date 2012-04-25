@@ -16,11 +16,11 @@ function plot_wavefield(x,y,P,varargin)
 %       conf        - optional struct containing configuration variables (see
 %                     SFS_config for default values)
 %
-%   PLOT_WAVEFIELD(x,y,P,L,ls_activity) plots the wavefield P in dependence of
-%   the x and y axes. Therefore the wavefield is normalized to 1 at its center
-%   position P(end/2,end/2). For a given array length L also the loudspeaker are
-%   added to the plot at their real positions. But only if distance between them
-%   is larger than 10cm.
+%   PLOT_WAVEFIELD(x,y,P,L,ls_activity,conf) plots the wavefield P in dependence
+%   of the x and y axes. Therefore the wavefield is normalized to 1 at its
+%   center position P(end/2,end/2). For a given array length L also the
+%   loudspeaker are added to the plot at their real positions. But only if
+%   distance between them is larger than 10cm.
 %
 %   see also: wave_field_mono_wfs_25d
 
@@ -59,19 +59,15 @@ function plot_wavefield(x,y,P,varargin)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;
-nargmax = 7;
+nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
 isargvector(x,y);
 isargmatrix(P);
 % Setting default values and check varargin parameters
 ls_activity = 1;
-% FIXME: remove outfile here, because we now use conf.plot.file
-outfile = 'wavefield.plot';
 for ii = 1:length(varargin)
     if isstruct(varargin{ii})
         conf = varargin{ii};
-    elseif ischar(varargin{ii})
-        outfile = varargin{ii};
     elseif isscalar(varargin{ii}) && varargin{ii}>0 && ~exist('L','var')
         L = varargin{ii};
         if ii+1<=length(varargin) && isvector(varargin{ii})
@@ -85,12 +81,10 @@ end
 
 
 %% ===== Configuration ==================================================
-
 % Check if we have a loudspeaker array at all
 if ~exist('L','var')
     conf.plot.loudspeakers = 0;
 end
-
 % Tmp dir
 tmpdir = conf.tmpdir;
 % Center position of array
@@ -115,7 +109,6 @@ p.file = conf.plot.file;
 
 
 %% ===== Calculation =====================================================
-
 % Check the size of x,y and P
 if size(P,1)~=length(y) || size(P,2)~=length(x)
     error('%s: the size of P has to be y x x.',upper(mfilename));
@@ -305,14 +298,6 @@ else
     if(p.loudspeakers)
         % Loudspeaker positions and directions
         x0 = secondary_source_positions(L,conf);
-
-        % FIXME: I think the following code is not neccessary
-        % check if we have loudspeakers outside of the desired plotting region and
-        % remove them in order to don't mess up the graph
-        %idx = (( x0<x(1) || x0>x(end) || y0<y(1) || y0>y(end) ));
-        %x0(idx) = NaN;
-        %y0(idx) = NaN;
-        %phi(idx) = NaN;
 
         if  dx0<= 0.01
             warning(['%s: the given loudspeaker distance is to small. ',...

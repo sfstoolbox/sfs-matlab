@@ -84,13 +84,14 @@ if(usefracdelay)
        sig = resample(sig2,1,rfactor);
 
     case 'least_squares'
+        if ~exist('hgls2')
+            error(['%s: the least_squares methods needs the hgls2 function ',...
+                'which you have to look for in the web ;)']);
+        end
         idt = floor(dt);
         sig = delayline(sig,idt,weight,conf2);
         if(abs(dt-idt)>0)
-            % FIXME: add this function to Toolbox, or display URL for download
             h = hgls2(Lls,dt-idt,0.90);
-            %[IP,wprot] = iniheq2(Lls,0.90);
-            %h = heqrip2(Lls,dt-idt,wprot,IP);
             sig = conv(sig,h);
             sig = sig(Lls/2:end-Lls/2);
         end

@@ -13,7 +13,7 @@ function brs = irs2brs(irs)
 %   SoundScape Renderer. The brs data set is a matrix containing the
 %   channels for all directions.
 %
-%   see also: brsset_wfs_25d
+%   see also: set_wfs_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -69,8 +69,7 @@ end
 
 % TODO: check the order of angles
 %       I think the user have to check this by itself. Because the user
-%       could also be interested in a particular angle order, they can
-%       create by themself
+%       could also be interested in a particular angle order
 
 for ii = 1:length(irs.apparent_azimuth)
     brs(:,(ii-1)*2+1:ii*2) = [irs.left(:,ii) irs.right(:,ii)];

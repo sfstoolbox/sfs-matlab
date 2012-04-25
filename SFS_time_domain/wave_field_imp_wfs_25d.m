@@ -68,7 +68,6 @@ isargvector(X,Y);
 xs = position_vector(xs);
 isargpositivescalar(L);
 isargchar(src);
-
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -94,14 +93,11 @@ debug = conf.debug;
 
 
 %% ===== Computation =====================================================
-% Setting the x- and y-axis
-[X,Y] = setting_xy_ranges(X,Y,conf);
-
 % Get secondary sources
 x0 = secondary_source_positions(L,conf);
 ls_activity = secondary_source_selection(x0,xs,src);
 % Generate tapering window
-win = tapwin(L,ls_activity,conf);
+win = tapering_window(L,ls_activity,conf);
 ls_activity = ls_activity .* win;
 
 % Spatial grid

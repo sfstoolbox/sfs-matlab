@@ -67,5 +67,4 @@ c = conf.c;
 
 
 %% ===== Computation =====================================================
-% FIXME: better calculation possible?
 fal = c/(2*dx0);

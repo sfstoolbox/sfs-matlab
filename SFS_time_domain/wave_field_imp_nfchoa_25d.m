@@ -67,7 +67,6 @@ isargvector(X,Y);
 xs = position_vector(xs);
 isargpositivescalar(L);
 isargchar(src);
-
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -91,9 +90,6 @@ debug = conf.debug;
 
 
 %% ===== Computation =====================================================
-% Setting the x- and y-axis
-[X,Y] = setting_xy_ranges(X,Y,conf);
-
 % Get secondary sources
 x0 = secondary_source_positions(L,conf);
 nls = size(x0,1);

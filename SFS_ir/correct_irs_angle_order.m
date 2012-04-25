@@ -88,6 +88,3 @@ if ~(isequal(size(irs.source_position),[3 1]) || ...
         isequal(size(irs.source_position),[1 3]))
     irs.source_position = irs.source_position(:,idx);
 end
-
-%FIXME: try if it will work to reorder the whole irs afterwards regarding the
-% apparent_elevation angle

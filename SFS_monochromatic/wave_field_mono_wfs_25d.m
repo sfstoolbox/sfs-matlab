@@ -73,7 +73,6 @@ nargmin = 6;
 nargmax = 7;
 error(nargchk(nargmin,nargmax,nargin));
 isargvector(X,Y);
-isargposition(xs);
 xs = position_vector(xs);
 isargpositivescalar(L,f);
 isargchar(src);
@@ -94,24 +93,19 @@ useplot = conf.useplot;
 
 
 %% ===== Variables ======================================================
-
-% Setting x- and y-axis
-[X,Y] = setting_xy_ranges(X,Y,conf);
-
-% Geometry
+% Getting values for x- and y-axis
 x = linspace(X(1),X(2),xysamples);
 y = linspace(Y(1),Y(2),xysamples);
 
 
 %% ===== Computation ====================================================
-
 % Calculate the wave field in time-frequency domain
 %
 % Get the position of the loudspeakers and its activity
 x0 = secondary_source_positions(L,conf);
 ls_activity = secondary_source_selection(x0,xs,src);
 % Generate tapering window
-win = tapwin(L,ls_activity,conf);
+win = tapering_window(L,ls_activity,conf);
 ls_activity = ls_activity .* win;
 % Create a x-y-grid to avoid a loop
 [xx,yy] = meshgrid(x,y);

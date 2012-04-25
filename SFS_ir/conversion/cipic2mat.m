@@ -18,10 +18,10 @@ function cipic2mat(irsset,irspath)
 %
 %   CIPIC2MAT(irsset,irspath) converts the IRs data given by the irsset
 %   and stored at the given irspath in our own mat-file based format. See:
-%   https://dev.qu.tu-berlin.de/projects/sfs/wiki/IRs_mat-file_format
+%   https://dev.qu.tu-berlin.de/projects/measurements/wiki/IRs_file_format
 %
-%   FIXME: add url for CIPIC data set
-%   FIXME: check syntax of options (large_pinna_final?)
+%   The CIPIC data set can be found here:
+%   http://interface.cipic.ucdavis.edu/sound/hrtf.html
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *

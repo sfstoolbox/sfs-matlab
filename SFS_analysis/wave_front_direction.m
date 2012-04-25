@@ -99,7 +99,7 @@ nls = number_of_loudspeaker(L,conf);
 
 % === Design tapering window ===
 % See SFS_config if it is applied
-win = tapwin(L,conf);
+win = tapering_window(L,conf);
 
 %% ===== Calculate direction of the echos ===============================
 

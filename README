@@ -9,15 +9,13 @@ INSTALL.
 
 For questions, bug reports and feature requests:
 
-FIXME: add mail adress
-Contact: mail@tu-berlin.de
+Contact: sfstoolbox@googlemail.com
 Website: http://dev.qu.tu-berlin.de/projects/sfs
 
 Copyright (c) 2010-2012 Quality & Usability Lab
                         Deutsche Telekom Laboratories, TU Berlin
                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany
 
-FIXME: merge with old README
 
 # ===== Sound Field Synthesis (SFS) Toolbox =====
 
@@ -27,20 +25,15 @@ Synthesis (WFS) or Higher Order Ambisonics (HOA). There are functions to
 simulate monochromatic wave fields for different secondary source
 (loudspeaker) setups, time snapshots of full band impulses emitted by the
 secondary source distributions, or even generate Binaural Room Scanning (BRS)
-stimuli stes in order to simulate WFS with the SoundScape Renderer (SSR).
+stimuli sets in order to simulate WFS with the SoundScape Renderer (SSR).
 
 To start the Toolbox, have a look at the SFS_config.m file and set it up to your
-needs, than run SFS_start which will add all necessary pathes.
+needs, then run SFS_start which will add all necessary paths.
 
 Here is an overview over the different folders containing in the SFS Toolbox:
 
-# * scripts
-This folder contains scripts that were use to generate stimuli or test some
-settings for experiments and/or paper. In opposite to all folders beginning
-with SFS_ this folder contains ony scripts and no functions.
-
 # * SFS_analysis
-Functions to do some additional analysises of some special applications like
+Functions to do some additional analysis of some special applications like
 extracting ITD, ILD or time of arrival for pre-echoes
 
 # * SFS_binaural_resynthesis
@@ -49,14 +42,11 @@ loudspeaker setups and sources. Also some functions to auralize the given BRS
 sets with audio material.
 
 # * SFS_general
-Diverse function, ranging from loudspeaker positions to rad <> degree
+Diverse functions, ranging from loudspeaker positions to rad <> degree
 conversion.
 
 # * SFS_helper
 Helper functions for checking of input args
-
-# * SFS_HOA_IIR
-Functions to create IIR filters for HOA
 
 # * SFS_ir
 Functions to read and generate IRs sets in our own file format. Also functions

@@ -29,7 +29,17 @@ function [itd,idxleft,idxright] = interaural_time_difference(insigleft,insigrigh
 %   the first non-zero entry in both IRs and then calculating the time difference.
 %
 %   References:
-%   FIXME: put the references for gaik1993, sandvad1994, lindau2010
+%   Gaik W (1993). Combined evaluation of interaural time and intensity
+%       differences: psychoacoustic results and computer modeling.
+%       J Acoust Soc Am, 94(1), 98-110.
+%   Sandvad J, Hammershøi D (1994). Binaural Auralization. Comparison of
+%       FIR and IIR Filter Representation of HIRs.
+%       96th AES Conv.
+%   Lindau A, Estrella J, Weinzierl S (2010). Individualization of
+%   dynamic binaural synthesis by real time manipulation of the ITD.
+%       128th AES Conv.
+%
+%   see also: interaural_level_difference
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -96,8 +106,6 @@ end
 
 % See if we have more than one frequency channel in the insig
 itd = zeros(1,size(insigleft,2));
-%idxleft = itd;
-%idxright = itd;
 itdold =0;
 jminold=0;
 for ii = 1:size(insigleft,2)

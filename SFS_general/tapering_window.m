@@ -1,7 +1,7 @@
-function win = tapwin(L,ls_activity,conf)
+function win = tapering_window(L,ls_activity,conf)
 %TAPWIN generate a tapering window for a loudspeaker array
 %
-%   Usage: win = tapwin(L,[ls_activity],[conf])
+%   Usage: win = tapering_window(L,[ls_activity],[conf])
 %
 %   Input parameters:
 %       L           - length of the loudspeaker array (m)
@@ -13,12 +13,12 @@ function win = tapwin(L,ls_activity,conf)
 %   Output parameters:
 %       win     - tapering window (nlsx1)
 %
-%   TAPWIN(L,ls_activity,conf) generates a tapering window for a linear WFS
-%   loudspeaker array with a length of L. The window is created from a squared
-%   Hann window. For circular arrays it is necessary to apply the ls_activity
-%   option.
+%   TAPERING_WINDOW(L,ls_activity,conf) generates a tapering window for a linear
+%   WFS loudspeaker array with a length of L. The window is created from a
+%   squared Hann window. For circular arrays it is necessary to apply the
+%   ls_activity option.
 %
-%   see also: brs_wfs_25d, secondary_source_selection, hann
+%   see also: wave_field_wfs_25d, ir_wfs_25d, secondary_source_selection, hann
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -55,8 +55,6 @@ function win = tapwin(L,ls_activity,conf)
 % TODO: the array length is only used, if ls_activity is not given. Maybe there
 % is a better way to handle this
 
-% FIXME: rename this function to tapering_window
-
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
@@ -74,9 +72,9 @@ if nargin==nargmax-1
 elseif nargin==nargmax-2
     conf = SFS_config;
     if strcmp(conf.array,'circle')
-        error(['%s: For circular arrays tapwin needs the ls_activity. ', ...
+        error(['%s: For circular arrays tapering_window needs the ls_activity. ', ...
             'If you have really all loudspeakers active use ', ...
-            'conf.tapwin=0.'],upper(mfilename));
+            'conf.usetapwin=0.'],upper(mfilename));
     end
     % If no explicit loudspeaker activity is given mark all speakers as active
     ls_activity = ones(1,secondary_source_number(L,conf));

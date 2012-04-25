@@ -11,10 +11,11 @@ function bkoldenburg2mat(irsset,irspath)
 %
 %   BKOLDENBURG2MAT(irsset,irspath) converts the IRs data given by the irsset
 %   and measured with a B&K dummy head in Oldenburg and stored at the given 
-%   irspath in our own mat-file based format. For format details have a look 
-%   at the IR_format.txt file.
+%   irspath in our own mat-file based format. For format details, see:
+%   https://dev.qu.tu-berlin.de/projects/measurements/wiki/IRs_file_format
 %
-%   FIXME: enter url for downloading the IR data set
+%   The Oldenburg HRTF data base can be found here:
+%   http://medi.uni-oldenburg.de/hrir/
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *

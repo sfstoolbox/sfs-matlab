@@ -14,21 +14,40 @@ function k = findcols(A,b)
 %   in the matrix A that are identical to the column vector b.  If no
 %   columns in A are identical to b, an empty vector is returned.
 %
-%   The methods uses a for-loop, but it uses less memory and is in many
-%   cases a lot faster than the vectorized methods
-%
-%      find( all( A == repmat(b, 1, size(A, 2)), 1 ) )
-%      find( all( A == b(:,ones(size(A, 2), 1)), 1 ) )
-%
 %   See also: find, findrows
-%
+
+%*****************************************************************************
+% Copyright (c) 2010-2012 Quality & Usability Lab                            *
+%                         Deutsche Telekom Laboratories, TU Berlin           *
+%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+%                                                                            *
+% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+%                                                                            *
+% The SFS is free software:  you can redistribute it and/or modify it  under *
+% the terms of the  GNU  General  Public  License  as published by the  Free *
+% Software Foundation, either version 3 of the License,  or (at your option) *
+% any later version.                                                         *
+%                                                                            *
+% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
+% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
+% FOR A PARTICULAR PURPOSE.                                                  *
+% See the GNU General Public License for more details.                       *
+%                                                                            *
+% You should  have received a copy  of the GNU General Public License  along *
+% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+%                                                                            *
+% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
+%                                                                            *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
+%*****************************************************************************
 
 % AUTHOR: Peter John Acklam, Hagen Wierstorf
 % $LastChangedDate$
 % $LastChangedRevision$
 % $LastChangedBy$
 
-% FIXME: have a look regarding the license
 
 %% ===== Checking of input parameters ====================================
 nargmin = 2;
@@ -37,10 +56,10 @@ error(nargchk(nargmin,nargmax,nargin));
 
 
 %% ===== Computation =====================================================
-k = find( A(1,:) == b(1) );
-for j = 2:size(A, 1)
-  k = k( A(j,k) == b(j) );
-  if isempty(k)
-     return
-  end
+k = find( A(1,:)==b(1) );
+for jj = 2:size(A,1)
+    k = k( A(jj,k) == b(jj) );
+    if isempty(k)
+        return
+    end
 end

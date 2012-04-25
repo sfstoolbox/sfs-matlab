@@ -49,9 +49,6 @@ function ir = get_ir(irs,phi,delta)
 % $LastChangedRevision$
 % $LastChangedBy$
 
-% FIXME: implement deactivation of interpolation and returning nearest
-% neighbor
-
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 2;

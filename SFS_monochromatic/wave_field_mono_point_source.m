@@ -62,7 +62,6 @@ nargmin = 4;
 nargmax = 5;
 error(nargchk(nargmin,nargmax,nargin));
 isargvector(X,Y);
-isargposition(xs);
 xs = position_vector(xs);
 isargpositivescalar(f);
 if nargin<nargmax
@@ -80,9 +79,7 @@ useplot = conf.useplot;
 
 
 %% ===== Computation ====================================================
-% Setting x- and y-axis
-[X,Y] = setting_xy_ranges(X,Y,conf);
-% Geometry
+% Getting values for x- and y-axis
 x = linspace(X(1),X(2),xysamples);
 y = linspace(Y(1),Y(2),xysamples);
 % Create a x-y-grid to avoid a loop

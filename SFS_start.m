@@ -59,7 +59,7 @@ if exist('addpath')
     addpath(basepath);
     addpath([basepath,'/scripts']);
     addpath([basepath,'/SFS_analysis']);
-    addpath([basepath,'/SFS_binaural_resynthesis']);
+    addpath([basepath,'/SFS_binaural_synthesis']);
     addpath([basepath,'/SFS_general']);
     addpath([basepath,'/SFS_helper']);
     addpath([basepath,'/SFS_ir']);
@@ -73,7 +73,7 @@ else
     path(path,basepath);
     path(path,[basepath,'/scripts']);
     path(path,[basepath,'/SFS_analysis']);
-    path(path,[basepath,'/SFS_binaural_resynthesis']);
+    path(path,[basepath,'/SFS_binaural_synthesis']);
     path(path,[basepath,'/SFS_general']);
     path(path,[basepath,'/SFS_helper']);
     path(path,[basepath,'/SFS_ir']);

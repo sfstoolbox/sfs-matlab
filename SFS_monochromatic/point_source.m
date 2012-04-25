@@ -48,8 +48,6 @@ function S = point_source(x,y,xs,f,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% FIXME: make x,y to X?
-
 % AUTHOR: Hagen Wierstorf
 % $LastChangedDate$
 % $LastChangedRevision$

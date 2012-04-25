@@ -1,4 +1,4 @@
-function brs = extrapolate_farfield_hrtfset(phi,irs,conf)
+function irs_pw = extrapolate_farfield_hrtfset(phi,irs,conf)
 %EXTRAPOLATE_FARFIELD_HRTFSET far-field extrapolation of a given HRTF dataset
 %
 %   Usage: brs = extrapolate_farfield_hrtfset(phi,xs,L,src,irs,[conf])
@@ -10,8 +10,7 @@ function brs = extrapolate_farfield_hrtfset(phi,irs,conf)
 %                 SFS_config for default values)
 %
 %   Output parameters:
-%       brs     - conf.N x 2*nangles matrix containing all brs (2
-%                 channels) for every angles of the BRS set
+%       irs_pw  - IR data set extra polated to conation plane wave IRs
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -40,9 +39,6 @@ function brs = extrapolate_farfield_hrtfset(phi,irs,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-
-% FIXME: return not a BRS but a irs in irs format
-
 % AUTHOR: Sascha Spors
 % $LastChangedDate$
 % $LastChangedRevision$
@@ -55,7 +51,6 @@ nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin));
 isargscalar(phi);
 check_irs(irs);
-
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -64,11 +59,12 @@ end
 
 
 %% ===== Configuration ===================================================
-N = conf.N;                     % Target length of BRIR impulse responses
-angles = rad(conf.brsangles);   % Angles for the BRIRs
 fs = conf.fs;                   % sampling frequency
 
+
 %% ===== Variables ======================================================
+Acorr = -1.7;                     % DAGA 2011 R=0.5m -> pw
+Af = Acorr*sin(irs.apparent_azimuth);
 
 phi = correct_azimuth(phi);
 R = irs.distance;
@@ -78,45 +74,36 @@ lenir = length(irs.left(:,1));
 
 % get virtual loudspeaker positions from HRTF dataset
 conf.array = 'circle';
-conf.dx0=2*pi*R/nls;
+conf.dx0 = 2*pi*R/nls;
 conf.xref = [0 0 0];
-conf.x0=zeros(nls,6);
-conf.x0(:,1:2)=[R*cos(irs.apparent_azimuth) ; R*sin(irs.apparent_azimuth)]';
-conf.x0(:,4:6)=direction_vector(conf.x0(:,1:3),repmat(conf.xref,nls,1));
-
-
-x0 = secondary_source_positions(L,conf);
-
-brs = zeros(N,2*length(angles));
-
-Acorr=-1.7;                     % DAGA 2011 R=0.5m -> pw
-Af=Acorr*sin(angles);
-
-
-% append zeros or truncate IRs to target length
-if(lenir<N)
-    irs.left=cat(1,ir.left,zeros(N-lenir,2));
-    irs.right=cat(1,ir.right,zeros(N-lenir,2));
-else
-    irs.left=irs.left(1:N,:);
-    irs.right=irs.right(1:N,:);
-end
+conf.x0 = zeros(nls,6);
+conf.x0(:,1:2) = [R*cos(irs.apparent_azimuth) ; R*sin(irs.apparent_azimuth)]';
+conf.x0(:,4:6) = direction_vector(conf.x0(:,1:3),repmat(conf.xref,nls,1));
 
 
 %% ===== Computation =====================================================
-% Generate a BRS set for all given angles
-for ii = 1:length(angles)
+% get virtual secondary source positions
+x0 = secondary_source_positions(L,conf);
 
-    % variables
-    brir = zeros(N,2);
-    % FIXME: this works only for plane waves (xs/src is ignored)
-    xs = -[cos(angles(ii)) sin(angles(ii))];
+% Initialize new irs set
+irs_pw = irs;
+irs_pw.description = 'Extrapolated HRTF set containing plane waves';
+irs_pw.left = zeros(size(irs_pw.left));
+irs_pw.right = zeros(size(irs_pw.right));
+irs_pw.distance = 'Inf';
+
+% Generate a irs set for all given angles
+for ii = 1:length(irs.apparent_azimuth)
+
+    % direction of plane wave
+    xs = -[cos(irs.apparent_azimuth(ii)) ...
+        sin(irs.apparent_azimuth(ii))];
 
     % calculate active virtual speakers
     ls_activity = secondary_source_selection(x0,xs,'pw');
 
     % generate tapering window
-    win = tapwin(L,ls_activity,conf);
+    win = tapering_window(L,ls_activity,conf);
 
     % sum up contributions from individual virtual speakers
     aidx=find(ls_activity>0);
@@ -125,21 +112,21 @@ for ii = 1:length(angles)
         [a,delay] = driving_function_imp_wfs_25d(x0(l,:),xs,'pw',conf);
         dt = delay*fs + round(R/conf.c*fs);
         w=a*win(l);
-
+        % truncate IR length
+        irl = fix_ir_length(irs.left(:,l),length(irs.left(:,l)),dt);
+        irr = fix_ir_length(irs.right(:,l),length(irs.right(:,l)),dt);
         % delay and weight HRTFs
-        brir(:,1) = brir(:,1) + delayline(irs.left(:,l)',dt,w,conf)';
-        brir(:,2) = brir(:,2) + delayline(irs.right(:,l)',dt,w,conf)';
+        irs_pw.left(:,ii) = irs_pw.left(:,ii) + delayline(irl',dt,w,conf)';
+        irs_pw.right(:,ii) = irs_pw.right(:,ii) + delayline(irr',dt,w,conf)';
     end
 
-    brir(:,1)=brir(:,1)*10^(Af(ii)/20);
-    brir(:,2)=brir(:,2)*10^(-Af(ii)/20);
+    irs_pw.left(:,ii) = irs_pw.left(:,ii)*10^(Af(ii)/20);
+    irs_pw.right(:,ii) = irs_pw.right(:,ii)*10^(-Af(ii)/20);
 
     % store result to output variable
-    brs(:,(ii-1)*2+1:ii*2) = brir;
+    %brs(:,(ii-1)*2+1:ii*2) = brir;
 end
 
 %% ===== Pre-equalization ===============================================
-brs = wfs_preequalization(brs,conf);
-
-%% ===== Headphone compensation =========================================
-brs = compensate_headphone(brs,conf);
+irs_pw.left = wfs_preequalization(irs_pw.left,conf);
+irs_pw.right = wfs_preequalization(irs_pw.right,conf);

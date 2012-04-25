@@ -9,7 +9,7 @@ function conf = SFS_config()
 %   SFS_CONFIG() creates the struct conf containing the default
 %   configuration values. If you want to create other entries, please set
 %   them in your script (e.g. conf.fs = 48000) and pass the conf struct to
-%   the desired function as last input (e.g. tapwin(L,conf)).
+%   the desired function as last input (e.g. tapering_window(L,conf)).
 %
 %   So edit this function only, if the default values have changed!
 %
@@ -140,20 +140,19 @@ conf.N = 2^15; % samples
 % (SSR) and a headtracker, brs sets can be created. If these sets should be
 % used in BRS mode of the SSR, the angles have to be:
 % conf.brsangles = 0:1:359;
-% If the brs set should be used as HRIRs for the SSR, the angles have to be:
+% If the brs set should be used as IRs for the SSR, the angles have to be:
 % conf.brsangles = 360:-1:1;
 conf.brsangles = 0:1:359; % degree
 %
 % === Auralisation ===
-% FIXME: what files can we provide for free. Or should I remove this completly
-% from the open source release?
 % These files are used for the auralization of impulse responses by the
 % auralize_ir() function.
-conf.speechfile = '~/data/signals/goesa_sentence.wav';
-conf.cellofile = '~/data/signals/cello.wav';
-conf.castanetsfile = '~/data/signals/castanets.wav';
-conf.noisefile = '~/data/signals/noise.wav';
-conf.pinknoisefile = '~/data/signals/pinknoise.wav';
+% NOTE: you have to provide them by yourself!
+conf.speechfile = '';
+conf.cellofile = '';
+conf.castanetsfile = '';
+conf.noisefile = '';
+conf.pinknoisefile = '';
 
 
 % ===== WFS =====================================
@@ -226,7 +225,6 @@ conf.plot.loudspeakers = true; % boolean
 % Use real loudspeakers symbols (otherwise crosses are used)
 conf.plot.realloudspeakers = true; % boolean
 % Size of the loudspeaker
-% FIXME: Gnuplot ignores the loudspeaker size at the moment
 conf.plot.lssize = conf.dx0; % m
 % Size of the plot
 conf.plot.size = [16,11.55]; % cm

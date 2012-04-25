@@ -32,7 +32,7 @@ function x0 = secondary_source_positions(L,conf)
 %                                   |
 %       --------------------------------------------------------> x-axis
 %
-% see also: secondary_source_selection, secondary_source_number, tapwin
+% see also: secondary_source_selection, secondary_source_number, tapering_window
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *

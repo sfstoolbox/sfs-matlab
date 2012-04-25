@@ -186,8 +186,8 @@ for n=1:nls
     ir = fix_ir_length(ir,N,dt);
 
     % Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay
-    ir_wfs(:,1) = brir(:,1) + delayline(ir(:,1)',dt(n),a(n)*win(n)*g,conf)';
-    ir_wfs(:,2) = brir(:,2) + delayline(ir(:,2)',dt(n),a(n)*win(n)*g,conf)';
+    ir_wfs(:,1) = ir_wfs(:,1) + delayline(ir(:,1)',dt(n),a(n)*win(n)*g,conf)';
+    ir_wfs(:,2) = ir_wfs(:,2) + delayline(ir(:,2)',dt(n),a(n)*win(n)*g,conf)';
 
 end
 warning('on','SFS:irs_intpol');

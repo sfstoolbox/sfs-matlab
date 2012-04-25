@@ -55,7 +55,7 @@ function ir = compensate_headphone(ir,conf)
 nargmin = 1;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-isargmatrix(brir);
+isargmatrix(ir);
 if nargin<nargmax
     conf = SFS_config;
 else

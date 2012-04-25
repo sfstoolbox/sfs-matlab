@@ -1,5 +1,5 @@
-function brir = brs_point_source(X,phi,xs,irs,conf)
-%BRS_POINT_SOURCE Generate a BRIR for a point source
+function brs = brs_point_source(X,phi,xs,irs,conf)
+%BRS_POINT_SOURCE generates a BRS set for use with the SoundScapeRenderer
 %
 %   Usage: brs = brs_point_source(X,phi,xs,irs,[conf])
 %
@@ -12,13 +12,14 @@ function brir = brs_point_source(X,phi,xs,irs,conf)
 %                 SFS_config for default values)
 %
 %   Output parameters:
-%       brir    - Binaural room impulse response (nx2 matrix)
+%       brs     - conf.N x 2*nangles matrix containing all brs (2
+%                 channels) for every angles of the BRS set
 %
-%   BRS_POINT_SOURCE(X,phi,xs,irs,conf) calculates a binaural room impulse
-%   response for a reference source (single loudspeaker) at position
-%   xs and a listener located at X and looking into direction phi.
-%   Whereby at phi = 0 the listener is looking in the direction of the x-axis,
-%   like the angle is normally defined in Mathematics.
+%   BRS_POINT_SOURCE(X,phi,xs,irs,conf) prepares a BRS set for
+%   a reference source (single point source) for the given listener
+%   position.
+%   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
+%   http://www.tu-berlin.de/?id=ssr
 %
 %   Geometry:
 %
@@ -36,8 +37,7 @@ function brir = brs_point_source(X,phi,xs,irs,conf)
 %                                   |
 %       ----------------------------|---------------------------> x-axis
 %
-%
-% see also: SFS_config, brs_wfs_25d, auralize_ir, brsset_point_source
+%   see also: SFS_config, ir_point_source, brs_wfs_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -72,7 +72,7 @@ function brir = brs_point_source(X,phi,xs,irs,conf)
 % $LastChangedBy$
 
 
-%% ===== Checking of input parameters ====================================
+%% ===== Checking of input  parameters ==================================
 nargmin = 4;
 nargmax = 5;
 error(nargchk(nargmin,nargmax,nargin));
@@ -87,68 +87,18 @@ end
 
 
 %% ===== Configuration ===================================================
-fs = conf.fs;                  % sampling frequency
-c = conf.c;                    % speed of sound
-N = conf.N;                    % target length of BRS impulse responses
+N = conf.N;                     % Target length of BRIR impulse responses
+angles = rad(conf.brsangles);   % Angles for the BRIRs
 
 
-%% ===== Variables =======================================================
-phi = correct_azimuth(phi);
-
-
-%% ===== BRIR ============================================================
+%% ===== Computation =====================================================
 % Initial values
-brir = zeros(N,2);
+brs = zeros(N,2*length(angles));
 
-% === Secondary source angle ===
-% Calculate the angle between the given loudspeaker and the listener.
-% This is needed for the HRIR dataset.
-%
-%                                 y-axis
-%                                    ^
-%                                    |
-%                X, phi = 0          |
-%                 O--------          |
-%                  \ a |             |
-%                   \ /              |  a = alpha
-%                    \               |
-%                     o              |
-%                     xs             |
-%        ----------------------------|--------------------------> x-axis
-%
-% Angle between listener and source (-pi < alpha <= pi)
-% NOTE: phi is the orientation of the listener (see first graph)
-alpha = cart2sph(xs(1)-X(1),xs(2)-X(2),0) - phi;
-% Ensure -pi <= alpha < pi
-alpha = correct_azimuth(alpha);
-
-% === IR interpolation ===
-ir = get_ir(irs,alpha);
-ir_distance = get_ir_distance(irs,alpha);
-
-% === Relative distances and time delay ===
-% Time delay of the single source (at the listener position)
-% Define an offset to ensure norm(X-xs)-irs.distance+offset > 0
-offset = 3; % in m
-tau = (norm(X-xs)-ir_distance+offset)/c;
-% Time delay in samples
-delay = ceil( tau*fs );
-
-% === Amplitude factor ===
-% The 1/norm(X-xs) term is for the decreasing of the sound on its way from
-% the loudspeaker (xs) to the listener (X). It accounts for the distance that is
-% already present in the IR dataset.
-amplitude = (1/norm(X-xs)) / (1/ir_distance);
-
-% === Trim IR ===
-% make sure the IR has the right length
-ir = fix_ir_length(ir,N,delay);
-
-% === Calculate BRIR ===
-% Add the point source with the corresponding time delay and amplitude
-brir(:,1) = delayline(ir(:,1)',delay,amplitude,conf)';
-brir(:,2) = delayline(ir(:,2)',delay,amplitude,conf)';
-
-
-%% ===== Headphone compensation ==========================================
-brir = compensate_headphone(brir,conf);
+% Generate a BRS set for all given angles
+warning('off','SFS:irs_intpol');
+for ii=1:length(angles)
+    % Compute IR for a reference (single loudspeaker at xs)
+    brs(:,(ii-1)*2+1:ii*2) = ir_point_source(X,angles(ii)+phi,xs,irs,conf);
+end
+warning('on','SFS:irs_intpol');

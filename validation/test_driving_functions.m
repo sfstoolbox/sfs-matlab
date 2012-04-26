@@ -1,6 +1,5 @@
 function boolean = test_driving_functions(modus)
 %TEST_DRIVING_FUNCTIONS tests the correctness of the driving functions
-%functions
 %
 %   Usage: boolean = test_driving_functions(modus)
 %
@@ -14,9 +13,6 @@ function boolean = test_driving_functions(modus)
 %   TEST_DRIVING_FUNCTIONS(MODUS) checks if the functions, that calculates
 %   the driving functions working correctly. Therefore different wave
 %   fields are simulated.
-%   For full help see: help test_all
-%
-%   see also: test_all
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *

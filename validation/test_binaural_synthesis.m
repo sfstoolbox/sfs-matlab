@@ -1,11 +1,11 @@
-function test_delayline()
-%TEST_DELAYLINE evaluates the delayline implementation
+function test_binaural_synthesis()
+%TEST_BINAURAL_SYNTHESIS tests the correctness of the binaural synthesis
+%functions
 %
-%   Usage: test_delayline()
+%   Usage: test_binaural_synthesis()
 %
-%   TEST_DELAYLINE() tests the implementation of the delayline. For different
-%   types (conf.usefracdelay) you have to manual edit the code below at the
-%   moment.
+%   TEST_BINAURAL_SYNTHESIS() tests the ir_wfs_25d function for different
+%   loudspeaker arrays and source models.
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -34,79 +34,77 @@ function test_delayline()
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Sascha Spors
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
+% AUTHOR: Hagen Wierstorf
+% $LastChangedDate: $
+% $LastChangedRevision: $
+% $LastChangedBy: $
 
 
-%% ===== Configuration ==================================================
-
-% delays to evaluate
-%dt=[-1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
-%dt=[0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
-dt=[-5 -2.5 0 2.5 5];
-%dt=1*[0 0.01 0.02 0.03 0.04 0.05 0.06 0.07 0.08 0.09 0.1];
-%dt=linspace(0,2,200);
-
-% parameters for delayline
-conf.usefracdelay = 1;
-%conf.fracdelay_method = 'least_squares';
-%conf.fracdelay_method = 'resample';
-conf.fracdelay_method = 'interp1';
-
-% length of input signal
-L=256;
-
-% create frequency axis
-w = (0:1:(L-1))/L; 
-wpi = w*pi;
-wpi2=wpi(2:L);
-
-% set up input signal
-insig = zeros(1,L);
-insig(L/2) = 1;
+%% ===== Checking of input  parameters ===================================
+nargmin = 0;
+nargmax = 0;
+error(nargchk(nargmin,nargmax,nargin));
 
 
-%% ===== Computation =====================================================
-for n=1:length(dt)
-    outsig(:,n) = delayline(insig,dt(n),1,conf);
-
-    H(:,n) = freqz(outsig(:,n),1,wpi);
-    magresp(:,n) = abs(H(:,n));
-    uwphase(:,n)=-unwrap(angle(H(:,n)));
-    
-    phasdel(:,n) = uwphase(2:L,n)./wpi2';
-end
+%% ===== Main ============================================================
+conf = SFS_config;
+L = 3;
+irs = read_irs('QU_KEMAR_anechoic_3m.mat');
+conf.usehcomp = false;
 
 
+%% ===== WFS 2.5D ========================================================
+% === Linear array ===
+conf.array = 'linear';
+conf.dx0 = 0.15;
+X = [0,2];
+phi = pi/2;
+conf.xref = [0 2];
+% Plane wave
+src = 'pw';
+xs = [0.5,1];
+ir_wfs_25d(X,phi,xs,L,src,irs,conf);
+% Point source
+src = 'ps';
+xs = [0,-1];
+ir_wfs_25d(X,phi,xs,L,src,irs,conf);
+% Focused source
+src = 'fs';
+xs = [0,1];
+ir_wfs_25d(X,phi,xs,L,src,irs,conf);
 
-%% ===== Plotting =====================================================
-% setup legend and axis
-t=1:L;
-t=t-L/2;
+% === Circular array ===
+conf.array = 'circle';
+conf.dx0 = 0.15;
+X = [0,0];
+conf.xref = [0,0];
+% Plane wave
+src = 'pw';
+xs = [0.5,1];
+ir_wfs_25d(X,phi,xs,L,src,irs,conf);
+% Point source
+src = 'ps';
+xs = [0.5,2];
+ir_wfs_25d(X,phi,xs,L,src,irs,conf);
+% Focused source
+src = 'fs';
+xs = [0.5,0.5];
+ir_wfs_25d(X,phi,xs,L,src,irs,conf);
 
-% phase delay
-figure;
-plot(wpi2/pi,phasdel-(L/2)+1);
-ylabel('phase delay');
-xlabel('normalized frequency');
-grid on;
-
-% magnitude response
-figure;
-plot(wpi/pi,magresp);
-ylabel('magnitude');
-xlabel('normalized frequency');
-grid on;
-
-% impluse response
-figure;
-%plot(t(L/2-10:L/2+10),outsig(L/2-10:L/2+10,:));
-imagesc(dt,t(L/2-50:L/2+50),db(outsig(L/2-50:L/2+50,:)));
-caxis([-100 10]);
-ylabel('samples');
-xlabel('delay');
-turn_imagesc;
-colorbar;
-grid on;
+% === Box shaped array ===
+conf.array = 'box';
+conf.dx0 = 0.15;
+X = [0,0];
+conf.xref = [0,0];
+% Plane wave
+src = 'pw';
+xs = [0.5,1];
+ir_wfs_25d(X,phi,xs,L,src,irs,conf);
+% Point source
+src = 'ps';
+xs = [0.5,2];
+ir_wfs_25d(X,phi,xs,L,src,irs,conf);
+% Focused source
+src = 'fs';
+xs = [0.5,0.5];
+ir_wfs_25d(X,phi,xs,L,src,irs,conf);

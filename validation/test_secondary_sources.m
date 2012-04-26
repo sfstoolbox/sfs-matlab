@@ -13,9 +13,6 @@ function boolean = test_secondary_sources(modus)
 %
 %   TEST_SECONDARY_SOURCES(modus) checks if the functions, that calculates
 %   the secondary source positions and directions are working correctly.
-%   For full help see: help test_all
-%
-%   see also: test_all
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *

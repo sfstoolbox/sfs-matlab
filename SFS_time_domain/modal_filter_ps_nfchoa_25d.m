@@ -101,6 +101,11 @@ for n=1:size(sos,1)
 end
 
 
-% realize FOS/SOS as DF-II structure
-hd = dfilt.df2sos(sos); 
-hd.ScaleValues(end)=1/(2*pi*R);
+if isoctave
+    error(['%s: the HOA implementation depends on dfilt at the moment, ', ...
+        'which is not available under Octave'],upper(mfilename));
+else
+    % realize FOS/SOS as DF-II structure
+    hd = dfilt.df2sos(sos); 
+    hd.ScaleValues(end)=1/(2*pi*R);
+end

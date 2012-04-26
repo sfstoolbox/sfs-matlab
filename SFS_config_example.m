@@ -92,7 +92,7 @@ conf.fs = 44100; % Hz
 conf.c = 343; % m/s
 % use fractional delays for delay lines
 conf.usefracdelay = 0;
-conf.fracdelay_method = 'least_squares';
+conf.fracdelay_method = 'resample';
 
 
 % ===== Simulations =============================

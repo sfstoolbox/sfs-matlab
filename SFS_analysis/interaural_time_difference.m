@@ -29,9 +29,6 @@ function [itd,idxleft,idxright] = interaural_time_difference(insigleft,insigrigh
 %   the first non-zero entry in both IRs and then calculating the time difference.
 %
 %   References:
-%   Gaik W (1993). Combined evaluation of interaural time and intensity
-%       differences: psychoacoustic results and computer modeling.
-%       J Acoust Soc Am, 94(1), 98-110.
 %   Sandvad J, Hammershøi D (1994). Binaural Auralization. Comparison of
 %       FIR and IIR Filter Representation of HIRs.
 %       96th AES Conv.
@@ -72,8 +69,6 @@ function [itd,idxleft,idxright] = interaural_time_difference(insigleft,insigrigh
 % $LastChangedDate$
 % $LastChangedRevision$
 % $LastChangedBy$
-
-% FIXME: clean up and test this function
 
 
 %% ===== Checking of input parameters ===================================

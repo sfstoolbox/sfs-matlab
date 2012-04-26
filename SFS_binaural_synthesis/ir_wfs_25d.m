@@ -181,11 +181,9 @@ for n=1:nls
     end
 
     % === Trim IR ===
-    % FIXME: check if this is still working, because in the old version the IR
-    % was always fixed to a length with dt=0.
     ir = fix_ir_length(ir,N,dt);
 
-    % Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay
+    % === Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay ===
     ir_wfs(:,1) = ir_wfs(:,1) + delayline(ir(:,1)',dt(n),a(n)*win(n)*g,conf)';
     ir_wfs(:,2) = ir_wfs(:,2) + delayline(ir(:,2)',dt(n),a(n)*win(n)*g,conf)';
 

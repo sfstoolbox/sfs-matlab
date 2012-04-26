@@ -84,10 +84,8 @@ end
 
 
 %% ===== Configuration ==================================================
-
 % xy resolution
 xysamples = conf.xysamples;
-
 % Plotting result
 useplot = conf.useplot;
 

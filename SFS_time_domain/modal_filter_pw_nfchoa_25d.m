@@ -40,7 +40,7 @@ function [hd] = modal_filter_pw_nfchoa_25d(R,order,fs)
 % field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
 % ambisonics.                                                                * 
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Sascha Spors
@@ -83,7 +83,11 @@ for n=1:size(sos,1)
     end
 end
 
-
-% realize FOS/SOS as DF-II structure
-hd = dfilt.df2sos(sos); 
-hd.ScaleValues(end)=2*(-1)^order;
+if isoctave
+    error(['%s: the HOA implementation depends on dfilt at the moment, ', ...
+        'which is not available under Octave'],upper(mfilename));
+else
+    % realize FOS/SOS as DF-II structure
+    hd = dfilt.df2sos(sos); 
+    hd.ScaleValues(end)=2*(-1)^order;
+end

@@ -43,7 +43,6 @@ conf.useplot = modus;
 % === Linear array ===
 conf.array = 'linear';
 conf.dx0 = 0.15;
-conf.useplot = 1;
 X = [-2,2];
 Y = [-0.15,3];
 conf.xref = [0 2];
@@ -78,7 +77,6 @@ title('WFS 2D linear array, focused source, mono-frequent');
 % === Circular array ===
 conf.array = 'circle';
 conf.dx0 = 0.15;
-conf.useplot = 1;
 X = [-2,2];
 Y = [-2,2];
 conf.xref = [0,0];
@@ -113,7 +111,6 @@ title('WFS 2D circular array, focused source, mono-frequent');
 % === Box shaped array ===
 conf.array = 'box';
 conf.dx0 = 0.15;
-conf.useplot = 1;
 X = [-2,2];
 Y = [-2,2];
 conf.xref = [0,0];
@@ -150,7 +147,6 @@ title('WFS 2D box shaped array, focused source, mono-frequent');
 % === Linear array ===
 conf.array = 'linear';
 conf.dx0 = 0.15;
-conf.useplot = 1;
 X = [-2,2];
 Y = [-0.15,3];
 conf.xref = [0 2];
@@ -186,7 +182,6 @@ title('WFS 2.5D linear array, focused source [0,1], impulse response');
 % === Circular array ===
 conf.array = 'circle';
 conf.dx0 = 0.15;
-conf.useplot = 1;
 X = [-2,2];
 Y = [-2,2];
 conf.xref = [0,0];
@@ -221,7 +216,6 @@ title('WFS 2.5D circular array, focused source [0.5,0.5], impulse response');
 % === Box shaped array ===
 conf.array = 'box';
 conf.dx0 = 0.15;
-conf.useplot = 1;
 X = [-2,2];
 Y = [-2,2];
 conf.xref = [0,0];
@@ -258,7 +252,6 @@ title('WFS 2.5D box shaped array, focused source [0.5,0.5], impulse response');
 % === Circular array ===
 conf.array = 'circle';
 conf.dx0 = 0.15;
-conf.useplot = 1;
 X = [-2,2];
 Y = [-2,2];
 conf.xref = [0,0];

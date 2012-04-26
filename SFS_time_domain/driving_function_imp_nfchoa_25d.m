@@ -19,7 +19,7 @@ function [d] = driving_function_imp_nfchoa_25d(x0,xs,src,conf)
 %   driving function of 2.5D NFC-HOA for the given source type and position,
 %    and loudspeaker positions.
 %
-%   see also:
+%   see also: modal_filter_ps_nfchoa_25d, modal_filter_pw_nfchoa_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -97,7 +97,7 @@ if strcmp('pw',src)
         df=modal_filter_pw_nfchoa_25d(R,n-1,fs);
         dm(n,:) = df.filter([zeros(1,N0) 1 zeros(1,N-1-N0)]);
     end
-    
+
 elseif strcmp('ps',src)
     % === Point source ===
     for n=1:order+1

@@ -10,9 +10,6 @@ function sig = db(sig)
 %
 %   DB(sig) converts the given signal to dB by applaying 20*log10.
 %
-%   FIXME: check if the result is the same as the db function implemented
-%   in Matlab!
-%
 %   see also: rms
 
 %*****************************************************************************

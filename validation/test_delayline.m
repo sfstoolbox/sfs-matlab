@@ -1,20 +1,5 @@
-function [hd] = modal_filter_pw_nfchoa_25d(R,order,fs)
-%MODAL_FILTER_PW_NFCHOA_25D calculates the modal filter for NFC-HOA 2.5D
-%
-%   Usage: [hd] = modal_filter_pw_nfchoa_25d(R,order,fs)
-%
-%   Input parameters:
-%       R       - radius of secondary source distribution (m)
-%       order   - order of filter
-%       fs      - sampling frequency
-%
-%   Output parameters:
-%       hd  - modal filter object
-%
-%   MODAL_FILTER_PW_NFCHOA_25D(R,order,fs) returns the modal filter
-%   object for 2.5D NFC-HOA synthesis of a plane wave.
-%
-%   see also: modal_filter_ps_nfchoa_25d
+function test_delayline()
+%TEST_DELAYLINE evaluates the delayline implementation
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -49,45 +34,73 @@ function [hd] = modal_filter_pw_nfchoa_25d(R,order,fs)
 % $LastChangedBy$
 
 
-c=343;
+%% ===== Configuration ==================================================
 
-% compute normalized roots/zeros of spherical Hankel function
-B=zeros(1,order+2);
-A=B;
+% delays to evaluate
+%dt=[-1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
+%dt=[0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
+dt=[-5 -2.5 0 2.5 5];
+%dt=1*[0 0.01 0.02 0.03 0.04 0.05 0.06 0.07 0.08 0.09 0.1];
+%dt=linspace(0,2,200);
 
-for n=0:order
-        B(n+1) = factorial(2*order-n)/(factorial(order-n)*factorial(n)*2^(order-n));
+% parameters for delayline
+conf.usefracdelay = 1;
+%conf.fracdelay_method = 'least_squares';
+%conf.fracdelay_method = 'resample';
+conf.fracdelay_method = 'interp1';
+
+% length of input signal
+L=256;
+
+% create frequency axis
+w = (0:1:(L-1))/L; 
+wpi = w*pi;
+wpi2=wpi(2:L);
+
+% set up input signal
+insig = zeros(1,L);
+insig(L/2) = 1;
+
+
+%% ===== Computation =====================================================
+for n=1:length(dt)
+    outsig(:,n) = delayline(insig,dt(n),1,conf);
+
+    H(:,n) = freqz(outsig(:,n),1,wpi);
+    magresp(:,n) = abs(H(:,n));
+    uwphase(:,n)=-unwrap(angle(H(:,n)));
+    
+    phasdel(:,n) = uwphase(2:L,n)./wpi2';
 end
-B=B(end:-1:1);
-%A(2) = (-1)^order;
-A(2) = 1;
-
-% find zeros/roots
-z=roots(B);
-p=roots(A);
 
 
-% compute SOS coefficients of modal driving function
-[sos,g] = zp2sos(p,z*c/R,2,'down', 'none');
 
-% transform coefficients
-for n=1:size(sos,1)
-    %[bz,az] = impinvar(sos(n,1:3),sos(n,4:6),fs);
-    [bz,az] = bilinear(sos(n,1:3),sos(n,4:6),fs);
-    if(length(bz)==2)
-        sos(n,2:3)=bz;
-        sos(n,5:6)=az;
-    else
-        sos(n,1:3)=bz;
-        sos(n,4:6)=az;
-    end
-end
+%% ===== Plotting =====================================================
+% setup legend and axis
+t=1:L;
+t=t-L/2;
 
-if isoctave
-    error(['%s: the HOA implementation depends on dfilt at the moment, ', ...
-        'which is not available under Octave'],upper(mfilename));
-else
-    % realize FOS/SOS as DF-II structure
-    hd = dfilt.df2sos(sos);
-    hd.ScaleValues(end)=2*(-1)^order;
-end
+% phase delay
+figure;
+plot(wpi2/pi,phasdel-(L/2)+1);
+ylabel('phase delay');
+xlabel('normalized frequency');
+grid on;
+
+% magnitude response
+figure;
+plot(wpi/pi,magresp);
+ylabel('magnitude');
+xlabel('normalized frequency');
+grid on;
+
+% impluse response
+figure;
+%plot(t(L/2-10:L/2+10),outsig(L/2-10:L/2+10,:));
+imagesc(dt,t(L/2-50:L/2+50),db(outsig(L/2-50:L/2+50,:)));
+caxis([-100 10]);
+ylabel('samples');
+xlabel('delay');
+turn_imagesc;
+colorbar;
+grid on;

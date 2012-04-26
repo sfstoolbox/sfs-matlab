@@ -10,7 +10,7 @@ function bkoldenburg2mat(irsset,irspath)
 %       irspath - path to the directory containing the IR data
 %
 %   BKOLDENBURG2MAT(irsset,irspath) converts the IRs data given by the irsset
-%   and measured with a B&K dummy head in Oldenburg and stored at the given 
+%   and measured with a B&K dummy head in Oldenburg and stored at the given
 %   irspath in our own mat-file based format. For format details, see:
 %   https://dev.qu.tu-berlin.de/projects/measurements/wiki/IRs_file_format
 %
@@ -38,10 +38,10 @@ function bkoldenburg2mat(irsset,irspath)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf

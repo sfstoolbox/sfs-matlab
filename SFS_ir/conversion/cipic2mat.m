@@ -1,20 +1,32 @@
 function cipic2mat(irsset,irspath)
-%CIPIC2MAT converts IRs data given from the CIPIS measurements  to our mat-file based format
+%CIPIC2MAT converts IRs data given from the CIPIS measurements to our mat-file
+%based format
 %
 %   Usage: cipic2mat(irsset,irspath);
 %
 %   Input options:
-%       irsset  - IR sets measured from CIPIS . Currently the following are available:
-%                   'large_pinna_frontal'          - HRIR from KEMAR with large ears, only from the front (spacing of 2.8125°)
-%                   'small_pinna_frontal'          - HRIR from KEMAR with small ears, only from the front (spacing of 2.8125°)
-%                   'large_pinna_final'            - HRIR from KEMAR with large ears (spacing of 5°)
-%                   'small_pinna_final'            - HRIR from KEMAR with small ears (spacing of 5°)
-%					'subject_xxx'				   - for example subject_003 , here real persons were taken, also elevation-data available
-%					'subject_021'				   - KEMAR with large pinnae, also elevation-data available
-%					'subject_165' 				   - KEMAR with small pinnae, also elevation-data available								
-%
-%                 NOTE: you still have to give the matching path to the CIPIC-data
-%       irspath - path to the directory containing the CIPIC-data (like: './CIPIC')
+%       irsset  - IR sets measured from CIPIS.
+%                 Currently the following are available:
+%                   'large_pinna_frontal'  - HRIR from KEMAR with large ears,
+%                                            only from the front (spacing of
+%                                            2.8125°)
+%                   'small_pinna_frontal'  - HRIR from KEMAR with small ears,
+%                                            only from the front (spacing of
+%                                            2.8125°)
+%                   'large_pinna_final'    - HRIR from KEMAR with large ears
+%                                            (spacing of 5°)
+%                   'small_pinna_final'    - HRIR from KEMAR with small ears
+%                                            (spacing of 5°)
+%                   'subject_xxx'          - for example subject_003 , here
+%                                            real persons were taken, also
+%                                            elevation-data available
+%                   'subject_021'          - KEMAR with large pinnae, also
+%                                            elevation-data available
+%                   'subject_165'          - KEMAR with small pinnae, also
+%                                            elevation-data available
+%                 NOTE: you still have to give the matching path to the
+%                 CIPIC-data
+%       irspath - path to the directory containing the CIPIC-data
 %
 %   CIPIC2MAT(irsset,irspath) converts the IRs data given by the irsset
 %   and stored at the given irspath in our own mat-file based format. See:
@@ -44,10 +56,10 @@ function cipic2mat(irsset,irspath)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Lars-Erik Riechert
@@ -103,9 +115,9 @@ elseif strcmp(irsset,'small_pinna_final')
     irs.description = 'CIPIC measurement with KEMAR,spacing of 5°';
     irs.ears = 'small';
 elseif strncmp(irsset,'subject',7)
-	irs.head = sprintf('%s for more details see anthro.mat',irsset);
-	irs.ears = sprintf('%s for more details see anthro.mat',irsset);
-	irs.description = ...
+    irs.head = sprintf('%s for more details see anthro.mat',irsset);
+    irs.ears = sprintf('%s for more details see anthro.mat',irsset);
+    irs.description = ...
         ['CIPIC; azimuth resolution: 5° (-45° to +45°) and +- 55° 65° 80° '];
 
 end
@@ -113,9 +125,9 @@ end
 
 
 if strcmp(irsset,'large_pinna_frontal') | strcmp(irsset,'small_pinna_frontal')
-	irfile = sprintf('%s/special_kemar_hrir/kemar_frontal/%s.mat',irspath,irsset);
-	load(irfile);
-	for ii = 1:99
+    irfile = sprintf('%s/special_kemar_hrir/kemar_frontal/%s.mat',irspath,irsset);
+    load(irfile);
+    for ii = 1:99
         theta = 0;                      % elevation
         phi = rad(135-(ii-1)*2.8125);   % azimuth
         r = 1;                          % radius
@@ -131,9 +143,9 @@ if strcmp(irsset,'large_pinna_frontal') | strcmp(irsset,'small_pinna_frontal')
         irs.right(:,ii) = right(:,ii);
     end
 elseif strcmp(irsset,'large_pinna_final') | strcmp(irsset,'small_pinna_final')
-	irfile = sprintf('%s/special_kemar_hrir/kemar_horizontal/%s.mat',irspath,irsset);
-	load(irfile);
-	for ii = 1:72
+    irfile = sprintf('%s/special_kemar_hrir/kemar_horizontal/%s.mat',irspath,irsset);
+    load(irfile);
+    for ii = 1:72
         theta = 0;                  % elevation
         phi = rad(180-(ii-1)*5);    % azimuth
         r = 1;                      % radius
@@ -148,38 +160,38 @@ elseif strcmp(irsset,'large_pinna_final') | strcmp(irsset,'small_pinna_final')
         irs.left(:,ii) = left(:,ii);
         irs.right(:,ii) = right(:,ii);
     end
-	
+
 elseif strncmp(irsset,'subject',7)
-	irfile = sprintf('%s/standard_hrir_database/%s/hrir_final.mat',irspath,irsset);
-	load(irfile);
-	azimuths = [-80 -65 -55 -45:5:45 55 65 80];
-	elevations = -45:5.625:235;
-	
-	ii=1;
-	for a = 1:25
-		for e = 1:50
-			theta = rad(elevations(e));         % elevation
-			phi = rad(azimuths(a));    			% azimuth
-			r = 1;                      		% radius
+    irfile = sprintf('%s/standard_hrir_database/%s/hrir_final.mat',irspath,irsset);
+    load(irfile);
+    azimuths = [-80 -65 -55 -45:5:45 55 65 80];
+    elevations = -45:5.625:235;
 
-	
-			if theta > pi/2						% behind should be defined by the azimuth instead of elevation
-				theta = pi - theta;
-				phi = pi-phi;
-			end
-			
-			irs.distance(ii) = r;
-			[x y z] = sph2cart(phi,theta,r);
+    ii=1;
+    for a = 1:25
+        for e = 1:50
+            theta = rad(elevations(e));         % elevation
+            phi = rad(azimuths(a));             % azimuth
+            r = 1;                              % radius
 
-			irs.source_position(:,ii) = [x y z]';
-			irs.apparent_azimuth(ii) = correct_azimuth(-phi);
-			irs.apparent_elevation(ii) = round(theta*100000)/100000;
-		
-			irs.left(:,ii) = hrir_l(a,e,:);
-			irs.right(:,ii) = hrir_r(a,e,:);
-			ii = ii+1;
-		end
-	end
+
+            if theta > pi/2                     % behind should be defined by the azimuth instead of elevation
+                theta = pi - theta;
+                phi = pi-phi;
+            end
+
+            irs.distance(ii) = r;
+            [x y z] = sph2cart(phi,theta,r);
+
+            irs.source_position(:,ii) = [x y z]';
+            irs.apparent_azimuth(ii) = correct_azimuth(-phi);
+            irs.apparent_elevation(ii) = round(theta*100000)/100000;
+
+            irs.left(:,ii) = hrir_l(a,e,:);
+            irs.right(:,ii) = hrir_r(a,e,:);
+            ii = ii+1;
+        end
+    end
 end
 
 

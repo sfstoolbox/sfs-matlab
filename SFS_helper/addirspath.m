@@ -4,11 +4,11 @@ function addirspath(varargin)
 %   Usage: addirspath(varargin)
 %
 %   Input parameters:
-%       varargin - path or pathe containing irs data sets. 
+%       varargin - path or pathe containing irs data sets.
 %                  Default: '~/svn/ir_databases' and '~/svn/measurements'
 %
 %   ADDIRSPATH(varargin) adds the given directorysand its subdirectories to
-%   the path. If no directory is given, '~/svn/ir_databases' and 
+%   the path. If no directory is given, '~/svn/ir_databases' and
 %   '~/svn/measurements' are added.
 
 %*****************************************************************************
@@ -32,10 +32,10 @@ function addirspath(varargin)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf

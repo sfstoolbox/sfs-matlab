@@ -38,10 +38,10 @@ function [hd] = HOA25D_modal_filter_ps(R,r_ps,order,fs)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Sascha Spors
@@ -64,22 +64,22 @@ A(1) = 1;
 
 % find zeros/roots
 z=roots(B);
-    
+
 
 % compute SOS coefficients of modal driving function
 if(1)
-    [sos,g] = zp2sos(z*c/r_ps,z*c/R,1,'up', 'none'); 
+    [sos,g] = zp2sos(z*c/r_ps,z*c/R,1,'up', 'none');
 else
     p=roots(A);
     [sos0,g] = zp2sos(z,p,1,'down', 'none');
-    
+
     for n=1:size(sos0,1)
         sos(n,1) = sos0(n,1);
         sos(n,4) = sos0(n,1);
-        
+
         sos(n,2) = c/r_ps*sos0(n,2);
         sos(n,3) = (c/r_ps)^2*sos0(n,3);
-        
+
         sos(n,5) = c/R*sos0(n,2);
         sos(n,6) = (c/R)^2*sos0(n,3);
     end
@@ -90,7 +90,7 @@ for n=1:size(sos,1)
     %[bz,az] = impinvar(sos(n,1:3),sos(n,4:6),fs);
     [bz,az] = bilinear(sos(n,1:3),sos(n,4:6),fs,1000);
     %[bz,az] = ciim_sos(sos(n,1:3),sos(n,4:6),fs);
-    
+
     if(length(bz)==2)
         sos(n,2:3)=bz;
         sos(n,5:6)=az;
@@ -106,6 +106,6 @@ if isoctave
         'which is not available under Octave'],upper(mfilename));
 else
     % realize FOS/SOS as DF-II structure
-    hd = dfilt.df2sos(sos); 
+    hd = dfilt.df2sos(sos);
     hd.ScaleValues(end)=1/(2*pi*R);
 end

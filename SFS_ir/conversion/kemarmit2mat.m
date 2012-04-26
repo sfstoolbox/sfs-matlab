@@ -7,7 +7,7 @@ function kemarmit2mat(irspath)
 %       irspath - path to the directory containing the IR data
 %
 %   KEMARMIT2MAT(irspath) converts the IRs data given by the KEMAR MIT
-%   measurement and stored at the given irspath in our own mat-file based 
+%   measurement and stored at the given irspath in our own mat-file based
 %   format. See:
 %   https://dev.qu.tu-berlin.de/projects/measurements/wiki/IRs_file_format
 %
@@ -35,10 +35,10 @@ function kemarmit2mat(irspath)
 % with this program.  If not, see <http://www.gnu.org/licenses/>.            *
 %                                                                            *
 % The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order * 
-% ambisonics.                                                                * 
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfs-toolbox@gmail.com *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf

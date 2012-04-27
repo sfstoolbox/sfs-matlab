@@ -1,10 +1,9 @@
-function irs_pw = extrapolate_farfield_hrtfset(phi,irs,conf)
+function irs_pw = extrapolate_farfield_hrtfset(irs,conf)
 %EXTRAPOLATE_FARFIELD_HRTFSET far-field extrapolation of a given HRTF dataset
 %
-%   Usage: brs = extrapolate_farfield_hrtfset(phi,xs,L,src,irs,[conf])
+%   Usage: brs = extrapolate_farfield_hrtfset(irs,[conf])
 %
 %   Input parameters:
-%       phi     - listener direction [head orientation] (rad)
 %       irs     - IR data set for the virtual secondary sources
 %       conf    - optional struct containing configuration variables (see
 %                 SFS_config for default values)
@@ -46,10 +45,9 @@ function irs_pw = extrapolate_farfield_hrtfset(phi,irs,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
-nargmax = 3;
+nargmin = 1;
+nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-isargscalar(phi);
 check_irs(irs);
 if nargin<nargmax
     conf = SFS_config;
@@ -66,11 +64,9 @@ fs = conf.fs;                   % sampling frequency
 Acorr = -1.7;                     % DAGA 2011 R=0.5m -> pw
 Af = Acorr*sin(irs.apparent_azimuth);
 
-phi = correct_azimuth(phi);
 R = irs.distance;
 L = 2*R;
 nls = length(irs.apparent_azimuth);
-lenir = length(irs.left(:,1));
 
 % get virtual loudspeaker positions from HRTF dataset
 conf.array = 'circle';

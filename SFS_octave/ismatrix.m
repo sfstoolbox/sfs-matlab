@@ -1,6 +1,8 @@
 function bool = ismatrix(sig)
 %ISMATRIX checks if the given input sig is a matrix
 %
+%   Usage: bool = ismatrix(sig)
+%
 %   Input parameters:
 %       sig     - signal to check
 %

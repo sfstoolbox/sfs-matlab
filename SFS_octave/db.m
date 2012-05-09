@@ -1,6 +1,7 @@
 function sig = db(sig)
 %DB Convert to decibels.
-%   DB(X) converts sig to decibel units
+%
+%   Usage: sig = db(sig)
 %
 %   Input parameters:
 %       sig - signal to convert to dB

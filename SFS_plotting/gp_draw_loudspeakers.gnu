@@ -50,8 +50,8 @@
 
 # getting the input parameters
 set macros
-file = '"$0"'
-if ($#==2) lssize = $1; else lssize = 0.1
+file = "'$0'"
+if ('$#'==2) lssize = $1; else lssize = 0.1
 
 # Set the output of the following plot to a table in order to achieve that is it
 # not shown in the current terminal

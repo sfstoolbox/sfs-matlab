@@ -140,7 +140,6 @@ if ~(p.usegnuplot)
     %
     % Create a new figure
     figure;
-    GraphDefaults(p.mode);
 
     if(p.usedb)
         % Plot the amplitude of the wave field in dB
@@ -309,7 +308,7 @@ else
                 ls_activity = repmat(ls_activity,size(x0));
             end
             % Storing loudspeaker positions and activity
-            phi = cart2pol(x0(:,4)-x0(:,1),x0(:,5)-x0(:,2));
+            phi = cart2pol(x0(:,4),x0(:,5));
             [x0,y0,phi,ls_activity] = column_vector(x0(:,1),x0(:,2),phi,ls_activity);
             gp_save(lsfile,x0,[y0 phi ls_activity]);
         end

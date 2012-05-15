@@ -50,7 +50,7 @@
 
 
 # Checking if we have enough input parameters
-if ($#!=5) print 'gp_set_loudspeakers needs 5 input parameters'; exit
+if ('$#'!=5) print 'gp_set_loudspeakers needs 5 input parameters'; exit
 
 # Getting the input parameters
 x0 = $0

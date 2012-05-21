@@ -33,7 +33,7 @@ function [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,L,f,src,conf)
 %           Wave Field Synthesis (AES127)
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: plot_wavefield, wf_SDM_25D
+%   see also: plot_wavefield, wave_field_imp_wfs_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *

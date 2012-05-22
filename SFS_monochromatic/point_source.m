@@ -82,5 +82,5 @@ omega = 2*pi*f;
 %
 % see: Williams1999, p. 198
 %
-S = 1/(4*pi) * exp(1i*omega/c.*sqrt((x-xs(1)).^2+(y-xs(2)).^2)) ./ ...
+S = 1/(4*pi) * exp(-1i*omega/c.*sqrt((x-xs(1)).^2+(y-xs(2)).^2)) ./ ...
         sqrt((x-xs(1)).^2+(y-xs(2)).^2);

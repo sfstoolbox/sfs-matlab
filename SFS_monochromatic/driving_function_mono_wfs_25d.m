@@ -120,14 +120,14 @@ if(ls_activity)
         % D_25D using a plane wave as source model
         %                                   ___
         %                                  | w |
-        % D_25D(x0,w) = 2 g0 n(xs) n(x0) _ |---  e^(i w/c n(xs) x0)
+        % D_25D(x0,w) = 2 g0 n(xs) n(x0) _ |---  e^(-i w/c n(xs) x0)
         %                                 \|i c
         %
         % NOTE: the phase term e^(-i phase) is only there in order to be able to
         %       simulate different time steps
         %
         D = 2*g0* nxs*nx0' * sqrt(omega/(1i*c)) * ...
-            exp(1i*omega/c*(nxs*x0')) * ...
+            exp(-1i*omega/c*(nxs*x0')) * ...
             exp(-1i*phase);
 
 

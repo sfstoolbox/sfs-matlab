@@ -1,8 +1,8 @@
-function [D] = driving_function_mono_sdm_25d_sd(x0,xs,f,src,conf)
-%DRIVING_FUNCTION_MONO_SDM_25D_SD returns the driving signal D for 2.5D SDM
-%IN THE SPACIAL DOMAIN
+function [D] = driving_function_mono_sdm_25d(x0,xs,f,src,conf)
+%DRIVING_FUNCTION_MONO_SDM_25D returns the driving signal D for 2.5D SDM
 %
-%   Usage: D = driving_function_mono_sdm_25d_sd(x0,xs,f,src,[conf])
+%
+%   Usage: D = driving_function_mono_sdm_25d(x0,xs,f,src,[conf])
 %
 %   Input parameters:
 %       x           - positions of the secondary sources (m)
@@ -18,8 +18,8 @@ function [D] = driving_function_mono_sdm_25d_sd(x0,xs,f,src,conf)
 %   Output parameters:
 %       D         - driving function
 %
-%   DRIVING_FUNCTION_MONO_SDM_25D_SD(x0,xs,f,src,conf) returns the
-%   space-domain driving signal for the given secondary sources and 
+%   DRIVING_FUNCTION_MONO_SDM_25D(x0,xs,f,src,conf) returns the
+%   driving signal for the given secondary sources and 
 %   desired source type (src). The driving signal is calculated for the 
 %   SDM 2.5 dimensional case.
 

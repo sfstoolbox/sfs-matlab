@@ -106,6 +106,8 @@ x0 = secondary_source_positions(L,conf);
 P = zeros(length(y),length(x));
 % Driving function D(x0,omega)
 D = driving_function_mono_sdm_25d_sd(x0,xs,f,src,conf);
+% Generate tapering window
+win = tapering_window(L,ones(1,length(x0)),conf);
 
 % Integration over secondary source positions
 for ii = 1:size(x0,1)
@@ -123,7 +125,7 @@ for ii = 1:size(x0,1)
     %              /
     %
     % see: Spors2009, Williams1993 p. 36
-    P = P + D(ii).*G;
+    P = P + win(ii).*D(ii).*G;
 
 end
 

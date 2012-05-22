@@ -1,4 +1,4 @@
-function [x,y,P,ls_activity] = wave_field_mono_nfchoa_25d(X,Y,xs,L,f,src,conf)
+function [x,y,P] = wave_field_mono_nfchoa_25d(X,Y,xs,L,f,src,conf)
 %WAVE_FIELD_MONO_NFCHOA_25D simulates a wave field for 2.5D NFC-HOA
 %
 %   Usage: [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,L,f,src,[conf])
@@ -20,7 +20,6 @@ function [x,y,P,ls_activity] = wave_field_mono_nfchoa_25d(X,Y,xs,L,f,src,conf)
 %       x           - corresponding x axis
 %       y           - corresponding y axis
 %       P           - Simulated wave field
-%       ls_activity - activity of the secondary sources (see plot_wavefield)
 %
 %   WAVE_FIELD_MONO_NFCHOA_25D(X,Y,xs,L,f,src,conf) simulates a wave
 %   field of the given source type (src) using a NFC-HOA 2.5 dimensional driving
@@ -123,7 +122,7 @@ for ii = 1:size(x0,1)
     %              /
     %
     % see: Spors2009, Williams1993 p. 36
-    P = P + D.*G;
+    P = P + D(ii).*G;
 
 end
 
@@ -133,5 +132,5 @@ P = norm_wave_field(P,x,y,conf);
 
 % ===== Plotting =========================================================
 if(useplot)
-    plot_wavefield(x,y,P,L,ls_activity,conf);
+    plot_wavefield(x,y,P,L,1,conf);
 end

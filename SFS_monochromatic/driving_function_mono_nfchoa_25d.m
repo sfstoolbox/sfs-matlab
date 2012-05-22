@@ -83,128 +83,54 @@ end
 phase = conf.phase;
 % xref
 xref = position_vector(conf.xref);
-% Speed of sound
+% speed of sound
 c = conf.c;
+% positions and angles of secondary sources
+x0 = x0(:,1:3);
+al=atan2(x0(:,2),x0(:,1));
+% number of secondary sources
+M=length(x0);
+% max order of spherical harmonics
+if(isodd(M))
+    N=(M-1)/2;
+else
+    N=floor((M+1)/2);
+end
+% source angle
+al_pw=atan2(xs(2),xs(1));
+% radius of array
+R = norm(xref-x0(1,1:3));
 
 
 %% ===== Computation ====================================================
+% Calculate the driving function in frequency domain
 
-% Calculate the driving function in time-frequency domain
-%
-% Omega
-omega = 2*pi*f;
+D=zeros(1,M);
+% wavenumber
+k = 2*pi*f/c;
 
-% Driving function D(x0,omega)
-% Activity of secondary sources
-ls_activity = secondary_source_selection(x0,xs,src);
-if(ls_activity)
 
-    % Direction and position of secondary sources
-    nx0 = x0(4:6);
-    x0 = x0(1:3);
+if strcmp('pw',src)
 
-    % Constant amplitude factor g0
-    g0 = sqrt(2*pi*norm(xref-x0));
-
-    if strcmp('pw',src)
-
-        % ===== PLANE WAVE ===============================================
-        % Use the position of the source as the direction vector for a plane
-        % wave
-        nxs = xs / norm(xs);
-        %
-        % ----------------------------------------------------------------
-        % D_25D using a plane wave as source model
-        %                                   ___
-        %                                  | w |
-        % D_25D(x0,w) = 2 g0 n(xs) n(x0) _ |---  e^(i w/c n(xs) x0)
-        %                                 \|i c
-        %
-        % NOTE: the phase term e^(-i phase) is only there in order to be able to
-        %       simulate different time steps
-        %
-        D = 2*g0* nxs*nx0' * sqrt(omega/(1i*c)) * ...
-            exp(1i*omega/c*(nxs*x0')) * ...
-            exp(-1i*phase);
-
+    % ===== PLANE WAVE ===============================================
+    for m=0:M-1
+        for n = -N : N
+            D(m+1) = D(m+1) + 4.*pi .* ( 1i.^(-abs(n)) .* exp(-1i.*n.*al_pw) ) ./ ( -1i .* k .* sphbesselh(abs(n),2,k.*R) ) .*exp(1i.*n.*al(m+1));
+        end
+    end
 
     elseif strcmp('ps',src)
 
-        % ===== POINT SOURCE =============================================
-        %
-        % ----------------------------------------------------------------
-        % D_25D using a point source as source model
-        %
-        % D_25D(x0,w) =
-        %             ___       ___
-        %    g0  /   | w |     |i c|    1    \  (x0-xs)nk
-        %   ---  | _ |---  - _ |---  ------- |  --------- e^(i w/c |x0-xs|)
-        %   2pi  \  \|i c     \| w   |x0-xs| /  |x0-xs|^2
-        %
-        % NOTE: the phase term e^(-i phase) is only there in order to be able to
-        %       simulate different time steps
-        %
-        D = g0/(2*pi) * ( sqrt(omega/(1i*c)) - sqrt(1i*c/omega) / ...
-            norm(x0-xs) ) * (x0-xs)*nx0' / norm(x0-xs)^2 * ...
-            exp(1i*omega/c*norm(x0-xs)) * exp(-1i*phase);
+    % ===== POINT SOURCE =============================================
+
 
     elseif strcmp('fs',src)
 
-        % ===== FOCUSED SOURCE ===========================================
-        %
-        % ----------------------------------------------------------------
-        % D_25D using a point sink as source model
-        %
-        % D_25D(x0,w) =
-        %             ___       ___
-        %   -g0  /   | w |     |i c|    1    \  (x0-xs)nk
-        %   ---  | _ |---  + _ |---  ------- |  --------- e^(-i w/c |x0-xs|)
-        %   2pi  \  \|i c     \| w   |x0-xs| /  |x0-xs|^2
-        %
-        % NOTE: the phase term e^(-i phase) is only there in order to be able to
-        %       simulate different time steps
-        %
-        %D = -g0/(2*pi) * ( sqrt(omega/(1i*c)) + sqrt(1i*c/omega) / ...
-        %    norm(x0-xs) ) * (x0-xs)*nx0' / norm(x0-xs)^2 * ...
-        %    exp(-1i*omega/c*norm(x0-xs)) * exp(-1i*phase);
-        %
-        % ----------------------------------------------------------------
-        % Alternative Driving Functions for a focused source:
-        %
-        % D_25D using a line sink with point source amplitude characteristics as
-        % source (see Spors2009).
-        %
-        %                   iw (x0-xs)nk   (2)/ w         \
-        % D_25D(x0,w) = -g0 -- --------- H1  | - |x0-xs| |
-        %                   2c |x0-xs|        \ c         /
-        %
-        % NOTE: the phase term e^(-i phase) is only there in order to be able to
-        %       simulate different time steps
-        %
-        %D = -g0 * 1i*omega/(2*c) * (x0-xs)*nx0' / norm(x0-xs)^(3/2) * ...
-        %    besselh(1,2,omega/c*norm(x0-xs)) * exp(-1i*phase);
-        %
-        % --------------------------------------------------------------------
-        % D_25D using a line sink with point amplitue characteristic as source
-        % and the large argument approximation of the driving function above.
-        % This results in the "traditional" driving function, derived in
-        % Verheijen1997 (see Spors2009).
-        %                     _____
-        %                    |i w  |   (x0-xs)nk
-        % D_25D(x0,w) = g0 _ |-----  ------------- e^(-i w/c |x0-xs|)
-        %                   \|2pi c  |x0-xs|^(3/2)
-        %
-        % NOTE: the phase term e^(-i phase) is only there in order to be able to
-        %       simulate different time steps
-        %
-        D = g0 * sqrt(1i*omega/(2*pi*c)) * ...
-            (x0-xs)*nx0' / norm(x0-xs)^(3/2) * ...
-            exp(-1i*omega/c*norm(x0-xs)) * exp(-1i*phase);
-        %
+    % ===== FOCUSED SOURCE ===========================================
+
+
     else
-        % No such source type for the driving function
-        error('%s: src has to be one of "pw", "ps", "fs"!',upper(mfilename));
-    end
-else
-    D = 0;
-end
+    % No such source type for the driving function
+    error('%s: src has to be one of "pw", "ps", "fs"!',upper(mfilename));
+ end
+

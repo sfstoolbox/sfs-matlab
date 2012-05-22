@@ -106,19 +106,20 @@ c = conf.c;
 useplot = conf.useplot;
 % xy resolution
 xysamples = conf.xysamples;
+% Check array type
+if ~strcmpi(conf.array,'linear')
+    error('%s: this function works only for linear loudspeaker arrays.', ...
+        upper(mfilename));
+end
 
 
 %% ===== Variables ======================================================
 % General
 omega = 2*pi*f;
-% init variables
-kxrep=2*pi/dx;
-Nrep=6;             % number of spectral repetitions
 % Aliasing condition
 kxal = omega/c;
 % Factor by which kx is extended of kx = omega/c criteria
 Nkx=1.5;
-%kx = linspace(-Nkx*kxal,Nkx*kxal,Nkx*2000);
 kx = linspace(-Nkx*kxal,Nkx*kxal,Nkx*xysamples*10);
 x  = linspace(X(1),X(2),xysamples);
 y  = linspace(Y(1),Y(2),xysamples);
@@ -150,9 +151,11 @@ end
 % Driving function
 Dkx = driving_function_mono_sdm_25d(kx,xs,f,src,conf);
 % Convolution with a window representing the length L of the loudspeaker array
-% FIXME: this doesn't work with evanescent waves at the moment
-%w = L * sin(kx*L/2)./(kx*L/2);
-%Dkx = conv2(Dkx,w,'same');
+% Use L = inf for no windowing
+if L~=Inf
+    w = L * sin(kx*L/2)./(kx*L/2);
+    Dkx = conv2(Dkx,w,'same');
+end
 
 
 %% =======================================================================
@@ -181,5 +184,9 @@ P = norm_wave_field(P,x,y,conf);
 
 %% ===== Plotting ========================================================
 if(useplot)
-    plot_wavefield(x,y,P,L,1,conf);
+    if L==Inf
+        plot_wavefield(x,y,P,conf);
+    else
+        plot_wavefield(x,y,P,L,1,conf);
+    end
 end

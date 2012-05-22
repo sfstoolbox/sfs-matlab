@@ -1,7 +1,7 @@
 function [x,y,P] = wave_field_mono_nfchoa_25d(X,Y,xs,L,f,src,conf)
 %WAVE_FIELD_MONO_NFCHOA_25D simulates a wave field for 2.5D NFC-HOA
 %
-%   Usage: [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,L,f,src,[conf])
+%   Usage: [x,y,P] = wave_field_mono_nfchoa_25d(X,Y,xs,L,f,src,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
@@ -13,7 +13,6 @@ function [x,y,P] = wave_field_mono_nfchoa_25d(X,Y,xs,L,f,src,conf)
 %                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
-%                         'fs' - focused source
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -27,11 +26,12 @@ function [x,y,P] = wave_field_mono_nfchoa_25d(X,Y,xs,L,f,src,conf)
 %   P with a summation.
 %   To plot the result use plot_wavefield(x,y,P).
 %
+%   FIXME: add more references
 %   References:
 %       
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: plot_wavefield
+%   see also: plot_wavefield, wave_field_imp_nfchoa_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *

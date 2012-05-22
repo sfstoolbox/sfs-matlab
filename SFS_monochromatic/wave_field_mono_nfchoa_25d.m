@@ -98,19 +98,15 @@ y = linspace(Y(1),Y(2),xysamples);
 %% ===== Computation ====================================================
 % Calculate the wave field in time-frequency domain
 %
-% Get the position of the loudspeakers and its activity
+% Get the position of the loudspeakers
 x0 = secondary_source_positions(L,conf);
-ls_activity = secondary_source_selection(x0,xs,src);
-% Generate tapering window
-win = tapering_window(L,ls_activity,conf);
-ls_activity = ls_activity .* win;
 % Create a x-y-grid to avoid a loop
 [xx,yy] = meshgrid(x,y);
 % Initialize empty wave field
 P = zeros(length(y),length(x));
-% Use only active secondary sources
-x0 = x0(ls_activity>0,:);
-win = win(ls_activity>0);
+% Driving function D(x0,omega)
+D = driving_function_mono_nfchoa_25d(x0,xs,f,src,conf);
+
 % Integration over secondary source positions
 for ii = 1:size(x0,1)
 
@@ -121,21 +117,13 @@ for ii = 1:size(x0,1)
     G = point_source(xx,yy,x0(ii,1:3),f);
 
     % ====================================================================
-    % Driving function D(x0,omega)
-    D = driving_function_mono_wfs_25d(x0(ii,:),xs,f,src,conf);
-
-    % ====================================================================
     % Integration
     %              /
     % P(x,omega) = | D(x0,omega) G(x-x0,omega) dx0
     %              /
     %
     % see: Spors2009, Williams1993 p. 36
-    %
-    % NOTE: win(ii) is the factor of the tapering window in order to have fewer
-    % truncation artifacts. If you don't use a tapering window win(ii) will
-    % always be one.
-    P = P + win(ii)*D.*G;
+    P = P + D.*G;
 
 end
 

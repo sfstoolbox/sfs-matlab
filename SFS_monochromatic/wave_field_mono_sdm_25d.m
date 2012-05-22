@@ -1,7 +1,7 @@
 function [x,y,P] = wave_field_mono_sdm_25d(X,Y,xs,L,f,src,conf)
-%WAVE_FIELD_SDM_WFS_25D simulates the wave field of a given source for 25D SDM
+%WAVE_FIELD_MONO_SDM_25D simulates a wave field for 2.5D NFC-HOA
 %
-%   Usage: [x,y,P] = wave_field_mono_sdm_25d(X,Y,xs,ys,L,f,src,[conf])
+%   Usage: [x,y,P] = wave_field_mono_sdm_25d(X,Y,xs,L,f,src,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
@@ -21,26 +21,17 @@ function [x,y,P] = wave_field_mono_sdm_25d(X,Y,xs,L,f,src,conf)
 %       y           - corresponding y axis
 %       P           - Simulated wave field
 %
-%   WAVE_FIELD_MONO_SDM_25D(X,Y,xs,L,f,src,conf) simulates a wave field of
-%   the given source type (src) using a SDM 2.5 dimensional driving function
-%   in the spectro-temporal domain. 
+%   WAVE_FIELD_MONO_SDM_25D(X,Y,xs,L,f,src,conf) simulates a wave
+%   field of the given source type (src) using a SDM 2.5 dimensional driving
+%   function in the space/time-frequency domain. This means by calculating 
+%   the integral for P with a summation.
 %   To plot the result use plot_wavefield(x,y,P).
 %
-%   NOTE: due to numerical problems with the fft and the bessel functions needed
-%   in SDM (which resulted in an imaginary part which is hundreds of orders
-%   greater/smaller than the real part) the FFT is done by hand in this
-%   function. This results in a longer time to run this function. If you haven't
-%   that time and you can try the large argument approximation of the
-%   bessel functions, which will result in a wrong evanescent part of the wave
-%   field.
-%
 %   References:
-%       Spors2010 - Reproduction of Focused Sources by the Spectral Division
-%           Method
-%       Spors2010 - Analysis and Improvement of Pre-equalization in
-%       2.5-Dimensional Wave Field Synthesis
+%       
+%       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: plot_wavefield, wave_field_mono_wfs_25d
+%   see also: plot_wavefield
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -69,10 +60,10 @@ function [x,y,P] = wave_field_mono_sdm_25d(X,Y,xs,L,f,src,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Hagen Wierstorf
-% $LastChangedDate: $
-% $LastChangedRevision: $
-% $LastChangedBy: $
+% AUTHOR: Sascha Spors
+% $LastChangedDate$
+% $LastChangedRevision$
+% $LastChangedBy$
 
 
 %% ===== Checking of input  parameters ==================================
@@ -91,102 +82,57 @@ end
 
 
 %% ===== Configuration ==================================================
-% Array position (m)
-X0 = conf.X0;
-% Loudspeaker distcane
-% NOTE: if dLS <= dx, than we have a continous loudspeaker
-dx = conf.dx0;
-% Method to calculate driving function (only for non-aliased part)
-withev = conf.withev;  % with evanescent waves
-% Reference position for the amplitude (correct reproduction of amplitude
-% at y = yref).
-xref = conf.xref;
-c = conf.c;
-% Plotting
-useplot = conf.useplot;
 % xy resolution
 xysamples = conf.xysamples;
-% Check array type
-if ~strcmpi(conf.array,'linear')
-    error('%s: this function works only for linear loudspeaker arrays.', ...
-        upper(mfilename));
-end
+% Plotting result
+useplot = conf.useplot;
 
 
 %% ===== Variables ======================================================
-% General
-omega = 2*pi*f;
-% Aliasing condition
-kxal = omega/c;
-% Factor by which kx is extended of kx = omega/c criteria
-Nkx=1.5;
-kx = linspace(-Nkx*kxal,Nkx*kxal,Nkx*xysamples*10);
-x  = linspace(X(1),X(2),xysamples);
-y  = linspace(Y(1),Y(2),xysamples);
-% Indexes for evanescent contributions and propagating part of the wave field
-idxpr = (( abs(kx) <= (omega/c) ));
-idxev = (( abs(kx) > (omega/c) ));
+% Getting values for x- and y-axis
+x = linspace(X(1),X(2),xysamples);
+y = linspace(Y(1),Y(2),xysamples);
 
 
-%% ===== Wave field in the spectro-temporal domain =======================
+%% ===== Computation ====================================================
+% Calculate the wave field in time-frequency domain
 %
-% ========================================================================
-% Secondary source model
-Gkx = zeros(length(kx),length(y));
-% Green's function for a point source in the spectro-temporal domain (see
-% Spors2010)
-%                                  ____________
-%                 / -i/4 H0^(2)( \|(w/c)^2-kx^2 y )
-% G_3D(kx,y,w) = <                ____________
-%                 \ 1/(2pi) K0( \|kx^2-(w/c)^2 y )
-%
-[K,Y] = meshgrid(kx(idxpr),abs(y-X0(2)));
-Gkx(idxpr,:) = -1j/4 .* besselh(0,2,sqrt( (omega/c)^2 - K.^2 ).* Y)';
-if(withev)
-    [K,Y] = meshgrid(kx(idxev),abs(y-X0(2)));
-    Gkx(idxev,:) = 1/(2*pi) .* besselk(0,sqrt( K.^2 - (omega/c)^2).* Y)';
-end
-
-% ========================================================================
-% Driving function
-Dkx = driving_function_mono_sdm_25d(kx,xs,f,src,conf);
-% Convolution with a window representing the length L of the loudspeaker array
-% Use L = inf for no windowing
-if L~=Inf
-    w = L * sin(kx*L/2)./(kx*L/2);
-    Dkx = conv2(Dkx,w,'same');
-end
-
-
-%% =======================================================================
-% Reproduced field
-% Pkx = Dkx * Gkx
-Pkx = repmat(Dkx',1,length(y)) .* Gkx;
-
-
-%% ===== Inverse spatial Fourier transformation =========================
-% 
-%            /
-% P(x,y,w) = | Pkx(kx,y,w) * e^(-i kx x) dkx
-%            /
-%
+% Get the position of the loudspeakers
+x0 = secondary_source_positions(L,conf);
+% Create a x-y-grid to avoid a loop
+[xx,yy] = meshgrid(x,y);
+% Initialize empty wave field
 P = zeros(length(y),length(x));
-for n=1:length(x)
-    % The following loop can be done faster by using the line below with repmat
-    %for m=1:length(y)
-    %    P(m,n) = sum ( Pkx(:,m) .* exp(-1j*kx*x(n))' )';
-    %end
-    P(:,n) = sum ( Pkx .* repmat(exp(-1j*kx*x(n))',1,xysamples),1 )';
+% Driving function D(x0,omega)
+D = driving_function_mono_sdm_25d(x0,xs,f,src,conf);
+% Generate tapering window
+win = tapering_window(L,ones(1,length(x0)),conf);
+
+% Integration over secondary source positions
+for ii = 1:size(x0,1)
+
+    % ====================================================================
+    % Secondary source model G(x-x0,omega)
+    % This is the model for the loudspeakers we apply. We use closed cabinet
+    % loudspeakers and therefore point sources.
+    G = point_source(xx,yy,x0(ii,1:3),f);
+
+    % ====================================================================
+    % Integration
+    %              /
+    % P(x,omega) = | D(x0,omega) G(x-x0,omega) dx0
+    %              /
+    %
+    % see: Spors2009, Williams1993 p. 36
+    P = P + win(ii).*D(ii).*G;
+
 end
 
-% === Scale signal (at [xref yref]) ===
+% === Scale signal (at xref) ===
 P = norm_wave_field(P,x,y,conf);
 
-%% ===== Plotting ========================================================
+
+% ===== Plotting =========================================================
 if(useplot)
-    if L==Inf
-        plot_wavefield(x,y,P,conf);
-    else
-        plot_wavefield(x,y,P,L,1,conf);
-    end
+    plot_wavefield(x,y,P,L,1,conf);
 end

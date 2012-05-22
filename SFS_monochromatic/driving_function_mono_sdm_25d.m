@@ -93,7 +93,27 @@ Dkx = zeros(1,length(kx));
 if strcmp('pw',src)
 
     % ===== PLANE WAVE ===================================================
-    to_be_implemented(mfilename);
+    al_pw=pi/2;
+    kpwx=omega/c*cos(al_pw);
+    kpwy=omega/c*sin(al_pw);
+    idx = find(kx>=kpwx,1,'first');
+    
+    Dkx(idx) = 4i*exp(-1i*kpwy*xref(2))./besselh(0,2,kpwy*xref(2));
+    
+    % spectral repetitions
+    Nrep=6;
+    kxrep=2*pi/0.2;
+    if(Nrep>0)
+        for n=-Nrep:Nrep
+            if(n~=0)
+                kxp=kpwx-n*kxrep;
+    
+                idx=find(kx>=kxp,1,'first');
+                    Dkx(idx) = 4i*exp(-1i*kpwy*xref(2))./besselh(0,2,kpwy*xref(2));
+            end
+        end
+    end
+    
 
 elseif strcmp('ps',src)
 

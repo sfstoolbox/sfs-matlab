@@ -154,6 +154,7 @@ Dkx = driving_function_mono_sdm_25d(kx,xs,f,src,conf);
 %w = L * sin(kx*L/2)./(kx*L/2);
 %Dkx = conv2(Dkx,w,'same');
 
+
 %% =======================================================================
 % Reproduced field
 % Pkx = Dkx * Gkx

@@ -122,12 +122,12 @@ if strcmp('pw',src)
     elseif strcmp('ps',src)
 
     % ===== POINT SOURCE =============================================
-
+    to_be_implemented(mfilename);
 
     elseif strcmp('fs',src)
 
     % ===== FOCUSED SOURCE ===========================================
-
+    to_be_implemented(mfilename);
 
     else
     % No such source type for the driving function

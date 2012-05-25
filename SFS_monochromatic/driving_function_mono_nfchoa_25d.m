@@ -115,7 +115,9 @@ if strcmp('pw',src)
     % ===== PLANE WAVE ===============================================
     for m=0:M-1
         for n = -N : N
-            D(m+1) = D(m+1) + 4.*pi .* ( 1i.^(-abs(n)) .* exp(-1i.*n.*al_pw) ) ./ ( -1i .* k .* sphbesselh(abs(n),2,k.*R) ) .*exp(1i.*n.*al(m+1));
+            D(m+1) = D(m+1) + 4.*pi .* ...
+                ( 1i.^(-abs(n)) .* exp(-1i.*n.*al_pw) ) ./ ...
+                ( -1i .* k .* sphbesselh(abs(n),2,k.*R) ) .*exp(1i.*n.*al(m+1));
         end
     end
 

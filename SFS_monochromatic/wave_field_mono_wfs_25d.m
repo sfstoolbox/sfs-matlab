@@ -136,7 +136,7 @@ for ii = 1:size(x0,1)
     % NOTE: win(ii) is the factor of the tapering window in order to have fewer
     % truncation artifacts. If you don't use a tapering window win(ii) will
     % always be one.
-    P = P + win(ii)*D.*G;
+    P = P + win(ii)*D(ii).*G;
 
 end
 

@@ -31,7 +31,7 @@ function [x,y,P] = wave_field_mono_sdm_25d(X,Y,xs,L,f,src,conf)
 %       
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: plot_wavefield
+%   see also: plot_wavefield, wave_field_mono_sdm_25d_kx
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *

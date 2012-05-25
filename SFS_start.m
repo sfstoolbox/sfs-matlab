@@ -64,11 +64,13 @@ if exist('addpath')
     addpath([basepath,'/SFS_helper']);
     addpath([basepath,'/SFS_ir']);
     addpath([basepath,'/SFS_monochromatic']);
-    addpath([basepath,'/SFS_octave']);
     addpath([basepath,'/SFS_plotting']);
     addpath([basepath,'/SFS_time_domain']);
     addpath([basepath,'/SFS_HRTF_extrapolation']);
     addpath([basepath,'/validation']);
+    if isoctave
+        addpath([basepath,'/SFS_octave']);
+    end
 else
     path(path,basepath);
     path(path,[basepath,'/scripts']);
@@ -78,11 +80,13 @@ else
     path(path,[basepath,'/SFS_helper']);
     path(path,[basepath,'/SFS_ir']);
     path(path,[basepath,'/SFS_monochromatic']);
-    path(path,[basepath,'/SFS_octave']);
     path(path,[basepath,'/SFS_plotting']);
     path(path,[basepath,'/SFS_time_domain']);
     path([basepath,'/SFS_HRTF_extrapolation']);
     path(path,[basepath,'/validation']);
+    if isoctave
+        path(path,[basepath,'/SFS_octave']);
+    end
 end
 
 

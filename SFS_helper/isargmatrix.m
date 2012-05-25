@@ -46,7 +46,7 @@ function isargmatrix(varargin)
 
 %% ===== Checking for matrix =============================================
 for ii = 1:nargin
-    %if ~isnumeric(varargin{ii}) || ~ismatrix(varargin{ii})
-    %    error('%s need to be a matrix.',inputname(ii));
-    %end
+    if ~isnumeric(varargin{ii}) || ndims(varargin{ii})~=2
+        error('%s need to be a matrix.',inputname(ii));
+    end
 end

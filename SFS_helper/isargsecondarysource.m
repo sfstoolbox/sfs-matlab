@@ -49,7 +49,7 @@ function isargsecondarysource(varargin)
 %% ===== Checking for vector =============================================
 for ii = 1:nargin
     x0 = varargin{ii};
-    if ~isnumeric(x0) || ~ismatrix(x0) || size(x0,2)~=6
+    if ~isnumeric(x0) || ndims(x0)~=2 || size(x0,2)~=6
         error(['%s need to be a nx6 matrix containing the secondary ', ...
             'sources positions and directions.'],inputname(ii));
     end

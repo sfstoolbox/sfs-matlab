@@ -130,15 +130,12 @@ for ii = 1:nls
     % amplitude decay for a 3D monopole
     g = 1./(4*pi*r);
 
-    % ================================================================
-    ds = d(:,ii);
-
     % Interpolate the driving function w.r.t. the propagation delay from
     % the secondary sources to a field point.
     % NOTE: the interpolation is required to account for the fractional
     % delay times from the loudspeakers to the field points
-    t = 1:length(ds);
-    ds = interp1(t,ds,r/c*fs,'spline');
+    t = 1:length(d(:,ii));
+    ds = interp1(t,d(:,ii),r/c*fs,'spline');
 
     % ================================================================
     % Wave field p(x,t)

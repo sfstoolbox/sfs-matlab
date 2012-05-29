@@ -110,4 +110,4 @@ end
 % spatial IFFT
 d = circshift(d,[order+1 0]);
 d = (2*order+1)*ifft(d,[],1);
-d = d';
+d = real(d');

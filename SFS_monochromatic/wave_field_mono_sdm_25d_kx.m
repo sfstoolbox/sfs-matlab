@@ -70,9 +70,9 @@ function [x,y,P] = wave_field_mono_sdm_25d_kx(X,Y,xs,L,f,src,conf)
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
+% $LastChangedDate: $
+% $LastChangedRevision: -1 $
+% $LastChangedBy: $
 
 
 %% ===== Checking of input  parameters ==================================

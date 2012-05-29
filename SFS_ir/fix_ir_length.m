@@ -1,12 +1,13 @@
 function ir = fix_ir_length(ir,N,dt)
 %FIX_IR_LENGTH pads zeros or removes entries from the IR according to length N
 %
-%   Usage: ir = fix_ir_length(ir,N,dt)
+%   Usage: ir = fix_ir_length(ir,N,[dt])
 %
 %   Input parameters:
 %       ir  - impulse response (IR)
 %       N   - number of samples the calculated BRIR should have
-%       dt  - time delay for the given setup the IR will be shifted with
+%       dt  - time delay for the given setup the IR will be shifted with, 
+%             default: 0
 %
 %   Output paramteres:
 %       ir  - corrected IR
@@ -51,9 +52,12 @@ function ir = fix_ir_length(ir,N,dt)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 2;
 nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin));
+if nargin==nargmax-1
+    dt = 0;
+end
 
 
 %% ===== Fix IR ==========================================================

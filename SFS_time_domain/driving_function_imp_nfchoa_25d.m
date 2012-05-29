@@ -1,4 +1,4 @@
-function [d] = driving_function_imp_nfchoa_25d(x0,xs,src,conf)
+function [d] = driving_function_imp_nfchoa_25d(x0,xs,src,L,conf)
 %DRIVING_FUNCTION_IMP_NFCHOA_25D calculates the NFC-HOA 2.5D driving function
 %
 %   Usage: [d] = driving_function_imp_nfchoa_25d(x0,xs,src,[conf]);
@@ -10,6 +10,7 @@ function [d] = driving_function_imp_nfchoa_25d(x0,xs,src,conf)
 %                     'pw' - plane wave (xs, ys are the direction of the
 %                            plane wave in this case)
 %                     'ps' - point source
+%       L       - diameter of loudspeaker array
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -19,7 +20,7 @@ function [d] = driving_function_imp_nfchoa_25d(x0,xs,src,conf)
 %   driving function of 2.5D NFC-HOA for the given source type and position,
 %    and loudspeaker positions.
 %
-%   see also: modal_filter_ps_nfchoa_25d, modal_filter_pw_nfchoa_25d
+%   see also: modal_filter_coeff_nfchoa_25d, wave_field_imp_nfchoa_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -55,13 +56,14 @@ function [d] = driving_function_imp_nfchoa_25d(x0,xs,src,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
-nargmax = 4;
+nargmin = 4;
+nargmax = 5;
 error(nargchk(nargmin,nargmax,nargin));
 isargsecondarysource(x0)
 isargposition(xs);
 xs = position_vector(xs);
 isargchar(src);
+isargpositivescalar(L);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -70,18 +72,15 @@ end
 
 
 %% ===== Configuration ==================================================
-c = conf.c;
-fs = conf.fs;
-xref = position_vector(conf.xref);
-R = norm(xref-x0(1,1:3));
-nLS = size(x0,1);
+R = L/2;
+nls = size(x0,1);
 N = conf.N;
 N0 = 0;       % pre-delay
 
-if(isodd(nLS))
-    order=(nLS-1)/2;    %  max order of spherical harmonics
+if(isodd(nls))
+    order=(nls-1)/2;    %  max order of spherical harmonics
 else
-    order=floor((nLS+1)/2);
+    order=floor((nls+1)/2);
 end
 
 [theta_src, r_src] = cart2pol(xs(1),xs(2));
@@ -89,41 +88,26 @@ end
 %% ===== Computation =====================================================
 
 % compute impulse responses of modal filters
-dm=zeros(order+1,N);
-
-if strcmp('pw',src)
-    % === Plane wave ===
-    for n=1:order+1
-        df=modal_filter_pw_nfchoa_25d(R,n-1,fs);
-        dm(n,:) = df.filter([zeros(1,N0) 1 zeros(1,N-1-N0)]);
+dm = zeros(order+1,N);
+for n=1:order+1
+    dm(n,:) = [zeros(1,N0) 1 zeros(1,N-1-N0)];
+    [b,a] = modal_filter_coeff_nfchoa_25d(n-1,R,src,r_src,conf);
+    for ii=1:length(b)
+        dm(n,:) = filter(b{ii},a{ii},dm(n,:));
     end
-
-elseif strcmp('ps',src)
-    % === Point source ===
-    for n=1:order+1
-        df=modal_filter_ps_nfchoa_25d(R,r_src,n-1,fs);
-        dm(n,:) = df.filter([zeros(1,N0) 1 zeros(1,N-1-N0)]);
-    end
-
-else
-    error('%s: %s is not a known source type.',upper(mfilename),src);
 end
-
 
 % compute input signal for IFFT
-d=zeros(2*order+1,N);
-
+d = zeros(2*order+1,N);
 for n=-order:order
-    d(n+order+1,:)=dm(abs(n)+1,:) .* exp(-1i*n*theta_src);
+    d(n+order+1,:) = dm(abs(n)+1,:) .* exp(-1i*n*theta_src);
 end
 
-if(iseven(nLS))
-   d=d(2:end,:);
+if(iseven(nls))
+   d = d(2:end,:);
 end
 
 % spatial IFFT
-d=circshift(d,[order+1 0]);
-d=(2*order+1)*ifft(d,[],1);
-d=d';
-
-end
+d = circshift(d,[order+1 0]);
+d = (2*order+1)*ifft(d,[],1);
+d = d';

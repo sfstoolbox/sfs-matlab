@@ -101,8 +101,7 @@ y = linspace(Y(1),Y(2),xysamples);
 
 
 % Calculate driving function
-[d] = driving_function_imp_nfchoa_25d(x0,xs,src,conf);
-
+[d] = driving_function_imp_nfchoa_25d(x0,xs,src,L,conf);
 % time reversal of driving function due to propagation of sound
 % later parts of the driving function are emitted later by secondary
 % sources
@@ -140,9 +139,6 @@ for ii = 1:nls
     % delay times from the loudspeakers to the field points
     t = 1:length(ds);
     ds = interp1(t,ds,r/c*fs,'spline');
-    %ds = interp1(t,ds,r/c*fs,'cubic');
-    %ds = interp1(t,ds,r/c*fs,'linear');
-    %ds = interp1(t,ds,r/c*fs,'nearest');
 
     % ================================================================
     % Wave field p(x,t)
@@ -150,13 +146,17 @@ for ii = 1:nls
 
 end
 
+% === Scale amplitude ===
+% TODO: explain why
+p = p ./ (pi*L);
+
 % === Checking of wave field ===
 check_wave_field(p,frame);
 
 % === Plotting ===
 if (useplot)
     conf.plot.usedb = 1;
-    ls_activity=1;
+    ls_activity = 1;
     plot_wavefield(x,y,p,L,ls_activity,conf);
 end
 

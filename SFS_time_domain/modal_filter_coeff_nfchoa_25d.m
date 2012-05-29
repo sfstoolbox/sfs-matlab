@@ -1,20 +1,25 @@
-function [hd] = modal_filter_pw_nfchoa_25d(R,order,fs)
-%MODAL_FILTER_PW_NFCHOA_25D calculates the modal filter for NFC-HOA 2.5D
+function [b,a] = modal_filter_coeff_nfchoa_25d(order,R,src,r,conf)
+%MODAL_FILTER_COEFF_NFCHOA_25D calculates the modal filter for NFC-HOA 2.5D
 %
-%   Usage: [hd] = modal_filter_pw_nfchoa_25d(R,order,fs)
+%   Usage: [b,a] = modal_filter_coeff_nfchoa_25d(order,R,src,[r,[conf]])
 %
 %   Input parameters:
-%       R       - radius of secondary source distribution (m)
 %       order   - order of filter
-%       fs      - sampling frequency
+%       R       - radius of secondary source distribution (m)
+%       src     - source type of the virtual source
+%                     'pw' - plane wave (xs, ys are the direction of the
+%                            plane wave in this case)
+%                     'ps' - point source
+%       r       - distance of virtual point source (m)
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       hd  - modal filter object
+%       b,a     - modal filter coefficients
 %
-%   MODAL_FILTER_PW_NFCHOA_25D(R,order,fs) returns the modal filter
-%   object for 2.5D NFC-HOA synthesis of a plane wave.
+%   MODAL_FILTER_COEFF_NFCHOA_25D(order,R,src,r,conf) returns the modal filter
+%   coefficients for 2.5D NFC-HOA synthesis.
 %
-%   see also: modal_filter_ps_nfchoa_25d
+%   see also: driving_function_imp_nfchoa_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -49,45 +54,56 @@ function [hd] = modal_filter_pw_nfchoa_25d(R,order,fs)
 % $LastChangedBy$
 
 
-c=343;
+%% ===== Checking of input  parameters ===================================
+nargmin = 3;
+nargmax = 5;
+error(nargchk(nargmin,nargmax,nargin));
+if nargin==nargmax-2
+    conf = SFS_config;
+elseif nargin==nargmax-1 & ~isstruct(r)
+    conf = SFS_config;
+end
+if strcmp('ps',src) & ~exist('r','var')
+    error('%s: the distance r is needed for a point source.',upper(mfilename));
+end
 
+
+%% ===== Configuration ===================================================
+c = conf.c;
+fs = conf.fs;
+
+
+%% ===== Computation =====================================================
 % compute normalized roots/zeros of spherical Hankel function
 B=zeros(1,order+2);
 A=B;
-
 for n=0:order
         B(n+1) = factorial(2*order-n)/(factorial(order-n)*factorial(n)*2^(order-n));
 end
 B=B(end:-1:1);
-%A(2) = (-1)^order;
-A(2) = 1;
-
 % find zeros/roots
 z=roots(B);
-p=roots(A);
-
 
 % compute SOS coefficients of modal driving function
-[sos,g] = zp2sos(p,z*c/R,2,'down', 'none');
-
-% transform coefficients
-for n=1:size(sos,1)
-    %[bz,az] = impinvar(sos(n,1:3),sos(n,4:6),fs);
-    [bz,az] = bilinear(sos(n,1:3),sos(n,4:6),fs);
-    if(length(bz)==2)
-        sos(n,2:3)=bz;
-        sos(n,5:6)=az;
-    else
-        sos(n,1:3)=bz;
-        sos(n,4:6)=az;
-    end
+if strcmp('pw',src)
+    A(2) = 1;
+    p=roots(A);
+    [sos,g] = zp2sos(p,z*c/R,2,'down','none');
+elseif strcmp('ps',src)
+    [sos,g] = zp2sos(z*c/r,z*c/R,1,'up','none');
+else
+    error('%s: %s is not a known source type.',upper(mfilename),src);
 end
 
-if isoctave
-    error(['%s: the HOA implementation depends on dfilt at the moment, ', ...
-        'which is not available under Octave'],upper(mfilename));
-else
-    % realize FOS/SOS as DF-II structure
-    hd = dfilt.df2sos(sos);
-    hd.ScaleValues(end)=2*(-1)^order;
+% transform coefficients
+a = {};
+b = {};
+for n=1:size(sos,1)
+    if isoctave
+        [bz,az] = bilinear(sos(n,1:3),sos(n,4:6),1/fs);
+    else
+        [bz,az] = bilinear(sos(n,1:3),sos(n,4:6),fs);
+    end
+    b{n} = bz;
+    a{n} = az;
 end

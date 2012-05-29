@@ -1,7 +1,7 @@
-function ir_wfs = ir_wfs_25d(X,phi,xs,L,src,irs,conf)
-%BRS_WFS_25D Generate a IR for WFS
+function ir = ir_nfchoa_25d(X,phi,xs,L,src,irs,conf)
+%IR_NFCHOA_25D Generate a IR for HOA
 %
-%   Usage: ir_wfs = ir_wfs_25d(X,phi,xs,L,src,irs,[conf])
+%   Usage: ir = ir_nfchoa_25d(X,phi,xs,L,src,irs,[conf])
 %
 %   Input parameters:
 %       X       - listener position (m)
@@ -13,34 +13,16 @@ function ir_wfs = ir_wfs_25d(X,phi,xs,L,src,irs,conf)
 %                              'ps' - point source
 %                              'fs' - focused source
 %       irs     - IR data set for the secondary sources
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
+%       conf    - optional configuration struct (see SFS_config) 
 %
 %   Output parameters:
-%       iri_wfs - Impulse response for the desired WFS array (nx2 matrix)
+%       ir      - Impulse response for the desired HOA synthesis (nx2 matrix)
 %
-%   IR_WFS_25D(X,phi,xs,L,irs,src,conf) calculates a binaural room impulse
-%   response for a virtual source at xs for a virtual WFS array and a
+%   IR_NFCHOA_25D(X,phi,xs,L,irs,src,conf) calculates a binaural room impulse
+%   response for a virtual source at xs for a virtual HOA array and a
 %   listener located at X.
 %
-%   Geometry (for a linear array):
-%
-%                               y-axis
-%                                 ^
-%                                 |
-%                                 |
-%                                 |    (Listener)
-%                                 |        O X, phi=-pi/2
-%                                 |        |
-%                                 |
-%                  o xs           |
-%             (Virtual Source)    |
-%                                 |
-%     -------v--v--v--v--v--v--v--v--v--v--v--v--v--v--v------> x-axis
-%                                 X0 (Array center)
-%            |---      Loudspeaker array length     ---|
-%
-% see also: brs_wfs_25d, ir_point_source, auralize_ir
+%   see also: brs_nfchoa_25d, ir_wfs_25d, ir_point_source, auralize_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -92,38 +74,29 @@ end
 
 
 %% ===== Configuration ==================================================
-fs = conf.fs;                 % sampling frequency
-t0 = conf.t0;                 % pre-delay for causality (focused sources)
-c = conf.c;                   % speed of sound
 N = conf.N;                   % target length of BRS impulse responses
-debug = conf.debug;           % debugging
 
 
 %% ===== Variables ======================================================
-
 phi = correct_azimuth(phi);
-
-% Loudspeaker positions (phiLS describes the directions of the loudspeakers)
+% Loudspeaker positions
 x0 = secondary_source_positions(L,conf);
 nls = size(x0,1);
-ls_activity = secondary_source_selection(x0,xs,src);
-% generate tapering window
-win = tapering_window(L,ls_activity,conf);
 
 
 %% ===== BRIR ===========================================================
 % Initial values
-ir_wfs = zeros(N,2);
-dt = zeros(1,nls);
-a = zeros(1,nls);
+ir_hoa = zeros(N,2);
+
+% calculate driving function
+d = driving_function_imp_nfchoa_25d(x0,xs,src,L,conf);
 
 % Create a BRIR for every single loudspeaker
 warning('off','SFS:irs_intpol');
-for ii = 1:nls
-
+for ii=1:nls
 
     % === Secondary source model: Greens function ===
-    g = 1/(4*pi*norm(X-x0(ii,1:3)));
+    g = 1./(4*pi*norm(X-x0(ii,1:3)));
 
     % === Secondary source angle ===
     % Calculate the angle between the given loudspeaker and the listener.
@@ -154,59 +127,17 @@ for ii = 1:nls
     % Get the desired IR.
     % If needed interpolate the given IR set
     ir = get_ir(irs,alpha,0);
-    ir_distance = get_ir_distance(irs,alpha,0);
-
-    % === Amplitude and delay ===
-    % Driving function to get weighting and delaying
-    [a(ii),delay] = driving_function_imp_wfs_25d(x0(ii,:),xs,src,conf);
-    % Time delay of the virtual source (at the listener position)
-    % t0 is a causality pre delay for a focused source, e.g. 0 for a non
-    % focused point source (see SFS_config.m)
-    % Define an offset to ensure |[X-Y]-[x0 y0]|-irs.distance+offset > 0
-    offset = 3; % in m
-    % Check if we have a non focused source
-    if strcmp('fs',src)
-        % Focused source
-        tau = (norm(X-x0(ii,1:3)) - ir_distance+offset)/c + delay - t0;
-    else
-        % Virtual source behind the loudspeaker array
-        tau = (norm(X-x0(ii,1:3)) - ir_distance+offset)/c + delay;
-    end
-    % Time delay in samples for the given loudspeaker
-    % NOTE: I added some offset, because we can't get negative
-    dt(ii) = (tau*fs) + 0;
-    if dt(ii)<0
-        error('%s: the time delay dt(ii) = %i has to be positive.', ...
-            upper(mfilename),dt(ii));
-    end
-
-    % === Trim IR ===
-    ir = fix_ir_length(ir,N,dt);
 
     % === Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay ===
-    ir_wfs(:,1) = ir_wfs(:,1) + delayline(ir(:,1)',dt(ii),a(ii)*win(ii)*g,conf)';
-    ir_wfs(:,2) = ir_wfs(:,2) + delayline(ir(:,2)',dt(ii),a(ii)*win(ii)*g,conf)';
+    ir_hoa(:,1) = ir_hoa(:,1) + fix_ir_length(conv(ir(:,1),d(:,ii)),N) .* g;
+    ir_hoa(:,2) = ir_hoa(:,2) + fix_ir_length(conv(ir(:,2),d(:,ii)),N) .* g;
 
 end
 warning('on','SFS:irs_intpol');
 
 
 %% ===== Pre-equalization ===============================================
-ir_wfs = wfs_preequalization(ir_wfs,conf);
+ir_hoa = wfs_preequalization(ir_hoa,conf);
 
 %% ===== Headphone compensation =========================================
-ir = compensate_headphone(ir_wfs,conf);
-
-
-%% ===== Plot WFS parameters ============================================
-if(debug)
-    figure
-    plot(x0(:,1),dt);
-    title('delay (taps)');
-    grid on;
-
-    figure
-    plot(x0(:,1),a);
-    title('amplitude');
-    grid on;
-end
+ir = compensate_headphone(ir_hoa,conf);

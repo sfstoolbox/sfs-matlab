@@ -100,7 +100,7 @@ end
 % compute input signal for IFFT
 d = zeros(2*order+1,N);
 for n=-order:order
-    d(n+order+1,:) = dm(abs(n)+1,:) .* exp(-1i*n*theta_src);
+    d(n+order+1,:) = dm(abs(n)+1,:) .* exp(1i*n*theta_src);
 end
 
 if(iseven(nls))

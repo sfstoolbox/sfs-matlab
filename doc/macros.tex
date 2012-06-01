@@ -1,16 +1,8 @@
-% Latex macros
-%
-% This file contains macros for
-%   * References in a paper
-%   * Defining vectors, signals, etc.
-%   * Math
-%
-% AUTHOR: Sascha Spors, Hagen Wierstorf
+% latex macros for signals and transformations
+% S.Spors, 11.11.05
 
-%=============== Important command (used also below) =========================
-% Overwrite the \vec command to use bold font instead of arrow above the symbol
+
 \renewcommand{\vec}[1]{\ensuremath{ \mathbf{#1} }}
-
 
 %=============== some macros =================================================
 \newcommand{\eg}[0]{e.\,g.}
@@ -18,7 +10,7 @@
 \newcommand{\qp}[0]{\;.}
 \newcommand{\threeD}[0]{\text{3D}}
 \newcommand{\twoD}[0]{\text{2D}}
-\newcommand{\twohalfD}[0]{\text{2.5D}}
+\renewcommand{\comment}[1]{{\color{magenta}{#1}}}
 
 
 %=============== References ==================================================
@@ -27,92 +19,26 @@
 \newcommand{\SecRef}[1]{Section~\ref{#1}}
 \newcommand{\AppRef}[1]{Appendix~\ref{#1}}
 \newcommand{\PRef}[1]{Page~\pageref{#1}}
-\newcommand{\EqRef}[1]{(\ref{#1})}
-
-% mark some text (need package ``color'')
-%\newcommand{\RED}[1]{\textcolor{red}{#1}}
-%\newcommand{\GREEN}[1]{\textcolor{green}{#1}}
-%\newcommand{\BLUE}[1]{\textcolor{blue}{#1}}
+\newcommand{\EqRef}[1]{Eq.~(\ref{#1})}
 
 \newcommand{\ul}[1]{\underline{#1}}
 
 
-
-%=============== Signale =========================================
-\newcommand{\fts}[1]{\ensuremath{ \tilde{#1} }}           % fourier transform expansion coeff
-\newcommand{\fss}[1]{\ensuremath{ \mathring{#1} }}        % fourier series expansion coeff
-\newcommand{\pws}[1]{\ensuremath{ \bar{#1} }}             % plane wave expansion coeff
-\newcommand{\wds}[1]{\ensuremath{ \tilde{#1} }}           % wave domain expansion coeff
-\newcommand{\cys}[1]{\ensuremath{ \breve{#1} }}           % cylindric expansion coeff
-
-
-%=============== Operatoren =========================================
-\DeclareMathOperator{\PWT}{\mathcal{P}}
-\DeclareMathOperator{\CHT}{\mathcal{C}}
-\newcommand{\FT}{\ensuremath{\mathcal{F}}}
-\newcommand{\IFT}{\ensuremath{\mathcal{F}^{-1}}}
-\DeclareMathOperator{\HT}{\mathcal{H}}
-\DeclareMathOperator{\Sys}{\mathcal{S}}
-
-
-\newcommand{\FS}{\ensuremath{\text{FS}}}
-\newcommand{\IFS}{\ensuremath{\text{FS}^{-1}}}
-\DeclareMathOperator{\DHT}{\text{DFBT}}
-\DeclareMathOperator{\DFT}{\text{DFT}}
-\DeclareMathOperator{\IDFT}{\text{IDFT}}
-
-
-\DeclareMathOperator{\conv}{\ast}
-\DeclareMathOperator{\pconv}{\circledast}
-
-\newcommand{\real}[1]{\ensuremath{ \Re\{#1\} }}
-\newcommand{\imag}[1]{\ensuremath{ \Im\{#1\} }}
-
-
-%=============== Koordinatensysteme =========================================
-\newcommand{\cc}{\ensuremath{\mathtt{C}}}
-\newcommand{\spc}{\ensuremath{\mathtt{H}}}
-\newcommand{\yc}{\ensuremath{\mathtt{Y}}}
-\newcommand{\pc}{\ensuremath{\mathtt{P}}}
-
-\newcommand{\inc}{{\ensuremath{\text{(1)}}}}
-\newcommand{\outg}{{\ensuremath{\text{(2)}}}}
-
-\newcommand{\si}[1]{{\ensuremath{\text{(#1)}}}}
-
-
-
 %=============== Funktionen =========================================
-\DeclareMathOperator{\circf}{\text{circ}}
-\DeclareMathOperator{\sinc}{\text{sinc}}
+\newcommand{\omegac}{\frac{\omega}{c}}
 
-\newcommand{\sha}{\bot \!\! \bot \!\! \bot}
-
-%=============== Variables =========================================
-% omega
-% -----
-%   c
-\newcommand{\omegac}{\ensuremath{ \frac{\omega}{c} }}
+% Variablen, Vektoren, . . .
+\newcommand{\x}{\ensuremath{ \vec{x} }}
+\newcommand{\n}{\ensuremath{ \vec{n} }}
 % x-x_0 (vector)
 \newcommand{\xx}{\ensuremath{ \vec{x}-\vec{x}_0 }}
-% x (vector) 
-\newcommand{\x}{\ensuremath{ \mathbf{x} }}
 % k (vector) 
 % NOTE: the \k command is for the ogonek accent, which we very probably will 
 % not need, therefore I overwrite it
-\renewcommand{\k}{\ensuremath{ \mathbf{k} }}
-
-%=============== Bessel functions ========================================
-% Hankel functions H^kind_order
-\newcommand{\hankelzero}[1]{\ensuremath{ H_{#1}^{(0)} }}
-\newcommand{\hankelone}[1]{\ensuremath{ H_{#1}^{(1)} }}
-\newcommand{\hankeltwo}[1]{\ensuremath{ H_{#1}^{(2)} }}
-
-
-%\DeclareSymbolFont{cyrletters}{OT2}{wncyr}{m}{n}
-%\DeclareMathSymbol{\sha}{\mathalpha}{cyrletters}{"58}
+\renewcommand{\k}{\ensuremath{ \vec{k} }}
 
 %=============== Matrizen & Vektoren =========================================
+\newcommand{\Vek}[1]{\ensuremath{ \mathbf{#1} }}
 \newcommand{\Mat}[1]{\ensuremath{ \mathbf{#1} }}
 \newcommand{\FSc}[1]{\ensuremath{ \underline{#1} }}
 \newcommand{\FVek}[1]{\ensuremath{ \underline{\mathbf{#1}} }}
@@ -134,8 +60,4 @@
 \newcommand{\rank}[1]{\ensuremath{\text{rk} \{ #1 \} }}
 \newcommand{\tr}[1]{\ensuremath{\text{tr} \{ #1 \} }}
 
-% ----------- Mathematische Operationen ------------
-\newcommand{\p}[1]{\ensuremath{\frac{\partial}{\partial #1}}}
-
-% ----- Compatibility to old papers --------------------------------------
-\newcommand{\Vek}[1]{\ensuremath{ \mathbf{#1} }}
+\newcommand{\pos}[1]{\ensuremath{(#1)}}

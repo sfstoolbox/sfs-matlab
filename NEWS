@@ -1,5 +1,12 @@
 User-visible changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
+0.3.0 (...)
+    
+    - added NFCHOA 2.5D monochromatic
+    - added NFCHOA 2.5D binaural simulations
+    - added SDM 2.5D monochromatic
+    - make NFCHOA work under Octave
+
 0.2.0 (25 April 2012)
 
- - first public release (under the GPLv3+ license)
+    - first public release (under the GPLv3+ license)

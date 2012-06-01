@@ -87,7 +87,7 @@ if strcmp('pw',src)
     %      \ 0, else
     %
     % Direction of plane wave (nxs) is set above
-    ls_activity = double( diag(nxs*nx0') >= 0 );
+    ls_activity = double( diag(nxs*nx0') >= eps );
 
 elseif strcmp('ps',src) || strcmp('ls',src)
     % === Point source ===

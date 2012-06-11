@@ -63,9 +63,11 @@ end
 %% ===== Fix IR ==========================================================
 % length of IR
 lenir = length(ir(:,1));
+% ensure integer delays
+dt = round(dt);
 % append zeros if to short
 if(lenir<N-dt)
-    ir = cat(1,ir,zeros(N-lenir,2));
+    ir = cat(1,ir,zeros(N-dt-lenir,2));
 % remove the end of the IR, if to long
 else
     ir=ir(1:N,:);

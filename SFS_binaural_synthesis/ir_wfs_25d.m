@@ -181,7 +181,7 @@ for ii = 1:nls
     end
 
     % === Trim IR ===
-    ir = fix_ir_length(ir,N,dt);
+    ir = fix_ir_length(ir,N,dt(ii));
 
     % === Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay ===
     ir_wfs(:,1) = ir_wfs(:,1) + delayline(ir(:,1)',dt(ii),a(ii)*win(ii)*g,conf)';

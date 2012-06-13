@@ -14,9 +14,13 @@ function fal = aliasing_frequency(dx0,conf)
 %   ALIASING_FREQUENCY(dx0,conf) returns the aliasing frequency for the given
 %   interspacing of secondary sources. The value is calculated after
 %   spors2009.
-%
-%   S. Spors and J. Ahrens - Spatial sampling artifacts of wave field synthesis
-%   for the reproduction of virtual point sources. 126th AES, May 2009.
+%   
+%   References:
+%       S. Spors and J. Ahrens - Spatial sampling artifacts of wave field
+%       synthesis for the reproduction of virtual point sources. 126th AES,
+%       May 2009.
+%       E. Start - Direct Sound Enhancement by Wave Field Synthesis. TU Delft,
+%       1997.
 %
 %   see also: wave_field_mono_wfs_25d
 
@@ -60,6 +64,7 @@ error(nargchk(nargmin,nargmax,nargin));
 if nargin==nargmax-1
     conf = SFS_config;
 end
+%[xs,X] = position_vector(xs,X);
 
 
 %% ===== Configuration ==================================================
@@ -68,3 +73,41 @@ c = conf.c;
 
 %% ===== Computation =====================================================
 fal = c/(2*dx0);
+return
+
+%FIXME: the following code works not probably at the moment.
+% The alias frequency depends on the plane waves that are present in the sound
+% field. And which plane waves can be present depends on the concrete angle
+% between the source/listener and the array of secondary sources. The following
+% code uses the Fraunhofer approximation in order to calculate the alias
+% frequency, see Start1997 p73, eq 5.17
+%
+% get secondary source positions and activity
+x0 = secondary_source_positions(L,conf);
+ls_activity = secondary_source_selection(x0,xs,src);
+win = tapering_window(L,ls_activity,conf);
+ls_activity = ls_activity .* win;
+% === get angles between array edges and virtual source position ===
+% find active secondary sources
+idx = (( ls_activity>0 ));
+x0 = x0(idx,:);
+% orientation of loudspeaker array
+v_array = x0(1,1:3)-x0(end,1:3);
+phi_array = cart2sph(v_array(1),v_array(2),v_array(3))-pi/2;
+% angle between array edges and virtual source position
+v1 = x0(1,1:3)-xs;
+v2 = x0(end,1:3)-xs;
+phix01 = cart2sph(v1(1),v1(2),v1(3))-phi_array;
+phix02 = cart2sph(v2(1),v2(2),v2(3))-phi_array;
+% angle between array edges and listener position
+v1 = x0(1,1:3)-X;
+v2 = x0(end,1:3)-X;
+phiX1 = cart2sph(v1(1),v1(2),v1(3))+phi_array;
+phiX2 = cart2sph(v2(1),v2(2),v2(3))+phi_array;
+% use only the smallest of these angles
+phi1 = min([abs(phix01) abs(phiX1)]);
+phi2 = min([abs(phix02) abs(phiX2)]);
+%                    c
+% fal = -----------------------------
+%       dx0 (sin(|phi1|)+sin(|phi2|))
+fal = c / (dx0*(sin(phi1)+sin(phi2)));

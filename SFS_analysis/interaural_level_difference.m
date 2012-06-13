@@ -64,8 +64,4 @@ end
 
 
 %% ===== Computation =====================================================
-% See if we have more than one frequency channel in the insig
-ild = zeros(1,size(insigleft,2));
-for ii = 1:size(insigleft,2)
-    ild(ii) = db(rms(insigright(:,ii)))-db(rms(insigleft(:,ii)));
-end
+ild = db(rms(insigright(:,:)))-db(rms(insigleft(:,:)));

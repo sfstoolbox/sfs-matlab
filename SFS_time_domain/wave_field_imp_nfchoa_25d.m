@@ -1,4 +1,4 @@
-function [x,y,p,ls_activity,dds] = wave_field_imp_nfchoa_25d(X,Y,xs,src,L,conf)
+function [x,y,p,ls_activity] = wave_field_imp_nfchoa_25d(X,Y,xs,src,L,conf)
 %WAVE_FIELD_IMP_NFCHOA_25D returns the wave field in time domain of an impulse
 %
 %   Usage: [x,y,p,ls_activity] = wave_field_imp_nfchoa_25d(X,Y,xs,src,L,[conf])
@@ -150,10 +150,11 @@ p = p ./ (pi*L);
 % === Checking of wave field ===
 check_wave_field(p,frame);
 
+ls_activity = 1;
+
 % === Plotting ===
 if (useplot)
     conf.plot.usedb = 1;
-    ls_activity = 1;
     plot_wavefield(x,y,p,L,ls_activity,conf);
 end
 

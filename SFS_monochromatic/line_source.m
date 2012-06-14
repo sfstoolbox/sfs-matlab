@@ -76,11 +76,11 @@ c = conf.c;
 omega = 2*pi*f;
 % Source model for a line source: 2D Green's function.
 %
-%              i   (1)/ w        \
+%              i   (2)/ w        \
 % G(x-xs,w) =  -  H0  | - |x-xs| |
 %              4      \ c        /
 %
 % see: Williams1999, p. 266
 %
-S = 1i/4 * besselh(0,1,omega/c* ...
+S = 1i/4 * besselh(0,2,omega/c* ...
     sqrt( (x-xs(1)).^2 + (y-xs(2)).^2 ));

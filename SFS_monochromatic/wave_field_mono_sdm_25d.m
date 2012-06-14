@@ -1,19 +1,19 @@
-function [x,y,P] = wave_field_mono_sdm_25d(X,Y,xs,L,f,src,conf)
+function [x,y,P] = wave_field_mono_sdm_25d(X,Y,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_SDM_25D simulates a wave field for 2.5D NFC-HOA
 %
-%   Usage: [x,y,P] = wave_field_mono_sdm_25d(X,Y,xs,L,f,src,[conf])
+%   Usage: [x,y,P] = wave_field_mono_sdm_25d(X,Y,xs,src,f,L,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
 %       Y           - [ymin,ymax]
 %       xs          - position of point source (m)
-%       L           - array length (m)
-%       f           - monochromatic frequency (Hz)
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
+%       f           - monochromatic frequency (Hz)
+%       L           - array length (m)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -21,7 +21,7 @@ function [x,y,P] = wave_field_mono_sdm_25d(X,Y,xs,L,f,src,conf)
 %       y           - corresponding y axis
 %       P           - Simulated wave field
 %
-%   WAVE_FIELD_MONO_SDM_25D(X,Y,xs,L,f,src,conf) simulates a wave
+%   WAVE_FIELD_MONO_SDM_25D(X,Y,xs,src,f,L,conf) simulates a wave
 %   field of the given source type (src) using a SDM 2.5 dimensional driving
 %   function in the space/time-frequency domain. This means by calculating 
 %   the integral for P with a summation.
@@ -104,7 +104,7 @@ x0 = secondary_source_positions(L,conf);
 % Initialize empty wave field
 P = zeros(length(y),length(x));
 % Driving function D(x0,omega)
-D = driving_function_mono_sdm_25d(x0,xs,f,src,conf);
+D = driving_function_mono_sdm_25d(x0,xs,src,f,conf);
 % Generate tapering window
 win = tapering_window(L,ones(1,length(x0)),conf);
 

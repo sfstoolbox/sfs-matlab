@@ -17,8 +17,7 @@ function outsig = auralize_ir(ir,content,usenorm,conf)
 %                   The corresponding content files are specified in
 %                   SFS_config.
 %       normalize - normalize the signal (1 or 0), default: 1
-%       conf      - optional struct containing configuration variables (see
-%                   SFS_config for default values)
+%       conf      - optional configuration struct (see SFS_config)
 %
 %   AURALIZE_IR(ir,content,normalize) convolves the first two channels of the
 %   given IR with the given content and returns the resulting outsig. If

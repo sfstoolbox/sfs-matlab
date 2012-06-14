@@ -1,25 +1,24 @@
-function ir_wfs = ir_wfs_25d(X,phi,xs,L,src,irs,conf)
+function ir_wfs = ir_wfs_25d(X,phi,xs,src,L,irs,conf)
 %BRS_WFS_25D Generate a IR for WFS
 %
-%   Usage: ir_wfs = ir_wfs_25d(X,phi,xs,L,src,irs,[conf])
+%   Usage: ir_wfs = ir_wfs_25d(X,phi,xs,src,L,irs,[conf])
 %
 %   Input parameters:
 %       X       - listener position (m)
 %       phi     - listener direction [head orientation] (rad)
 %                 0 means the head is oriented towards the x-axis.
 %       xs      - virtual source position [ys > Y0 => focused source] (m)
-%       L       - Length of loudspeaker array (m)
 %       src     - source type: 'pw' -plane wave
 %                              'ps' - point source
 %                              'fs' - focused source
+%       L       - Length of loudspeaker array (m)
 %       irs     - IR data set for the secondary sources
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       iri_wfs - Impulse response for the desired WFS array (nx2 matrix)
 %
-%   IR_WFS_25D(X,phi,xs,L,irs,src,conf) calculates a binaural room impulse
+%   IR_WFS_25D(X,phi,xs,src,L,irs,conf) calculates a binaural room impulse
 %   response for a virtual source at xs for a virtual WFS array and a
 %   listener located at X.
 %

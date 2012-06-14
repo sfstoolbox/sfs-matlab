@@ -1,17 +1,17 @@
-function [alpha,a,t] = wave_front_direction(X,phi,xs,L,src,conf)
+function [alpha,a,t] = wave_front_direction(X,phi,xs,src,L,conf)
 %WAVE_FRONT_DIRECTION returns direction, amplitude and time of the single wave
 %   fronts for WFS
 %
-%   Usage: [alpha,a,t] = wave_front_direction(X,phi,xs,L,[conf])
+%   Usage: [alpha,a,t] = wave_front_direction(X,phi,xs,src,L,[conf])
 %
 %   Input parameters:
 %       X,phi   - listener position and direction (m),(rad)
 %       xs      - virtual source position (m)
-%       L       - length of the linear loudspeaker array (m)
 %       src     - used source model:
 %                   'pw' - plane wave
 %                   'ps' - point source
 %                   'fs' - focused source
+%       L       - length of the linear loudspeaker array (m)
 %       conf    - optional struct containing configuration variables (see
 %                 SFS_config for default values)
 %
@@ -25,7 +25,7 @@ function [alpha,a,t] = wave_front_direction(X,phi,xs,L,src,conf)
 %   WFS array at the given listener position X for the given virtual source
 %   xs and given array length L.
 %
-%   see also: brs_wfs_25d
+%   see also: ir_wfs_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *

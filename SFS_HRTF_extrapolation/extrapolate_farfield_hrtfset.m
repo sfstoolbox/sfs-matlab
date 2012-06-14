@@ -1,7 +1,7 @@
 function irs_pw = extrapolate_farfield_hrtfset(irs,conf)
 %EXTRAPOLATE_FARFIELD_HRTFSET far-field extrapolation of a given HRTF dataset
 %
-%   Usage: brs = extrapolate_farfield_hrtfset(irs,[conf])
+%   Usage: irs_pw = extrapolate_farfield_hrtfset(irs,[conf])
 %
 %   Input parameters:
 %       irs     - IR data set for the virtual secondary sources
@@ -10,6 +10,13 @@ function irs_pw = extrapolate_farfield_hrtfset(irs,conf)
 %
 %   Output parameters:
 %       irs_pw  - IR data set extra polated to conation plane wave IRs
+%
+%   EXTRAPOLATE_FARFIELD_HRTFSET(IRS) generates a far-field extrapolated set of
+%   impulse responses, using the given irs set. Far-field means that the
+%   resulting impulse responses are plane waves. The extrapolation is done via
+%   2.5D WFS.
+%
+%   see also: ir_point_source, get_ir, driving_function_imp_wfs_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -109,8 +116,8 @@ for ii = 1:length(irs.apparent_azimuth)
         dt = delay*fs + round(R/conf.c*fs);
         w=a*win(l);
         % truncate IR length
-        irl = fix_ir_length(irs.left(:,l),length(irs.left(:,l)),dt);
-        irr = fix_ir_length(irs.right(:,l),length(irs.right(:,l)),dt);
+        irl = fix_ir_length(irs.left(:,l),length(irs.left(:,l)),0);
+        irr = fix_ir_length(irs.right(:,l),length(irs.right(:,l)),0);
         % delay and weight HRTFs
         irs_pw.left(:,ii) = irs_pw.left(:,ii) + delayline(irl',dt,w,conf)';
         irs_pw.right(:,ii) = irs_pw.right(:,ii) + delayline(irr',dt,w,conf)';
@@ -119,8 +126,6 @@ for ii = 1:length(irs.apparent_azimuth)
     irs_pw.left(:,ii) = irs_pw.left(:,ii)*10^(Af(ii)/20);
     irs_pw.right(:,ii) = irs_pw.right(:,ii)*10^(-Af(ii)/20);
 
-    % store result to output variable
-    %brs(:,(ii-1)*2+1:ii*2) = brir;
 end
 
 %% ===== Pre-equalization ===============================================

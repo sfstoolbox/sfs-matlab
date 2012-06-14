@@ -1,25 +1,24 @@
-function brs = brs_wfs_25d(X,phi,xs,L,src,irs,conf)
+function brs = brs_wfs_25d(X,phi,xs,src,L,irs,conf)
 %BRS_WFS_25D generates a BRS set for use with the SoundScapeRenderer
 %
-%   Usage: brs = brs_wfs_25d(X,phi,xs,L,src,irs,[conf])
+%   Usage: brs = brs_wfs_25d(X,phi,xs,src,L,irs,[conf])
 %
 %   Input parameters:
 %       X       - listener position (m)
 %       phi     - listener direction [head orientation] (rad)
 %       xs      - virtual source position [ys > Y0 => focused source] (m)
-%       L       - Length of linear loudspeaker array (m)
 %       src     - source type: 'pw' - plane wave
 %                              'ps' - point source
 %                              'fs' - focused source
+%       L       - Length of linear loudspeaker array (m)
 %       irs     - IR data set for the second sources
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       brs     - conf.N x 2*nangles matrix containing all brs (2
 %                 channels) for every angles of the BRS set
 %
-%   BRS_WFS_25D(X,phi,xs,L,irs,conf) prepares a BRS set for
+%   BRS_WFS_25D(X,phi,xs,src,L,irs,conf) prepares a BRS set for
 %   a virtual source at xs for a linear WFS array and the given
 %   listener position.
 %   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
@@ -105,5 +104,5 @@ brs = zeros(N,2*length(angles));
 for ii = 1:length(angles)
     % Compute BRIR for the desired WFS system
     brs(:,(ii-1)*2+1:ii*2) = ...
-        ir_wfs_25d(X,angles(ii)+phi,xs,L,src,irs,conf);
+        ir_wfs_25d(X,angles(ii)+phi,xs,src,L,irs,conf);
 end

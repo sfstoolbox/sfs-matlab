@@ -1,22 +1,21 @@
-function ir = generic_wfs_25d(xs,L,src,conf)
+function ir = generic_wfs_25d(xs,src,L,conf)
 %GENRIC_WFS_25D Generate a IR for the generic renderer of the SSR
 %
-%   Usage: ir = generic_wfs_25d(xs,L,src,[conf])
+%   Usage: ir = generic_wfs_25d(xs,src,L,[conf])
 %
 %   Input parameters:
 %       xs      - virtual source position [ys > Y0 => focused source] (m)
-%       L       - Length of linear loudspeaker array (m)
 %       src     - source type: 'pw' -plane wave
 %                              'ps' - point source
 %                              'fs' - focused source
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
+%       L       - Length of linear loudspeaker array (m)
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ir      - Impulse response for the desired WFS array loudspeaker
 %                 (nx1)
 %
-%   GENERIC_WFS_25D(xs,L,src,conf) calculates an impulse
+%   GENERIC_WFS_25D(xs,src,L,conf) calculates an impulse
 %   response for a virtual source at xs for the loudspeakers of a WFS
 %   array. every loudspeaker of the array is represented by one column in
 %   the impulse response.

@@ -1,19 +1,19 @@
-function [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,L,f,src,conf)
+function [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_WFS_25D simulates a wave field for 2.5D WFS
 %
-%   Usage: [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,L,f,src,[conf])
+%   Usage: [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
 %       Y           - [ymin,ymax]
 %       xs          - position of point source (m)
-%       L           - array length (m)
-%       f           - monochromatic frequency (Hz)
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
+%       f           - monochromatic frequency (Hz)
+%       L           - array length (m)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -123,7 +123,7 @@ for ii = 1:size(x0,1)
 
     % ====================================================================
     % Driving function D(x0,omega)
-    D = driving_function_mono_wfs_25d(x0(ii,:),xs,f,src,conf);
+    D = driving_function_mono_wfs_25d(x0(ii,:),xs,src,f,conf);
 
     % ====================================================================
     % Integration

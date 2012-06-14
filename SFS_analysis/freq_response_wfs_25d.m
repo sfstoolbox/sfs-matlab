@@ -1,23 +1,23 @@
-function [f,S] = freq_response_wfs_25d(X,xs,L,src,conf)
+function [f,S] = freq_response_wfs_25d(X,xs,src,L,conf)
 %FREQ_RESPONSE_WFS_25D simulates the frequency response for 2.5D WFS
 %
-%   Usage: [f,S] = freq_response_wfs_25d(X,xs,L,src,[conf])
+%   Usage: [f,S] = freq_response_wfs_25d(X,xs,src,L,[conf])
 %
 %   Input parameters:
 %       X           - listener position (m)
 %       xs          - position of virtual source (m)
-%       L           - array length (m)
 %       src         - source type of the virtual source
 %                         'pw' -plane wave
 %                         'ps' - point source
 %                         'fs' - focused source
+%       L           - array length (m)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       f           - corresponding frequency (x) axis
 %       S           - simulated frequency response
 %
-%   FREQ_RESPONSE_WFS_25D(X,xs,L,src,conf) simulates the frequency
+%   FREQ_RESPONSE_WFS_25D(X,xs,src,L,conf) simulates the frequency
 %   response of the wave field at the given position X. The wave field is
 %   simulated for the given source type (src) using a WFS 2.5 dimensional
 %   driving function in the temporal domain.
@@ -117,7 +117,7 @@ for ii = 1:length(f)
 
         % ================================================================
         % Driving function D(x0,omega)
-        D = driving_function_mono_wfs_25d(x0(n,:),xs,f(ii),src,conf);
+        D = driving_function_mono_wfs_25d(x0(n,:),xs,src,f(ii),conf);
 
         % ================================================================
         % Integration

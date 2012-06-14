@@ -1,19 +1,19 @@
-function [x,y,P] = wave_field_mono_sdm_25d_kx(X,Y,xs,L,f,src,conf)
+function [x,y,P] = wave_field_mono_sdm_25d_kx(X,Y,xs,src,f,L,conf)
 %WAVE_FIELD_SDM_WFS_25D_KX simulates the wave field of a given source for 25D SDM
 %IN THE SPATIAL FREQUENCY DOMAIN
-%   Usage: [x,y,P] = wave_field_mono_sdm_25d_kx(X,Y,xs,ys,L,f,src,[conf])
+%   Usage: [x,y,P] = wave_field_mono_sdm_25d_kx(X,Y,xs,src,f,L,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
 %       Y           - [ymin,ymax]
 %       xs          - position of point source (m)
-%       L           - array length (m)
-%       f           - monochromatic frequency (Hz)
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
+%       f           - monochromatic frequency (Hz)
+%       L           - array length (m)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -21,7 +21,7 @@ function [x,y,P] = wave_field_mono_sdm_25d_kx(X,Y,xs,L,f,src,conf)
 %       y           - corresponding y axis
 %       P           - Simulated wave field
 %
-%   WAVE_FIELD_MONO_SDM_25D_KX(X,Y,xs,L,f,src,conf) simulates a wave field of
+%   WAVE_FIELD_MONO_SDM_25D_KX(X,Y,xs,src,f,L,conf) simulates a wave field of
 %   the given source type (src) using a SDM 2.5 dimensional driving function
 %   in the spectro-temporal freqeuncy domain. 
 %   To plot the result use plot_wavefield(x,y,P).
@@ -148,7 +148,7 @@ end
 
 % ========================================================================
 % Driving function
-Dkx = driving_function_mono_sdm_25d_kx(kx,xs,f,src,conf);
+Dkx = driving_function_mono_sdm_25d_kx(kx,xs,src,f,conf);
 % Convolution with a window representing the length L of the loudspeaker array
 % FIXME: this doesn't work with evanescent waves at the moment
 %w = L * sin(kx*L/2)./(kx*L/2);

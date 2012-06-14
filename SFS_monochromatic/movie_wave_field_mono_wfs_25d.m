@@ -1,23 +1,23 @@
-function movie_wave_field_mono_wfs_25d(X,Y,xs,L,f,src,outfile,conf)
+function movie_wave_field_mono_wfs_25d(X,Y,xs,src,f,L,outfile,conf)
 %MOVIE_WAVE_FIELD_MONO_WFS_25D generates movie a 2.5D WFS wave field
 %
-%   Usage: movie_wave_field_mono_wfs_25d(X,Y,xs,L,f,src,outfile,[conf])
+%   Usage: movie_wave_field_mono_wfs_25d(X,Y,xs,src,f,L,outfile,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
 %       Y           - [ymin,ymax]
 %       xs          - position of point source (m)
-%       L           - array length (m)
-%       f           - monochromatic frequency (Hz)
 %       src         - sourcetype of the virtual source:
 %                         'pw' - plane wave (xs, ys are the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
+%       f           - monochromatic frequency (Hz)
+%       L           - array length (m)
 %       outfile     - name for the movie file
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   MOVIE_WAVE_FIELD_MONO_WFS_25D(X,Y,xs,L,f,src,outfile,conf) generates a
+%   MOVIE_WAVE_FIELD_MONO_WFS_25D(X,Y,xs,src,f,L,outfile,conf) generates a
 %   movie of simulations of a wave field of the given source positioned at xs
 %   using a WFS 2.5 dimensional driving function in the temporal domain with
 %   different phase.
@@ -90,7 +90,7 @@ for ii = 1:length(phase)-1
     conf.phase = phase(ii);
     conf.useplot = 0;
     % Calculate wave field for the given phase
-    [x,y,P] = wave_field_mono_wfs_25d(X,Y,xs,L,f,src,conf);
+    [x,y,P] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,conf);
     x0 = secondary_source_positions(L,conf);
     ls_activity = secondary_source_selection(x0,xs,src);
     % Generate tapering window

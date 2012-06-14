@@ -1,18 +1,19 @@
-function [Dkx] = driving_function_mono_sdm_25d_kx(kx,xs,f,src,conf)
+function [Dkx] = driving_function_mono_sdm_25d_kx(kx,xs,src,f,conf)
 %DRIVING_FUNCTION_MONO_SDM_25D_KX returns the driving signal D for 2.5D SDM
 %IN THE SPATIAL FREQUENCY (kx-)DOMAIN
-%   Usage: Dkx = driving_function_mono_sdm_25d_kx(kx,xs,f,src,[conf])
+%
+%   Usage: Dkx = driving_function_mono_sdm_25d_kx(kx,xs,src,f,[conf])
 %
 %   Input parameters:
 %       kx          - position of the secondary source in the spectro-temporal
 %                     domain (m)
 %       xs          - position of virtual source or direction of plane wave (m)
-%       f           - frequency of the monochromatic source (Hz)
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
+%       f           - frequency of the monochromatic source (Hz)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:

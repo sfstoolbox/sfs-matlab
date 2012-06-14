@@ -1,18 +1,18 @@
-function [x,y,p,ls_activity,dds] = wave_field_imp_wfs_25d(X,Y,xs,L,src,conf)
+function [x,y,p,ls_activity,dds] = wave_field_imp_wfs_25d(X,Y,xs,src,L,conf)
 %WAVE_FIELD_IMP_WFS_25D returns the wave field in time domain of an impulse
 %
-%   Usage: [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,L,src,[conf])
+%   Usage: [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,src,L,[conf])
 %
 %   Input options:
 %       X           - length of the X axis (m); single value or [xmin,xmax]
 %       Y           - length of the Y axis (m); single value or [ymin,ymax]
 %       xs          - position of point source (m)
-%       L           - array length (m)
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs, ys are the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
+%       L           - array length (m)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output options:
@@ -20,7 +20,7 @@ function [x,y,p,ls_activity,dds] = wave_field_imp_wfs_25d(X,Y,xs,L,src,conf)
 %       p           - wave field (length(y) x length(x))
 %       ls_activity - activity of the secondary sources
 %
-%   WAVE_FIELD_IMP_WFS_25D(X,Y,xs,L,src,conf) simulates a wave field of the
+%   WAVE_FIELD_IMP_WFS_25D(X,Y,xs,src,L,conf) simulates a wave field of the
 %   given source type (src) using a WFS 2.5 dimensional driving function with
 %   a delay line.
 %   To plot the result use:

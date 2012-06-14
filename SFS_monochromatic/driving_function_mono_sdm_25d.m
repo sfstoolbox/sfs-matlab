@@ -1,18 +1,18 @@
-function [D] = driving_function_mono_sdm_25d(x0,xs,f,src,conf)
+function [D] = driving_function_mono_sdm_25d(x0,xs,src,f,conf)
 %DRIVING_FUNCTION_MONO_SDM_25D returns the driving signal D for 2.5D SDM
 %
 %
-%   Usage: D = driving_function_mono_sdm_25d(x0,xs,f,src,[conf])
+%   Usage: D = driving_function_mono_sdm_25d(x0,xs,src,f,[conf])
 %
 %   Input parameters:
 %       x           - positions of the secondary sources (m)
 %       xs          - position of virtual source or direction of plane wave (m)
-%       f           - frequency of the monochromatic source (Hz)
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
+%       f           - frequency of the monochromatic source (Hz)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:

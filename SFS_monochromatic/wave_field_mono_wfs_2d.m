@@ -1,4 +1,4 @@
-function [x,y,P,ls_activity] = wave_field_mono_wfs_2d(X,Y,xs,L,f,src,conf)
+function [x,y,P,ls_activity] = wave_field_mono_wfs_2d(X,Y,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_WFS_25D simulates a wave field for 2D WFS
 %
 %   Usage: [x,y,P] = wave_field_mono_wfs_2d(X,Y,xs,L,f,src,[conf])
@@ -7,13 +7,13 @@ function [x,y,P,ls_activity] = wave_field_mono_wfs_2d(X,Y,xs,L,f,src,conf)
 %       X           - [xmin,xmax]
 %       Y           - [ymin,ymax]
 %       xs          - position of point source (m)
-%       L           - array length (m)
-%       f           - monochromatic frequency (Hz)
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs, ys are the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
+%       f           - monochromatic frequency (Hz)
+%       L           - array length (m)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -21,7 +21,7 @@ function [x,y,P,ls_activity] = wave_field_mono_wfs_2d(X,Y,xs,L,f,src,conf)
 %       y           - corresponding y axis
 %       P           - Simulated wave field
 %
-%   WAVE_FIELD_MONO_WFS_2D(X,Y,xs,L,f,src,conf) simulates a wave
+%   WAVE_FIELD_MONO_WFS_2D(X,Y,xs,src,f,L,conf) simulates a wave
 %   field of the given source type (src) using a WFS 2 dimensional driving
 %   function in the temporal domain. This means by calculating the integral for
 %   P with a summation.
@@ -123,7 +123,7 @@ for ii = 1:length(x0)
 
     % ====================================================================
     % Driving function D(x0,omega)
-    D = driving_function_mono_wfs_2d(x0(ii,:),xs,f,src,conf);
+    D = driving_function_mono_wfs_2d(x0(ii,:),xs,src,f,conf);
 
     % ====================================================================
     % Integration

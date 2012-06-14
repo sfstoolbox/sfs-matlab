@@ -63,15 +63,15 @@ conf.xref = [0 2];
 % Plane wave
 src = 'pw';
 xs = [0.5,1];
-ir_wfs_25d(X,phi,xs,L,src,irs,conf);
+ir_wfs_25d(X,phi,xs,src,L,irs,conf);
 % Point source
 src = 'ps';
 xs = [0,-1];
-ir_wfs_25d(X,phi,xs,L,src,irs,conf);
+ir_wfs_25d(X,phi,xs,src,L,irs,conf);
 % Focused source
 src = 'fs';
 xs = [0,1];
-ir_wfs_25d(X,phi,xs,L,src,irs,conf);
+ir_wfs_25d(X,phi,xs,src,L,irs,conf);
 
 % === Circular array ===
 conf.array = 'circle';
@@ -81,15 +81,15 @@ conf.xref = [0,0];
 % Plane wave
 src = 'pw';
 xs = [0.5,1];
-ir_wfs_25d(X,phi,xs,L,src,irs,conf);
+ir_wfs_25d(X,phi,xs,src,L,irs,conf);
 % Point source
 src = 'ps';
 xs = [0.5,2];
-ir_wfs_25d(X,phi,xs,L,src,irs,conf);
+ir_wfs_25d(X,phi,xs,src,L,irs,conf);
 % Focused source
 src = 'fs';
 xs = [0.5,0.5];
-ir_wfs_25d(X,phi,xs,L,src,irs,conf);
+ir_wfs_25d(X,phi,xs,src,L,irs,conf);
 
 % === Box shaped array ===
 conf.array = 'box';
@@ -99,12 +99,12 @@ conf.xref = [0,0];
 % Plane wave
 src = 'pw';
 xs = [0.5,1];
-ir_wfs_25d(X,phi,xs,L,src,irs,conf);
+ir_wfs_25d(X,phi,xs,src,L,irs,conf);
 % Point source
 src = 'ps';
 xs = [0.5,2];
-ir_wfs_25d(X,phi,xs,L,src,irs,conf);
+ir_wfs_25d(X,phi,xs,src,L,irs,conf);
 % Focused source
 src = 'fs';
 xs = [0.5,0.5];
-ir_wfs_25d(X,phi,xs,L,src,irs,conf);
+ir_wfs_25d(X,phi,xs,src,L,irs,conf);

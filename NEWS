@@ -6,6 +6,8 @@ User-visible changes in the Sound Field Synthesis-Toolbox. Recent changes on top
     - added NFCHOA 2.5D binaural simulations
     - added SDM 2.5D monochromatic
     - make NFCHOA work under Octave
+    - fixed direction of plane waves and point sources for NFCHOA time domain
+      simulations
     - changed syntax for wave_field_* and driving_* functions:
         xs,f,src => xs,src,f
         xs,L,src => xs,src,L

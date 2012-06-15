@@ -83,7 +83,14 @@ else
     order=floor((nls+1)/2);
 end
 
-[theta_src, r_src] = cart2pol(xs(1),xs(2));
+% if-request as a workaround for the right direction of the wave field
+if strcmpi(src,'pw')
+    [theta_src, r_src] = cart2pol(-xs(1),xs(2));
+elseif strcmpi(src,'ps')
+    [theta_src, r_src] = cart2pol(xs(1),-xs(2));
+else
+    [theta_src, r_src] = cart2pol(xs(1),xs(2));
+end
 
 %% ===== Computation =====================================================
 

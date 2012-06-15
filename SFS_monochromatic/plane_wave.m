@@ -58,7 +58,7 @@ nargmin = 4;
 nargmax = 5;
 error(nargchk(nargmin,nargmax,nargin));
 isargmatrix(x,y);
-isargposition(xs);
+xs = position_vector(xs);
 isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
@@ -75,11 +75,13 @@ c = conf.c;
 omega = 2*pi*f;
 % Source model for a plane wave:
 %
-% S(x,w) = e^(-i w/c nx)
+% S(x,w) = e^(-i w/c n x)
 %
 % see: Williams1999, p. 21
 %
+% direction of plane wave
 nxs = xs / norm(xs);
+%
 %S = exp(-1i*omega/c.*repmat(nxs(1:2),size(x,1))*[x y]');
 % FIXME: replace this loop by something with repmat
 for ii = 1:size(x,1)
@@ -87,3 +89,25 @@ for ii = 1:size(x,1)
         S(ii,jj) = exp(-1i*omega/c.*nxs(1:2)*[x(ii,jj) y(ii,jj)]');
     end
 end
+% the following code enables us to replace this loop
+%
+% Get a matrix in the form of
+% 1 1 0 0 0 0
+% 0 0 1 1 0 0
+% 0 0 0 0 1 1
+%E = eye(2*size(x,1));
+%E = E(1:2:end,:)+E(2:2:end,:);
+%% Multiply this matrix with the plane wave direction
+%N = repmat([nxs(1) nxs(2)],size(x,1)]) .* E;
+%% Interlace x and y into one matrix
+%% x11 x12 ... x1m
+%% y11 y12 ... y1m
+%% .   .       .
+%% .   .       .
+%% xn1 xn2 ... xnm
+%% yn1 yn2 ... ynm
+%XY = zeros(2*size(x,1),size(x,2));
+%XY(1:2:end,:) = x;
+%XY(2:2:end,:) = y;
+%% calculate sound field
+%S = exp(-1i*omega/c.*N*XY);

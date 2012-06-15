@@ -5,8 +5,7 @@ function irs_pw = extrapolate_farfield_hrtfset(irs,conf)
 %
 %   Input parameters:
 %       irs     - IR data set for the virtual secondary sources
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       irs_pw  - IR data set extra polated to conation plane wave IRs

@@ -7,8 +7,7 @@ function t = wave_front_time(X,xs,L,conf)
 %       X       - listener position (m)
 %       xs      - position of the virtual source (m)
 %       L       - length of the linear loudspeaker array
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   WAVE_FRONT_TIME(X,xs,L) calculates the time of occuring of the first
 %   echo (focused sources) resp. the last echo (virtual point source) at the

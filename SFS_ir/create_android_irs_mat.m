@@ -1,7 +1,7 @@
 function irs = create_android_irs_mat(irs,nsamples,fs,conf)
 %CREATE_ANDROID_IRS_MAT generates an IR mat file for the Android phone
-%   Usage: irs = create_android_irs_mat(irs,nsamples,fs,conf)
-%          irs = create_android_irs_mat(irs,nsamples,fs)
+%   
+%   Usage: irs = create_android_irs_mat(irs,nsamples,fs,[conf])
 %
 %   Input parameters:
 %       irs         - irs set to shorten

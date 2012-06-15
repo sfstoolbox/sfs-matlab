@@ -7,7 +7,7 @@ function x0 = secondary_source_positions(L,conf)
 %   Input options:
 %       L           - the size (m) of the array (length for a linear array,
 %                     diameter for a circle or a box)
-%       conf        - configuration struct
+%       conf        - optional configuration struct (see SFS_config)
 %
 %   Output options:
 %       x0          - secondary source positions and directions (m)

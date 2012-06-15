@@ -5,15 +5,13 @@ function sig =  bandpass(sig,conf)
 %
 %   Input parameters:
 %       sig  - input signal (vector)
-%       conf - optional struct containing configuration variables (see
-%              SFS_config for default values)
+%       conf - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       sig  - filtered signal
 %
 %   BANDPASS(sig) filters the given signal with a bandpass filter
-%   with ...
-%   FIXME: @Sascha add the rest of the comment
+%   with cutoff frequencies of 10Hz and 20kHz.
 %
 %   see also: wave_field_imp_wfs_25d
 

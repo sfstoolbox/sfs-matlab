@@ -6,7 +6,7 @@ function P = norm_wave_field(P,x,y,conf)
 %   Input options:
 %       P       - wave field
 %       x,y     - vectors conatining the x- and y-axis values
-%       conf    - optional configuration struct
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output options:
 %       P       - normalized wave field

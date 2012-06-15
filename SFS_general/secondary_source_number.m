@@ -6,8 +6,7 @@ function [nls,L] = secondary_source_number(L,conf)
 %
 %   Input parameters:
 %       L       - length of the loudspeaker array (m)
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       nls     - number of needed loudspeaker

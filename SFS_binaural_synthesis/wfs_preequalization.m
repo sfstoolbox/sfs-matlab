@@ -5,8 +5,7 @@ function ir = wfs_preequalization(ir,conf)
 %
 %   Input parameters:
 %       ir      - IR to which the pre-equalization filter should be applied
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ir      - IR with applied pre-equalization

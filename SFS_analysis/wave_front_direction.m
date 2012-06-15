@@ -12,8 +12,7 @@ function [alpha,a,t] = wave_front_direction(X,phi,xs,src,L,conf)
 %                   'ps' - point source
 %                   'fs' - focused source
 %       L       - length of the linear loudspeaker array (m)
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       alpha   - angle of incident for every echo (rad)

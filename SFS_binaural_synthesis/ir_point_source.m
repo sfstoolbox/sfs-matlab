@@ -8,8 +8,7 @@ function ir_ps = ir_point_source(X,phi,xs,irs,conf)
 %       phi     - listener direction [head orientation] (rad)
 %       xs      - source position (m)
 %       irs     - IR data set for the second sources
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ir_ps   - Impulse response (nx2 matrix)

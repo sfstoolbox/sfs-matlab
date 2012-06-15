@@ -4,8 +4,7 @@ function hpre = wfs_prefilter(conf)
 %   Usage: hpre = wfs_prefilter([conf])
 %
 %   Input parameters:
-%       conf - optional struct containing configuration variables (see
-%              SFS_config for default values)
+%       conf - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       hpre - pre-equalization filter

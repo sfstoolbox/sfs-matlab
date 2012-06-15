@@ -7,8 +7,7 @@ function ir = reduce_ir(ir,fs,nsamples,conf)
 %       ir          - two channel IR signal
 %       fs          - sampling rate of the target IR
 %       nsamples    - length of the target IR
-%       conf        - optional struct containing configuration variables
-%                     (see SFS_config for default values)
+%       conf        - optional configuration struct (see SFS_config)
 %
 %   Output paramteres:
 %       ir          - two channel IR signal

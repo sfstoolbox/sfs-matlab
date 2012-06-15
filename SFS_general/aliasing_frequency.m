@@ -5,8 +5,7 @@ function fal = aliasing_frequency(dx0,conf)
 %
 %   Input options:
 %       dx0     - distance between adjacent secondary sources (m)
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output options:
 %       fal     - aliasing frequency (Hz)

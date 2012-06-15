@@ -13,8 +13,7 @@ function plot_wavefield(x,y,P,varargin)
 %                     should be active, you can simply set it to 1. Otherwise a
 %                     vector with entries for every single loudspeaker is
 %                     needed.
-%       conf        - optional struct containing configuration variables (see
-%                     SFS_config for default values)
+%       conf        - optional configuration struct (see SFS_config)
 %
 %   PLOT_WAVEFIELD(x,y,P,L,ls_activity,conf) plots the wavefield P in dependence
 %   of the x and y axes. Therefore the wavefield is normalized to 1 at its

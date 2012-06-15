@@ -1,5 +1,6 @@
 function irs = create_irs_mat(irset)
 %CREATE_IRS_MAT Save a IR dataset as a mat file
+%   
 %   Usage: create_irs_mat(irset)
 %
 %   Input parameters:

@@ -6,8 +6,7 @@ function draw_loudspeakers(x0,ls_activity,conf)
 %   Input options:
 %       x0          - positions and directions of the loudspeakers (m)
 %       ls_activity - activity of the loudspeaker
-%       conf        - optional struct containing configuration variables (see
-%                     SFS_config for default values)
+%       conf        - optional configuration struct (see SFS_config)
 %
 %   DRAW_LOUDSPEAKERS(x0,ls_activity) draws loudspeaker symbols at
 %   the given secondary source positions. The loudspeaker symbols are pointing

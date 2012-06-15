@@ -7,8 +7,7 @@ function win = tapering_window(L,ls_activity,conf)
 %       L           - length of the loudspeaker array (m)
 %       ls_activity - vector containing the activity of the loudspeakers from
 %                     0..1
-%       conf        - optional struct containing configuration variables (see
-%                     SFS_config for default values)
+%       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       win     - tapering window (nlsx1)

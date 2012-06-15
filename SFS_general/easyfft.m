@@ -6,8 +6,7 @@ function [amplitude,phase,f] = easyfft(sig,conf)
 %
 %   Input parameters:
 %       sig         - one channel audio waveform
-%       conf        - optional struct containing configuration variables (see
-%                     SFS_config for default values)
+%       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       amplitude   - amplitude spectrum of the input signal

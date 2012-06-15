@@ -7,8 +7,7 @@ function sig = delayline(sig,dt,weight,conf)
 %       sig     - input signal (vector)
 %       dt      - delay (samples)
 %       weight  - amplitude weighting factor
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameter:
 %       sig     - delayed signal

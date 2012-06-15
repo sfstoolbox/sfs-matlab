@@ -6,8 +6,7 @@ function label = print_label(dim,unit,conf)
 %   Input parameters:
 %       dim     - name of label dimension
 %       unit    - name of label unit, default: no unit
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Ouput parameters:
 %       label   - label to put on an axis of a plot

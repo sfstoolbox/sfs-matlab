@@ -5,8 +5,7 @@ function irs = correct_irs_angle_order(irs,conf)
 %
 %   Input options
 %       irs     - irs struct
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output options
 %       irs     - irs struct with corrected angle ordering

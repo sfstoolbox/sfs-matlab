@@ -5,8 +5,7 @@ function ir = compensate_headphone(ir,conf)
 %
 %   Input parameters:
 %       ir      - Impulse response to which the compensation should be applied
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output:
 %       ir      - Impulse response which is compensated for the given headphone

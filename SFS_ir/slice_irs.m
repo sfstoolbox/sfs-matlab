@@ -6,8 +6,7 @@ function irspart = slice_irs(irs,idx)
 %   Input parameters:
 %       irs     - IR data set
 %       idx     - idx to slice out of the IR set
-%       conf    - optional struct containing configuration variables (see
-%                 SFS_config for default values)
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       irspart - HRIR/BRIR containing only the part of the original IR set

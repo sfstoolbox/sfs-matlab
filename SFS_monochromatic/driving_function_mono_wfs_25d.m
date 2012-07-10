@@ -99,7 +99,7 @@ omega = 2*pi*f;
 
 % Driving function D(x0,omega)
 % Activity of secondary sources
-ls_activity = secondary_source_selection(x0,xs,src);
+ls_activity = secondary_source_selection(x0,xs,src,xref);
 idx = ((ls_activity>0));
 
 % Direction and position of secondary sources

@@ -79,7 +79,7 @@ xref = position_vector(conf.xref);
 
 %% ===== Computation =====================================================
 % Check also the activity of the used loudspeaker.
-ls_activity = secondary_source_selection(x0,xs,src);
+ls_activity = secondary_source_selection(x0,xs,src,xref);
 if ls_activity>0
 
     % Direction and position of secondary sources

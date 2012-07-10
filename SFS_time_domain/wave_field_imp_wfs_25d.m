@@ -90,12 +90,13 @@ frame = conf.frame;
 usehpre = conf.usehpre;
 % Debug mode
 debug = conf.debug;
+xref = position_vector(conf.xref);
 
 
 %% ===== Computation =====================================================
 % Get secondary sources
 x0 = secondary_source_positions(L,conf);
-ls_activity = secondary_source_selection(x0,xs,src);
+ls_activity = secondary_source_selection(x0,xs,src,xref);
 % Generate tapering window
 win = tapering_window(L,ls_activity,conf);
 ls_activity = ls_activity .* win;

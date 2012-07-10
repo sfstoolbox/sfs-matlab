@@ -84,10 +84,9 @@ end
 
 
 %% ===== Configuration ==================================================
-% xy resolution
 xysamples = conf.xysamples;
-% Plotting result
 useplot = conf.useplot;
+xref = position_vector(conf.xref); 
 
 
 %% ===== Variables ======================================================
@@ -101,7 +100,7 @@ y = linspace(Y(1),Y(2),xysamples);
 %
 % Get the position of the loudspeakers and its activity
 x0 = secondary_source_positions(L,conf);
-ls_activity = secondary_source_selection(x0,xs,src);
+ls_activity = secondary_source_selection(x0,xs,src,xref);
 % Generate tapering window
 win = tapering_window(L,ls_activity,conf);
 ls_activity = ls_activity .* win;

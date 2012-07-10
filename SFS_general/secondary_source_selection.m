@@ -1,7 +1,7 @@
-function ls_activity = secondary_source_selection(x0,xs,src)
+function ls_activity = secondary_source_selection(x0,xs,src,xref)
 %SECONDARY_SOURCE_SELECTION selects which secondary sources are active
 %
-%   Usage: ls_activity = secondary_source_selection(x0,xs,src)
+%   Usage: ls_activity = secondary_source_selection(x0,xs,src,[xref])
 %
 %   Input options:
 %       x0          - secondary source positions and directions (m)
@@ -11,6 +11,9 @@ function ls_activity = secondary_source_selection(x0,xs,src)
 %                              plane wave in this case)
 %                       'ps' - point source
 %                       'fs' - focused source
+%       xref        - position of reference point (conf.xref). This is needed
+%                     for focused sources, and will define the direction of the
+%                     focused source
 %
 %   Output options:
 %       ls_activity - index of the active secondary sources
@@ -59,12 +62,17 @@ function ls_activity = secondary_source_selection(x0,xs,src)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;
-nargmax = 3;
+nargmax = 4;
 error(nargchk(nargmin,nargmax,nargin));
 isargsecondarysource(x0);
-isargposition(xs);
 xs = position_vector(xs);
 isargchar(src);
+if nargin==nargmax
+    xref = position_vector(xref);
+elseif strcmp('fs',src)
+    error(['%s: you have chosen "fs" as source type, then xref is ', ...
+        'needed as fourth argument.'],upper(mfilename));
+end
 
 
 %% ===== Calculation ====================================================
@@ -76,6 +84,7 @@ x0 = x0(:,1:3);
 % First we have to get the direction of a plane wave
 nxs = xs / norm(xs);
 xs = repmat(xs,size(x0,1),1);
+xref = repmat(xref,size(x0,1),1);
 nxs = repmat(nxs,size(x0,1),1);
 
 if strcmp('pw',src)
@@ -103,12 +112,11 @@ elseif strcmp('fs',src)
     % === Focused source ===
     % secondary source selection (Spors 2008)
     %
-    %      / 1, if <xs-x0,n_x0> > 0
+    %      / 1, if <xs-x0,n_x0> > 0 and <xref-xs,nx_0> > 0
     % a = <
     %      \ 0, else
-    % FIXME: focused sources are not working correctly at the moment with
-    % circular and boxed shaped arrays
-    ls_activity = double( diag((xs-x0)*nx0') > 0 );
+    ls_activity = double( diag((xs-x0)*nx0')>0 & diag((xref-xs)*nx0')>0 );
+    %ls_activity = double( diag((xs-x0)*nx0')>0 );
 else
     error('%s: %s is not a supported source type!',upper(mfilename),src);
 end

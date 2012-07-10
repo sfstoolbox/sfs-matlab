@@ -86,6 +86,7 @@ end
 phase = conf.phase;
 % Speed of sound
 c = conf.c;
+xref = position_vector(conf.xref);
 
 
 %% ===== Computation ====================================================
@@ -96,7 +97,7 @@ omega = 2*pi*f;
 
 % Driving function D(x0,omega)
 % Activity of secondary sources
-ls_activity = secondary_source_selection(x0,xs,src);
+ls_activity = secondary_source_selection(x0,xs,src,xref);
 if(ls_activity)
 
     % Direction and position of secondary sources

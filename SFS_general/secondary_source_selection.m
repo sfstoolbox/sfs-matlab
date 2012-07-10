@@ -116,7 +116,6 @@ elseif strcmp('fs',src)
     % a = <
     %      \ 0, else
     ls_activity = double( diag((xs-x0)*nx0')>0 & diag((xref-xs)*nx0')>0 );
-    %ls_activity = double( diag((xs-x0)*nx0')>0 );
 else
     error('%s: %s is not a supported source type!',upper(mfilename),src);
 end

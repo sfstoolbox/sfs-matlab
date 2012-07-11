@@ -111,11 +111,13 @@ elseif strcmp('ps',src) || strcmp('ls',src)
 elseif strcmp('fs',src)
     % === Focused source ===
     % secondary source selection (Spors 2008)
+    % NOTE: <xs-x0,nx0> > 0 is always true for a focused source
     %
-    %      / 1, if <xs-x0,n_x0> > 0 and <xref-xs,nx_0> > 0
+    %      / 1, <xs-xref,x_0-xs> > 0
     % a = <
     %      \ 0, else
-    ls_activity = double( diag((xs-x0)*nx0')>0 & diag((xref-xs)*nx0')>0 );
+    %
+    ls_activity = double( diag((xs-xref)*(x0-xs)') > 0 );
 else
     error('%s: %s is not a supported source type!',upper(mfilename),src);
 end

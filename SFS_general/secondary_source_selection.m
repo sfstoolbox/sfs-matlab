@@ -72,6 +72,8 @@ if nargin==nargmax
 elseif strcmp('fs',src)
     error(['%s: you have chosen "fs" as source type, then xref is ', ...
         'needed as fourth argument.'],upper(mfilename));
+else
+    xref = [0,0,0];
 end
 
 

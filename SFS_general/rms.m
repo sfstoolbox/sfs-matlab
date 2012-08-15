@@ -17,6 +17,9 @@ function y = rms(insig,options)
 %   RMS(x,'ac') does the same, but considers only the AC component of the
 %   signal (i.e. the mean is removed).
 %
+%   If the input is a matrix or ND-array, the RMS is computed along the first
+%   dimension, and a vector of values is returned.
+%
 %   The RMS value of a signal x of length N is computed by
 %
 %                        1  N
@@ -62,7 +65,7 @@ function y = rms(insig,options)
 nargmin = 1;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector(insig);
+isargmatrix(insig);
 if (nargin==1) || (~ischar(options))
   options='';
 end
@@ -73,7 +76,11 @@ end
 % norm (hopefully) attempts to avoid numerical overflow.
 switch(lower(options))
     case 'ac'
-        y = norm(insig-mean(insig))/sqrt(length(insig));
+        for ii=1:size(insig,2)
+            y(1,ii) = norm(insig(:,ii)-mean(insig(:,ii)))/sqrt(length(insig(:,ii)));
+        end
     otherwise
-        y = norm(insig)/sqrt(length(insig));
+        for ii=1:size(insig,2)
+            y(1,ii) = norm(insig(:,ii))/sqrt(length(insig(:,ii)));
+        end
 end

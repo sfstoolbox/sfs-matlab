@@ -92,17 +92,17 @@ idx = (( ls_activity>0 ));
 x0 = x0(idx,:);
 % orientation of loudspeaker array
 v_array = x0(1,1:3)-x0(end,1:3);
-phi_array = cart2sph(v_array(1),v_array(2),v_array(3))-pi/2;
+[phi_array,theta_tmp,r_tmp] = cart2sph(v_array(1),v_array(2),v_array(3))-pi/2;
 % angle between array edges and virtual source position
 v1 = x0(1,1:3)-xs;
 v2 = x0(end,1:3)-xs;
-phix01 = cart2sph(v1(1),v1(2),v1(3))-phi_array;
-phix02 = cart2sph(v2(1),v2(2),v2(3))-phi_array;
+[phix01,theta_tmp,r_tmp] = cart2sph(v1(1),v1(2),v1(3))-phi_array;
+[phix02,theta_tmp,r_tmp] = cart2sph(v2(1),v2(2),v2(3))-phi_array;
 % angle between array edges and listener position
 v1 = x0(1,1:3)-X;
 v2 = x0(end,1:3)-X;
-phiX1 = cart2sph(v1(1),v1(2),v1(3))+phi_array;
-phiX2 = cart2sph(v2(1),v2(2),v2(3))+phi_array;
+[phiX1,theta_tmp,r_tmp] = cart2sph(v1(1),v1(2),v1(3))+phi_array;
+[phiX2,theta_tmp,r_tmp] = cart2sph(v2(1),v2(2),v2(3))+phi_array;
 % use only the smallest of these angles
 phi1 = min([abs(phix01) abs(phiX1)]);
 phi2 = min([abs(phix02) abs(phiX2)]);

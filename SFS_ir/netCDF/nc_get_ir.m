@@ -55,11 +55,11 @@ else %% === Matlab ===
     src_pos = source(1:3,:);
     % calculate apparent azimuth
     tmp = head_pos-src_pos;
-    [src_phi,~,distance] = cart2sph(tmp(1,:),tmp(2,:),tmp(3,:));
+    [src_phi,theta_tmp,distance] = cart2sph(tmp(1,:),tmp(2,:),tmp(3,:));
     nx = receiver(4,:,1);
     ny = receiver(5,:,1);
     nz = receiver(6,:,1);
-    head_phi = cart2sph(nx,ny,nz);
+    [head_phi,theta_tmp,r_tmp] = cart2sph(nx,ny,nz);
     apparent_azimuth = src_phi + head_phi;
 
     idx = find(apparent_azimuth>=angle,1,'first');

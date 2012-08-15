@@ -139,7 +139,7 @@ for ii = 1:nls
     % Angle between listener and secondary source (-pi < alpha <= pi,
     % without phi)
     % Note: phi is the orientation of the listener (see first graph)
-    alpha(ii) = cart2sph(x0(n,1)-X(1),x0(n,2)-X(2),0) - phi;
+    [alpha(ii),theta_tmp,r_tmp] = cart2sph(x0(n,1)-X(1),x0(n,2)-X(2),0) - phi;
 
     % === Direction and amplitude in vector notation ===
     % Rotation matrix (see: http://en.wikipedia.org/wiki/Rotation_matrix)
@@ -173,7 +173,7 @@ if(usegnuplot)
     % definition at t = 0
     A = sum(a);
     % Calculate the direction of the virtual source pulse (rad)
-    alpha_ds = cart2sph(xs(1)-X(1),xs(2)-X(2),0) - phi;
+    [alpha_ds,theta_tmp,r_tmp] = cart2sph(xs(1)-X(1),xs(2)-X(2),0) - phi;
     RM_ds = rotation_matrix(alpha_ds,'counterclockwise');
     X_ds = A .* (RM_ds * [0 1]');
     X_dsdB = (20*log10(A)+100) .* (RM_ds * [0 1]');

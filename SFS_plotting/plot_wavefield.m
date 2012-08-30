@@ -399,7 +399,7 @@ else
             p.file, ...
             p.cmd);
 
-    elseif strcmp('monitor',p.mode) | strcmp('screen',p.mode)
+    elseif strcmp('monitor',p.mode) || strcmp('screen',p.mode)
         % === Monitor ===
         % Therefore we use the wxt Gnuplot terminal
         cmd = sprintf([...

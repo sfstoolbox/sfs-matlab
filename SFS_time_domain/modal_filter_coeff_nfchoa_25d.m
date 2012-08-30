@@ -60,10 +60,10 @@ nargmax = 5;
 error(nargchk(nargmin,nargmax,nargin));
 if nargin==nargmax-2
     conf = SFS_config;
-elseif nargin==nargmax-1 & ~isstruct(r)
+elseif nargin==nargmax-1 && ~isstruct(r)
     conf = SFS_config;
 end
-if strcmp('ps',src) & ~exist('r','var')
+if strcmp('ps',src) && ~exist('r','var')
     error('%s: the distance r is needed for a point source.',upper(mfilename));
 end
 

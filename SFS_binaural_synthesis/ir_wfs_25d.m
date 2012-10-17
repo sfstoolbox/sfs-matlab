@@ -164,7 +164,9 @@ for ii = 1:nls
     % Define an offset to ensure |[X-Y]-[x0 y0]|-irs.distance+offset > 0
     offset = 3; % in m
     % Check if we have a non focused source
-    if strcmp('fs',src)
+    % FIXME: added a hack to handle the time gap in plane waves (this occurs
+    % only for some directions). Find a better solution for this
+    if strcmp('fs',src) || strcmp('pw',src)
         % Focused source
         tau = (norm(X-x0(ii,1:3)) - ir_distance+offset)/c + delay - t0;
     else

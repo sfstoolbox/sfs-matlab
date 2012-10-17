@@ -10,7 +10,7 @@ function gp_save_loudspeakers(file,x0,ls_activity)
 %                     (nx6)
 %       ls_activity - activity of the speakers (nx1)
 %
-%   GP_SAVE_LOUDSPEAKERS(file,x0,ls_activity) saves x0(:,1:3) as positions of
+%   GP_SAVE_LOUDSPEAKERS(file,x0,ls_activity) saves x0(:,1:2) as positions of
 %   the speakers, an orientation value calculated from x0(:,4:6), and the
 %   activity of the speakers in a text file useable by Gnuplot
 %
@@ -75,9 +75,9 @@ fclose(fid);
 
 % Calculate phi
 X0 = [];
-X0(:,1:3) = x0(:,1:3);
+X0(:,1:2) = x0(:,1:2);
 [phi,dummy,dummy] = cart2sph(x0(:,4),x0(:,5),x0(:,6));
-X0(:,4) = phi;
+X0(:,3) = phi;
 % Append the data to the file using tabulator as a delimiter between the data
 if isoctave
     dlmwrite(file,[X0 ls_activity],'\t','-append');

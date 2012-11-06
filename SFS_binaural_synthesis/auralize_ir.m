@@ -125,7 +125,7 @@ if min(size(content))~=1
     end
 end
 % Convolve the two
-for ii = 1:2
+for ii = 1:size(ir,2)
     outsig(:,ii) = conv(ir(:,ii),content);
 end
 % Scale output

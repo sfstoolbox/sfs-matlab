@@ -1,4 +1,10 @@
-User-visible changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
+Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
+
+0.2.2
+
+    - added compatibility for octave 3.6
+    - first fix of secondary source selection for focused sources (now they
+      point always in the direction of the reference point) 
 
 0.2.1 (15 June 2012)
     

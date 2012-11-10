@@ -3,7 +3,7 @@ clc
 clear all
 close all
 %% properties which need to be set
-conf = SFS_config;
+conf = SFS_config_example;
 % diameter of array
 L = 1;
 % structure of secondary sources

@@ -104,7 +104,8 @@ conf.phase = 0; % rad
 % Time frame to simulate for wave field in time domain (change this value to
 % create impulse response movies of the wave field
 conf.frame = 1000;
-
+% resolution of evelation angle for 3D case
+conf.resolution_theta = 10;
 
 % ===== Secondary Sources =======================
 % Interspacing (distance) between the secondary sources

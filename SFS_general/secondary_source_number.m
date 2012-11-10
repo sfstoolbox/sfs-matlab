@@ -50,9 +50,9 @@ function [nls,L] = secondary_source_number(L,conf)
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
+% $LastChangedDate: 2012-06-15 13:30:32 +0200 (Fri, 15 Jun 2012) $
+% $LastChangedRevision: 765 $
+% $LastChangedBy: wierstorf.hagen $
 
 
 %% ===== Checking of input  parameters ==================================
@@ -86,7 +86,7 @@ elseif strcmp('linear',array)
     nls = fix(L/dx0)+1;
     % Corresponding size of loudspeaker array
     L = (nls-1)*dx0;
-elseif strcmp('circle',array)
+elseif strcmp('circle',array) || strcmp('spherical',array)
     % L is the diameter!
     % Perimeter of the circle
     P = pi*L;

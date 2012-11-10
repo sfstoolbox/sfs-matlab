@@ -1,19 +1,21 @@
-function R = rotation_matrix(phi,orientation)
+function R = rotation_matrix(phi,dimension,orientation)
 %ROTATION_MATRIX returns a 2D rotation matrix for the given angle
 %
 %   Usage: R = rotation_matrix(phi,[orientation])
 %
 %   Input parameters:
 %       phi         - angle to rotate the given dim dimension vector (rad)
+%       dimension   - string: '2D' or '3D' rotation matrix
 %       orientation - orientation of the rotation, 'clockwise' or
 %                     'counterclockwise' (default: 'counterclockwise')
 %
 %   Output parameters:
-%       R       - 2x2 rotation matrix to apply to your vector to rotate:
-%                 R*y
+%       R       - 2x2 or 3x3 rotation matrix to apply to your vector to 
+%                 rotate: R*y
+%                 
 %
-%   ROTATION_MATRIX(phi,orientation) returns a rotation matrix R, which is
-%   able to rotate a given dim dimensional vector about phi.
+%   ROTATION_MATRIX(phi,dimension,orientation) returns a rotation matrix R, 
+%   which is able to rotate a given dim dimensional vector about phi.
 %
 %   see also: echo_direction
 
@@ -45,17 +47,17 @@ function R = rotation_matrix(phi,orientation)
 %*****************************************************************************
 
 % AUTHOR: Hagen Wierstorf
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
+% $LastChangedDate: 2012-04-24 14:39:17 +0200 (Tue, 24 Apr 2012) $
+% $LastChangedRevision: 700 $
+% $LastChangedBy: wierstorf.hagen $
 
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
-nargmax = 2;
+nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin));
 isargscalar(phi)
-if nargin < 2
+if nargin < 3
     % Set defualt orientation of the rotation
     orientation = 'counterclockwise';
 else
@@ -67,9 +69,29 @@ end
 % Rotation matrix (see: http://en.wikipedia.org/wiki/Rotation_matrix)
 switch orientation
     case 'counterclockwise'
-        R = [cos(phi) -sin(phi); ...
-             sin(phi) cos(phi)];
+        
+        if strcmp('2D',dimension) 
+             R = [cos(phi) -sin(phi); ...
+                  sin(phi) cos(phi)];
+        elseif strcmp('3D',dimension)
+             R = [1    0          0
+                  0 cos(phi)  -sin(phi); ...
+                  0 sin(phi)   cos(phi)];
+        else
+             error('%s: %s is no possible dimension',upper(mfilename),dimension);
+        end
+
     case 'clockwise'
-        R = [cos(phi) sin(phi); ...
-             -sin(phi) cos(phi)];
+        
+        if strcmp('2D',dimension) 
+             R = [cos(phi) sin(phi); ...
+                  -sin(phi) cos(phi)];
+        elseif strcmp('3D',dimension)
+             R = [1      0       0
+                  0  cos(phi)  sin(phi); ...
+                  0 -sin(phi)  cos(phi)];            
+        else
+             error('%s: %s is no possible dimension (try "2D" or "3D")',upper(mfilename),dimension);
+        end   
+            
 end

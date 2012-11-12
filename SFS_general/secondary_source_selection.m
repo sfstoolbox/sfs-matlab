@@ -81,10 +81,10 @@ end
 % Position and direction of secondary sources
 nx0 = x0(:,4:6);
 x0 = x0(:,1:3);
+% direction of the plane wave
+nxs = xs / norm(xs);
 % Make the size of the xs position the same as the number of secondary sources
 % in order to allow x0-xs
-% First we have to get the direction of a plane wave
-nxs = xs / norm(xs);
 xs = repmat(xs,size(x0,1),1);
 xref = repmat(xref,size(x0,1),1);
 nxs = repmat(nxs,size(x0,1),1);

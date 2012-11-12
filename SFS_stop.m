@@ -56,7 +56,6 @@ basepath=basepath(1:end-12);
 
 % Add the base path and the needed sub-directories
 if exist('rmpath')
-    rmpath([basepath,'/scripts']);
     rmpath([basepath,'/SFS_analysis']);
     rmpath([basepath,'/SFS_binaural_synthesis']);
     rmpath([basepath,'/SFS_general']);

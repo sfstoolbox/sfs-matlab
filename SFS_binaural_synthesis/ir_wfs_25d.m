@@ -95,6 +95,8 @@ fs = conf.fs;                 % sampling frequency
 t0 = conf.t0;                 % pre-delay for causality (focused sources)
 c = conf.c;                   % speed of sound
 N = conf.N;                   % target length of BRS impulse responses
+xref = conf.xref;             % reference point (needed for direction of focused
+                              % sources)
 debug = conf.debug;           % debugging
 
 
@@ -105,7 +107,7 @@ phi = correct_azimuth(phi);
 % Loudspeaker positions (phiLS describes the directions of the loudspeakers)
 x0 = secondary_source_positions(L,conf);
 nls = size(x0,1);
-ls_activity = secondary_source_selection(x0,xs,src);
+ls_activity = secondary_source_selection(x0,xs,src,xref);
 % generate tapering window
 win = tapering_window(L,ls_activity,conf);
 

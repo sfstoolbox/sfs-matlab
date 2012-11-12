@@ -5,3 +5,5 @@ SFS_config.m
 *.mat
 *.nc
 *.sofa
+# octave crashes
+octave-core

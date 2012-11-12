@@ -125,6 +125,9 @@ if min(size(content))~=1
     end
 end
 % Convolve the two
+if size(ir,2)>2
+    warning('Your impulse response has more than two channels.');
+end
 for ii = 1:size(ir,2)
     outsig(:,ii) = conv(ir(:,ii),content);
 end

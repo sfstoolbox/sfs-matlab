@@ -68,7 +68,7 @@ end
 
 irs.left = repmat(irs.left,1,180);
 irs.right = repmat(irs.right,1,180);
-theta = 0:180;
+theta = 0:179;
 irs.apparent_elevation = correct_elevation(theta/180*pi);
 irs.description = ['HRIR dummy set (Dirac pulse) for testing your',...
                    'frequency response, etc.'];

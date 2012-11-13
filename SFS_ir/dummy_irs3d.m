@@ -51,20 +51,25 @@ ir = zeros(nsamples,1);
 ir(300) = 1;
 
 
+nsamples = 1024;
+ir = zeros(nsamples,1);
+ir(300) = 1;
+
+
 irs = new_irs();
-irs.left =[];
-irs.right =[];
-for i=0:179
+
+
 for ii=0:359
-    irs.leftnew(:,ii+1) = ir;
-    irs.rightnew(:,ii+1) = ir;
+    irs.left(:,ii+1) = ir;
+    irs.right(:,ii+1) = ir;
     irs.apparent_azimuth(ii+1) = correct_azimuth(ii/180*pi);
-    irs.apparent_elevation(i+1) = correct_elevation(i/180*pi);
 end
-    irs.left = [irs.left irs.leftnew];
-    irs.right = [irs.right irs.rightnew];
-end
-irs.apparent_elevation = [-1*irs.apparent_elevation irs.apparent_elevation];
+   
+
+irs.left = repmat(irs.left,1,180);
+irs.right = repmat(irs.right,1,180);
+theta = 0:180;
+irs.apparent_elevation = correct_elevation(theta/180*pi);
 irs.description = ['HRIR dummy set (Dirac pulse) for testing your',...
                    'frequency response, etc.'];
 % Reorder entries

@@ -138,7 +138,7 @@ elseif strcmp('spherical',array)
     % sources, floor() has to be applied if 180%(resolution_theta)~=0;
     x0_help = [];
     % rotate around the x axis to get all spherical positions and directions
-    for theta = resolution_theta:resolution_theta:(180-resolution_theta)
+    for theta = (-90+resolution_theta):resolution_theta:(90-resolution_theta)
         % in rad
         theta = theta*pi/180;  
         % get 3D rotation matrix (x axis) for every elevation angle 

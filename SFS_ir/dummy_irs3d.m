@@ -1,12 +1,12 @@
 function irs = dummy_irs3d()
-% DUMMY_IRS creates a dummy dirac pulse IR set
+% DUMMY_IRS3D creates a dummy dirac pulse IR set for a spehre
 %
-%   Usage: irs = dummy_irs()
+%   Usage: irs = dummy_irs3d()
 %
 %   Output parameters:
 %       irs   - irs struct
 %
-%   DUMMY_IRS() creates a dummy IR data set (Dirac impulse) to check
+%   DUMMY_IRS3D() creates a dummy IR data set (Dirac impulse) to check
 %   processing without IRs.
 %
 %   See also: new_irs, IR_format.txt
@@ -64,13 +64,15 @@ for ii=0:359
     irs.right(:,ii+1) = ir;
     irs.apparent_azimuth(ii+1) = correct_azimuth(ii/180*pi);
 end
-   
 
+ii = -90:89;
+irs.apparent_elevation = correct_elevation(ii/180*pi);
 irs.left = repmat(irs.left,1,180);
 irs.right = repmat(irs.right,1,180);
-theta = 0:179;
-irs.apparent_elevation = correct_elevation(theta/180*pi);
+% theta = 0:179;
+% irs.apparent_elevation = correct_elevation(theta/180*pi);
 irs.description = ['HRIR dummy set (Dirac pulse) for testing your',...
                    'frequency response, etc.'];
 % Reorder entries
 irs = correct_irs_angle_order(irs);
+end

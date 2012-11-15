@@ -63,7 +63,7 @@ end
 
 %% ===== Computation =====================================================
 % Sort azimuth angle and reorder the whole irs
-% [phi,idx] = sort(irs.apparent_azimuth);
+[phi,idx] = sort(irs.apparent_azimuth);
 
 % ===== CHANGE ============================================================
 [phi,idx] = sort(irs.apparent_azimuth);

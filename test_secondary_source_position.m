@@ -1,9 +1,10 @@
-%Test File
+%% Test File to prove secondary source position for spherical array and
+%  active LS for 3D WFS
 clc 
 clear all
 close all
-%% properties which need to be set
-conf = SFS_config_example;
+%% properties 
+conf = SFS_config;
 % diameter of array
 L = 1;
 % structure of secondary sources
@@ -13,7 +14,7 @@ conf.resolution_theta = 10;
 
 % position of virtual source
 R = 1;
-phi = pi/2;
+phi = 0;
 theta = pi/2;
 xs = R*[cos(phi)*sin(theta) sin(phi)*sin(theta) cos(theta)];
 
@@ -59,4 +60,3 @@ plot3(x0(:,1),x0(:,2),x0(:,3),'bx')
  grid on
  axis equal
  title('All Secondary Sources of 3D WFS')
- %%

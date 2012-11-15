@@ -74,5 +74,5 @@ irs.right = repmat(irs.right,1,180);
 irs.description = ['HRIR dummy set (Dirac pulse) for testing your',...
                    'frequency response, etc.'];
 % Reorder entries
-irs = correct_irs_angle_order(irs);
+irs = correct_irs_angle_order3d(irs);
 end

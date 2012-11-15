@@ -49,11 +49,6 @@ function [nls,L] = secondary_source_number(L,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Hagen Wierstorf
-% $LastChangedDate: 2012-06-15 13:30:32 +0200 (Fri, 15 Jun 2012) $
-% $LastChangedRevision: 765 $
-% $LastChangedBy: wierstorf.hagen $
-
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;

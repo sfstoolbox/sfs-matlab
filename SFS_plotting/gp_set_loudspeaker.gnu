@@ -43,11 +43,6 @@
 # http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 #*****************************************************************************
 
-# AUTHOR: Hagen Wierstorf
-# $LastChangedDate$
-# $LastChangedRevision$
-# $LastChangedBy$
-
 
 # Checking if we have enough input parameters
 if ('$#'!=5) print 'gp_set_loudspeakers needs 5 input parameters'; exit

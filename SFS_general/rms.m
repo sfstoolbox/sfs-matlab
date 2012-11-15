@@ -55,11 +55,6 @@ function y = rms(insig,options)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR : Hagen Wierstorf, Peter L. Soendergaard
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Checking of input parameters ====================================
 nargmin = 1;

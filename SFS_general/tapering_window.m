@@ -46,11 +46,6 @@ function win = tapering_window(L,ls_activity,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Hagen Wierstorf, Sascha Spors
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 % TODO: the array length is only used, if ls_activity is not given. Maybe there
 % is a better way to handle this
 

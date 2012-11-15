@@ -43,11 +43,6 @@ function plot_itd(itd,phi)
 
 % FIXME: is this function needed anymore?
 
-% AUTHOR: Hagen Wierstorf
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Checking of input parameters ====================================
 nargmin = 1;

@@ -54,11 +54,6 @@ function [x,y,p,ls_activity,dds] = wave_field_imp_wfs_25d(X,Y,xs,src,L,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Hagen Wierstorf, Sascha Spors
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 5;

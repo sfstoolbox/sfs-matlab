@@ -41,11 +41,6 @@ function inoutsig = gaindb(inoutsig,gn)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Hagen Wierstorf, Peter L. Soendergaard
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Checking input parameters =======================================
 nargmin = 2;

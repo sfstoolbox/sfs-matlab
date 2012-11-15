@@ -46,11 +46,6 @@ function R = rotation_matrix(phi,dimension,orientation)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Hagen Wierstorf
-% $LastChangedDate: 2012-04-24 14:39:17 +0200 (Tue, 24 Apr 2012) $
-% $LastChangedRevision: 700 $
-% $LastChangedBy: wierstorf.hagen $
-
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;

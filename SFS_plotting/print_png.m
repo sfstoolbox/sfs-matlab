@@ -41,11 +41,6 @@ function print_png(filename)
 
 % Is this function needed anymore?
 
-% AUTHOR: Hagen Wierstorf
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;

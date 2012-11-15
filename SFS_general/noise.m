@@ -58,11 +58,6 @@ function outsig = noise(samples,nsigs,noisetype)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Hagen Wierstorf, Peter Soendergaard
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Checking input parameters =======================================
 nargmin = 1;

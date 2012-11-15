@@ -51,11 +51,6 @@ function [x,y,P] = wave_field_mono_point_source(X,Y,xs,f,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Hagen Wierstorf
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 4;
@@ -87,7 +82,7 @@ y = linspace(Y(1),Y(2),xysamples);
 % Source model for a point source G(x,omega)
 P = point_source(xx,yy,xs,f);
 % Scale signal (at xref)
-P = norm_wave_field(P,x,y,conf);
+%P = norm_wave_field(P,x,y,conf);
 
 
 % ===== Plotting =========================================================

@@ -47,11 +47,6 @@ function [amplitude,phase,f] = easyfft(sig,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Hagen Wierstorf
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Check input arguments ===========================================
 nargmin = 1;

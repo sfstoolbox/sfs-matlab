@@ -62,11 +62,6 @@ function [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Hagen Wierstorf
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 6;
@@ -140,7 +135,7 @@ for ii = 1:size(x0,1)
 end
 
 % === Scale signal (at xref) ===
-P = norm_wave_field(P,x,y,conf);
+%P = norm_wave_field(P,x,y,conf);
 
 
 % ===== Plotting =========================================================

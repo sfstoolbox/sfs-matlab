@@ -135,7 +135,7 @@ for ii = 1:size(x0,1)
 end
 
 % === Scale signal (at xref) ===
-%P = norm_wave_field(P,x,y,conf);
+P = norm_wave_field(P,x,y,conf);
 
 
 % ===== Plotting =========================================================

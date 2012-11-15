@@ -82,7 +82,7 @@ y = linspace(Y(1),Y(2),xysamples);
 % Source model for a point source G(x,omega)
 P = point_source(xx,yy,xs,f);
 % Scale signal (at xref)
-%P = norm_wave_field(P,x,y,conf);
+P = norm_wave_field(P,x,y,conf);
 
 
 % ===== Plotting =========================================================

@@ -46,11 +46,6 @@ function label = print_label(dim,unit,conf)
 
 % FIXME: is this function needed anymore?
 
-% AUTHOR: Hagen Wierstorf
-% $LastChangedDate: $
-% $LastChangedRevision: $
-% $LastChangedBy: $
-
 
 %% ===== Checking of input parameter =====================================
 nargmin = 1;

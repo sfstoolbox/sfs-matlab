@@ -43,10 +43,7 @@ function k = findrows(A,b)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Peter John Acklam, Hagen Wierstorf
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
+% AUTHOR: Peter John Acklam
 
 
 %% ===== Checking of input parameters ====================================

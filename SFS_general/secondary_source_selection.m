@@ -54,11 +54,6 @@ function ls_activity = secondary_source_selection(x0,xs,src,xref)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Hagen Wierstorf
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;

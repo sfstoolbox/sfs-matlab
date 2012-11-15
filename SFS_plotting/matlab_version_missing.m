@@ -40,11 +40,6 @@ function matlab_version_missing(mfile)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Hagen Wierstorf
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Checking of input parameters ====================================
 error(nargchk(0,1,nargin)

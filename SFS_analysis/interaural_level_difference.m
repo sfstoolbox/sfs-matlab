@@ -46,11 +46,6 @@ function ild = interaural_level_difference(insigleft,insigright)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Hagen Wierstorf
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Checking of input parameters ====================================
 nargmin = 2;

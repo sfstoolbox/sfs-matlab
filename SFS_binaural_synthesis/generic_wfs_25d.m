@@ -49,11 +49,6 @@ function ir = generic_wfs_25d(xs,src,L,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Sascha Spors, Hagen Wierstorf
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 % FIXME: at the moment the first loudspeaker of your array has to be on the x-axis
 % (which means phi=0). If you have another setup (like we have in Pinta) you
 % have to manually edit the secondary_source_positions.m function in order to

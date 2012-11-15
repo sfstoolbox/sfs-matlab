@@ -48,11 +48,6 @@ function [b,a] = modal_filter_coeff_nfchoa_25d(order,R,src,r,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Sascha Spors
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Checking of input  parameters ===================================
 nargmin = 3;

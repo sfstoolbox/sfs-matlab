@@ -65,11 +65,6 @@ function [itd,idxleft,idxright] = interaural_time_difference(insigleft,insigrigh
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Hagen Wierstorf,Lars-Erik Riechert
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Checking of input parameters ===================================
 nargmin = 3;

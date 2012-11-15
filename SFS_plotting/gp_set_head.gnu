@@ -40,11 +40,6 @@
 # http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 #*****************************************************************************
 
-# AUTHOR: Hagen Wierstorf
-# $LastChangedDate$
-# $LastChangedRevision$
-# $LastChangedBy$
-
 
 # Checking if we have enough input parameters
 if ($#!=3) print 'gp_set_head needs 3 input parameters'; exit

@@ -69,11 +69,6 @@ function [x,y,P] = wave_field_mono_sdm_25d_kx(X,Y,xs,src,f,L,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Hagen Wierstorf
-% $LastChangedDate: $
-% $LastChangedRevision: $
-% $LastChangedBy: $
-
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 6;

@@ -51,11 +51,6 @@ function movie_wave_field_mono_wfs_25d(X,Y,xs,src,f,L,outfile,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Hagen Wierstorf
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 7;

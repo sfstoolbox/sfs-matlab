@@ -61,11 +61,6 @@ function x0 = secondary_source_positions(L,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Sascha Spors, Hagen Wierstorf
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 % NOTE: If you wanted to add a new type of loudspeaker array, do it in a way,
 % that the loudspeakers are ordered in a way, that one can go around for closed
 % arrays. Otherwise the tapering window function will not work properly.

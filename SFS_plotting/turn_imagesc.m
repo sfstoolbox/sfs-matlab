@@ -28,11 +28,6 @@ function turn_imagesc()
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Sascha Spors
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Main ============================================================
 set(gca,'YDir','normal');

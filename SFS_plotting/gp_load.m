@@ -43,11 +43,6 @@ function [x,y,header] = gp_load(file)
 
 % FIXME: is this function doing what it should do?
 
-% AUTHOR: Hagen Wierstorf
-% $LastChangedDate: 2012-02-14 12:06:58 +0100 (Di, 14 Feb 2012) $
-% $LastChangedRevision: 634 $
-% $LastChangedBy: wierstorf.hagen $
-
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;

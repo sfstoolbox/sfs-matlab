@@ -56,11 +56,6 @@ function [D] = driving_function_mono_nfchoa_25d(x0,xs,src,f,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Sascha Spors
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 4;

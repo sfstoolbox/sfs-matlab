@@ -50,11 +50,6 @@ function [weight,delay] = driving_function_imp_wfs_25d(x0,xs,src,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Hagen Wierstorf
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;

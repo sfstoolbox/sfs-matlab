@@ -43,11 +43,6 @@ function out = sphbesselh(nu,k,z)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Jens Ahrens
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Checking input parameters =======================================
 nargmin = 3;

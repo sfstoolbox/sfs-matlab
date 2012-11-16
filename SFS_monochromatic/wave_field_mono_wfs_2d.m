@@ -1,4 +1,4 @@
-function [x,y,P,ls_activity] = wave_field_mono_wfs_2d(X,Y,xs,src,f,L,conf)
+function [x,y,P,win] = wave_field_mono_wfs_2d(X,Y,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_WFS_25D simulates a wave field for 2D WFS
 %
 %   Usage: [x,y,P] = wave_field_mono_wfs_2d(X,Y,xs,L,f,src,[conf])
@@ -90,18 +90,11 @@ y = linspace(Y(1),Y(2),xysamples);
 
 
 %% ===== Computation ====================================================
-
 % Calculate the wave field in time-frequency domain
-%
-% Get the position of the loudspeakers and its activity
-x0 = secondary_source_positions(L,conf);
-x0 = secondary_source_selection(x0,xs,src,xref);
-% Generate tapering window
-win = tapering_window(x0,conf);
 % Create a x-y-grid to avoid a loop
 [xx,yy] = meshgrid(x,y);
 % get wave field
-[P,win] = wfs_2d(xx,yy,xs,src,f,L,conf);
+[P,x0,win] = wfs_2d(xx,yy,xs,src,f,L,conf);
 % scale signal (at xref)
 P = norm_wave_field(P,x,y,conf);
 

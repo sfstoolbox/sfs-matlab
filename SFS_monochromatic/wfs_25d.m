@@ -1,4 +1,4 @@
-function [P,win] = wfs_25d(x,y,xs,src,f,L,conf)
+function [P,x0,win] = wfs_25d(x,y,xs,src,f,L,conf)
 %WFS_25D returns the sound pressure for 2.5D WFS at x,y
 %
 %   Usage: [P,win] = wfs_25d(x,y,xs,src,f,L,[conf])

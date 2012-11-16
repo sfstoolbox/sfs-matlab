@@ -129,5 +129,5 @@ ls_activity = 1;
 
 % ===== Plotting =========================================================
 if(useplot)
-    plot_wavefield(x,y,P,L,ls_activity,conf);
+    plot_wavefield(x,y,P,x0,conf);
 end

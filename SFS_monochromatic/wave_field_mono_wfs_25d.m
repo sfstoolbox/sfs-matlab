@@ -94,7 +94,7 @@ y = linspace(Y(1),Y(2),xysamples);
 % Create a x-y-grid to avoid a loop
 [xx,yy] = meshgrid(x,y);
 % calculate wave field
-[P,win] = wfs_25d(xx,yy,xs,src,f,L,conf);
+[P,x0,win] = wfs_25d(xx,yy,xs,src,f,L,conf);
 % scale signal (at xref)
 P = norm_wave_field(P,x,y,conf);
 

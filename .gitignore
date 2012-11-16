@@ -7,3 +7,5 @@ SFS_config.m
 *.sofa
 # octave crashes
 octave-core
+# tmp files
+*.swp

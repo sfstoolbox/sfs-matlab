@@ -1,4 +1,4 @@
-function [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,conf)
+function [x,y,P,win] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_WFS_25D simulates a wave field for 2.5D WFS
 %
 %   Usage: [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,[conf])
@@ -95,17 +95,13 @@ y = linspace(Y(1),Y(2),xysamples);
 %
 % Get the position of the loudspeakers and its activity
 x0 = secondary_source_positions(L,conf);
-ls_activity = secondary_source_selection(x0,xs,src,xref);
+x0 = secondary_source_selection(x0,xs,src,xref);
 % Generate tapering window
-win = tapering_window(L,ls_activity,conf);
-ls_activity = ls_activity .* win;
+win = tapering_window(x0,conf);
 % Create a x-y-grid to avoid a loop
 [xx,yy] = meshgrid(x,y);
 % Initialize empty wave field
 P = zeros(length(y),length(x));
-% Use only active secondary sources
-x0 = x0(ls_activity>0,:);
-win = win(ls_activity>0);
 % Integration over secondary source positions
 for ii = 1:size(x0,1)
 
@@ -140,5 +136,5 @@ P = norm_wave_field(P,x,y,conf);
 
 % ===== Plotting =========================================================
 if(useplot)
-    plot_wavefield(x,y,P,L,ls_activity,conf);
+    plot_wavefield(x,y,P,x0,win,conf);
 end

@@ -84,7 +84,6 @@ useplot = conf.useplot;
 
 % Get the position of the loudspeakers
 x0 = secondary_source_positions(L,conf);
-nls = size(x0,1);
 
 % Generate frequencies (10^0-10^5)
 f = logspace(0,5,500);
@@ -95,9 +94,10 @@ f = f(1:idx);
 S = zeros(1,length(f));
 
 % Activity of secondary sources
-ls_activity = secondary_source_selection(x0,xs,src);
+x0 = secondary_source_selection(x0,xs,src);
+nls = size(x0,1);
 % Tapering window
-win = tapering_window(L,ls_activity,conf);
+win = tapering_window(x0,conf);
 % Get the result for all frequencies
 for ii = 1:length(f)
     P = 0;

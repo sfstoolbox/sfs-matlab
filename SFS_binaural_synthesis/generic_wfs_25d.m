@@ -80,10 +80,10 @@ useplot = conf.useplot;       % Plot results?
 %% ===== Variables ======================================================
 % Secondary sources
 x0 = secondary_source_positions(L,conf);
-nls = length(x0);
-ls_activity = secondary_source_selection(x0,xs,src);
+x0 = secondary_source_selection(x0,xs,src);
+nls = size(x0,1);
 % generate tapering window
-win = tapering_window(L,ls_activity,conf);
+win = tapering_window(x0,conf);
 
 
 %% ===== IR =============================================================

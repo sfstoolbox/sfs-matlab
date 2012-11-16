@@ -69,7 +69,7 @@ p.lssize = conf.plot.lssize;
 %% ===== Plotting ========================================================
 % Plot only "x" at the loudspeaker positions
 if(~p.realloudspeakers)
-    plot(x0(ls_activity>0,1),x0(ls_activity>0,2),'wx','linewidth',1,...
+    plot(x0(:,1),x0(:,2),'wx','linewidth',1,...
         'Color',[.01 .01 .01]);
 else
 

@@ -89,11 +89,11 @@ outfiledB = sprintf('direction_L%i_xs%i_ys%i_X%.1f_Y%.1f_dB.txt',...
 % Loudspeaker positions
 x0 = secondary_source_positions(L,conf);
 % Number of loudspeaker
-nls = number_of_loudspeaker(L,conf);
+nls = size(x0,1);
 
 % === Design tapering window ===
 % See SFS_config if it is applied
-win = tapering_window(L,conf);
+win = tapering_window(x0,conf);
 
 %% ===== Calculate direction of the echos ===============================
 

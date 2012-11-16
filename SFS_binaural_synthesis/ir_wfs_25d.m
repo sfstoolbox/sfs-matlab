@@ -101,10 +101,10 @@ phi = correct_azimuth(phi);
 
 % Loudspeaker positions (phiLS describes the directions of the loudspeakers)
 x0 = secondary_source_positions(L,conf);
+x0 = secondary_source_selection(x0,xs,src,xref);
 nls = size(x0,1);
-ls_activity = secondary_source_selection(x0,xs,src,xref);
 % generate tapering window
-win = tapering_window(L,ls_activity,conf);
+win = tapering_window(x0,conf);
 
 
 %% ===== BRIR ===========================================================

@@ -101,7 +101,7 @@ P = zeros(length(y),length(x));
 % Driving function D(x0,omega)
 D = driving_function_mono_sdm_25d(x0,xs,src,f,conf);
 % Generate tapering window
-win = tapering_window(L,ones(1,length(x0)),conf);
+win = tapering_window(x0,conf);
 
 % Integration over secondary source positions
 for ii = 1:size(x0,1)
@@ -129,5 +129,5 @@ P = norm_wave_field(P,x,y,conf);
 
 % ===== Plotting =========================================================
 if(useplot)
-    plot_wavefield(x,y,P,L,1,conf);
+    plot_wavefield(x,y,P,x0,win,conf);
 end

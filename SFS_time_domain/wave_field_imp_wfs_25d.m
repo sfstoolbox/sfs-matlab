@@ -91,20 +91,15 @@ xref = position_vector(conf.xref);
 %% ===== Computation =====================================================
 % Get secondary sources
 x0 = secondary_source_positions(L,conf);
-ls_activity = secondary_source_selection(x0,xs,src,xref);
+x0 = secondary_source_selection(x0,xs,src,xref);
+nls = size(x0,1);
 % Generate tapering window
-win = tapering_window(L,ls_activity,conf);
-ls_activity = ls_activity .* win;
+win = tapering_window(x0,conf);
 
 % Spatial grid
 x = linspace(X(1),X(2),xysamples);
 y = linspace(Y(1),Y(2),xysamples);
 [xx,yy] = meshgrid(x,y);
-
-% Use only active secondary sources
-x0 = x0(ls_activity>0,:);
-nls = size(x0,1);
-win = win(ls_activity>0);
 
 % Calculate maximum time delay possible for the given axis size
 maxt = round(sqrt((X(1)-X(2))^2+(Y(1)-Y(2))^2)/c*fs);
@@ -212,7 +207,7 @@ check_wave_field(p,frame);
 % === Plotting ===
 if (useplot)
     conf.plot.usedb = 1;
-    plot_wavefield(x,y,p,L,ls_activity,conf);
+    plot_wavefield(x,y,p,x0,win,conf);
 end
 
 % some debug stuff

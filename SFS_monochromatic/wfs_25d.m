@@ -1,7 +1,7 @@
-function [P,ls_activity] = wfs_25d(x,y,xs,src,f,L,conf)
+function [P,win] = wfs_25d(x,y,xs,src,f,L,conf)
 %WFS_25D returns the sound pressure for 2.5D WFS at x,y
 %
-%   Usage: P = wfs_25d(x,y,xs,src,f,L,[conf])
+%   Usage: [P,win] = wfs_25d(x,y,xs,src,f,L,[conf])
 %
 %   Input parameters:
 %       x           - x position(s)
@@ -18,19 +18,19 @@ function [P,ls_activity] = wfs_25d(x,y,xs,src,f,L,conf)
 %
 %   Output parameters:
 %       P           - Simulated wave field
+%       win         - tapering window (activity of loudspeaker)
 %
-%   WAVE_FIELD_MONO_WFS_25D(X,Y,xs,L,f,src,conf) simulates a wave
-%   field of the given source type (src) using a WFS 2.5 dimensional driving
-%   function in the temporal domain. This means by calculating the integral for
-%   P with a summation.
-%   To plot the result use plot_wavefield(x,y,P).
+%   WAVE_FIELD_MONO_WFS_25D(x,y,xs,L,f,src,conf) returns the sound pressure at
+%   the point(s) (x,y) for the given source type (src) using a WFS 2.5
+%   dimensional driving function in the temporal domain. This means by
+%   calculating the integral for P with a summation.
 %
 %   References:
 %       Spors2009 - Physical and Perceptual Properties of Focused Sources in
 %           Wave Field Synthesis (AES127)
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: plot_wavefield, wave_field_imp_wfs_25d
+%   see also: wave_field_mono_wfs_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -75,21 +75,21 @@ else
 end
 
 
+%% ==
+xref = conf.xref;
+
+
 %% ===== Computation ====================================================
 % Calculate the wave field in time-frequency domain
 %
 % Get the position of the loudspeakers and its activity
 x0 = secondary_source_positions(L,conf);
-ls_activity = secondary_source_selection(x0,xs,src,xref);
+x0 = secondary_source_selection(x0,xs,src,xref);
 % Generate tapering window
-win = tapering_window(L,ls_activity,conf);
-ls_activity = ls_activity .* win;
+win = tapering_window(x0,conf);
 % Initialize empty wave field
 % FIXME: it could be that length is not enough here and we need size(...)
 P = zeros(length(y),length(x));
-% Use only active secondary sources
-x0 = x0(ls_activity>0,:);
-win = win(ls_activity>0);
 % Integration over secondary source positions
 for ii = 1:size(x0,1)
 
@@ -116,9 +116,4 @@ for ii = 1:size(x0,1)
     % always be one.
     P = P + win(ii)*D.*G;
 
-end
-
-% ===== Plotting =========================================================
-if(useplot)
-    plot_wavefield(x,y,P,L,ls_activity,conf);
 end

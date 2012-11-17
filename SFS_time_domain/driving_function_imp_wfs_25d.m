@@ -73,46 +73,38 @@ xref = position_vector(conf.xref);
 
 
 %% ===== Computation =====================================================
-% Check also the activity of the used loudspeaker.
-ls_activity = secondary_source_selection(x0,xs,src,xref);
-if ls_activity>0
 
-    % Direction and position of secondary sources
-    nx0 = x0(4:6);
-    x0 = x0(1:3);
+% Direction and position of secondary sources
+nx0 = x0(4:6);
+x0 = x0(1:3);
 
-    % Constant amplitude factor
-    g0 = sqrt(2*pi*norm(xref-x0));
+% Constant amplitude factor
+g0 = sqrt(2*pi*norm(xref-x0));
 
-    if strcmp('pw',src)
-        % === Plane wave ===
-        % Direction of plane wave
-        nxs = xs / norm(xs);
-        % Delay and amplitude weight
-        % NOTE: <n_pw,n(x0)> is the same as the cosinus between their angle
-        delay = 1/c * nxs*x0';
-        weight = 2*g0 * nxs*nx0';
+if strcmp('pw',src)
+    % === Plane wave ===
+    % Direction of plane wave
+    nxs = xs / norm(xs);
+    % Delay and amplitude weight
+    % NOTE: <n_pw,n(x0)> is the same as the cosinus between their angle
+    delay = 1/c * nxs*x0';
+    weight = 2*g0 * nxs*nx0';
 
-    elseif strcmp('ps',src)
-        % === Point source ===
-        % Distance between loudspeaker and virtual source
-        r = norm(x0-xs);
-        % Delay and amplitude weight
-        delay = r/c;
-        weight = g0/(2*pi)*(x0-xs)*nx0'*r^(-3/2);
+elseif strcmp('ps',src)
+    % === Point source ===
+    % Distance between loudspeaker and virtual source
+    r = norm(x0-xs);
+    % Delay and amplitude weight
+    delay = r/c;
+    weight = g0/(2*pi)*(x0-xs)*nx0'*r^(-3/2);
 
-    elseif strcmp('fs',src)
-        % === Focused source ===
-        % Distance between loudspeaker and virtual source
-        r = norm(x0-xs);
-        % Delay and amplitude weight
-        delay =  -r/c;
-        weight = g0/(2*pi)*(x0-xs)*nx0'*r^(-3/2);
-    else
-        error('%s: %s is not a known source type.',upper(mfilename),src);
-    end
-
+elseif strcmp('fs',src)
+    % === Focused source ===
+    % Distance between loudspeaker and virtual source
+    r = norm(x0-xs);
+    % Delay and amplitude weight
+    delay =  -r/c;
+    weight = g0/(2*pi)*(x0-xs)*nx0'*r^(-3/2);
 else
-    delay = 0;
-    weight = 0;
+    error('%s: %s is not a known source type.',upper(mfilename),src);
 end

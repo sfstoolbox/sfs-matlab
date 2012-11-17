@@ -78,13 +78,9 @@ return
 %
 % get secondary source positions and activity
 x0 = secondary_source_positions(L,conf);
-ls_activity = secondary_source_selection(x0,xs,src);
-win = tapering_window(L,ls_activity,conf);
-ls_activity = ls_activity .* win;
+x0 = secondary_source_selection(x0,xs,src);
+win = tapering_window(x0,conf);
 % === get angles between array edges and virtual source position ===
-% find active secondary sources
-idx = (( ls_activity>0 ));
-x0 = x0(idx,:);
 % orientation of loudspeaker array
 v_array = x0(1,1:3)-x0(end,1:3);
 [phi_array,theta_tmp,r_tmp] = cart2sph(v_array(1),v_array(2),v_array(3))-pi/2;

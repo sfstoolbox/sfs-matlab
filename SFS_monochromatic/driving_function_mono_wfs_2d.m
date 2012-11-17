@@ -91,88 +91,82 @@ xref = position_vector(conf.xref);
 omega = 2*pi*f;
 
 % Driving function D(x0,omega)
-% Activity of secondary sources
-ls_activity = secondary_source_selection(x0,xs,src,xref);
-if(ls_activity)
 
-    % Direction and position of secondary sources
-    nx0 = x0(4:6);
-    x0 = x0(1:3);
+% Direction and position of secondary sources
+nx0 = x0(4:6);
+x0 = x0(1:3);
 
-    if strcmp('pw',src)
+if strcmp('pw',src)
 
-        % ===== PLANE WAVE ===============================================
-        % Use the position of the source as the direction vector for a plane
-        % wave
-        nxs = xs / norm(xs);
-        %
-        % ----------------------------------------------------------------
-        % D_2D using a plane wave as source model
-        %
-        % D_2D(x0,w) = 2i w/c n(xs) n(x0)  e^(-i w/c n(xs) x0)
-        %
-        % NOTE: the phase term e^(-i phase) is only there in order to be able to
-        %       simulate different time steps
-        %
-        D = 2*1i*omega/c*nxs*nx0' * exp(-1i*omega/c*(nxs*x0')) * ...
-            exp(-1i*phase);
-        %
+    % ===== PLANE WAVE ===============================================
+    % Use the position of the source as the direction vector for a plane
+    % wave
+    nxs = xs / norm(xs);
+    %
+    % ----------------------------------------------------------------
+    % D_2D using a plane wave as source model
+    %
+    % D_2D(x0,w) = 2i w/c n(xs) n(x0)  e^(-i w/c n(xs) x0)
+    %
+    % NOTE: the phase term e^(-i phase) is only there in order to be able to
+    %       simulate different time steps
+    %
+    D = 2*1i*omega/c*nxs*nx0' * exp(-1i*omega/c*(nxs*x0')) * ...
+        exp(-1i*phase);
+    %
 
-    elseif strcmp('ps',src)
+elseif strcmp('ps',src)
 
-        % ===== POINT SOURCE =============================================
-        %
-        % D_2D using a point source
-        %
-        %                1  / iw      1    \  (x0-xs)nk
-        % D_2D(x0,w) =  --- | -- - ------- |  --------- e^(-i w/c |x0-xs|)
-        %               2pi \  c   |x0-xs| /  |x0-xs|^2
-        %
-        % NOTE: the phase term e^(-i phase) is only there in order to be able to
-        %       simulate different time steps
-        %
-        D = 1/(2*pi) * ( (1i*omega)/c - 1/norm(x0-xs) ) * ...
-            (x0-xs)*nx0' / norm(x0-xs)^2 * exp(-1i*omega/c*norm(x0-xs)) * ...
-            exp(-1i*phase);
-        %
+    % ===== POINT SOURCE =============================================
+    %
+    % D_2D using a point source
+    %
+    %                1  / iw      1    \  (x0-xs)nk
+    % D_2D(x0,w) =  --- | -- - ------- |  --------- e^(-i w/c |x0-xs|)
+    %               2pi \  c   |x0-xs| /  |x0-xs|^2
+    %
+    % NOTE: the phase term e^(-i phase) is only there in order to be able to
+    %       simulate different time steps
+    %
+    D = 1/(2*pi) * ( (1i*omega)/c - 1/norm(x0-xs) ) * ...
+        (x0-xs)*nx0' / norm(x0-xs)^2 * exp(-1i*omega/c*norm(x0-xs)) * ...
+        exp(-1i*phase);
+    %
 
-    elseif strcmp('ls',src)
+elseif strcmp('ls',src)
 
-        % ===== LINE SOURCE ==============================================
-        %
-        % D_2D using a line source
-        %
-        %                 iw (x0-xs)nk  (2)/ w         \
-        % D_2D(x0,w) =  - -- --------- H1  | - |x0-xs| |
-        %                 2c  |x0-xs|      \ c         /
-        %
-        % NOTE: the phase term e^(-i phase) is only there in order to be able to
-        %       simulate different time steps
-        %
-        D = -1i*omega/(2*c) * (x0-xs)*nx0' / norm(x0-xs)^(3/2) * ...
-            besselh(1,2,omega/c*norm(x0-xs)) * exp(-1i*phase);
-        %
+    % ===== LINE SOURCE ==============================================
+    %
+    % D_2D using a line source
+    %
+    %                 iw (x0-xs)nk  (2)/ w         \
+    % D_2D(x0,w) =  - -- --------- H1  | - |x0-xs| |
+    %                 2c  |x0-xs|      \ c         /
+    %
+    % NOTE: the phase term e^(-i phase) is only there in order to be able to
+    %       simulate different time steps
+    %
+    D = -1i*omega/(2*c) * (x0-xs)*nx0' / norm(x0-xs)^(3/2) * ...
+        besselh(1,2,omega/c*norm(x0-xs)) * exp(-1i*phase);
+    %
 
-    elseif strcmp('fs',src)
+elseif strcmp('fs',src)
 
-        % ===== FOCUSED SOURCE ===========================================
-        %
-        % D_2D using a line sink
-        %
-        %                 iw (x0-xs)nk  (1)/ w         \
-        % D_2D(x0,w) =  - -- --------- H1  | - |x0-xs| |
-        %                 2c  |x0-xs|      \ c         /
-        %
-        % NOTE: the phase term e^(-i phase) is only there in order to be able to
-        %       simulate different time steps
-        %
-        D = -1i*omega/(2*c) * (x0-xs)*nx0' / norm(x0-xs)^(3/2) * ...
-            besselh(1,1,omega/c*norm(x0-xs)) * exp(-1i*phase);
-        %
-    else
-        % No such source type for the driving function
-        error('%s: src has to be one of "pw", "ps", "fs"!',upper(mfilename));
-    end
+    % ===== FOCUSED SOURCE ===========================================
+    %
+    % D_2D using a line sink
+    %
+    %                 iw (x0-xs)nk  (1)/ w         \
+    % D_2D(x0,w) =  - -- --------- H1  | - |x0-xs| |
+    %                 2c  |x0-xs|      \ c         /
+    %
+    % NOTE: the phase term e^(-i phase) is only there in order to be able to
+    %       simulate different time steps
+    %
+    D = -1i*omega/(2*c) * (x0-xs)*nx0' / norm(x0-xs)^(3/2) * ...
+        besselh(1,1,omega/c*norm(x0-xs)) * exp(-1i*phase);
+    %
 else
-    D = 0;
+    % No such source type for the driving function
+    error('%s: src has to be one of "pw", "ps", "fs"!',upper(mfilename));
 end

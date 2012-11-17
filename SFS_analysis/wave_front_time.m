@@ -1,20 +1,24 @@
-function t = wave_front_time(X,xs,L,conf)
-%WAVE_FRONT_TIME time of occurence of first echo for a linear WFS array
+function t = wave_front_time(X,xs,src,L,conf)
+%WAVE_FRONT_TIME time of occurence of wave fronts for a WFS array
 %
-%   Usage: wave_front_time(X,xs,L,[conf])
+%   Usage: wave_front_time(X,xs,src,L,[conf])
 %
 %   Input parameters:
 %       X       - listener position (m)
 %       xs      - position of the virtual source (m)
+%       src     - source type of the virtual source
+%                     'pw' - plane wave (xs, ys are the direction of the
+%                            plane wave in this case)
+%                     'ps' - point source
+%                     'fs' - focused source
 %       L       - length of the linear loudspeaker array
 %       conf    - optional configuration struct (see SFS_config)
 %
-%   WAVE_FRONT_TIME(X,xs,L) calculates the time of occuring of the first
-%   echo (focused sources) resp. the last echo (virtual point source) at the
-%   listener position X for a given point source location xs and a
-%   linear WFS loudspeaker array with a length of L.
+%   WAVE_FRONT_TIME(X,xs,src,L,conf) calculates the time of occurence of the
+%   single wave fronts at te listener positions. The single wave fronts are 
+%   omitted by the secondary sources.
 %
-%   see also: wave_front_direction, plot_wave_front_times
+%   see also: wave_front_direction, driving_function_imp_wfs_25d 
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -45,10 +49,11 @@ function t = wave_front_time(X,xs,L,conf)
 
 
 %% ===== Checking of input parameters ===================================
-nargmin = 5;
-nargmax = 6;
+nargmin = 4;
+nargmax = 5;
 error(nargchk(nargmin,nargmax,nargin));
 [X,xs] = position_vector(X,xs);
+isargchar(src);
 isargpositivescalar(L);
 
 if nargin<nargmax
@@ -72,33 +77,15 @@ nls = size(x0,1);
 
 %% ===== Calculate a time axis ==========================================
 
-% Geometry
-%          x0(ii,:)                  X0
-% x-axis <-^--^--^--^--^--^--^--^--^-|-^--^--^--^--^--^--^--^--^--
-%             |                      |
-%         R2 |  |                    |
-%           |     | R                |
-%          x        |                |
-%         xs          |              |
-%                       O            |
-%                       X            |
-%                                    v
-%                                  y-axis
-%
-% Distance between secondary source and listener: R
-% Distance between secondary source and virtual source: R2
-
-% Calculate arrival times at the virtual source position of the waves
+% Calculate arrival times at the listener position of the waves
 % emitted by the secondary sources
-t2 = zeros(nls,1);
 t = zeros(nls,1);
-for i = 1:nls
-    % Time between secondary sources and virtual source
-    t2(ii) = norm(x0(ii,1:3)-xs)/c;
-    % === Time, in which pre-echos occur ===
+delay = zeros(nls,1);
+for ii = 1:nls
+    % Time between secondary sources and listener
     t(ii) = norm(x0(ii,1:3)-X)/c;
+    % Time delay of the secondary sources
+    [weight,delay(ii)] = driving_function_imp_wfs_25d(x0(ii,:),xs,src,conf);
 end
 
-% Adjust the time, so the virtual source arrives at time 0 at the listener
-% position and use only the minimum time (focused sources).
-t = min(t-1.*t2 - norm(xs-X)/c);
+t = t+delay;

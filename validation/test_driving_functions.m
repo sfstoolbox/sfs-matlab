@@ -287,7 +287,7 @@ xs = [0.5,1];
     wave_field_mono_nfchoa_25d(X,Y,xs,src,f,L,conf);
 title('NFC-HOA 2.5D circular array, plane wave [0.5,1], mono-frequent');
 % spatio-temporal impulse response
-[x,y,p_nfchoa25d_circular_pw,ls_activity] = wave_field_imp_nfchoa_25d(X,Y,xs,src,L,conf);
+[x,y,p_nfchoa25d_circular_pw] = wave_field_imp_nfchoa_25d(X,Y,xs,src,L,conf);
 title('NFC-HOA 2.5D circular array, plane wave [0.5,1], impulse response');
 
 % point source
@@ -298,7 +298,7 @@ xs = [0.5,2];
 %    wave_field_mono_nfchoa_25d(X,Y,xs,src,f,L,conf);
 %title('NFC-HOA 2.5D circular array, point source [0.5,2], mono-frequent');
 % spatio-temporal impulse response
-[x,y,p_nfchoa25d_circular_ps,ls_activity] = wave_field_imp_nfchoa_25d(X,Y,xs,src,L,conf);
+[x,y,p_nfchoa25d_circular_ps] = wave_field_imp_nfchoa_25d(X,Y,xs,src,L,conf);
 title('NFC-HOA 2.5D circular array, point source [0.5,2], impulse response');
 
 

@@ -1,4 +1,4 @@
-function [x,y,P,ls_activity] = wave_field_mono_wfs_2d(X,Y,xs,src,f,L,conf)
+function [x,y,P,win] = wave_field_mono_wfs_2d(X,Y,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_WFS_25D simulates a wave field for 2D WFS
 %
 %   Usage: [x,y,P] = wave_field_mono_wfs_2d(X,Y,xs,L,f,src,[conf])
@@ -90,68 +90,16 @@ y = linspace(Y(1),Y(2),xysamples);
 
 
 %% ===== Computation ====================================================
-
 % Calculate the wave field in time-frequency domain
-%
-% Get the position of the loudspeakers and its activity
-x0 = secondary_source_positions(L,conf);
-ls_activity = secondary_source_selection(x0,xs,src,xref);
-% Generate tapering window
-win = tapering_window(L,ls_activity,conf);
-ls_activity = ls_activity .* win;
 % Create a x-y-grid to avoid a loop
 [xx,yy] = meshgrid(x,y);
-% Initialize empty wave field
-P = zeros(length(y),length(x));
-% Use only active secondary sources
-x0 = x0(ls_activity>0,:);
-win = win(ls_activity>0);
-% Integration over secondary source positions
-for ii = 1:length(x0)
-
-    % ====================================================================
-    % Secondary source model G(x-x0,omega)
-    % This is the model for the loudspeakers we apply. We use line sources
-    % for 2D synthesis.
-    G = line_source(xx,yy,x0(ii,1:3),f);
-
-    % ====================================================================
-    % Driving function D(x0,omega)
-    D = driving_function_mono_wfs_2d(x0(ii,:),xs,src,f,conf);
-
-    % ====================================================================
-    % Integration
-    %              /
-    % P(x,omega) = | D(x0,omega) G(x-x0,omega) dx0
-    %              /
-    %
-    % see: Spors2009, Williams1993 p. 36
-    %
-    % NOTE: win(ii) is the factor of the tapering window in order to have fewer
-    % truncation artifacts. If you don't use a tapering window win(ii) will
-    % always be one.
-    P = P + win(ii)*D.*G;
-
-end
-
-% === Primary source correction ===
-% This is not implemented yet. Have a look at
-% Völk, F., Lindner, F., & Fastl, H. (2011). Primary Source Correction (PSC) in
-% Wave Field Synthesis. ICSA
-if(0)
-    omega = 2*pi*f;
-    c = conf.c;
-    xref = position_vector(conf.xref);
-    C = exp(-1i*(omega/c*norm(xref-xs) - pi/2)) / ...
-    ( pi*norm(xref-xs)*besselh(0,2,omega/c*norm(xref-xs)) )
-    P = P .* C;
-end
-
-% === Scale signal (at xref) ===
+% get wave field
+[P,x0,win] = wfs_2d(xx,yy,xs,src,f,L,conf);
+% scale signal (at xref)
 P = norm_wave_field(P,x,y,conf);
 
 
 % ===== Plotting =========================================================
 if(useplot)
-    plot_wavefield(x,y,P,L,ls_activity,conf);
+    plot_wavefield(x,y,P,x0,win,conf);
 end

@@ -2,6 +2,10 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
 0.2.2
 
+    - added functions to calculate the sound pressure for monochromatic WFS at a
+      single point in analogy to the point_source function
+    - changed the behavior of secondary_source_selection to returning a new x0
+      vector
     - added compatibility for octave 3.6
     - first fix of secondary source selection for focused sources (now they
       point always in the direction of the reference point) 

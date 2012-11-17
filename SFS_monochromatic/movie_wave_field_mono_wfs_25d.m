@@ -85,12 +85,9 @@ for ii = 1:length(phase)-1
     conf.phase = phase(ii);
     conf.useplot = 0;
     % Calculate wave field for the given phase
-    [x,y,P] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,conf);
+    [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,conf);
     x0 = secondary_source_positions(L,conf);
-    ls_activity = secondary_source_selection(x0,xs,src);
-    % Generate tapering window
-    win = tapering_window(L,ls_activity,conf);
-    ls_activity = ls_activity .* win;
+    x0 = secondary_source_selection(x0,xs,src);
 
     % === Save temporary data ===
     if ~exist(tmpdir,'dir')
@@ -98,7 +95,9 @@ for ii = 1:length(phase)-1
     end
     pngfile = sprintf('%s/%s_%i.png',tmpdir,rn,ii+10);
     conf.plot.mode = 'png';
-    plot_wavefield(x,y,P,L,ls_activity,pngfile,conf);
+    % FIXME: this is broken at the moment, because pngfile is not handled by the
+    % plotting function
+    plot_wavefield(x,y,P,x0,ls_activity,pngfile,conf);
 end
 
 

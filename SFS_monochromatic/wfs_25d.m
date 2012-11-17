@@ -1,35 +1,36 @@
-function [f,S] = freq_response_wfs_25d(X,xs,src,L,conf)
-%FREQ_RESPONSE_WFS_25D simulates the frequency response for 2.5D WFS
+function [P,x0,win] = wfs_25d(x,y,xs,src,f,L,conf)
+%WFS_25D returns the sound pressure for 2.5D WFS at x,y
 %
-%   Usage: [f,S] = freq_response_wfs_25d(X,xs,src,L,[conf])
+%   Usage: [P,win] = wfs_25d(x,y,xs,src,f,L,[conf])
 %
 %   Input parameters:
-%       X           - listener position (m)
-%       xs          - position of virtual source (m)
+%       x           - x position(s)
+%       y           - y position(s)
+%       xs          - position of point source (m)
 %       src         - source type of the virtual source
-%                         'pw' -plane wave
+%                         'pw' - plane wave (xs is the direction of the
+%                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
+%       f           - monochromatic frequency (Hz)
 %       L           - array length (m)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       f           - corresponding frequency (x) axis
-%       S           - simulated frequency response
+%       P           - Simulated wave field
+%       win         - tapering window (activity of loudspeaker)
 %
-%   FREQ_RESPONSE_WFS_25D(X,xs,src,L,conf) simulates the frequency
-%   response of the wave field at the given position X. The wave field is
-%   simulated for the given source type (src) using a WFS 2.5 dimensional
-%   driving function in the temporal domain.
+%   WAVE_FIELD_MONO_WFS_25D(x,y,xs,L,f,src,conf) returns the sound pressure at
+%   the point(s) (x,y) for the given source type (src) using a WFS 2.5
+%   dimensional driving function in the temporal domain. This means by
+%   calculating the integral for P with a summation.
 %
 %   References:
 %       Spors2009 - Physical and Perceptual Properties of Focused Sources in
 %           Wave Field Synthesis (AES127)
-%       Spors2010 - Analysis and Improvement of Pre-equalization in
-%           2.5-Dimensional Wave Field Synthesis (AES128)
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: wave_field_mono_wfs_25d, wave_field_time_domain_wfs_25d
+%   see also: wave_field_mono_wfs_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -55,18 +56,18 @@ function [f,S] = freq_response_wfs_25d(X,xs,src,L,conf)
 % field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
 % ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox      sfstoolbox@gmail.com  *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
+nargmin = 6;
+nargmax = 7;
 error(nargchk(nargmin,nargmax,nargin));
-[X,xs] = position_vector(X,xs);
-isargpositivescalar(L);
+isargmatrix(x,y);
+xs = position_vector(xs);
+isargpositivescalar(L,f);
 isargchar(src);
-
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -74,63 +75,45 @@ else
 end
 
 
-%% ===== Configuration ==================================================
-% Plotting result
-useplot = conf.useplot;
+%% ==
+xref = conf.xref;
 
 
 %% ===== Computation ====================================================
-% Calculate the wave field in time domain
-
-% Get the position of the loudspeakers
+% Calculate the wave field in time-frequency domain
+%
+% Get the position of the loudspeakers and its activity
 x0 = secondary_source_positions(L,conf);
-
-% Generate frequencies (10^0-10^5)
-f = logspace(0,5,500);
-% We want only frequencies until f = 20000Hz
-idx = find(f>20000,1);
-f = f(1:idx);
-
-S = zeros(1,length(f));
-
-% Activity of secondary sources
-x0 = secondary_source_selection(x0,xs,src);
-nls = size(x0,1);
-% Tapering window
+x0 = secondary_source_selection(x0,xs,src,xref);
+% Generate tapering window
 win = tapering_window(x0,conf);
-% Get the result for all frequencies
-for ii = 1:length(f)
-    P = 0;
-    % Integration over secondary source positions
-    for n = 1:nls
+% Initialize empty wave field
+% FIXME: it could be that length is not enough here and we need size(...)
+P = zeros(length(y),length(x));
+% Integration over secondary source positions
+for ii = 1:size(x0,1)
 
-        % ================================================================
-        % Secondary source model
-        % This is the model for the loudspeakers we apply. We use closed cabinet
-        % loudspeakers and therefore the 3D Green's function is our model.
-        G = point_source(X(1),X(2),x0(n,1:3),f(ii),conf);
+    % ====================================================================
+    % Secondary source model G(x-x0,omega)
+    % This is the model for the loudspeakers we apply. We use closed cabinet
+    % loudspeakers and therefore point sources.
+    G = point_source(x,y,x0(ii,1:3),f);
 
-        % ================================================================
-        % Driving function D(x0,omega)
-        D = driving_function_mono_wfs_25d(x0(n,:),xs,src,f(ii),conf);
+    % ====================================================================
+    % Driving function D(x0,omega)
+    D = driving_function_mono_wfs_25d(x0(ii,:),xs,src,f,conf);
 
-        % ================================================================
-        % Integration
-        %              /
-        % P(x,omega) = | D(x0,omega) G(x-xs,omega) dx0
-        %              /
-        %
-        % see: Spors2009, Williams1993 p. 36
-        %
-        P = P + win(n)*D.*G;
-    end
-    S(ii) = abs(P);
-end
+    % ====================================================================
+    % Integration
+    %              /
+    % P(x,omega) = | D(x0,omega) G(x-x0,omega) dx0
+    %              /
+    %
+    % see: Spors2009, Williams1993 p. 36
+    %
+    % NOTE: win(ii) is the factor of the tapering window in order to have fewer
+    % truncation artifacts. If you don't use a tapering window win(ii) will
+    % always be one.
+    P = P + win(ii)*D.*G;
 
-
-% ===== Plotting =========================================================
-if(useplot)
-    figure; semilogx(f,db(S));
-    ylabel('Amplitude (dB)');
-    xlabel('Frequency (Hz)');
 end

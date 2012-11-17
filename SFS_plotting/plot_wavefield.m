@@ -1,7 +1,7 @@
-function plot_wavefield(x,y,P,varargin)
+function plot_wavefield(x,y,P,x0,ls_activity,conf)
 %PLOT_WAVEFIELD plot the given wavefield
 %
-%   Usage: plot_wavefield(x,y,P,[[[L],ls_activity],conf])
+%   Usage: plot_wavefield(x,y,P,[x0],conf])
 %
 %   Input parameters:
 %       x,y         - vectors for the x- and y-axis
@@ -57,36 +57,37 @@ nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
 isargvector(x,y);
 isargmatrix(P);
-% Setting default values and check varargin parameters
-ls_activity = 1;
-for ii = 1:length(varargin)
-    if isstruct(varargin{ii})
-        conf = varargin{ii};
-    elseif isscalar(varargin{ii}) && varargin{ii}>0 && ~exist('L','var')
-        L = varargin{ii};
-        if ii+1<=length(varargin) && isvector(varargin{ii})
-            ls_activity = varargin{ii+1};
-        end
+if nargin==nargmax-1
+    if isstruct(ls_activity)
+        conf = ls_activity;
+        ls_activity = ones(1,size(x0,1));
+    else
+        conf = SFS_config;
     end
-end
-if ~exist('conf','var')
+elseif nargin==nargmax-2
+    if isstruct(x0)
+        conf = x0;
+        x0 = [];
+    else
+        conf = SFS_config;
+    end
+elseif nargin==nargmax-3
     conf = SFS_config;
 end
+isargsecondarysource(x0);
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
 % Check if we have a loudspeaker array at all
-if ~exist('L','var')
+if length(x0)==0
     conf.plot.loudspeakers = 0;
 end
+dx0 = conf.dx0;
 % Tmp dir
 tmpdir = conf.tmpdir;
 % Center position of array
 X0 = position_vector(conf.X0);
-% Distance between loudspeakers
-dx0 = conf.dx0;
-% Used array geometry
-array = conf.array;
 % Plotting
 useplot = conf.useplot;
 p.usegnuplot = conf.plot.usegnuplot;
@@ -106,12 +107,6 @@ p.file = conf.plot.file;
 % Check the size of x,y and P
 if size(P,1)~=length(y) || size(P,2)~=length(x)
     error('%s: the size of P has to be y x x.',upper(mfilename));
-end
-
-% Check if the array length is given, if the loudspeaker should be plotted
-if ~exist('L','var') && p.loudspeakers
-    error(['%s: the array length L has to be given in order to draw ',...
-           'the loudspeakers!'],upper(mfilename));
 end
 
 if(p.usedb)
@@ -251,7 +246,6 @@ if ~(p.usegnuplot)
             warning(['%s: the given loudspeaker distance is to small. ',...
                      'Disabling plotting of the loudspeakers'],upper(mfilename));
         else
-            x0 = secondary_source_positions(L,conf);
             hold on;
             draw_loudspeakers(x0,ls_activity,conf);
             hold off;
@@ -290,8 +284,6 @@ else
     % Check if we should plot the loudspeakers.
     if(p.loudspeakers)
         % Loudspeaker positions and directions
-        x0 = secondary_source_positions(L,conf);
-
         if  dx0<= 0.01
             warning(['%s: the given loudspeaker distance is to small. ',...
                     'Disabling plotting of the loudspeakers'],upper(mfilename));

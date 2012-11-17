@@ -93,13 +93,10 @@ c = conf.c;
 omega = 2*pi*f;
 
 % Driving function D(x0,omega)
-% Activity of secondary sources
-ls_activity = secondary_source_selection(x0,xs,src,xref);
-idx = ((ls_activity>0));
 
 % Direction and position of secondary sources
-nx0 = x0(idx,4:6);
-x0 = x0(idx,1:3);
+nx0 = x0(:,4:6);
+x0 = x0(:,1:3);
 
 % Constant amplitude factor g0
 g0 = sqrt(2*pi*norm(xref-x0));
@@ -124,7 +121,7 @@ if strcmp('pw',src)
     % NOTE: the phase term e^(-i phase) is only there in order to be able to
     %       simulate different time steps
     %
-    D(idx) = 2*g0* nxs*nx0' * sqrt(omega/(1i*c)) * ...
+    D = 2*g0* nxs*nx0' * sqrt(omega/(1i*c)) * ...
         exp(-1i*omega/c*(nxs*x0')) * ...
         exp(-1i*phase);
 
@@ -145,7 +142,7 @@ elseif strcmp('ps',src)
     % NOTE: the phase term e^(-i phase) is only there in order to be able to
     %       simulate different time steps
     %
-    D(idx) = g0/(2*pi) * ( sqrt(omega/(1i*c)) - sqrt(1i*c/omega) / ...
+    D = g0/(2*pi) * ( sqrt(omega/(1i*c)) - sqrt(1i*c/omega) / ...
         norm(x0-xs) ) * (x0-xs)*nx0' / norm(x0-xs)^2 * ...
         exp(-1i*omega/c*norm(x0-xs)) * exp(-1i*phase);
 
@@ -198,7 +195,7 @@ elseif strcmp('fs',src)
     % NOTE: the phase term e^(-i phase) is only there in order to be able to
     %       simulate different time steps
     %
-    D(idx) = g0 * sqrt(1i*omega/(2*pi*c)) * ...
+    D = g0 * sqrt(1i*omega/(2*pi*c)) * ...
         (x0-xs)*nx0' / norm(x0-xs)^(3/2) * ...
         exp(1i*omega/c*norm(x0-xs)) * exp(-1i*phase);
     %

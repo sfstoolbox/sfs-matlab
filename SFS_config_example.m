@@ -9,7 +9,7 @@ function conf = SFS_config()
 %   SFS_CONFIG() creates the struct conf containing the default
 %   configuration values. If you want to create other entries, please set
 %   them in your script (e.g. conf.fs = 48000) and pass the conf struct to
-%   the desired function as last input (e.g. tapering_window(L,conf)).
+%   the desired function as last input (e.g. tapering_window(x0,conf)).
 %
 %   So edit this function only, if the default values have changed!
 %

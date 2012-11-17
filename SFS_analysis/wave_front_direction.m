@@ -53,6 +53,8 @@ function [alpha,a,t] = wave_front_direction(X,phi,xs,src,L,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
+% FIXME: see if this function still works correctly
+
 
 %% ===== Checking of input parameters ====================================
 nargmin = 5;
@@ -134,7 +136,8 @@ for ii = 1:nls
     % Angle between listener and secondary source (-pi < alpha <= pi,
     % without phi)
     % Note: phi is the orientation of the listener (see first graph)
-    [alpha(ii),theta_tmp,r_tmp] = cart2sph(x0(n,1)-X(1),x0(n,2)-X(2),0) - phi;
+    [alpha_tmp,theta_tmp,r_tmp] = cart2sph(x0(ii,1)-X(1),x0(ii,2)-X(2),0);
+    alpha(ii) = alpha_tmp - phi;
 
     % === Direction and amplitude in vector notation ===
     % Rotation matrix (see: http://en.wikipedia.org/wiki/Rotation_matrix)

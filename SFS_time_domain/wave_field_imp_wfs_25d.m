@@ -1,4 +1,4 @@
-function [x,y,p,ls_activity,dds] = wave_field_imp_wfs_25d(X,Y,xs,src,L,conf)
+function [x,y,p,win,dds] = wave_field_imp_wfs_25d(X,Y,xs,src,L,conf)
 %WAVE_FIELD_IMP_WFS_25D returns the wave field in time domain of an impulse
 %
 %   Usage: [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,src,L,[conf])

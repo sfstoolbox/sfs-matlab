@@ -124,28 +124,29 @@ elseif strcmp('circle',array)
     x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1).*ones(nls,3));  
 elseif strcmp('spherical',array)
     % get positions of secondary sources for xy-plane
+    x0 = equally_spaced_points_on_sphere(conf);
     conf.array = 'circle';
-    x0 = secondary_source_positions(L,conf);
-    conf.array = 'spherical';
-    x0_point = x0(:,1:3);
-    x0(:,4:6) = x0(:,4:6)*-1;
-    % help position vector, will be filled with new spherical positions of secondary
-    % sources, floor() has to be applied if 180%(resolution_theta)~=0;
-    x0_help = [];
-    % rotate around the x axis to get all spherical positions and directions
-    for theta = (-90+resolution_theta):resolution_theta:(90-resolution_theta)
-        % in rad
-        theta = theta*pi/180;  
-        % get 3D rotation matrix (x axis) for every elevation angle 
-        Rotate = rotation_matrix(theta,'3D');
-        % help vector: stores the secondary sound source position for actual angle
-        x0_help = [x0_help Rotate*x0_point'];    
-    end
-    x0_help = x0_help.';
-    % get normal vectors for all secondary source position with respect to config.xref
-    x_dir = direction_vector(-1*x0_help(:,1:3),repmat(X0,length(x0_help),1).*ones(length(x0_help),3));
-    % new postion/direction matrix of secondary source
-    x0 = [x0;x0_help x_dir];  
+%     x0 = secondary_source_positions(L,conf);
+%     conf.array = 'spherical';
+%     x0_point = x0(:,1:3);
+%     x0(:,4:6) = x0(:,4:6)*-1;
+%     % help position vector, will be filled with new spherical positions of secondary
+%     % sources, floor() has to be applied if 180%(resolution_theta)~=0;
+%     x0_help = [];
+%     % rotate around the x axis to get all spherical positions and directions
+%     for theta = (-90+resolution_theta):resolution_theta:(90-resolution_theta)
+%         % in rad
+%         theta = theta*pi/180;  
+%         % get 3D rotation matrix (x axis) for every elevation angle 
+%         Rotate = rotation_matrix(theta,'3D');
+%         % help vector: stores the secondary sound source position for actual angle
+%         x0_help = [x0_help Rotate*x0_point'];    
+%     end
+%     x0_help = x0_help.';
+%     % get normal vectors for all secondary source position with respect to config.xref
+%     x_dir = direction_vector(-1*x0_help(:,1:3),repmat(X0,length(x0_help),1).*ones(length(x0_help),3));
+%     % new postion/direction matrix of secondary source
+%     x0 = [x0;x0_help x_dir];  
 elseif strcmp('box',array)
     % === Boxed loudspeaker array ===
     % Number of secondary sources per linear array

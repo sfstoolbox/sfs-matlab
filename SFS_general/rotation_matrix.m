@@ -65,28 +65,18 @@ end
 switch orientation
     case 'counterclockwise'
         
-        if strcmp('2D',dimension) 
-             R = [cos(phi) -sin(phi); ...
-                  sin(phi) cos(phi)];
-        elseif strcmp('3D',dimension)
-             R = [1    0          0
-                  0 cos(phi)  -sin(phi); ...
-                  0 sin(phi)   cos(phi)];
-        else
-             error('%s: %s is no possible dimension',upper(mfilename),dimension);
-        end
-
+    
+             R = [ cos(phi)  -sin(phi)  0; ...
+                   sin(phi)   cos(phi)  0;
+                     0          0       1];
+        
+        
     case 'clockwise'
         
-        if strcmp('2D',dimension) 
-             R = [cos(phi) sin(phi); ...
-                  -sin(phi) cos(phi)];
-        elseif strcmp('3D',dimension)
-             R = [1      0       0
-                  0  cos(phi)  sin(phi); ...
-                  0 -sin(phi)  cos(phi)];            
-        else
-             error('%s: %s is no possible dimension (try "2D" or "3D")',upper(mfilename),dimension);
-        end   
+
+      
+             R = [ cos(phi)  sin(phi)  0; ...
+                   -sin(phi) cos(phi)  0;
+                     0          0       1];
             
 end

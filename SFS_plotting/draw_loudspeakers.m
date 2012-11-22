@@ -80,9 +80,9 @@ else
     % vertex coordinates
     %v1 = [-h/2 -h/2 0 0 -h/2 ; -w/2 w/2 w/2 -w/2 -w/2];
     %v2 = [0 h/2 h/2 0 ; -w/6 -w/2 w/2 w/6];
-    v1 = [-h -h -h/2 -h/2 -h ; -w/2 w/2 w/2 -w/2 -w/2];
-    v2 = [-h/2 0 0 -h/2 ; -w/6 -w/2 w/2 w/6];
-
+    v1 = [-h -h -h/2 -h/2 -h ; -w/2 w/2 w/2 -w/2 -w/2 ; 0 0 0 0 0];
+    v2 = [-h/2 0 0 -h/2 ; -w/6 -w/2 w/2 w/6 ; 0 0 0 0 ];
+    
     hold on;
 
     % draw loudspeakers

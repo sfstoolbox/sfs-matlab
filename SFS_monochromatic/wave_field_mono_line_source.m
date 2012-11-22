@@ -67,18 +67,13 @@ end
 
 
 %% ===== Configuration ==================================================
-% xy resolution
-xysamples = conf.xysamples;
 % Plotting result
 useplot = conf.useplot;
 
 
 %% ===== Computation ====================================================
-% Getting values for x- and y-axis
-x = linspace(X(1),X(2),xysamples);
-y = linspace(Y(1),Y(2),xysamples);
 % Create a x-y-grid to avoid a loop
-[xx,yy] = meshgrid(x,y);
+[xx,yy,x,y] = xy_grid(X,Y,conf);
 % Source model for a line source G_2D(x,omega)
 P = line_source(xx,yy,xs,f);
 % Scale signal (at yref)

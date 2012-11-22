@@ -78,16 +78,8 @@ end
 
 
 %% ===== Configuration ==================================================
-% xy resolution
-xysamples = conf.xysamples;
 % Plotting result
 useplot = conf.useplot;
-
-
-%% ===== Variables ======================================================
-% Getting values for x- and y-axis
-x = linspace(X(1),X(2),xysamples);
-y = linspace(Y(1),Y(2),xysamples);
 
 
 %% ===== Computation ====================================================
@@ -96,7 +88,7 @@ y = linspace(Y(1),Y(2),xysamples);
 % Get the position of the loudspeakers
 x0 = secondary_source_positions(L,conf);
 % Create a x-y-grid to avoid a loop
-[xx,yy] = meshgrid(x,y);
+[xx,yy,x,y] = xy_grid(X,Y,conf);
 % Initialize empty wave field
 P = zeros(length(y),length(x));
 % Driving function D(x0,omega)

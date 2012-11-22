@@ -78,21 +78,13 @@ end
 
 
 %% ===== Configuration ==================================================
-xysamples = conf.xysamples;
 useplot = conf.useplot;
-xref = position_vector(conf.xref);
-
-
-%% ===== Variables ======================================================
-% Getting values for x- and y-axis
-x = linspace(X(1),X(2),xysamples);
-y = linspace(Y(1),Y(2),xysamples);
 
 
 %% ===== Computation ====================================================
 % Calculate the wave field in time-frequency domain
 % Create a x-y-grid to avoid a loop
-[xx,yy] = meshgrid(x,y);
+[xx,yy,x,y] = xy_grid(X,Y,conf);
 % get wave field
 [P,x0,win] = wfs_2d(xx,yy,xs,src,f,L,conf);
 % scale signal (at xref)

@@ -1,7 +1,7 @@
 function [x,y,p,dds] = wave_field_imp_wfs_3d(X,Y,xs,src,L,conf)
-%WAVE_FIELD_IMP_WFS_25D returns the wave field in time domain of an impulse
+%WAVE_FIELD_IMP_WFS_3D returns the wave field in time domain of an impulse
 %
-%   Usage: [x,y,p,ls_activity] = wave_field_imp_wfs_25d(X,Y,xs,src,L,[conf])
+%   Usage: [x,y,p,ls_activity] = wave_field_imp_wfs_3d(X,Y,xs,src,L,[conf])
 %
 %   Input options:
 %       X           - length of the X axis (m); single value or [xmin,xmax]
@@ -20,8 +20,8 @@ function [x,y,p,dds] = wave_field_imp_wfs_3d(X,Y,xs,src,L,conf)
 %       p           - wave field (length(y) x length(x))
 %       ls_activity - activity of the secondary sources
 %
-%   WAVE_FIELD_IMP_WFS_25D(X,Y,xs,src,L,conf) simulates a wave field of the
-%   given source type (src) using a WFS 2.5 dimensional driving function with
+%   WAVE_FIELD_IMP_WFS_3D(X,Y,xs,src,L,conf) simulates a wave field of the
+%   given source type (src) using a WFS 3 dimensional driving function with
 %   a delay line.
 %   To plot the result use:
 %   conf.plot.usedb = 1;

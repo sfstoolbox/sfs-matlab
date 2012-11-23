@@ -1,7 +1,7 @@
 function ir_wfs = ir_wfs_3d(X,phi,xs,src,L,irs,conf)
-%BRS_WFS_25D Generate a IR for WFS
+%BRS_WFS_3D Generate a IR for WFS
 %
-%   Usage: ir_wfs = ir_wfs_25d(X,phi,xs,src,L,irs,[conf])
+%   Usage: ir_wfs = ir_wfs_3d(X,phi,xs,src,L,irs,[conf])
 %
 %   Input parameters:
 %       X       - listener position (m)
@@ -18,7 +18,7 @@ function ir_wfs = ir_wfs_3d(X,phi,xs,src,L,irs,conf)
 %   Output parameters:
 %       iri_wfs - Impulse response for the desired WFS array (nx2 matrix)
 %
-%   IR_WFS_25D(X,phi,xs,src,L,irs,conf) calculates a binaural room impulse
+%   IR_WFS_3D(X,phi,xs,src,L,irs,conf) calculates a binaural room impulse
 %   response for a virtual source at xs for a virtual WFS array and a
 %   listener located at X.
 %
@@ -104,12 +104,12 @@ phi = correct_azimuth(phi);
 
 % Loudspeaker positions (phiLS describes the directions of the loudspeakers)
 x0 = secondary_source_positions(L,conf);
+x0 = x0(:,1:6);
+x0 = secondary_source_selection(x0,xs,src);
 nls = size(x0,1);
 conf.nls = nls;
-ls_activity = secondary_source_selection(x0,xs,src);
-conf.array = 'circle';
 % generate tapering window
-win = tapering_window(L,ls_activity,conf);
+win = tapering_window(x0,conf);
 
 
 %% ===== BRIR ===========================================================

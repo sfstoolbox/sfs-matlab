@@ -5,16 +5,17 @@ close all
 clc
 %% properties
 conf = SFS_config;
-L = 3;
+conf.L = 3;
 conf.array = 'spherical';
-conf.resolution_theta = 1;
-X = [0 0];
+conf.number_of_points_on_sphere = 900;
+X = [0 0 0];
 phi = -pi/2;
 src = 'pw';
 xs = [0 2.5 0];
 conf.xref = [0 0 0];
 conf.usehpre = 1;
 conf.usehcomp = 0;
+conf.usetapwin = 0;
 dx1 = [];
 dx2 = [];
 %% get dirac impulses as impulse responses
@@ -23,14 +24,14 @@ irs = dummy_irs3d();
 % 1. loudspeaker spacing = 0.16m
 conf.dx0 = 0.16;
 conf.hprefhigh = aliasing_frequency(conf.dx0);
-ir = ir_wfs_3d(X,phi,xs,src,L,irs,conf);
+ir = ir_wfs_3d(X,phi,xs,src,conf.L,irs,conf);
 [a,p,f] = easyfft(ir(:,1),conf);
 dx1 = conf.dx0;
 %% frequency response of the first LS
 % 2. loudspeaker spacing = 0.32m
 conf.dx0 = 0.32;
 conf.hprefhigh = aliasing_frequency(conf.dx0);
-ir = ir_wfs_3d(X,phi,xs,src,L,irs,conf);
+ir = ir_wfs_3d(X,phi,xs,src,conf.L,irs,conf);
 [b,p,f] = easyfft(ir(:,1),conf);
 dx2 = conf.dx0;
 %% plot the results

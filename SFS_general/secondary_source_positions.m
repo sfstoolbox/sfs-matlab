@@ -87,8 +87,7 @@ X0 = position_vector(conf.X0);
 dx0 = conf.dx0;
 % Given secondary sources
 x0 = conf.x0;
-% evelation angle for 3D case
-resolution_theta = conf.resolution_theta;
+
 
 %% ===== Main ============================================================
 % Check if we have already predefined secondary sources

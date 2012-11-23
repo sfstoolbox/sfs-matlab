@@ -1,4 +1,4 @@
-function x0 = equally_spaced_points_on_sphere(conf)
+function [x0,conf] = equally_spaced_points_on_sphere(conf)
 
 % x0 = equally_spaced_points_on_sphere(conf) loads the coordinates and
 % weights of N equally spaced points on a sphere. N has to be set in conf
@@ -39,7 +39,7 @@ x0 = L/2*x0;
 x0(:,7) = x0(:,4);
 %% get normal vectors of x0
 X0 = position_vector(conf.X0);
-x0(:,4:6) = direction_vector(-x0(:,1:3),repmat(X0,length(x0),1).*ones(length(x0),3)); 
+x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,length(x0),1).*ones(length(x0),3)); 
 end
 
 end % end of function

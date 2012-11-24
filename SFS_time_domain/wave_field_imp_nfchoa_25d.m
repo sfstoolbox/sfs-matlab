@@ -70,8 +70,6 @@ end
 
 
 %% ===== Configuration ==================================================
-% xy resolution
-xysamples = conf.xysamples;
 % Plotting result
 useplot = conf.useplot;
 % Speed of sound
@@ -90,10 +88,7 @@ x0 = secondary_source_positions(L,conf);
 nls = size(x0,1);
 
 % Spatial grid
-x = linspace(X(1),X(2),xysamples);
-y = linspace(Y(1),Y(2),xysamples);
-[xx,yy] = meshgrid(x,y);
-
+[xx,yy,x,y] = xy_grid(X,Y,conf);
 
 % Calculate driving function
 [d] = driving_function_imp_nfchoa_25d(x0,xs,src,L,conf);

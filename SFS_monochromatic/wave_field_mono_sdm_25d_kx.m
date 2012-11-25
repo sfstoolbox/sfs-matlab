@@ -1,11 +1,12 @@
-function [x,y,P] = wave_field_mono_sdm_25d_kx(X,Y,xs,src,f,L,conf)
+function [x,y,P] = wave_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,conf)
 %WAVE_FIELD_SDM_WFS_25D_KX simulates the wave field of a given source for 25D SDM
 %IN THE SPATIAL FREQUENCY DOMAIN
-%   Usage: [x,y,P] = wave_field_mono_sdm_25d_kx(X,Y,xs,src,f,L,[conf])
+%   Usage: [x,y,P] = wave_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
 %       Y           - [ymin,ymax]
+%       Z           - [zmin,zmax]
 %       xs          - position of point source (m)
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
@@ -21,10 +22,10 @@ function [x,y,P] = wave_field_mono_sdm_25d_kx(X,Y,xs,src,f,L,conf)
 %       y           - corresponding y axis
 %       P           - Simulated wave field
 %
-%   WAVE_FIELD_MONO_SDM_25D_KX(X,Y,xs,src,f,L,conf) simulates a wave field of
+%   WAVE_FIELD_MONO_SDM_25D_KX(X,Y,Z,xs,src,f,L,conf) simulates a wave field of
 %   the given source type (src) using a SDM 2.5 dimensional driving function
 %   in the spectro-temporal freqeuncy domain. 
-%   To plot the result use plot_wavefield(x,y,P).
+%   To plot the result use plot_wavefield(x,y,z,P).
 %
 %   NOTE: due to numerical problems with the fft and the bessel functions needed
 %   in SDM (which resulted in an imaginary part which is hundreds of orders
@@ -69,12 +70,14 @@ function [x,y,P] = wave_field_mono_sdm_25d_kx(X,Y,xs,src,f,L,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
+% FIXME: this functions works only with 2D at the moment
+
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 7;
+nargmin = 7;
+nargmax = 8;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector(X,Y);
+isargvector(X,Y,Z);
 xs = position_vector(xs);
 isargpositivescalar(L,f);
 isargchar(src);
@@ -115,8 +118,7 @@ kxal = omega/c;
 Nkx=1.5;
 %kx = linspace(-Nkx*kxal,Nkx*kxal,Nkx*2000);
 kx = linspace(-Nkx*kxal,Nkx*kxal,Nkx*xysamples*10);
-x  = linspace(X(1),X(2),xysamples);
-y  = linspace(Y(1),Y(2),xysamples);
+[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
 % Indexes for evanescent contributions and propagating part of the wave field
 idxpr = (( abs(kx) <= (omega/c) ));
 idxev = (( abs(kx) > (omega/c) ));
@@ -172,9 +174,9 @@ for n=1:length(x)
 end
 
 % === Scale signal (at [xref yref]) ===
-P = norm_wave_field(P,x,y,conf);
+P = norm_wave_field(P,x,y,z,conf);
 
 %% ===== Plotting ========================================================
 if(useplot)
-    plot_wavefield(x,y,P,conf);
+    plot_wavefield(x,y,z,P,conf);
 end

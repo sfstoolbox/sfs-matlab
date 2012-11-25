@@ -1,5 +1,5 @@
 function P = norm_wave_field(P,x,y,z,conf)
-%NORM_WAVE_FIELD normalizes the wave field to 1 at xref,yref
+%NORM_WAVE_FIELD normalizes the wave field to 1 at xref
 %
 %   Usage: P = norm_wave_field(P,x,y,z,[conf])
 %

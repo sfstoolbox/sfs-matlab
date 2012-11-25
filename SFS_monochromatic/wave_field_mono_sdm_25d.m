@@ -1,11 +1,12 @@
-function [x,y,P] = wave_field_mono_sdm_25d(X,Y,xs,src,f,L,conf)
+function [x,y,P] = wave_field_mono_sdm_25d(X,Y,Z,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_SDM_25D simulates a wave field for 2.5D NFC-HOA
 %
-%   Usage: [x,y,P] = wave_field_mono_sdm_25d(X,Y,xs,src,f,L,[conf])
+%   Usage: [x,y,P] = wave_field_mono_sdm_25d(X,Y,Z,xs,src,f,L,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
 %       Y           - [ymin,ymax]
+%       Z           - [zmin,zmax]
 %       xs          - position of point source (m)
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
@@ -21,11 +22,11 @@ function [x,y,P] = wave_field_mono_sdm_25d(X,Y,xs,src,f,L,conf)
 %       y           - corresponding y axis
 %       P           - Simulated wave field
 %
-%   WAVE_FIELD_MONO_SDM_25D(X,Y,xs,src,f,L,conf) simulates a wave
+%   WAVE_FIELD_MONO_SDM_25D(X,Y,Z,xs,src,f,L,conf) simulates a wave
 %   field of the given source type (src) using a SDM 2.5 dimensional driving
 %   function in the space/time-frequency domain. This means by calculating 
 %   the integral for P with a summation.
-%   To plot the result use plot_wavefield(x,y,P).
+%   To plot the result use plot_wavefield(x,y,z,P).
 %
 %   References:
 %       
@@ -62,10 +63,10 @@ function [x,y,P] = wave_field_mono_sdm_25d(X,Y,xs,src,f,L,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 7;
+nargmin = 7;
+nargmax = 8;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector(X,Y);
+isargvector(X,Y,Z);
 xs = position_vector(xs);
 isargpositivescalar(L,f);
 isargchar(src);
@@ -87,7 +88,7 @@ useplot = conf.useplot;
 % Get the position of the loudspeakers
 x0 = secondary_source_positions(L,conf);
 % Create a x-y-grid to avoid a loop
-[xx,yy,x,y] = xy_grid(X,Y,conf);
+[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
 % Initialize empty wave field
 P = zeros(length(y),length(x));
 % Driving function D(x0,omega)
@@ -102,7 +103,7 @@ for ii = 1:size(x0,1)
     % Secondary source model G(x-x0,omega)
     % This is the model for the loudspeakers we apply. We use closed cabinet
     % loudspeakers and therefore point sources.
-    G = point_source(xx,yy,x0(ii,1:3),f);
+    G = point_source(xx,yy,zz,x0(ii,1:3),f);
 
     % ====================================================================
     % Integration
@@ -116,10 +117,10 @@ for ii = 1:size(x0,1)
 end
 
 % === Scale signal (at xref) ===
-P = norm_wave_field(P,x,y,conf);
+P = norm_wave_field(P,x,y,z,conf);
 
 
 % ===== Plotting =========================================================
 if(useplot)
-    plot_wavefield(x,y,P,x0,win,conf);
+    plot_wavefield(x,y,z,P,x0,win,conf);
 end

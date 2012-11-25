@@ -1,11 +1,12 @@
-function [x,y,P,win] = wave_field_mono_wfs_2d(X,Y,xs,src,f,L,conf)
+function [x,y,P,win] = wave_field_mono_wfs_2d(X,Y,Z,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_WFS_25D simulates a wave field for 2D WFS
 %
-%   Usage: [x,y,P] = wave_field_mono_wfs_2d(X,Y,xs,L,f,src,[conf])
+%   Usage: [x,y,P] = wave_field_mono_wfs_2d(X,Y,Z,xs,L,f,src,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
 %       Y           - [ymin,ymax]
+%       Z           - [zmin,zmax]
 %       xs          - position of point source (m)
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs, ys are the direction of the
@@ -21,11 +22,11 @@ function [x,y,P,win] = wave_field_mono_wfs_2d(X,Y,xs,src,f,L,conf)
 %       y           - corresponding y axis
 %       P           - Simulated wave field
 %
-%   WAVE_FIELD_MONO_WFS_2D(X,Y,xs,src,f,L,conf) simulates a wave
+%   WAVE_FIELD_MONO_WFS_2D(X,Y,Z,xs,src,f,L,conf) simulates a wave
 %   field of the given source type (src) using a WFS 2 dimensional driving
 %   function in the temporal domain. This means by calculating the integral for
 %   P with a summation.
-%   To plot the result use plot_wavefield(x,y,P).
+%   To plot the result use plot_wavefield(x,y,z,P).
 %
 %   References:
 %       Spors2009 - Physical and Perceptual Properties of Focused Sources in
@@ -61,10 +62,12 @@ function [x,y,P,win] = wave_field_mono_wfs_2d(X,Y,xs,src,f,L,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
+% FIXME: this works only for a constant Z at the moment
+
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 7;
+nargmin = 7;
+nargmax = 8;
 error(nargchk(nargmin,nargmax,nargin));
 isargvector(X,Y);
 xs = position_vector(xs);
@@ -84,14 +87,14 @@ useplot = conf.useplot;
 %% ===== Computation ====================================================
 % Calculate the wave field in time-frequency domain
 % Create a x-y-grid to avoid a loop
-[xx,yy,x,y] = xy_grid(X,Y,conf);
+[xx,yy,~,x,y,z] = xyz_grid(X,Y,Z,conf);
 % get wave field
 [P,x0,win] = wfs_2d(xx,yy,xs,src,f,L,conf);
 % scale signal (at xref)
-P = norm_wave_field(P,x,y,conf);
+P = norm_wave_field(P,x,y,z,conf);
 
 
 % ===== Plotting =========================================================
 if(useplot)
-    plot_wavefield(x,y,P,x0,win,conf);
+    plot_wavefield(x,y,z,P,x0,win,conf);
 end

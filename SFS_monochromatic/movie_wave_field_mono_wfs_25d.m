@@ -1,11 +1,12 @@
-function movie_wave_field_mono_wfs_25d(X,Y,xs,src,f,L,outfile,conf)
+function movie_wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,outfile,conf)
 %MOVIE_WAVE_FIELD_MONO_WFS_25D generates movie a 2.5D WFS wave field
 %
-%   Usage: movie_wave_field_mono_wfs_25d(X,Y,xs,src,f,L,outfile,[conf])
+%   Usage: movie_wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,outfile,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
 %       Y           - [ymin,ymax]
+%       Z           - [zmin,zmax]
 %       xs          - position of point source (m)
 %       src         - sourcetype of the virtual source:
 %                         'pw' - plane wave (xs, ys are the direction of the
@@ -17,7 +18,7 @@ function movie_wave_field_mono_wfs_25d(X,Y,xs,src,f,L,outfile,conf)
 %       outfile     - name for the movie file
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   MOVIE_WAVE_FIELD_MONO_WFS_25D(X,Y,xs,src,f,L,outfile,conf) generates a
+%   MOVIE_WAVE_FIELD_MONO_WFS_25D(X,Y,Z,xs,src,f,L,outfile,conf) generates a
 %   movie of simulations of a wave field of the given source positioned at xs
 %   using a WFS 2.5 dimensional driving function in the temporal domain with
 %   different phase.
@@ -53,10 +54,10 @@ function movie_wave_field_mono_wfs_25d(X,Y,xs,src,f,L,outfile,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 7;
-nargmax = 8;
+nargmin = 8;
+nargmax = 9;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector(X,Y);
+isargvector(X,Y,Z);
 isargposition(xs);
 xs = position_vector(xs);
 isargpositivescalar(L,f);
@@ -85,7 +86,7 @@ for ii = 1:length(phase)-1
     conf.phase = phase(ii);
     conf.useplot = 0;
     % Calculate wave field for the given phase
-    [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,conf);
+    [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,conf);
     x0 = secondary_source_positions(L,conf);
     x0 = secondary_source_selection(x0,xs,src);
 
@@ -97,7 +98,7 @@ for ii = 1:length(phase)-1
     conf.plot.mode = 'png';
     % FIXME: this is broken at the moment, because pngfile is not handled by the
     % plotting function
-    plot_wavefield(x,y,P,x0,ls_activity,pngfile,conf);
+    plot_wavefield(x,y,z,P,x0,ls_activity,pngfile,conf);
 end
 
 

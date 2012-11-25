@@ -1,11 +1,12 @@
-function [x,y,P] = wave_field_mono_point_source(X,Y,xs,f,conf)
+function [x,y,P] = wave_field_mono_point_source(X,Y,Z,xs,f,conf)
 %WAVE_FIELD_MONO_POINT_SOURCE simulates a wave field for a point source
 %
-%   Usage: [x,y,P] = wave_field_mono_point_source(X,Y,xs,f,[conf])
+%   Usage: [x,y,P] = wave_field_mono_point_source(X,Y,Z,xs,f,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
 %       Y           - [ymin,ymax]
+%       Z           - [zmin,zmax]
 %       xs          - position of point source (m)
 %       f           - monochromatic frequency (Hz)
 %       conf        - optional configuration struct (see SFS_config)
@@ -15,7 +16,7 @@ function [x,y,P] = wave_field_mono_point_source(X,Y,xs,f,conf)
 %       y           - corresponding y axis
 %       P           - Simulated wave field
 %
-%   WAVE_FIELD_MONO_POINT_SOURCE(X,Y,xs,f,conf) simulates a wave
+%   WAVE_FIELD_MONO_POINT_SOURCE(X,Y,Z,xs,f,conf) simulates a wave
 %   field of a point source positioned at xs.
 %   To plot the result use plot_wavefield(x,y,P).
 %
@@ -53,8 +54,8 @@ function [x,y,P] = wave_field_mono_point_source(X,Y,xs,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
+nargmin = 5;
+nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
 isargvector(X,Y);
 xs = position_vector(xs);
@@ -73,14 +74,14 @@ useplot = conf.useplot;
 
 %% ===== Computation ====================================================
 % Create a x-y-grid to avoid a loop
-[xx,yy,x,y] = xy_grid(x,y);
+[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
 % Source model for a point source G(x,omega)
-P = point_source(xx,yy,xs,f);
+P = point_source(xx,yy,zz,xs,f,conf);
 % Scale signal (at xref)
-P = norm_wave_field(P,x,y,conf);
+P = norm_wave_field(P,x,y,z,conf);
 
 
 % ===== Plotting =========================================================
 if(useplot)
-    plot_wavefield(x,y,P,conf);
+    plot_wavefield(x,y,z,P,conf);
 end

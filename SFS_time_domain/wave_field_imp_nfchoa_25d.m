@@ -1,11 +1,12 @@
-function [x,y,p] = wave_field_imp_nfchoa_25d(X,Y,xs,src,L,conf)
+function [x,y,p] = wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,L,conf)
 %WAVE_FIELD_IMP_NFCHOA_25D returns the wave field in time domain of an impulse
 %
-%   Usage: [x,y,p,ls_activity] = wave_field_imp_nfchoa_25d(X,Y,xs,src,L,[conf])
+%   Usage: [x,y,p,ls_activity] = wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,L,[conf])
 %
 %   Input options:
-%       X           - length of the X axis (m); single value or [xmin,xmax]
-%       Y           - length of the Y axis (m); single value or [ymin,ymax]
+%       X           - [xmin,xmax]
+%       Y           - [ymin,ymax]
+%       Z           - [zmin,zmax]
 %       xs          - position of point source (m)
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs, ys are the direction of the
@@ -19,12 +20,12 @@ function [x,y,p] = wave_field_imp_nfchoa_25d(X,Y,xs,src,L,conf)
 %       p           - wave field (length(y) x length(x))
 %       ls_activity - activity of the secondary sources
 %
-%   WAVE_FIELD_IMP_NFCHOA_25D(X,Y,xs,src,L,conf) simulates a wave field of the
+%   WAVE_FIELD_IMP_NFCHOA_25D(X,Y,Z,xs,src,L,conf) simulates a wave field of the
 %   given source type (src) using a NFC-HOA 2.5 dimensional driving
 %   function.
 %   To plot the result use:
 %   conf.plot.usedb = 1;
-%   plot_wavefield(x,y,p,L,ls_activity,conf);
+%   plot_wavefield(x,y,z,p,L,ls_activity,conf);
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -55,10 +56,10 @@ function [x,y,p] = wave_field_imp_nfchoa_25d(X,Y,xs,src,L,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 6;
+nargmin = 6;
+nargmax = 7;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector(X,Y);
+isargvector(X,Y,Z);
 xs = position_vector(xs);
 isargpositivescalar(L);
 isargchar(src);
@@ -88,7 +89,7 @@ x0 = secondary_source_positions(L,conf);
 nls = size(x0,1);
 
 % Spatial grid
-[xx,yy,x,y] = xy_grid(X,Y,conf);
+[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
 
 % Calculate driving function
 [d] = driving_function_imp_nfchoa_25d(x0,xs,src,L,conf);
@@ -116,7 +117,7 @@ for ii = 1:nls
     % ================================================================
     % Secondary source model: Greens function g3D(x,t)
     % distance of secondary source to receiver position
-    r = sqrt((xx-x0(ii,1)).^2 + (yy-x0(ii,2)).^2);
+    r = sqrt((xx-x0(ii,1)).^2 + (yy-x0(ii,2)).^2 + (zz-x0(ii,3)).^2);
     % amplitude decay for a 3D monopole
     g = 1./(4*pi*r);
 
@@ -144,7 +145,7 @@ check_wave_field(p,frame);
 % === Plotting ===
 if (useplot)
     conf.plot.usedb = 1;
-    plot_wavefield(x,y,p,x0,conf);
+    plot_wavefield(x,y,z,p,x0,conf);
 end
 
 % some debug stuff

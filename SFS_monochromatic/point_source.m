@@ -1,10 +1,10 @@
-function S = point_source(x,y,xs,f,conf)
+function S = point_source(x,y,z,xs,f,conf)
 %POINT_SOURCE returns the Green's function for a point source
 %
-%   Usage: S = point_source(x,y,x0,omega,[conf])
+%   Usage: S = point_source(x,y,z,x0,omega,[conf])
 %
 %   Input options:
-%       x,y     - x,y points for which the Green's function should be calculated
+%       x,y,z   - x,y,z points for which the Green's function should be calculated
 %       xs      - position of the point source
 %       f       - frequency of the point source
 %       conf    - optional configuration struct (see SFS_config)
@@ -50,8 +50,8 @@ function S = point_source(x,y,xs,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
+nargmin = 5;
+nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
 isargmatrix(x,y);
 isargposition(xs);
@@ -77,5 +77,6 @@ omega = 2*pi*f;
 %
 % see: Williams1999, p. 198
 %
-S = 1/(4*pi) * exp(-1i*omega/c.*sqrt((x-xs(1)).^2+(y-xs(2)).^2)) ./ ...
-        sqrt((x-xs(1)).^2+(y-xs(2)).^2);
+S = 1/(4*pi) * exp(-1i*omega/c.* ...
+    sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2)) ./ ...
+        sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);

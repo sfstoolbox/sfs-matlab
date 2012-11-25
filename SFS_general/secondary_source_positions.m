@@ -124,7 +124,6 @@ elseif strcmp('circle',array)
 elseif strcmp('spherical',array)
     % get positions of secondary sources for xy-plane
     x0 = equally_spaced_points_on_sphere(conf);
-    conf.weights = x0(:,7);
 elseif strcmp('box',array)
     % === Boxed loudspeaker array ===
     % Number of secondary sources per linear array

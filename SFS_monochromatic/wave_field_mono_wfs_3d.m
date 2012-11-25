@@ -1,11 +1,12 @@
-function [x,y,P,win] = wave_field_mono_wfs_3d(X,Y,xs,src,f,L,conf)
+function [x,y,P,win] = wave_field_mono_wfs_3d(X,Y,Z,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_WFS_3D simulates a wave field for 3D WFS
 %
-%   Usage: [x,y,P,win] = wave_field_mono_wfs_3d(X,Y,xs,src,f,L,[conf])
+%   Usage: [x,y,P,win] = wave_field_mono_wfs_3d(X,Y,Z,xs,src,f,L,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
 %       Y           - [ymin,ymax]
+%       Z           - [zmin,zmax]
 %       xs          - position of point source (m)
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
@@ -21,7 +22,7 @@ function [x,y,P,win] = wave_field_mono_wfs_3d(X,Y,xs,src,f,L,conf)
 %       y           - corresponding y axis
 %       P           - Simulated wave field
 %      %
-%   WAVE_FIELD_MONO_WFS_3D(X,Y,xs,L,f,src,conf) simulates a wave
+%   WAVE_FIELD_MONO_WFS_3D(X,Y,Z,xs,L,f,src,conf) simulates a wave
 %   field of the given source type (src) using a WFS 3 dimensional driving
 %   function in the temporal domain. This means by calculating the integral for
 %   P with a summation.
@@ -63,10 +64,10 @@ function [x,y,P,win] = wave_field_mono_wfs_3d(X,Y,xs,src,f,L,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 7;
+nargmin = 7;
+nargmax = 8;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector(X,Y);
+isargvector(X,Y,Z);
 xs = position_vector(xs);
 isargpositivescalar(L,f);
 isargchar(src);
@@ -84,11 +85,11 @@ useplot = conf.useplot;
 %% ===== Computation ====================================================
 % Calculate the wave field in time-frequency domain
 % Create a x-y-grid to avoid a loop
-[xx,yy,x,y] = xy_grid(X,Y,conf);
+[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
 % calculate wave field
-[P,x0,win] = wfs_3d(xx,yy,xs,src,f,L,conf);
+[P,x0,win] = wfs_3d(xx,yy,zz,xs,src,f,L,conf);
 % scale signal (at xref)
-P = norm_wave_field(P,x,y,conf);
+P = norm_wave_field(P,x,y,z,conf);
 
 
 % ===== Plotting =========================================================

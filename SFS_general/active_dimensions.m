@@ -1,20 +1,25 @@
-function P = norm_wave_field(P,x,y,z,conf)
-%NORM_WAVE_FIELD normalizes the wave field to 1 at xref,yref
+function [x1,x2,xref] = active_dimensions(x,y,z,conf)
+%ACTIVE_DIMENSIONS returns the first two active dimensions and the
+%corresponding xref values
 %
-%   Usage: P = norm_wave_field(P,x,y,z,[conf])
+%   Usage: [x1,x2,xref] = active_dimensions(x,y,z,[conf])
 %
 %   Input options:
-%       P       - wave field
 %       x,y,z   - vectors conatining the x-, y- and z-axis values
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output options:
-%       P       - normalized wave field
+%       x1      - first active dimension (this could be the x or y axis)
+%       x2      - second active dimension (this could be the y or z axis)
+%       xref    - corresponding xref values (dim: 1x2)
 %
-%   NORM_WAVE_FIELD(P,x,y,z,yref) normalizes the given wave field P to 1 at
-%   the position conf.xref.
+%   ACTIVE_DIMENSIONS(x,y,z,conf) returns the first two active dimensions.
+%   An active dimension is any dimension of x,y,z for which the first and
+%   the last value of the axis vector is not the same. In addition the
+%   coresponding xref values are returned. For example, if the first two 
+%   active dimensions are y,z then xref = [conf.xref(2) conf.xref(3)].
 %
-%   see also: wave_field_mono_wfs_25d
+%   see also: norm_wavefield, plot_wavefield
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -45,10 +50,9 @@ function P = norm_wave_field(P,x,y,z,conf)
 
 
 %% ===== Checking of input parameters ====================================
-nargmin = 4;
-nargmax = 5;
+nargmin = 3;
+nargmax = 4;
 error(nargchk(nargmin,nargmax,nargin));
-isargmatrix(P);
 isargvector(x,y,z);
 if nargin<nargmax
     conf = SFS_config;
@@ -62,16 +66,17 @@ xref = position_vector(conf.xref);
 
 
 %% ===== Computation =====================================================
-% Get our active axis
-[x1,x2,xref] = active_dimensions(x,y,z,conf);
-% Use the half of the x axis and xref
-[a,x1idx] = find(x1>=xref(1),1);
-[a,x2idx] = find(x2>=xref(2),1);
-if isempty(x1idx) || abs(x1(x1idx)-xref(1))>0.1
-    error('%s: your used conf.xref is out of your boundaries',upper(mfilename));
+% Check if we have any inactive dimensions
+if x(1)==x(end)
+    x1 = y;
+    x2 = z;
+    xref = [xref(2) xref(3)];
+elseif y(1)==y(end)
+    x1 = x;
+    x2 = z;
+    xref = [xref(1) xref(3)];
+else
+    x1 = x;
+    x2 = y;
+    xref = [xref(1) xref(2)];
 end
-if isempty(x2idx) || abs(x2(x2idx)-xref(2))>0.1
-    error('%s: your used conf.xref is out of your boundaries',upper(mfilename));
-end
-% Scale signal to 1
-P = 1*P/abs(P(x2idx,x1idx));

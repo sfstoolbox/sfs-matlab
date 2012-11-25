@@ -1,4 +1,4 @@
-function [P,x0,win] = wfs_25d(x,y,xs,src,f,L,conf)
+function [P,x0,win] = wfs_25d(x,y,z,xs,src,f,L,conf)
 %WFS_25D returns the sound pressure for 2.5D WFS at x,y
 %
 %   Usage: [P,win] = wfs_25d(x,y,xs,src,f,L,[conf])
@@ -6,6 +6,7 @@ function [P,x0,win] = wfs_25d(x,y,xs,src,f,L,conf)
 %   Input parameters:
 %       x           - x position(s)
 %       y           - y position(s)
+%       z           - z positons(s)
 %       xs          - position of point source (m)
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
@@ -18,12 +19,13 @@ function [P,x0,win] = wfs_25d(x,y,xs,src,f,L,conf)
 %
 %   Output parameters:
 %       P           - Simulated wave field
+%       x0          - secondary sources
 %       win         - tapering window (activity of loudspeaker)
 %
-%   WAVE_FIELD_MONO_WFS_25D(x,y,xs,L,f,src,conf) returns the sound pressure at
-%   the point(s) (x,y) for the given source type (src) using a WFS 2.5
-%   dimensional driving function in the temporal domain. This means by
-%   calculating the integral for P with a summation.
+%   WAVE_FIELD_MONO_WFS_25D(x,y,z,xs,L,f,src,conf) returns the sound
+%   pressure at the point(s) (x,y,z) for the given source type (src) using
+%   a WFS 2.5 dimensional driving function in the temporal domain. This
+%   means by calculating the integral for P with a summation.
 %
 %   References:
 %       Spors2009 - Physical and Perceptual Properties of Focused Sources in
@@ -61,10 +63,10 @@ function [P,x0,win] = wfs_25d(x,y,xs,src,f,L,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 7;
+nargmin = 7;
+nargmax = 8;
 error(nargchk(nargmin,nargmax,nargin));
-isargmatrix(x,y);
+isargmatrix(x,y,z);
 xs = position_vector(xs);
 isargpositivescalar(L,f);
 isargchar(src);
@@ -97,7 +99,7 @@ for ii = 1:size(x0,1)
     % Secondary source model G(x-x0,omega)
     % This is the model for the loudspeakers we apply. We use closed cabinet
     % loudspeakers and therefore point sources.
-    G = point_source(x,y,x0(ii,1:3),f);
+    G = point_source(x,y,z,x0(ii,1:3),f);
 
     % ====================================================================
     % Driving function D(x0,omega)

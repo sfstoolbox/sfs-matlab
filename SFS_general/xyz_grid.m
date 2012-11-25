@@ -1,18 +1,21 @@
-function P = norm_wave_field(P,x,y,z,conf)
-%NORM_WAVE_FIELD normalizes the wave field to 1 at xref,yref
+function [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf)
+%XY_GRID returns a xy-grid for the listening area
 %
-%   Usage: P = norm_wave_field(P,x,y,z,[conf])
+%   Usage: [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,[conf])
 %
-%   Input options:
-%       P       - wave field
-%       x,y,z   - vectors conatining the x-, y- and z-axis values
-%       conf    - optional configuration struct (see SFS_config)
+%   Input parameters:
+%       X        - [xmin,xmax]
+%       Y        - [ymin,ymax]
+%       Z        - [zmin,zmax]
+%       conf     - optional configuration struct (see SFS_config)
 %
-%   Output options:
-%       P       - normalized wave field
+%   Output parameters:
+%       xx,yy,zz - matrices representing the xy-grid
+%       x,y,z    - x-, y-, z-axis
 %
-%   NORM_WAVE_FIELD(P,x,y,z,yref) normalizes the given wave field P to 1 at
-%   the position conf.xref.
+%   XYZ_GRID(X,Y,Z,conf) creates a xyz-grid to avoid a loop in the wave field
+%   calculation for the whole listening area. It returns also the x-, y-, z-axis
+%   for the listening area, defined by the points given with X,Y,Z.
 %
 %   see also: wave_field_mono_wfs_25d
 
@@ -44,12 +47,11 @@ function P = norm_wave_field(P,x,y,z,conf)
 %*****************************************************************************
 
 
-%% ===== Checking of input parameters ====================================
-nargmin = 4;
-nargmax = 5;
+%% ===== Checking input parameters =======================================
+nargmin = 3;
+nargmax = 4;
 error(nargchk(nargmin,nargmax,nargin));
-isargmatrix(P);
-isargvector(x,y,z);
+isargvector(X,Y);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -57,21 +59,24 @@ else
 end
 
 
-%% ===== Configuration ===================================================
-xref = position_vector(conf.xref);
+% ===== Configuration ====================================================
+xysamples = conf.xysamples;
+zreferenceaxis = conf.zreferenceaxis;
 
 
 %% ===== Computation =====================================================
-% Get our active axis
-[x1,x2,xref] = active_dimensions(x,y,z,conf);
-% Use the half of the x axis and xref
-[a,x1idx] = find(x1>=xref(1),1);
-[a,x2idx] = find(x2>=xref(2),1);
-if isempty(x1idx) || abs(x1(x1idx)-xref(1))>0.1
-    error('%s: your used conf.xref is out of your boundaries',upper(mfilename));
+% creating x-, y-axis
+x = linspace(X(1),X(2),xysamples);
+y = linspace(Y(1),Y(2),xysamples);
+z = linspace(Z(1),Z(2),xysamples);
+% create xyz-grid
+[xx,yy] = meshgrid(x,y);
+% create the z grid regarding its reference axis.
+% this means that z changes its values along this particular axis.
+if strcmp('y',zreferenceaxis)
+    [~,zz] = meshgrid(x,z);
+elseif strcmp('x',zreferenceaxis)
+    zz = meshgrid(z,y);
+else
+    error('%s: zreferenceaxis has to be ''y'' or ''x''.',upper(mfilename));
 end
-if isempty(x2idx) || abs(x2(x2idx)-xref(2))>0.1
-    error('%s: your used conf.xref is out of your boundaries',upper(mfilename));
-end
-% Scale signal to 1
-P = 1*P/abs(P(x2idx,x1idx));

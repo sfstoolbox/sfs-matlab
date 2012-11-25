@@ -1,4 +1,4 @@
-function [x,y,P,win] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,conf)
+function [x,y,P,win] = wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_WFS_25D simulates a wave field for 2.5D WFS
 %
 %   Usage: [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,[conf])
@@ -64,8 +64,8 @@ function [x,y,P,win] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 7;
+nargmin = 7;
+nargmax = 8;
 error(nargchk(nargmin,nargmax,nargin));
 isargvector(X,Y);
 xs = position_vector(xs);
@@ -85,11 +85,11 @@ useplot = conf.useplot;
 %% ===== Computation ====================================================
 % Calculate the wave field in time-frequency domain
 % Create a x-y-grid to avoid a loop
-[xx,yy,x,y] = xy_grid(X,Y,conf);
+[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
 % calculate wave field
-[P,x0,win] = wfs_25d(xx,yy,xs,src,f,L,conf);
+[P,x0,win] = wfs_25d(xx,yy,zz,xs,src,f,L,conf);
 % scale signal (at xref)
-P = norm_wave_field(P,x,y,conf);
+P = norm_wave_field(P,x,y,z,conf);
 
 
 % ===== Plotting =========================================================

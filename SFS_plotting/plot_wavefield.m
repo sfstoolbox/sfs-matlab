@@ -1,10 +1,10 @@
-function plot_wavefield(x,y,P,x0,ls_activity,conf)
+function plot_wavefield(x,y,z,P,x0,ls_activity,conf)
 %PLOT_WAVEFIELD plot the given wavefield
 %
-%   Usage: plot_wavefield(x,y,P,[x0],conf])
+%   Usage: plot_wavefield(x,y,z,P,[x0],conf])
 %
 %   Input parameters:
-%       x,y         - vectors for the x- and y-axis
+%       x,y,z       - vectors for the x-, y- and z-axis
 %       P           - matrix containing the wavefield in the format P = P(y,x)
 %       L           - array length. If this is given and the distance between the
 %                     loudspeaker is greater than 10cm the loudspeaker are added
@@ -15,7 +15,7 @@ function plot_wavefield(x,y,P,x0,ls_activity,conf)
 %                     needed.
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   PLOT_WAVEFIELD(x,y,P,L,ls_activity,conf) plots the wavefield P in dependence
+%   PLOT_WAVEFIELD(x,y,z,P,L,ls_activity,conf) plots the wavefield P in dependence
 %   of the x and y axes. Therefore the wavefield is normalized to 1 at its
 %   center position P(end/2,end/2). For a given array length L also the
 %   loudspeaker are added to the plot at their real positions. But only if
@@ -52,10 +52,10 @@ function plot_wavefield(x,y,P,x0,ls_activity,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
-nargmax = 6;
+nargmin = 4;
+nargmax = 7;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector(x,y);
+isargvector(x,y,z);
 isargmatrix(P);
 if nargin==nargmax-1
     if isstruct(ls_activity)
@@ -74,13 +74,13 @@ elseif nargin==nargmax-2
 elseif nargin==nargmax-3
     conf = SFS_config;
 end
-isargsecondarysource(x0);
+%isargsecondarysource(x0);
 isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
 % Check if we have a loudspeaker array at all
-if length(x0)==0
+if isempty(x0)
     conf.plot.loudspeakers = 0;
 end
 dx0 = conf.dx0;
@@ -89,7 +89,6 @@ tmpdir = conf.tmpdir;
 % Center position of array
 X0 = position_vector(conf.X0);
 % Plotting
-useplot = conf.useplot;
 p.usegnuplot = conf.plot.usegnuplot;
 p.cmd = conf.plot.cmd;
 p.usedb = conf.plot.usedb;

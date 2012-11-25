@@ -1,5 +1,5 @@
 function [P,x0,win,weights] = wfs_3d(x,y,z,xs,src,f,L,conf)
-%WFS_3D returns the sound pressure for 3D WFS at x,y
+%WFS_3D returns the sound pressure for 3D WFS at x,y,z
 %
 %   Usage: [P,x0,win] = wfs_3d(x,y,z,xs,src,f,L,[conf])
 %

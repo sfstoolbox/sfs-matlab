@@ -1,10 +1,10 @@
-function S = plane_wave(x,y,xs,f,conf)
+function S = plane_wave(x,y,z,xs,f,conf)
 %PLANE_WAVE returns the source model for a plane wave
 %
-%   Usage: S = plane_wave(x,y,x0,omega,[conf])
+%   Usage: S = plane_wave(x,y,z,x0,omega,[conf])
 %
 %   Input options:
-%       x,y     - x,y points for which the Green's function should be calculated
+%       x,y,z   - x,y,z points for which the Green's function should be calculated
 %       xs      - direction of the plane wave
 %       f       - frequency of the point source
 %       conf    - optional configuration struct (see SFS_config)
@@ -12,8 +12,8 @@ function S = plane_wave(x,y,xs,f,conf)
 %   Output parameters:
 %       S       - Wave field of a plane wave traveling in the direction xs
 %
-%   PLANE_WAVE(x,y,xs,f) calculates the wave field of a plane wave going into
-%   the direction xs for the given points x,y and the frequency f.
+%   PLANE_WAVE(x,y,z,xs,f) calculates the wave field of a plane wave going into
+%   the direction xs for the given points x,y,z and the frequency f.
 %
 %   References:
 %       Williams1999 - Fourier Acoustics (Academic Press)
@@ -49,10 +49,10 @@ function S = plane_wave(x,y,xs,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
+nargmin = 5;
+nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
-isargmatrix(x,y);
+isargmatrix(x,y,z);
 xs = position_vector(xs);
 isargpositivescalar(f);
 if nargin<nargmax
@@ -80,27 +80,30 @@ nxs = xs / norm(xs);
 % The following code enables us to replace this two for-loops
 % for ii = 1:size(x,1)
 %     for jj = 1:size(x,2)
-%         S(ii,jj) = exp(-1i*omega/c.*nxs(1:2)*[x(ii,jj) y(ii,jj)]');
+%         S(ii,jj) = exp(-1i*omega/c.*nxs*[x(ii,jj) y(ii,jj) z(ii,jj)]');
 %     end
 % end
 %
 % Get a matrix in the form of
-% 1 1 0 0 0 0
-% 0 0 1 1 0 0
-% 0 0 0 0 1 1
-E = eye(2*size(x,1));
-E = E(1:2:end,:)+E(2:2:end,:);
+% 1 1 1 0 0 0 0 0 0
+% 0 0 0 1 1 1 0 0 0
+% 0 0 0 0 0 0 1 1 1
+E = eye(3*size(x,1));
+E = E(1:3:end,:)+E(2:3:end,:)+E(3:3:end,:);
 % Multiply this matrix with the plane wave direction
-N = repmat([nxs(1) nxs(2)],size(x,1)) .* E;
-% Interlace x and y into one matrix
+N = repmat(nxs,size(x,1)) .* E;
+% Interlace x,y,z into one matrix
 % x11 x12 ... x1m
 % y11 y12 ... y1m
+% z11 z12 ... z1m
 % .   .       .
 % .   .       .
 % xn1 xn2 ... xnm
 % yn1 yn2 ... ynm
-XY = zeros(2*size(x,1),size(x,2));
-XY(1:2:end,:) = x;
-XY(2:2:end,:) = y;
+% zn1 zn2 ... znm
+XYZ = zeros(3*size(x,1),size(x,2));
+XYZ(1:3:end,:) = x;
+XYZ(2:3:end,:) = y;
+XYZ(3:3:end,:) = z;
 % calculate sound field
-S = exp(-1i*omega/c.*N*XY);
+S = exp(-1i*omega/c.*N*XYZ);

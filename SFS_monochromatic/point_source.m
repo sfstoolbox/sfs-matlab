@@ -1,7 +1,7 @@
 function S = point_source(x,y,z,xs,f,conf)
 %POINT_SOURCE returns the Green's function for a point source
 %
-%   Usage: S = point_source(x,y,z,x0,omega,[conf])
+%   Usage: S = point_source(x,y,z,xs,omega,[conf])
 %
 %   Input options:
 %       x,y,z   - x,y,z points for which the Green's function should be calculated
@@ -10,10 +10,10 @@ function S = point_source(x,y,z,xs,f,conf)
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       S       - Wave field of a point source located at x0,y0
+%       S       - Wave field of a point source located at xs
 %
-%   POINT_SOURCE(x,y,xs,f) calculates the wave field of a point source
-%   located at xs for the given points x,y and the frequency f. The wave
+%   POINT_SOURCE(x,y,z,xs,f,conf) calculates the wave field of a point source
+%   located at xs for the given points x,y,z and the frequency f. The wave
 %   field is calculated by the Greens function.
 %
 %   References:

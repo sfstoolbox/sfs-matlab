@@ -1,11 +1,12 @@
-function [x,y,P] = wave_field_mono_plane_wave(X,Y,xs,f,conf)
+function [x,y,P] = wave_field_mono_plane_wave(X,Y,Z,xs,f,conf)
 %WAVE_FIELD_MONO_PLANE_WAVE simulates a wave field of a plane wave
 %
-%   Usage: [x,y,P] = wave_field_mono_plane_wave(X,Y,xs,f,[conf])
+%   Usage: [x,y,P] = wave_field_mono_plane_wave(X,Y,Z,xs,f,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
 %       Y           - [ymin,ymax]
+%       Z           - [zmin,zmax]
 %       xs          - direction of the plane wave
 %       f           - monochromatic frequency (Hz)
 %       conf        - optional configuration struct (see SFS_config)
@@ -15,7 +16,7 @@ function [x,y,P] = wave_field_mono_plane_wave(X,Y,xs,f,conf)
 %       y           - corresponding y axis
 %       P           - Simulated wave field
 %
-%   WAVE_FIELD_MONO_PLANE_WAVE(X,Y,xs,f,conf) simulates a wave
+%   WAVE_FIELD_MONO_PLANE_WAVE(X,Y,Z,xs,f,conf) simulates a wave
 %   field of a plane wave going in the direction xs.
 %   To plot the result use plot_wavefield(x,y,P).
 %
@@ -53,10 +54,10 @@ function [x,y,P] = wave_field_mono_plane_wave(X,Y,xs,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
+nargmin = 5;
+nargmax = 6;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector(X,Y);
+isargvector(X,Y,Z);
 xs = position_vector(xs);
 isargpositivescalar(f);
 if nargin<nargmax
@@ -73,14 +74,14 @@ useplot = conf.useplot;
 
 %% ===== Computation ====================================================
 % Create a x-y-grid to avoid a loop
-[xx,yy,x,y] = xy_grid(X,Y,conf);
+[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
 % Source model for a point source G(x,omega)
-P = plane_wave(xx,yy,xs,f);
+P = plane_wave(xx,yy,zz,xs,f);
 % Scale signal (at xref)
-P = norm_wave_field(P,x,y,conf);
+P = norm_wave_field(P,x,y,z,conf);
 
 
 % ===== Plotting =========================================================
 if(useplot)
-    plot_wavefield(x,y,P,conf);
+    plot_wavefield(x,y,z,P,conf);
 end

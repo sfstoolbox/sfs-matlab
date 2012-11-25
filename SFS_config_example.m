@@ -42,11 +42,6 @@ function conf = SFS_config()
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% AUTHOR: Hagen Wierstorf
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
-
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 0;
@@ -98,6 +93,8 @@ conf.fracdelay_method = 'resample';
 % ===== Simulations =============================
 % xyresolution for wavefield simulations
 conf.xysamples = 300; % samples
+% z changes along this axis
+conf.zreferenceaxis = 'y';
 % Phase of omega of wavefield (change this value to create monochromatic wave
 % fields with different phases for a movie)
 conf.phase = 0; % rad

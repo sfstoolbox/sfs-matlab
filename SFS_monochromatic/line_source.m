@@ -10,10 +10,10 @@ function S = line_source(x,y,xs,f,conf)
 %       conf     - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       S        - Wave field of a point source located at xs,ys
+%       S        - Wave field of a point source located at xs
 %
 %   LINE_SOURCE(x,y,xs,f) calculates the wave field of a line source
-%   located at xs,ys for the given points x,y and the frequency f. The wave
+%   located at xs for the given points x,y and the frequency f. The wave
 %   field is calculated by the Greens function.
 %
 %   References:

@@ -73,13 +73,13 @@ p.mode = conf.plot.mode;
 %% ===== Main ============================================================
 if strcmp(p.mode,'paper') | strcmp(p.mode,'talk')
     if length(unit)>0
-        label = sprintf('$%s$~(%s)',dim,unit);
+        label = sprintf('$%s /$\;%s',dim,unit);
     else
         label = sprintf('$%s$',dim);
     end
 else
     if length(unit)>0
-        label = sprintf('%s (%s)',dim,unit);
+        label = sprintf('%s / %s',dim,unit);
     else
         label = sprintf('%s',dim);
     end

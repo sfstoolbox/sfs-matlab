@@ -69,14 +69,22 @@ zreferenceaxis = conf.zreferenceaxis;
 x = linspace(X(1),X(2),xysamples);
 y = linspace(Y(1),Y(2),xysamples);
 z = linspace(Z(1),Z(2),xysamples);
+% check which dimensions will be non singleton
+dimensions = active_dimensions(x,y,z);
 % create xyz-grid
-[xx,yy] = meshgrid(x,y);
-% create the z grid regarding its reference axis.
-% this means that z changes its values along this particular axis.
-if strcmp('y',zreferenceaxis)
-    [~,zz] = meshgrid(x,z);
-elseif strcmp('x',zreferenceaxis)
-    zz = meshgrid(z,y);
+if dimensions(1) && dimensions(2)
+    [xx,yy] = meshgrid(x,y);
+    % create the z grid regarding its reference axis.
+    % this means that z changes its values along this particular axis.
+    if strcmp('y',zreferenceaxis)
+        [~,zz] = meshgrid(x,z);
+    elseif strcmp('x',zreferenceaxis)
+        zz = meshgrid(z,y);
+    else
+        error('%s: zreferenceaxis has to be ''y'' or ''x''.',upper(mfilename));
+    end
 else
-    error('%s: zreferenceaxis has to be ''y'' or ''x''.',upper(mfilename));
+    [yy,zz] = meshgrid(y,z);
+    xx = meshgrid(x,y);
 end
+

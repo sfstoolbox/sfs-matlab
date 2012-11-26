@@ -1,7 +1,7 @@
 function plot_wavefield(x,y,z,P,x0,ls_activity,conf)
 %PLOT_WAVEFIELD plot the given wavefield
 %
-%   Usage: plot_wavefield(x,y,z,P,[x0],conf])
+%   Usage: plot_wavefield(x,y,z,P,[x0,[ls_activity]],[conf])
 %
 %   Input parameters:
 %       x,y,z       - vectors for the x-, y- and z-axis
@@ -103,9 +103,30 @@ p.file = conf.plot.file;
 
 
 %% ===== Calculation =====================================================
+% Handle the given axis and check which should be plotted
+[dimensions,x1,x2] = active_dimensions(x,y,z);
+if ~dimensions(1)
+    % FIXME: in order to work with gnuplot the label should be prtinted
+    % with the extra function, which can handle if the output should be
+    % LaTeX or something else
+    %str_xlabel = print_label('y','m',conf);
+    str_xlabel = 'y / m';
+    str_ylabel = 'z / m';
+elseif ~dimensions(2)
+    str_xlabel = 'x / m';
+    str_ylabel = 'z / m';
+elseif ~dimensions(3)
+    str_xlabel = 'x / m';
+    str_ylabel = 'y / m';
+else
+    % FIXME: in this case every three axis should be plotted and we should
+    % switch to use splot or some other alternativ to plot it in 3D.
+    to_be_implemented(mfilename);
+end
+
 % Check the size of x,y and P
-if size(P,1)~=length(y) || size(P,2)~=length(x)
-    error('%s: the size of P has to be y x x.',upper(mfilename));
+if size(P,1)~=length(x2) || size(P,2)~=length(x1)
+    error('%s: the size of P has to be x2 x x1.',upper(mfilename));
 end
 
 if(p.usedb)
@@ -131,7 +152,7 @@ if ~(p.usegnuplot)
 
     if(p.usedb)
         % Plot the amplitude of the wave field in dB
-        imagesc(x,y,20*log10(abs(P)),[-45 0]);
+        imagesc(x1,x2,20*log10(abs(P)),[-45 0]);
         % Set the limits of the colormap and add a colorbar
         if length(p.caxis)==2
             caxis(p.caxis);
@@ -148,7 +169,7 @@ if ~(p.usegnuplot)
         set(temp,'FontName',fname);
     else
         % Plot the wave field
-        imagesc(x,y,real(P),[-1 1]);
+        imagesc(x1,x2,real(P),[-1 1]);
         % Set the limits of the colormap and add a colorbar
         if length(p.caxis)==2
             caxis(p.caxis);
@@ -236,15 +257,15 @@ if ~(p.usegnuplot)
     % Set the axis to use the same amount of space for the same length (m)
     axis image;
     % Labels etc. for the plot
-    xlabel('x (m)');
-    ylabel('y (m)');
+    xlabel(str_xlabel);
+    ylabel(str_ylabel);
 
     % Add loudspeaker to the plot
     if(p.loudspeakers)
         if dx0<=0.01
             warning(['%s: the given loudspeaker distance is to small. ',...
                      'Disabling plotting of the loudspeakers'],upper(mfilename));
-        else
+        elseif dimensions(1)&&dimensions(2)
             hold on;
             draw_loudspeakers(x0,ls_activity,conf);
             hold off;
@@ -293,7 +314,7 @@ else
                 ls_activity = repmat(ls_activity,size(x0));
             end
             % Storing loudspeaker positions and activity
-            [phi,r_tmp] = cart2pol(x0(:,4),x0(:,5));
+            [phi,~] = cart2pol(x0(:,4),x0(:,5));
             [x0,y0,phi,ls_activity] = column_vector(x0(:,1),x0(:,2),phi,ls_activity);
             gp_save(lsfile,x0,[y0 phi ls_activity]);
         end
@@ -302,7 +323,7 @@ else
     % Check if we should handle the wave field in dB
     if p.usedb
         % Save the data for plotting with Gnuplot
-        gp_save_matrix(datafile,x,y,db(abs(P)));
+        gp_save_matrix(datafile,x1,x2,db(abs(P)));
         if p.caxis else
             p.caxis = [-45,0];
         end
@@ -311,7 +332,7 @@ else
         punit = 'dB';
     else
         % Save the data for plotting with Gnuplot
-        gp_save_matrix(datafile,x,y,real(P));
+        gp_save_matrix(datafile,x1,x2,real(P));
         if p.caxis else
             p.caxis = [-1,1];
         end
@@ -342,12 +363,12 @@ else
         'set xlabel ''%s''\n', ...
         'set ylabel ''%s''\n', ...
         'set label ''%s'' at screen 0.84,0.14\n'], ...
-        x(1),x(end), ...
-        y(1),y(end), ...
+        x1(1),x1(end), ...
+        x2(1),x2(end), ...
         p.caxis(1),p.caxis(2), ...
         cbtics, ...
-        print_label('x','m',conf), ...
-        print_label('y','m',conf), ...
+        str_xlabel, ...
+        str_ylabel, ...
         print_label(pdim,punit,conf));
 
 

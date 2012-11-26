@@ -1,23 +1,21 @@
-function [x1,x2,xref] = active_dimensions(x,y,z,conf)
+function [dimensions,x1,x2] = active_dimensions(x,y,z)
 %ACTIVE_DIMENSIONS returns the first two active dimensions and the
 %corresponding xref values
 %
-%   Usage: [x1,x2,xref] = active_dimensions(x,y,z,[conf])
+%   Usage: dimensions = active_dimensions(x,y,z)
 %
 %   Input options:
-%       x,y,z   - vectors conatining the x-, y- and z-axis values
-%       conf    - optional configuration struct (see SFS_config)
+%       x,y,z      - vectors conatining the x-, y- and z-axis values
 %
 %   Output options:
-%       x1      - first active dimension (this could be the x or y axis)
-%       x2      - second active dimension (this could be the y or z axis)
-%       xref    - corresponding xref values (dim: 1x2)
+%       dimensions - 1x3 vector containing 1 or 0 to indicate the activity
+%                    of the single dimensions in the order [x y z]
+%       x1         - vector containing the first active axis
+%       x2         - vector containing the second active axis
 %
-%   ACTIVE_DIMENSIONS(x,y,z,conf) returns the first two active dimensions.
-%   An active dimension is any dimension of x,y,z for which the first and
-%   the last value of the axis vector is not the same. In addition the
-%   coresponding xref values are returned. For example, if the first two 
-%   active dimensions are y,z then xref = [conf.xref(2) conf.xref(3)].
+%   ACTIVE_DIMENSIONS(x,y,z) returns a vector indicating for the x-, y- and
+%   z-axis if we have any activity on this axis or if it is a singleton axis.
+%   In addition the first non-singleton axis a returned.
 %
 %   see also: norm_wavefield, plot_wavefield
 
@@ -51,32 +49,25 @@ function [x1,x2,xref] = active_dimensions(x,y,z,conf)
 
 %% ===== Checking of input parameters ====================================
 nargmin = 3;
-nargmax = 4;
+nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin));
 isargvector(x,y,z);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
-
-
-%% ===== Configuration ===================================================
-xref = position_vector(conf.xref);
 
 
 %% ===== Computation =====================================================
+dimensions = [1 1 1];
+x1 = x;
+x2 = y;
 % Check if we have any inactive dimensions
 if x(1)==x(end)
+    dimensions(1) = 0;
     x1 = y;
     x2 = z;
-    xref = [xref(2) xref(3)];
-elseif y(1)==y(end)
-    x1 = x;
+end
+if y(1)==y(end)
+    dimensions(2) = 0;
     x2 = z;
-    xref = [xref(1) xref(3)];
-else
-    x1 = x;
-    x2 = y;
-    xref = [xref(1) xref(2)];
+end
+if z(1)==z(end)
+    dimensions(3) = 0;
 end

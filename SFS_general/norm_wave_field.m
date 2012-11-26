@@ -63,7 +63,14 @@ xref = position_vector(conf.xref);
 
 %% ===== Computation =====================================================
 % Get our active axis
-[x1,x2,xref] = active_dimensions(x,y,z,conf);
+[dimensions,x1,x2] = active_dimensions(x,y,z);
+if ~dimensions(1)
+    xref(1) = xref(2);
+    xref(2) = xref(3);
+elseif ~dimensions(2)
+    xref(2) = xref(3);
+end
+    
 % Use the half of the x axis and xref
 [a,x1idx] = find(x1>=xref(1),1);
 [a,x2idx] = find(x2>=xref(2),1);

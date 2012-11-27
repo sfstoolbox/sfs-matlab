@@ -85,7 +85,7 @@ xref = conf.xref;
 %
 % Get the position of the loudspeakers and its activity
 x0 = secondary_source_positions(L,conf);
-conf.weights = x0(:,7);
+%conf.weights = x0(:,7);
 x0 = x0(:,1:6);
 x0 = secondary_source_selection(x0,xs,src,xref);
 % Generate tapering window

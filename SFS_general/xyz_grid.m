@@ -67,7 +67,7 @@ zreferenceaxis = conf.zreferenceaxis;
 % creating x-, y-axis
 [x,y,z] = xyz_axes(X,Y,Z,conf);
 % check which dimensions will be non singleton
-dimensions = active_dimensions(x,y,z);
+dimensions = xyz_axes_selection(x,y,z);
 % create xyz-grid
 if dimensions(1) && dimensions(2)
     [xx,yy] = meshgrid(x,y);
@@ -84,4 +84,3 @@ else
     [yy,zz] = meshgrid(y,z);
     xx = meshgrid(x,y);
 end
-

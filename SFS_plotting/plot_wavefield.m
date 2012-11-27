@@ -104,7 +104,7 @@ p.file = conf.plot.file;
 
 %% ===== Calculation =====================================================
 % Handle the given axis and check which should be plotted
-[dimensions,x1,x2] = active_dimensions(x,y,z);
+[dimensions,x1,x2] = xyz_axes_selection(x,y,z);
 if ~dimensions(1)
     % FIXME: in order to work with gnuplot the label should be prtinted
     % with the extra function, which can handle if the output should be

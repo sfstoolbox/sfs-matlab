@@ -13,8 +13,6 @@ function [x,y,z] = xyz_axes(X,Y,Z,conf)
 %       x,y,z    - x-, y-, z-axis
 %
 %   XYZ_AXES(X,Y,Z,conf) creates the x-, y-, and -z-axis for the listening area.
-%   If for any given axis range min==max, then this single value is returned as
-%   axis in this dimension.
 %
 %   see also: xyz_grid, xyz_axes_selection
 
@@ -64,18 +62,6 @@ xysamples = conf.xysamples;
 
 %% ===== Computation =====================================================
 % creating x-, y-, and z-axis
-if X(1)==X(end)
-    x = X(1);
-else
-    x = linspace(X(1),X(2),xysamples);
-end
-if Y(1)==Y(end)
-    y = Y(1);
-else
-    y = linspace(Y(1),Y(2),xysamples);
-end
-if Z(1)==Z(end)
-    z = z(1);
-else
-    z = linspace(Z(1),Z(2),xysamples);
-end
+x = linspace(X(1),X(2),xysamples);
+y = linspace(Y(1),Y(2),xysamples);
+z = linspace(Z(1),Z(2),xysamples);

@@ -63,7 +63,7 @@ xref = position_vector(conf.xref);
 
 %% ===== Computation =====================================================
 % Get our active axis
-[dimensions,x1,x2] = active_dimensions(x,y,z);
+[dimensions,x1,x2] = xyz_axes_selection(x,y,z);
 if ~dimensions(1)
     xref(1) = xref(2);
     xref(2) = xref(3);

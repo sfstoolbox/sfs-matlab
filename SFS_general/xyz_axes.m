@@ -1,23 +1,22 @@
-function [dimensions,x1,x2] = active_dimensions(x,y,z)
-%ACTIVE_DIMENSIONS returns the first two active dimensions and the
-%corresponding xref values
+function [x,y,z] = xyz_axes(X,Y,Z,conf)
+%XYZ_AXES returns the x-, y-, and z-axis for the listening area
 %
-%   Usage: dimensions = active_dimensions(x,y,z)
+%   Usage: [x,y,z] = xyz_aex(X,Y,Z,[conf])
 %
-%   Input options:
-%       x,y,z      - vectors conatining the x-, y- and z-axis values
+%   Input parameters:
+%       X        - [xmin,xmax]
+%       Y        - [ymin,ymax]
+%       Z        - [zmin,zmax]
+%       conf     - optional configuration struct (see SFS_config)
 %
-%   Output options:
-%       dimensions - 1x3 vector containing 1 or 0 to indicate the activity
-%                    of the single dimensions in the order [x y z]
-%       x1         - vector containing the first active axis
-%       x2         - vector containing the second active axis
+%   Output parameters:
+%       x,y,z    - x-, y-, z-axis
 %
-%   ACTIVE_DIMENSIONS(x,y,z) returns a vector indicating for the x-, y- and
-%   z-axis if we have any activity on this axis or if it is a singleton axis.
-%   In addition the first non-singleton axis a returned.
+%   XYZ_AXES(X,Y,Z,conf) creates the x-, y-, and -z-axis for the listening area.
+%   If for any given axis range min==max, then this single value is returned as
+%   axis in this dimension.
 %
-%   see also: norm_wavefield, plot_wavefield
+%   see also: xyz_grid, xyz_axes_selection
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -47,27 +46,36 @@ function [dimensions,x1,x2] = active_dimensions(x,y,z)
 %*****************************************************************************
 
 
-%% ===== Checking of input parameters ====================================
+%% ===== Checking input parameters =======================================
 nargmin = 3;
-nargmax = 3;
+nargmax = 4;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector(x,y,z);
+[X,Y,Z] = axis_vector(X,Y,Z);
+if nargin<nargmax
+    conf = SFS_config;
+else
+    isargstruct(conf);
+end
+
+
+% ===== Configuration ====================================================
+xysamples = conf.xysamples;
 
 
 %% ===== Computation =====================================================
-dimensions = [1 1 1];
-x1 = x;
-x2 = y;
-% Check if we have any inactive dimensions
-if x(1)==x(end)
-    dimensions(1) = 0;
-    x1 = y;
-    x2 = z;
+% creating x-, y-, and z-axis
+if X(1)==X(end)
+    x = X(1);
+else
+    x = linspace(X(1),X(2),xysamples);
 end
-if y(1)==y(end)
-    dimensions(2) = 0;
-    x2 = z;
+if Y(1)==Y(end)
+    y = Y(1);
+else
+    y = linspace(Y(1),Y(2),xysamples);
 end
-if z(1)==z(end)
-    dimensions(3) = 0;
+if Z(1)==Z(end)
+    z = z(1);
+else
+    z = linspace(Z(1),Z(2),xysamples);
 end

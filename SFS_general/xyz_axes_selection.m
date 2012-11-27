@@ -1,23 +1,23 @@
-function [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf)
-%XY_GRID returns a xy-grid for the listening area
+function [dimensions,x1,x2] = xyz_axes_selestion(x,y,z)
+%XYZ_AXES_SELECTION returns the first two active dimensions and a vector
+%indicating which axes are selected
 %
-%   Usage: [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,[conf])
+%   Usage: [dimensions,x1,x2] = xyz_axes_selection(x,y,z)
 %
-%   Input parameters:
-%       X        - [xmin,xmax]
-%       Y        - [ymin,ymax]
-%       Z        - [zmin,zmax]
-%       conf     - optional configuration struct (see SFS_config)
+%   Input options:
+%       x,y,z      - vectors conatining the x-, y- and z-axis values
 %
-%   Output parameters:
-%       xx,yy,zz - matrices representing the xy-grid
-%       x,y,z    - x-, y-, z-axis
+%   Output options:
+%       dimensions - 1x3 vector containing 1 or 0 to indicate the activity
+%                    of the single dimensions in the order [x y z]
+%       x1         - vector containing the first active axis
+%       x2         - vector containing the second active axis
 %
-%   XYZ_GRID(X,Y,Z,conf) creates a xyz-grid to avoid a loop in the wave field
-%   calculation for the whole listening area. It returns also the x-, y-, z-axis
-%   for the listening area, defined by the points given with X,Y,Z.
+%   XYZ_AXES_SELECTION(x,y,z) returns a vector indicating for the x-, y- and
+%   z-axis if we have any activity on this axis or if it is a singleton axis.
+%   In addition the first non-singleton axis a returned.
 %
-%   see also: wave_field_mono_wfs_25d
+%   see also: norm_wavefield, plot_wavefield, xyz_axes, xyz_grid
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -47,41 +47,27 @@ function [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf)
 %*****************************************************************************
 
 
-%% ===== Checking input parameters =======================================
+%% ===== Checking of input parameters ====================================
 nargmin = 3;
-nargmax = 4;
+nargmax = 3;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector(X,Y);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
-
-
-% ===== Configuration ====================================================
-zreferenceaxis = conf.zreferenceaxis;
+isargvector(x,y,z);
 
 
 %% ===== Computation =====================================================
-% creating x-, y-axis
-[x,y,z] = xyz_axes(X,Y,Z,conf);
-% check which dimensions will be non singleton
-dimensions = active_dimensions(x,y,z);
-% create xyz-grid
-if dimensions(1) && dimensions(2)
-    [xx,yy] = meshgrid(x,y);
-    % create the z grid regarding its reference axis.
-    % this means that z changes its values along this particular axis.
-    if strcmp('y',zreferenceaxis)
-        [~,zz] = meshgrid(x,z);
-    elseif strcmp('x',zreferenceaxis)
-        zz = meshgrid(z,y);
-    else
-        error('%s: zreferenceaxis has to be ''y'' or ''x''.',upper(mfilename));
-    end
-else
-    [yy,zz] = meshgrid(y,z);
-    xx = meshgrid(x,y);
+dimensions = [1 1 1];
+x1 = x;
+x2 = y;
+% Check if we have any inactive dimensions
+if x(1)==x(end)
+    dimensions(1) = 0;
+    x1 = y;
+    x2 = z;
 end
-
+if y(1)==y(end)
+    dimensions(2) = 0;
+    x2 = z;
+end
+if z(1)==z(end)
+    dimensions(3) = 0;
+end

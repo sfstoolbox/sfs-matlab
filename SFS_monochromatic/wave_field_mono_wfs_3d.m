@@ -94,5 +94,5 @@ P = norm_wave_field(P,x,y,z,conf);
 
 % ===== Plotting =========================================================
 if(useplot)
-    plot_wavefield(x,y,P,x0,win,conf);
+    plot_wavefield(x,y,z,P,x0,win,conf);
 end

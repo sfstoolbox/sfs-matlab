@@ -121,7 +121,7 @@ elseif strcmp('circle',array)
     x0(:,1:3) = [cx,cy,cz] + repmat(X0,nls,1);
     % Direction of the secondary sources
     x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1).*ones(nls,3));  
-elseif strcmp('spherical',array)
+elseif strcmp('spherical',array) || strcmp('sphere',array)
     % get positions of secondary sources for xy-plane
     x0 = equally_spaced_points_on_sphere(conf);
 elseif strcmp('box',array)

@@ -9,3 +9,4 @@ SFS_config.m
 octave-core
 # tmp files
 *.swp
+*.asv

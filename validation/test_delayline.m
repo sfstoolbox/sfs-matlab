@@ -103,7 +103,7 @@ grid on;
 % impluse response
 figure;
 %plot(t(L/2-10:L/2+10),outsig(L/2-10:L/2+10,:));
-imagesc(dt,t(L/2-50:L/2+50),db(outsig(L/2-50:L/2+50,:)));
+imagesc(dt,t(L/2-50:L/2+50),db(abs(outsig(L/2-50:L/2+50,:))));
 caxis([-100 10]);
 ylabel('samples');
 xlabel('delay');

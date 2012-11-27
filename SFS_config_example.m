@@ -175,7 +175,8 @@ conf.hpreflow = 50; % Hz
 % Upper frequency limit of preequalization filter (~ aliasing frequency of
 % system)
 conf.hprefhigh = 1200; % Hz
-%
+% number of equally spaced points on a sphere (3D case)
+conf.number_of_points_on_sphere = 900;
 % ===== Tapering =====
 % The truncation of the loudspeaker array leads to diffraction of the
 % synthesized wave field. It has been shown that the truncation can be discribed

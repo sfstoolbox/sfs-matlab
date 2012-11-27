@@ -1,6 +1,6 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
-0.2.2
+0.2.2 (27 November 2012)
 
     - added functions to calculate the sound pressure for monochromatic WFS at a
       single point in analogy to the point_source function

@@ -30,7 +30,10 @@ else
 %% re-define conf.variables
 N = conf.number_of_points_on_sphere;
 %% load file and calculate x0
-addpath('MinimumEnergyPointsOnASphere');
+% get current path
+basepath = which('equally_spaced_points_on_sphere' );
+basepath = basepath(1:end-33);
+addpath([basepath,'MinimumEnergyPointsOnASphere']);
 N = [num2str(N) 'points.mat'];
 x0 = load(N,'-ascii');
 x0 = L/2*x0;

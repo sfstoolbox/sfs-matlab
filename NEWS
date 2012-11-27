@@ -1,5 +1,12 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
+0.3.0
+
+    - added the possibility to calculate the wave field for a arbritrary
+      positioned plane in 3D
+    - added 3D WFS functions
+    - removed compatibility for octave versions <3.6
+
 0.2.2
 
     - added functions to calculate the sound pressure for monochromatic WFS at a

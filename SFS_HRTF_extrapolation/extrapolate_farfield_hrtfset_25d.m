@@ -1,4 +1,4 @@
-function irs_pw = extrapolate_farfield_hrtfset(irs,conf)
+function irs_pw = extrapolate_farfield_hrtfset_25d(irs,conf)
 %EXTRAPOLATE_FARFIELD_HRTFSET far-field extrapolation of a given HRTF dataset
 %
 %   Usage: irs_pw = extrapolate_farfield_hrtfset(irs,[conf])

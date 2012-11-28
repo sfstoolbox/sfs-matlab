@@ -53,7 +53,7 @@ function [d] = driving_function_imp_nfchoa_25d(x0,xs,src,L,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 4;
 nargmax = 5;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargsecondarysource(x0)
 isargposition(xs);
 xs = position_vector(xs);

@@ -57,7 +57,7 @@ function [x,y,p] = wave_field_imp_nfchoa_25d(X,Y,xs,src,L,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 5;
 nargmax = 6;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargvector(X,Y);
 xs = position_vector(xs);
 isargpositivescalar(L);

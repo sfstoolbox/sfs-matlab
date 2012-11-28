@@ -63,7 +63,7 @@ function [P,x0,win] = wfs_25d(x,y,xs,src,f,L,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 6;
 nargmax = 7;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargmatrix(x,y);
 xs = position_vector(xs);
 isargpositivescalar(L,f);

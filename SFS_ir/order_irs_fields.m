@@ -48,7 +48,7 @@ function irs = order_irs_fields(irs)
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
 nargmax = 1;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 % Disable the ordering warning, becuase we wanted to reorder the entries
 warning('off','SFS:irs_fields_order');
 check_irs(irs);

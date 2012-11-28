@@ -45,7 +45,7 @@ function gp_save(file,x,y,header)
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;
 nargmax = 4;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 if nargin==nargmax-1
     header = '';
 end

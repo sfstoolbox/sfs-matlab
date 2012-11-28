@@ -58,7 +58,7 @@ function ir = generic_wfs_25d(xs,src,L,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;
 nargmax = 4;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 xs = position_vector(xs);
 isargpositivescalar(L);
 isargchar(src);

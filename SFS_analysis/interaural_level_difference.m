@@ -50,7 +50,7 @@ function ild = interaural_level_difference(insigleft,insigright)
 %% ===== Checking of input parameters ====================================
 nargmin = 2;
 nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargmatrix(insigleft,insigright);
 if size(insigright)~=size(insigright)
     error('%s: insigleft and insigright have to be the same size!', ...

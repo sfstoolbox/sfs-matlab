@@ -46,7 +46,7 @@ function sig =  bandpass(sig,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
 nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargvector(sig);
 if nargin<nargmax
     conf = SFS_config;

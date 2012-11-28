@@ -52,7 +52,7 @@ function S = point_source(x,y,xs,f,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 4;
 nargmax = 5;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargmatrix(x,y);
 isargposition(xs);
 isargpositivescalar(f);

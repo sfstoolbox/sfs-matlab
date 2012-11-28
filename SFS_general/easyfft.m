@@ -51,7 +51,7 @@ function [amplitude,phase,f] = easyfft(sig,conf)
 %% ===== Check input arguments ===========================================
 nargmin = 1;
 nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 sig = column_vector(sig);
 if nargin<nargmax
     conf = SFS_config;

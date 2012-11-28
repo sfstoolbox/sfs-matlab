@@ -46,7 +46,7 @@ function ir = shorten_ir(ir,nsamples)
 %% ===== Checking of input  parameters ==================================
 nargmin = 2;
 nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargpositivescalar(nsamples);
 
 

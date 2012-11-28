@@ -48,7 +48,7 @@ function win = tapering_window(x0,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
 nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargsecondarysource(x0);
 if nargin==nargmax-1
     conf = SFS_config;

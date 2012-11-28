@@ -63,7 +63,7 @@ function [D] = driving_function_mono_wfs_25d(x0,xs,src,f,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 4;
 nargmax = 5;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargsecondarysource(x0);
 isargposition(xs);
 xs = position_vector(xs);

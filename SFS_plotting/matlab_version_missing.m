@@ -42,7 +42,9 @@ function matlab_version_missing(mfile)
 
 
 %% ===== Checking of input parameters ====================================
-error(nargchk(0,1,nargin)
+nargmin = 0;
+nargmax = 1;
+narginchk(nargmin,nargmax);
 if exist('mfile','var')
     if ~ischar(mfile)
         error('%s: mfile has to be a string.',upper(mfilename));

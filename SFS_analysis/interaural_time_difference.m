@@ -69,7 +69,7 @@ function [itd,idxleft,idxright] = interaural_time_difference(insigleft,insigrigh
 %% ===== Checking of input parameters ===================================
 nargmin = 3;
 nargmax = 5;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargmatrix(insigleft,insigright);
 isargpositivescalar(fs);
 if size(insigleft)~=size(insigright)

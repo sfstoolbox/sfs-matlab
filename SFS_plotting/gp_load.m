@@ -47,7 +47,7 @@ function [x,y,header] = gp_load(file)
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
 nargmax = 1;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargfile(file);
 
 

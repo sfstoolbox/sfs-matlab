@@ -47,7 +47,7 @@ function P = norm_wave_field(P,x,y,conf)
 %% ===== Checking of input parameters ====================================
 nargmin = 3;
 nargmax = 4;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargmatrix(P);
 isargvector(x,y);
 if nargin<nargmax

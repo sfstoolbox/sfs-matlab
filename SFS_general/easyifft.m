@@ -46,7 +46,7 @@ function outsig = easyifft(amplitude,phase)
 %% ===== Checking input arguments ========================================
 nargmin = 2;
 nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 [amplitude,phase] = column_vector(amplitude,phase);
 
 

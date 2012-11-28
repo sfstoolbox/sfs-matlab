@@ -48,7 +48,7 @@ function irs_pw = extrapolate_farfield_hrtfset_25d(irs,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
 nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 check_irs(irs);
 if nargin<nargmax
     conf = SFS_config;

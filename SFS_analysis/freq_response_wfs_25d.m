@@ -62,7 +62,7 @@ function [f,S] = freq_response_wfs_25d(X,xs,src,L,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 4;
 nargmax = 5;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 [X,xs] = position_vector(X,xs);
 isargpositivescalar(L);
 isargchar(src);

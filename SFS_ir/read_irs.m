@@ -48,7 +48,7 @@ function irs = read_irs(irsfile)
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
 nargmax = 1;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargfile(irsfile);
 
 

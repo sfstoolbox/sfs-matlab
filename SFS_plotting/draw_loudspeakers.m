@@ -45,7 +45,7 @@ function draw_loudspeakers(x0,ls_activity,conf)
 %% ===== Checking of input parameter =====================================
 nargmin = 1;
 nargmax = 3;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargsecondarysource(x0)
 nls = size(x0,1);
 if nargin<nargmax-1

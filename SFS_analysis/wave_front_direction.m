@@ -59,7 +59,7 @@ function [alpha,a,t] = wave_front_direction(X,phi,xs,src,L,conf)
 %% ===== Checking of input parameters ====================================
 nargmin = 5;
 nargmax = 6;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 [X,xs] = position_vector(X,xs);
 isargscalar(phi);
 isargpositivescalar(L);

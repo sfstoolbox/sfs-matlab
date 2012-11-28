@@ -62,7 +62,7 @@ function outsig = noise(samples,nsigs,noisetype)
 %% ===== Checking input parameters =======================================
 nargmin = 1;
 nargmax = 3;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 if nargin<3
     noisetype = 'white';
 elseif nargin<2

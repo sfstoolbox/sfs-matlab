@@ -44,7 +44,7 @@ function check_wave_field(P,frame)
 %% ===== Checking of input parameters ====================================
 nargmin = 2;
 nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargmatrix(P);
 isargscalar(frame);
 

@@ -74,7 +74,7 @@ function brs = brs_wfs_25d(X,phi,xs,src,L,irs,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 6;
 nargmax = 7;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 [X,xs] = position_vector(X,xs);
 isargscalar(phi);
 isargpositivescalar(L);

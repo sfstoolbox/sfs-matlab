@@ -46,7 +46,7 @@ function out = sphbesselj(nu,z)
 %% ===== Checking input parameters =======================================
 nargmin = 2;
 nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargpositivescalar(nu)
 isargnumeric(z)
 

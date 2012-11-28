@@ -47,7 +47,7 @@ function gp_save_loudspeakers(file,x0,ls_activity)
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;
 nargmax = 3;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargchar(file);
 isargmatrix(x0);
 isargvector(ls_activity);

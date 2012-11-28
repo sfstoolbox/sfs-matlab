@@ -46,7 +46,7 @@ function hpre = wfs_prefilter(conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 0;
 nargmax = 1;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 if nargin<nargmax
     conf = SFS_config;
 else

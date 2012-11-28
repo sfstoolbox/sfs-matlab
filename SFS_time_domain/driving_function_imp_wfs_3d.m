@@ -79,27 +79,22 @@ xref = position_vector(conf.xref);
 
 %% ===== Computation =====================================================
 % Check also the activity of the used loudspeaker.
-ls_activity = secondary_source_selection(x0,xs,src);
-if ls_activity>0
 
-    % Direction and position of secondary sources
-    nx0 = x0(4:6);
-    x0 = x0(1:3);
+% Direction and position of active secondary sources
+nx0 = x0(4:6);
+x0 = x0(1:3);
     
-    if strcmp('pw',src)
-        % === Plane wave ===
-        % Direction of plane wave
-        nxs = xs / norm(xs);
-        % Delay and amplitude weight
-        % NOTE: <n_pw,n(x0)> is the same as the cosinus between their angle
-        delay = 1/c * nxs*x0';
-        weight = 2 .* nxs*nx0';
+if strcmp('pw',src)
+% === Plane wave ===
+% Direction of plane wave
+nxs = xs / norm(xs);
+% Delay and amplitude weight
+delay = 1/c * nxs*x0';
+weight = 2 .* nxs*nx0';
         
-    else
-        error('%s: %s is not a known source type.',upper(mfilename),src);
-    end
-
 else
-    delay = 0;
-    weight = 0;
+        error('%s: %s is not a known source type.',upper(mfilename),src);
+end
+
+
 end

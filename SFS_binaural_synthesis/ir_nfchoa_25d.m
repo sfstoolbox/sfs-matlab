@@ -130,8 +130,5 @@ end
 warning('on','SFS:irs_intpol');
 
 
-%% ===== Pre-equalization ===============================================
-ir_hoa = wfs_preequalization(ir_hoa,conf);
-
 %% ===== Headphone compensation =========================================
 ir = compensate_headphone(ir_hoa,conf);

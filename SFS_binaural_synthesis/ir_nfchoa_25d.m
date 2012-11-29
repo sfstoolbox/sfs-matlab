@@ -10,7 +10,6 @@ function ir = ir_nfchoa_25d(X,phi,xs,src,L,irs,conf)
 %       xs      - virtual source position [ys > Y0 => focused source] (m)
 %       src     - source type: 'pw' -plane wave
 %                              'ps' - point source
-%                              'fs' - focused source
 %       L       - Length of loudspeaker array (m)
 %       irs     - IR data set for the secondary sources
 %       conf    - optional configuration struct (see SFS_config) 

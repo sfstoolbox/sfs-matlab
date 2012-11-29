@@ -50,7 +50,7 @@ function R = rotation_matrix(phi,dimension,orientation)
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
 nargmax = 3;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargscalar(phi)
 if nargin < 3
     % Set defualt orientation of the rotation

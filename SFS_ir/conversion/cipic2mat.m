@@ -71,7 +71,7 @@ function cipic2mat(irsset,irspath)
 %% ===== Checking of input  parameters ==================================
 nargmin = 2;
 nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargchar(irsset);
 isargdir(irspath);
 

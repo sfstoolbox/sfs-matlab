@@ -54,7 +54,7 @@ function plot_wavefield(x,y,z,P,x0,ls_activity,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 4;
 nargmax = 7;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargvector(x,y,z);
 isargmatrix(P);
 if nargin==nargmax-1

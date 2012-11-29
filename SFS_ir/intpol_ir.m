@@ -50,7 +50,7 @@ function ir = intpol_ir(ir1,beta1,ir2,beta2,alpha)
 %% ===== Checking of input  parameters ==================================
 nargmin = 5;
 nargmax = 5;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 
 
 %% ===== Computation ====================================================

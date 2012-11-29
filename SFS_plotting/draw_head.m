@@ -41,7 +41,7 @@ function [] = draw_head(X,Y,phi)
 %% ===== Checking of input parameter =====================================
 nargmin = 3;
 nargmax = 3;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargscalar(X,Y,phi);
 
 

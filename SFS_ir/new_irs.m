@@ -45,7 +45,7 @@ function [irs,opt_fields] = new_irs()
 %% ===== Checking of input  parameters ==================================
 nargmin = 0;
 nargmax = 0;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 
 
 %% ===== Computation =====================================================

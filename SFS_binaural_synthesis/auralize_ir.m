@@ -58,7 +58,7 @@ function outsig = auralize_ir(ir,content,usenorm,conf)
 %% ===== Checking of input parameters and configuration =================
 nargmin = 2;
 nargmax = 4;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargmatrix(ir);
 
 if nargin<3

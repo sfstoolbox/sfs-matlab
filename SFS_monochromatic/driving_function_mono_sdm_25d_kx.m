@@ -55,7 +55,7 @@ function [Dkx] = driving_function_mono_sdm_25d_kx(kx,xs,src,f,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 4;
 nargmax = 5;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargmatrix(kx);
 isargposition(xs);
 xs = position_vector(xs);

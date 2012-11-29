@@ -44,7 +44,7 @@ function save_irs(irs,outfile)
 %% ===== Checking of input  parameters ==================================
 nargmin = 2;
 nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 check_irs(irs);
 isargchar(outfile);
 

@@ -48,7 +48,7 @@ function ir = reduce_ir(ir,fs,nsamples,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;
 nargmax = 4;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargpositivescalar(fs,nsamples);
 if ~isnumeric(ir) || size(ir,2)~=2
     error('%s: ir has to be an IR with samples x 2 size.',upper(mfilename));

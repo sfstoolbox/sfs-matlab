@@ -48,7 +48,7 @@ function d = get_ir_distance(irs,phi,delta)
 %% ===== Checking of input  parameters ==================================
 nargmin = 2;
 nargmax = 3;
-error(nargchk(nargmin,nargmax,nargin))
+narginchk(nargmin,nargmax)
 if nargin==nargmax-1
     delta = 0;
 end

@@ -54,10 +54,11 @@ function [x,y,P] = wave_field_mono_point_source(X,Y,Z,xs,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
+<<<<<<< HEAD
 nargmin = 5;
 nargmax = 6;
-error(nargchk(nargmin,nargmax,nargin));
-isargvector(X,Y);
+narginchk(nargmin,nargmax);
+isargvector(X,Y,Z);
 xs = position_vector(xs);
 isargpositivescalar(f);
 if nargin<nargmax

@@ -48,7 +48,7 @@ function n = direction_vector(x1,x2)
 %% ===== Checking of input  parameters ===================================
 nargmin = 2;
 nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 if size(x1)~=size(x2)
     error('%s: x1 and x2 had to have the same size.',upper(mfilename));
 end

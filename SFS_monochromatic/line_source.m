@@ -52,7 +52,7 @@ function S = line_source(x,y,xs,f,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 4;
 nargmax = 5;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargmatrix(x,y);
 xs = position_vector(xs);
 isargpositivescalar(f);

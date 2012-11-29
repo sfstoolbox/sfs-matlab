@@ -69,7 +69,7 @@ function x0 = secondary_source_positions(L,conf)
 %% ===== Checking of input  parameters ===================================
 nargmin = 1;
 nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargpositivescalar(L);
 if nargin<nargmax
     conf = SFS_config;

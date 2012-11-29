@@ -59,7 +59,7 @@ function y = rms(insig,options)
 %% ===== Checking of input parameters ====================================
 nargmin = 1;
 nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargmatrix(insig);
 if (nargin==1) || (~ischar(options))
   options='';

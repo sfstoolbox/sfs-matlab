@@ -69,7 +69,7 @@ function ir_ps = ir_point_source(X,phi,xs,irs,conf)
 %% ===== Checking of input parameters ====================================
 nargmin = 4;
 nargmax = 5;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 [X,xs] = position_vector(X,xs);
 isargscalar(phi);
 check_irs(irs);

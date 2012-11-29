@@ -58,7 +58,7 @@ function x0 = secondary_source_selection(x0,xs,src,xref)
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;
 nargmax = 4;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargsecondarysource(x0);
 xs = position_vector(xs);
 isargchar(src);

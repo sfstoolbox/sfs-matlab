@@ -49,7 +49,7 @@ function [xx,yy,x,y] = xy_grid(X,Y,conf)
 %% ===== Checking input parameters =======================================
 nargmin = 2;
 nargmax = 3;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargvector(X,Y);
 if nargin<nargmax
     conf = SFS_config;

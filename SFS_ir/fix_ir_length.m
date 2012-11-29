@@ -49,7 +49,7 @@ function ir = fix_ir_length(ir,N,dt)
 %% ===== Checking of input  parameters ==================================
 nargmin = 2;
 nargmax = 3;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 if nargin==nargmax-1
     dt = 0;
 end

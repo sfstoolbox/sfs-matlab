@@ -45,7 +45,7 @@ function win = hanningwin(onset,offset,nsamples)
 %% ===== Checking input parameters =======================================
 nargmin = 3;
 nargmax = 3;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargpositivescalar(onset,offset,nsamples)
 if nsamples<onset+offset
     error('%s: nsamples has to be greater than onset+offset.',...

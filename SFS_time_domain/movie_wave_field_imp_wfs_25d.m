@@ -54,7 +54,7 @@ function movie_wave_field_imp_wfs_25d(X,Y,xs,src,L,outfile,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 6;
 nargmax = 7;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargvector(X,Y);
 isargposition(xs);
 xs = position_vector(xs);

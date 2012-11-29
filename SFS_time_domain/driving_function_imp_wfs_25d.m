@@ -54,7 +54,7 @@ function [weight,delay] = driving_function_imp_wfs_25d(x0,xs,src,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;
 nargmax = 4;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargsecondarysource(x0)
 isargposition(xs);
 xs = position_vector(xs);

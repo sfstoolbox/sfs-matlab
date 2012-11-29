@@ -76,7 +76,7 @@ function [x,y,P] = wave_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 7;
 nargmax = 8;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargvector(X,Y,Z);
 xs = position_vector(xs);
 isargpositivescalar(L,f);

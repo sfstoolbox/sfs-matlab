@@ -51,7 +51,7 @@ function S = plane_wave(x,y,z,xs,f,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 5;
 nargmax = 6;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargmatrix(x,y,z);
 xs = position_vector(xs);
 isargpositivescalar(f);

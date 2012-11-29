@@ -42,7 +42,7 @@ function addirspath(varargin)
 % ===== Checking of input parameters ====================================
 nargmin = 0;
 nargmax = inf;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 if nargin==nargmin
     dirs{1} = '~/svn/ir_databases';
     dirs{2} = '~/svn/measurements';

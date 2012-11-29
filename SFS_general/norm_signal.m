@@ -45,7 +45,7 @@ function sig = norm_signal(sig)
 %% ===== Checking of input parameters ====================================
 nargmin = 1;
 nargmax = 1;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargmatrix(sig);
 
 

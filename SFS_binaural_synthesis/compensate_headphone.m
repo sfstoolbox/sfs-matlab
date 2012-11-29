@@ -48,7 +48,7 @@ function ir = compensate_headphone(ir,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
 nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargmatrix(ir);
 if nargin<nargmax
     conf = SFS_config;

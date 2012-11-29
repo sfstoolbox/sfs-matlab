@@ -55,7 +55,7 @@ function [x,y,P] = wave_field_mono_line_source(X,Y,xs,f,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 4;
 nargmax = 5;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargvector(X,Y);
 xs = position_vector(xs);
 isargpositivescalar(f);

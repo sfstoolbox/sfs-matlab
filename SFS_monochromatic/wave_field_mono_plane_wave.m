@@ -56,7 +56,7 @@ function [x,y,P] = wave_field_mono_plane_wave(X,Y,Z,xs,f,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 5;
 nargmax = 6;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargvector(X,Y,Z);
 xs = position_vector(xs);
 isargpositivescalar(f);

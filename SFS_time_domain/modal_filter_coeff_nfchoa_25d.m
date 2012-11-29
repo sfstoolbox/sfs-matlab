@@ -52,7 +52,7 @@ function [b,a] = modal_filter_coeff_nfchoa_25d(order,R,src,r,conf)
 %% ===== Checking of input  parameters ===================================
 nargmin = 3;
 nargmax = 5;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 if nargin==nargmax-2
     conf = SFS_config;
 elseif nargin==nargmax-1 && ~isstruct(r)

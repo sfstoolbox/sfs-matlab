@@ -50,7 +50,7 @@ function label = print_label(dim,unit,conf)
 %% ===== Checking of input parameter =====================================
 nargmin = 1;
 nargmax = 3;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 if nargin==nargmax-1
     if isstruct(unit)
         conf = unit;

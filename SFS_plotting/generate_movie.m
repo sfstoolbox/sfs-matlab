@@ -46,7 +46,7 @@ function generate_movie(outfile,directory,pattern)
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
 nargmax = 3;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 if ~exist('directory','var')
     directory = pwd;
 end

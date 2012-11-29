@@ -68,8 +68,8 @@ function [x,y,P,win] = wave_field_mono_wfs_2d(X,Y,Z,xs,src,f,L,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 7;
 nargmax = 8;
-error(nargchk(nargmin,nargmax,nargin));
-isargvector(X,Y);
+narginchk(nargmin,nargmax);
+isargvector(X,Y,Z);
 xs = position_vector(xs);
 isargpositivescalar(L,f);
 isargchar(src);

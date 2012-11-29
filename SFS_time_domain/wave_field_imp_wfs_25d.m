@@ -59,7 +59,7 @@ function [x,y,p,win,dds] = wave_field_imp_wfs_25d(X,Y,Z,xs,src,L,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 6;
 nargmax = 7;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargvector(X,Y,Z);
 xs = position_vector(xs);
 isargpositivescalar(L);

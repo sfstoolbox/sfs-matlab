@@ -50,7 +50,7 @@ function kemarmit2mat(irspath)
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
 nargmax = 1;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargdir(irspath);
 
 

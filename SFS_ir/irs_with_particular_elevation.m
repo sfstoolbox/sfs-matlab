@@ -49,7 +49,7 @@ function irs = irs_with_particular_elevation(irs,delta)
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
 nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin))
+narginchk(nargmin,nargmax)
 check_irs(irs);
 if nargin==nargmax
     isargscalar(delta);

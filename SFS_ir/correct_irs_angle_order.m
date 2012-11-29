@@ -47,7 +47,7 @@ function irs = correct_irs_angle_order(irs,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
 nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 if nargin==nargmax-1
     conf = SFS_config;
 end

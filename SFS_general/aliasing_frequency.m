@@ -54,7 +54,7 @@ function fal = aliasing_frequency(dx0,conf)
 %% ===== Checking of input parameters ====================================
 nargmin = 1;
 nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 if nargin==nargmax-1
     conf = SFS_config;
 end

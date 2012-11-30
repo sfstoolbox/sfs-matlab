@@ -92,6 +92,13 @@ win = tapering_window(x0,conf);
 % Initialize empty wave field
 % FIXME: it could be that length is not enough here and we need size(...)
 P = zeros(length(y),length(x));
+
+if conf.debug
+    phi = zeros(1,size(x0,1));
+    D_plot =  zeros(1,size(x0,1));
+    D_win = D_plot;
+end
+
 % Integration over secondary source positions
 for ii = 1:size(x0,1)
 
@@ -117,5 +124,22 @@ for ii = 1:size(x0,1)
     % truncation artifacts. If you don't use a tapering window win(ii) will
     % always be one.
     P = P + win(ii)*D.*G;
+    
+    if conf.debug
+        phi(1,ii) = atan2(x0(ii,2),x0(ii,1));
+        D_plot(1,ii) = D;
+        D_win(1,ii) = D.*win(ii);
+    end
 
 end
+     if conf.debug
+        figure
+        plot(phi(1,:),20*log10(abs(D_plot(1,:))),'k.');
+        hold on
+        plot(phi(1,:),20*log10(abs(D_win(1,:))),'b.');
+        grid on
+        legend('amplitude without window function','amplitude with window function','Location','South')
+        xlabel('\phi')
+        ylabel('amplitude / dB')
+        title('amplitude for all N loudspeakers')
+    end

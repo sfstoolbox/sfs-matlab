@@ -62,15 +62,7 @@ error(nargchk(nargmin,nargmax,nargin));
 
 %% ===== Computation ====================================================
 
-% Check if the given IR have the same angle
-% in order to get the right interpolation dimension
-if phi1==phi2 && phi2==phi3
-    error('%s: The azimuth angles of the three given IRs are the same!',upper(mfilename));
-end
 
-if theta1==theta2 && theta2==theta3
-    error('%s: The elevation angles of the three given IRs are the same!',upper(mfilename));
-end
 % note: phi_min < alpha < phi_max AND theta_min < beta < theta_max
 % otherwise you're not interpolating between them
 phi = [phi1,phi2,phi3];
@@ -98,6 +90,18 @@ end
 % calculate scaling parameters
 m = (alpha - phi1)./(phi2 - phi1);
 n = (beta - theta1)./(theta2 - theta1);
+
+% Check if the given IR have the same angle
+% in order to get the right interpolation dimension
+if phi1==phi2 && phi2==phi3
+    m=0;
+    warning('%s: The azimuth angles of the three given IRs are the same!',upper(mfilename));
+end
+
+if theta1==theta2 && theta2==theta3
+    n = 0;
+    warning('%s: The elevation angles of the three given IRs are the same!',upper(mfilename));
+end
 
 % calculate desired ir
 ir = ir1 + m.*(ir2-ir1) + n.*(ir3-ir1);

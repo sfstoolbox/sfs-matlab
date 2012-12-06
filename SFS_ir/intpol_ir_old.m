@@ -1,28 +1,21 @@
-function ir = intpol_ir3d(ir1,phi1,theta1,ir2,phi2,theta2,ir3,phi3,theta3,alpha,beta)
-%INTPOL_IR3D interpolates three given IRs for the given angle
+function ir = intpol_ir_old(ir1,beta1,ir2,beta2,alpha)
+%INTPOL_IR interpolates two given IRs for the given angle
 %
-%   Usage: ir = intpol_ir3d(ir1,phi1,theta1,ir2,phi2,theta2,ir3,phi3,theta3,alpha,beta)
+%   Usage: ir = intpol_ir(ir1,beta1,ir2,beta2,alpha)
 %
 %   Input parameters:
-%       ir1     - IR 1
-%       phi1    - azimuth angle of ir1 (rad)
-%       theta1  - elevation angle of ir1 (rad)
-%       ir2     - IR 2
-%       phi2    - azimuth angle of ir2 (rad)
-%       theta2  - elevation angle of ir2 (rad)
-%       ir3     - IR 3
-%       phi3    - azimuth angle of ir3 (rad)
-%       theta3  - elevation angle of ir3 (rad)
-%       alpha   - azimuth angle of the desired IR (rad)
-%       beta    - elevation angle of the desired IR (rad)
+%       ir1     - IR with lower angle
+%       beta1   - angle of ir1 (rad)
+%       ir2     - IR with bigger angle
+%       beta2   - angle of ir2 (rad)
+%       alpha   - angle of the desired IR (rad)
 %
 %   Output parameters:
-%       ir      - IR for the given angles alpha,beta (length(IR1),2)
+%       ir      - IR for the given angle alpha (length(IR1),2)
 %
-%   INTPOL_IR3d(ir1,phi1,theta1,ir2,phi2,theta2,ir3,phi3,theta3,alpha,beta)
-%   interpolates the three given IRs ir1,ir2 and ir3 with their corresponding 
-%   angles (phi1,theta1),(phi2,theta2) and (phi3,theta3) for the given
-%   angles (alpha,beta) and returns an interpolated IR.
+%   INTPOL_IR(ir1,beta1,ir2,beta2,alpha) interpolates the two given IRs ir1 and
+%   ir2 with their corresponding angles beta1 and beta2 for the given angle
+%   alpha and returns an interpolated IR.
 %
 %   see also: get_ir, shorten_ir, read_irs
 
@@ -55,53 +48,31 @@ function ir = intpol_ir3d(ir1,phi1,theta1,ir2,phi2,theta2,ir3,phi3,theta3,alpha,
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 11;
-nargmax = 11;
+nargmin = 5;
+nargmax = 5;
 error(nargchk(nargmin,nargmax,nargin));
 
 
 %% ===== Computation ====================================================
 
+% Check if the given IR have the same angle
+% in order to get the right interpolation dimension
+if beta1==beta2
+    error('%s: The angles of the two given IRs are the same!',upper(mfilename));
+end
 
-% note: phi_min < alpha < phi_max AND theta_min < beta < theta_max
-% otherwise you're not interpolating between them
-phi = [phi1,phi2,phi3];
-theta = [theta1,theta2,theta3];
-if alpha < min(phi) || alpha > max(phi)
-    error('%s: The azimuth angle of the desired IR has to be between phi1,phi2 and phi3!',upper(mfilename));
-end
-if beta < min(theta) || beta > max(theta)
-    error('%s: The elevation angle of the desired IR has to be between theta1,theta2 and theta3!',upper(mfilename));
-end
 % Correct the given angles
-phi1 = correct_azimuth(phi1);
-phi2 = correct_azimuth(phi2);
+beta1 = correct_azimuth(beta1);
+beta2 = correct_azimuth(beta2);
 alpha = correct_azimuth(alpha);
 
-theta1 = correct_elevation(theta1);
-theta2 = correct_elevation(theta2);
-beta = correct_elevation(beta);
-
-if length(ir1)~=length(ir2) || length(ir2)~=length(ir3) || length(ir1)~=length(ir3)
+%if alpha==beta1 || alpha==beta2
+%    error('%s: no interpolation needed for the given alpha value.',...
+%        upper(mfilename));
+%end
+if length(ir1)~=length(ir2)
     error('%s: the given IRs have not the same length.',upper(mfilename));
 end
 
-% Linear interpolate the three given IRs
-% calculate scaling parameters
-m = (alpha - phi1)./(phi2 - phi1);
-n = (beta - theta1)./(theta2 - theta1);
-
-% Check if the given IR have the same angle
-% in order to get the right interpolation dimension
-if phi1==phi2 && phi2==phi3
-    m=0;
-    warning('%s: The azimuth angles of the three given IRs are the same!',upper(mfilename));
-end
-
-if theta1==theta2 && theta2==theta3
-    n = 0;
-    warning('%s: The elevation angles of the three given IRs are the same!',upper(mfilename));
-end
-
-% calculate desired ir
-ir = ir1 + m.*(ir2-ir1) + n.*(ir3-ir1);
+% Linear interpolate the two given IRs
+ir = ir1 + (ir2-ir1) ./ (beta2-beta1)*(alpha-beta1);

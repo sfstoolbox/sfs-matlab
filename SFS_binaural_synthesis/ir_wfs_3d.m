@@ -151,7 +151,7 @@ for ii = 1:nls
     % alpha = cart2sph(x0(ii,1)-X(1),x0(ii,2)-X(2),0) - phi;
     [alpha,delta] = cart2sph(x0(ii,1)-X(1),x0(ii,2)-X(2),x0(ii,3)-X(3));
     alpha = alpha-phi;
-%     delta = delta-phi;
+    delta = delta-phi;
     %
     % Ensure -pi <= alpha < pi
     alpha = correct_azimuth(alpha);
@@ -162,7 +162,7 @@ for ii = 1:nls
     % If needed interpolate the given IR set
     %======================================================================
     %CHANGED
-    ir = get_ir3d(irs,alpha,delta);
+    ir = get_ir(irs,alpha,delta);
     ir_distance = get_ir_distance(irs,alpha,delta);
     
     %======================================================================

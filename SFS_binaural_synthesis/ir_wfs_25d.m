@@ -72,7 +72,7 @@ function ir_wfs = ir_wfs_25d(X,phi,xs,src,L,irs,conf)
 %% ===== Checking of input  parameters ==================================
 nargmin = 6;
 nargmax = 7;
-narginchk(nargmin,nargmax);
+error(nargchk(nargmin,nargmax,nargin));
 if nargin==nargmax-1
     conf = SFS_config;
 end
@@ -150,6 +150,7 @@ for ii = 1:nls
     % Get the desired IR.
     % If needed interpolate the given IR set
     ir = get_ir(irs,alpha,0);
+    ir = get_ir_old(irs,alpha,0);
     ir_distance = get_ir_distance(irs,alpha,0);
 
     % === Amplitude and delay ===

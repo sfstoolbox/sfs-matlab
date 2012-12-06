@@ -1,4 +1,4 @@
-function ir = get_ir(irs,phi,delta)
+function ir = get_ir_old(irs,phi,delta)
 %GET_IR returns a IR for the given apparent angle
 %
 %   Usage: ir = get_ir(irs,phi,[delta])
@@ -85,59 +85,112 @@ if idx
     ir(:,1) = irs.left(:,idx);
     ir(:,2) = irs.right(:,idx);
 
+% If only elevation angle could be found
+elseif findrows(roundto(irs.apparent_elevation',prec), ...
+                roundto(delta,prec))
+    idx = findrows(roundto(irs.apparent_elevation',prec), ...
+                   roundto(delta,prec));
+    
+    % === Interpolation of the azimuth ===
+    % Get the IR set for the elevation delta
+    irs = slice_irs(irs,idx);
 
-else (isempty(idx));
-        
-        % calculate the x-,y-,z-coordinates for the desired angles(phi,delta)
-        r = irs.distance;
-        x = r.*cos(phi).*cos(delta);
-        y = r.*sin(phi).*cos(delta);
-        z = r.*sin(delta); 
-        vec = [x,y,z];
-        % calculate the x-,y-,z-coordinates for all known IRs
-        x = cos(irs.apparent_azimuth(1,:)).*cos(irs.apparent_elevation(1,:));
-        y = sin(irs.apparent_azimuth(1,:)).*cos(irs.apparent_elevation(1,:));
-        z = sin(irs.apparent_elevation(1,:));
-        x0 = [x;y;z];
-       
-        % get the indices of the maxima in order 
-        % to get the three closest IRs with respect to the desired angles(phi,delta)
-        [~,index1] = max(vec*x0);
-            if length(index1)>1
-                index1 = index1(1,1);
-            end
-        x0(:,index1) = 0;
-        
-        index2 = find(max(vec*x0) == vec*x0);
-            if length(index2)>1
-                index2 = index2(1,1);
-            end
-        x0(:,index2) = 0;
-        
-        index3 = find(max(vec*x0) == vec*x0);
-            if length(index3)>1
-                index3 = index3(1,1);
-            end
-       
-fprintf('The indices of the found IRs with get_ir_new_version are: index1 = %d, index2 = %d,index3 = %d\n',index1,index2,index3);     
-        
-        % get the desired IRs
-        ir1(:,1) = irs.left(:,index1);
-        ir1(:,2) = irs.right(:,index1);
+    % Find the nearest value smaller than phi
+    % Note: this requieres monotonic increasing values of phi in
+    % azimuth(idx_delta)
+    idx1 = find(irs.apparent_azimuth<phi,1,'last');
+    
+    if(isempty(idx1))
+        % If no value is smaller than phi, use the largest value in
+        % azimuth(idx_delta), because of the 0..2pi cicle
+        idx1 = length(irs.apparent_azimuth(idx));
+    end
 
-        ir2(:,1) = irs.left(:,index2);
-        ir2(:,2) = irs.right(:,index2);
+    % Find the nearest value larger than phi
+    idx2 = find(irs.apparent_azimuth>phi,1,'first');
+    if(isempty(idx2))
+        % If no value is greater than phi, use the smallest value in
+        % azimuth(idx_delta), because of the 0..2pi cicle
+        idx2 = 1;
+    end
+    
+                
+ fprintf('The indices of the found IRs with get_ir_old_version are: index1 = %d, index2 = %d\n',idx1,idx2);
+ fprintf('\n');
+        
 
-        ir3(:,1) = irs.left(:,index3);
-        ir3(:,2) = irs.right(:,index3);
-           
-        % IR interpolation
-        ir = intpol_ir(ir1,irs.apparent_azimuth(index1),irs.apparent_elevation(index1),...
-                       ir2,irs.apparent_azimuth(index2),irs.apparent_elevation(index2),...
-                       ir3,irs.apparent_azimuth(index3),irs.apparent_elevation(index3),...    
-                       phi,delta...
-                       );
+    
+    if idx1==idx2
+        error('%s: we have only one apparent_azimuth angle: %f.',...
+            upper(mfilename),irs_delta.apparent_azimuth(idx1));
+    end
 
+    % Get the single IR corresponding to idx1
+    ir1(:,1) = irs.left(:,idx1);
+    ir1(:,2) = irs.right(:,idx1);
+    % Get the single IR corresponding to idx2
+    ir2(:,1) = irs.left(:,idx2);
+    ir2(:,2) = irs.right(:,idx2);
+    warning('SFS:irs_intpol',...
+        ['doing IR interpolation with the angles beta1 = ',...
+        '%.1f deg and beta2 = %.1f deg.'],...
+        degree(irs.apparent_azimuth(idx1)),...
+        degree(irs.apparent_azimuth(idx2)));
+    % IR interpolation
+    ir = intpol_ir_old(ir1,irs.apparent_azimuth(idx1),...
+        ir2,irs.apparent_azimuth(idx2),phi);
+
+% if only azimuth angle could be found
+elseif findrows(roundto(irs.apparent_azimuth',prec),...
+                roundto(phi,prec))
+    idx = findrows(roundto(irs.apparent_azimuth',prec),...
+                   roundto(phi,prec));
+
+    % === Interpolation of the elevation ===
+    % Get the IR set for the azimuth phi
+    irs = slice_irs(irs,idx);
+
+    % Find the nearest value smaller than delta
+    % Note: this requieres monotonic increasing values of delta in
+    % irs.apparent_delta(idx)
+    idx1 = find(irs.apparent_elevation<delta,1,'last');
+    if(isempty(idx1))
+        error(['%s: there is no elevation avaialble which is smaller ',...
+               'than your given delta value.'],upper(mfilename));
+    end
+
+    % Find the nearest value larger than delta
+    idx2 = find(irs.apparent_elevation>delta,1,'first');
+    if(isempty(idx2))
+        error(['%s: there is no elevation avaialble which is greater ',...
+               'than your given delta value.'],upper(mfilename));
+    end
+
+    if idx1==idx2
+        error('%s: we have only one apparent_elevation angle: %f.',...
+            upper(mfilename),irs_delta.apparent_azimuth(idx1));
+    end
+
+    % Get the single IR corresponding to idx1
+    ir1(:,1) = irs.left(:,idx1);
+    ir1(:,2) = irs.right(:,idx1);
+    % Get the single IR corresponding to idx2
+    ir2(:,1) = irs.left(:,idx2);
+    ir2(:,2) = irs.right(:,idx2);
+    % IR interpolation
+    warning('SFS:irs_intpol',...
+        ['doing IR interpolation with the angles beta1 = ',...
+        '%.1f deg and beta2 = %.1f deg.'],...
+        degree(irs.apparent_elevation(idx1)),...
+        degree(irs.apparent_elevation(idx2)));
+    ir = intpol_ir_old(ir1,irs.apparent_elevation(idx1),...
+        ir2,irs.apparent_elevation(idx2),delta);
+
+else
+    error(['%s: at the moment interpolation for azimuth and elevation ',...
+           'angles at the same time is currently not supported. ',...
+           'Please choose an azimuth angle or an elevation angle, ',...
+           'which is in the IR data set.'],upper(mfilename));
 end
 end % of main function
 

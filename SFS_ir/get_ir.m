@@ -89,15 +89,15 @@ if idx
 else (isempty(idx));
         
         % calculate the x-,y-,z-coordinates for the desired angles(phi,delta)
-        r = irs.distance;
-        x = r.*cos(phi).*cos(delta);
-        y = r.*sin(phi).*cos(delta);
-        z = r.*sin(delta); 
+        x = cos(phi).*cos(delta);
+        y = sin(phi).*cos(delta);
+        z = sin(delta); 
         vec = [x,y,z];
         % calculate the x-,y-,z-coordinates for all known IRs
-        x = cos(irs.apparent_azimuth(1,:)).*cos(irs.apparent_elevation(1,:));
-        y = sin(irs.apparent_azimuth(1,:)).*cos(irs.apparent_elevation(1,:));
-        z = sin(irs.apparent_elevation(1,:));
+        r = irs.distance;
+        x = r.*cos(irs.apparent_azimuth(1,:)).*cos(irs.apparent_elevation(1,:));
+        y = r.*sin(irs.apparent_azimuth(1,:)).*cos(irs.apparent_elevation(1,:));
+        z = r.*sin(irs.apparent_elevation(1,:));
         x0 = [x;y;z];
        
         % get the indices of the maxima in order 

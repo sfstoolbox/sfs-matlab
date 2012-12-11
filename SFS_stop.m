@@ -1,4 +1,4 @@
-function SFS_start()
+function SFS_stop()
 %SFS_START Start the Sound Field Synthesis Toolbox
 %
 %   Usage: SFS_start;
@@ -52,7 +52,7 @@ printbanner = false;
 % becase old versions of Matlab does not have "mfilename('fullpath')"
 basepath=which('SFS_stop');
 % Kill the function name from the path.
-basepath=basepath(1:end-12);
+basepath=basepath(1:end-11);
 
 % Add the base path and the needed sub-directories
 if exist('rmpath')

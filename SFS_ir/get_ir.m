@@ -87,57 +87,53 @@ if idx
 
 
 else (isempty(idx));
-        
-        % calculate the x-,y-,z-coordinates for the desired angles(phi,delta)
-        x = cos(phi).*cos(delta);
-        y = sin(phi).*cos(delta);
-        z = sin(delta); 
-        vec = [x,y,z];
-        % calculate the x-,y-,z-coordinates for all known IRs
-        r = irs.distance;
-        x = r.*cos(irs.apparent_azimuth(1,:)).*cos(irs.apparent_elevation(1,:));
-        y = r.*sin(irs.apparent_azimuth(1,:)).*cos(irs.apparent_elevation(1,:));
-        z = r.*sin(irs.apparent_elevation(1,:));
-        x0 = [x;y;z];
+    
+    % calculate the x-,y-,z-coordinates for the desired angles(phi,delta)
+    [x,y,z] = sph2cart(phi,delta,1);
+    vec = [x,y,z];
+    
+    % calculate the x-,y-,z-coordinates for all known IRs
+    [x,y,z] = sph2cart(irs.apparent_azimuth(1,:),irs.apparent_elevation(1,:),irs.distance);
+    x0 = [x;y;z];
+    
+    % get the maxima in order to get the indices of the three closest IRs 
+    % with respect to the desired angles(phi,delta)
+    scalar_product = vec*x0;
+    [~,index1] = max(scalar_product);
+    if length(index1)>1
+        index1 = index1(1,1);
+    end
+    
+    scalar_product(:,index1) = -1-eps;
+    [~,index2] = max(scalar_product);
+    if length(index2)>1
+        index2 = index2(1,1);
+    end
        
-        % get the indices of the maxima in order 
-        % to get the three closest IRs with respect to the desired angles(phi,delta)
-        [~,index1] = max(vec*x0);
-            if length(index1)>1
-                index1 = index1(1,1);
-            end
-        x0(:,index1) = 0;
-        
-        index2 = find(max(vec*x0) == vec*x0);
-            if length(index2)>1
-                index2 = index2(1,1);
-            end
-        x0(:,index2) = 0;
-        
-        index3 = find(max(vec*x0) == vec*x0);
-            if length(index3)>1
-                index3 = index3(1,1);
-            end
+    scalar_product(:,index2) = -1-eps;
+    [~,index3] = max(scalar_product);
+    if length(index3)>1
+        index3 = index3(1,1);
+    end
        
 fprintf('The indices of the found IRs with get_ir_new_version are: index1 = %d, index2 = %d,index3 = %d\n',index1,index2,index3);     
         
-        % get the desired IRs
-        ir1(:,1) = irs.left(:,index1);
-        ir1(:,2) = irs.right(:,index1);
+    % get the desired IRs
+    ir1(:,1) = irs.left(:,index1);
+    ir1(:,2) = irs.right(:,index1);
 
-        ir2(:,1) = irs.left(:,index2);
-        ir2(:,2) = irs.right(:,index2);
+    ir2(:,1) = irs.left(:,index2);
+    ir2(:,2) = irs.right(:,index2);
 
-        ir3(:,1) = irs.left(:,index3);
-        ir3(:,2) = irs.right(:,index3);
+    ir3(:,1) = irs.left(:,index3);
+    ir3(:,2) = irs.right(:,index3);
            
-        % IR interpolation
-        ir = intpol_ir(ir1,irs.apparent_azimuth(index1),irs.apparent_elevation(index1),...
-                       ir2,irs.apparent_azimuth(index2),irs.apparent_elevation(index2),...
-                       ir3,irs.apparent_azimuth(index3),irs.apparent_elevation(index3),...    
-                       phi,delta...
-                       );
-
+    % IR interpolation
+    ir = intpol_ir(ir1,irs.apparent_azimuth(index1),irs.apparent_elevation(index1),...
+                   ir2,irs.apparent_azimuth(index2),irs.apparent_elevation(index2),...
+                   ir3,irs.apparent_azimuth(index3),irs.apparent_elevation(index3),...    
+                   phi,delta...
+                   );
 end
 end % of main function
 

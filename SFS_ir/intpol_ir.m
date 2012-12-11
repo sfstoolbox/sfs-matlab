@@ -64,9 +64,11 @@ error(nargchk(nargmin,nargmax,nargin));
 % correct found azimuth/elevation angles
 phi1 = correct_azimuth(phi1);
 phi2 = correct_azimuth(phi2);
+phi3 = correct_azimuth(phi3);
 alpha = correct_azimuth(alpha);
 theta1 = correct_elevation(theta1);
 theta2 = correct_elevation(theta2);
+theta3 = correct_elevation(theta3);
 beta = correct_elevation(beta);
 
 % check if the length of the found IRs are the same

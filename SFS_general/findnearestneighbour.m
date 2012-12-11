@@ -1,18 +1,20 @@
 function [C,idx] = findnearestneighbour(A,b,number_of_neighbours)
-%FINDCOLS finds indices of a given column within a matrix.
+%FINDNEARESTNEIGHBOUR finds the n nearest neighbours
 %
-%   Usage: idx = findcols(A,b)
+%   Usage: [C,idx] = findnearestneighbour(A,b,[number_of_neighbours]);
 %
 %   Input parameters:
-%       A       - matrix
-%       b       - colum to search for in A
+%       A                     - matrix
+%       b                     - colum to search for in A
+%       number_of_neighbours  - number of nearest neighbours to find
 %
 %   output parameters:
-%       idx     - indices of found columns in matrix
+%       C                     - found neighbour columns
+%       idx                   - indices of found columns in matrix
 %
-%   FINDCOLS(A,b) returns a row vector with the indices of the columns
-%   in the matrix A that are identical to the column vector b.  If no
-%   columns in A are identical to b, an empty vector is returned.
+%   FINDNEARESTNEIGHBOUR(A,b,number_of_neighbours) returns a number_of_neighbours
+%   column vectors with the nearest neighbour points from the matrix A to the
+%   point b. In addition to the values, the indices are also returned.
 %
 %   See also: find, findrows
 
@@ -42,8 +44,6 @@ function [C,idx] = findnearestneighbour(A,b,number_of_neighbours)
 %                                                                            *
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
-
-% AUTHOR: Peter John Acklam
 
 
 %% ===== Checking of input parameters ====================================

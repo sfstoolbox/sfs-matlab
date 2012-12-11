@@ -1,4 +1,4 @@
-function ir = intpol_ir(ir1,phi1,theta1,ir2,phi2,theta2,ir3,phi3,theta3,alpha,beta)
+function ir = intpol_ir(desired_point,x0_1,ir1,x0_2,ir2,x0_3,ir3)
 %INTPOL_IR interpolates three given IRs for the given angle
 %
 %   Usage: ir = intpol_ir(ir1,phi1,theta1,ir2,phi2,theta2,ir3,phi3,theta3,alpha,beta)
@@ -55,51 +55,35 @@ function ir = intpol_ir(ir1,phi1,theta1,ir2,phi2,theta2,ir3,phi3,theta3,alpha,be
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 11;
-nargmax = 11;
+nargmin = 5;
+nargmax = 7;
 error(nargchk(nargmin,nargmax,nargin));
 
+if nargin == 5
+
+    if length(ir1)~=length(ir2)
+    error('%s: the given IRs have not the same length.',upper(mfilename));
+    end
+    
+    L = [x0_1,x0_2];
+    p = desired_point';
+    g = p\L^-1;
+    % calculate desired ir with linear combination of ir1,ir2 
+    ir = g(1,1)*ir1 + g(1,2)*ir2;
+    
 
 %% ===== Computation ====================================================
-% correct found azimuth/elevation angles
-phi1 = correct_azimuth(phi1);
-phi2 = correct_azimuth(phi2);
-phi3 = correct_azimuth(phi3);
-alpha = correct_azimuth(alpha);
-theta1 = correct_elevation(theta1);
-theta2 = correct_elevation(theta2);
-theta3 = correct_elevation(theta3);
-beta = correct_elevation(beta);
+else
+    % check if the length of the found IRs are the same
+    if length(ir1)~=length(ir2) || length(ir2)~=length(ir3) || length(ir1)~=length(ir3)
+        error('%s: the given IRs have not the same length.',upper(mfilename));
+    end
 
-% check if the length of the found IRs are the same
-if length(ir1)~=length(ir2) || length(ir2)~=length(ir3) || length(ir1)~=length(ir3)
-    error('%s: the given IRs have not the same length.',upper(mfilename));
+    % Solve linear equation system to get the desired weight factors g(n)
+    L = [x0_1,x0_2,x0_3];
+    p = desired_point';
+    g = p\L^-1;
+    % calculate desired ir with linear combination of ir1,ir2 and ir3
+    ir = g(1,1)*ir1 + g(1,2)*ir2 + g(1,3)*ir3;
+    
 end
-
-% Linear interpolate the three given IRs
-% calculate scaling parameters
-m = (alpha - phi1)./(phi2 - phi1);
-n = (beta - theta1)./(theta2 - theta1);
-
-% different cases which can happen for phi and/or theta 
-% --> do not devide through zero! otherwise the desired IR will be NaN!
-% --> if all found phi or theta are the same do 2point interpolation
-
-if phi1 == phi2
-    m = (alpha - phi1)./(phi3 - phi1);
-end
-
-if theta1 == theta2
-    n = (beta - theta1)./(theta3 - theta1);
-end
-
-if phi1==phi2 && phi2==phi3
-    m=0;
-end
-
-if theta1==theta2 && theta2==theta3
-    n = 0;
-end
-
-% calculate desired ir with linear combination of ir1,ir2 and ir3
-ir = ir1 + m.*(ir2-ir1) + n.*(ir3-ir1);

@@ -1,18 +1,17 @@
 function ir = get_ir(irs,phi,delta,r)
 %GET_IR returns a IR for the given apparent angle
 %
-%   Usage: ir = get_ir(irs,phi,[delta,[r]])
+%   Usage: ir = get_ir(irs,phi,[delta])
 %
 %   Input parameters:
 %       irs     - IR data set
 %       phi     - azimuth angle for the desired IR (rad)
 %       delta   - elevation angle for the desired IR (rad)
-%       r       - distance for the desired IR (m)
 %
 %   Output parameters:
 %       ir      - IR for the given angles (length of IR x 2)
 %
-%   GET_IR(irs,phi,delta,r) returns a single IR set for the given angles phi and
+%   GET_IR(irs,phi,delta) returns a single IR set for the given angles phi and
 %   delta. If the desired angles are not present in the IR data set an
 %   interpolation is applied to create the desired angles.
 %
@@ -47,15 +46,10 @@ function ir = get_ir(irs,phi,delta,r)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
+nargmin = 4;
 nargmax = 4;
-narginchk(nargmin,nargmax)
-if nargin==nargmax-1
-    r = 1;
-elseif nargin==nargmax-2
-    r = 1;
-    delta = 0;
-end
+error(nargchk(nargmin,nargmax,nargin))
+
 
 
 %% ===== Configuration ==================================================
@@ -90,29 +84,45 @@ if idx
     ir(:,2) = irs.right(:,idx);
 
 
-else
+else (isempty(idx));
     
     % calculate the x-,y-,z-coordinates for the desired angles(phi,delta)
+    % and radius (r)
     [x,y,z] = sph2cart(phi,delta,r);
-    vec = [x,y,z];
+    
+    desired_point = [x,y,z];
     
     % calculate the x-,y-,z-coordinates for all known IRs
-    [x,y,z] = sph2cart(irs.apparent_azimuth(1,:),irs.apparent_elevation(1,:),irs.distance);
+    [x,y,z] = sph2cart(irs.apparent_azimuth(1,:),irs.apparent_elevation(1,:),irs.distance(1,:));
     x0 = [x;y;z];
+    
+    % find the known IRs which are the closest to the desired one
+    [~,idx] = findnearestneighbour(x0,desired_point,3);
+       
+fprintf('The indices of the found IRs with get_ir_new_version are: index1 = %d, index2 = %d,index3 = %d\n',idx(1),idx(2),idx(3));     
+   
+    ir1(:,1) = irs.left(:,idx(1));
+    ir1(:,2) = irs.right(:,idx(1));
 
-    % get the three nearest IRs
-    [~,idx] = findnearestneighbour(x0,vec,3);
+    ir2(:,1) = irs.left(:,idx(2));
+    ir2(:,2) = irs.right(:,idx(2));
 
-if 1
-    fprintf('The indices of the found IRs with %s are: index1 = %d, index2 = %d,index3 = %d\n',mfilename,idx(1),idx(2),idx(3));
-end
+    ir3(:,1) = irs.left(:,idx(3));
+    ir3(:,2) = irs.right(:,idx(3));
+   
+    % do interpolation
+    
+    % 2d case
+    if x0(3,:) == 0;
         
-    % IR interpolation
-    ir = intpol_ir([irs.left(:,idx(1)) irs.right(:,idx(1))], irs.apparent_azimuth(idx(1)),irs.apparent_elevation(idx(1)),...
-                   [irs.left(:,idx(2)) irs.right(:,idx(2))], irs.apparent_azimuth(idx(2)),irs.apparent_elevation(idx(2)),...
-                   [irs.left(:,idx(3)) irs.right(:,idx(3))], irs.apparent_azimuth(idx(3)),irs.apparent_elevation(idx(3)),...    
-                   phi,delta...
-                   );
+        ir = intpol_ir([desired_point(1),desired_point(2)],x0(1:2,idx(1)),ir1,x0(1:2,idx(2)),ir2);
+   
+    % 3d case
+    else
+        
+        ir = intpol_ir(desired_point,x0(:,idx(1)),ir1,x0(:,idx(2)),ir2,x0(:,idx(3)),ir3);
+        
+    end
 end
 end % of main function
 

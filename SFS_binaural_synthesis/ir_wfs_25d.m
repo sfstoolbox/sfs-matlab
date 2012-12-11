@@ -142,14 +142,12 @@ for ii = 1:nls
     % Angle between listener and secondary source (-pi < alpha <= pi)
     % Note: phi is the orientation of the listener (see first graph)
     [alpha,theta_tmp,r_tmp] = cart2sph(x0(ii,1)-X(1),x0(ii,2)-X(2),0);
-    %
     % Ensure -pi <= alpha < pi
     alpha = correct_azimuth(alpha-phi);
-
     % === IR interpolation ===
     % Get the desired IR.
     % If needed interpolate the given IR set
-    ir = get_ir(irs,alpha,0);
+    ir = get_ir(irs,alpha,theta_tmp,r_tmp);
     ir = get_ir_old(irs,alpha,0);
     ir_distance = get_ir_distance(irs,alpha,0);
 

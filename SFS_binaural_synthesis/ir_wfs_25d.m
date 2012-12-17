@@ -147,7 +147,7 @@ for ii = 1:nls
     % === IR interpolation ===
     % Get the desired IR.
     % If needed interpolate the given IR set
-    ir = get_ir(irs,alpha,theta_tmp,r_tmp);
+    ir = get_ir(irs,alpha,theta_tmp,r_tmp,conf.X0);
     ir = get_ir_old(irs,alpha,0);
     ir_distance = get_ir_distance(irs,alpha,0);
 

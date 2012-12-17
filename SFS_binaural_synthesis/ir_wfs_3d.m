@@ -159,7 +159,7 @@ for ii = 1:nls
     % Get the desired IR.
     % If needed interpolate the given IR set
     %======================================================================
-    ir = get_ir(irs,alpha,delta,r);
+    ir = get_ir(irs,alpha,delta,r,conf.X0);
     ir_distance = get_ir_distance(irs,alpha,delta);
     %======================================================================
     % === Amplitude and delay ===

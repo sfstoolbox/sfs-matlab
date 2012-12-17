@@ -1,4 +1,4 @@
-function ir = get_ir(irs,phi,delta,r)
+function ir = get_ir(irs,phi,delta,r,X0)
 %GET_IR returns a IR for the given apparent angle
 %
 %   Usage: ir = get_ir(irs,phi,[delta,[r]])
@@ -47,8 +47,8 @@ function ir = get_ir(irs,phi,delta,r)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
-nargmax = 4;
+nargmin = 5;
+nargmax = 5;
 narginchk(nargmin,nargmax)
 if nargin==nargmax-1
     r = 1;
@@ -77,9 +77,13 @@ delta = correct_elevation(delta);
 % angles.
 
 % If azimuth and elevation could be found
+if length(irs.distance) == 1
+    irs.distance = repmat(irs.distance,1,length(irs.apparent_azimuth));
+end
+
 idx = findrows(...
-    roundto([irs.apparent_azimuth' irs.apparent_elevation'],prec),...
-    roundto([phi,delta],prec));
+    roundto([irs.apparent_azimuth' irs.apparent_elevation' irs.distance'],prec),...
+    roundto([phi,delta,r],prec));
 if idx
     if length(idx)>1
         error(['%s: the irs data set has more than one entry corresponding ',...
@@ -92,18 +96,24 @@ if idx
 
 else
     
-    % calculate the x-,y-,z-coordinates for the desired angles(phi,delta)
-    [x,y,z] = sph2cart(phi,delta,r);
-    desired_point = [x,y,z];
-    
-    % calculate the x-,y-,z-coordinates for all known IRs
-    [x,y,z] = sph2cart(irs.apparent_azimuth(1,:), ...
-        irs.apparent_elevation(1,:),irs.distance(1,:));
-    x0 = [x;y;z];
+   % get the three nearest IRs via scalar product
+   [ir1,ir2,ir3,x0,desired_point] = findnearestneighbour_scalar(irs,phi,delta,r,3,X0);
+   L = [x0(:,1),x0(:,2),x0(:,3)];
+   
+   
+   if rank(L) == 3
+          
+       ir = intpol_ir3d(desired_point,ir1,ir2,ir3,L);
+  
+   else
+          
+       ir = intpol_ir2d(ir1,ir2,x0,desired_point);
+       
+   end
 
-    % get the three nearest IRs
-    [neighbours,idx] = findnearestneighbour(x0,desired_point,3);
-        
+       
+end
+
     % Check if we need to do 2D or 3D interpolation
     % FIXME:
     % Ein problem bleibt hiernoch. Ich weiß nicht genau, hattest Du das nicht
@@ -113,24 +123,21 @@ else
     % würden die ersten drei Nachbarn alle rechts von dem Punkt liegen, was aber
     % Schwachsinn ist für interpolieren, da wir dafür auch den Punkt ganz links
     % benötigen.
-    if all(neighbours(1)-neighbours(2)) && all(neighbours(2)-neighbours(3))
-        % 3D interpolation
-        ir = intpol_ir(desired_point, ...
-            x0(:,idx(1)),[irs.left(:,idx(1)) irs.right(:,idx(1))], ...
-            x0(:,idx(2)),[irs.left(:,idx(2)) irs.right(:,idx(2))], ...
-            x0(:,idx(3)),[irs.left(:,idx(3)) irs.right(:,idx(3))]);
-    else
-        to_be_implemented();
-        % FIXME:
-        % An dieser Stelle sollten wir testen, ob die 3 nächsten Nachbarn eine
-        % Ebene aufspannen, die durch den Nullpunkt geht. Wenn dem so ist,
-        % benötigen wir nur eine Interpolation zwischen den dichtesten 2
-        % Punkten.
-        %ir = intpol_ir(desired_point, ...
-        %    x0(:,idx(1)),[irs.left(:,idx(1)) irs.right(:,idx(1))], ...
-        %    x0(:,idx(2)),[irs.left(:,idx(2)) irs.right(:,idx(2))]);
-    end
-end
+%     if all(neighbours(1)-neighbours(2)) && all(neighbours(2)-neighbours(3))
+%         % 3D interpolation
+%         
+%     else
+%         to_be_implemented();
+%         % FIXME:
+%         % An dieser Stelle sollten wir testen, ob die 3 nächsten Nachbarn eine
+%         % Ebene aufspannen, die durch den Nullpunkt geht. Wenn dem so ist,
+%         % benötigen wir nur eine Interpolation zwischen den dichtesten 2
+%         % Punkten.
+%         %ir = intpol_ir(desired_point, ...
+%         %    x0(:,idx(1)),[irs.left(:,idx(1)) irs.right(:,idx(1))], ...
+%         %    x0(:,idx(2)),[irs.left(:,idx(2)) irs.right(:,idx(2))]);
+%     end
+
 end % of main function
 
 %% ===== Subfunctions ====================================================

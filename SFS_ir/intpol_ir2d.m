@@ -1,21 +1,21 @@
 function ir = intpol_ir2d(ir1,ir2,x0,desired_point)
-%INTPOL_IR interpolates two given IRs for the given angle
+%INTPOL_IR2D interpolates two given IRs for the given angle
 %
-%   Usage: ir = intpol_ir(ir1,beta1,ir2,beta2,alpha)
+%   Usage: ir = intpol_ir2d(ir1,ir2,x0,desired_point)
 %
 %   Input parameters:
-%       ir1     - IR with lower angle
-%       beta1   - angle of ir1 (rad)
-%       ir2     - IR with bigger angle
-%       beta2   - angle of ir2 (rad)
-%       alpha   - angle of the desired IR (rad)
+%       ir1             - IR 1
+%       ir2             - IR 2
+%       x0              - Matrix containing the positions of ir1 and ir2
+%       desired_point   - point at which the 3 IRs should be interpolated
+%                         (in cartesian coordinates)
 %
 %   Output parameters:
-%       ir      - IR for the given angle alpha (length(IR1),2)
+%       ir      - IR for the desired position
 %
-%   INTPOL_IR(ir1,beta1,ir2,beta2,alpha) interpolates the two given IRs ir1 and
-%   ir2 with their corresponding angles beta1 and beta2 for the given angle
-%   alpha and returns an interpolated IR.
+%   INTPOL_IR2D(ir1,ir2,x0,desired_point) interpolates the two given IRs 
+%   ir1 and ir2 with their corresponding angles beta1 and beta2 for the 
+%   given angle alpha and returns an interpolated IR.
 %
 %   see also: get_ir, shorten_ir, read_irs
 
@@ -57,7 +57,7 @@ if length(ir1)~=length(ir2)
 end
 
 %% ===== Computation ====================================================
-
+%calculate the spherical coordinates for the 2 next neighbours
 [phi1,theta1,r1] = cart2sph(x0(1,1),x0(2,1),x0(3,1));
 [phi2,theta2,r2] = cart2sph(x0(2,1),x0(2,2),x0(2,3));
 [alpha,beta,R]  = cart2sph(desired_point(1),desired_point(2),desired_point(3));
@@ -71,6 +71,7 @@ theta2 = correct_elevation(theta2);
 alpha = correct_elevation(alpha);
 beta = correct_elevation(beta);
 
+% decide in which direction you have to interpolate
 if phi1 == phi2 && theta1~=theta2
     
     phi1 = theta1;
@@ -83,7 +84,6 @@ elseif phi1 == phi2 && theta1 == theta2
     phi2 = r2;
     alpha = R;
     
-else    
 end
 
 % Linear interpolate the two given IRs

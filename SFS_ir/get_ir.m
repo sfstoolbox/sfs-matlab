@@ -76,11 +76,12 @@ delta = correct_elevation(delta);
 % phi and delta. If this is not the case, interpolate the dataset for the given
 % angles.
 
-% If azimuth and elevation could be found
+% check if different distances are available at the IR set
 if length(irs.distance) == 1
     irs.distance = repmat(irs.distance,1,length(irs.apparent_azimuth));
 end
 
+% If azimuth and elevation could be found
 idx = findrows(...
     roundto([irs.apparent_azimuth' irs.apparent_elevation' irs.distance'],prec),...
     roundto([phi,delta,r],prec));
@@ -98,9 +99,13 @@ else
     
    % get the three nearest IRs via scalar product
    [ir1,ir2,ir3,x0,desired_point] = findnearestneighbour_scalar(irs,phi,delta,r,3,X0);
+   % fill a matrix with positions of the three nearest neighbours
    L = [x0(:,1),x0(:,2),x0(:,3)];
    
    
+   % if the matrix describes three dimensional case do triangular 
+   % interpolation
+   % else do an interpolation with two IRs
    if rank(L) == 3
           
        ir = intpol_ir3d(desired_point,ir1,ir2,ir3,L);
@@ -113,30 +118,6 @@ else
 
        
 end
-
-    % Check if we need to do 2D or 3D interpolation
-    % FIXME:
-    % Ein problem bleibt hiernoch. Ich weiß nicht genau, hattest Du das nicht
-    % schon mal abgefangen? Folgendes Problem:
-    % x------------O--x--x--x
-    % O ist der gewollte Punkt, x sind die gemessenen Punkte. In diesem Fall
-    % würden die ersten drei Nachbarn alle rechts von dem Punkt liegen, was aber
-    % Schwachsinn ist für interpolieren, da wir dafür auch den Punkt ganz links
-    % benötigen.
-%     if all(neighbours(1)-neighbours(2)) && all(neighbours(2)-neighbours(3))
-%         % 3D interpolation
-%         
-%     else
-%         to_be_implemented();
-%         % FIXME:
-%         % An dieser Stelle sollten wir testen, ob die 3 nächsten Nachbarn eine
-%         % Ebene aufspannen, die durch den Nullpunkt geht. Wenn dem so ist,
-%         % benötigen wir nur eine Interpolation zwischen den dichtesten 2
-%         % Punkten.
-%         %ir = intpol_ir(desired_point, ...
-%         %    x0(:,idx(1)),[irs.left(:,idx(1)) irs.right(:,idx(1))], ...
-%         %    x0(:,idx(2)),[irs.left(:,idx(2)) irs.right(:,idx(2))]);
-%     end
 
 end % of main function
 

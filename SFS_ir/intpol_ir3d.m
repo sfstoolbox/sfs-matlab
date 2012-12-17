@@ -1,25 +1,20 @@
 function ir = intpol_ir3d(desired_point,ir1,ir2,ir3,L)
-%INTPOL_IR interpolates three given IRs for the given angle
+%INTPOL_IR3D interpolates three given IRs for the given points in L
 %
-%   Usage: ir = intpol_ir(ir1,phi1,theta1,ir2,phi2,theta2,ir3,phi3,theta3,alpha,beta)
+%   Usage: ir = intpol_ir3d(desired_point,ir1,ir2,ir3,L)
 %
 %   Input parameters:
-%       ir1     - IR 1
-%       phi1    - azimuth angle of ir1 (rad)
-%       theta1  - elevation angle of ir1 (rad)
-%       ir2     - IR 2
-%       phi2    - azimuth angle of ir2 (rad)
-%       theta2  - elevation angle of ir2 (rad)
-%       ir3     - IR 3
-%       phi3    - azimuth angle of ir3 (rad)
-%       theta3  - elevation angle of ir3 (rad)
-%       alpha   - azimuth angle of the desired IR (rad)
-%       beta    - elevation angle of the desired IR (rad)
+%       desired_point   - point at which the 3 IRs should be interpolated
+%                         (in cartesian coordinates)
+%       ir1             - IR 1
+%       ir2             - IR 2
+%       ir3             - IR 3
+%       L               - Matrix containing the positions of the 3 IRs
 %
 %   Output parameters:
-%       ir      - IR for the given angles alpha,beta (length(IR1),2)
+%       ir      - IR for the desired position
 %
-%   INTPOL_IR(ir1,phi1,theta1,ir2,phi2,theta2,ir3,phi3,theta3,alpha,beta)
+%   INTPOL_IR3D(desired_point,ir1,ir2,ir3,L)
 %   interpolates the three given IRs ir1,ir2 and ir3 with their corresponding 
 %   angles (phi1,theta1),(phi2,theta2) and (phi3,theta3) for the given
 %   angles (alpha,beta) and returns an interpolated IR.

@@ -1,18 +1,19 @@
 function [C,idx] = findnearestneighbour_distance(A,b,X0)
-%FINDNEARESTNEIGHBOUR finds the n nearest neighbours
+%FINDNEARESTNEIGHBOUR finds the 2 nearest neighbours
 %
-%   Usage: [C,idx] = findnearestneighbour(A,b,[number_of_neighbours]);
+%   Usage: [C,idx] = findnearestneighbour_distance(A,b,X0);
 %
 %   Input parameters:
 %       A                     - matrix
 %       b                     - colum to search for in A
-%       number_of_neighbours  - number of nearest neighbours to find
+%       conf.X0               - listener position 
+%                              (in cartesian coordinates and as row vector)
 %
 %   output parameters:
 %       C                     - found neighbour columns
 %       idx                   - indices of found columns in matrix
 %
-%   FINDNEARESTNEIGHBOUR(A,b,number_of_neighbours) returns a number_of_neighbours
+%   FINDNEARESTNEIGHBOUR_DISTANCE(A,b,number_of_neighbours) returns 2
 %   column vectors with the nearest neighbour points from the matrix A to the
 %   point b. In addition to the values, the indices are also returned.
 %
@@ -53,27 +54,31 @@ narginchk(nargmin,nargmax);
 b = column_vector(b);
 
 %% ===== Computation =====================================================
-% loop through the points
+% loop through the points and calculate distances
 distance = zeros(1,size(A,2));
 for ii=1:size(A,2)
     distance(ii) = norm(A(:,ii)-b);
 end
-% sort the distances in order to find the n lowest once
+% sort the distances in order to find the 2 lowest once
 [~,idx] = sort(distance);
 idx2 = idx(1:2);
 D = A(:,idx2);
-
+% calculate the distance from the desired point to the listener position
 origin_distance = norm(b-X0');
+% set counter variables
 ii=0;
 counter = 1;
-
+% search for the nearest neighbours with repsect to the ITD
 while ii<1
-
+    % calculate the distance from the 2 actual nearest neighbours
     distance1 = norm(D(:,1)-X0');
     distance2 = norm(D(:,2)-X0');
-
+    % if there is no nearest neighbour left and right from your desired 
+    % point keep one point and search for the next nearest neighbour. Do so 
+    % as long as both points are not smaller oder higher then the 
+    % disered one
     if (distance1 < origin_distance && distance2 < origin_distance) || (distance1 > origin_distance && distance2 > origin_distance)
-
+        % set the new nearest neighbour
         idx2 = [idx(1) idx(2+counter)];
         D = A(:,idx2);
         counter = counter+1;

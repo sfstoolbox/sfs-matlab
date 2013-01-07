@@ -69,7 +69,7 @@ function [D] = driving_function_mono_wfs_3d(x0,xs,src,f,conf)
 nargmin = 4;
 nargmax = 5;
 error(nargchk(nargmin,nargmax,nargin));
-isargsecondarysource(x0);
+% isargsecondarysource(x0);
 isargposition(xs);
 xs = position_vector(xs);
 isargpositivescalar(f);
@@ -80,7 +80,6 @@ else
     isargstruct(conf);
 end
 
-
 %% ===== Configuration ==================================================
 % phase of omega
 phase = conf.phase;
@@ -89,24 +88,23 @@ xref = position_vector(conf.xref);
 % Speed of sound
 c = conf.c;
 
-
 %% ===== Computation ====================================================
 
 % Calculate the driving function in time-frequency domain
-%
+
 % Omega
 omega = 2*pi*f;
 
-% Driving function D(x0,omega)
 % Activity of secondary sources
 x0 = secondary_source_selection(x0,xs,src);
 
+% Weights if needed
+equallyPointsWeights = x0(:,7);
+surfaceWeights = x0(:,8);
 
 % Direction and position of secondary sources
-% weight = x0(:,7);
 nx0 = x0(:,4:6);
 x0 = x0(:,1:3);
-
 
 % Initialize empty driving function
 D = zeros(size(x0,1));
@@ -127,6 +125,10 @@ if strcmp('pw',src)
     %
     % NOTE: the phase term e^(-i phase) is only there in order to be able to
     %       simulate different time steps
- 
-    D = -2*nxs*nx0'./c * 1i*omega * exp(-1i*omega/c*(nxs*x0'))*exp(-1i*phase);
+    if strcmp('spherical',conf.array)
+        D = -2*nxs*nx0'./c * 1i*omega * exp(-1i*omega/c*(nxs*x0'))*exp(-1i*phase).*equallyPointsWeights.*surfaceWeights;
+    else 
+        D = -2*nxs*nx0'./c * 1i*omega * exp(-1i*omega/c*(nxs*x0'))*exp(-1i*phase);
+    end
+
 end

@@ -1,4 +1,4 @@
-function [x,y,p,dds] = wave_field_imp_wfs_3d(X,Y,xs,src,L,conf)
+function [x,y,p,dds] = wave_field_imp_wfs_3d(X,Y,Z,xs,src,L,conf)
 %WAVE_FIELD_IMP_WFS_3D returns the wave field in time domain of an impulse
 %
 %   Usage: [x,y,p,ls_activity] = wave_field_imp_wfs_3d(X,Y,xs,src,L,[conf])
@@ -61,10 +61,10 @@ function [x,y,p,dds] = wave_field_imp_wfs_3d(X,Y,xs,src,L,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 6;
+nargmin = 6;
+nargmax = 7;
 error(nargchk(nargmin,nargmax,nargin));
-isargvector(X,Y);
+isargvector(X,Y,Z);
 xs = position_vector(xs);
 isargpositivescalar(L);
 isargchar(src);
@@ -96,23 +96,14 @@ debug = conf.debug;
 % Get secondary sources
 conf.array = 'spherical';
 x0 = secondary_source_positions(L,conf);
-x0 = x0(:,1:6);
 x0 = secondary_source_selection(x0,xs,src);
 % Generate tapering window
-x0 = x0(:,1:6);
 conf.x0 =  x0;
-win = tapering_window(x0,conf);
-
+nls = size(x0,1);
+win = tapering_window(x0(:,1:6),conf);
 
 % Spatial grid
-x = linspace(X(1),X(2),xysamples);
-y = linspace(Y(1),Y(2),xysamples);
-[xx,yy] = meshgrid(x,y);
-
-% Use only active secondary sources
-
-nls = size(x0,1);
-
+[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
 
 % Calculate maximum time delay possible for the given axis size
 maxt = round(sqrt((X(1)-X(2))^2+(Y(1)-Y(2))^2)/c*fs);
@@ -178,7 +169,7 @@ for ii = 1:nls
     % ================================================================
     % Secondary source model: Greens function g3D(x,t)
     % distance of secondary source to receiver position
-    r = sqrt((xx-x0(ii,1)).^2 + (yy-x0(ii,2)).^2);
+    r = sqrt((xx-x0(ii,1)).^2 + (yy-x0(ii,2)).^2+ (zz-x0(ii,3)).^2);
     % amplitude decay for a 3D monopole
     g = 1./(4*pi*r);
 
@@ -221,12 +212,12 @@ check_wave_field(p,frame);
 % === Plotting ===
 if (useplot)
     conf.plot.usedb = 1;
-    plot_wavefield(x,y,p,x0,conf);
+    plot_wavefield(x,y,z,p,x0,conf);
 end
 
 % some debug stuff
 if debug
-    figure; imagesc(db(dds)); title('driving functions'); caxis([-100 0]); colorbar;
+%     figure; imagesc(db(dds)); title('driving functions'); caxis([-100 0]); colorbar;
     % figure; plot(win); title('tapering window');
     % figure; plot(delay*fs); title('delay (samples)');
     % figure; plot(weight); title('weight');

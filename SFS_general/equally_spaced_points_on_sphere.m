@@ -37,7 +37,9 @@ addpath([basepath,'MinimumEnergyPointsOnASphere']);
 N = [num2str(N) 'points.mat'];
 x0 = load(N,'-ascii');
 x0 = L/2*x0;
+% x0(:,1:3) = L/2*x0(:,1:3);
 x0(:,7) = x0(:,4);
+x0(:,8) = sin(acos(x0(:,3)./(L/2)));
 %% get normal vectors of x0
 X0 = position_vector(conf.X0);
 x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,length(x0),1).*ones(length(x0),3)); 

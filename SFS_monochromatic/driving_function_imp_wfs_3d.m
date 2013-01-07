@@ -60,7 +60,11 @@ function [weight,delay] = driving_function_imp_wfs_3d(x0,xs,src,conf)
 nargmin = 3;
 nargmax = 4;
 error(nargchk(nargmin,nargmax,nargin));
-isargsecondarysource(x0)
+if strcmp('spherical',conf.array)
+    isargsecondarysourceforsphere(x0);
+else
+    isargsecondarysource(x0)
+end
 isargposition(xs);
 xs = position_vector(xs);
 isargchar(src);
@@ -79,24 +83,26 @@ xref = position_vector(conf.xref);
 
 %% ===== Computation =====================================================
 % Check also the activity of the used loudspeaker.
-x0 = secondary_source_selection(x0,xs,src);
 
+% Weights if needed
+equallyPointsWeights = x0(7);
+surfaceWeights = x0(8);
 
-    % Direction and position of secondary sources
-    nx0 = x0(4:6);
-    x0 = x0(1:3);
+% Direction and position of active secondary sources
+nx0 = x0(4:6);
+x0 = x0(1:3);
     
-    if strcmp('pw',src)
-        % === Plane wave ===
-        % Direction of plane wave
-        nxs = xs / norm(xs);
-        % Delay and amplitude weight
-        delay = 1/c * nxs*x0';
-        weight = 2 .* nxs*nx0';
+if strcmp('pw',src)
+% === Plane wave ===
+% Direction of plane wave
+nxs = xs / norm(xs);
+% Delay and amplitude weight
+delay = 1/c * nxs*x0';
+weight = 2 .* nxs*nx0'.*equallyPointsWeights.*surfaceWeights.*10; % *10 because the amplitude is to low to see anything in the plot
         
-    else
+else
         error('%s: %s is not a known source type.',upper(mfilename),src);
-    end
+end
 
 
 end

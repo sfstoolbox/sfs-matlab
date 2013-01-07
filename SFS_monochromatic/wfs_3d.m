@@ -85,11 +85,9 @@ xref = conf.xref;
 %
 % Get the position of the loudspeakers and its activity
 x0 = secondary_source_positions(L,conf);
-%conf.weights = x0(:,7);
-x0 = x0(:,1:6);
 x0 = secondary_source_selection(x0,xs,src,xref);
 % Generate tapering window
-win = tapering_window(x0,conf);
+win = tapering_window(x0(:,1:6),conf);
 % Initialize empty wave field
 % FIXME: it could be that length is not enough here and we need size(...)
 P = zeros(length(y),length(x));
@@ -112,7 +110,6 @@ for ii = 1:size(x0,1)
     % ====================================================================
     % Driving function D(x0,omega)
     D = driving_function_mono_wfs_3d(x0(ii,:),xs,src,f,conf);
-
     % ====================================================================
     % Integration
     %              /
@@ -124,20 +121,33 @@ for ii = 1:size(x0,1)
     % NOTE: win(ii) is the factor of the tapering window in order to have fewer
     % truncation artifacts. If you don't use a tapering window win(ii) will
     % always be one.
-    P = P + win(ii)*D.*G;
     
+    P = P + win(ii)*D.*G;
+
     if conf.debug
-    phi(1,ii) = atan2(x0(ii,2),x0(ii,1));
-    D_plot(1,ii) = D;
+        phi(1,ii) = atan2(x0(ii,2),x0(ii,1));
+%           if phi(1,ii)<-2.9 || phi(1,ii)>-0.2
+%               D_test = D*0.2;
+%           else
+%               D_test = D;
+%           end
+        D_plot(1,ii) = D;
+%         D_plot2(1,ii) = D_test;
     end
+    
+
+%     P = P + win(ii)*D_test.*G;
     
 end
 
     if conf.debug
+%     save('DrivingFunctionWithoutWeights.mat','D_plot')  
     figure
     plot(phi(1,:),20*log10(abs(D_plot(1,:))),'k.');
+    hold on 
+%     plot(phi(1,:),20*log10(abs(D_plot2(1,:))),'r.');
     grid on
-    xlabel('\phi')
+    xlabel('$\varphi$ / rad','interpreter','latex')
     ylabel('amplitude / dB')
     title('amplitude for all N loudspeakers')
     end

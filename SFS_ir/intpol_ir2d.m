@@ -59,7 +59,7 @@ end
 %% ===== Computation ====================================================
 %calculate the spherical coordinates for the 2 next neighbours
 [phi1,theta1,r1] = cart2sph(x0(1,1),x0(2,1),x0(3,1));
-[phi2,theta2,r2] = cart2sph(x0(2,1),x0(2,2),x0(2,3));
+[phi2,theta2,r2] = cart2sph(x0(1,2),x0(2,2),x0(3,2));
 [alpha,beta,R]  = cart2sph(desired_point(1),desired_point(2),desired_point(3));
 
 

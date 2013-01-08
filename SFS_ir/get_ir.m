@@ -101,12 +101,13 @@ else
    [ir1,ir2,ir3,x0,desired_point] = findnearestneighbour_scalar(irs,phi,delta,r,3,X0);
    % fill a matrix with positions of the three nearest neighbours
    L = [x0(:,1),x0(:,2),x0(:,3)];
-   
-   
+%    [PHI1,THETA1,R1] = cart2sph(x0(1,1),x0(2,1),x0(3,1))
+%    [PHI2,THETA2,R2] = cart2sph(x0(1,2),x0(2,2),x0(3,2))
+%    [PHI3,THETA3,R3] = cart2sph(x0(1,3),x0(2,3),x0(3,3))
    % if the matrix describes three dimensional case do triangular 
    % interpolation
    % else do an interpolation with two IRs
-   if rank(L) == 3
+   if   any(L(1,1)-L(1,2:end)) && any(L(2,1)-L(2,2:end)) && any(L(3,1)-L(3,2:end)) 
           
        ir = intpol_ir3d(desired_point,ir1,ir2,ir3,L);
   

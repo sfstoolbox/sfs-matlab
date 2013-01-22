@@ -63,4 +63,7 @@ error(nargchk(nargmin,nargmax,nargin));
     % calculate desired ir with linear combination of ir1,ir2 and ir3
     ir = g(1,1)*ir1 + g(2,1)*ir2 + g(3,1)*ir3;
     
+    ir(:,1) = ir2(:,1)/max(ir2(:,1));
+    ir(:,2) = ir2(:,2)/max(ir2(:,2));
+        
 end

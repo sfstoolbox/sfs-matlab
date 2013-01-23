@@ -62,6 +62,9 @@ if nargin == 5
     X0 = [0 0 0];
 end
 
+% turn on(=1) / off(=0) the debug mode for this file
+debug = 1;
+
 %% ===== Computation ====================================================
 % calculate the x-,y-,z-coordinates for the desired angles(phi,delta)
 % and radius r
@@ -83,24 +86,37 @@ if ~any(irs.apparent_azimuth(1,1)-irs.apparent_azimuth(1,2:end)) && ~any(irs.app
     ir3 = [0 0 0];
     
 else
-
-% calculate the scalarproduct between desired point and all points of 
+% calculate the cos(angle) between desired point and all points of 
 % the HRIR set 
-    scalarproduct = desired_point*x0;
-    [~,idx] = sort(scalarproduct,'descend');
+    scalarproduct = (desired_point*x0)';
+    for ii = 1:length(x0)
+        norm_vec(ii,1) = norm(x0(:,ii));
+    end
+    cos_angle = scalarproduct./(norm_vec.*norm(desired_point));
+% get the x nearest neighbours of the desired point
+    [~,idx] = sort(cos_angle,'descend');
     idx = idx(1:number_of_neighbours);
-
-
+    
+    % store the previous found nearest neighbours, if you want to prove
+    % them
+    if debug
+    save('NearestPoints','idx');
+    end
+    
 % get the HRIR-positions corresponding to the maxima
     x0 = x0(:,idx);
     ir1 = [irs.left(:,idx(1)) irs.right(:,idx(1))];
     ir2 = [irs.left(:,idx(2)) irs.right(:,idx(2))];
     ir3 = [irs.left(:,idx(3)) irs.right(:,idx(3))]; 
-    
-end
-fprintf('The indices of the found IRs with get_ir_new_version are: index1 = %d, index2 = %d\n',idx(1),idx(2));
-fprintf('\n'); 
 
+end
+
+% show the indices of the nearest neighbours. maybe desired for proving
+% results
+if debug 
+fprintf('The indices of the found IRs with get_ir_new_version are: index1 = %d, index2 = %d\n, index3 = %d',idx(1),idx(2),idx(3));
+fprintf('\n'); 
+end
     
 end
        

@@ -53,6 +53,7 @@ nargmax = 5;
 error(nargchk(nargmin,nargmax,nargin));
 %% ===== Computation ====================================================
 
+
     % check if the length of the found IRs are the same
     if length(ir1)~=length(ir2) || length(ir2)~=length(ir3) || length(ir1)~=length(ir3)
         error('%s: the given IRs have not the same length.',upper(mfilename));
@@ -60,10 +61,9 @@ error(nargchk(nargmin,nargmax,nargin));
     % Solve linear equation system to get the desired weight factors g(n)
     p = desired_point';
     g = L.'\p;
+    g = g/norm(g);
     % calculate desired ir with linear combination of ir1,ir2 and ir3
     ir = g(1,1)*ir1 + g(2,1)*ir2 + g(3,1)*ir3;
     
-    ir(:,1) = ir2(:,1)/max(ir2(:,1));
-    ir(:,2) = ir2(:,2)/max(ir2(:,2));
         
 end

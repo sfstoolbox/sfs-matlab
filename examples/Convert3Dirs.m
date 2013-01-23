@@ -26,4 +26,6 @@ irs = rmfield(irs,'itd');
 [x,y,z] = sph2cart(irs.apparent_azimuth,irs.apparent_elevation,irs.distance);
 irs.source_position = [x;y;z];
 
-save('FABIAN3D1,7.mat');
+irs = order_irs_fields(irs);
+
+save('FABIAN_3D_anechoic_~1.6.mat');

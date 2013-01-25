@@ -59,11 +59,12 @@ error(nargchk(nargmin,nargmax,nargin));
         error('%s: the given IRs have not the same length.',upper(mfilename));
     end
     % Solve linear equation system to get the desired weight factors g(n)
-    p = desired_point';
-    g = L.'\p;
-    g = g/norm(g);
+    p = desired_point;
+    g = p/L.';
+    g_scale = 0.707*(g/norm(g))';
+    
     % calculate desired ir with linear combination of ir1,ir2 and ir3
-    ir = g(1,1)*ir1 + g(2,1)*ir2 + g(3,1)*ir3;
+    ir = g_scale(1,1)*ir1 + g_scale(2,1)*ir2 + g_scale(3,1)*ir3;
     
         
 end

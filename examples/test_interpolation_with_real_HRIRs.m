@@ -41,10 +41,9 @@ basepath = which('test_interpolation_with_real_HRIRs');
 basepath = basepath(1:end-36);
 addpath([basepath,'3D_HRIR_DataSet_1,6']);
 irs = read_irs('FABIAN_3D_anechoic_~1.6.mat');
-
 % get random HRIR of data set
 random_ir = randi(length(irs.left),1,1);
-
+% random_ir = 5886;% --> (0,0)
 % calculate the cartesian coordinates of the place of the random chosen HRIR 
 [x1,y1,z1] = sph2cart(irs.apparent_azimuth(1,random_ir),irs.apparent_elevation(1,random_ir),irs.distance(1,random_ir));
 
@@ -123,6 +122,14 @@ ylabel('amplitude / db')
 title('Left ear HRTFs without and with interpolation, dataset: FABIAN,3D,r~1.6m')
 legend('without interpolation','with interpolation')
 
+% HRTF from original data set
+% hold on
+% load('az0.mat')
+% [amplitude_original1,phase_original1,f1l] = easyfft(left(:,random_ir));
+% plot(f1l,db(amplitude_original1),'m-.')
+% [amplitude_original2,phase_original2,~] = easyfft(right(:,random_ir));
+
+
 subplot(3,2,2)
 plot(f1l,db(amplitude_ir1r),'g')
 hold on
@@ -132,6 +139,9 @@ xlabel('f / Hz')
 ylabel('amplitude / db')
 title('Right ear HRTFs without and with interpolation, dataset: dataset: FABIAN,3D,r~1.6m')
 legend('without interpolation','with interpolation')
+
+% hold on
+% plot(f1l,db(amplitude_original2),'m-.')
 
 subplot(3,2,3)
 plot(f1l,db(amplitude_ir2l)-db(amplitude_ir1l),'r')
@@ -177,4 +187,16 @@ title('nearest neighbours (blue) of desired interpolation point (red)')
 xlabel('x --> [m]')
 ylabel('y --> [m]')
 zlabel('z --> [m]')
+
+%% considering ILD
+subplot(3,2,6)
+plot(f1l,db(amplitude_ir1l)-db(amplitude_ir1r),'r');
+hold on
+plot(f1l,db(amplitude_ir2l)-db(amplitude_ir2r),'b');
+xlabel('f / Hz')
+ylabel('amplitude / db')
+title('ILD')
+legend('measured HRTF','interpolated HRTF')
+grid on
+
 end

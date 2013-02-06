@@ -97,8 +97,23 @@ if ~isempty(x0)
     return
 end
 
-if strcmp('spherical',array) 
-    x0 = equally_spaced_points_on_sphere(L,conf);
+if strcmp('spherical',array)
+ 
+    if strcmp('HRTFgrid',conf.grid)
+        
+        irs = read_irs('FABIAN_3D_anechoic_~1.6.mat');
+        x0(:,1:3) = irs.source_position.';
+        x0(:,4:6) = direction_vector(x0(:,1:3),repmat([0 0 0],length(irs.left),1)); 
+        x0(:,7) = ones(length(irs.distance),1);
+        x0(:,8) = ones(length(irs.distance),1);       
+        
+    else
+        
+        x0 = equally_spaced_points_on_sphere(L,conf);
+
+    end
+
+
 else
 
     % Get the number of secondary sources

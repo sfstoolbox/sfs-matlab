@@ -96,13 +96,11 @@ debug = conf.debug;
 % Get secondary sources
 conf.array = 'spherical';
 x0 = secondary_source_positions(L,conf);
-x0 = x0(:,1:6);
-x0 = secondary_source_selection(x0,xs,src);
+x0 = secondary_source_selection(x0,xs,src,conf.xref);
 % Generate tapering window
-x0 = x0(:,1:6);
 conf.x0 =  x0;
 nls = size(x0,1);
-win = tapering_window(x0,conf);
+win = tapering_window(x0(:,1:6),conf);
 
 % Spatial grid
 [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
@@ -138,7 +136,7 @@ delay = zeros(nls,1);
 weight = zeros(nls,1);
 for ii = 1:nls
     % ================================================================
-    % Driving function d2.5D(x0,t)
+    % Driving function d3D(x0,t)
     [weight(ii),delay(ii)] = driving_function_imp_wfs_3d(x0(ii,:),xs,src,conf);
 end
 dmin=min(delay);
@@ -219,7 +217,7 @@ end
 
 % some debug stuff
 if debug
-    figure; imagesc(db(dds)); title('driving functions'); caxis([-100 0]); colorbar;
+%     figure; imagesc(db(dds)); title('driving functions'); caxis([-100 0]); colorbar;
     % figure; plot(win); title('tapering window');
     % figure; plot(delay*fs); title('delay (samples)');
     % figure; plot(weight); title('weight');

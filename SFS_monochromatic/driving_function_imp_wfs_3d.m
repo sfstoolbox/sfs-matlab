@@ -98,9 +98,22 @@ if strcmp('pw',src)
 nxs = xs / norm(xs);
 % Delay and amplitude weight
 delay = 1/c * nxs*x0';
-weight = 2 .* nxs*nx0'.*equallyPointsWeights.*surfaceWeights.*10; % *10 because the amplitude is to low to see anything in the plot
-        
-else
+weight = 2 .* nxs*nx0'.*equallyPointsWeights.*surfaceWeights; 
+
+elseif strcmp('ps',src)
+
+    delay = norm(x0-xs)/c;
+    weight = (-2*(x0-xs)*nx0'./(norm(x0-xs)^2))*(1./norm(x0-xs)+1/c).*equallyPointsWeights.*surfaceWeights;
+    
+elseif strcmp('fs',src)
+    % === Focused source ===
+%     g0 = sqrt(2*pi*norm(xref-x0));
+    % Distance between loudspeaker and virtual source
+    % Delay and amplitude weight
+    delay =  -1*norm(x0-xref)/c;
+%     weight = sqrt(2/pi)*(x0-xs)*nx0'/(norm(x0-xs)^(-3/2)).*equallyPointsWeights.*surfaceWeights;
+    weight = (-2*(x0-xs)*nx0'./(norm(x0-xs)^2))*(1./norm(x0-xs)+1/c).*equallyPointsWeights.*surfaceWeights;
+else   
         error('%s: %s is not a known source type.',upper(mfilename),src);
 end
 

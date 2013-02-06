@@ -96,7 +96,7 @@ c = conf.c;
 omega = 2*pi*f;
 
 % Activity of secondary sources
-x0 = secondary_source_selection(x0,xs,src);
+x0 = secondary_source_selection(x0,xs,src,conf.xref);
 
 % Weights if needed
 equallyPointsWeights = x0(:,7);
@@ -125,10 +125,22 @@ if strcmp('pw',src)
     %
     % NOTE: the phase term e^(-i phase) is only there in order to be able to
     %       simulate different time steps
-    if strcmp('spherical',conf.array)
-        D = -2*nxs*nx0'./c * 1i*omega * exp(-1i*omega/c*(nxs*x0'))*exp(-1i*phase).*equallyPointsWeights.*surfaceWeights;
-    else 
-        D = -2*nxs*nx0'./c * 1i*omega * exp(-1i*omega/c*(nxs*x0'))*exp(-1i*phase);
-    end
+   
+    D = -2*nxs*nx0'./c * 1i*omega * exp(-1i*omega/c*(nxs*x0'))*...
+        exp(-1i*phase).*equallyPointsWeights.*surfaceWeights;
+    
+elseif strcmp('ps',src)
+    
+        D =  -2*(x0-xs)*nx0' / norm(x0-xs)^2 *(1/norm(x0-xs)+1i*omega/c)*...
+            exp(-1i*omega/c*norm(x0-xs)).*equallyPointsWeights.*surfaceWeights;
+ 
+elseif strcmp('fs',src)
+                  
+%         D = sqrt(-1i*omega/c) * norm(x0(:,1:3)).* sqrt(2/pi) .* ...
+%             (x0-xs)*nx0' / (norm(x0-xs)^(3/2)) .* ...
+%             exp(1i*omega/c*norm(x0-xs)) .* exp(-1i*phase).* ...
+%             equallyPointsWeights.*surfaceWeights;
+        D =  -2*(x0-xs)*nx0' / norm(x0-xs)^2 *(1/norm(x0-xs)-1i*omega/c)*...
+            exp(1i*omega/c*norm(x0-xs)).*equallyPointsWeights.*surfaceWeights;
 
 end

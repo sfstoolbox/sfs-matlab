@@ -70,6 +70,9 @@ fs = conf.fs;
 
 %% ===== Computation =====================================================
 % compute normalized roots/zeros of spherical Hankel function
+% FIXME: this works only until a order of 85. For higher orders factorial will
+% return Inf. Hence, for higher orders we have to find another way to calculate
+% the zeros of the Hankel funtion.
 B=zeros(1,order+2);
 A=B;
 for n=0:order

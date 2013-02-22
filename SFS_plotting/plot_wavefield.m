@@ -74,7 +74,6 @@ elseif nargin==nargmax-2
 elseif nargin==nargmax-3
     conf = SFS_config;
 end
-isargsecondarysource(x0);
 isargstruct(conf);
 
 

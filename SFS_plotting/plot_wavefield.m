@@ -67,21 +67,21 @@ if nargin==nargmax-1
 elseif nargin==nargmax-2
     if isstruct(x0)
         conf = x0;
-        x0 = [];
+        % disable loudspeakers
+        conf.plot.loudspeakers = 0;
+        % setting of dummy positions for isargsecondarysource
+        x0 = [0 0 0 1 0 0];
     else
         conf = SFS_config;
     end
 elseif nargin==nargmax-3
     conf = SFS_config;
 end
+isargsecondarysource(x0);
 isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
-% Check if we have a loudspeaker array at all
-if length(x0)==0
-    conf.plot.loudspeakers = 0;
-end
 dx0 = conf.dx0;
 % Tmp dir
 tmpdir = conf.tmpdir;

@@ -61,7 +61,7 @@ lenir = length(ir(:,1));
 % ensure integer delays
 dt = round(dt);
 % append zeros if to short
-if(lenir<N-dt)
+if(lenir<N+abs(dt))
     ir = cat(1,ir,zeros(N-lenir,2));
 % remove the end of the IR, if to long
 else

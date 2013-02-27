@@ -220,6 +220,8 @@ conf.plot.usedb = false; % boolean
 % caxis settings (leave blank, if you would use the default values of the given
 % plot function)
 conf.plot.caxis = '';
+% Default colormap to use (note this works only with Matlab at the moment)
+conf.plot.colormap = 'gray'; % (default: 'gray')
 % Plot loudspeakers in the wave field plots
 conf.plot.loudspeakers = true; % boolean
 % Use real loudspeakers symbols (otherwise crosses are used)

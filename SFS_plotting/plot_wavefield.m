@@ -74,7 +74,7 @@ elseif nargin==nargmax-2
 elseif nargin==nargmax-3
     conf = SFS_config;
 end
-if length(x0)==0
+if ~exist('x0','var') || length(x0)==0
     conf.plot.loudspeakers = 0;
 else
     isargsecondarysource(x0);

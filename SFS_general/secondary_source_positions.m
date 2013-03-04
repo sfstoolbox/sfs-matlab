@@ -98,21 +98,28 @@ if ~isempty(x0)
 end
 
 if strcmp('spherical',array)
- 
-    if strcmp('HRTFgrid',conf.grid)
-        
-        irs = read_irs('FABIAN_3D_anechoic_~1.6.mat');
-        x0(:,1:3) = irs.source_position.';
-        x0(:,4:6) = direction_vector(x0(:,1:3),repmat([0 0 0],length(irs.left),1)); 
-        x0(:,7) = ones(length(irs.distance),1);
-        x0(:,8) = ones(length(irs.distance),1);       
-        
-    else
-        
+    % need to be set in SFS_config->conf.grid
+    if strcmp('MinimumEnergyPoints',conf.grid)
+        % uses secondary source position of the MinimumEnergyPoints
+        % Approach stated by Fliege&Maier (equally spaced points on a 
+        % sphere with weights)
         x0 = equally_spaced_points_on_sphere(L,conf);
-
+    else
+        % uses the measurement grid of the 3D HRTF dataset recorded with
+        % FABIAN
+        % load dataset
+        irs = read_irs('FABIAN_3D_anechoic.mat');
+        % get positions of secondary sources
+        x0(:,1:3) = irs.source_position.'; 
+        % get directions of secondary sources
+        x0(:,4:6) = direction_vector(x0(:,1:3),repmat([0 0 0],...
+                                     length(irs.left),1)); 
+        % integration element of the sphere applied as weight
+        x0(:,7) = cos(irs.apparent_elevation); 
+        % weights for secondary source positions
+        x0(:,8) = weights_for_points_on_a_sphere_rectangle(...
+                  irs.apparent_azimuth,irs.apparent_elevation,irs.distance);
     end
-
 
 else
 

@@ -1,4 +1,4 @@
-function [P,x0,win,weights] = wfs_3d(x,y,z,xs,src,f,L,conf)
+function [P,x0,win] = wfs_3d(x,y,z,xs,src,f,L,conf)
 %WFS_3D returns the sound pressure for 3D WFS at x,y,z
 %
 %   Usage: [P,x0,win] = wfs_3d(x,y,z,xs,src,f,L,[conf])
@@ -20,7 +20,8 @@ function [P,x0,win,weights] = wfs_3d(x,y,z,xs,src,f,L,conf)
 %   Output parameters:
 %       P           - Simulated wave field
 %       win         - tapering window (activity of loudspeaker)
-%
+%       x0          - positions of active secondary sources
+% 
 %   WAVE_FIELD_MONO_WFS_3D(x,y,z,xs,L,f,src,conf) returns the sound pressure at
 %   the point(s) (x,y,z) for the given source type (src) using a WFS 3
 %   dimensional driving function in the temporal domain. This means by
@@ -125,29 +126,23 @@ for ii = 1:size(x0,1)
     P = P + win(ii)*D.*G;
 
     if conf.debug
-        phi(1,ii) = atan2(x0(ii,2),x0(ii,1));
-%           if phi(1,ii)<-2.9 || phi(1,ii)>-0.2
-%               D_test = D*0.2;
-%           else
-%               D_test = D;
-%           end
+        phi(1,ii) = degree(correct_azimuth(atan2(x0(ii,2),x0(ii,1))));
+        theta(1,ii) = degree(correct_elevation(asin(x0(ii,3)./...
+                      sqrt(x0(ii,1).^2+x0(ii,2).^2+x0(ii,3).^2))));
         D_plot(1,ii) = D;
-%         D_plot2(1,ii) = D_test;
     end
     
-
-%     P = P + win(ii)*D_test.*G;
     
 end
 
-    if conf.debug
-%     save('DrivingFunctionWithoutWeights.mat','D_plot')  
-    figure
-    plot(phi(1,:),20*log10(abs(D_plot(1,:))),'k.');
-    hold on 
-%     plot(phi(1,:),20*log10(abs(D_plot2(1,:))),'r.');
-    grid on
-    xlabel('$\varphi$ / rad','interpreter','latex')
-    ylabel('amplitude / dB')
-    title('amplitude for all N loudspeakers')
+    if conf.debug   
+%       save('DrivingFunctionWithoutWeights.mat','D_plot')  
+%       save('phi.mat','phi')
+        figure
+        plot3(phi(1,:),theta(1,:),20*log10(abs(D_plot(1,:))),'k.');
+        grid on
+        xlabel('$\varphi$ / degree','interpreter','latex')
+        ylabel('$\theta$ / degree','interpreter','latex')
+        zlabel('amplitude/db')
+        title('amplitude for all N active loudspeakers used for reproduction')
     end

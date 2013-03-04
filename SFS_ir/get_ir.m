@@ -1,22 +1,24 @@
 function ir = get_ir(irs,phi,delta,r,X0)
 %GET_IR returns a IR for the given apparent angle
 %
-%   Usage: ir = get_ir(irs,phi,[delta,[r]])
+%   Usage: ir = get_ir(irs,phi,delta,r,X0)
 %
 %   Input parameters:
 %       irs     - IR data set
 %       phi     - azimuth angle for the desired IR (rad)
 %       delta   - elevation angle for the desired IR (rad)
 %       r       - distance for the desired IR (m)
+%       X0      - listener position [3x1]
 %
 %   Output parameters:
 %       ir      - IR for the given angles (length of IR x 2)
 %
-%   GET_IR(irs,phi,delta,r) returns a single IR set for the given angles phi and
-%   delta. If the desired angles are not present in the IR data set an
-%   interpolation is applied to create the desired angles.
+%   GET_IR(irs,phi,delta,r,X0) returns a single IR set for the given angles 
+%   phi and delta. If the desired angles are not present in the IR data set 
+%   an interpolation is applied to create the desired angles.
+%   (Note: get_ir can be used for 2D and 3D HRTF datasets.)
 %
-%   see also: read_irs, slice_irs, ir_intpol
+%   see also: read_irs, slice_irs, intpol_ir2d, intpol_ir3d 
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -101,6 +103,7 @@ else
    [ir1,ir2,ir3,x0,desired_point] = findnearestneighbour_scalar(irs,phi,delta,r,3,X0);
    % fill a matrix with positions of the three nearest neighbours
    L = [x0(:,1),x0(:,2),x0(:,3)];
+
 %    [PHI1,THETA1,R1] = cart2sph(x0(1,1),x0(2,1),x0(3,1))
 %    [PHI2,THETA2,R2] = cart2sph(x0(1,2),x0(2,2),x0(3,2))
 %    [PHI3,THETA3,R3] = cart2sph(x0(1,3),x0(2,3),x0(3,3))

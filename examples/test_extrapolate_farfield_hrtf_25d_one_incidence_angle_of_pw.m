@@ -1,4 +1,12 @@
-%% Test 2.5D far-field range extrapolation of HRTFs
+%TEST_EXTRAPOLATE_FARFIELD_HRTF_25D_ONE_INCIDENCE_ANGLE_OF_PW test the
+% range extrapolation of ONE desired incidence angle of a plane wave(2.5d).
+% The incidence angle can be choosen by 'position'.
+% After calculating the frequency response of the extrapolated HRIR and the
+% measured HRIR will be plotted.
+% The used HRIR dataset has to be stored in the same folder where this
+% function is located.
+
+%% ===== Configuration ===================================================
 clear all; close all; clc;
 conf = SFS_config;
 conf.array = 'circle';
@@ -7,13 +15,13 @@ R = irs.distance;
 L = 2*R;
 nls = length(irs.apparent_azimuth);
 
-%% potential error sources
+% potential error sources
 conf.usefracdelay = 1;
-conf.usetapwin = 0;
+conf.usetapwin = 1;
 conf.usehpre = 1;
-%% Desired HRTF position at azimuth
 
-position = 0; % in degree
+% Desired HRTF position at azimuth
+position = -90; % in degree
 
 idx = findrows(...
     [irs.apparent_azimuth' irs.apparent_elevation'],...
@@ -27,13 +35,7 @@ ir = get_ir(irs,rad(position),rad(0),R,conf.xref);
 % x = sin(2*pi*440*0:1/44100:1/44100*10);
 % outsig = auralize_ir(ir,x,1,conf);
 % wavwrite(outsig,conf.fs,32,'HRTF');
-
-
-
-%% ===== Configuration ===================================================
 fs = conf.fs;                   % sampling frequency
-
-
 %% ===== Variables ======================================================
 
 Acorr = -1.7;                     % DAGA 2011 R=0.5m -> pw
@@ -90,7 +92,7 @@ irs_pw.distance = 'Inf';
 
     % direction of plane wave
 %     xs = -[cos(rad(position)) sin(rad(position)) 0];
-    xs = [0 -1 0];
+    xs = [-1 0 0];
 
     % calculate active virtual speakers
     x0 = secondary_source_selection(x0_help,xs,'pw');
@@ -131,8 +133,8 @@ conf.useplot = 1;
 wave_field_mono_wfs_25d([-4 4],[-4 4],[0 0],xs,'pw',1000,L,conf);
 
 %calculated ILD
-ild1 = interaural_level_difference(ir(:,1),ir(:,2));
-ild2 = interaural_level_difference(irs_pw.left(:,1),irs_pw.right(:,1));
+ild1 = interaural_level_difference(ir(:,:),ir(:,:));
+ild2 = interaural_level_difference(irs_pw.left(:,:),irs_pw.right(:,:));
 
 % plot ILD
 figure

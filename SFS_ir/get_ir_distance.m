@@ -75,7 +75,7 @@ end
 
 % If we have found the both angles
 % Precision of the conformance of the given angle and the desired one
-prec = 1000; % which is ca. 0.1 degree
+prec = 0.1; % which is ca. 0.1 degree
 
 % If azimuth and elevation could be found
 idx = findrows(...

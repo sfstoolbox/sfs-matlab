@@ -1,25 +1,26 @@
 function plot_wavefield(x,y,P,x0,ls_activity,conf)
 %PLOT_WAVEFIELD plot the given wavefield
 %
-%   Usage: plot_wavefield(x,y,P,[x0],conf])
+%   Usage: plot_wavefield(x,y,P,[x0,[ls_activity]],[conf])
 %
 %   Input parameters:
 %       x,y         - vectors for the x- and y-axis
 %       P           - matrix containing the wavefield in the format P = P(y,x)
-%       L           - array length. If this is given and the distance between the
-%                     loudspeaker is greater than 10cm the loudspeaker are added
-%                     to the plot at their real positions.
-%       ls_activity - activity of the single loudspeakers. If all loudspeakers
-%                     should be active, you can simply set it to 1. Otherwise a
-%                     vector with entries for every single loudspeaker is
-%                     needed.
+%       x0          - matrix containing the secondary source positions to plot.
+%                     Default: plot no secondary sources
+%       ls_activity - activity of the single secondary sources. Note: this option
+%                     is only valid, if you give also x0 as an input parameter.
+%                     The default behavior is to plot all secondary sources as 
+%                     active.
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   PLOT_WAVEFIELD(x,y,P,L,ls_activity,conf) plots the wavefield P in dependence
+%   PLOT_WAVEFIELD(x,y,P,x0,ls_activity,conf) plots the wavefield P in dependence
 %   of the x and y axes. Therefore the wavefield is normalized to 1 at its
-%   center position P(end/2,end/2). For a given array length L also the
-%   loudspeaker are added to the plot at their real positions. But only if
-%   distance between them is larger than 10cm.
+%   center position P(end/2,end/2). For a given set x0 of secondary sources the
+%   loudspeakers are added to the plot at their real positions. But only if
+%   distance between them is larger than 10cm. The ls_activity option specifies
+%   the color shade of the speakers, going from 0 (white) to 1(dark gray). The
+%   default behavior is to set all speakers to 1.
 %
 %   see also: wave_field_mono_wfs_25d
 

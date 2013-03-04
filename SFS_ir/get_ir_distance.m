@@ -85,7 +85,7 @@ if idx
     if length(idx)>1
         error(['%s: the irs data set has more than one entry corresponding ',...
                'an azimuth of %.3f and an elevation of %.3f.'],...
-            upper(mfilename),degree(phi),dgree(delta));
+            upper(mfilename),degree(phi),degree(delta));
     end
     d = irs.distance(idx);
 

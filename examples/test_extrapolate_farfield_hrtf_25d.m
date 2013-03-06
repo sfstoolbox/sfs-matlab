@@ -7,6 +7,7 @@
 %% ===== Configuration ===================================================
 clear all; close all; clc;
 conf = SFS_config;
+addirspath;
 conf.array = 'circle';
 irs = read_irs('QU_KEMAR_anechoic_3m.mat');
 R = irs.distance;
@@ -21,8 +22,8 @@ conf.usehpre = 1;
 irs_pw = extrapolate_farfield_hrtfset_25d(irs,conf);
 
 %calculated ILD
-ild1 = interaural_level_difference(irs.left(:,:),irs.right(:,:));
-ild2 = interaural_level_difference(irs_pw.left(:,:),irs_pw.right(:,:));
+ild1 = interaural_level_difference(irs.left,irs.right);
+ild2 = interaural_level_difference(irs_pw.left,irs_pw.right);
 %% ===== Plot ============================================================
 % ILD
 figure

@@ -80,7 +80,7 @@ conf.x0(:,4:6) = direction_vector(conf.x0(:,1:3),repmat(conf.xref,nls,1));
 
 %% ===== Computation =====================================================
 % get virtual secondary source positions
-x0 = secondary_source_positions(L,conf);
+x0_all = secondary_source_positions(L,conf);
 
 % Initialize new irs set
 irs_pw = irs;
@@ -97,7 +97,7 @@ for ii = 1:length(irs.apparent_azimuth)
         sin(irs.apparent_azimuth(ii))];
 
     % calculate active virtual speakers
-    x0 = secondary_source_selection(x0,xs,'pw');
+    x0 = secondary_source_selection(x0_all,xs,'pw');
 
     % generate tapering window
     win = tapering_window(x0,conf);

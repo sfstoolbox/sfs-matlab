@@ -108,21 +108,25 @@ for ii = 1:length(irs.apparent_azimuth)
     win = tapering_window(x0,conf);
 
     % sum up contributions from individual virtual speakers
+%     delay = [];
     for l=1:size(x0,1)
         % Driving function to get weighting and delaying
-        [a,delay] = driving_function_imp_wfs_25d(x0(l,:),xs,'pw',conf);
-        dt = delay*fs + round(R/conf.c*fs);
+        
+        [a,delay(l)] = driving_function_imp_wfs_25d(x0(l,:),xs,'pw',conf);
+        dt = delay(l)*fs + round(R/conf.c*fs);
         w=a*win(l);
+        % get IR for the secondary source position
+        [phi,theta,r] = cart2sph(x0(l,1),x0(l,2),x0(l,3));
+        ir_tmp = get_ir(irs,phi);
         % truncate IR length
-        irl = fix_ir_length(irs.left(:,l),length(irs.left(:,l)),0);
-        irr = fix_ir_length(irs.right(:,l),length(irs.right(:,l)),0);
+        irl = fix_ir_length(ir_tmp(:,1),length(ir_tmp(:,1)),0);
+        irr = fix_ir_length(ir_tmp(:,2),length(ir_tmp(:,2)),0);
         % delay and weight HRTFs
         irs_pw.left(:,ii) = irs_pw.left(:,ii) + delayline(irl',dt,w,conf)';
         irs_pw.right(:,ii) = irs_pw.right(:,ii) + delayline(irr',dt,w,conf)';
     end
-
-    irs_pw.left(:,ii) = irs_pw.left(:,ii)*10^(Af(ii)/20);
-    irs_pw.right(:,ii) = irs_pw.right(:,ii)*10^(-Af(ii)/20);
+    irs_pw.left(:,ii) = irs_pw.left(:,ii)/10^(Af(ii)/20);
+    irs_pw.right(:,ii) = irs_pw.right(:,ii)/10^(-Af(ii)/20);
 
 end
 

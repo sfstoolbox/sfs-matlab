@@ -75,7 +75,7 @@ end
 
 % If we have found the both angles
 % Precision of the conformance of the given angle and the desired one
-prec = 1000; % which is ca. 0.1 degree
+prec = 0.1; % which is ca. 0.1 degree
 
 % If azimuth and elevation could be found
 idx = findrows(...
@@ -85,7 +85,7 @@ if idx
     if length(idx)>1
         error(['%s: the irs data set has more than one entry corresponding ',...
                'an azimuth of %.3f and an elevation of %.3f.'],...
-            upper(mfilename),degree(phi),dgree(delta));
+            upper(mfilename),degree(phi),degree(delta));
     end
     d = irs.distance(idx);
 

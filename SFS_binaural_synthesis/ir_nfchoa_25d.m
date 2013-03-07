@@ -80,60 +80,11 @@ N = conf.N;                   % target length of BRS impulse responses
 phi = correct_azimuth(phi);
 % Loudspeaker positions
 x0 = secondary_source_positions(L,conf);
-nls = size(x0,1);
 
 
 %% ===== BRIR ===========================================================
-% Initial values
-ir_hoa = zeros(N,2);
-
 % calculate driving function
 d = driving_function_imp_nfchoa_25d(x0,xs,src,L,conf);
 
-% Create a BRIR for every single loudspeaker
-warning('off','SFS:irs_intpol');
-for ii=1:nls
-
-    % === Secondary source model: Greens function ===
-    g = 1./(4*pi*norm(X-x0(ii,1:3)));
-
-    % === Secondary source angle ===
-    % Calculate the angle between the given loudspeaker and the listener.
-    % This is needed for the HRIR dataset.
-    %
-    %                             y-axis
-    %                               ^
-    %                               |
-    %                               |
-    %                               |
-    %            [X Y], phi=0       |
-    %              O------------    |  a = alpha
-    %               \ a |           |  tan(alpha) = (y0-Y)/(x0-X)
-    %                \ /            |
-    %                 \             |
-    %                  \            |
-    %   -------v--v--v--v--v--v--v--v--v--v--v--v--v--v--v------> x-axis
-    %                [x0 y0]
-    %
-    % Angle between listener and secondary source (-pi < alpha <= pi)
-    % Note: phi is the orientation of the listener (see first graph)
-    [alpha,theta_tmp,r_tmp] = cart2sph(x0(ii,1)-X(1),x0(ii,2)-X(2),0);
-    %
-    % Ensure -pi <= alpha < pi
-    alpha = correct_azimuth(alpha-phi);
-
-    % === IR interpolation ===
-    % Get the desired IR.
-    % If needed interpolate the given IR set
-    ir = get_ir(irs,alpha,0);
-
-    % === Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay ===
-    ir_hoa(:,1) = ir_hoa(:,1) + fix_ir_length(conv(ir(:,1),d(:,ii)),N) .* g;
-    ir_hoa(:,2) = ir_hoa(:,2) + fix_ir_length(conv(ir(:,2),d(:,ii)),N) .* g;
-
-end
-warning('on','SFS:irs_intpol');
-
-
-%% ===== Headphone compensation =========================================
-ir = compensate_headphone(ir_hoa,conf);
+% generate the impulse response for NFCHOA
+ir = ir_generic(X,phi,x0,d,irs,conf);

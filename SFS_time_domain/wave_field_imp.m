@@ -1,4 +1,4 @@
-function [x,y,p] = wave_field_imp(X,Y,x0,d,conf)
+function [x,y,p] = wave_field_imp(X,Y,x0,d,t,conf)
 %WAVE_FIELD_IMP returns the wave field in time domain of a loudspeaker array
 %
 %   Usage: [x,y,p] = wave_field_imp_nfchoa_25d(X,Y,x0,d,[conf])
@@ -8,14 +8,15 @@ function [x,y,p] = wave_field_imp(X,Y,x0,d,conf)
 %       Y           - length of the Y axis (m); single value or [ymin,ymax]
 %       x0          - positions of secondary sources
 %       d           - driving function of secondary sources
+%       t           - time (samples)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output options:
 %       x,y         - x- and y-axis of the wave field
 %       p           - wave field (length(y) x length(x))
 %
-%   WAVE_FIELD_IMP(X,Y,x0,d,conf) computes the wave field synthesized by a 
-%   loudspekaer array driven by individual driving functions.
+%   WAVE_FIELD_IMP(X,Y,x0,d,t,conf) computes the wave field synthesized by a 
+%   loudspekaer array driven by individual driving functions to the time t.
 %
 %   To plot the result use:
 %   conf.plot.usedb = 1;
@@ -55,10 +56,13 @@ function [x,y,p] = wave_field_imp(X,Y,x0,d,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
+nargmin = 5;
+nargmax = 6;
 narginchk(nargmin,nargmax);
 isargvector(X,Y);
+isargsecondarysource(x0);
+isargmatrix(d);
+isargscalar(t);
 
 if nargin<nargmax
     conf = SFS_config;
@@ -74,8 +78,6 @@ useplot = conf.useplot;
 c = conf.c;
 % Sampling rate
 fs = conf.fs;
-% Time frame to simulate
-frame = conf.frame;
 % Debug mode
 debug = conf.debug;
 
@@ -90,12 +92,7 @@ nls = size(x0,1);
 % time reversal of driving function due to propagation of sound
 % later parts of the driving function are emitted later by secondary
 % sources
-d = d(end:-1:1,:);
-
-% shift driving function
-for ii = 1:nls
-    d(:,ii) = delayline(d(:,ii)',-size(d,1)+frame,1,conf)';
-end
+%d = d(end:-1:1,:);
 
 % Apply bandbass filter
 if(0)
@@ -115,12 +112,16 @@ for ii = 1:nls
     % amplitude decay for a 3D monopole
     g = 1./(4*pi*r);
 
+    % shift driving function
+    %d(:,ii) = delayline(d(:,ii)',-size(d,1)+t,1,conf)';
+    d(:,ii) = delayline(d(:,ii)',t,1,conf)';
+
     % Interpolate the driving function w.r.t. the propagation delay from
     % the secondary sources to a field point.
     % NOTE: the interpolation is required to account for the fractional
     % delay times from the loudspeakers to the field points
-    t = 1:length(d(:,ii));
-    ds = interp1(t,d(:,ii),r/c*fs,'spline');
+    t_vector = 1:length(d(:,ii));
+    ds = interp1(t_vector,d(:,ii),r/c*fs,'spline');
 
     % ================================================================
     % Wave field p(x,t)
@@ -129,7 +130,7 @@ for ii = 1:nls
 end
 
 % === Checking of wave field ===
-check_wave_field(p,frame);
+check_wave_field(p,t);
 
 
 % === Plotting ===

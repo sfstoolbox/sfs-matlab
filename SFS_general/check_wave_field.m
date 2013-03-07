@@ -1,14 +1,14 @@
-function check_wave_field(P,frame)
+function check_wave_field(P,t)
 %CHECK_WAVE_FIELD checks if we have any activity in the wave field and returns a
 %   warning otherwise.
 %
-%   Usage: check_wave_field(P,frame)
+%   Usage: check_wave_field(P,t)
 %
 %   Input parameters:
 %       P       - wave field
-%       frame   - used time frame
+%       t       - time t (samples)
 %
-%   CHECK_WAVE_FIELD(P,frame) checks if the wave field is different from zero.
+%   CHECK_WAVE_FIELD(P,t) checks if the wave field is different from zero.
 %   If this is not the case it returns a warning.
 %
 %   see also: wave_field_imp_wfs_25d, norm_wave_field
@@ -51,13 +51,12 @@ nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
 isargmatrix(P);
-isargscalar(frame);
+isargscalar(t);
 
 
 %% ===== Computation =====================================================
 if max(abs(P(:)))==0 || all(isnan(P(:)))
     warning('SFS:check_wave_field',...
         ['The activity in the simulated wave field is zero. ',...
-         'Maybe you should use another time frame than %i. ', ...
-         'You can set the time frame with conf.frame.'],frame);
+         'Maybe you should use another time frame t than %i. '],t);
 end

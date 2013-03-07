@@ -26,10 +26,10 @@ function [x,y,p] = wave_field_imp(X,Y,x0,d,conf)
 %                         Deutsche Telekom Laboratories, TU Berlin           *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013      Institut für Nachrichtentechnik 
-%                         Universität Rostock
-%                         Richard-Wagner-Strasse 31, 18119 Rostock
-%
+% Copyright (c) 2013      Institut für Nachrichtentechnik                    * 
+%                         Universität Rostock                                *
+%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+%                                                                            *
 % This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
 %                                                                            *
 % The SFS is free software:  you can redistribute it and/or modify it  under *

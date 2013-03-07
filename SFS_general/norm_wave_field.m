@@ -59,6 +59,7 @@ end
 
 %% ===== Configuration ===================================================
 xref = position_vector(conf.xref);
+xysamples = conf.xysamples;
 
 
 %% ===== Computation =====================================================
@@ -72,13 +73,16 @@ elseif ~dimensions(2)
 end
     
 % Use the half of the x axis and xref
-[a,x1idx] = find(x1>=xref(1),1);
-[a,x2idx] = find(x2>=xref(2),1);
-if isempty(x1idx) || abs(x1(x1idx)-xref(1))>0.1
-    error('%s: your used conf.xref is out of your boundaries',upper(mfilename));
+[a,x1idx] = find(x1>xref(1),1);
+[a,x2idx] = find(x2>xref(2),1);
+% abs(x(1)-x(end))/xysamples gives us the maximum distance between to samples.
+% If abs(x(xidx)-xref(1)) is greater this indicates that we are out of our
+% bounds
+if isempty(x1idx) || abs(x1(x1idx)-xref(1))>2*abs(x1(1)-x1(end))/xysamples
+    error('%s: your used conf.xref is out of your X boundaries',upper(mfilename));
 end
-if isempty(x2idx) || abs(x2(x2idx)-xref(2))>0.1
-    error('%s: your used conf.xref is out of your boundaries',upper(mfilename));
+if isempty(x2idx) || abs(x2(x2idx)-xref(2))>2*abs(x2(1)-x2(end))/xysamples
+    error('%s: your used conf.xref is out of your Y boundaries',upper(mfilename));
 end
 % Scale signal to 1
 P = 1*P/abs(P(x2idx,x1idx));

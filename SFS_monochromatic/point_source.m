@@ -1,7 +1,7 @@
 function S = point_source(x,y,z,xs,f,conf)
 %POINT_SOURCE returns the Green's function for a point source
 %
-%   Usage: S = point_source(x,y,z,xs,omega,[conf])
+%   Usage: S = point_source(x,y,xs,f,[conf])
 %
 %   Input options:
 %       x,y,z   - x,y,z points for which the Green's function should be calculated

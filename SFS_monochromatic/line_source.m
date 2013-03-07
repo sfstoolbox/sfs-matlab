@@ -1,16 +1,16 @@
 function S = line_source(x,y,xs,f,conf)
 %LINE_SOURCE returns the Green's function for a line source
 %
-%   Usage: S = line_source(x,y,xs,ys,omega,[conf])
+%   Usage: S = line_source(x,y,xs,f,[conf])
 %
 %   Input options:
 %       x,y      - x,y points for which the Green's function should be calculated
-%       xs,ys    - position of the point source
-%       f        - frequency of the point source
+%       xs       - position of the line source
+%       f        - frequency of the line source
 %       conf     - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       S        - Wave field of a point source located at xs
+%       S        - Wave field of a line source located at xs
 %
 %   LINE_SOURCE(x,y,xs,f) calculates the wave field of a line source
 %   located at xs for the given points x,y and the frequency f. The wave

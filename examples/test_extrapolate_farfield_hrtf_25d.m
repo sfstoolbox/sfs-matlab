@@ -5,7 +5,7 @@
 % extrapolated dataset is compared.
 
 %% ===== Configuration ===================================================
-clear all; close all; clc;
+%clear all; close all; clc;
 conf = SFS_config;
 addirspath;
 conf.array = 'circle';
@@ -15,8 +15,8 @@ L = 2*R;
 nls = length(irs.apparent_azimuth);
 % potential error sources
 conf.usefracdelay = 0;
-conf.usetapwin = 1;
-conf.usehpre = 1;
+conf.usetapwin = 0;
+conf.usehpre = 0;
 %% ===== Computation =====================================================
 % far field extrapolation
 irs_pw = extrapolate_farfield_hrtfset_25d(irs,conf);

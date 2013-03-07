@@ -9,9 +9,14 @@ function versionnumber = SFS_version()
 %   See also: SFS_start, SFS_config
 
 %*****************************************************************************
-% Copyright (c) 2010-2012 Quality & Usability Lab                            *
+% Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
+%                         Assessment of IP-based Applications                *
 %                         Deutsche Telekom Laboratories, TU Berlin           *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+%                                                                            *
+% Copyright (c) 2013      Institut für Nachrichtentechnik                    *
+%                         Universität Rostock                                *
+%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
 % This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
 %                                                                            *
@@ -34,11 +39,6 @@ function versionnumber = SFS_version()
 %                                                                            *
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
-
-% AUTHOR: Hagen Wierstor
-% $LastChangedDate$
-% $LastChangedRevision$
-% $LastChangedBy$
 
 
 %% ===== Configuration ===================================================

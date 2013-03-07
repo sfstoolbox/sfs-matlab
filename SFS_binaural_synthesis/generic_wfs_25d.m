@@ -23,9 +23,14 @@ function ir = generic_wfs_25d(xs,src,L,conf)
 % see also: brs_wfs_25d, brs_point_source, auralize_ir
 
 %*****************************************************************************
-% Copyright (c) 2010-2012 Quality & Usability Lab                            *
+% Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
+%                         Assessment of IP-based Applications                *
 %                         Deutsche Telekom Laboratories, TU Berlin           *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+%                                                                            *
+% Copyright (c) 2013      Institut für Nachrichtentechnik                    *
+%                         Universität Rostock                                *
+%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
 % This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
 %                                                                            *

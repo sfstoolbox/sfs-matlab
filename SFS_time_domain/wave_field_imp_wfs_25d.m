@@ -80,7 +80,6 @@ end
 
 %% ===== Configuration ==================================================
 fs = conf.fs;
-debug = conf.debug;
 xref = position_vector(conf.xref);
 
 
@@ -88,15 +87,13 @@ xref = position_vector(conf.xref);
 % Get secondary sources
 x0 = secondary_source_positions(L,conf);
 x0 = secondary_source_selection(x0,xs,src,xref);
-nls = size(x0,1);
 % Generate tapering window
 win = tapering_window(x0,conf);
 
 % Get driving signals
-[d,weight,delay] = driving_function_imp_wfs_25d(x0,xs,src,conf);
-for ii = 1:size(x0,1)
-    d(:,ii) = d(:,ii)*win(ii);
-end
+[d,delay] = driving_function_imp_wfs_25d(x0,xs,src,conf);
+% Apply tapering window
+d = bsxfun(@times,d,win');
 
 % Setting time point to 0 for the first active secondary source
 t = t-max((max(delay)-delay)*fs);

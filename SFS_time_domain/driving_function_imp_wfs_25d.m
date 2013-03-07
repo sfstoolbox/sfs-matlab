@@ -1,7 +1,7 @@
-function [d,weight,delay] = driving_function_imp_wfs_25d(x0,xs,src,conf)
+function [d,delay,weight] = driving_function_imp_wfs_25d(x0,xs,src,conf)
 %DRIVING_FUNCTION_IMP_WFS_25D calculates the WFS 2.5D weighting and delaying
 %
-%   Usage: [weight,delay] = driving_function_imp_wfs_25d(x0,xs,src,[conf]);
+%   Usage: [d,delay,weight] = driving_function_imp_wfs_25d(x0,xs,src,[conf]);
 %
 %   Input parameters:
 %       x0      - position  and direction of secondary source (m)
@@ -14,14 +14,15 @@ function [d,weight,delay] = driving_function_imp_wfs_25d(x0,xs,src,conf)
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       weight  - weight (amplitude) of the driving function
+%       d       - driving signals
 %       delay   - delay of the driving function (s)
+%       weight  - weight (amplitude) of the driving function
 %
-%   DRIVING_FUNCTION_IMP_WFS_25D(x0,xs,src,conf) returns the
+%   DRIVING_FUNCTION_IMP_WFS_25D(x0,xs,src,conf) returns the driving signals and
 %   weighting and delay parameters of the WFS 2.5D driving function for the given
 %   source type and position and loudspeaker positions.
 %
-%   see also: wave_field_imp_wfs_25d, driving_function_mono_wfs_25d
+%   see also: wave_field_imp, wave_field_imp_wfs_25d, driving_function_mono_wfs_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

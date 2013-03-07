@@ -35,9 +35,14 @@ function x0 = secondary_source_positions(L,conf)
 % see also: secondary_source_selection, secondary_source_number, tapering_window
 
 %*****************************************************************************
-% Copyright (c) 2010-2012 Quality & Usability Lab                            *
+% Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
+%                         Assessment of IP-based Applications                *
 %                         Deutsche Telekom Laboratories, TU Berlin           *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+%                                                                            *
+% Copyright (c) 2013      Institut für Nachrichtentechnik                    *
+%                         Universität Rostock                                *
+%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
 % This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
 %                                                                            *

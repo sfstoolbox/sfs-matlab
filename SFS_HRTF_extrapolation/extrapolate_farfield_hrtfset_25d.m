@@ -89,6 +89,7 @@ irs_pw.left = zeros(size(irs_pw.left));
 irs_pw.right = zeros(size(irs_pw.right));
 irs_pw.distance = 'Inf';
 
+show_delay = zeros(360,180);
 % Generate a irs set for all given angles
 for ii = 1:length(irs.apparent_azimuth)
 
@@ -103,7 +104,7 @@ for ii = 1:length(irs.apparent_azimuth)
     win = tapering_window(x0,conf);
 
     % sum up contributions from individual virtual speakers
-    delay = [];
+%     delay = [];
     for l=1:size(x0,1)
         % Driving function to get weighting and delaying
         [a,delay(l)] = driving_function_imp_wfs_25d(x0(l,:),xs,'pw',conf);
@@ -115,9 +116,10 @@ for ii = 1:length(irs.apparent_azimuth)
         % delay and weight HRTFs
         irs_pw.left(:,ii) = irs_pw.left(:,ii) + delayline(irl',dt,w,conf)';
         irs_pw.right(:,ii) = irs_pw.right(:,ii) + delayline(irr',dt,w,conf)';
+        show_delay(ii,l) = delay(l)*fs;
     end
-    delay(1:3)*fs
-
+%     delay(1:3)*fs
+    save('show_delay','show_delay')
     %irs_pw.left(:,ii) = irs_pw.left(:,ii)*10^(Af(ii)/20);
     %irs_pw.right(:,ii) = irs_pw.right(:,ii)*10^(-Af(ii)/20);
 

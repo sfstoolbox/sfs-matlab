@@ -41,8 +41,8 @@ function [x,y,P,ls_activity] = wave_field_mono_nfchoa_25d(X,Y,Z,xs,src,f,L,conf)
 %                         Deutsche Telekom Laboratories, TU Berlin           *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013      Institut für Nachrichtentechnik                    *
-%                         Universität Rostock                                *
+% Copyright (c) 2013      Institut fuer Nachrichtentechnik                   *
+%                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
 % This file is part of the Sound Field Synthesis-Toolbox (SFS).              *

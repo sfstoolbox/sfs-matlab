@@ -30,8 +30,8 @@ function plot_wavefield(x,y,z,P,x0,ls_activity,conf)
 %                         Deutsche Telekom Laboratories, TU Berlin           *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013      Institut für Nachrichtentechnik                    *
-%                         Universität Rostock                                *
+% Copyright (c) 2013      Institut fuer Nachrichtentechnik                   *
+%                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
 % This file is part of the Sound Field Synthesis-Toolbox (SFS).              *

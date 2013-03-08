@@ -89,10 +89,6 @@ else
     hpre = 1; % dirac pulse
 end
 
-% Calculate driving function prototype
-% FIXME: check if the zeros at the end are long enough
-d_proto = [hpre zeros(1,800)];
-
 % Secondary source positions and directions
 nx0 = x0(:,4:6);
 x0 = x0(:,1:3);
@@ -132,6 +128,10 @@ elseif strcmp('fs',src)
 else
     error('%s: %s is not a known source type.',upper(mfilename),src);
 end
+
+% Calculate driving function prototype
+% FIXME: check if the zeros at the end are long enough
+d_proto = [hpre zeros(1,800)];
 d = zeros(length(d_proto),size(x0,1));
 for ii=1:size(x0,1)
     % Shift and weight prototype driving function

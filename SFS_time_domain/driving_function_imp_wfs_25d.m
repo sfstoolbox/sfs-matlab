@@ -92,48 +92,61 @@ end
 % FIXME: check if the zeros at the end are long enough
 d_proto = [hpre zeros(1,800)];
 
+nx0 = x0(:,4:6);
+x0 = x0(:,1:3);
 
-% Loop over all secondary sources
-x0_all = x0;
-for ii = 1:size(x0_all,1)
-    % Direction and position of secondary sources
-    nx0 = x0_all(ii,4:6);
-    x0 = x0_all(ii,1:3);
+xref = repmat(xref,[size(x0,1) 1]);
+xs = repmat(xs,[size(x0,1) 1]);
+% Do it without a loop
+g0 = sqrt(2*pi*vector_norm(xref-x0,2));
 
-    % Constant amplitude factor
-    g0 = sqrt(2*pi*norm(xref-x0));
-
-    % Get the delay and weighting factors
-    if strcmp('pw',src)
-        % === Plane wave ===
-        % Direction of plane wave
-        nxs = xs / norm(xs);
-        % Delay and amplitude weight
-        % NOTE: <n_pw,n(x0)> is the same as the cosinus between their angle
-        delay(ii) = 1/c * nxs*x0';
-        weight(ii) = 2*g0 * nxs*nx0';
-
-    elseif strcmp('ps',src)
-        % === Point source ===
-        % Distance between loudspeaker and virtual source
-        r = norm(x0-xs);
-        % Delay and amplitude weight
-        delay(ii) = r/c;
-        weight(ii) = g0/(2*pi)*(x0-xs)*nx0'*r^(-3/2);
-
-    elseif strcmp('fs',src)
-        % === Focused source ===
-        % Distance between loudspeaker and virtual source
-        r = norm(x0-xs);
-        % Delay and amplitude weight
-        delay(ii) =  -r/c;
-        weight(ii) = g0/(2*pi)*(x0-xs)*nx0'*r^(-3/2);
-    else
-        error('%s: %s is not a known source type.',upper(mfilename),src);
-    end
+if strcmp('pw',src)
+    nxs = bsxfun(@rdivide,xs,vector_norm(xs,2));
+    delay = 1/c * vector_product(nxs,x0,2);
+    weight = 2*g0 .* vector_product(nxs,nx0,2);
 end
+
+% % Loop over all secondary sources
+% x0_all = x0;
+% for ii = 1:size(x0_all,1)
+%     % Direction and position of secondary sources
+%     nx0 = x0_all(ii,4:6);
+%     x0 = x0_all(ii,1:3);
+% 
+%     % Constant amplitude factor
+%     g0 = sqrt(2*pi*norm(xref-x0));
+% 
+%     % Get the delay and weighting factors
+%     if strcmp('pw',src)
+%         % === Plane wave ===
+%         % Direction of plane wave
+%         nxs = xs / norm(xs);
+%         % Delay and amplitude weight
+%         % NOTE: <n_pw,n(x0)> is the same as the cosinus between their angle
+%         delay(ii) = 1/c * nxs*x0';
+%         weight(ii) = 2*g0 * nxs*nx0';
+% 
+%     elseif strcmp('ps',src)
+%         % === Point source ===
+%         % Distance between loudspeaker and virtual source
+%         r = norm(x0-xs);
+%         % Delay and amplitude weight
+%         delay(ii) = r/c;
+%         weight(ii) = g0/(2*pi)*(x0-xs)*nx0'*r^(-3/2);
+% 
+%     elseif strcmp('fs',src)
+%         % === Focused source ===
+%         % Distance between loudspeaker and virtual source
+%         r = norm(x0-xs);
+%         % Delay and amplitude weight
+%         delay(ii) =  -r/c;
+%         weight(ii) = g0/(2*pi)*(x0-xs)*nx0'*r^(-3/2);
+%     else
+%         error('%s: %s is not a known source type.',upper(mfilename),src);
+%     end
+% end
 d = zeros(length(d_proto),size(x0,1));
-for ii=1:size(x0_all,1)
+for ii=1:size(x0,1)
     % Shift and weight prototype driving function
     % - less delay in driving function is more propagation time in sound
     %   field, hence the sign of the delay has to be reversed in the

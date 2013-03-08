@@ -1,4 +1,4 @@
-function ir = get_ir(irs,phi,delta)
+function ir = get_ir(irs,xs,coordinate_system)
 %GET_IR returns a IR for the given apparent angle
 %
 %   Usage: ir = get_ir(irs,phi,[delta])
@@ -67,10 +67,18 @@ prec = 0.1; % degree
 
 %% ===== Computation ====================================================
 
+% === Coordinate system conversion ===
+if strcmp(coordinate_system,'cart')
+    [phi,theta,r] = cart2sph(xs(1),xs(2),xs(3));
+else
+    phi = xs(1);
+    theta = xs(2);
+    r = xs(3);
+end
 % === Check the given angles ===
 % Ensure -pi <= phi < pi and -pi/2 <= delta <= pi/2
 phi = correct_azimuth(phi);
-delta = correct_elevation(delta);
+theta = correct_elevation(theta);
 
 % === IR interpolation ===
 % Check if the IR dataset contains a measurement for the given angles
@@ -80,21 +88,21 @@ delta = correct_elevation(delta);
 % If azimuth and elevation could be found
 idx = findrows(...
     roundto([irs.apparent_azimuth' irs.apparent_elevation'],prec),...
-    roundto([phi,delta],prec));
+    roundto([phi,theta],prec));
 if idx
     if length(idx)>1
         error(['%s: the irs data set has more than one entry corresponding ',...
                'an azimuth of %.3f deg and an elevation of %.3f deg.'],...
-            upper(mfilename),degree(phi),degree(delta));
+            upper(mfilename),degree(phi),degree(theta));
     end
     ir(:,1) = irs.left(:,idx);
     ir(:,2) = irs.right(:,idx);
 
 % If only elevation angle could be found
 elseif findrows(roundto(irs.apparent_elevation',prec), ...
-                roundto(delta,prec))
+                roundto(theta,prec))
     idx = findrows(roundto(irs.apparent_elevation',prec), ...
-                   roundto(delta,prec));
+                   roundto(theta,prec));
 
     % === Interpolation of the azimuth ===
     % Get the IR set for the elevation delta
@@ -151,14 +159,14 @@ elseif findrows(roundto(irs.apparent_azimuth',prec),...
     % Find the nearest value smaller than delta
     % Note: this requieres monotonic increasing values of delta in
     % irs.apparent_delta(idx)
-    idx1 = find(irs.apparent_elevation<delta,1,'last');
+    idx1 = find(irs.apparent_elevation<theta,1,'last');
     if(isempty(idx1))
         error(['%s: there is no elevation avaialble which is smaller ',...
                'than your given delta value.'],upper(mfilename));
     end
 
     % Find the nearest value larger than delta
-    idx2 = find(irs.apparent_elevation>delta,1,'first');
+    idx2 = find(irs.apparent_elevation>theta,1,'first');
     if(isempty(idx2))
         error(['%s: there is no elevation avaialble which is greater ',...
                'than your given delta value.'],upper(mfilename));
@@ -182,7 +190,7 @@ elseif findrows(roundto(irs.apparent_azimuth',prec),...
         degree(irs.apparent_elevation(idx1)),...
         degree(irs.apparent_elevation(idx2)));
     ir = intpol_ir(ir1,irs.apparent_elevation(idx1),...
-        ir2,irs.apparent_elevation(idx2),delta);
+        ir2,irs.apparent_elevation(idx2),theta);
 
 else
     error(['%s: at the moment interpolation for azimuth and elevation ',...

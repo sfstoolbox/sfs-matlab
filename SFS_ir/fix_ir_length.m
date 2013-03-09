@@ -67,7 +67,7 @@ lenir = length(ir(:,1));
 dt = round(dt);
 % append zeros if to short
 if(lenir<N+abs(dt))
-    ir = cat(1,ir,zeros(N-lenir,2));
+    ir = cat(1,ir,zeros(N-lenir,size(ir,2)));
 % remove the end of the IR, if to long
 else
     ir=ir(1:N,:);

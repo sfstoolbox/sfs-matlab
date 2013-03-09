@@ -1,4 +1,4 @@
-function ir_wfs = ir_wfs_25d(X,phi,xs,src,L,irs,conf)
+function ir = ir_wfs_25d(X,phi,xs,src,L,irs,conf)
 %BRS_WFS_25D Generate a IR for WFS
 %
 %   Usage: ir_wfs = ir_wfs_25d(X,phi,xs,src,L,irs,[conf])
@@ -16,7 +16,7 @@ function ir_wfs = ir_wfs_25d(X,phi,xs,src,L,irs,conf)
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       iri_wfs - Impulse response for the desired WFS array (nx2 matrix)
+%       ir      - Impulse response for the desired WFS array (nx2 matrix)
 %
 %   IR_WFS_25D(X,phi,xs,src,L,irs,conf) calculates a binaural room impulse
 %   response for a virtual source at xs for a virtual WFS array and a

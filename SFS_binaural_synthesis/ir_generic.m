@@ -85,43 +85,21 @@ ir_generic = zeros(N,2);
 warning('off','SFS:irs_intpol');
 for ii=1:size(x0,1)
 
-    % === Secondary source model: Greens function ===
-    g = 1./(4*pi*norm(X-x0(ii,1:3)));
-
-    % === Secondary source angle ===
-    % Calculate the angle between the given loudspeaker and the listener.
-    % This is needed for the HRIR dataset.
-    %
-    %                             y-axis
-    %                               ^
-    %                               |
-    %                               |
-    %                               |
-    %            [X Y], phi=0       |
-    %              O------------    |  a = alpha
-    %               \ a |           |  tan(alpha) = (y0-Y)/(x0-X)
-    %                \ /            |
-    %                 \             |
-    %                  \            |
-    %   -------v--v--v--v--v--v--v--v--v--v--v--v--v--v--v------> x-axis
-    %                [x0 y0]
-    %
-    % Angle between listener and secondary source (-pi < alpha <= pi)
-    % Note: phi is the orientation of the listener (see first graph)
-    [alpha,theta_tmp,r_tmp] = cart2sph(x0(ii,1)-X(1),x0(ii,2)-X(2),0);
-    
     % direction of the source from the listener
-    x_direction = x0-X;
-    %
-    % Ensure -pi <= alpha < pi
+    x_direction = x0(ii,1:3)-X;
+    % change to spherical coordinates
+    [alpha,theta,r] = cart2sph(x_direction(1),x_direction(2),x_direction(3));
+
+    % === Secondary source model: Greens function ===
+    g = 1./(4*pi*r);
+
+    % Incoporate head orientation and ensure -pi <= alpha < pi
     alpha = correct_azimuth(alpha-phi);
 
     % === IR interpolation ===
     % Get the desired IR.
     % If needed interpolate the given IR set
-    ir = get_ir(irs,alpha,0);
-    % FIXME: add handling for IRs with different distances!!!
-    % Maybe this should go directly in the get_ir function.
+    ir = get_ir(irs,[alpha,theta,r]);
 
     % === Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay ===
     ir_generic(:,1) = ir_generic(:,1) + fix_ir_length(conv(ir(:,1),d(:,ii)),N) .* g;

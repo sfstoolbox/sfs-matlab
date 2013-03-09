@@ -1,5 +1,8 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
+    - fixed a critical bug for the HRTF farfield extrapolation, due to the new
+      secondary source selection behavior
+
 0.2.2 (27 November 2012)
 
     - added functions to calculate the sound pressure for monochromatic WFS at a

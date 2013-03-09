@@ -1,18 +1,18 @@
-function d = get_ir_distance(irs,phi,delta)
+function d = get_ir_distance(irs,xs,coordinate_system)
 %GET_IR_DISTANCE returns the distance for the given apparent angle
 %
-%   Usage: ir = get_ir_distance(irs,phi,[delta])
+%   Usage: ir = get_ir_distance(irs,phi,[theta])
 %
 %   Input parameters:
 %       irs     - IR data set
 %       phi     - azimuth angle for the desired IR (rad)
-%       delta   - elevation angle for the desired IR (rad)
+%       theta   - elevation angle for the desired IR (rad)
 %
 %   Output parameters:
 %       d       - distace for the given angles
 %
-%   GET_IR_DISTANCE(irs,phi,delta) returns the distance for the given angles
-%   phi and delta. If the desired angles are not present in the IR data set an
+%   GET_IR_DISTANCE(irs,phi,theta) returns the distance for the given angles
+%   phi and theta. If the desired angles are not present in the IR data set an
 %   interpolation is applied to create the desired angles.
 %
 %   see also: get_ir, read_irs, slice_irs, ir_intpol
@@ -55,16 +55,25 @@ nargmin = 2;
 nargmax = 3;
 narginchk(nargmin,nargmax)
 if nargin==nargmax-1
-    delta = 0;
+    coordinate_system = 'spherical';
 end
 
 
 %% ===== Computation ====================================================
 
+% === Coordinate system conversion ===
+if strcmp(coordinate_system,'cartesian') || strcmp(coordinate_system,'cart')
+    [phi,theta,r] = cart2sph(xs(1),xs(2),xs(3));
+else
+    phi = xs(1);
+    theta = xs(2);
+    r = xs(3);
+end
+
 % === Check the given angles ===
-% Ensure -pi <= phi < pi and -pi/2 <= delta <= pi/2
+% Ensure -pi <= phi < pi and -pi/2 <= theta <= pi/2
 phi = correct_azimuth(phi);
-delta = correct_elevation(delta);
+theta = correct_elevation(theta);
 
 % Check if we have only one distance for the whole irs set and return that
 % value
@@ -75,7 +84,7 @@ end
 
 % === IR interpolation ===
 % Check if the IR dataset contains a measurement for the given angles
-% phi and delta. If this is not the case, interpolate the dataset for the given
+% phi and theta. If this is not the case, interpolate the dataset for the given
 % angles.
 
 % If we have found the both angles
@@ -85,32 +94,32 @@ prec = 0.1; % which is ca. 0.1 degree
 % If azimuth and elevation could be found
 idx = findrows(...
     roundto([irs.apparent_azimuth' irs.apparent_elevation'],prec),...
-    roundto([phi,delta],prec));
+    roundto([phi,theta],prec));
 if idx
     if length(idx)>1
         error(['%s: the irs data set has more than one entry corresponding ',...
                'an azimuth of %.3f and an elevation of %.3f.'],...
-            upper(mfilename),degree(phi),degree(delta));
+            upper(mfilename),degree(phi),degree(theta));
     end
     d = irs.distance(idx);
 
 % If only the elevation angle is found
 elseif findrows(roundto(irs.apparent_elevation',prec), ...
-                roundto(delta,prec))
+                roundto(theta,prec))
         idx = findrows(roundto(irs.apparent_elevation',prec), ...
-                       roundto(delta,prec));
+                       roundto(theta,prec));
 
     % === Interpolation of the azimuth ===
-    % Get the IR set for the elevation delta
+    % Get the IR set for the elevation theta
     irs = slice_irs(irs,idx);
 
     % Find the nearest value smaller than phi
     % Note: this requieres monotonic increasing values of phi in
-    % azimuth(idx_delta)
+    % azimuth(idx_theta)
     idx1 = find(irs.apparent_azimuth<phi,1,'last');
     if(isempty(idx1))
         % If no value is smaller than phi, use the largest value in
-        % azimuth(idx_delta), because of the 0..2pi cicle
+        % azimuth(idx_theta), because of the 0..2pi cicle
         idx1 = length(irs.apparent_azimuth(idx));
     end
 
@@ -118,13 +127,13 @@ elseif findrows(roundto(irs.apparent_elevation',prec), ...
     idx2 = find(irs.apparent_azimuth>phi,1,'first');
     if(isempty(idx2))
         % If no value is greater than phi, use the smallest value in
-        % azimuth(idx_delta), because of the 0..2pi cicle
+        % azimuth(idx_theta), because of the 0..2pi cicle
         idx2 = 1;
     end
 
     if idx1==idx2
         error('%s: we have only one apparent_azimuth angle: %f.',...
-            upper(mfilename),irs_delta.apparent_azimuth(idx1));
+            upper(mfilename),irs_theta.apparent_azimuth(idx1));
     end
 
     % Get the single distance corresponding to idx1
@@ -151,25 +160,25 @@ elseif findrows(roundto(irs.apparent_azimuth',prec), ...
     % Get the IR set for the azimuth phi
     irs = slice_irs(irs,idx);
 
-    % Find the nearest value smaller than delta
-    % Note: this requieres monotonic increasing values of delta in
-    % irs.apparent_delta(idx)
-    idx1 = find(irs.apparent_elevation<delta,1,'last');
+    % Find the nearest value smaller than theta
+    % Note: this requieres monotonic increasing values of theta in
+    % irs.apparent_theta(idx)
+    idx1 = find(irs.apparent_elevation<theta,1,'last');
     if(isempty(idx1))
         error(['%s: there is no elevation avaialble which is smaller ',...
-               'than your given delta value.'],upper(mfilename));
+               'than your given theta value.'],upper(mfilename));
     end
 
-    % Find the nearest value larger than delta
-    idx2 = find(irs.apparent_elevation>delta,1,'first');
+    % Find the nearest value larger than theta
+    idx2 = find(irs.apparent_elevation>theta,1,'first');
     if(isempty(idx2))
         error(['%s: there is no elevation avaialble which is greater ',...
-               'than your given delta value.'],upper(mfilename));
+               'than your given theta value.'],upper(mfilename));
     end
 
     if idx1==idx2
         error('%s: we have only one apparent_elevation angle: %f.',...
-            upper(mfilename),irs_delta.apparent_azimuth(idx1));
+            upper(mfilename),irs_theta.apparent_azimuth(idx1));
     end
 
     % Get the single distance corresponding to idx1

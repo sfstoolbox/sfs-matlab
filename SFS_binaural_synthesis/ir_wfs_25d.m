@@ -22,23 +22,6 @@ function ir_wfs = ir_wfs_25d(X,phi,xs,src,L,irs,conf)
 %   response for a virtual source at xs for a virtual WFS array and a
 %   listener located at X.
 %
-%   Geometry (for a linear array):
-%
-%                               y-axis
-%                                 ^
-%                                 |
-%                                 |
-%                                 |    (Listener)
-%                                 |        O X, phi=-pi/2
-%                                 |        |
-%                                 |
-%                  o xs           |
-%             (Virtual Source)    |
-%                                 |
-%     -------v--v--v--v--v--v--v--v--v--v--v--v--v--v--v------> x-axis
-%                                 X0 (Array center)
-%            |---      Loudspeaker array length     ---|
-%
 % see also: brs_wfs_25d, ir_point_source, auralize_ir
 
 %*****************************************************************************
@@ -91,7 +74,6 @@ end
 
 
 %% ===== Computation =====================================================
-
 % Get secondary sources
 x0 = secondary_source_positions(L,conf);
 x0 = secondary_source_selection(x0,xs,src,xref);

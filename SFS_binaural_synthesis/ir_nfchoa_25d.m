@@ -1,5 +1,5 @@
 function ir = ir_nfchoa_25d(X,phi,xs,src,L,irs,conf)
-%IR_NFCHOA_25D Generate a IR for HOA
+%IR_NFCHOA_25D Generate a IR for NFCHOA
 %
 %   Usage: ir = ir_nfchoa_25d(X,phi,xs,src,L,irs,[conf])
 %
@@ -18,7 +18,7 @@ function ir = ir_nfchoa_25d(X,phi,xs,src,L,irs,conf)
 %       ir      - Impulse response for the desired HOA synthesis (nx2 matrix)
 %
 %   IR_NFCHOA_25D(X,phi,xs,src,L,irs,conf) calculates a binaural room impulse
-%   response for a virtual source at xs for a virtual HOA array and a
+%   response for a virtual source at xs for a virtual NFCHOA array and a
 %   listener located at X.
 %
 %   see also: brs_nfchoa_25d, ir_wfs_25d, ir_point_source, auralize_ir
@@ -73,11 +73,10 @@ end
 
 
 %% ===== Configuration ==================================================
-N = conf.N;                   % target length of BRS impulse responses
+N = conf.N;                   % target length of IR impulse responses
 
 
 %% ===== Variables ======================================================
-phi = correct_azimuth(phi);
 % Loudspeaker positions
 x0 = secondary_source_positions(L,conf);
 

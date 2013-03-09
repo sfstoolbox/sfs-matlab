@@ -9,17 +9,15 @@ function ir = get_ir(irs,xs,coordinate_system,conf)
 %                             cartesian coordinates
 %       coordinate_system   - 'spherical' (default)
 %                             'cartesian'
-%       phi     - azimuth angle for the desired IR (rad)
-%       theta   - elevation angle for the desired IR (rad)
 %
 %   Output parameters:
 %       ir      - IR for the given source position (length of IR x 2)
 %
 %   GET_IR(irs,xs,coordinate_system) returns a single IR pair for the given
 %   source position. The source position can be specified in spherical
-%   coordinates in the form [phi theta r] in rad and meter. Alternativ you can
+%   coordinates in the form [phi theta r] in rad and meter. Alternatively you can
 %   specify 'cartesian' as coordinate system and the position vector is then
-%   [x y z9 in meter. If the desired angles are not present in the IR data set an
+%   [x y z] in meter. If the desired angles are not present in the IR data set an
 %   interpolation is applied to create the desired angles. The radius, that is
 %   the distance of the source, is extrapolated by delaying and weighting with
 %   1/r.

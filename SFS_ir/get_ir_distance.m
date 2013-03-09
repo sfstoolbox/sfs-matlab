@@ -1,18 +1,23 @@
 function d = get_ir_distance(irs,xs,coordinate_system)
-%GET_IR_DISTANCE returns the distance for the given apparent angle
+%GET_IR_DISTANCE returns the distance for the given source position
 %
-%   Usage: ir = get_ir_distance(irs,phi,[theta])
+%   Usage: ir = get_ir_distance(irs,xs,coordinate_system)
 %
 %   Input parameters:
-%       irs     - IR data set
-%       phi     - azimuth angle for the desired IR (rad)
-%       theta   - elevation angle for the desired IR (rad)
+%       irs                 - IR data set
+%       xs                  - position of source in spherical (default) or
+%                             cartesian coordinates
+%       coordinate_system   - 'spherical' (default)
+%                             'cartesian'
 %
 %   Output parameters:
 %       d       - distace for the given angles
 %
-%   GET_IR_DISTANCE(irs,phi,theta) returns the distance for the given angles
-%   phi and theta. If the desired angles are not present in the IR data set an
+%   GET_IR_DISTANCE(irs,xs,coordinate_system) returns the distance for the
+%   given source position. The source position can be specified in spherical
+%   coordinates in the form [phi theta r] in rad and meter. Alternatively you can
+%   specify 'cartesian' as coordinate system and the position vector is then
+%   [x y z] in meter. If the desired angles are not present in the IR data set an
 %   interpolation is applied to create the desired angles.
 %
 %   see also: get_ir, read_irs, slice_irs, ir_intpol

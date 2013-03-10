@@ -71,21 +71,5 @@ else
 end
 
 
-%% ===== Configuration ==================================================
-% Plotting result
-useplot = conf.useplot;
-
-
 %% ===== Computation ====================================================
-% Create a x-y-grid to avoid a loop
-[xx,yy,x,y] = xy_grid(X,Y,conf);
-% Source model for a line source G_2D(x,omega)
-P = line_source(xx,yy,xs,f);
-% Scale signal (at yref)
-P = norm_wave_field(P,x,y,conf);
-
-
-% ===== Plotting =========================================================
-if(useplot)
-    plot_wavefield(x,y,P,conf);
-end
+[x,y,P] = wave_field_mono_2d(X,Y,[xs 0 1 0],1,f,conf);

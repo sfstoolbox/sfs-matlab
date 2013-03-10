@@ -1,39 +1,35 @@
-function [x,y,P,x0,win] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,conf)
-%WAVE_FIELD_MONO_WFS_25D simulates a wave field for 2.5D WFS
+function [x,y,P] = wave_field_mono_3(X,Y,x0,D,f,conf)
+%WAVE_FIELD_MONO_3D simulates a monofrequent wave field for point sources as
+%secondary sources
 %
-%   Usage: [x,y,P,x0,win] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,[conf])
+%   Usage: [x,y,P] = wave_field_mono_3d(X,Y,x0,D,f,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
 %       Y           - [ymin,ymax]
-%       xs          - position of point source (m)
-%       src         - source type of the virtual source
-%                         'pw' - plane wave (xs is the direction of the
-%                                plane wave in this case)
-%                         'ps' - point source
-%                         'fs' - focused source
+%       x0          - secondary sources [n x 6]
+%       D           - driving signals for the secondary sources [m x n]
 %       f           - monochromatic frequency (Hz)
-%       L           - array length (m)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       x           - corresponding x axis
 %       y           - corresponding y axis
 %       P           - Simulated wave field
-%       win         - tapering window of the secondary sources
 %
-%   WAVE_FIELD_MONO_WFS_25D(X,Y,xs,L,f,src,conf) simulates a wave
-%   field of the given source type (src) using a WFS 2.5 dimensional driving
-%   function in the temporal domain. This means by calculating the integral for
-%   P with a summation.
+%   WAVE_FIELD_MONO(X,Y,x0,D,f,conf) simulates a wave field for the given
+%   secondary sources, driven by the corresponding driving signals. Point
+%   sources are applied as source models for the secondary sources.The
+%   simulation is done for one frequency in the frequency domain, by
+%   calculating the integral for P with a summation.
+%   
 %   To plot the result use plot_wavefield(x,y,P).
 %
 %   References:
-%       Spors2009 - Physical and Perceptual Properties of Focused Sources in
-%           Wave Field Synthesis (AES127)
+%       
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: plot_wavefield, wave_field_imp_wfs_25d
+%   see also: plot_wavefield, wave_field_mono_wfs_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -69,40 +65,58 @@ function [x,y,P,x0,win] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 7;
+nargmin = 5;
+nargmax = 6;
 narginchk(nargmin,nargmax);
-isargvector(X,Y);
-xs = position_vector(xs);
-isargpositivescalar(L,f);
-isargchar(src);
+isargvector(X,Y,D);
+isargsecondarysource(x0);
+isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
 else
     isargstruct(conf);
 end
+if size(x0,1)~=length(D)
+    error(['%s: The number of secondary sources (%i) and driving ', ...
+        'signals (%i) does not correspond.'], ...
+        upper(mfilename),size(x0,1),length(D));
+end
 
 
 %% ===== Configuration ==================================================
+% Plotting result
 useplot = conf.useplot;
-xref = conf.xref;
 
 
 %% ===== Computation ====================================================
-% Get the position of the loudspeakers and its activity
-x0 = secondary_source_positions(L,conf);
-x0 = secondary_source_selection(x0,xs,src,xref);
-% Generate tapering window
-win = tapering_window(x0,conf);
-% Driving function
-D = driving_function_mono_wfs_25d(x0,xs,src,f,conf) .* win;
-% Wave field
-% disable plotting, in order to integrate the tapering window
-conf.useplot = 0;
-[x,y,P] = wave_field_mono_3d(X,Y,x0,D,f,conf);% calculate wave field
+% Create a x-y-grid
+[xx,yy,x,y] = xy_grid(X,Y,conf);
+% Initialize empty wave field
+P = zeros(length(y),length(x));
+% Integration over secondary source positions
+for ii = 1:size(x0,1)
 
+    % ====================================================================
+    % Secondary source model G(x-x0,omega)
+    % This is the model for the loudspeakers we apply. We use closed cabinet
+    % loudspeakers and therefore point sources.
+    G = point_source(xx,yy,x0(ii,1:3),f);
+
+    % ====================================================================
+    % Integration
+    %              /
+    % P(x,omega) = | D(x0,omega) G(x-x0,omega) dx0
+    %              /
+    %
+    % see: Spors2009, Williams1993 p. 36
+    P = P + D(ii).*G;
+
+end
+
+% === Scale signal (at xref) ===
+P = norm_wave_field(P,x,y,conf);
 
 % ===== Plotting =========================================================
 if(useplot)
-    plot_wavefield(x,y,P,x0,win,conf);
+    plot_wavefield(x,y,P,x0,conf);
 end

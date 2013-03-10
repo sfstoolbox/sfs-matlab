@@ -81,6 +81,7 @@ end
 %% ===== Configuration ==================================================
 fs = conf.fs;
 xref = position_vector(conf.xref);
+useplot = conf.useplot;
 
 
 %% ===== Computation =====================================================
@@ -98,5 +99,13 @@ d = bsxfun(@times,d,win');
 % Setting time point to 0 for the first active secondary source
 t = t-max((max(delay)-delay)*fs);
 
+% disable plotting in order to integrate the tapering window
+conf.useplot = 0;
 % Calculate wave field
 [x,y,p] = wave_field_imp(X,Y,x0,d,t,conf);
+
+
+%% ===== Plotting ========================================================
+if useplot
+    plot_wavefield(x,y,p,x0,win);
+end

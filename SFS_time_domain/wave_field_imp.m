@@ -63,13 +63,16 @@ isargvector(X,Y);
 isargsecondarysource(x0);
 isargmatrix(d);
 isargscalar(t);
-
 if nargin<nargmax
     conf = SFS_config;
 else
     isargstruct(conf);
 end
-
+if size(x0,1)~=size(d,2)
+    error(['%s: The number of secondary sources (%i) and driving ', ...
+        'signals (%i) does not correspond.'], ...
+        upper(mfilename),size(x0,1),size(d,2));
+end
 
 %% ===== Configuration ==================================================
 % Plotting result
@@ -83,8 +86,6 @@ debug = conf.debug;
 
 
 %% ===== Computation =====================================================
-% Get number of secondary sources
-nls = size(x0,1);
 
 % Spatial grid
 [xx,yy,x,y] = xy_grid(X,Y,conf);
@@ -103,7 +104,7 @@ end
 p = zeros(length(y),length(x));
 
 % Integration over loudspeaker
-for ii = 1:nls
+for ii = 1:size(x0,1)
 
     % ================================================================
     % Secondary source model: Greens function g3D(x,t)

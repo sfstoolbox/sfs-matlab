@@ -92,33 +92,7 @@ x0 = secondary_source_positions(L,conf);
 x0 = secondary_source_selection(x0,xs,src,xref);
 % Generate tapering window
 win = tapering_window(x0,conf);
-% Initialize empty wave field
-% FIXME: it could be that length is not enough here and we need size(...)
-P = zeros(length(y),length(x));
-% Integration over secondary source positions
-for ii = 1:size(x0,1)
-
-    % ====================================================================
-    % Secondary source model G(x-x0,omega)
-    % This is the model for the loudspeakers we apply. We use closed cabinet
-    % loudspeakers and therefore point sources.
-    G = point_source(x,y,x0(ii,1:3),f);
-
-    % ====================================================================
-    % Driving function D(x0,omega)
-    D = driving_function_mono_wfs_25d(x0(ii,:),xs,src,f,conf);
-
-    % ====================================================================
-    % Integration
-    %              /
-    % P(x,omega) = | D(x0,omega) G(x-x0,omega) dx0
-    %              /
-    %
-    % see: Spors2009, Williams1993 p. 36
-    %
-    % NOTE: win(ii) is the factor of the tapering window in order to have fewer
-    % truncation artifacts. If you don't use a tapering window win(ii) will
-    % always be one.
-    P = P + win(ii)*D.*G;
-
-end
+% Driving function
+D = driving_function_mono_wfs_25d(x0,xs,src,f,conf) .* win;
+% Wave field
+[x,y,P] = wave_field_mono([x x],[y y],x0,D,f,conf);

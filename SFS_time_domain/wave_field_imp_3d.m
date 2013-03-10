@@ -62,8 +62,7 @@ nargmin = 5;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargvector(X,Y);
-isargsecondarysource(x0);
-isargmatrix(d);
+isargmatrix(x0,d);
 isargscalar(t);
 if nargin<nargmax
     conf = SFS_config;

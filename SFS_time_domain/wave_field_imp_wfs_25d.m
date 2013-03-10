@@ -102,7 +102,7 @@ t = t-max((max(delay)-delay)*fs);
 % disable plotting in order to integrate the tapering window
 conf.useplot = 0;
 % Calculate wave field
-[x,y,p] = wave_field_imp(X,Y,x0,d,t,conf);
+[x,y,p] = wave_field_imp_3d(X,Y,x0,d,t,conf);
 
 
 %% ===== Plotting ========================================================

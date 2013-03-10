@@ -85,4 +85,4 @@ x0 = secondary_source_positions(L,conf);
 d = driving_function_imp_nfchoa_25d(x0,xs,src,L,conf);
 
 % Calculate wave field
-[x,y,p] = wave_field_imp(X,Y,x0,d,t,conf);
+[x,y,p] = wave_field_imp_3d(X,Y,x0,d,t,conf);

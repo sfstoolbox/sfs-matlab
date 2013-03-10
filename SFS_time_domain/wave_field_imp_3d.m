@@ -1,7 +1,8 @@
-function [x,y,p] = wave_field_imp(X,Y,x0,d,t,conf)
-%WAVE_FIELD_IMP returns the wave field in time domain of a loudspeaker array
+function [x,y,p] = wave_field_imp_3d(X,Y,x0,d,t,conf)
+%WAVE_FIELD_IMP_3D returns the wave field in time domain with point sources as
+%secondary sources
 %
-%   Usage: [x,y,p] = wave_field_imp_nfchoa_25d(X,Y,x0,d,[conf])
+%   Usage: [x,y,p] = wave_field_imp_3d(X,Y,x0,d,[conf])
 %
 %   Input options:
 %       X           - length of the X axis (m); single value or [xmin,xmax]
@@ -15,8 +16,9 @@ function [x,y,p] = wave_field_imp(X,Y,x0,d,t,conf)
 %       x,y         - x- and y-axis of the wave field
 %       p           - wave field (length(y) x length(x))
 %
-%   WAVE_FIELD_IMP(X,Y,x0,d,t,conf) computes the wave field synthesized by a 
-%   loudspekaer array driven by individual driving functions to the time t.
+%   WAVE_FIELD_IMP(X,Y,x0,d,t,conf) computes the wave field synthesized by 
+%   secondary sources driven by individual driving functions to the time t.
+%   Point sources are applied as source models for the secondary sources.
 %
 %   To plot the result use:
 %   conf.plot.usedb = 1;

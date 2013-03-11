@@ -1,14 +1,14 @@
-function draw_loudspeakers(x0,ls_activity,conf)
+function draw_loudspeakers(x0,win,conf)
 %DRAW_LOUDSPEAKERS draws loudspeaker symbols or "x" at the given positions
 %
-%   Usage: draw_loudspeakers(x0,ls_activity,[conf])
+%   Usage: draw_loudspeakers(x0,win,[conf])
 %
 %   Input options:
 %       x0          - positions and directions of the loudspeakers (m)
-%       ls_activity - activity of the loudspeaker
+%       win         - tapering window (activity of the loudspeaker)
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   DRAW_LOUDSPEAKERS(x0,ls_activity) draws loudspeaker symbols at
+%   DRAW_LOUDSPEAKERS(x0,win) draws loudspeaker symbols at
 %   the given secondary source positions. The loudspeaker symbols are pointing
 %   in their given direction.
 %
@@ -54,11 +54,11 @@ narginchk(nargmin,nargmax);
 isargsecondarysource(x0)
 nls = size(x0,1);
 if nargin<nargmax-1
-    ls_activity = zeros(nls,1);
-elseif length(ls_activity)==1
-    ls_activity = ls_activity*ones(nls,1);
+    win = zeros(nls,1);
+elseif length(win)==1
+    win = win*ones(nls,1);
 end
-isargvector(ls_activity);
+isargvector(win);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -114,13 +114,13 @@ else
         v02(1,:) = vr2(1,:) + x0(n,1);
         v02(2,:) = vr2(2,:) + x0(n,2);
 
-        if(ls_activity(n)>0)
+        if(win(n)>0)
             % Set fill color for active loudspeakers
             % Scale the color. sc = 1 => black. sc = 0.5 => gray.
             sc = 0.5;
-            fc = [(1-sc*ls_activity(n)), ...
-                  (1-sc*ls_activity(n)), ...
-                  (1-sc*ls_activity(n))];
+            fc = [(1-sc*win(n)), ...
+                  (1-sc*win(n)), ...
+                  (1-sc*win(n))];
         else
             % set fill color to white for inactive loudspeakers
             fc = [1,1,1];
@@ -133,5 +133,8 @@ else
     end
 
     hold off;
+    
+    % set equal axis ratio
+    axis image
 
 end

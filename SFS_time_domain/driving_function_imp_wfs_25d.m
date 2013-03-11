@@ -131,7 +131,7 @@ end
 
 % Calculate driving function prototype
 % FIXME: check if the zeros at the end are long enough
-d_proto = [hpre zeros(1,800)];
+d_proto = [hpre' zeros(1,800)];
 d = zeros(length(d_proto),size(x0,1));
 for ii=1:size(x0,1)
     % Shift and weight prototype driving function

@@ -83,7 +83,7 @@ end
 if ~exist('x0','var') || length(x0)==0
     conf.plot.loudspeakers = 0;
 else
-    isargsecondarysource(x0);
+%      isargsecondarysource(x0);
 end
 isargstruct(conf);
 

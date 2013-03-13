@@ -12,7 +12,7 @@ clc
 clear all
 close all
 % properties of SFS_conf
-conf = SFS_config;
+conf = SFS_config_example;
 conf.zreferenceaxis = 'y'; % set a plot reference axis
 conf.useplot = 1; % plot the results = 1 ; otherwise = 0
 conf.array = 'spherical'; % array type

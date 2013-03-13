@@ -96,16 +96,16 @@ debug = conf.debug;
 % sources
 %d = d(end:-1:1,:);
 
-% Apply bandbass filter
-if(0)
-    d=bandpass(d,conf);
-end
-
 % Initialize empty wave field
 p = zeros(length(y),length(x));
 
 % Integration over loudspeaker
 for ii = 1:size(x0,1)
+
+    % Apply bandbass filter
+    if(1)
+        d(:,ii) = bandpass(d(:,ii),10,20000,conf);
+    end
 
     % ================================================================
     % Secondary source model: Greens function g3D(x,t)

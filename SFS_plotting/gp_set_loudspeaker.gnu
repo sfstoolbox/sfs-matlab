@@ -50,7 +50,7 @@
 
 
 # Checking if we have enough input parameters
-if ('$#'!=5) print 'gp_set_loudspeakers needs 5 input parameters'; exit
+if ('$#'!=5) { print 'gp_set_loudspeakers needs 5 input parameters'; exit }
 
 # Getting the input parameters
 x0 = $0
@@ -60,7 +60,7 @@ activity = $3
 lssize = $4
 
 # Initialize an object number
-if (!exists("object_number")) object_number = 1;
+if (!exists("object_number")) { object_number = 1; }
 
 # Fixing loudspeaker size (because we draw a line around the loudspeaker
 a = lssize-0.01;

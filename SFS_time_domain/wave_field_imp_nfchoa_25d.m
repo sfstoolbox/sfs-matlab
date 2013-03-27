@@ -1,7 +1,7 @@
 function [x,y,p] = wave_field_imp_nfchoa_25d(X,Y,xs,src,L,conf)
 %WAVE_FIELD_IMP_NFCHOA_25D returns the wave field in time domain of an impulse
 %
-%   Usage: [x,y,p,ls_activity] = wave_field_imp_nfchoa_25d(X,Y,xs,src,L,[conf])
+%   Usage: [x,y,p] = wave_field_imp_nfchoa_25d(X,Y,xs,src,L,[conf])
 %
 %   Input options:
 %       X           - length of the X axis (m); single value or [xmin,xmax]
@@ -17,14 +17,14 @@ function [x,y,p] = wave_field_imp_nfchoa_25d(X,Y,xs,src,L,conf)
 %   Output options:
 %       x,y         - x- and y-axis of the wave field
 %       p           - wave field (length(y) x length(x))
-%       ls_activity - activity of the secondary sources
 %
 %   WAVE_FIELD_IMP_NFCHOA_25D(X,Y,xs,src,L,conf) simulates a wave field of the
 %   given source type (src) using a NFC-HOA 2.5 dimensional driving
 %   function.
 %   To plot the result use:
+%   x0 = secondary_source_positions(L,conf);
 %   conf.plot.usedb = 1;
-%   plot_wavefield(x,y,p,L,ls_activity,conf);
+%   plot_wavefield(x,y,p,x0,conf);
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -155,7 +155,5 @@ end
 % some debug stuff
 if debug
     figure; imagesc(db(d)); title('driving functions'); caxis([-100 0]); colorbar;
-    % figure; plot(win); title('tapering window');
-    % figure; plot(delay*fs); title('delay (samples)');
-    % figure; plot(weight); title('weight');
+    figure; plot(db(sum(d,2))); title('signal at center');
 end

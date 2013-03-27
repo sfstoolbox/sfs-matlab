@@ -104,7 +104,7 @@ p = zeros(length(y),length(x));
 for ii = 1:nls
 
     % Apply bandbass filter
-    if(1)
+    if(0)
         d(:,ii) = bandpass(d(:,ii),10,20000,conf);
     end
 

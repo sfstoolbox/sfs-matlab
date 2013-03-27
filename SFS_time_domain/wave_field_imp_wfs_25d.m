@@ -121,7 +121,7 @@ d = [zeros(1,aoffset) hpre zeros(1,length(t)-length(hpre)-aoffset)];
 
 % Apply bandbass filter to the prototype
 if(0)
-    d=bandpass(d,conf);
+    d=bandpass(d,10,20000,conf);
 end
 
 % In a first loop calculate the weight and delay values.

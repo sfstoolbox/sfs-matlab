@@ -87,4 +87,4 @@ x0 = secondary_source_positions(L,conf);
 % Driving function D(x0,omega)
 D = driving_function_mono_nfchoa_25d(x0,xs,src,f,conf);
 % Wave field
-[x,y,P] = wave_field_mono_3d(X,Y,x0,D,f,conf);
+[x,y,P] = wave_field_mono(X,Y,x0,@point_source_mono,D,f,conf);

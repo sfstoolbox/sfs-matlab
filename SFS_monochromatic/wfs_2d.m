@@ -102,7 +102,7 @@ for ii = 1:size(x0,1)
     % Secondary source model G(x-x0,omega)
     % This is the model for the loudspeakers we apply. We use line sources
     % for 2D synthesis.
-    G = line_source(x,y,x0(ii,1:3),f);
+    G = line_source_mono(x,y,x0(ii,1:3),f);
 
     % ====================================================================
     % Driving function D(x0,omega)

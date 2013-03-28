@@ -97,7 +97,7 @@ D = driving_function_mono_sdm_25d(x0,xs,src,f,conf) .* win;
 % disable plotting to handle the tapering window
 conf.useplot = 0;
 % Wave field
-[x,y,P] = wave_field_mono_3d(X,Y,x0,D,f,conf);
+[x,y,P] = wave_field_mono(X,Y,x0,@point_source_mono,D,f,conf);
 
 
 % ===== Plotting =========================================================

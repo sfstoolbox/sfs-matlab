@@ -91,10 +91,13 @@ debug = conf.debug;
 % Spatial grid
 [xx,yy,x,y] = xy_grid(X,Y,conf);
 
+% FIXME: this needs a little bit more explanation!
 % time reversal of driving function due to propagation of sound
 % later parts of the driving function are emitted later by secondary
 % sources
 d = d(end:-1:1,:);
+% correct time vector to work with inverted driving functions
+t_inverted = t-size(d,1);
 
 % Initialize empty wave field
 p = zeros(length(y),length(x));
@@ -116,7 +119,7 @@ for ii = 1:size(x0,1)
 
     % shift driving function
     %d(:,ii) = delayline(d(:,ii)',-size(d,1)+t,1,conf)';
-    d(:,ii) = delayline(d(:,ii)',t,1,conf)';
+    d(:,ii) = delayline(d(:,ii)',t_inverted,1,conf)';
 
     % Interpolate the driving function w.r.t. the propagation delay from
     % the secondary sources to a field point.
@@ -132,7 +135,7 @@ for ii = 1:size(x0,1)
 end
 
 % === Checking of wave field ===
-check_wave_field(p,t);
+check_wave_field(p,t+size(d,1));
 
 
 % === Plotting ===

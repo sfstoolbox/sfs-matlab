@@ -79,7 +79,6 @@ end
 
 
 %% ===== Configuration ==================================================
-fs = conf.fs;
 xref = position_vector(conf.xref);
 useplot = conf.useplot;
 
@@ -92,12 +91,9 @@ x0 = secondary_source_selection(x0,xs,src,xref);
 win = tapering_window(x0,conf);
 
 % Get driving signals
-[d,delay] = driving_function_imp_wfs_25d(x0,xs,src,conf);
+d = driving_function_imp_wfs_25d(x0,xs,src,conf);
 % Apply tapering window
 d = bsxfun(@times,d,win');
-
-% Setting time point to 0 for the first active secondary source
-t = t-max((max(delay)-delay)*fs);
 
 % disable plotting in order to integrate the tapering window
 conf.useplot = 0;

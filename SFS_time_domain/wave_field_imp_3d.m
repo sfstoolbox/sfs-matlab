@@ -118,7 +118,6 @@ for ii = 1:size(x0,1)
     g = 1./(4*pi*r);
 
     % shift driving function
-    %d(:,ii) = delayline(d(:,ii)',-size(d,1)+t,1,conf)';
     d(:,ii) = delayline(d(:,ii)',t_inverted,1,conf)';
 
     % Interpolate the driving function w.r.t. the propagation delay from
@@ -135,7 +134,7 @@ for ii = 1:size(x0,1)
 end
 
 % === Checking of wave field ===
-check_wave_field(p,t+size(d,1));
+check_wave_field(p,t);
 
 
 % === Plotting ===

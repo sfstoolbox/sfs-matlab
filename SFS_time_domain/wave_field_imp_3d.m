@@ -111,7 +111,7 @@ for ii = 1:size(x0,1)
 
     % Apply bandbass filter
     if usebandpass
-        d(:,ii) = bandpass(d(:,ii),bandpassflow,bandpassfhigh);
+        d(:,ii) = bandpass(d(:,ii),bandpassflow,bandpassfhigh,conf);
     end
 
     % ================================================================

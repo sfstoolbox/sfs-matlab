@@ -94,7 +94,7 @@ debug = conf.debug;
 % time reversal of driving function due to propagation of sound
 % later parts of the driving function are emitted later by secondary
 % sources
-%d = d(end:-1:1,:);
+d = d(end:-1:1,:);
 
 % Initialize empty wave field
 p = zeros(length(y),length(x));
@@ -103,7 +103,7 @@ p = zeros(length(y),length(x));
 for ii = 1:size(x0,1)
 
     % Apply bandbass filter
-    if(1)
+    if(0)
         d(:,ii) = bandpass(d(:,ii),10,20000,conf);
     end
 

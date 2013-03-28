@@ -1,24 +1,26 @@
-function S = plane_wave(x,y,xs,f,conf)
-%PLANE_WAVE returns the source model for a plane wave
+function S = line_source_mono(x,y,xs,f,conf)
+%LINE_SOURCE_mono returns the Green's function for a line source in the
+%frequency domain
 %
-%   Usage: S = plane_wave(x,y,x0,omega,[conf])
+%   Usage: S = line_source_mono(x,y,xs,f,[conf])
 %
 %   Input options:
-%       x,y     - x,y points for which the Green's function should be calculated
-%       xs      - direction of the plane wave
-%       f       - frequency of the point source
-%       conf    - optional configuration struct (see SFS_config)
+%       x,y      - x,y points for which the Green's function should be calculated
+%       xs       - position of the line source
+%       f        - frequency of the line source
+%       conf     - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       S       - Wave field of a plane wave traveling in the direction xs
+%       S        - Wave field of a line source located at xs
 %
-%   PLANE_WAVE(x,y,xs,f) calculates the wave field of a plane wave going into
-%   the direction xs for the given points x,y and the frequency f.
+%   LINE_SOURCE_MONO(x,y,xs,f) calculates the wave field of a line source
+%   located at xs for the given points x,y and the frequency f. The wave
+%   field is calculated by the Greens function.
 %
 %   References:
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: point_source, line_source
+%   see also: point_source
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -73,39 +75,13 @@ c = conf.c;
 
 %% ===== Computation =====================================================
 omega = 2*pi*f;
-% Source model for a plane wave:
+% Source model for a line source: 2D Green's function.
 %
-% S(x,w) = e^(-i w/c n x)
+%              i   (2)/ w        \
+% G(x-xs,w) =  -  H0  | - |x-xs| |
+%              4      \ c        /
 %
-% see: Williams1999, p. 21
+% see: Williams1999, p. 266
 %
-% direction of plane wave
-nxs = xs / norm(xs);
-%
-% The following code enables us to replace this two for-loops
-% for ii = 1:size(x,1)
-%     for jj = 1:size(x,2)
-%         S(ii,jj) = exp(-1i*omega/c.*nxs(1:2)*[x(ii,jj) y(ii,jj)]');
-%     end
-% end
-%
-% Get a matrix in the form of
-% 1 1 0 0 0 0
-% 0 0 1 1 0 0
-% 0 0 0 0 1 1
-E = eye(2*size(x,1));
-E = E(1:2:end,:)+E(2:2:end,:);
-% Multiply this matrix with the plane wave direction
-N = repmat([nxs(1) nxs(2)],size(x,1)) .* E;
-% Interlace x and y into one matrix
-% x11 x12 ... x1m
-% y11 y12 ... y1m
-% .   .       .
-% .   .       .
-% xn1 xn2 ... xnm
-% yn1 yn2 ... ynm
-XY = zeros(2*size(x,1),size(x,2));
-XY(1:2:end,:) = x;
-XY(2:2:end,:) = y;
-% calculate sound field
-S = exp(-1i*omega/c.*N*XY);
+S = 1i/4 * besselh(0,2,omega/c* ...
+    sqrt( (x-xs(1)).^2 + (y-xs(2)).^2 ));

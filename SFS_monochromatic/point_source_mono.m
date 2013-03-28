@@ -1,25 +1,26 @@
-function S = line_source(x,y,xs,f,conf)
-%LINE_SOURCE returns the Green's function for a line source
+function S = point_source_mono(x,y,xs,f,conf)
+%POINT_SOURCE_MONO returns the Green's function for a point source in the
+%frequency domain
 %
-%   Usage: S = line_source(x,y,xs,f,[conf])
+%   Usage: S = point_source_mono(x,y,xs,f,[conf])
 %
 %   Input options:
-%       x,y      - x,y points for which the Green's function should be calculated
-%       xs       - position of the line source
-%       f        - frequency of the line source
-%       conf     - optional configuration struct (see SFS_config)
+%       x,y     - x,y points for which the Green's function should be calculated
+%       xs      - position of the point source
+%       f       - frequency of the point source
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       S        - Wave field of a line source located at xs
+%       S       - Wave field of a point source located at x0,y0
 %
-%   LINE_SOURCE(x,y,xs,f) calculates the wave field of a line source
+%   POINT_SOURCE_MONO(x,y,xs,f) calculates the wave field of a point source
 %   located at xs for the given points x,y and the frequency f. The wave
 %   field is calculated by the Greens function.
 %
 %   References:
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: point_source
+%   see also: line_source
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -59,7 +60,7 @@ nargmin = 4;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargmatrix(x,y);
-xs = position_vector(xs);
+isargposition(xs);
 isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
@@ -74,13 +75,13 @@ c = conf.c;
 
 %% ===== Computation =====================================================
 omega = 2*pi*f;
-% Source model for a line source: 2D Green's function.
+% Source model for a point source: 3D Green's function.
 %
-%              i   (2)/ w        \
-% G(x-xs,w) =  -  H0  | - |x-xs| |
-%              4      \ c        /
+%              1  e^(-i w/c |x-xs|)
+% G(x-xs,w) = --- -----------------
+%             4pi      |x-xs|
 %
-% see: Williams1999, p. 266
+% see: Williams1999, p. 198
 %
-S = 1i/4 * besselh(0,2,omega/c* ...
-    sqrt( (x-xs(1)).^2 + (y-xs(2)).^2 ));
+S = 1/(4*pi) * exp(-1i*omega/c.*sqrt((x-xs(1)).^2+(y-xs(2)).^2)) ./ ...
+        sqrt((x-xs(1)).^2+(y-xs(2)).^2);

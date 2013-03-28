@@ -72,4 +72,4 @@ end
 
 
 %% ===== Computation ====================================================
-[x,y,P] = wave_field_mono_3d(X,Y,[xs 0 1 0],1,f,conf);
+[x,y,P] = wave_field_mono(X,Y,[xs 0 1 0],@point_source_mono,1,f,conf);

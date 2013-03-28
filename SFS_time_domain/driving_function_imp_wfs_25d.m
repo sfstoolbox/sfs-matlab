@@ -141,6 +141,5 @@ for ii=1:size(x0,1)
     %   argument of the delayline function
     % - the proagation time from the source to the nearest secondary source
     %   is removed
-    %d(:,ii) = delayline(d_proto,-(min(delay)-delay(ii))*fs,weight(ii),conf);
     d(:,ii) = delayline(d_proto,delay(ii)*fs,weight(ii),conf);
 end

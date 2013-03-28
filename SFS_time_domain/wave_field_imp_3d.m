@@ -84,6 +84,10 @@ c = conf.c;
 fs = conf.fs;
 % Debug mode
 debug = conf.debug;
+% Bandpass
+usebandpass = conf.usebandpass;
+bandpassflow = conf.bandpassflow;
+bandpassfhigh = conf.bandpassfhigh;
 
 
 %% ===== Computation =====================================================
@@ -106,8 +110,8 @@ p = zeros(length(y),length(x));
 for ii = 1:size(x0,1)
 
     % Apply bandbass filter
-    if(0)
-        d(:,ii) = bandpass(d(:,ii),10,20000,conf);
+    if usebandpass
+        d(:,ii) = bandpass(d(:,ii),bandpassflow,bandpassfhigh);
     end
 
     % ================================================================

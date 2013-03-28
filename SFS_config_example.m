@@ -93,6 +93,12 @@ conf.c = 343; % m/s
 % use fractional delays for delay lines
 conf.usefracdelay = 0;
 conf.fracdelay_method = 'resample';
+% Bandpass filter for time domain driving functions
+% FIXME: check where the bandpass should be applied exactly. At the moment
+% it is applied in the wave_field_imp.m function
+conf.usebandpass = 1;
+conf.bandpassflow = 10;
+conf.bandpassfhigh = 20000;
 
 
 % ===== Simulations =============================
@@ -101,9 +107,11 @@ conf.xysamples = 300; % samples
 % Phase of omega of wavefield (change this value to create monochromatic wave
 % fields with different phases for a movie)
 conf.phase = 0; % rad
+% FIXME: this is depraceted now and should be removed.
 % Time frame to simulate for wave field in time domain (change this value to
 % create impulse response movies of the wave field
 conf.frame = 1000;
+
 
 
 % ===== Secondary Sources =======================

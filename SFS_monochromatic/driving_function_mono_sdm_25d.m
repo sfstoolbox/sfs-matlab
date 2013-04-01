@@ -75,7 +75,6 @@ end
 %% ===== Configuration ==================================================
 phase = conf.phase;
 xref = position_vector(conf.xref);
-X0 = conf.X0;
 c = conf.c;
 
 
@@ -84,9 +83,6 @@ c = conf.c;
 omega = 2*pi*f;
 % positions and angles of secondary sources
 x0 = x0(:,1:3);
-al=atan2(x0(:,2),x0(:,1));
-% number of secondary sources
-M=length(x0);
 % virtual source angle
 al_pw=atan2(xs(2),xs(1));
 
@@ -120,3 +116,5 @@ else
     % No such source type for the driving function
     error('%s: src has to be one of "pw", "ps", "fs"!',upper(mfilename));
 end
+% Add phase to be able to simulate different time steps
+D = D .* exp(-1i*phase);

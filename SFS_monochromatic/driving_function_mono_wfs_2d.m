@@ -86,7 +86,6 @@ end
 phase = conf.phase;
 % Speed of sound
 c = conf.c;
-xref = position_vector(conf.xref);
 
 
 %% ===== Computation ====================================================
@@ -114,11 +113,7 @@ for ii = 1:size(x0,1)
         %
         % D_2D(x0,w) = 2i w/c n(xs) n(x0)  e^(-i w/c n(xs) x0)
         %
-        % NOTE: the phase term e^(-i phase) is only there in order to be able to
-        %       simulate different time steps
-        %
-        D(ii) = 2*1i*omega/c*nxs*nx0' * exp(-1i*omega/c*(nxs*x0')) * ...
-            exp(-1i*phase);
+        D(ii) = 2*1i*omega/c*nxs*nx0' * exp(-1i*omega/c*(nxs*x0'));
         %
 
     elseif strcmp('ps',src)
@@ -131,12 +126,8 @@ for ii = 1:size(x0,1)
         % D_2D(x0,w) =  --- | -- - ------- |  --------- e^(-i w/c |x0-xs|)
         %               2pi \  c   |x0-xs| /  |x0-xs|^2
         %
-        % NOTE: the phase term e^(-i phase) is only there in order to be able to
-        %       simulate different time steps
-        %
         D(ii) = 1/(2*pi) * ( (1i*omega)/c - 1/norm(x0-xs) ) * ...
-            (x0-xs)*nx0' / norm(x0-xs)^2 * exp(-1i*omega/c*norm(x0-xs)) * ...
-            exp(-1i*phase);
+            (x0-xs)*nx0' / norm(x0-xs)^2 * exp(-1i*omega/c*norm(x0-xs));
         %
 
     elseif strcmp('ls',src)
@@ -149,11 +140,8 @@ for ii = 1:size(x0,1)
         % D_2D(x0,w) =  - -- --------- H1  | - |x0-xs| |
         %                 2c  |x0-xs|      \ c         /
         %
-        % NOTE: the phase term e^(-i phase) is only there in order to be able to
-        %       simulate different time steps
-        %
         D(ii) = -1i*omega/(2*c) * (x0-xs)*nx0' / norm(x0-xs)^(3/2) * ...
-            besselh(1,2,omega/c*norm(x0-xs)) * exp(-1i*phase);
+            besselh(1,2,omega/c*norm(x0-xs));
         %
 
     elseif strcmp('fs',src)
@@ -166,14 +154,13 @@ for ii = 1:size(x0,1)
         % D_2D(x0,w) =  - -- --------- H1  | - |x0-xs| |
         %                 2c  |x0-xs|      \ c         /
         %
-        % NOTE: the phase term e^(-i phase) is only there in order to be able to
-        %       simulate different time steps
-        %
         D(ii) = -1i*omega/(2*c) * (x0-xs)*nx0' / norm(x0-xs)^(3/2) * ...
-            besselh(1,1,omega/c*norm(x0-xs)) * exp(-1i*phase);
+            besselh(1,1,omega/c*norm(x0-xs));
         %
     else
         % No such source type for the driving function
         error('%s: src has to be one of "pw", "ps", "fs"!',upper(mfilename));
     end
 end
+% Add phase to be able to simulate different time steps
+D = D .* exp(-1i*phase);

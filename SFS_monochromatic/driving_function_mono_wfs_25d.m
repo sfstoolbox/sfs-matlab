@@ -124,12 +124,8 @@ for ii = 1:size(x0_all,1)
         % D_25D(x0,w) = 2 g0 n(xs) n(x0) _ |---  e^(-i w/c n(xs) x0)
         %                                 \|i c
         %
-        % NOTE: the phase term e^(-i phase) is only there in order to be able to
-        %       simulate different time steps
-        %
         D(ii) = 2*g0* nxs*nx0' * sqrt(omega/(1i*c)) * ...
-            exp(-1i*omega/c*(nxs*x0')) * ...
-            exp(-1i*phase);
+            exp(-1i*omega/c*(nxs*x0'));
 
 
     elseif strcmp('ps',src)
@@ -145,12 +141,9 @@ for ii = 1:size(x0_all,1)
         %   ---  | _ |---  - _ |---  ------- |  --------- e^(-i w/c |x0-xs|)
         %   2pi  \  \|i c     \| w   |x0-xs| /  |x0-xs|^2
         %
-        % NOTE: the phase term e^(-i phase) is only there in order to be able to
-        %       simulate different time steps
-        %
         D(ii) = g0/(2*pi) * ( sqrt(omega/(1i*c)) - sqrt(1i*c/omega) / ...
             norm(x0-xs) ) * (x0-xs)*nx0' / norm(x0-xs)^2 * ...
-            exp(-1i*omega/c*norm(x0-xs)) * exp(-1i*phase);
+            exp(-1i*omega/c*norm(x0-xs));
 
     elseif strcmp('fs',src)
 
@@ -165,12 +158,9 @@ for ii = 1:size(x0_all,1)
         %   ---  | _ |---  + _ |---  ------- |  --------- e^(i w/c |x0-xs|)
         %   2pi  \  \|i c     \| w   |x0-xs| /  |x0-xs|^2
         %
-        % NOTE: the phase term e^(-i phase) is only there in order to be able to
-        %       simulate different time steps
-        %
         %D(ii) = -g0/(2*pi) * ( sqrt(omega/(1i*c)) + sqrt(1i*c/omega) / ...
         %    norm(x0-xs) ) * (x0-xs)*nx0' / norm(x0-xs)^2 * ...
-        %    exp(1i*omega/c*norm(x0-xs)) * exp(-1i*phase);
+        %    exp(1i*omega/c*norm(x0-xs));
         %
         % ----------------------------------------------------------------
         % Alternative Driving Functions for a focused source:
@@ -182,11 +172,8 @@ for ii = 1:size(x0_all,1)
         % D_25D(x0,w) = -g0 -- --------- H1  | - |x0-xs| |
         %                   2c |x0-xs|        \ c         /
         %
-        % NOTE: the phase term e^(-i phase) is only there in order to be able to
-        %       simulate different time steps
-        %
         %D(ii) = -g0 * 1i*omega/(2*c) * (x0-xs)*nx0' / norm(x0-xs)^(3/2) * ...
-        %    besselh(1,1,omega/c*norm(x0-xs)) * exp(-1i*phase);
+        %    besselh(1,1,omega/c*norm(x0-xs));
         %
         % --------------------------------------------------------------------
         % D_25D using a line sink with point amplitue characteristic as source
@@ -198,15 +185,14 @@ for ii = 1:size(x0_all,1)
         % D_25D(x0,w) = g0 _ |-----  ------------- e^(i w/c |x0-xs|)
         %                   \|2pi c  |x0-xs|^(3/2)
         %
-        % NOTE: the phase term e^(-i phase) is only there in order to be able to
-        %       simulate different time steps
-        %
         D(ii) = g0 * sqrt(1i*omega/(2*pi*c)) * ...
             (x0-xs)*nx0' / norm(x0-xs)^(3/2) * ...
-            exp(1i*omega/c*norm(x0-xs)) * exp(-1i*phase);
+            exp(1i*omega/c*norm(x0-xs));
         %
     else
         % No such source type for the driving function
         error('%s: src has to be one of "pw", "ps", "fs"!',upper(mfilename));
     end
 end
+% Add phase to be able to simulate different time steps
+D = D .* exp(-1i*phase);

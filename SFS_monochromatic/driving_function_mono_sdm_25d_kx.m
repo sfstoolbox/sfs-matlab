@@ -143,16 +143,16 @@ elseif strcmp('fs',src)
     %
     Dkx(idxpr) =  exp(1i*kx(idxpr)*xs(1)) .* ...
         besselh(0,2,sqrt( (omega/c)^2 - kx(idxpr).^2 )*abs(xref(2)-xs(2))) ./ ...
-        besselh(0,2,sqrt( (omega/c)^2 - kx(idxpr).^2 )*abs(xref(2)-X0(2))) .* ...
-        exp(1i*phase);
+        besselh(0,2,sqrt( (omega/c)^2 - kx(idxpr).^2 )*abs(xref(2)-X0(2)));
     if(withev)
         Dkx(idxev) =  exp(1i*kx(idxev)*xs(1)) .* ...
             besselk(0,sqrt(kx(idxev).^2 - (omega/c).^2)*abs(xref(2)-xs(2))) ./ ...
-            besselk(0,sqrt(kx(idxev).^2 - (omega/c).^2)*abs(xref(2)-X0(2))) .* ...
-            exp(1i*phase);
+            besselk(0,sqrt(kx(idxev).^2 - (omega/c).^2)*abs(xref(2)-X0(2)));
     end
 
 else
     % No such source type for the driving function
     error('%s: src has to be one of "pw", "ps", "fs"!',upper(mfilename));
 end
+% Add phase to be able to simulate different time steps
+Dkx = Dkx .* exp(-1i*phase);

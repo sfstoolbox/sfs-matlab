@@ -1,17 +1,20 @@
-function check_wave_field(P,t)
-%CHECK_WAVE_FIELD checks if we have any activity in the wave field and returns a
-%   warning otherwise.
+function y = vector_product(x1,x2,dim)
+%VECTOR_PRODUCT calculates the scalar product for two vectors within matrices
 %
-%   Usage: check_wave_field(P,t)
+%   Usage: y = vector_product(x1,x2,dim)
 %
 %   Input parameters:
-%       P       - wave field
-%       t       - time t (samples)
+%       x1  - first matrix [n x m]
+%       x2  - second matrix [n x m]
+%       dim - dimension along the scalar product should be calculated
 %
-%   CHECK_WAVE_FIELD(P,t) checks if the wave field is different from zero.
-%   If this is not the case it returns a warning.
+%   Output parameter:
+%       y   - scalar product between the vectors [1 x m] or [n x 1]
 %
-%   see also: wave_field_imp_wfs_25d, norm_wave_field
+%   VECTOR_PRODUCT(x1,x2,dim) calculates the scalar product between the vectors
+%   given within the matrices along the dimension dim.
+%
+%   see also: vector_norm
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -46,17 +49,17 @@ function check_wave_field(P,t)
 %*****************************************************************************
 
 
-%% ===== Checking of input parameters ====================================
-nargmin = 2;
-nargmax = 2;
-narginchk(nargmin,nargmax);
-isargmatrix(P);
-isargscalar(t);
+%% ===== Checking of input  parameters ==================================
+nargmin = 3;
+nargmax = 3;
+narginchk(nargmin,nargmax)
+isargmatrix(x1,x2)
+isargpositivescalar(dim)
+if size(x1)~=size(x2)
+    error('%s: the given matrices x1, x2 had to be of the same size.', ...
+        upper(mfilename));
+end
 
 
 %% ===== Computation =====================================================
-if max(abs(P(:)))==0 || all(isnan(P(:)))
-    warning('SFS:check_wave_field',...
-        ['The activity in the simulated wave field is zero. ',...
-         'Maybe you should use another time frame t than %i. '],t);
-end
+y = sum(x1.*x2,dim);

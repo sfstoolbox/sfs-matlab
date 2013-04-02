@@ -172,7 +172,7 @@ if ~(p.usegnuplot)
     if p.colormap
         colormap(p.colormap);
     else
-        colormap('gray');
+        colormap(flipud(colormap('gray')));
     end
 
     % Set the axis to use the same amount of space for the same length (m)

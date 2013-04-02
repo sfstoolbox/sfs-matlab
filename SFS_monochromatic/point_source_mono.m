@@ -1,7 +1,8 @@
-function S = point_source(x,y,xs,f,conf)
-%POINT_SOURCE returns the Green's function for a point source
+function S = point_source_mono(x,y,xs,f,conf)
+%POINT_SOURCE_MONO returns the Green's function for a point source in the
+%frequency domain
 %
-%   Usage: S = point_source(x,y,xs,f,[conf])
+%   Usage: S = point_source_mono(x,y,xs,f,[conf])
 %
 %   Input options:
 %       x,y     - x,y points for which the Green's function should be calculated
@@ -12,7 +13,7 @@ function S = point_source(x,y,xs,f,conf)
 %   Output parameters:
 %       S       - Wave field of a point source located at x0,y0
 %
-%   POINT_SOURCE(x,y,xs,f) calculates the wave field of a point source
+%   POINT_SOURCE_MONO(x,y,xs,f) calculates the wave field of a point source
 %   located at xs for the given points x,y and the frequency f. The wave
 %   field is calculated by the Greens function.
 %

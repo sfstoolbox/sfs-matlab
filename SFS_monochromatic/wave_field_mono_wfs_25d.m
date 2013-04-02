@@ -1,7 +1,7 @@
-function [x,y,P,win] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,conf)
+function [x,y,P,x0,win] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_WFS_25D simulates a wave field for 2.5D WFS
 %
-%   Usage: [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,[conf])
+%   Usage: [x,y,P,x0,win] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
@@ -20,7 +20,7 @@ function [x,y,P,win] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,conf)
 %       x           - corresponding x axis
 %       y           - corresponding y axis
 %       P           - Simulated wave field
-%       ls_activity - activity of the secondary sources (see plot_wavefield)
+%       win         - tapering window of the secondary sources
 %
 %   WAVE_FIELD_MONO_WFS_25D(X,Y,xs,L,f,src,conf) simulates a wave
 %   field of the given source type (src) using a WFS 2.5 dimensional driving
@@ -85,16 +85,22 @@ end
 
 %% ===== Configuration ==================================================
 useplot = conf.useplot;
+xref = conf.xref;
 
 
 %% ===== Computation ====================================================
-% Calculate the wave field in time-frequency domain
-% Create a x-y-grid to avoid a loop
-[xx,yy,x,y] = xy_grid(X,Y,conf);
+% Get the position of the loudspeakers and its activity
+x0 = secondary_source_positions(L,conf);
+x0 = secondary_source_selection(x0,xs,src,xref);
+% Generate tapering window
+win = tapering_window(x0,conf);
+% Driving function
+D = driving_function_mono_wfs_25d(x0,xs,src,f,conf) .* win;
+% Wave field
+% disable plotting, in order to integrate the tapering window
+conf.useplot = 0;
 % calculate wave field
-[P,x0,win] = wfs_25d(xx,yy,xs,src,f,L,conf);
-% scale signal (at xref)
-P = norm_wave_field(P,x,y,conf);
+[x,y,P] = wave_field_mono(X,Y,x0,@point_source_mono,D,f,conf);
 
 
 % ===== Plotting =========================================================

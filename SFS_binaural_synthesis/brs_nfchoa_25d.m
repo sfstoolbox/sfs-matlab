@@ -80,12 +80,16 @@ angles = rad(conf.brsangles);   % Angles for the BRIRs
 
 
 %% ===== Computation =====================================================
+% secondary sources
+x0 = secondary_source_positions(L,conf);
+% calculate driving function
+d = driving_function_imp_nfchoa_25d(x0,xs,src,L,conf);
+
 % Initial values
 brs = zeros(N,2*length(angles));
-
 % Generate a BRS set for all given angles
 for ii = 1:length(angles)
     % Compute BRIR for the desired HOA system
     brs(:,(ii-1)*2+1:ii*2) = ...
-        ir_nfchoa_25d(X,angles(ii)+phi,xs,src,L,irs,conf);
+        ir_generic(X,angles(ii)+phi,x0,d,irs,conf);
 end

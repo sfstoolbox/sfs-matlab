@@ -1,7 +1,8 @@
-function S = plane_wave(x,y,xs,f,conf)
-%PLANE_WAVE returns the source model for a plane wave
+function S = plane_wave_mono(x,y,xs,f,conf)
+%PLANE_WAVE_MONO returns the source model for a plane wave in the frequency
+%domain
 %
-%   Usage: S = plane_wave(x,y,x0,omega,[conf])
+%   Usage: S = plane_wave_mono(x,y,x0,omega,[conf])
 %
 %   Input options:
 %       x,y     - x,y points for which the Green's function should be calculated
@@ -12,13 +13,13 @@ function S = plane_wave(x,y,xs,f,conf)
 %   Output parameters:
 %       S       - Wave field of a plane wave traveling in the direction xs
 %
-%   PLANE_WAVE(x,y,xs,f) calculates the wave field of a plane wave going into
-%   the direction xs for the given points x,y and the frequency f.
+%   PLANE_WAVE_MONO(x,y,xs,f) calculates the wave field of a plane wave
+%   going into the direction xs for the given points x,y and the frequency f.
 %
 %   References:
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: point_source, line_source
+%   see also: plane_wave_imp, point_source_mono, line_source_mono
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

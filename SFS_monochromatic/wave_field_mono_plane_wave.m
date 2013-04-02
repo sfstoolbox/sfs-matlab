@@ -71,21 +71,7 @@ else
 end
 
 
-%% ===== Configuration ==================================================
-% Plotting result
-useplot = conf.useplot;
-
-
 %% ===== Computation ====================================================
-% Create a x-y-grid to avoid a loop
-[xx,yy,x,y] = xy_grid(X,Y,conf);
-% Source model for a point source G(x,omega)
-P = plane_wave(xx,yy,xs,f);
-% Scale signal (at xref)
-P = norm_wave_field(P,x,y,conf);
-
-
-% ===== Plotting =========================================================
-if(useplot)
-    plot_wavefield(x,y,P,conf);
-end
+% Disable the plotting of a source, because we have a plane wave
+conf.plot.loudspeakers = 0;
+[x,y,P] = wave_field_mono(X,Y,[xs 0 1 0],@plane_wave_mono,1,f,conf);

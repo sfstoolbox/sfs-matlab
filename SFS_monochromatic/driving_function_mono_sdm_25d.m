@@ -1,4 +1,4 @@
-function [D] = driving_function_mono_sdm_25d(x0,xs,src,f,conf)
+function D = driving_function_mono_sdm_25d(x0,xs,src,f,conf)
 %DRIVING_FUNCTION_MONO_SDM_25D returns the driving signal D for 2.5D SDM
 %
 %
@@ -75,7 +75,6 @@ end
 %% ===== Configuration ==================================================
 phase = conf.phase;
 xref = position_vector(conf.xref);
-X0 = conf.X0;
 c = conf.c;
 
 
@@ -84,26 +83,21 @@ c = conf.c;
 omega = 2*pi*f;
 % positions and angles of secondary sources
 x0 = x0(:,1:3);
-al=atan2(x0(:,2),x0(:,1));
-% number of secondary sources
-M=length(x0);
 % virtual source angle
 al_pw=atan2(xs(2),xs(1));
 
 
 
 %% ===== Spectrum of driving function ====================================
-D = zeros(1,length(x0));
+D = zeros(size(x0,1),1);
 
 if strcmp('pw',src)
 
     % ===== PLANE WAVE ===================================================
-    D=zeros(1,length(x0));
-
     kx=omega/c*cos(al_pw);
     ky=omega/c*sin(al_pw);
 
-    for n=1:length(x0)
+    for n=1:size(x0,1)
         D(n) = 4*1i*exp(-1i*ky*xref(2))./besselh(0,2,ky*xref(2)).*exp(-1i*(kx*x0(n,1)+ky*x0(n,2)));
     end
     
@@ -122,3 +116,5 @@ else
     % No such source type for the driving function
     error('%s: src has to be one of "pw", "ps", "fs"!',upper(mfilename));
 end
+% Add phase to be able to simulate different time steps
+D = D .* exp(-1i*phase);

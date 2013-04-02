@@ -1,17 +1,26 @@
-function check_wave_field(P,t)
-%CHECK_WAVE_FIELD checks if we have any activity in the wave field and returns a
-%   warning otherwise.
+function S = line_source_mono(x,y,xs,f,conf)
+%LINE_SOURCE_mono returns the Green's function for a line source in the
+%frequency domain
 %
-%   Usage: check_wave_field(P,t)
+%   Usage: S = line_source_mono(x,y,xs,f,[conf])
 %
-%   Input parameters:
-%       P       - wave field
-%       t       - time t (samples)
+%   Input options:
+%       x,y      - x,y points for which the Green's function should be calculated
+%       xs       - position of the line source
+%       f        - frequency of the line source
+%       conf     - optional configuration struct (see SFS_config)
 %
-%   CHECK_WAVE_FIELD(P,t) checks if the wave field is different from zero.
-%   If this is not the case it returns a warning.
+%   Output parameters:
+%       S        - Wave field of a line source located at xs
 %
-%   see also: wave_field_imp_wfs_25d, norm_wave_field
+%   LINE_SOURCE_MONO(x,y,xs,f) calculates the wave field of a line source
+%   located at xs for the given points x,y and the frequency f. The wave
+%   field is calculated by the Greens function.
+%
+%   References:
+%       Williams1999 - Fourier Acoustics (Academic Press)
+%
+%   see also: point_source
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -46,17 +55,33 @@ function check_wave_field(P,t)
 %*****************************************************************************
 
 
-%% ===== Checking of input parameters ====================================
-nargmin = 2;
-nargmax = 2;
+%% ===== Checking of input  parameters ==================================
+nargmin = 4;
+nargmax = 5;
 narginchk(nargmin,nargmax);
-isargmatrix(P);
-isargscalar(t);
+isargmatrix(x,y);
+xs = position_vector(xs);
+isargpositivescalar(f);
+if nargin<nargmax
+    conf = SFS_config;
+else
+    isargstruct(conf);
+end
+
+
+%% ===== Configuration ==================================================
+c = conf.c;
 
 
 %% ===== Computation =====================================================
-if max(abs(P(:)))==0 || all(isnan(P(:)))
-    warning('SFS:check_wave_field',...
-        ['The activity in the simulated wave field is zero. ',...
-         'Maybe you should use another time frame t than %i. '],t);
-end
+omega = 2*pi*f;
+% Source model for a line source: 2D Green's function.
+%
+%                i   (2) / w        \
+% G(x-xs,w) =  - -  H0  |  - |x-xs|  |
+%                4       \ c        /
+%
+% see: Williams1999, p. 266
+%
+S = -1i/4 * besselh(0,2,omega/c* ...
+    sqrt( (x-xs(1)).^2 + (y-xs(2)).^2 ));

@@ -1,25 +1,19 @@
-function S = line_source(x,y,xs,f,conf)
-%LINE_SOURCE returns the Green's function for a line source
+function y = vector_norm(x,dim)
+%VECTOR_NORM calculates the norm for the rows/columns of a matrix
 %
-%   Usage: S = line_source(x,y,xs,f,[conf])
+%   Usage: y = vector_norm(x,dim)
 %
-%   Input options:
-%       x,y      - x,y points for which the Green's function should be calculated
-%       xs       - position of the line source
-%       f        - frequency of the line source
-%       conf     - optional configuration struct (see SFS_config)
+%   Input parameters:
+%       x   - matrix [n x m]
+%       dim - dimension along the norm should be calculated
 %
-%   Output parameters:
-%       S        - Wave field of a line source located at xs
+%   Output parameter:
+%       y   - norm of the vectors [1 x m] or [n x 1]
 %
-%   LINE_SOURCE(x,y,xs,f) calculates the wave field of a line source
-%   located at xs for the given points x,y and the frequency f. The wave
-%   field is calculated by the Greens function.
+%   VECTOR_NORM(x,dim) calculates the p-norm (with p=2) for the vectors
+%   given within the matrix along the dimension dim.
 %
-%   References:
-%       Williams1999 - Fourier Acoustics (Academic Press)
-%
-%   see also: point_source
+%   see also: norm, vector_product
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -55,32 +49,12 @@ function S = line_source(x,y,xs,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
-narginchk(nargmin,nargmax);
-isargmatrix(x,y);
-xs = position_vector(xs);
-isargpositivescalar(f);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
-
-
-%% ===== Configuration ==================================================
-c = conf.c;
+nargmin = 2;
+nargmax = 2;
+narginchk(nargmin,nargmax)
+isargmatrix(x)
+isargpositivescalar(dim)
 
 
 %% ===== Computation =====================================================
-omega = 2*pi*f;
-% Source model for a line source: 2D Green's function.
-%
-%                i   (2) / w        \
-% G(x-xs,w) =  - -  H0  |  - |x-xs|  |
-%                4       \ c        /
-%
-% see: Williams1999, p. 266
-%
-S = -1i/4 * besselh(0,2,omega/c* ...
-    sqrt( (x-xs(1)).^2 + (y-xs(2)).^2 ));
+y = sum(abs(x).^2,dim).^(1/2);

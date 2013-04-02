@@ -120,6 +120,7 @@ for ii = 1:size(x0,1)
     r = sqrt((xx-x0(ii,1)).^2 + (yy-x0(ii,2)).^2);
     % amplitude decay for a 3D monopole
     g = 1./(4*pi*r);
+    %g = greens_function_imp(xx,yy,x0(ii,1:3),src);
 
     % shift driving function
     d(:,ii) = delayline(d(:,ii)',t_inverted,1,conf)';

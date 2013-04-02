@@ -1,16 +1,19 @@
-function [x,y,P] = wave_field_mono(X,Y,x0,greens_function,D,f,conf)
-%WAVE_FIELD_MONO_3D simulates a monofrequent wave field for point sources as
-%secondary sources
+function [x,y,P] = wave_field_mono(X,Y,x0,src,D,f,conf)
+%WAVE_FIELD_MONO simulates a monofrequent wave field for the given driving
+%signals and secondary sources
 %
-%   Usage: [x,y,P] = wave_field_mono_3d(X,Y,x0,D,f,[conf])
+%   Usage: [x,y,P] = wave_field_mono(X,Y,x0,src,D,f,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
 %       Y           - [ymin,ymax]
 %       x0          - secondary sources [n x 6]
-%       greens_function - handle to the function handling the propagation
-%                         of sound from x0. For example, for a point source
-%                         use @point_source_mono
+%       src         - source model for the secondary sources. This describes the
+%                     Green's function, that is used for the modeling of the
+%                     sound propagation. Valid models are:
+%                       'ps' - point source
+%                       'ls' - line source
+%                       'pw' - plane wave
 %       D           - driving signals for the secondary sources [m x n]
 %       f           - monochromatic frequency (Hz)
 %       conf        - optional configuration struct (see SFS_config)
@@ -20,11 +23,11 @@ function [x,y,P] = wave_field_mono(X,Y,x0,greens_function,D,f,conf)
 %       y           - corresponding y axis
 %       P           - Simulated wave field
 %
-%   WAVE_FIELD_MONO(X,Y,x0,greens_function,D,f,conf) simulates a wave field
+%   WAVE_FIELD_MONO(X,Y,x0,src,D,f,conf) simulates a wave field
 %   for the given secondary sources, driven by the corresponding driving
-%   signals. The given greens_function handle is applied as source model
-%   for the secondary sources. The simulation is done for one frequency in
-%   the frequency domain, by calculating the integral for P with a
+%   signals. The given source model src is applied by the corresponding Green's
+%   function for the secondary sources. The simulation is done for one
+%   frequency in the frequency domain, by calculating the integral for P with a
 %   summation.
 %   
 %   To plot the result use plot_wavefield(x,y,P).
@@ -75,6 +78,7 @@ narginchk(nargmin,nargmax);
 isargvector(X,Y,D);
 isargsecondarysource(x0);
 isargpositivescalar(f);
+isargchar(src);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -97,14 +101,16 @@ useplot = conf.useplot;
 [xx,yy,x,y] = xy_grid(X,Y,conf);
 % Initialize empty wave field
 P = zeros(length(y),length(x));
+% Get Green's function for the desired dimensionality
+greens_function = get_greens_function_handle(src,'f');
 % Integration over secondary source positions
 for ii = 1:size(x0,1)
 
     % ====================================================================
     % Secondary source model G(x-x0,omega)
-    % This is the model for the loudspeakers we apply. We use closed cabinet
-    % loudspeakers and therefore point sources.
-    %G = point_source(xx,yy,x0(ii,1:3),f);
+    % This is the model for the secondary sources we apply.
+    % The exact function is given by the dimensionality of the problem, e.g. a
+    % point source for 3D
     G = greens_function(xx,yy,x0(ii,1:3),f);
 
     % ====================================================================

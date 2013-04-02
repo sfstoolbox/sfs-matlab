@@ -114,11 +114,6 @@ for ii = 1:size(x0,1)
         d(:,ii) = bandpass(d(:,ii),bandpassflow,bandpassfhigh,conf);
     end
 
-    % Apply bandbass filter
-    if(0)
-        d(:,ii) = bandpass(d(:,ii),10,20000,conf);
-    end
-
     % ================================================================
     % Secondary source model: Greens function g3D(x,t)
     % distance of secondary source to receiver position

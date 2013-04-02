@@ -95,4 +95,4 @@ win = tapering_window(x0,conf);
 % Driving function
 D = driving_function_mono_wfs_25d(x0,xs,src,f,conf) .* win;
 % Wave field
-[x,y,P] = wave_field_mono([x x],[y y],x0,@point_source_mono,D,f,conf);
+[x,y,P] = wave_field_mono([x x],[y y],x0,'ps',D,f,conf);

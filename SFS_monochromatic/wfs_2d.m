@@ -1,14 +1,14 @@
 function [P,x0,win] = wfs_2d(x,y,xs,src,f,L,conf)
-%WFS_25D returns the sound pressure for 2D WFS at x,y
+%WFS_2D returns the sound pressure for 2D WFS at x,y
 %
-%   Usage: [P,win] = wfs_2d(x,y,xs,L,f,src,[conf])
+%   Usage: [P,x0,win] = wfs_2d(x,y,xs,src,f,L,[conf])
 %
 %   Input parameters:
 %       x           - x position(s)
 %       y           - y position(s)
 %       xs          - position of point source (m)
 %       src         - source type of the virtual source
-%                         'pw' - plane wave (xs, ys are the direction of the
+%                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
@@ -17,20 +17,21 @@ function [P,x0,win] = wfs_2d(x,y,xs,src,f,L,conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       P           - Simulated wave field
+%       P           - simulated wave field
+%       x0          - secondary sources
 %       win         - tapering window (activity of loudspeaker)
 %
-%   WFS_2D(X,Y,xs,src,f,L,conf) returns the sound pressure at the point(s) (x,y)
-%   for the given source type (src) using a WFS 2 dimensional driving
-%   function in the temporal domain. This means by calculating the integral for
-%   P with a summation.
+%   WAVE_FIELD_MONO_WFS_2D(x,y,xs,L,f,src,conf) returns the sound pressure at
+%   the point(s) (x,y) for the given source type (src) using a WFS 2
+%   dimensional driving function in the temporal domain. This means by
+%   calculating the integral for P with a summation.
 %
 %   References:
 %       Spors2009 - Physical and Perceptual Properties of Focused Sources in
 %           Wave Field Synthesis (AES127)
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: wave_field_mono_wfs_2d, driving_function_mono_wfs_2d
+%   see also: wave_field_mono_wfs_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -80,9 +81,8 @@ else
 end
 
 
-%% ===== Configuration ==================================================
-useplot = conf.useplot;
-xref = position_vector(conf.xref);
+%% ==
+xref = conf.xref;
 
 
 %% ===== Computation ====================================================
@@ -93,45 +93,7 @@ x0 = secondary_source_positions(L,conf);
 x0 = secondary_source_selection(x0,xs,src,xref);
 % Generate tapering window
 win = tapering_window(x0,conf);
-% Initialize empty wave field
-P = zeros(length(y),length(x));
-% Integration over secondary source positions
-for ii = 1:size(x0,1)
-
-    % ====================================================================
-    % Secondary source model G(x-x0,omega)
-    % This is the model for the loudspeakers we apply. We use line sources
-    % for 2D synthesis.
-    G = line_source_mono(x,y,x0(ii,1:3),f);
-
-    % ====================================================================
-    % Driving function D(x0,omega)
-    D = driving_function_mono_wfs_2d(x0(ii,:),xs,src,f,conf);
-
-    % ====================================================================
-    % Integration
-    %              /
-    % P(x,omega) = | D(x0,omega) G(x-x0,omega) dx0
-    %              /
-    %
-    % see: Spors2009, Williams1993 p. 36
-    %
-    % NOTE: win(ii) is the factor of the tapering window in order to have fewer
-    % truncation artifacts. If you don't use a tapering window win(ii) will
-    % always be one.
-    P = P + win(ii)*D.*G;
-
-end
-
-% === Primary source correction ===
-% This is not implemented yet. Have a look at
-% Völk, F., Lindner, F., & Fastl, H. (2011). Primary Source Correction (PSC) in
-% Wave Field Synthesis. ICSA
-if(0)
-    omega = 2*pi*f;
-    c = conf.c;
-    xref = position_vector(conf.xref);
-    C = exp(-1i*(omega/c*norm(xref-xs) - pi/2)) / ...
-    ( pi*norm(xref-xs)*besselh(0,2,omega/c*norm(xref-xs)) )
-    P = P .* C;
-end
+% Driving function
+D = driving_function_mono_wfs_2d(x0,xs,src,f,conf) .* win;
+% Wave field
+[x,y,P] = wave_field_mono([x x],[y y],x0,'ls',D,f,conf);

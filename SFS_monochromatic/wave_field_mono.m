@@ -101,8 +101,6 @@ useplot = conf.useplot;
 [xx,yy,x,y] = xy_grid(X,Y,conf);
 % Initialize empty wave field
 P = zeros(length(y),length(x));
-% Get Green's function for the desired dimensionality
-greens_function = get_greens_function_handle(src,'f');
 % Integration over secondary source positions
 for ii = 1:size(x0,1)
 
@@ -111,7 +109,7 @@ for ii = 1:size(x0,1)
     % This is the model for the secondary sources we apply.
     % The exact function is given by the dimensionality of the problem, e.g. a
     % point source for 3D
-    G = greens_function(xx,yy,x0(ii,1:3),f);
+    G = greens_function_mono(xx,yy,x0(ii,1:3),src,f);
 
     % ====================================================================
     % Integration

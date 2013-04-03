@@ -19,7 +19,8 @@ function [x,y,P,x0,win] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,conf)
 %   Output parameters:
 %       x           - corresponding x axis
 %       y           - corresponding y axis
-%       P           - Simulated wave field
+%       P           - simulated wave field
+%       x0          - active secondary sources
 %       win         - tapering window of the secondary sources
 %
 %   WAVE_FIELD_MONO_WFS_25D(X,Y,xs,L,f,src,conf) simulates a wave

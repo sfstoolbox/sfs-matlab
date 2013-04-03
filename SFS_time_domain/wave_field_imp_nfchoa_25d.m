@@ -1,7 +1,11 @@
 function [x,y,p,x0] = wave_field_imp_nfchoa_25d(X,Y,xs,src,t,L,conf)
 %WAVE_FIELD_IMP_NFCHOA_25D returns the wave field in time domain of an impulse
 %
+<<<<<<< HEAD
+%   Usage: [x,y,p] = wave_field_imp_nfchoa_25d(X,Y,xs,src,L,[conf])
+=======
 %   Usage: [x,y,p,ls_activity] = wave_field_imp_nfchoa_25d(X,Y,xs,src,t,L,[conf])
+>>>>>>> driving_functions
 %
 %   Input options:
 %       X           - length of the X axis (m); single value or [xmin,xmax]
@@ -18,15 +22,19 @@ function [x,y,p,x0] = wave_field_imp_nfchoa_25d(X,Y,xs,src,t,L,conf)
 %   Output options:
 %       x,y         - x- and y-axis of the wave field
 %       p           - wave field (length(y) x length(x))
+<<<<<<< HEAD
+=======
 %       x0          - positions and directions of the secondary sources
+>>>>>>> driving_functions
 %
 %   WAVE_FIELD_IMP_NFCHOA_25D(X,Y,xs,src,t,L,conf) simulates a wave field of the
 %   given source type (src) using a NFC-HOA 2.5 dimensional driving
 %   function at the time point t.
 %
 %   To plot the result use:
+%   x0 = secondary_source_positions(L,conf);
 %   conf.plot.usedb = 1;
-%   plot_wavefield(x,y,p,L,ls_activity,conf);
+%   plot_wavefield(x,y,p,x0,conf);
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

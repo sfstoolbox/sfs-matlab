@@ -101,7 +101,7 @@ D = driving_function_mono_wfs_25d(x0,xs,src,f,conf) .* win;
 % disable plotting, in order to integrate the tapering window
 conf.useplot = 0;
 % calculate wave field
-[x,y,P] = wave_field_mono(X,Y,x0,@point_source_mono,D,f,conf);
+[x,y,P] = wave_field_mono(X,Y,x0,'ps',D,f,conf);
 
 
 % ===== Plotting =========================================================

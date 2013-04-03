@@ -74,4 +74,4 @@ end
 %% ===== Computation ====================================================
 % Disable the plotting of a source, because we have a plane wave
 conf.plot.loudspeakers = 0;
-[x,y,P] = wave_field_mono(X,Y,[xs 0 1 0],@plane_wave_mono,1,f,conf);
+[x,y,P] = wave_field_mono(X,Y,[xs 0 1 0],'pw',1,f,conf);

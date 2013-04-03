@@ -1,7 +1,7 @@
 function [P,x0,win] = wfs_25d(x,y,xs,src,f,L,conf)
 %WFS_25D returns the sound pressure for 2.5D WFS at x,y
 %
-%   Usage: [P,win] = wfs_25d(x,y,xs,src,f,L,[conf])
+%   Usage: [P,x0,win] = wfs_25d(x,y,xs,src,f,L,[conf])
 %
 %   Input parameters:
 %       x           - x position(s)
@@ -17,7 +17,8 @@ function [P,x0,win] = wfs_25d(x,y,xs,src,f,L,conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       P           - Simulated wave field
+%       P           - simulated wave field
+%       x0          - secondary sources
 %       win         - tapering window (activity of loudspeaker)
 %
 %   WAVE_FIELD_MONO_WFS_25D(x,y,xs,L,f,src,conf) returns the sound pressure at
@@ -95,4 +96,4 @@ win = tapering_window(x0,conf);
 % Driving function
 D = driving_function_mono_wfs_25d(x0,xs,src,f,conf) .* win;
 % Wave field
-[x,y,P] = wave_field_mono([x x],[y y],x0,@point_source_mono,D,f,conf);
+[x,y,P] = wave_field_mono([x x],[y y],x0,'ps',D,f,conf);

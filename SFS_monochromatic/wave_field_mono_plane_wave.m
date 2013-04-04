@@ -1,4 +1,4 @@
-function [x,y,P] = wave_field_mono_plane_wave(X,Y,Z,xs,f,conf)
+function [x,y,z,P] = wave_field_mono_plane_wave(X,Y,Z,xs,f,conf)
 %WAVE_FIELD_MONO_PLANE_WAVE simulates a wave field of a plane wave
 %
 %   Usage: [x,y,P] = wave_field_mono_plane_wave(X,Y,Z,xs,f,[conf])
@@ -72,21 +72,7 @@ else
 end
 
 
-%% ===== Configuration ==================================================
-% Plotting result
-useplot = conf.useplot;
-
-
 %% ===== Computation ====================================================
-% Create a x-y-grid to avoid a loop
-[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
-% Source model for a point source G(x,omega)
-P = plane_wave(xx,yy,zz,xs,f);
-% Scale signal (at xref)
-P = norm_wave_field(P,x,y,z,conf);
-
-
-% ===== Plotting =========================================================
-if(useplot)
-    plot_wavefield(x,y,z,P,conf);
-end
+% Disable the plotting of a source, because we have a plane wave
+conf.plot.loudspeakers = 0;
+[x,y,z,P] = wave_field_mono(X,Y,Z,[xs 0 1 0],'pw',1,f,conf);

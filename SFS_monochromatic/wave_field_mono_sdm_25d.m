@@ -1,4 +1,4 @@
-function [x,y,P] = wave_field_mono_sdm_25d(X,Y,Z,xs,src,f,L,conf)
+function [x,y,z,P,x0] = wave_field_mono_sdm_25d(X,Y,Z,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_SDM_25D simulates a wave field for 2.5D NFC-HOA
 %
 %   Usage: [x,y,P] = wave_field_mono_sdm_25d(X,Y,Z,xs,src,f,L,[conf])
@@ -20,7 +20,8 @@ function [x,y,P] = wave_field_mono_sdm_25d(X,Y,Z,xs,src,f,L,conf)
 %   Output parameters:
 %       x           - corresponding x axis
 %       y           - corresponding y axis
-%       P           - Simulated wave field
+%       P           - simulated wave field
+%       x0          - secondary sources
 %
 %   WAVE_FIELD_MONO_SDM_25D(X,Y,Z,xs,src,f,L,conf) simulates a wave
 %   field of the given source type (src) using a SDM 2.5 dimensional driving
@@ -88,41 +89,16 @@ useplot = conf.useplot;
 
 
 %% ===== Computation ====================================================
-% Calculate the wave field in time-frequency domain
-%
 % Get the position of the loudspeakers
 x0 = secondary_source_positions(L,conf);
-% Create a x-y-grid to avoid a loop
-[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
-% Initialize empty wave field
-P = zeros(length(y),length(x));
-% Driving function D(x0,omega)
-D = driving_function_mono_sdm_25d(x0,xs,src,f,conf);
 % Generate tapering window
 win = tapering_window(x0,conf);
-
-% Integration over secondary source positions
-for ii = 1:size(x0,1)
-
-    % ====================================================================
-    % Secondary source model G(x-x0,omega)
-    % This is the model for the loudspeakers we apply. We use closed cabinet
-    % loudspeakers and therefore point sources.
-    G = point_source(xx,yy,zz,x0(ii,1:3),f);
-
-    % ====================================================================
-    % Integration
-    %              /
-    % P(x,omega) = | D(x0,omega) G(x-x0,omega) dx0
-    %              /
-    %
-    % see: Spors2009, Williams1993 p. 36
-    P = P + win(ii).*D(ii).*G;
-
-end
-
-% === Scale signal (at xref) ===
-P = norm_wave_field(P,x,y,z,conf);
+% Driving function D(x0,omega)
+D = driving_function_mono_sdm_25d(x0,xs,src,f,conf) .* win;
+% disable plotting to handle the tapering window
+conf.useplot = 0;
+% Wave field
+[x,y,z,P] = wave_field_mono(X,Y,Z,x0,'ps',D,f,conf);
 
 
 % ===== Plotting =========================================================

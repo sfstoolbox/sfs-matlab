@@ -1,25 +1,29 @@
-function S = point_source(x,y,z,xs,f,conf)
-%POINT_SOURCE returns the Green's function for a point source
+function G = greens_function_mono(x,y,z,xs,src,f,conf)
+%GREENS_FUNCTION_MONO returns a Green's function in the frequency domain
 %
-%   Usage: S = point_source(x,y,xs,f,[conf])
+%   Usage: G = greens_function_mono(x,y,z,xs,src,f,[conf])
 %
 %   Input options:
 %       x,y,z   - x,y,z points for which the Green's function should be calculated
-%       xs      - position of the point source
-%       f       - frequency of the point source
+%       xs      - position of the source
+%       src     - source model of the Green's function. Valid models are:
+%                   'ps' - point source
+%                   'ls' - line source
+%                   'pw' - plane wave
+%       f       - frequency of the source
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       S       - Wave field of a point source located at xs
+%       G       - Green's function evaluated at the points x,y
 %
-%   POINT_SOURCE(x,y,z,xs,f,conf) calculates the wave field of a point source
-%   located at xs for the given points x,y,z and the frequency f. The wave
-%   field is calculated by the Greens function.
+%   GREENS_FUNCTION_MONO(x,y,z,xs,src,f) calculates the Green's function for the
+%   given source model located at xs for the given points x,y and the frequency
+%   f.
 %
 %   References:
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: line_source
+%   see also: wave_field_mono
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -55,11 +59,12 @@ function S = point_source(x,y,z,xs,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 6;
+nargmin = 6;
+nargmax = 7;
 narginchk(nargmin,nargmax);
-isargmatrix(x,y,z);
-xs = position_vector(xs);
+isargmatrix(x,y);
+isargposition(xs);
+isargchar(src);
 isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
@@ -73,15 +78,75 @@ c = conf.c;
 
 
 %% ===== Computation =====================================================
+% frequency
 omega = 2*pi*f;
-% Source model for a point source: 3D Green's function.
-%
-%              1  e^(-i w/c |x-xs|)
-% G(x-xs,w) = --- -----------------
-%             4pi      |x-xs|
-%
-% see: Williams1999, p. 198
-%
-S = 1/(4*pi) * exp(-1i*omega/c.* ...
-    sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2)) ./ ...
-        sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
+% calculate Green's function for the given source model
+if strcmp('ps',src)
+    % Source model for a point source: 3D Green's function.
+    %
+    %              1  e^(-i w/c |x-xs|)
+    % G(x-xs,w) = --- -----------------
+    %             4pi      |x-xs|
+    %
+    % see: Williams1999, p. 198
+    %
+    G = 1/(4*pi) * exp(-1i*omega/c .* sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2)) ./ ...
+            sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
+
+elseif strcmp('ls',src)
+    % Source model for a line source: 2D Green's function.
+    %
+    %                i   (2) / w        \
+    % G(x-xs,w) =  - -  H0  |  - |x-xs|  |
+    %                4       \ c        /
+    %
+    % see: Williams1999, p. 266
+    %
+    G = -1i/4 * besselh(0,2,omega/c* ...
+        sqrt( (x-xs(1)).^2 + (y-xs(2)).^2 + (z-xs(3)).^2 ));
+
+elseif strcmp('pw',src)
+    % Source model for a plane wave:
+    %
+    % G(x,w) = e^(-i w/c n x)
+    %
+    % see: Williams1999, p. 21
+    %
+    % direction of plane wave
+    nxs = xs / norm(xs);
+    %
+    % The following code enables us to replace this two for-loops
+    % for ii = 1:size(x,1)
+    %     for jj = 1:size(x,2)
+    %         S(ii,jj) = exp(-1i*omega/c.*nxs*[x(ii,jj) y(ii,jj) z(ii,jj)]');
+    %     end
+    % end
+    %
+    % Get a matrix in the form of
+    % 1 1 1 0 0 0 0 0 0
+    % 0 0 0 1 1 1 0 0 0
+    % 0 0 0 0 0 0 1 1 1
+    E = eye(3*size(x,1));
+    E = E(1:3:end,:)+E(2:3:end,:)+E(3:3:end,:);
+    % Multiply this matrix with the plane wave direction
+    N = repmat(nxs,size(x,1)) .* E;
+    % Interlace x,y,z into one matrix
+    % x11 x12 ... x1m
+    % y11 y12 ... y1m
+    % z11 z12 ... z1m
+    % .   .       .
+    % .   .       .
+    % xn1 xn2 ... xnm
+    % yn1 yn2 ... ynm
+    % zn1 zn2 ... znm
+    XYZ = zeros(3*size(x,1),size(x,2));
+    XYZ(1:3:end,:) = x;
+    XYZ(2:3:end,:) = y;
+    XYZ(3:3:end,:) = z;
+    % calculate sound field
+    G = exp(-1i*omega/c.*N*XYZ);
+
+else
+    error('%s: %s is not a valid source model for the Green''s function', ...
+        upper(mfilename),src);
+end

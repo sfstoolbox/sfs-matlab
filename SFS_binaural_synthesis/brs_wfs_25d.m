@@ -24,23 +24,6 @@ function brs = brs_wfs_25d(X,phi,xs,src,L,irs,conf)
 %   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
 %   http://www.tu-berlin.de/?id=ssr
 %
-%   Geometry (for a linear array):
-%
-%                               y-axis
-%                                 ^
-%                                 |
-%                                 |
-%                                 |    (Listener)
-%                                 |        O X, phi=-pi/2
-%                                 |        |
-%                                 |
-%                  o xs           |
-%             (Virtual Source)    |
-%                                 |
-%     -------v--v--v--v--v--v--v--v--v--v--v--v--v--v--v------> x-axis
-%                                 X0 (Array center)
-%            |---      Loudspeaker array length     ---|
-%
 %   see also: SFS_config, brs_wfs_25d, brs_point_source
 
 %*****************************************************************************
@@ -97,12 +80,16 @@ angles = rad(conf.brsangles);   % Angles for the BRIRs
 
 
 %% ===== Computation =====================================================
+% secondary sources
+x0 = secondary_source_positions(L,conf);
+% calculate driving function
+d = driving_function_imp_wfs_25d(x0,xs,src,L,conf);
+
 % Initial values
 brs = zeros(N,2*length(angles));
-
 % Generate a BRS set for all given angles
 for ii = 1:length(angles)
     % Compute BRIR for the desired WFS system
     brs(:,(ii-1)*2+1:ii*2) = ...
-        ir_wfs_25d(X,angles(ii)+phi,xs,src,L,irs,conf);
+        ir_generic(X,angles(ii)+phi,x0,d,irs,conf);
 end

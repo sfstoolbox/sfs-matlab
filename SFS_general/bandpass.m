@@ -1,17 +1,19 @@
-function sig =  bandpass(sig,conf)
+function sig =  bandpass(sig,flow,fhigh,conf)
 %BANDPASS filters a signal by a bandpass
 %
-%   Usage: sig = bandpass(sig,[conf])
+%   Usage: sig = bandpass(sig,flow,fhigh,[conf])
 %
 %   Input parameters:
 %       sig  - input signal (vector)
+%       flow - start frequency of bandpass
+%       fhigh - stop frequency of bandpass
 %       conf - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       sig  - filtered signal
 %
-%   BANDPASS(sig) filters the given signal with a bandpass filter
-%   with cutoff frequencies of 10Hz and 20kHz.
+%   BANDPASS(sig,flow,fhigh) filters the given signal with a bandpass filter
+%   with cutoff frequencies of flow and fhigh.
 %
 %   see also: wave_field_imp_wfs_25d
 
@@ -49,10 +51,11 @@ function sig =  bandpass(sig,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
-nargmax = 2;
+nargmin = 3;
+nargmax = 4;
 narginchk(nargmin,nargmax);
 isargvector(sig);
+isargpositivescalar(flow,fhigh);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -67,7 +70,10 @@ N = 128;
 
 %% ===== Computation =====================================================
 % design bandpass filter
-Hf = [0 2*10/fs 2*20/fs 2*18000/fs 2*20000/fs 1];
+% FIXME: this doesn't work fine for all frequencies! Check if it is
+% possible to use a fraction of the desired freqeuncies for all frequency
+% ranges.
+Hf = [0 2*flow/fs 4*flow/fs 1.8*fhigh/fs 2*fhigh/fs 1];
 Hm = [0 0 1 1 0 0];
 b = fir2(N,Hf,Hm);
 % filter signal

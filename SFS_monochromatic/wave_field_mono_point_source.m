@@ -59,7 +59,6 @@ function [x,y,P] = wave_field_mono_point_source(X,Y,Z,xs,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-<<<<<<< HEAD
 nargmin = 5;
 nargmax = 6;
 narginchk(nargmin,nargmax);
@@ -73,21 +72,5 @@ else
 end
 
 
-%% ===== Configuration ==================================================
-% Plotting result
-useplot = conf.useplot;
-
-
 %% ===== Computation ====================================================
-% Create a x-y-grid to avoid a loop
-[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
-% Source model for a point source G(x,omega)
-P = point_source(xx,yy,zz,xs,f,conf);
-% Scale signal (at xref)
-P = norm_wave_field(P,x,y,z,conf);
-
-
-% ===== Plotting =========================================================
-if(useplot)
-    plot_wavefield(x,y,z,P,conf);
-end
+[x,y,z,P] = wave_field_mono(X,Y,Z,[xs 0 1 0],'ps',1,f,conf);

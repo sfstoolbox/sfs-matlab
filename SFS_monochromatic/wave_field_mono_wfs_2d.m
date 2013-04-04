@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 function [x,y,P,win] = wave_field_mono_wfs_2d(X,Y,Z,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_WFS_25D simulates a wave field for 2D WFS
 %
 %   Usage: [x,y,P] = wave_field_mono_wfs_2d(X,Y,Z,xs,L,f,src,[conf])
+=======
+function [x,y,P,x0,win] = wave_field_mono_wfs_2d(X,Y,xs,src,f,L,conf)
+%WAVE_FIELD_MONO_WFS_25D simulates a wave field for 2D WFS
+%
+%   Usage: [x,y,P,x0,win] = wave_field_mono_wfs_2d(X,Y,xs,L,f,src,[conf])
+>>>>>>> driving_functions
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
@@ -21,6 +28,8 @@ function [x,y,P,win] = wave_field_mono_wfs_2d(X,Y,Z,xs,src,f,L,conf)
 %       x           - corresponding x axis
 %       y           - corresponding y axis
 %       P           - Simulated wave field
+%       x0          - secondary sources
+%       win         - tapering window
 %
 %   WAVE_FIELD_MONO_WFS_2D(X,Y,Z,xs,src,f,L,conf) simulates a wave
 %   field of the given source type (src) using a WFS 2 dimensional driving
@@ -86,20 +95,28 @@ end
 
 
 %% ===== Configuration ==================================================
+xref = position_vector(conf.xref);
+fs = conf.fs;
 useplot = conf.useplot;
 
 
 %% ===== Computation ====================================================
-% Calculate the wave field in time-frequency domain
-% Create a x-y-grid to avoid a loop
-[xx,yy,~,x,y,z] = xyz_grid(X,Y,Z,conf);
-% get wave field
-[P,x0,win] = wfs_2d(xx,yy,xs,src,f,L,conf);
-% scale signal (at xref)
-P = norm_wave_field(P,x,y,z,conf);
+% Get secondary sources
+x0 = secondary_source_positions(L,conf);
+x0 = secondary_source_selection(x0,xs,src,xref);
+% Generate tapering window
+win = tapering_window(x0,conf);
+
+% Get driving signals
+D = driving_function_mono_wfs_2d(x0,xs,src,f,conf) .* win;
+
+% disable plotting in order to integrate the tapering window
+conf.useplot = 0;
+% Calculate wave field
+[x,y,z,P] = wave_field_mono(X,Y,Z,x0,'ls',D,f,conf);
 
 
-% ===== Plotting =========================================================
-if(useplot)
+%% ===== Plotting ========================================================
+if useplot
     plot_wavefield(x,y,z,P,x0,win,conf);
 end

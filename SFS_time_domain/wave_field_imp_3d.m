@@ -1,21 +1,25 @@
-function [x,y,p] = wave_field_imp(X,Y,x0,d,conf)
-%WAVE_FIELD_IMP returns the wave field in time domain of a loudspeaker array
+function [x,y,z,p] = wave_field_imp_3d(X,Y,Z,x0,d,t,conf)
+%WAVE_FIELD_IMP_3D returns the wave field in time domain with point sources as
+%secondary sources
 %
-%   Usage: [x,y,p] = wave_field_imp_nfchoa_25d(X,Y,x0,d,[conf])
+%   Usage: [x,y,z,p] = wave_field_imp_3d(X,Y,Z,x0,d,[conf])
 %
 %   Input options:
 %       X           - length of the X axis (m); single value or [xmin,xmax]
 %       Y           - length of the Y axis (m); single value or [ymin,ymax]
+%       Z           - [zmin,zmax]
 %       x0          - positions of secondary sources
 %       d           - driving function of secondary sources
+%       t           - time (samples)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output options:
 %       x,y         - x- and y-axis of the wave field
 %       p           - wave field (length(y) x length(x))
 %
-%   WAVE_FIELD_IMP(X,Y,x0,d,conf) computes the wave field synthesized by a 
-%   loudspekaer array driven by individual driving functions.
+%   WAVE_FIELD_IMP(X,Y,Z,x0,d,t,conf) computes the wave field synthesized by 
+%   secondary sources driven by individual driving functions to the time t.
+%   Point sources are applied as source models for the secondary sources.
 %
 %   To plot the result use:
 %   conf.plot.usedb = 1;
@@ -55,17 +59,22 @@ function [x,y,p] = wave_field_imp(X,Y,x0,d,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
+nargmin = 6;
+nargmax = 7;
 narginchk(nargmin,nargmax);
 isargvector(X,Y);
-
+isargmatrix(x0,d);
+isargscalar(t);
 if nargin<nargmax
     conf = SFS_config;
 else
     isargstruct(conf);
 end
-
+if size(x0,1)~=size(d,2)
+    error(['%s: The number of secondary sources (%i) and driving ', ...
+        'signals (%i) does not correspond.'], ...
+        upper(mfilename),size(x0,1),size(d,2));
+end
 
 %% ===== Configuration ==================================================
 % Plotting result
@@ -74,53 +83,55 @@ useplot = conf.useplot;
 c = conf.c;
 % Sampling rate
 fs = conf.fs;
-% Time frame to simulate
-frame = conf.frame;
 % Debug mode
 debug = conf.debug;
+% Bandpass
+usebandpass = conf.usebandpass;
+bandpassflow = conf.bandpassflow;
+bandpassfhigh = conf.bandpassfhigh;
 
 
 %% ===== Computation =====================================================
-% Get number of secondary sources
-nls = size(x0,1);
 
 % Spatial grid
-[xx,yy,x,y] = xy_grid(X,Y,conf);
+[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
 
+% FIXME: this needs a little bit more explanation!
 % time reversal of driving function due to propagation of sound
 % later parts of the driving function are emitted later by secondary
 % sources
 d = d(end:-1:1,:);
-
-% shift driving function
-for ii = 1:nls
-    d(:,ii) = delayline(d(:,ii)',-size(d,1)+frame,1,conf)';
-end
-
-% Apply bandbass filter
-if(0)
-    d=bandpass(d,conf);
-end
+% correct time vector to work with inverted driving functions
+t_inverted = t-size(d,1);
 
 % Initialize empty wave field
 p = zeros(length(y),length(x));
 
 % Integration over loudspeaker
-for ii = 1:nls
+for ii = 1:size(x0,1)
+
+    % Apply bandbass filter
+    if usebandpass
+        d(:,ii) = bandpass(d(:,ii),bandpassflow,bandpassfhigh,conf);
+    end
 
     % ================================================================
     % Secondary source model: Greens function g3D(x,t)
     % distance of secondary source to receiver position
-    r = sqrt((xx-x0(ii,1)).^2 + (yy-x0(ii,2)).^2);
+    r = sqrt((xx-x0(ii,1)).^2 + (yy-x0(ii,2)).^2 + (zz-x0(ii,3)).^2 );
     % amplitude decay for a 3D monopole
     g = 1./(4*pi*r);
+    %g = greens_function_imp(xx,yy,x0(ii,1:3),src);
+
+    % shift driving function
+    d(:,ii) = delayline(d(:,ii)',t_inverted,1,conf)';
 
     % Interpolate the driving function w.r.t. the propagation delay from
     % the secondary sources to a field point.
     % NOTE: the interpolation is required to account for the fractional
     % delay times from the loudspeakers to the field points
-    t = 1:length(d(:,ii));
-    ds = interp1(t,d(:,ii),r/c*fs,'spline');
+    t_vector = 1:length(d(:,ii));
+    ds = interp1(t_vector,d(:,ii),r/c*fs,'spline');
 
     % ================================================================
     % Wave field p(x,t)
@@ -129,13 +140,13 @@ for ii = 1:nls
 end
 
 % === Checking of wave field ===
-check_wave_field(p,frame);
+check_wave_field(p,t);
 
 
 % === Plotting ===
 if (useplot)
     conf.plot.usedb = 1;
-    plot_wavefield(x,y,p,x0,conf);
+    plot_wavefield(x,y,z,p,x0,conf);
 end
 
 % some debug stuff

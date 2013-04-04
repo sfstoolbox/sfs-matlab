@@ -1,7 +1,7 @@
-function [weight,delay] = driving_function_imp_wfs_25d(x0,xs,src,conf)
+function [d,delay,weight] = driving_function_imp_wfs_25d(x0,xs,src,conf)
 %DRIVING_FUNCTION_IMP_WFS_25D calculates the WFS 2.5D weighting and delaying
 %
-%   Usage: [weight,delay] = driving_function_imp_wfs_25d(x0,xs,src,[conf]);
+%   Usage: [d,delay,weight] = driving_function_imp_wfs_25d(x0,xs,src,[conf]);
 %
 %   Input parameters:
 %       x0      - position  and direction of secondary source (m)
@@ -14,14 +14,15 @@ function [weight,delay] = driving_function_imp_wfs_25d(x0,xs,src,conf)
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       weight  - weight (amplitude) of the driving function
+%       d       - driving signals
 %       delay   - delay of the driving function (s)
+%       weight  - weight (amplitude) of the driving function
 %
-%   DRIVING_FUNCTION_IMP_WFS_25D(x0,xs,src,conf) returns the
+%   DRIVING_FUNCTION_IMP_WFS_25D(x0,xs,src,conf) returns the driving signals and
 %   weighting and delay parameters of the WFS 2.5D driving function for the given
 %   source type and position and loudspeaker positions.
 %
-%   see also: wave_field_imp_wfs_25d, driving_function_mono_wfs_25d
+%   see also: wave_field_imp, wave_field_imp_wfs_25d, driving_function_mono_wfs_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -75,41 +76,70 @@ end
 % Speed of sound
 c = conf.c;
 xref = position_vector(conf.xref);
+fs = conf.fs;
+usehpre = conf.usehpre;
 
 
 %% ===== Computation =====================================================
 
-% Direction and position of secondary sources
-nx0 = x0(4:6);
-x0 = x0(1:3);
+% Calculate pre-equalization filter if required
+if usehpre
+    hpre = wfs_prefilter(conf);
+else
+    hpre = 1; % dirac pulse
+end
 
-% Constant amplitude factor
-g0 = sqrt(2*pi*norm(xref-x0));
+% Secondary source positions and directions
+nx0 = x0(:,4:6);
+x0 = x0(:,1:3);
 
+% Reference point and source position
+xref = repmat(xref,[size(x0,1) 1]);
+xs = repmat(xs,[size(x0,1) 1]);
+
+% 2.5D correction factor
+g0 = sqrt(2*pi*vector_norm(xref-x0,2));
+
+% Get the delay and weighting factors
 if strcmp('pw',src)
     % === Plane wave ===
     % Direction of plane wave
-    nxs = xs / norm(xs);
+    nxs = bsxfun(@rdivide,xs,vector_norm(xs,2));
     % Delay and amplitude weight
     % NOTE: <n_pw,n(x0)> is the same as the cosinus between their angle
-    delay = 1/c * nxs*x0';
-    weight = 2*g0 * nxs*nx0';
+    delay = 1/c * vector_product(nxs,x0,2);
+    weight = 2*g0 .* vector_product(nxs,nx0,2);
 
 elseif strcmp('ps',src)
     % === Point source ===
     % Distance between loudspeaker and virtual source
-    r = norm(x0-xs);
+    r = vector_norm(x0-xs,2);
     % Delay and amplitude weight
     delay = r/c;
-    weight = g0/(2*pi)*(x0-xs)*nx0'*r^(-3/2);
+    weight = g0/(2*pi).*vector_product(x0-xs,nx0,2).*r.^(-3/2);
 
 elseif strcmp('fs',src)
     % === Focused source ===
     % Distance between loudspeaker and virtual source
-    r = norm(x0-xs);
+    r = vector_norm(x0-xs,2);
     % Delay and amplitude weight
     delay =  -r/c;
-    weight = g0/(2*pi)*(x0-xs)*nx0'*r^(-3/2);
+    weight = g0/(2*pi).*vector_product(x0-xs,nx0,2).*r.^(-3/2);
 else
     error('%s: %s is not a known source type.',upper(mfilename),src);
+end
+
+% Calculate driving function prototype
+% FIXME: check if the zeros at the end are long enough
+delay = delay-min(delay);
+d_proto = [hpre' zeros(1,800)];
+d = zeros(length(d_proto),size(x0,1));
+for ii=1:size(x0,1)
+    % Shift and weight prototype driving function
+    % - less delay in driving function is more propagation time in sound
+    %   field, hence the sign of the delay has to be reversed in the
+    %   argument of the delayline function
+    % - the proagation time from the source to the nearest secondary source
+    %   is removed
+    d(:,ii) = delayline(d_proto,delay(ii)*fs,weight(ii),conf);
 end

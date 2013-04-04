@@ -1,11 +1,12 @@
-function [x,y,P,win] = wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,conf)
+function [x,y,z,P,x0,win] = wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_WFS_25D simulates a wave field for 2.5D WFS
 %
-%   Usage: [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,[conf])
+%   Usage: [x,y,z,P,x0,win] = wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
 %       Y           - [ymin,ymax]
+%       Z           - [zmin,zmax]
 %       xs          - position of point source (m)
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
@@ -19,14 +20,16 @@ function [x,y,P,win] = wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,conf)
 %   Output parameters:
 %       x           - corresponding x axis
 %       y           - corresponding y axis
-%       P           - Simulated wave field
-%       ls_activity - activity of the secondary sources (see plot_wavefield)
+%       z           - corresponding z axis
+%       P           - simulated wave field
+%       x0          - active secondary sources
+%       win         - tapering window of the secondary sources
 %
-%   WAVE_FIELD_MONO_WFS_25D(X,Y,xs,L,f,src,conf) simulates a wave
+%   WAVE_FIELD_MONO_WFS_25D(X,Y,Z,xs,L,f,src,conf) simulates a wave
 %   field of the given source type (src) using a WFS 2.5 dimensional driving
 %   function in the temporal domain. This means by calculating the integral for
 %   P with a summation.
-%   To plot the result use plot_wavefield(x,y,P).
+%   To plot the result use plot_wavefield(x,y,z,P).
 %
 %   References:
 %       Spors2009 - Physical and Perceptual Properties of Focused Sources in
@@ -85,16 +88,22 @@ end
 
 %% ===== Configuration ==================================================
 useplot = conf.useplot;
+xref = conf.xref;
 
 
 %% ===== Computation ====================================================
-% Calculate the wave field in time-frequency domain
-% Create a x-y-grid to avoid a loop
-[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
+% Get the position of the loudspeakers and its activity
+x0 = secondary_source_positions(L,conf);
+x0 = secondary_source_selection(x0,xs,src,xref);
+% Generate tapering window
+win = tapering_window(x0,conf);
+% Driving function
+D = driving_function_mono_wfs_25d(x0,xs,src,f,conf) .* win;
+% Wave field
+% disable plotting, in order to integrate the tapering window
+conf.useplot = 0;
 % calculate wave field
-[P,x0,win] = wfs_25d(xx,yy,zz,xs,src,f,L,conf);
-% scale signal (at xref)
-P = norm_wave_field(P,x,y,z,conf);
+[x,y,z,P] = wave_field_mono(X,Y,Z,x0,'ps',D,f,conf);
 
 
 % ===== Plotting =========================================================

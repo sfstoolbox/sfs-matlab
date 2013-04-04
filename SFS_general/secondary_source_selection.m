@@ -1,7 +1,7 @@
-function x0 = secondary_source_selection(x0,xs,src,xref)
+function [x0,idx] = secondary_source_selection(x0,xs,src,xref)
 %SECONDARY_SOURCE_SELECTION selects which secondary sources are active
 %
-%   Usage: ls_activity = secondary_source_selection(x0,xs,src,[xref])
+%   Usage: [x0,idx] = secondary_source_selection(x0,xs,src,[xref])
 %
 %   Input options:
 %       x0          - secondary source positions and directions (m)
@@ -17,9 +17,11 @@ function x0 = secondary_source_selection(x0,xs,src,xref)
 %
 %   Output options:
 %       x0          - secondary sources, containing only the active ones
+%       idx         - index of the selected sources from the original x0 matrix
 %
-%   SECONDARY_SOURCES_SELECTION(x0,xs,src) returns only the active secondary
-%   sources for the given geometry and virtual source.
+%   SECONDARY_SOURCES_SELECTION(x0,xs,src,xref) returns only the active secondary
+%   sources for the given geometry and virtual source. In addition the index of
+%   the chosen secondary sources is returned.
 %
 %   References:
 %       S. Spors, R. Rabenstein, J. Ahrens: "The Theory of Wave Field Synthesis
@@ -63,8 +65,8 @@ function x0 = secondary_source_selection(x0,xs,src,xref)
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;
 nargmax = 4;
-error(nargchk(nargmin,nargmax,nargin));
-% isargsecondarysource(x0);
+narginchk(nargmin,nargmax);
+isargsecondarysource(x0);
 xs = position_vector(xs);
 isargchar(src);
 if nargin==nargmax
@@ -99,8 +101,9 @@ if strcmp('pw',src)
     %      \ 0, else
     %
     % Direction of plane wave (nxs) is set above
-    x0 = x0_tmp(diag(nxs*nx0')>=eps,:);
-    
+    idx = (( diag(nxs*nx0')>=eps ));
+    x0 = x0_tmp(idx,:);
+
 elseif strcmp('ps',src) || strcmp('ls',src)
     % === Point source ===
     % secondary source selection (Spors 2008)
@@ -109,8 +112,9 @@ elseif strcmp('ps',src) || strcmp('ls',src)
     % a = <
     %      \ 0, else
     %
-    x0 = x0_tmp(diag((x0-xs)*nx0')>0,:);
-    
+    idx = (( diag((x0-xs)*nx0')>0 ));
+    x0 = x0_tmp(idx,:);
+
 elseif strcmp('fs',src)
     % === Focused source ===
     % secondary source selection (Spors 2008)
@@ -120,7 +124,8 @@ elseif strcmp('fs',src)
     % a = <
     %      \ 0, else
     %
-    x0 = x0_tmp(diag((xs-xref)*(x0-xs)')>0,:);
+    idx = (( diag((xs-xref)*(x0-xs)')>0 ));
+    x0 = x0_tmp(idx,:);
 else
     error('%s: %s is not a supported source type!',upper(mfilename),src);
 end

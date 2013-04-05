@@ -1,4 +1,4 @@
-function [x,y,z,P] = wave_field_mono_nfchoa_25d(X,Y,Z,xs,src,f,L,conf)
+function [x,y,z,P,x0] = wave_field_mono_nfchoa_25d(X,Y,Z,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_NFCHOA_25D simulates a wave field for 2.5D NFC-HOA
 %
 %   Usage: [x,y,z,P] = wave_field_mono_nfchoa_25d(X,Y,Z,xs,src,f,L,[conf])

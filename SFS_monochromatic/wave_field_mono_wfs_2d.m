@@ -1,14 +1,7 @@
-<<<<<<< HEAD
-function [x,y,P,win] = wave_field_mono_wfs_2d(X,Y,Z,xs,src,f,L,conf)
+function [x,y,z,P,x0,win] = wave_field_mono_wfs_2d(X,Y,Z,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_WFS_25D simulates a wave field for 2D WFS
 %
-%   Usage: [x,y,P] = wave_field_mono_wfs_2d(X,Y,Z,xs,L,f,src,[conf])
-=======
-function [x,y,P,x0,win] = wave_field_mono_wfs_2d(X,Y,xs,src,f,L,conf)
-%WAVE_FIELD_MONO_WFS_25D simulates a wave field for 2D WFS
-%
-%   Usage: [x,y,P,x0,win] = wave_field_mono_wfs_2d(X,Y,xs,L,f,src,[conf])
->>>>>>> driving_functions
+%   Usage: [x,y,z,P,x0,win] = wave_field_mono_wfs_2d(X,Y,Z,xs,L,f,src,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]

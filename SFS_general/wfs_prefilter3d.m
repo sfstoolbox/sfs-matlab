@@ -10,9 +10,6 @@ fhigh = conf.hprefhigh;     % Upper frequency limit of preequalization
                             % filter (= aliasing frequency of system)
 
 %% ===== Variables ======================================================
-            
-                 
-
 Nfilt=128;
 % Frequency axis
 f = linspace(0,fs/2,fs/10);

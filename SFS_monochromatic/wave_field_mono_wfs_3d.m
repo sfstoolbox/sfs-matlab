@@ -1,7 +1,7 @@
-function [x,y,P,win] = wave_field_mono_wfs_3d(X,Y,Z,xs,src,f,L,conf)
+function [x,y,z,P,x0,win] = wave_field_mono_wfs_3d(X,Y,Z,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_WFS_3D simulates a wave field for 3D WFS
 %
-%   Usage: [x,y,P,win] = wave_field_mono_wfs_3d(X,Y,Z,xs,src,f,L,[conf])
+%   Usage: [x,y,z,P,x0,win] = wave_field_mono_wfs_3d(X,Y,Z,xs,src,f,L,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
@@ -20,13 +20,16 @@ function [x,y,P,win] = wave_field_mono_wfs_3d(X,Y,Z,xs,src,f,L,conf)
 %   Output parameters:
 %       x           - corresponding x axis
 %       y           - corresponding y axis
+%       z           - corresponding z axis
 %       P           - Simulated wave field
-%      %
+%       x0          - active secondary sources
+%       win         - tapering window of the secondary sources
+%      
 %   WAVE_FIELD_MONO_WFS_3D(X,Y,Z,xs,L,f,src,conf) simulates a wave
 %   field of the given source type (src) using a WFS 3 dimensional driving
 %   function in the temporal domain. This means by calculating the integral for
 %   P with a summation.
-%   To plot the result use plot_wavefield(x,y,P).
+%   To plot the result use plot_wavefield(x,y,z,P).
 %
 %   References:
 %       Spors2009 - Physical and Perceptual Properties of Focused Sources in
@@ -80,16 +83,22 @@ end
 
 %% ===== Configuration ==================================================
 useplot = conf.useplot;
+xref = conf.xref;
 
 
 %% ===== Computation ====================================================
-% Calculate the wave field in time-frequency domain
-% Create a x-y-grid to avoid a loop
-[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
+% Get the position of the loudspeakers and its activity
+x0 = secondary_source_positions(L,conf);
+x0 = secondary_source_selection(x0,xs,src,xref);
+% Generate tapering window
+win = tapering_window(x0,conf);
+% Driving function
+D = driving_function_mono_wfs_3d(x0,xs,src,f,conf) .* win;
+% Wave field
+% disable plotting, in order to integrate the tapering window
+conf.useplot = 0;
 % calculate wave field
-[P,x0,win] = wfs_3d(xx,yy,zz,xs,src,f,L,conf);
-% scale signal (at xref)
-P = norm_wave_field(P,x,y,z,conf);
+[x,y,z,P] = wave_field_mono(X,Y,Z,x0,'ps',D,f,conf);
 
 
 % ===== Plotting =========================================================

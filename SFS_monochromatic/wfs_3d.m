@@ -77,6 +77,9 @@ else
 end
 
 
+
+%% ===== Computation ====================================================
+% Calculate the wave field in time-frequency domain
 %% ==
 xref = conf.xref;
 
@@ -88,61 +91,10 @@ xref = conf.xref;
 x0 = secondary_source_positions(L,conf);
 x0 = secondary_source_selection(x0,xs,src,xref);
 % Generate tapering window
-win = tapering_window(x0(:,1:6),conf);
-% Initialize empty wave field
-% FIXME: it could be that length is not enough here and we need size(...)
-P = zeros(length(y),length(x));
-% Integration over secondary source positions
+win = tapering_window(x0,conf);
+% Driving function
+D = driving_function_mono_wfs_3d(x0,xs,src,f,conf) .* win;
+% Wave field
+[x,y,z,P] = wave_field_mono([x x],[y y],[z z],x0,'ps',D,f,conf);
 
-phi = zeros(1,size(x0,1));
-
-if conf.debug
-    D_plot =  zeros(1,size(x0,1));
-end
-
-for ii = 1:size(x0,1)
-
-    % ====================================================================
-    % Secondary source model G(x-x0,omega)
-    % This is the model for the loudspeakers we apply. We use closed cabinet
-    % loudspeakers and therefore point sources.
-    G = point_source(x,y,z,x0(ii,1:3),f);
-
-    % ====================================================================
-    % Driving function D(x0,omega)
-    D = driving_function_mono_wfs_3d(x0(ii,:),xs,src,f,conf);
-    % ====================================================================
-    % Integration
-    %              /
-    % P(x,omega) = | D(x0,omega) G(x-x0,omega) dx0
-    %              /
-    %
-    % see: Spors2009, Williams1993 p. 36
-    %
-    % NOTE: win(ii) is the factor of the tapering window in order to have fewer
-    % truncation artifacts. If you don't use a tapering window win(ii) will
-    % always be one.
     
-    P = P + win(ii)*D.*G;
-
-    if conf.debug
-        phi(1,ii) = degree(correct_azimuth(atan2(x0(ii,2),x0(ii,1))));
-        theta(1,ii) = degree(correct_elevation(asin(x0(ii,3)./...
-                      sqrt(x0(ii,1).^2+x0(ii,2).^2+x0(ii,3).^2))));
-        D_plot(1,ii) = D;
-    end
-    
-    
-end
-
-    if conf.debug   
-%       save('DrivingFunctionWithoutWeights.mat','D_plot')  
-%       save('phi.mat','phi')
-        figure
-        plot3(phi(1,:),theta(1,:),20*log10(abs(D_plot(1,:))),'k.');
-        grid on
-        xlabel('$\varphi$ / degree','interpreter','latex')
-        ylabel('$\theta$ / degree','interpreter','latex')
-        zlabel('amplitude/db')
-        title('amplitude for all N active loudspeakers used for reproduction')
-    end

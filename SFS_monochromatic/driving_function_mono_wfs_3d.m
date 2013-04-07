@@ -15,7 +15,7 @@ function [D] = driving_function_mono_wfs_3d(x0,xs,src,f,conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       D           - driving function signal (1x1)
+%       D           - driving function signal (nx1)
 %
 %   DRIVING_FUNCTION_MONO_WFS_3D(x0,xs,f,src,conf) returns the
 %   driving signal for the given secondary source and desired source type (src).
@@ -94,53 +94,74 @@ c = conf.c;
 
 % Omega
 omega = 2*pi*f;
-
-% Activity of secondary sources
-x0 = secondary_source_selection(x0,xs,src,conf.xref);
-
-% Weights if needed
-equallyPointsWeights = x0(:,7);
-surfaceWeights = x0(:,8);
-
-% Direction and position of secondary sources
-nx0 = x0(:,4:6);
-x0 = x0(:,1:3);
-
+x0_all = x0;
 % Initialize empty driving function
-D = zeros(size(x0,1));
+D = zeros(size(x0_all,1),1);
+% Loop through secondary sources
+for ii = 1:size(x0_all,1)
 
-if strcmp('pw',src)
+    % Direction and position of secondary sources
+    nx0 = x0_all(ii,4:6);
+    x0 = x0_all(ii,1:3);
+    % Weights if needed
+    equallyPointsWeights = x0_all(ii,7);
+    surfaceWeights = x0_all(ii,8);
 
-    % ===== PLANE WAVE ===============================================
-    % Use the position of the source as the direction vector for a plane
-    % wave
-    nxs = xs / norm(xs);
-    %
-    % ----------------------------------------------------------------
-    % D_3D using a plane wave as source model
-    %                                  
-    %                              i w 
-    % D_3D(x0,w) =  2 n(xs) n(x0)  ---  e^(-i w/c n(xs) x0) weight
-    %                               c
-    %
-    % NOTE: the phase term e^(-i phase) is only there in order to be able to
-    %       simulate different time steps
+    if strcmp('pw',src)
+
+        % ===== PLANE WAVE ===============================================
+        % Use the position of the source as the direction vector for a plane
+        % wave
+        nxs = xs / norm(xs);
+        %
+        % ----------------------------------------------------------------
+        % D_3D using a plane wave as source model                                      
+        %                                 i w 
+        % D_3D(x0,w) =  -2 <n(xs),n(x0)>  ---  e^(-i w/c <n(xs),x0>) .* weights
+        %                                  c
+        %
+        % NOTE: the phase term e^(-i phase) is only there in order to be able to
+        %       simulate different time steps
    
-    D = -2*nxs*nx0'./c * 1i*omega * exp(-1i*omega/c*(nxs*x0'))*...
-        exp(-1i*phase).*equallyPointsWeights.*surfaceWeights;
+        D(ii) = -2*nxs*nx0'./c * 1i*omega * exp(-1i*omega/c*(nxs*x0')).*...
+                equallyPointsWeights.*surfaceWeights;
     
-elseif strcmp('ps',src)
+        elseif strcmp('ps',src)
+        % ===== POINT SOURCE ===========================================
+        %
+        % ----------------------------------------------------------------
+        % D_3D using a point source as source model
+        %
+        % D_3D(x0,w) =
+        %                    
+        %  /  i w      1    \  -2 <(x0-xs),nx0>
+        %  |  --- + ------- |  ---------------- e^(-i w/c |x0-xs|) .* weights
+        %  \   c    |x0-xs| /      |x0-xs|^2
+        %
+        % ----------------------------------------------------------------
     
-        D =  -2*(x0-xs)*nx0' / norm(x0-xs)^2 *(1/norm(x0-xs)+1i*omega/c)*...
-            exp(-1i*omega/c*norm(x0-xs)).*equallyPointsWeights.*surfaceWeights;
+            D(ii) =  -2*(x0-xs)*nx0' / norm(x0-xs).^2 *(1/norm(x0-xs)+1i*omega/c)*...
+                     exp(-1i*omega/c*norm(x0-xs)).*equallyPointsWeights.*surfaceWeights;
  
-elseif strcmp('fs',src)
-                  
-%         D = sqrt(-1i*omega/c) * norm(x0(:,1:3)).* sqrt(2/pi) .* ...
-%             (x0-xs)*nx0' / (norm(x0-xs)^(3/2)) .* ...
-%             exp(1i*omega/c*norm(x0-xs)) .* exp(-1i*phase).* ...
-%             equallyPointsWeights.*surfaceWeights;
-        D =  -2*(x0-xs)*nx0' / norm(x0-xs)^2 *(1/norm(x0-xs)-1i*omega/c)*...
-            exp(1i*omega/c*norm(x0-xs)).*equallyPointsWeights.*surfaceWeights;
+        elseif strcmp('fs',src)
+        % ===== FOCUSED SOURCE ===========================================
+        %
+        % ----------------------------------------------------------------
+        % D_3D using a point sink as source model
+        %
+        % D_3D(x0,w) =
+        %                    
+        %  /  i w      1    \  -2 <(x0-xs),nx0>
+        %  |- --- + ------- |  ---------------- e^(i w/c |x0-xs|) .* weights
+        %  \   c    |x0-xs| /      |x0-xs|^2
+        %
+        % ----------------------------------------------------------------
 
+            D(ii) =  -2*(x0-xs)*nx0' ./ norm(x0-xs)^2 *(1./norm(x0-xs)-1i*omega./c)*...
+                     exp(1i*omega./c*norm(x0-xs)).*equallyPointsWeights.*surfaceWeights;
+
+    end
+        
 end
+% Add phase to be able to simulate different time steps
+D = D .* exp(-1i*phase);

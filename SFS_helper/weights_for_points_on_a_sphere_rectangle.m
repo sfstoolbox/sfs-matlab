@@ -1,4 +1,4 @@
-function [w] = weights_for_points_on_a_sphere_rectangle(phi,theta,r)
+function [w] = weights_for_points_on_a_sphere_rectangle(phi,theta)
 %WEIGHTS_FOR_POINTS_ON_A_SPHERE_RECTANGLE returns the weights for a given 
 % set of points on a sphere.
 %
@@ -44,12 +44,12 @@ function [w] = weights_for_points_on_a_sphere_rectangle(phi,theta,r)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
-nargmax = 3;
+nargmin = 2;
+nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
 %% ===== Computation ====================================================
 
-weights = zeros(1,1); % initialize empty weight vector
+weights = [];%zeros(1,1); % initialize empty weight vector
 
 for ii=1:length(theta)-1
     
@@ -59,23 +59,22 @@ for ii=1:length(theta)-1
     if idx ~= theta(ii+1) 
         % calculate rectangle around the point with 
         % b*a = (r*cos(theta)d_phi) * (r*d_theta)
-        % the weights should not be negative --> abs()        
-        a = r(1,ii)*(abs(abs(theta(ii))-abs(theta(ii+1))));
+        a = (theta(ii)-theta(ii+1));
         
         % special case: north pole d_phi to the next point would be inf.
         % Therefore the 2nd nearest d_phi is used at this time
-        if ii==1
-            b = r(1,ii).^2*cos(a/r(1,ii))...
-                *(abs(abs(phi(ii+2))-abs(phi(ii))));
+         if ii==1
+             b = (phi(ii+3))-(phi(ii+2));
+             actual_weight = a*b; % calculate area element
+             weights = [weights actual_weight];
+         else
+            
+            b = (phi(ii+1))-(phi(ii));
             actual_weight = a*b; % calculate area element
             weights = [weights actual_weight];
-        else
-            b = r(1,ii).^2*cos(a/r(1,ii))...
-                *(abs(abs(phi(ii+1))-abs(phi(ii))));
-            actual_weight = a*b; % calculate area element
-            weights = [weights actual_weight];
-        
-        end
+                
+            
+         end
         
     else
         
@@ -85,4 +84,9 @@ for ii=1:length(theta)-1
         
 end
 
-w = weights./sum(weights);
+% northpole weight shouldn't be zero
+if weights(1)==0
+    weights(1)=weights(2);
+end
+
+w = 100*[weights,weights(end-1)];

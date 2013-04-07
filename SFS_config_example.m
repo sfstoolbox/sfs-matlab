@@ -111,7 +111,8 @@ conf.phase = 0; % rad
 % Time frame to simulate for wave field in time domain (change this value to
 % create impulse response movies of the wave field
 conf.frame = 1000;
-
+%dimension
+conf.dimension = '2.5d';
 
 
 % ===== Secondary Sources =======================

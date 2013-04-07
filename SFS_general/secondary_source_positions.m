@@ -123,7 +123,7 @@ if strcmp('spherical',array)
         x0(:,7) = cos(irs.apparent_elevation); 
         % weights for secondary source positions
         x0(:,8) = weights_for_points_on_a_sphere_rectangle(...
-                  irs.apparent_azimuth,irs.apparent_elevation,irs.distance);
+                  irs.apparent_azimuth,irs.apparent_elevation);
     end
 
 else

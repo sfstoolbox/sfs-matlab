@@ -1,27 +1,26 @@
-function [weight,delay] = driving_function_imp_wfs_3d(x0,xs,src,conf)
+function [d,weight,delay] = driving_function_imp_wfs_3d(x0,xs,src,conf)
 %DRIVING_FUNCTION_IMP_WFS_3D calculates the WFS 3D weighting and delaying
 %
 %   Usage: [weight,delay] = driving_function_imp_wfs_3d(x0,xs,src,[conf]);
 %
 %   Input parameters:
-%       x0      - position  and direction of secondary source (m)
-%       xs      - position of virtual source or diirection of plane wave (m)
-%       src     - source type of the virtual source
-%                     'pw3D' - plane wave (xs, ys, zs are the direction of the
-%                            plane wave in this case)
+%       x0      - position and direction of secondary source (m)
+%       xs      - position of virtual source or diirection of plane wave (m)               
+%       src     - source type of the virtual source: 'pw' (plane wave), 
+%                 'ps' (point source) and 'fs' (focused source)
 %                                         
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       weight  - weight (amplitude) of the driving function
 %       delay   - delay of the driving function (s)
-%
+%       d       - driving function [nx1]
+% 
 %   DRIVING_FUNCTION_IMP_WFS_3D(x0,xs,src,conf) returns the
 %   weighting and delay parameters of the WFS 3D driving function for the given
 %   source type and position and loudspeaker positions.
 %
-%   see also: ....   (wave_field_imp_wfs_25d,
-%   driving_function_mono_wfs_25d)
+%   see also: wave_field_imp_wfs_3d, driving_function_mono_wfs_3d
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -60,7 +59,7 @@ function [weight,delay] = driving_function_imp_wfs_3d(x0,xs,src,conf)
 nargmin = 3;
 nargmax = 4;
 error(nargchk(nargmin,nargmax,nargin));
-isargsecondarysource(x0)
+% isargsecondarysource(x0)
 isargposition(xs);
 xs = position_vector(xs);
 isargchar(src);
@@ -75,26 +74,73 @@ end
 % Speed of sound
 c = conf.c;
 xref = position_vector(conf.xref);
+fs = conf.fs;
+usehpre = conf.usehpre;
 
 
 %% ===== Computation =====================================================
 % Check also the activity of the used loudspeaker.
 
-% Direction and position of active secondary sources
-nx0 = x0(4:6);
-x0 = x0(1:3);
-    
-if strcmp('pw',src)
-% === Plane wave ===
-% Direction of plane wave
-nxs = xs / norm(xs);
-% Delay and amplitude weight
-delay = 1/c * nxs*x0';
-weight = 2 .* nxs*nx0';
-        
+% Calculate pre-equalization filter if required
+if usehpre
+    hpre = wfs_prefilter3d(conf);
 else
-        error('%s: %s is not a known source type.',upper(mfilename),src);
+    hpre = 1; % dirac pulse
 end
 
+
+% Direction and position of active secondary sources
+weights = x0(:,8);
+surfaceWeights = x0(:,7);
+nx0 = x0(:,4:6);
+x0 = x0(:,1:3);
+
+% Reference point and source position
+xref = repmat(xref,[size(x0,1) 1]);
+xs = repmat(xs,[size(x0,1) 1]);
+    
+if strcmp('pw',src)
+    % === Plane Wave ===
+    % Direction of plane wave
+    nxs = bsxfun(@rdivide,xs,norm(xs,2));
+    % Delay and amplitude weight
+    delay = 1/c * vector_product(nxs,x0,2);
+    weight = 2 .* vector_product(nxs,nx0,2).* surfaceWeights.* weights;
+    
+elseif strcmp('ps',src)
+    % === Point Source ===
+    % Delay and amplitude weight
+    delay = vector_norm(x0-xs,2)./c;
+    
+    weight = (-2.*vector_product(x0-xs,nx0,2)./(vector_norm(x0-xs,2).^2)).*...
+             (1./vector_norm(x0-xs,2)+1/c).*surfaceWeights.* weights;
+
+elseif strcmp('fs',src)
+% === Focused Source ===  
+% Delay and amplitude weight
+delay = -1.*vector_norm(x0-xs,2)./c;
+weight = (-2.*vector_product(x0-xs,nx0,2)./(vector_norm(x0-xs,2).^2)).*...
+         (1./vector_norm(x0-xs,2)+1./c).*surfaceWeights.* weights;
+
+else
+    % === Unknown Source Type ===
+    error('%s: %s is not a known source type.',upper(mfilename),src);
+
+end
+
+% Calculate driving function prototype
+% FIXME: check if the zeros at the end are long enough
+delay = delay-min(delay);
+d_proto = [hpre zeros(1,800)];
+d = zeros(length(d_proto),size(x0,1));
+for ii=1:size(x0,1)
+    % Shift and weight prototype driving function
+    % - less delay in driving function is more propagation time in sound
+    %   field, hence the sign of the delay has to be reversed in the
+    %   argument of the delayline function
+    % - the proagation time from the source to the nearest secondary source
+    %   is removed
+    d(:,ii) = delayline(d_proto,delay(ii)*fs,weight(ii),conf);
+end
 
 end

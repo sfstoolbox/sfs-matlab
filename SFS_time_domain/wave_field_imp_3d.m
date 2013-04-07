@@ -151,7 +151,7 @@ end
 
 % some debug stuff
 if debug
-    figure; imagesc(db(d)); title('driving functions'); caxis([-100 0]); colorbar;
+    figure; imagesc(db(abs(d))); title('driving functions'); caxis([-100 0]); colorbar;
     % figure; plot(win); title('tapering window');
     % figure; plot(delay*fs); title('delay (samples)');
     % figure; plot(weight); title('weight');

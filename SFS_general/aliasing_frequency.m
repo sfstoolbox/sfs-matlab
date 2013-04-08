@@ -1,18 +1,17 @@
-function fal = aliasing_frequency(dx0,conf)
+function fal = aliasing_frequency(x0,conf)
 %ALIASING_FREQUENCY returns the aliasing frequency
 %
-%   Usage: fal = aliasing_frequency(dx0,[conf])
+%   Usage: fal = aliasing_frequency(x0,[conf])
 %
 %   Input options:
-%       dx0     - distance between adjacent secondary sources (m)
+%       x0      - secondary sources
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output options:
 %       fal     - aliasing frequency (Hz)
 %
-%   ALIASING_FREQUENCY(dx0,conf) returns the aliasing frequency for the given
-%   interspacing of secondary sources. The value is calculated after
-%   spors2009.
+%   ALIASING_FREQUENCY(x0,conf) returns the aliasing frequency for the given
+%   secondary sources. The value is calculated after Spors (2009).
 %   
 %   References:
 %       S. Spors and J. Ahrens - Spatial sampling artifacts of wave field
@@ -21,7 +20,7 @@ function fal = aliasing_frequency(dx0,conf)
 %       E. Start - Direct Sound Enhancement by Wave Field Synthesis. TU Delft,
 %       1997.
 %
-%   see also: wave_field_mono_wfs_25d
+%   see also: wave_field_mono_wfs, secondary_source_positions
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -63,7 +62,7 @@ narginchk(nargmin,nargmax);
 if nargin==nargmax-1
     conf = SFS_config;
 end
-%[xs,X] = position_vector(xs,X);
+isargsecondarysource(x0);
 
 
 %% ===== Configuration ==================================================
@@ -71,10 +70,15 @@ c = conf.c;
 
 
 %% ===== Computation =====================================================
+% Estimate the average distance between the secondary sources.
+to_be_implemented;
+dx0 = get_mean_distance(x0);
 fal = c/(2*dx0);
 return
 
-%FIXME: the following code works not probably at the moment.
+%FIXME: the following code works not probably at the moment. But it is a first
+%step into the direction of calculating the aliasing frequency depending on the
+%listener and virtual source position.
 % The alias frequency depends on the plane waves that are present in the sound
 % field. And which plane waves can be present depends on the concrete angle
 % between the source/listener and the array of secondary sources. The following

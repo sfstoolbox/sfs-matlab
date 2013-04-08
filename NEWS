@@ -5,6 +5,7 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
     - added the possibility to calculate the wave field for a arbritrary
       positioned plane in 3D
     - added 3D WFS functions
+    - make the Toolbox work in 3D, which brakes backwards compability!
     - removed compatibility for octave versions <3.6
     - fixed a critical bug for the HRTF farfield extrapolation, due to the new
       secondary source selection behavior

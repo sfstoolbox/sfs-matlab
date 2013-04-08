@@ -1,5 +1,5 @@
 function varargout = axis_vector(varargin)
-%AXIS_VECTOR returns 3x1 vectors
+%AXIS_VECTOR returns 2x1 axis vectors [min max]
 %
 %   Usage: [x1,x2,...] = axis_vector(x1,x2,...)
 %

@@ -44,19 +44,19 @@ function isargsecondarysource(varargin)
 %                                                                            *
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
+
+
 %% ===== Checking for vector =============================================
 for ii = 1:nargin
    
-   x0 = varargin{ii};
+    x0 = varargin{ii};
     
-   if ~isnumeric(x0) || ndims(x0)~=2 || size(x0,2)<6 || size(x0,2)==7 || size(x0,2)>8 
-       error(['%s need to be a nx6 or a nx8 matrix containing the secondary ', ...
-      'sources positions and directions in the nx6 and weights and surface integrand in the nx8 case.'],inputname(ii));
-   end
-            
-               
-end
-
+    if ~isnumeric(x0) || ndims(x0)~=2 || size(x0,2)<6 || size(x0,2)==7 || size(x0,2)>8 
+        error(['%s need to be a nx6 or a nx8 matrix containing the ', ...
+            'secondary sources positions and directions in the nx6 ', ...
+            'and weights and surface integrand in the nx8 case.'], ...
+            inputname(ii));
+    end
     for jj=1:size(x0,1)
         if abs(norm(x0(jj,4:6))-1)>1e-10
             error(['The norm of the direction of %s is not 1. ', ...

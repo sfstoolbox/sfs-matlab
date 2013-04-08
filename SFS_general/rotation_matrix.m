@@ -1,21 +1,21 @@
-function R = rotation_matrix(phi,dimension,orientation)
-%ROTATION_MATRIX returns a 2D rotation matrix for the given angle
+function R = rotation_matrix(phi,dim,orientation)
+%ROTATION_MATRIX returns a 3D rotation matrix for the given angle and dimension
 %
-%   Usage: R = rotation_matrix(phi,[orientation])
+%   Usage: R = rotation_matrix(phi,[dim,[orientation]])
 %
 %   Input parameters:
 %       phi         - angle to rotate the given dim dimension vector (rad)
-%       dimension   - string: '2D' or '3D' rotation matrix
+%       dim         - dimension to turn around (default: 3, z-axis)
 %       orientation - orientation of the rotation, 'clockwise' or
 %                     'counterclockwise' (default: 'counterclockwise')
 %
 %   Output parameters:
-%       R       - 2x2 or 3x3 rotation matrix to apply to your vector to 
+%       R       - 3x3 rotation matrix to apply to your vector to 
 %                 rotate: R*y
 %                 
 %
 %   ROTATION_MATRIX(phi,dimension,orientation) returns a rotation matrix R, 
-%   which is able to rotate a given dim dimensional vector about phi.
+%   which is able to rotate a vector around the given dimension about phi.
 %
 %   see also: echo_direction
 
@@ -57,31 +57,47 @@ nargmin = 1;
 nargmax = 3;
 narginchk(nargmin,nargmax);
 isargscalar(phi)
-if nargin < 3
+if nargin<3
     % Set defualt orientation of the rotation
     orientation = 'counterclockwise';
-else
-    isargchar(orientation);
 end
+if nargin<2
+    % set default rotation dimension to z-axis
+    dim = 3;
+end
+isargchar(orientation);
+isargpositivescalar(dim);
 
 
 %% ===== Computation ====================================================
 % Rotation matrix (see: http://en.wikipedia.org/wiki/Rotation_matrix)
-switch orientation
-    case 'counterclockwise'
-        
-    
-             R = [ cos(phi)  -sin(phi)  0; ...
-                   sin(phi)   cos(phi)  0;
-                     0          0       1];
-        
-        
-    case 'clockwise'
-        
+% get single matrix entries
+r1 = cos(phi);
+r4 = cos(phi);
+if strcmp('counterclockwise',orientation)
+    r2 = -sin(phi);
+    r3 =  sin(phi);
+elseif strcmp('clockwise',orientation)
+    r2 =  sin(phi);
+    r3 = -sin(phi);
+else
+    error('%s: the given orientation "%s" is not known.', ...
+        upper(mfilename),orientation);
+end
+% fill up matrix to rotate around the given axis
+if dim==1
 
-      
-             R = [ cos(phi)  sin(phi)  0; ...
-                   -sin(phi) cos(phi)  0;
-                     0          0       1];
-            
+    R = [1 0  0;  ...
+         0 r1 r2; ...
+         0 r3 r4];
+elseif dim==2
+    R = [r1 0 r2; ...
+         0  1 0;  ...
+         r3 0 r4];
+elseif dim==3
+    R = [r1 r2 0; ...
+         r3 r4 0; ...
+         0  0  1];
+else
+    error('%s: dim has to be 1,2, or 3 and not %i',upper(mfilename),dim);
 end

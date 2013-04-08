@@ -148,7 +148,7 @@ for ii = 1:nls
     % Rotation matrix (see: http://en.wikipedia.org/wiki/Rotation_matrix)
     % RM = [cos(alpha(i)) -sin(alpha(i)); ...
     %       sin(alpha(i)) cos(alpha(i))];
-    RM = rotation_matrix(alpha(ii),'counterclockwise');
+    RM = rotation_matrix(alpha(ii),3,'counterclockwise');
     % Vector notation of angle and amplitude (in x,y coordinates)
     v(ii,:) = a(ii) .* (RM * [0 1]');
     %                 \____  ____/
@@ -177,7 +177,7 @@ if(usegnuplot)
     A = sum(a);
     % Calculate the direction of the virtual source pulse (rad)
     [alpha_ds,theta_tmp,r_tmp] = cart2sph(xs(1)-X(1),xs(2)-X(2),0) - phi;
-    RM_ds = rotation_matrix(alpha_ds,'counterclockwise');
+    RM_ds = rotation_matrix(alpha_ds,3,'counterclockwise');
     X_ds = A .* (RM_ds * [0 1]');
     X_dsdB = (20*log10(A)+100) .* (RM_ds * [0 1]');
 

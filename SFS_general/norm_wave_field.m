@@ -11,7 +11,7 @@ function P = norm_wave_field(P,x,y,z,conf)
 %   Output options:
 %       P       - normalized wave field
 %
-%   NORM_WAVE_FIELD(P,x,y,z,yref) normalizes the given wave field P to 1 at
+%   NORM_WAVE_FIELD(P,x,y,z,conf) normalizes the given wave field P to 1 at
 %   the position conf.xref.
 %
 %   see also: wave_field_mono_wfs_25d

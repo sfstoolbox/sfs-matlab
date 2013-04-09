@@ -98,33 +98,56 @@ xref = repmat(xref,[size(x0,1) 1]);
 xs = repmat(xs,[size(x0,1) 1]);
 
 % 2.5D correction factor
+%        ______________
+% g0 = \| 2pi |xref-x0|
+%
 g0 = sqrt(2*pi*vector_norm(xref-x0,2));
 
 % Get the delay and weighting factors
 if strcmp('pw',src)
-    % === Plane wave ===
+    % === Plane wave =====================================================
     % Direction of plane wave
     nxs = bsxfun(@rdivide,xs,vector_norm(xs,2));
+    % --------------------------------------------------------------------
+    % d_2.5D using a plane wave as source model
+    %
+    % d_2.5D(x0,t) = h(t) * 2 g0 nxs nx0 delta(t + 1/c nxs x0)
+    % 
     % Delay and amplitude weight
-    % NOTE: <n_pw,n(x0)> is the same as the cosinus between their angle
-    delay = 1/c * vector_product(nxs,x0,2);
+    delay = 1/c .* vector_product(nxs,x0,2);
     weight = 2*g0 .* vector_product(nxs,nx0,2);
 
 elseif strcmp('ps',src)
-    % === Point source ===
-    % Distance between loudspeaker and virtual source
+    % === Point source ===================================================
+    %
+    % --------------------------------------------------------------------
+    % d_2.5D using a point source as source model
+    %
+    %                       g0  (x0-xs) nx0
+    % d_2.5D(x0,t) = h(t) * --- ------------- delta(t + 1/c |x0-xs|)
+    %                      2pi  |x0-xs|^(3/2)
+    %
+    % r = |x0-xs|
     r = vector_norm(x0-xs,2);
     % Delay and amplitude weight
-    delay = r/c;
-    weight = g0/(2*pi).*vector_product(x0-xs,nx0,2).*r.^(-3/2);
+    delay = 1/c .* r;
+    weight = g0/(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
 
 elseif strcmp('fs',src)
-    % === Focused source ===
-    % Distance between loudspeaker and virtual source
+    % === Focused source =================================================
+    %
+    % --------------------------------------------------------------------
+    % d_2.5D using a line sink as source model
+    %
+    %                        g0 (x0-xs) nx0
+    % d_2.5D(x0,t) = h(t) * --- ------------- delta(t - 1/c |x0-xs|)
+    %                       2pi |x0-xs|^(3/2)
+    %
+    % r = |x0-xs|
     r = vector_norm(x0-xs,2);
     % Delay and amplitude weight
-    delay =  -r/c;
-    weight = g0/(2*pi).*vector_product(x0-xs,nx0,2).*r.^(-3/2);
+    delay =  -1/c .* r;
+    weight = g0/(2*pi).*vector_product(x0-xs,nx0,2) ./ r.^(3/2);
 else
     error('%s: %s is not a known source type.',upper(mfilename),src);
 end

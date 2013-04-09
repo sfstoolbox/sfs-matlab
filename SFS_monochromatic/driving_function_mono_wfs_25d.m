@@ -108,6 +108,9 @@ for ii = 1:size(x0_all,1)
     x0 = x0_all(ii,1:3);
 
     % Constant amplitude factor g0
+    %         ______________
+    %  g0 = \| 2pi |xref-x0|
+    %
     g0 = sqrt(2*pi*norm(xref-x0));
 
     if strcmp('pw',src)
@@ -118,11 +121,11 @@ for ii = 1:size(x0_all,1)
         nxs = xs / norm(xs);
         %
         % ----------------------------------------------------------------
-        % D_25D using a plane wave as source model
-        %                                   ___
-        %                                  | w |
-        % D_25D(x0,w) = 2 g0 n(xs) n(x0) _ |---  e^(-i w/c n(xs) x0)
-        %                                 \|i c
+        % D_2.5D using a plane wave as source model
+        %                                ___
+        %                               | w |
+        % D_2.5D(x0,w) = 2 g0 nxs nx0 _ |---  e^(-i w/c nxs x0)
+        %                              \|i c
         %
         D(ii) = 2*g0* nxs*nx0' * sqrt(omega/(1i*c)) * ...
             exp(-1i*omega/c*(nxs*x0'));
@@ -133,13 +136,13 @@ for ii = 1:size(x0_all,1)
         % ===== POINT SOURCE =============================================
         %
         % ----------------------------------------------------------------
-        % D_25D using a point source as source model
+        % D_2.5D using a point source as source model
         %
-        % D_25D(x0,w) =
+        % D_2.5D(x0,w) =
         %             ___       ___
-        %    g0  /   | w |     |i c|    1    \  (x0-xs)nk
-        %   ---  | _ |---  - _ |---  ------- |  --------- e^(-i w/c |x0-xs|)
-        %   2pi  \  \|i c     \| w   |x0-xs| /  |x0-xs|^2
+        %    g0  /   | w |     |i c|    1    \  (x0-xs) nx0
+        %   ---  | _ |---  - _ |---  ------- |  ----------- e^(-i w/c |x0-xs|)
+        %   2pi  \  \|i c     \| w   |x0-xs| /   |x0-xs|^2
         %
         D(ii) = g0/(2*pi) * ( sqrt(omega/(1i*c)) - sqrt(1i*c/omega) / ...
             norm(x0-xs) ) * (x0-xs)*nx0' / norm(x0-xs)^2 * ...
@@ -150,9 +153,9 @@ for ii = 1:size(x0_all,1)
         % ===== FOCUSED SOURCE ===========================================
         %
         % ----------------------------------------------------------------
-        % D_25D using a point sink as source model
+        % D_2.5D using a point sink as source model
         %
-        % D_25D(x0,w) =
+        % D_2.5D(x0,w) =
         %             ___       ___
         %   -g0  /   | w |     |i c|    1    \  (x0-xs)nk
         %   ---  | _ |---  + _ |---  ------- |  --------- e^(i w/c |x0-xs|)
@@ -165,24 +168,24 @@ for ii = 1:size(x0_all,1)
         % ----------------------------------------------------------------
         % Alternative Driving Functions for a focused source:
         %
-        % D_25D using a line sink with point source amplitude characteristics as
+        % D_2.5D using a line sink with point source amplitude characteristics as
         % source (see Spors2009).
         %
         %                   iw (x0-xs)nk   (1)/ w         \
-        % D_25D(x0,w) = -g0 -- --------- H1  | - |x0-xs| |
+        % D_2.5D(x0,w) = -g0 -- --------- H1  | - |x0-xs| |
         %                   2c |x0-xs|        \ c         /
         %
         %D(ii) = -g0 * 1i*omega/(2*c) * (x0-xs)*nx0' / norm(x0-xs)^(3/2) * ...
         %    besselh(1,1,omega/c*norm(x0-xs));
         %
         % --------------------------------------------------------------------
-        % D_25D using a line sink with point amplitue characteristic as source
+        % D_2.5D using a line sink with point amplitue characteristic as source
         % and the large argument approximation of the driving function above.
         % This results in the "traditional" driving function, derived in
         % Verheijen1997 (see Spors2009).
         %                     _____
         %                    |i w  |   (x0-xs)nk
-        % D_25D(x0,w) = g0 _ |-----  ------------- e^(i w/c |x0-xs|)
+        % D_2.5D(x0,w) = g0 _ |-----  ------------- e^(i w/c |x0-xs|)
         %                   \|2pi c  |x0-xs|^(3/2)
         %
         D(ii) = g0 * sqrt(1i*omega/(2*pi*c)) * ...

@@ -1,5 +1,10 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
+0.2.3 (9 April 2013)
+
+    - introduced global wave_field functions for mono and imp
+    - fixed binaural simulations for NFCHOA
+    - removed compatibility for octave versions <3.6
     - fixed a critical bug for the HRTF farfield extrapolation, due to the new
       secondary source selection behavior
 

@@ -152,7 +152,6 @@ else
     error('%s: %s is not a known source type.',upper(mfilename),src);
 end
 
-% Calculate driving function prototype
 % Remove delay offset, in order to begin always at t=0 with the first wave front
 % at any secondary source
 delay = delay-min(delay);

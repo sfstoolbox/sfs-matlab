@@ -83,8 +83,19 @@ H = ones(1,length(f));
 %% ===== Computation ====================================================
 
 % Desired response
-% Apply sqrt(2*pi*f)/sqrt(2*pi*fhigh) filter for idxf < idxfhigh
-H(1:idxfhigh) = sqrt(2*pi*f(1:idxfhigh))./sqrt(2*pi*fhigh);
+%   ^
+% 1_|          fhigh_______
+%   |            /
+%   |        /
+%   | ___/
+%   |  flow
+%   -------------------------> f
+%
+% Pre-equilization filter from flow to fhigh
+%           _______
+%  H(f) = \|f/fhigh, for f >= flow
+%
+H(idxflow:idxfhigh) = sqrt(f(idxflow:idxfhigh)./fhigh);
 % Set the response for idxf < idxflow to the value at idxflow
 H(1:idxflow) = H(idxflow)*ones(1,idxflow);
 

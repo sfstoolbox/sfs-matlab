@@ -6,6 +6,12 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
       positioned plane in 3D
     - added 3D WFS functions
     - make the Toolbox work in 3D, which brakes backwards compability!
+
+0.2.3 (9 April 2013)
+
+    - summed up line, point, ... sources to green_function for mono and imp
+    - introduced global wave_field functions for mono and imp
+    - fixed binaural simulations for NFCHOA
     - removed compatibility for octave versions <3.6
     - fixed a critical bug for the HRTF farfield extrapolation, due to the new
       secondary source selection behavior

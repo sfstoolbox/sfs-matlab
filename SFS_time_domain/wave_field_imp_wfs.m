@@ -1,7 +1,7 @@
-function [x,y,z,p,x0,win] = wave_field_imp_wfs_25d(X,Y,Z,xs,src,t,L,conf)
-%WAVE_FIELD_IMP_WFS_25D returns the wave field in time domain of an impulse
+function [x,y,z,p,x0,win] = wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf)
+%WAVE_FIELD_IMP_WFS returns the wave field in time domain of an impulse
 %
-%   Usage: [x,y,z,p,x0,win] = wave_field_imp_wfs_25d(X,Y,Z,xs,src,t,L,[conf])
+%   Usage: [x,y,z,p,x0,win] = wave_field_imp_wfs(X,Y,Z,xs,src,t,L,[conf])
 %
 %   Input options:
 %       X           - [xmin,xmax]
@@ -22,9 +22,9 @@ function [x,y,z,p,x0,win] = wave_field_imp_wfs_25d(X,Y,Z,xs,src,t,L,conf)
 %       p           - wave field (length(y) x length(x))
 %       win         - tapering window
 %
-%   WAVE_FIELD_IMP_WFS_25D(X,Y,Z,xs,src,t,L,conf) simulates a wave field of the
-%   given source type (src) using a WFS 2.5 dimensional driving function with
-%   a delay line at the time t.
+%   WAVE_FIELD_IMP_WFS(X,Y,Z,xs,src,t,L,conf) simulates a wave field of the
+%   given source type (src) using a WFS driving function with a delay line at
+%   the time t.
 %
 %   To plot the result use:
 %   conf.plot.usedb = 1;

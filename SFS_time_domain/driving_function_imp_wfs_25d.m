@@ -152,7 +152,6 @@ else
     error('%s: %s is not a known source type.',upper(mfilename),src);
 end
 
-% Calculate driving function prototype
 % Remove delay offset, in order to begin always at t=0 with the first wave front
 % at any secondary source
 delay = delay-min(delay);
@@ -161,6 +160,7 @@ delay = delay-min(delay);
 % delay them. NOTE: 800 is only a guess, we should check, if the value is large
 % enough for common cases.
 d_proto = [hpre' zeros(1,800)];
+% Calculate driving function prototype
 d = zeros(length(d_proto),size(x0,1));
 for ii=1:size(x0,1)
     % Shift and weight prototype driving function

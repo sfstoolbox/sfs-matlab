@@ -107,15 +107,15 @@ g0 = sqrt(2*pi*vector_norm(xref-x0,2));
 if strcmp('pw',src)
     % === Plane wave =====================================================
     % Direction of plane wave
-    nxs = bsxfun(@rdivide,xs,vector_norm(xs,2));
+    nk = bsxfun(@rdivide,xs,vector_norm(xs,2));
     % --------------------------------------------------------------------
     % d_2.5D using a plane wave as source model
     %
-    % d_2.5D(x0,t) = h(t) * 2 g0 nxs nx0 delta(t + 1/c nxs x0)
+    % d_2.5D(x0,t) = h(t) * 2 g0 nk nx0 delta(t + 1/c nk x0)
     % 
     % Delay and amplitude weight
-    delay = 1/c .* vector_product(nxs,x0,2);
-    weight = 2*g0 .* vector_product(nxs,nx0,2);
+    delay = 1/c .* vector_product(nk,x0,2);
+    weight = 2*g0 .* vector_product(nk,nx0,2);
 
 elseif strcmp('ps',src)
     % === Point source ===================================================
@@ -147,7 +147,7 @@ elseif strcmp('fs',src)
     r = vector_norm(x0-xs,2);
     % Delay and amplitude weight
     delay =  -1/c .* r;
-    weight = g0/(2*pi).*vector_product(x0-xs,nx0,2) ./ r.^(3/2);
+    weight = g0/(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
 else
     error('%s: %s is not a known source type.',upper(mfilename),src);
 end

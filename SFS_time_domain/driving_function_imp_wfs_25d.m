@@ -153,8 +153,13 @@ else
 end
 
 % Calculate driving function prototype
-% FIXME: check if the zeros at the end are long enough
+% Remove delay offset, in order to begin always at t=0 with the first wave front
+% at any secondary source
 delay = delay-min(delay);
+% Append zeros at the end of the driving function. This is necessary, because
+% the delayline function cuts into the end of the driving signals in order to
+% delay them. NOTE: 800 is only a guess, we should check, if the value is large
+% enough for common cases.
 d_proto = [hpre' zeros(1,800)];
 d = zeros(length(d_proto),size(x0,1));
 for ii=1:size(x0,1)
@@ -162,7 +167,7 @@ for ii=1:size(x0,1)
     % - less delay in driving function is more propagation time in sound
     %   field, hence the sign of the delay has to be reversed in the
     %   argument of the delayline function
-    % - the proagation time from the source to the nearest secondary source
+    % - the propagation time from the source to the nearest secondary source
     %   is removed
     d(:,ii) = delayline(d_proto,delay(ii)*fs,weight(ii),conf);
 end

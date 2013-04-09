@@ -59,7 +59,7 @@ Figure~\ref{fig:KHint}.
     \psfrag{V}[][][1]{$V$}
     \psfrag{dV}[][][1]{$\partial V$}
     \psfrag{0}[][][1]{$0$}
-    \centerline{\includegraphics[scale=0.5]{KHint}}
+    %\centerline{\includegraphics[scale=0.5]{KHint}}
     \caption{Illustration of the geometry used to discuss the physical foundations of sound field synthesis
     and the single layer potential~\eqref{eq:singlelayer}.}
     \label{fig:KHint}
@@ -371,38 +371,48 @@ $h(t)$ denotes the inverse Fourier transformation
 \end{equation}
 
 
-\subsection{2.5D WFS}
-\label{sec:wfs25d}
+\subsection{Wave Field Synthesis}
+\label{sec:wfs}
 
 \subsubsection{Plane Waves}
 The source model for a plane wave is given by [Williams, S.21, eq. 2.24]:
 \begin{equation} 
     S(\x,\omega) = 
-    \hat{S}_\text{s}(\omega)
+    \hat{S}(\omega)
     e^{i\omegac \vec{n}_k \x}
     \qc
 \end{equation}
 where $\hat{S}_\text{s}(\omega)$ denotes the frequency spectrum of the plane
 wave and $\vec{n}_k$ the direction of $\vec{k}$, which is the direction of the
 plane wave.
-Using \EqRef{eq:D} and \EqRef{eq:D_25D} this leads to a driving function of
+Using \EqRef{eq:D} and \EqRef{eq:D_25D} lead to the following driving functions.
 \begin{equation}
-    D_\twohalfD(\x_0,\omega) = \hat{S}_\text{s}(\omega)
-    2 g_0 n_{ky_0} \sqrt{\frac{\omega}{ic}}
-    e^{i\omegac \vec{n}_k \x_0}
-    \qp
-    \label{Dpw}
+    D_{\twoD, \threeD}(\x_0,\omega) = \hat{S}(\omega)
+    2 i \frac{\omega}{c} \n_k \n_{\x_0} e^{i\frac{\omega}{c} \n_k \x_0}
+    \label{D_pw}
 \end{equation}
+\begin{equation}
+    D_\twohalfD(\x_0,\omega) = \hat{S}(\omega)
+    2 g_0 \n_k \n_{\x_0} \sqrt{\frac{\omega}{ic}}
+    e^{i\omegac \vec{n}_k \x_0}
+    \label{D_25D_pw}
+\end{equation}
+
 
 If we use the Fourier transfomation we will get as the driving function for the
 time domain
 \begin{equation}
-    d_\twohalfD(\x_0,t) = s(t) * h(t) * 2 g_0 n_{ky_0} \delta(t +
+    d_{\twoD, \threeD}(\x_0,t) = \hat{s}(t) * h(t) * 2 \n_k \n_{\x_0} \delta(t +
     \frac{\vec{n}_k \x_0}{c})
-    \qc
-    \label{dpw}
+    \label{d_pw}
 \end{equation}
-where $h(t) = \IFT{\left\{ \sqrt{\frac{\omega}{ic}} \right\}}$.
+\begin{equation}
+    d_\twohalfD(\x_0,t) = \hat{s}(t) * h(t) * 2 g_0 \n_k \n_{\x_0} \delta(t +
+    \frac{\vec{n}_k \x_0}{c})
+    \label{d_25D_pw}
+\end{equation}
+
+where $h(t) = \IFT{\left\{ \sqrt{\frac{\omega}{ic}} \right\}}$. FIX this for 2D, 3D.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsubsection{Point Sources}
 The source model for a point source is given by [Williams]:

@@ -15,6 +15,11 @@ function irs_pw = extrapolate_farfield_hrtfset_25d(irs,conf)
 %   resulting impulse responses are plane waves. The extrapolation is done via
 %   2.5D WFS.
 %
+%   References:
+%       S. Spors and J. Ahrens. Generation of far-field head-related transfer
+%       functions using sound field synthesis.
+%       In German Annual Conference on Acoustics (DAGA), 2011.
+%
 %   see also: ir_point_source, get_ir, driving_function_imp_wfs_25d
 
 %*****************************************************************************
@@ -67,8 +72,9 @@ fs = conf.fs;                   % sampling frequency
 
 
 %% ===== Variables ======================================================
-Acorr = -1.7;                     % DAGA 2011 R=0.5m -> pw
-Af = Acorr*sin(irs.apparent_azimuth);
+% Apply a amplitude correction, due to 2.5D. This will result in a correct
+% reproduced ILD in the resulting impulse responses (see, Spors 2011)
+amplitude_correction = -1.7 * sin(irs.apparent_azimuth);
 
 R = irs.distance;
 L = 2*R;
@@ -108,13 +114,11 @@ for ii = 1:length(irs.apparent_azimuth)
     win = tapering_window(x0,conf);
 
     % sum up contributions from individual virtual speakers
-%     delay = [];
+    %     delay = [];
+    [~,delay,weight] = driving_function_imp_wfs_25d(x0,xs,'pw',conf);
     for l=1:size(x0,1)
-        % Driving function to get weighting and delaying
-        
-        [a,delay(l)] = driving_function_imp_wfs_25d(x0(l,:),xs,'pw',conf);
         dt = delay(l)*fs + round(R/conf.c*fs);
-        w=a*win(l);
+        w=weight(l)*win(l);
         % get IR for the secondary source position
         [phi,theta,r] = cart2sph(x0(l,1),x0(l,2),x0(l,3));
         ir_tmp = get_ir(irs,phi,theta,r,conf.xref);
@@ -125,8 +129,8 @@ for ii = 1:length(irs.apparent_azimuth)
         irs_pw.left(:,ii) = irs_pw.left(:,ii) + delayline(irl',dt,w,conf)';
         irs_pw.right(:,ii) = irs_pw.right(:,ii) + delayline(irr',dt,w,conf)';
     end
-    irs_pw.left(:,ii) = irs_pw.left(:,ii)/10^(Af(ii)/20);
-    irs_pw.right(:,ii) = irs_pw.right(:,ii)/10^(-Af(ii)/20);
+    irs_pw.left(:,ii) = irs_pw.left(:,ii)/10^(amplitude_correction(ii)/20);
+    irs_pw.right(:,ii) = irs_pw.right(:,ii)/10^(-amplitude_correction(ii)/20);
 
 end
 

@@ -2,6 +2,7 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
 0.2.3 (9 April 2013)
 
+    - summed up line, point, ... sources to green_function for mono and imp
     - introduced global wave_field functions for mono and imp
     - fixed binaural simulations for NFCHOA
     - removed compatibility for octave versions <3.6

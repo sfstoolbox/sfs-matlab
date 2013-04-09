@@ -1,12 +1,23 @@
-function SFS_start()
-%SFS_START Start the Sound Field Synthesis Toolbox
+function [delay,weight] = driving_function_imp_wfs_pw(x0,nx0,nk,conf)
+%DRIVING_FUNCTION_IMP_WFS_PW calculates the WFS weighting and delaying for a
+%plane wave as source model
 %
-%   Usage: SFS_start;
+%   Usage: [delay,weight] = driving_function_imp_wfs_pw(x0,nx0,nk,[conf]);
 %
-%   SFS_START starts the Sound Field Synthesis Toolbox (SFS). 
-%   This function must be run first in order to add the path's to Matlab.
+%   Input parameters:
+%       x0      - position  of secondary sources (m) [nx3]
+%       nx0     - direction of secondary sources [nx3]
+%       nk      - direction of plane wave [nx3]
+%       conf    - optional configuration struct (see SFS_config)
 %
-%   see also: SFS_config, SFS_version
+%   Output parameters:
+%       delay   - delay of the driving function (s)
+%       weight  - weight (amplitude) of the driving function
+%
+%   DRIVING_FUNCTION_IMP_WFS_PW(x0,nx0,nk,conf) returns delays and weights for
+%   the WFS driving function for plane wave as source model.
+%
+%   see also: wave_field_imp, wave_field_imp_wfs, driving_function_mono_wfs_pw
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -41,57 +52,47 @@ function SFS_start()
 %*****************************************************************************
 
 
-%% ===== Configuration ===================================================
-printbanner = false;
-
-
-%% ===== Adding Path's ===================================================
-
-% Get the basepath as the directory this function resides in.
-% The 'which' solution below is more portable than 'mfilename'
-% becase old versions of Matlab does not have "mfilename('fullpath')"
-basepath=which('SFS_start');
-% Kill the function name from the path.
-basepath=basepath(1:end-12);
-
-% Add the base path and the needed sub-directories
-if exist('addpath')
-    addpath(basepath);
-    addpath([basepath,'/SFS_analysis']);
-    addpath([basepath,'/SFS_binaural_synthesis']);
-    addpath([basepath,'/SFS_general']);
-    addpath([basepath,'/SFS_helper']);
-    addpath([basepath,'/SFS_ir']);
-    addpath([basepath,'/SFS_monochromatic']);
-    addpath([basepath,'/SFS_plotting']);
-    addpath([basepath,'/SFS_time_domain']);
-    addpath([basepath,'/SFS_time_domain/driving_functions_imp']);
-    addpath([basepath,'/SFS_HRTF_extrapolation']);
-    addpath([basepath,'/validation']);
-    if isoctave
-        addpath([basepath,'/SFS_octave']);
-    end
+%% ===== Checking of input  parameters ==================================
+nargmin = 3;
+nargmax = 4;
+narginchk(nargmin,nargmax);
+isargmatrix(x0,nx0,nk);
+if nargin<nargmax
+    conf = SFS_config;
 else
-    path(path,basepath);
-    path(path,[basepath,'/SFS_analysis']);
-    path(path,[basepath,'/SFS_binaural_synthesis']);
-    path(path,[basepath,'/SFS_general']);
-    path(path,[basepath,'/SFS_helper']);
-    path(path,[basepath,'/SFS_ir']);
-    path(path,[basepath,'/SFS_monochromatic']);
-    path(path,[basepath,'/SFS_plotting']);
-    path(path,[basepath,'/SFS_time_domain']);
-    path(path,[basepath,'/SFS_time_domain/driving_functions_imp']);
-    path([basepath,'/SFS_HRTF_extrapolation']);
-    path(path,[basepath,'/validation']);
-    if isoctave
-        path(path,[basepath,'/SFS_octave']);
-    end
+    isargstruct(conf);
 end
 
 
-%% ===== Banner ==========================================================
-if(printbanner)
-    printf('SFS %1.1f successfully initialized.\n',SFS_version);
-end
+%% ===== Configuration ==================================================
+% Speed of sound
+c = conf.c;
+xref = position_vector(conf.xref);
+fs = conf.fs;
+dimension = conf.dimension;
 
+
+%% ===== Computation =====================================================
+
+% Get the delay and weighting factors
+if strcmp('2D',dimension) || strcmp('3D',dimension)
+    to_be_implemented;
+elseif strcmp('2.5D',dimension)
+    % Reference point
+    xref = repmat(xref,[size(x0,1) 1]);
+    % 2.5D correction factor
+    %        ______________
+    % g0 = \| 2pi |xref-x0|
+    %
+    g0 = sqrt(2*pi*vector_norm(xref-x0,2));
+    % --------------------------------------------------------------------
+    % d_2.5D using a plane wave as source model
+    %
+    % d_2.5D(x0,t) = h(t) * 2 g0 nk nx0 delta(t + 1/c nk x0)
+    % 
+    % Delay and amplitude weight
+    delay = 1/c .* vector_product(nk,x0,2);
+    weight = 2*g0 .* vector_product(nk,nx0,2);
+else
+    error('%s: the dimension %s is unknown.',upper(mfilename),dimension);
+end

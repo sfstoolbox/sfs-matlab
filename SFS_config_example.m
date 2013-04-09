@@ -111,8 +111,14 @@ conf.phase = 0; % rad
 % Time frame to simulate for wave field in time domain (change this value to
 % create impulse response movies of the wave field
 conf.frame = 1000;
-%dimension
-conf.dimension = '2.5d';
+% Dimensionality of the secondary sources and the sound field synthesis driving
+% functions:
+% '2D'    - line sources as secondary sources, arranged in a circle, line, ...
+% '2.5D'  - point sources as secondary sources, arranged in a circle, line, ...
+% '3D'    - point sources as secondary sources, arranged in a sphere, plane, ...
+conf.dimension = '2.5D';
+% Reference axis for changing of z, by zmin==zmax (singleton)
+conf.zreferenceaxis = 'y';
 
 
 % ===== Secondary Sources =======================
@@ -124,8 +130,8 @@ conf.X0 = [0 0 0]; % m
 % Possible values are: 'linear', 'box', 'circle', 'U', 'custom'
 conf.array = 'linear';
 % Vector containing custom secondary source positions and directions.
-% conf.x0 = [x0; y0; z0; phi];
-conf.x0 = []; % m; m; m; rad
+% conf.x0 = [x0; y0; z0; nx0; ny0; nz0];
+conf.x0 = []; % m
 
 
 % ===== Binaural reproduction ===================

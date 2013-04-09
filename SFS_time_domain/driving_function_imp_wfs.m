@@ -1,7 +1,7 @@
-function [d,delay,weight] = driving_function_imp_wfs_25d(x0,xs,src,conf)
-%DRIVING_FUNCTION_IMP_WFS_25D calculates the WFS 2.5D weighting and delaying
+function [d,delay,weight] = driving_function_imp_wfs(x0,xs,src,conf)
+%DRIVING_FUNCTION_IMP_WFS_25D calculates the WFS weighting and delaying
 %
-%   Usage: [d,delay,weight] = driving_function_imp_wfs_25d(x0,xs,src,[conf]);
+%   Usage: [d,delay,weight] = driving_function_imp_wfs(x0,xs,src,[conf]);
 %
 %   Input parameters:
 %       x0      - position  and direction of secondary source (m)
@@ -18,11 +18,11 @@ function [d,delay,weight] = driving_function_imp_wfs_25d(x0,xs,src,conf)
 %       delay   - delay of the driving function (s)
 %       weight  - weight (amplitude) of the driving function
 %
-%   DRIVING_FUNCTION_IMP_WFS_25D(x0,xs,src,conf) returns the driving signals and
-%   weighting and delay parameters of the WFS 2.5D driving function for the given
+%   DRIVING_FUNCTION_IMP_WFS(x0,xs,src,conf) returns the driving signals and
+%   weighting and delay parameters of the WFS driving function for the given
 %   source type and position and loudspeaker positions.
 %
-%   see also: wave_field_imp, wave_field_imp_wfs_25d, driving_function_mono_wfs_25d
+%   see also: wave_field_imp, wave_field_imp_wfs, driving_function_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -73,11 +73,11 @@ end
 
 
 %% ===== Configuration ==================================================
-% Speed of sound
 c = conf.c;
 xref = position_vector(conf.xref);
 fs = conf.fs;
 usehpre = conf.usehpre;
+dimension = conf.dimension;
 
 
 %% ===== Computation =====================================================
@@ -93,61 +93,26 @@ end
 nx0 = x0(:,4:6);
 x0 = x0(:,1:3);
 
-% Reference point and source position
-xref = repmat(xref,[size(x0,1) 1]);
+% Source position
 xs = repmat(xs,[size(x0,1) 1]);
-
-% 2.5D correction factor
-%        ______________
-% g0 = \| 2pi |xref-x0|
-%
-g0 = sqrt(2*pi*vector_norm(xref-x0,2));
 
 % Get the delay and weighting factors
 if strcmp('pw',src)
     % === Plane wave =====================================================
     % Direction of plane wave
     nk = bsxfun(@rdivide,xs,vector_norm(xs,2));
-    % --------------------------------------------------------------------
-    % d_2.5D using a plane wave as source model
-    %
-    % d_2.5D(x0,t) = h(t) * 2 g0 nk nx0 delta(t + 1/c nk x0)
-    % 
     % Delay and amplitude weight
-    delay = 1/c .* vector_product(nk,x0,2);
-    weight = 2*g0 .* vector_product(nk,nx0,2);
+    [delay,weight] = driving_function_imp_wfs_pw(x0,nx0,nk,conf);
 
 elseif strcmp('ps',src)
     % === Point source ===================================================
-    %
-    % --------------------------------------------------------------------
-    % d_2.5D using a point source as source model
-    %
-    %                       g0  (x0-xs) nx0
-    % d_2.5D(x0,t) = h(t) * --- ------------- delta(t + 1/c |x0-xs|)
-    %                      2pi  |x0-xs|^(3/2)
-    %
-    % r = |x0-xs|
-    r = vector_norm(x0-xs,2);
     % Delay and amplitude weight
-    delay = 1/c .* r;
-    weight = g0/(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
+    [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs,conf);
 
 elseif strcmp('fs',src)
     % === Focused source =================================================
-    %
-    % --------------------------------------------------------------------
-    % d_2.5D using a line sink as source model
-    %
-    %                        g0 (x0-xs) nx0
-    % d_2.5D(x0,t) = h(t) * --- ------------- delta(t - 1/c |x0-xs|)
-    %                       2pi |x0-xs|^(3/2)
-    %
-    % r = |x0-xs|
-    r = vector_norm(x0-xs,2);
     % Delay and amplitude weight
-    delay =  -1/c .* r;
-    weight = g0/(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
+    [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs,conf);
 else
     error('%s: %s is not a known source type.',upper(mfilename),src);
 end

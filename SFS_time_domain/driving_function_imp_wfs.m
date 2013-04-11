@@ -77,7 +77,6 @@ c = conf.c;
 xref = position_vector(conf.xref);
 fs = conf.fs;
 usehpre = conf.usehpre;
-dimension = conf.dimension;
 
 
 %% ===== Computation =====================================================

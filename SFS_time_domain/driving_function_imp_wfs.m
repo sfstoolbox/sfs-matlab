@@ -4,8 +4,9 @@ function [d,delay,weight] = driving_function_imp_wfs(x0,xs,src,conf)
 %   Usage: [d,delay,weight] = driving_function_imp_wfs(x0,xs,src,[conf]);
 %
 %   Input parameters:
-%       x0      - position  and direction of secondary source (m)
-%       xs      - position of virtual source or diirection of plane wave (m)
+%       x0      - positions and directions of secondary sources (m) [nx6]
+%       xs      - position of virtual source or direction of plane wave (m)
+%                 [1x3]
 %       src     - source type of the virtual source
 %                     'pw' - plane wave (xs, ys are the direction of the
 %                            plane wave in this case)
@@ -14,13 +15,13 @@ function [d,delay,weight] = driving_function_imp_wfs(x0,xs,src,conf)
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       d       - driving signals
-%       delay   - delay of the driving function (s)
-%       weight  - weight (amplitude) of the driving function
+%       d       - driving signals [mxn]
+%       delay   - delay of the driving function (s) [nx1]
+%       weight  - weight (amplitude) of the driving function [nx1]
 %
 %   DRIVING_FUNCTION_IMP_WFS(x0,xs,src,conf) returns the driving signals and
 %   weighting and delay parameters of the WFS driving function for the given
-%   source type and position and loudspeaker positions.
+%   source type, position and secondary sources.
 %
 %   see also: wave_field_imp, wave_field_imp_wfs, driving_function_mono_wfs
 

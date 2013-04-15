@@ -62,8 +62,10 @@ if exist('rmpath')
     rmpath([basepath,'/SFS_helper']);
     rmpath([basepath,'/SFS_ir']);
     rmpath([basepath,'/SFS_monochromatic']);
+    rmpath([basepath,'/SFS_monochromatic/driving_functions_mono']);
     rmpath([basepath,'/SFS_plotting']);
     rmpath([basepath,'/SFS_time_domain']);
+    rmpath([basepath,'/SFS_time_domain/driving_functions_imp']);
     rmpath([basepath,'/SFS_HRTF_extrapolation']);
     rmpath([basepath,'/validation']);
     if isoctave

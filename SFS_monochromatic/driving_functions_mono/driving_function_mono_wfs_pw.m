@@ -113,7 +113,7 @@ if strcmp('2D',dimension)
         %
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
-            'for a 2D point source.'],upper(mfilename),driving_functions);
+            'for a 2D plane wave.'],upper(mfilename),driving_functions);
     end
 
 
@@ -146,7 +146,7 @@ elseif strcmp('2.5D',dimension)
         %
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
-            'for a 2.5D point source.'],upper(mfilename),driving_functions);
+            'for a 2.5D plane wave.'],upper(mfilename),driving_functions);
     end
 
 
@@ -173,7 +173,7 @@ elseif strcmp('3D',dimension)
         %
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
-            'for a 3D point source.'],upper(mfilename),driving_functions);
+            'for a 3D plane wave.'],upper(mfilename),driving_functions);
     end
 
 else

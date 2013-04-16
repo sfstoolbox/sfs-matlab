@@ -6,6 +6,8 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
       positioned plane in 3D
     - added 3D WFS functions
     - make the Toolbox work in 3D, which brakes backwards compability!
+    - changed direction of focused source from the conf.xref vector directly
+      into xs. For a focused source xs is now [1x6]
 
 0.2.3 (9 April 2013)
 

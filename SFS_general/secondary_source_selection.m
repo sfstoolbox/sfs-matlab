@@ -90,7 +90,7 @@ xs = repmat(xs,size(x0,1),1);
 if strcmp('pw',src)
     % === Plane wave ===
     % direction of the plane wave
-    nk = xs ./ vector_norm(xs);
+    nk = bsxfun(@rdivide,xs,vector_norm(xs,2));
     % secondary source selection (Spors 2008)
     %
     %      / 1, if nk nx0 > 0

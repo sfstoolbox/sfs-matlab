@@ -53,11 +53,7 @@ isargposition(varargin{:});
 
 
 %% ===== Computation =====================================================
+% ensure row vector
 for ii = 1:nargin
     vec = row_vector(varargin{ii});
-    if size(vec,2)<3
-        varargout{ii} = [vec 0];
-    else
-        varargout{ii} = vec;
-    end
 end

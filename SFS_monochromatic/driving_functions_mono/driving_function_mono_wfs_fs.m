@@ -144,7 +144,7 @@ elseif strcmp('2.5D',dimension)
         %                    \|2pi c  |x0-xs|^(3/2)
         %
         % r = |x0-xs|
-        r = vector_norm(x0-xs);
+        r = vector_norm(x0-xs,2);
         % driving signal
         D = g0 * sqrt( 1i*omega/(2*pi*c) ) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(1i*omega/c.*r);
@@ -165,7 +165,7 @@ elseif strcmp('2.5D',dimension)
         %                    2c   |x0-xs|        \ c         /
         %
         % r = |x0-xs|
-        r = vector_norm(x0-xs);
+        r = vector_norm(x0-xs,2);
         % driving signal
         D = -g0 * 1i*omega/(2*c) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* besselh(1,1,omega/c.*r);
@@ -189,7 +189,7 @@ elseif strcmp('2.5D',dimension)
         %   2pi  \  \|i c     \| w   |x0-xs| /   |x0-xs|^2
         %
         % r = |x0-xs|
-        r = vector_norm(x0-xs);
+        r = vector_norm(x0-xs,2);
         % driving signal
         D = -g0/(2*pi) .* ( sqrt(omega/(1i*c)) + sqrt(1i*c/omega) ./ r ) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(1i*omega/c.*r);
@@ -220,11 +220,10 @@ elseif strcmp('3D',dimension)
         %  \   c    |x0-xs| /     |x0-xs|^2
         %
         % r = |x0-xs|
-        r = vector_product(x0,xs,2);
+        r = vector_norm(x0-xs,2);
         % driving signal
-        D = ( -1i*omega/c + 1./r ) .* ...
-            -2*vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(1i*omega./c.*r) .* ...
-            equallyPointsWeights .* surfaceWeights;
+        D = ( -1i.*omega/c + 1./r ) .* ...
+            -2.*vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(1i*omega./c.*r);
         %
     elseif strcmp('delft1988',driving_functions)
         % --- Delft 1988 -------------------------------------------------

@@ -14,7 +14,7 @@ function D = driving_function_mono_wfs_pw(x0,nx0,nk,f,conf)
 %   Output parameters:
 %       D           - driving function signal [nx1]
 %
-%   DRIVING_FUNCTION_MONO_WFS_PW(x0,xs,f,src,conf) returns WFS driving signals
+%   DRIVING_FUNCTION_MONO_WFS_PW(x0,nx0,nk,f,conf) returns WFS driving signals
 %   for the given secondary sources, the virtual plane wave direction and the
 %   frequency f.
 %
@@ -65,7 +65,7 @@ function D = driving_function_mono_wfs_pw(x0,nx0,nk,f,conf)
 nargmin = 4;
 nargmax = 5;
 narginchk(nargmin,nargmax);
-isargmatrix(x0,nx0,xs);
+isargmatrix(x0,nx0,nk);
 isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
@@ -95,7 +95,7 @@ if strcmp('2D',dimension)
     % Ensure 2D
     x0 = x0(:,1:2);
     nx0 = nx0(:,1:2);
-    xs = xs(:,1:2);
+    nk = nk(:,1:2);
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % D_2D using a plane wave as source model
@@ -138,7 +138,7 @@ elseif strcmp('2.5D',dimension)
         %                             \|i c
         %
         D = 2*g0 .* vector_product(nk,nx0,2) .* sqrt(omega/(1i*c)) .* ...
-            exp(-1i*omega/c.*vector_product(nxs,x0,2));
+            exp(-1i*omega/c.*vector_product(nk,x0,2));
         %
     elseif strcmp('delft1988',driving_functions)
         % --- Delft 1988 -------------------------------------------------
@@ -163,9 +163,8 @@ elseif strcmp('3D',dimension)
         % D_3D(x0,w) =  -2 --- nk nx0  e^(-i w/c nk x0) .* weights
         %                   c
         %
-        D(ii) = -2*1i*omega/c .* vector_product(nk,nx0,2) .* ...
-            exp(-1i*omega/c.*vector_product(nk,x0,2)) .* ...
-                equallyPointsWeights .* surfaceWeights;
+        D = -2*1i*omega/c .* vector_product(nk,nx0,2) .* ...
+            exp(-1i*omega/c.*vector_product(nk,x0,2));
         %
     elseif strcmp('delft1988',driving_functions)
         % --- Delft 1988 -------------------------------------------------

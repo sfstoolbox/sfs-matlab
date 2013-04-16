@@ -119,6 +119,11 @@ conf.frame = 1000;
 conf.dimension = '2.5D';
 % Reference axis for changing of z, by zmin==zmax (singleton)
 conf.zreferenceaxis = 'y';
+% Implementation of driving functions. For the default ones use 'default'. These
+% functions are described in the PDF documentation, in the doc folder of the
+% SFS-Toolbox. For possible other flags have a look into the driving functions.
+% Most users can safely use the 'default' flag here.
+conf.driving_functions = 'default';
 
 
 % ===== Secondary Sources =======================

@@ -94,7 +94,7 @@ nx0 = x0(:,4:6);
 x0 = x0(:,1:3);
 
 % Source position
-xs = repmat(xs,[size(x0,1) 1]);
+xs = repmat(xs(1:3),[size(x0,1) 1]);
 
 % Get driving signals
 if strcmp('pw',src)

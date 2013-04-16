@@ -55,288 +55,120 @@ nargmax = 1;
 error(nargchk(nargmin,nargmax,nargin));
 
 
-%% ===== Main ============================================================
+%% ===== Configuration ===================================================
 conf = SFS_config;
 L = 3;
 f = 1000;
+t = 200;
 conf.useplot = modus;
+conf.driving_functions = 'default';
+% test scenarios
+scenarios = { ...
+    'WFS', '2D',   'linear',   'pw', [ 0.5  1.0  0.0]; ...
+    'WFS', '2D',   'linear',   'ls', [ 0.0 -1.0  0.0]; ...
+    'WFS', '2D',   'linear',   'ps', [ 0.0 -1.0  0.0]; ...
+    'WFS', '2D',   'linear',   'fs', [ 0.0  1.0  0.0]; ...
+    'WFS', '2D',   'circular', 'pw', [ 0.5  0.5  0.0]; ...
+    'WFS', '2D',   'circular', 'ls', [ 0.0  2.5  0.0]; ...
+    'WFS', '2D',   'circular', 'ps', [ 0.0  2.5  0.0]; ...
+    'WFS', '2D',   'circular', 'fs', [ 0.0  0.5  0.0]; ...
+    'WFS', '2D',   'box',      'pw', [ 0.5  1.0  0.0]; ...
+    'WFS', '2D',   'box',      'ls', [ 0.5  2.0  0.0]; ...
+    'WFS', '2D',   'box',      'ps', [ 0.5  2.0  0.0]; ...
+    'WFS', '2D',   'box',      'fs', [ 0.5  0.5  0.0]; ...
+    'WFS', '2.5D', 'linear',   'pw', [ 0.5  1.0  0.0]; ...
+    'WFS', '2.5D', 'linear',   'ps', [ 0.0 -1.0  0.0]; ...
+    'WFS', '2.5D', 'linear',   'fs', [ 0.0  1.0  0.0]; ...
+    'WFS', '2.5D', 'circular', 'pw', [ 0.5  0.5  0.0]; ...
+    'WFS', '2.5D', 'circular', 'ps', [ 0.0  2.5  0.0]; ...
+    'WFS', '2.5D', 'circular', 'fs', [ 0.0  0.5  0.0]; ...
+    'WFS', '2.5D', 'box',      'pw', [ 0.5  1.0  0.0]; ...
+    'WFS', '2.5D', 'box',      'ps', [ 0.5  2.0  0.0]; ...
+    'WFS', '2.5D', 'box',      'fs', [ 0.5  0.5  0.0]; ...
+    'HOA', '2.5D', 'circular', 'pw', [ 0.5  0.5  0.0]; ...
+    'HOA', '2.5D', 'circular', 'ps', [ 0.0  2.5  0.0]; ...
+};
 
+% Start testing
+for ii=1:size(scenarios)
 
-%% ===== WFS 2D ==========================================================
-conf.dimension = '2D';
-% === Linear array ===
-conf.array = 'linear';
-conf.dx0 = 0.15;
-X = [-2,2];
-Y = [-0.15,3];
-Z = [0 0];
-conf.xref = [0 2];
-% Plane wave
-src = 'pw';
-xs = [0.5,1];
-% mono-frequent
-[x,y,z,P_wfs2d_linear_pw,x0,win] = ...
-    wave_field_mono_wfs_2d(X,Y,Z,xs,src,f,L,conf);
-title('WFS 2D linear array, plane wave, mono-frequent');
-% spatio-temporal impulse response (not implemented yet)
-%[x,y,p_wfs2d_linear_pw,ls_activity] = wave_field_imp_wfs(X,Y,Z,xs,src,L,conf);
-%title('WFS 2D linear array, plane wave, impulse response');
-% Line source
-src = 'ls';
-xs = [0,-1];
-% mono-frequent
-[x,y,z,P_wfs2d_linear_ps,x0,win] = ...
-    wave_field_mono_wfs_2d(X,Y,Z,xs,src,f,L,conf);
-title('WFS 2D linear array, line source, mono-frequent');
-% spatio-temporal impulse response (not implemented yet)
-%[x,y,p_wfs2d_linear_ps,ls_activity] = wave_field_imp_wfs(X,Y,Z,xs,src,L,conf);
-%title('WFS 2D linear array, line source, impulse response');
-% Focused source
-src = 'fs';
-xs = [0,1];
-% mono-frequent
-[x,y,z,P_wfs2d_linear_fs,x0,win] = ...
-    wave_field_mono_wfs_2d(X,Y,Z,xs,src,f,L,conf);
-title('WFS 2D linear array, focused source, mono-frequent');
-% spatio-temporal impulse response (not implemented yet)
-%[x,y,p_wfs2d_linear_fs,ls_activity] = wave_field_imp_wfs(X,Y,Z,xs,src,L,conf);
-%title('WFS 2D linear array, focused source, impulse response');
+    % get current dimension
+    conf.dimension = scenarios{ii,2};
+   
+    % get listening area
+    switch scenarios{ii,3}
+        case 'linear'
+            X = [-2 2];
+            Y = [-0.15 3];
+            Z = 0;
+            conf.xref = [0 2 0];
+            conf.dx0 = 0.15;
+        case 'circular'
+            X = [-2 2];
+            Y = [-2 2];
+            Z = 0;
+            conf.xref = [0 0 0];
+            conf.dx0 = L*pi/56;
+        case 'box'
+            X = [-2 2];
+            Y = [-2 2];
+            Z = 0;
+            conf.xref = [0 0 0];
+            conf.dx0 = 0.15;
+    end
 
-% === Circular array ===
-conf.array = 'circle';
-conf.dx0 = 0.15;
-X = [-2,2];
-Y = [-2,2];
-Z = [0 0];
-conf.xref = [0,0];
-% Plane wave
-src = 'pw';
-xs = [0.5,1];
-% mono-frequent
-[x,y,z,P_wfs2d_circular_pw,x0,win] = ...
-    wave_field_mono_wfs_2d(X,Y,Z,xs,src,f,L,conf);
-title('WFS 2D circular array, plane wave, mono-frequent');
-% spatio-temporal impulse response (not implemented yet)
-%[x,y,p_wfs2d_circular_pw,ls_activity] = wave_field_imp_wfs(X,Y,Z,xs,src,L,conf);
-%title('WFS 2D circular array, plane wave, impulse response');
-% Line source
-src = 'ls';
-xs = [0.5,2];
-% mono-frequent
-[x,y,z,P_wfs2d_circular_ps,x0,win] = ...
-    wave_field_mono_wfs_2d(X,Y,Z,xs,src,f,L,conf);
-title('WFS 2D circular array, line source, mono-frequent');
-% spatio-temporal impulse response (not implemented yet)
-%[x,y,p_wfs2d_circular_ps,ls_activity] = wave_field_imp_wfs(X,Y,Z,xs,src,L,conf);
-%title('WFS 2D circular array, line source, impulse response');
-% Focused source
-src = 'fs';
-xs = [0.5,0.5];
-% mono-frequent
-[x,y,z,P_wfs2d_circular_fs,x0,win] = ...
-    wave_field_mono_wfs_2d(X,Y,Z,xs,src,f,L,conf);
-title('WFS 2D circular array, focused source, mono-frequent');
-% spatio-temporal impulse response (not implemented yet)
-%[x,y,p_wfs2d_circular_fs,ls_activity] = wave_field_imp_wfs(X,Y,xs,src,L,conf);
-%title('WFS 2D circular array, focused source, impulse response');
+    conf.array = scenarios{ii,3};
+    src = scenarios{ii,4};
+    xs = scenarios{ii,5};
 
-% === Box shaped array ===
-conf.array = 'box';
-conf.dx0 = 0.15;
-X = [-2,2];
-Y = [-2,2];
-Z = [0 0];
-conf.xref = [0,0];
-% Plane wave
-src = 'pw';
-xs = [0.5,1];
-% mono-frequent
-[x,y,z,P_wfs2d_box_pw,x0,win] = ...
-    wave_field_mono_wfs_2d(X,Y,Z,xs,src,f,L,conf);
-title('WFS 2D box shaped array, plane wave, mono-frequent');
-% spatio-temporal impulse response (not implemented yet)
-%[x,y,p_wfs2d_box_pw,ls_activity] = wave_field_imp_wfs(X,Y,Z,xs,src,L,conf);
-%title('WFS 2D box shaped array, plane wave, impulse response');
-% Line source
-src = 'ls';
-xs = [0.5,2];
-% mono-frequent
-[x,y,z,P_wfs2d_box_ps,x0,win] = ...
-    wave_field_mono_wfs_2d(X,Y,Z,xs,src,f,L,conf);
-title('WFS 2D box shaped array, line source, mono-frequent');
-% spatio-temporal impulse response (not implemented yet)
-%[x,y,p_wfs2d_box_ps,ls_activity] = wave_field_imp_wfs(X,Y,Z,xs,src,L,conf);
-%title('WFS 2D box shaped array, line source, impulse response');
-% Focused source
-src = 'fs';
-xs = [0.5,0.5];
-% mono-frequent
-[x,y,z,P_wfs2d_box_fs,x0,win] = ...
-    wave_field_mono_wfs_2d(X,Y,Z,xs,src,f,L,conf);
-title('WFS 2D box shaped array, focused source, mono-frequent');
-% spatio-temporal impulse response (not implemented yet)
-%[x,y,p_wfs2d_box_fs,ls_activity] = wave_field_imp_wfs(X,Y,Z,xs,src,L,conf);
-%title('WFS 2D box shaped array, focused source, impulse response');
-
-
-%% ===== WFS 2.5D ========================================================
-conf.dimension = '2.5D';
-% === Linear array ===
-conf.array = 'linear';
-conf.dx0 = 0.15;
-X = [-2,2];
-Y = [-0.15,3];
-Z = [0 0];
-conf.xref = [0 2];
-t = 200;
-% Plane wave
-src = 'pw';
-xs = [0.5,1];
-% mono-frequent
-[x,y,z,P_wfs25d_linear_pw,x0,win] = ...
-    wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,conf);
-title('WFS 2.5D linear array, plane wave [0.5,1], mono-frequent');
-% spatio-temporal impulse response
-[x,y,z,p_wfs25d_linear_pw,x0,win] = ...
-    wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf);
-title('WFS 2.5D linear array, plane wave [0.5,1], impulse response');
-% Point source
-src = 'ps';
-xs = [0,-1];
-% mono-frequent
-[x,y,z,P_wfs25d_linear_ps,x0,win] = ...
-    wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,conf);
-title('WFS 2.5D linear array, point source [0,-1], mono-frequent');
-% spatio-temporal impulse response
-[x,y,z,p_wfs25d_linear_ps,x0,win] = ...
-    wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf);
-title('WFS 2.5D linear array, point source [0,-1], impulse response');
-% Focused source
-src = 'fs';
-xs = [0,1];
-% mono-frequent
-[x,y,z,P_wfs25d_linear_fs,x0,win] = ...
-    wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,conf);
-title('WFS 2.5D linear array, focused source [0,1], mono-frequent');
-% spatio-temporal impulse response
-[x,y,z,p_wfs25d_linear_fs,x0,win] = ...
-    wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf);
-title('WFS 2.5D linear array, focused source [0,1], impulse response');
-
-% === Circular array ===
-conf.array = 'circle';
-conf.dx0 = 0.15;
-X = [-2,2];
-Y = [-2,2];
-Z = [0 0];
-conf.xref = [0,0];
-% Plane wave
-src = 'pw';
-xs = [0.5,1];
-% mono-frequent
-[x,y,z,P_wfs25d_circular_pw,x0,win] = ...
-    wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,conf);
-title('WFS 2.5D circular array, plane wave [0.5,1], mono-frequent');
-% spatio-temporal impulse response
-[x,y,z,p_wfs25d_circular_pw,x0,win] = ...
-    wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf);
-title('WFS 2.5D circular array, plane wave [0.5,1], impulse response');
-% Line source
-src = 'ps';
-xs = [0.5,2];
-% mono-frequent
-[x,y,z,P_wfs25d_circular_ps,x0,win] = ...
-    wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,conf);
-title('WFS 2.5D circular array, point source [0.5,2], mono-frequent');
-% spatio-temporal impulse response
-[x,y,z,p_wfs25d_circular_ps,x0,win] = ...
-    wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf);
-title('WFS 2.5D circular array, point source [0.5,2], impulse response');
-% Focused source
-src = 'fs';
-xs = [0.5,0.5];
-% mono-frequent
-[x,y,z,P_wfs25d_circular_fs,x0,win] = ...
-    wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,conf);
-title('WFS 2.5D circular array, focused source [0.5,0.5], mono-frequent');
-% spatio-temporal impulse response
-[x,y,z,p_wfs25d_circular_fs,x0,win] = ...
-    wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf);
-title('WFS 2.5D circular array, focused source [0.5,0.5], impulse response');
-
-% === Box shaped array ===
-conf.array = 'box';
-conf.dx0 = 0.15;
-X = [-2,2];
-Y = [-2,2];
-Z = [0 0];
-conf.xref = [0,0];
-% Plane wave
-src = 'pw';
-xs = [0.5,1];
-% mono-frequent
-[x,y,z,P_wfs25d_box_pw,x0,win] = ...
-    wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,conf);
-title('WFS 2.5D box shaped array, plane wave [0.5,1], mono-frequent');
-% spatio-temporal impulse response
-[x,y,z,p_wfs25d_box_pw,x0,win] = ...
-    wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf);
-title('WFS 2.5D box shaped array, plane wave [0.5,1], impulse response');
-% point source
-src = 'ps';
-xs = [0.5,2];
-% mono-frequent
-[x,y,z,P_wfs25d_box_ps,x0,win] = ...
-    wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,conf);
-title('WFS 2.5D box shaped array, point source [0.5,2], mono-frequent');
-% spatio-temporal impulse response
-[x,y,z,p_wfs25d_box_ps,x0,win] = ...
-    wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf);
-title('WFS 2.5D box shaped array, point source [0.5,2], impulse response');
-% Focused source
-src = 'fs';
-xs = [0.5,0.5];
-% mono-frequent
-[x,y,z,P_wfs25d_box_fs,x0,win] = ...
-    wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,conf);
-title('WFS 2.5D box shaped array, focused source [0.5,0.5], mono-frequent');
-% spatio-temporal impulse response
-[x,y,z,p_wfs25d_box_fs,x0,win] = ...
-    wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf);
-title('WFS 2.5D box shaped array, focused source [0.5,0.5], impulse response');
-
-
-%% ===== NFC-HOA 2.5D ========================================================
-% === Circular array ===
-conf.array = 'circle';
-conf.dx0 = 0.15;
-X = [-2,2];
-Y = [-2,2];
-Z = [0 0];
-conf.xref = [0,0];
-t = 200;
-% Plane wave
-src = 'pw';
-xs = [0.5,1];
-% mono-frequent
-[x,y,z,P_nfchoa25d_circular_pw,x0] = ...
-    wave_field_mono_nfchoa_25d(X,Y,Z,xs,src,f,L,conf);
-title('NFC-HOA 2.5D circular array, plane wave [0.5,1], mono-frequent');
-% spatio-temporal impulse response
-[x,y,z,p_nfchoa25d_circular_pwi,x0] = ...
-    wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,t,L,conf);
-title('NFC-HOA 2.5D circular array, plane wave [0.5,1], impulse response');
-
-% point source
-src = 'ps';
-xs = [0.5,2];
-% mono-frequent
-%[x,y,P_nfchoa25d_circular_ps,ls_activity] = ...
-%    wave_field_mono_nfchoa_25d(X,Y,Z,xs,src,f,L,conf);
-%title('NFC-HOA 2.5D circular array, point source [0.5,2], mono-frequent');
-% spatio-temporal impulse response
-[x,y,z,p_nfchoa25d_circular_ps,x0] = ...
-    wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,t,L,conf);
-title('NFC-HOA 2.5D circular array, point source [0.5,2], impulse response');
-
-
+    % ===== WFS ==========================================================
+    if strcmp('WFS',scenarios{ii,1})
+        % mono-frequent
+        try
+            [x,y,z,P,x0,win] = wave_field_mono_wfs(X,Y,Z,xs,src,f,L,conf);
+            title_str = sprintf('WFS %s %s array, %s, mono-frequent', ...
+                conf.dimension,conf.array,src);
+            title(title_str);
+        catch
+            warning('%s: WFS mono-frequent %s array %s %s gives the following error message.', ...
+                upper(mfilename),conf.array,conf.dimension,src);
+            lasterr
+        end
+        % spatio-temporal impulse response
+        try
+            [x,y,z,p,x0,win] = wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf);
+            title_str = sprintf('WFS %s %s array, %s, impulse response', ...
+                conf.dimension,conf.array,src);
+            title(title_str);
+        catch
+            warning('%s: WFS impulse response %s array %s %s gives the following error message.', ...
+                upper(mfilename),conf.array,conf.dimension,src);
+            lasterr
+        end
+    
+    % ===== NFC-HOA ======================================================
+    elseif strcmp('HOA',scenarios{ii,1})
+        % mono-frequent
+        try
+            [x,y,z,P,x0,win] = wave_field_mono_nfchoa(X,Y,Z,xs,src,f,L,conf);
+            title_str = sprintf('WFS %s %s array, %s, mono-frequent', ...
+                conf.dimension,conf.array,src);
+            title(title_str);
+        catch
+            warning('%s: WFS mono-frequent %s array %s %s gives the following error message.', ...
+                upper(mfilename),conf.array,conf.dimension,src);
+            lasterr
+        end
+        % spatio-temporal impulse response
+        try
+            [x,y,z,p,x0,win] = wave_field_imp_nfchoa(X,Y,Z,xs,src,t,L,conf);
+            title_str = sprintf('WFS %s %s array, %s, impulse response', ...
+                conf.dimension,conf.array,src);
+            title(title_str);
+        catch
+            warning('%s: WFS impulse response %s array %s %s gives the following error message.', ...
+                upper(mfilename),conf.array,conf.dimension,src);
+            lasterr
+        end
+    end
+end

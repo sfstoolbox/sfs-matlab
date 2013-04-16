@@ -46,8 +46,8 @@ function isargposition(varargin)
 
 %% ===== Checking for vector =============================================
 for ii = 1:nargin
-    if ~isvector(varargin{ii}) || length(varargin{ii})~=3 || ...
-        length(varargin{ii})~=6
+    if ~isvector(varargin{ii}) || all([length(varargin{ii})~=3 ...
+        length(varargin{ii})~=6])
         error('%s needs to be a [1x3] or [1x6] vector.',inputname(ii));
     end
 end

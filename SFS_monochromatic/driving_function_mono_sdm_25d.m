@@ -61,8 +61,7 @@ nargmin = 4;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargsecondarysource(x0);
-isargposition(xs);
-xs = position_vector(xs);
+isargxs(xs);
 isargpositivescalar(f);
 isargchar(src);
 if nargin<nargmax
@@ -74,7 +73,7 @@ end
 
 %% ===== Configuration ==================================================
 phase = conf.phase;
-xref = position_vector(conf.xref);
+xref = conf.xref;
 c = conf.c;
 
 

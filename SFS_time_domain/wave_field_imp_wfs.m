@@ -68,7 +68,7 @@ nargmin = 7;
 nargmax = 8;
 narginchk(nargmin,nargmax);
 isargvector(X,Y,Z);
-xs = position_vector(xs);
+isargxs(xs);
 isargpositivescalar(L);
 isargchar(src);
 isargscalar(t);
@@ -80,7 +80,7 @@ end
 
 
 %% ===== Configuration ==================================================
-xref = position_vector(conf.xref);
+xref = conf.xref;
 useplot = conf.useplot;
 
 

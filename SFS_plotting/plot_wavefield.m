@@ -93,7 +93,7 @@ dx0 = conf.dx0;
 % Tmp dir
 tmpdir = conf.tmpdir;
 % Center position of array
-X0 = position_vector(conf.X0);
+X0 = conf.X0;
 % Plotting
 p.usegnuplot = conf.plot.usegnuplot;
 p.cmd = conf.plot.cmd;

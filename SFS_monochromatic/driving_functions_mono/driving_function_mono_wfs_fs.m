@@ -75,7 +75,7 @@ end
 
 
 %% ===== Configuration ==================================================
-xref = position_vector(conf.xref);
+xref = conf.xref;
 c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;

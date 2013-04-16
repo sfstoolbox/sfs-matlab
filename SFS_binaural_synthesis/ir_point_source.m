@@ -57,7 +57,8 @@ function ir = ir_point_source(X,phi,xs,irs,conf)
 nargmin = 4;
 nargmax = 5;
 narginchk(nargmin,nargmax);
-[X,xs] = position_vector(X,xs);
+isargposition(X);
+isargxs(xs);
 isargscalar(phi);
 check_irs(irs);
 if nargin<nargmax

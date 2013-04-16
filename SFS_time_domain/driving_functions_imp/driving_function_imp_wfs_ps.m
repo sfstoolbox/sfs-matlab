@@ -67,7 +67,7 @@ end
 %% ===== Configuration ==================================================
 % Speed of sound
 c = conf.c;
-xref = position_vector(conf.xref);
+xref = conf.xref;
 fs = conf.fs;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;

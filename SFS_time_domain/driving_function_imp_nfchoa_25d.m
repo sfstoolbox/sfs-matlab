@@ -60,8 +60,7 @@ nargmin = 4;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargsecondarysource(x0)
-isargposition(xs);
-xs = position_vector(xs);
+isargxs(xs);
 isargchar(src);
 isargpositivescalar(L);
 if nargin<nargmax

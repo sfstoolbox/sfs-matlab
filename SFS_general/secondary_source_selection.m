@@ -66,7 +66,7 @@ nargmin = 3;
 nargmax = 3;
 narginchk(nargmin,nargmax);
 isargsecondarysource(x0);
-xs = position_vector(xs);
+isargxs(xs);
 isargchar(src);
 if strcmp('fs',src) && size(xs,2)~=6
     error(['%s: you have chosen "fs" as source type, then xs has ', ...

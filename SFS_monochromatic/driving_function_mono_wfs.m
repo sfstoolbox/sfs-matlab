@@ -70,7 +70,7 @@ nargmin = 4;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargsecondarysource(x0);
-xs = position_vector(xs);
+isargxs(xs);
 isargpositivescalar(f);
 isargchar(src);
 if nargin<nargmax

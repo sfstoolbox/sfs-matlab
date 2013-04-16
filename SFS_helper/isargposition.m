@@ -1,15 +1,16 @@
 function isargposition(varargin)
-%ISARGPOSITION tests if the given arg is a vector and returns an error otherwise
+%ISARGPOSITION tests if the given arg is a [1x3] vector and returns an error
+%otherwise
 %
 %   Usage: isargposition(args)
 %
 %   Input options:
 %       args        - list of args
 %
-%   ISARGPOSITION(args) tests if all given args are a position vector and
+%   ISARGPOSITION(args) tests if all given args are [1x3] vectors and
 %   returns an error otherwise.
 %
-%   see also: isargscalar, isargvector
+%   see also: isargscalar, isargvector, isargxs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -46,8 +47,7 @@ function isargposition(varargin)
 
 %% ===== Checking for vector =============================================
 for ii = 1:nargin
-    if ~isvector(varargin{ii}) || all([length(varargin{ii})~=3 ...
-        length(varargin{ii})~=6])
-        error('%s needs to be a [1x3] or [1x6] vector.',inputname(ii));
+    if ~isvector(varargin{ii}) || ~all(size(varargin{ii})==[1 3])
+        error('%s needs to be a [1x3] position vector.',inputname(ii));
     end
 end

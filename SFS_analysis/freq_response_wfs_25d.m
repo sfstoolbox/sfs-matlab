@@ -68,7 +68,8 @@ function [f,S] = freq_response_wfs_25d(X,xs,src,L,conf)
 nargmin = 4;
 nargmax = 5;
 narginchk(nargmin,nargmax);
-[X,xs] = position_vector(X,xs);
+isargposition(X);
+isargxs(xs);
 isargpositivescalar(L);
 isargchar(src);
 

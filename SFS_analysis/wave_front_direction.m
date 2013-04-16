@@ -65,7 +65,8 @@ function [alpha,a,t] = wave_front_direction(X,phi,xs,src,L,conf)
 nargmin = 5;
 nargmax = 6;
 narginchk(nargmin,nargmax);
-[X,xs] = position_vector(X,xs);
+isargposition(X);
+isargxs(xs),
 isargscalar(phi);
 isargpositivescalar(L);
 

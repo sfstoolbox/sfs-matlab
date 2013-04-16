@@ -57,7 +57,8 @@ function t = wave_front_time(X,xs,src,L,conf)
 nargmin = 4;
 nargmax = 5;
 narginchk(nargmin,nargmax);
-[X,xs] = position_vector(X,xs);
+isargposition(X);
+isargxs(xs);
 isargchar(src);
 isargpositivescalar(L);
 

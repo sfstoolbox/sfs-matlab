@@ -63,7 +63,7 @@ end
 
 
 %% ===== Configuration ===================================================
-xref = position_vector(conf.xref);
+xref = conf.xref;
 xysamples = conf.xysamples;
 
 

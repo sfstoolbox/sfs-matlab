@@ -63,7 +63,8 @@ function brs = brs_wfs_25d(X,phi,xs,src,L,irs,conf)
 nargmin = 6;
 nargmax = 7;
 narginchk(nargmin,nargmax);
-[X,xs] = position_vector(X,xs);
+isargposition(X);
+isargxs8xs);
 isargscalar(phi);
 isargpositivescalar(L);
 check_irs(irs);

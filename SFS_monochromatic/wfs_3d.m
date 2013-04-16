@@ -67,7 +67,7 @@ nargmin = 7;
 nargmax = 8;
 error(nargchk(nargmin,nargmax,nargin));
 isargmatrix(x,y);
-xs = position_vector(xs);
+isargxs(xs);
 isargpositivescalar(L,f);
 isargchar(src);
 if nargin<nargmax

@@ -67,8 +67,7 @@ nargmin = 4;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargsecondarysource(x0);
-isargposition(xs);
-xs = position_vector(xs);
+isargxs(xs);
 isargpositivescalar(f);
 isargchar(src);
 if nargin<nargmax
@@ -82,7 +81,7 @@ end
 % phase of omega
 phase = conf.phase;
 % xref
-xref = position_vector(conf.xref);
+xref = conf.xref;
 % speed of sound
 c = conf.c;
 % positions and angles of secondary sources

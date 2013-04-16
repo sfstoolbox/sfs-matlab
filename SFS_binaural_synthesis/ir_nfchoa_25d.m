@@ -63,8 +63,9 @@ narginchk(nargmin,nargmax);
 if nargin==nargmax-1
     conf = SFS_config;
 end
-[X,xs] = position_vector(X,xs);
 if conf.debug
+    isargposition(X);
+    isargxs(xs);
     isargscalar(phi);
     isargpositivescalar(L);
     isargchar(src);

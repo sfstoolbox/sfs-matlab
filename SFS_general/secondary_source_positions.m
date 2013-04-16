@@ -87,7 +87,7 @@ end
 % Array type
 array = conf.array;
 % Center of the array
-X0 = position_vector(conf.X0);
+X0 = conf.X0;
 % Distance between secondary sources
 dx0 = conf.dx0;
 % Given secondary sources

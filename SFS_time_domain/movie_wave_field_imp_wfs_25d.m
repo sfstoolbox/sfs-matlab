@@ -61,8 +61,7 @@ nargmin = 6;
 nargmax = 7;
 narginchk(nargmin,nargmax);
 isargvector(X,Y);
-isargposition(xs);
-xs = position_vector(xs);
+isargxs(xs);
 isargpositivescalar(L);
 isargchar(src,outfile);
 if nargin<nargmax

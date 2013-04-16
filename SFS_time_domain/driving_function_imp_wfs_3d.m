@@ -60,8 +60,7 @@ nargmin = 3;
 nargmax = 4;
 error(nargchk(nargmin,nargmax,nargin));
 % isargsecondarysource(x0)
-isargposition(xs);
-xs = position_vector(xs);
+isargxs(xs);
 isargchar(src);
 if nargin<nargmax
     conf = SFS_config;
@@ -73,7 +72,7 @@ end
 %% ===== Configuration ==================================================
 % Speed of sound
 c = conf.c;
-xref = position_vector(conf.xref);
+xref = conf.xref;
 fs = conf.fs;
 usehpre = conf.usehpre;
 

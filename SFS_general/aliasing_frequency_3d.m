@@ -50,7 +50,6 @@ error(nargchk(nargmin,nargmax,nargin));
 if nargin==nargmax-1
     conf = SFS_config;
 end
-%[xs,X] = position_vector(xs,X);
 
 %% ===== Configuration ==================================================
 c = conf.c;

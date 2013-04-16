@@ -57,15 +57,13 @@ function ir = ir_generic(X,phi,x0,d,irs,conf)
 nargmin = 5;
 nargmax = 6;
 narginchk(nargmin,nargmax);
+isargposition(X);
+isargscalar(phi);
+isargsecondarysource(x0);
+isargmatrix(d);
+check_irs(irs);
 if nargin==nargmax-1
     conf = SFS_config;
-end
-X = position_vector(X);
-if conf.debug
-    isargscalar(phi);
-    isargsecondarysource(x0);
-    isargmatrix(d);
-    check_irs(irs);
 end
 
 

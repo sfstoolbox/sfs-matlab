@@ -63,7 +63,7 @@ nargmin = 5;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargvector(X,Y,Z);
-xs = position_vector(xs);
+isargxs(xs);
 isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;

@@ -64,7 +64,7 @@ function ir = generic_wfs_25d(xs,src,L,conf)
 nargmin = 3;
 nargmax = 4;
 narginchk(nargmin,nargmax);
-xs = position_vector(xs);
+isargxs(xs);
 isargpositivescalar(L);
 isargchar(src);
 

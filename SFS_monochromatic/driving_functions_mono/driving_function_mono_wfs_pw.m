@@ -87,6 +87,7 @@ driving_functions = conf.driving_functions;
 % frequency
 omega = 2*pi*f;
 
+
 if strcmp('2D',dimension)
     
     % === 2-Dimensional ==================================================

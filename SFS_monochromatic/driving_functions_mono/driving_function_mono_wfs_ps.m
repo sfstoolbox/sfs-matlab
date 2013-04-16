@@ -87,8 +87,11 @@ driving_functions = conf.driving_functions;
 % frequency
 omega = 2*pi*f;
 
+
 if strcmp('2D',dimension)
+    
     % === 2-Dimensional ==================================================
+    
     % Ensure 2D
     x0 = x0(:,1:2);
     nx0 = nx0(:,1:2);
@@ -116,8 +119,11 @@ if strcmp('2D',dimension)
             'for a 2D point source.'],upper(mfilename),driving_functions);
     end
 
+
 elseif strcmp('2.5D',dimension)
+    
     % === 2.5-Dimensional ================================================
+    
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
@@ -151,8 +157,11 @@ elseif strcmp('2.5D',dimension)
             'for a 2.5D point source.'],upper(mfilename),driving_functions);
     end
 
+
 elseif strcmp('3D',dimension)
+    
     % === 3-Dimensional ==================================================
+    
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % D_3D using a point source as source model

@@ -140,7 +140,7 @@ else
         x0(:,3) = X0(3) * ones(nls,1);
         % Direction of the secondary sources
         x0(:,4:6) = direction_vector(x0(:,1:3),x0(:,1:3)+repmat([0 1 0],nls,1));
-    elseif strcmp('circle',array)
+    elseif strcmp('circle',array) || strcmp('circular',array)
         % === Circular array ===
         % Azimuth angles
         phi = linspace(0,(2-2/nls)*pi,nls)'; % 0..2pi

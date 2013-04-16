@@ -86,7 +86,7 @@ elseif strcmp('linear',array)
     nls = fix(L/dx0)+1;
     % Corresponding size of loudspeaker array
     L = (nls-1)*dx0;
-elseif strcmp('circle',array) || strcmp('spherical',array) || ...
+elseif strcmp('circle',array) || strcmp('circular',array) || strcmp('spherical',array) || ...
        strcmp('sphere',array)
     % L is the diameter!
     % Perimeter of the circle

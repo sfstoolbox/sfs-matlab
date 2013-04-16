@@ -1,25 +1,24 @@
-function [x0,idx] = secondary_source_selection(x0,xs,src,xref)
+function [x0,idx] = secondary_source_selection(x0,xs,src)
 %SECONDARY_SOURCE_SELECTION selects which secondary sources are active
 %
-%   Usage: [x0,idx] = secondary_source_selection(x0,xs,src,[xref])
+%   Usage: [x0,idx] = secondary_source_selection(x0,xs,src)
 %
 %   Input options:
-%       x0          - secondary source positions and directions (m)
-%       xs          - position of the desired source model (m)
+%       x0          - secondary source positions and directions (m) [nx6]
+%       xs          - position and for focused sources also direction of the
+%                     desired source model (m) [1x3] or [1x6]
 %       src         - source type of the virtual source
 %                       'pw' - plane wave (xs is the direction of the
 %                              plane wave in this case)
 %                       'ps' - point source
 %                       'fs' - focused source
-%       xref        - position of reference point (conf.xref). This is needed
-%                     for focused sources, and will define the direction of the
-%                     focused source
 %
 %   Output options:
-%       x0          - secondary sources, containing only the active ones
-%       idx         - index of the selected sources from the original x0 matrix
+%       x0          - secondary sources, containing only the active ones [mx6]
+%       idx         - index of the selected sources from the original x0
+%                     matrix [mx1]
 %
-%   SECONDARY_SOURCES_SELECTION(x0,xs,src,xref) returns only the active secondary
+%   SECONDARY_SOURCES_SELECTION(x0,xs,src) returns only the active secondary
 %   sources for the given geometry and virtual source. In addition the index of
 %   the chosen secondary sources is returned.
 %
@@ -64,18 +63,18 @@ function [x0,idx] = secondary_source_selection(x0,xs,src,xref)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;
-nargmax = 4;
+nargmax = 3;
 narginchk(nargmin,nargmax);
 isargsecondarysource(x0);
 xs = position_vector(xs);
 isargchar(src);
-if nargin==nargmax
-    xref = position_vector(xref);
-elseif strcmp('fs',src)
-    error(['%s: you have chosen "fs" as source type, then xref is ', ...
-        'needed as fourth argument.'],upper(mfilename));
-else
-    xref = [0,0,0];
+if strcmp('fs',src) && size(xs,2)~=6
+    error(['%s: you have chosen "fs" as source type, then xs has ', ...
+        'to be [1x6] including the direction of the focused source.'], ...
+        upper(mfilename));
+elseif ~strcmp('fs',src) && size(xs,2)~=3
+    error(['%s: for all source types beside "fs", the size of xs ', ...
+        'has to be [1x3].'],upper(mfilename));
 end
 
 
@@ -84,31 +83,29 @@ end
 x0_tmp = x0;
 nx0 = x0(:,4:6);
 x0 = x0(:,1:3);
-% direction of the plane wave
-nxs = xs / norm(xs);
 % Make the size of the xs position the same as the number of secondary sources
 % in order to allow x0-xs
 xs = repmat(xs,size(x0,1),1);
-xref = repmat(xref,size(x0,1),1);
-nxs = repmat(nxs,size(x0,1),1);
 
 if strcmp('pw',src)
     % === Plane wave ===
+    % direction of the plane wave
+    nk = xs ./ vector_norm(xs);
     % secondary source selection (Spors 2008)
     %
-    %      / 1, if <n_pw,n_x0> > 0
+    %      / 1, if nk nx0 > 0
     % a = <
     %      \ 0, else
     %
     % Direction of plane wave (nxs) is set above
-    idx = (( diag(nxs*nx0')>=eps ));
+    idx = (( diag(nk*nx0')>=eps ));
     x0 = x0_tmp(idx,:);
 
 elseif strcmp('ps',src) || strcmp('ls',src)
     % === Point source ===
     % secondary source selection (Spors 2008)
     %
-    %      / 1, if <x0-xs,n_x0> > 0
+    %      / 1, if (x0-xs) nx0 > 0
     % a = <
     %      \ 0, else
     %
@@ -118,13 +115,15 @@ elseif strcmp('ps',src) || strcmp('ls',src)
 elseif strcmp('fs',src)
     % === Focused source ===
     % secondary source selection (Spors 2008)
-    % NOTE: <xs-x0,nx0> > 0 is always true for a focused source
+    % NOTE: (xs-x0) nx0 > 0 is always true for a focused source
     %
-    %      / 1, <xs-xref,x_0-xs> > 0
+    %      / 1, (xs-nxs) (x0-xs) > 0
     % a = <
     %      \ 0, else
     %
-    idx = (( diag((xs-xref)*(x0-xs)')>0 ));
+    nxs = xs(:,4:6);
+    xs = xs(:,1:3);
+    idx = (( diag((xs-nxs)*(x0-xs)')>0 ));
     x0 = x0_tmp(idx,:);
 else
     error('%s: %s is not a supported source type!',upper(mfilename),src);

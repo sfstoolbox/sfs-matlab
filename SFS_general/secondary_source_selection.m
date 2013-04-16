@@ -117,14 +117,18 @@ elseif strcmp('fs',src)
     % secondary source selection (Spors 2008)
     % NOTE: (xs-x0) nx0 > 0 is always true for a focused source
     %
-    %      / 1, (xs-nxs) (x0-xs) > 0
+    %      / 1, nxs (xs-x0) > 0
     % a = <
     %      \ 0, else
     %
     nxs = xs(:,4:6);
     xs = xs(:,1:3);
-    idx = (( diag((xs-nxs)*(x0-xs)')>0 ));
+    idx = (( diag(nxs*(xs-x0)')>0 ));
     x0 = x0_tmp(idx,:);
 else
     error('%s: %s is not a supported source type!',upper(mfilename),src);
+end
+
+if size(x0,1)==0
+    warning('%s: 0 secondary sources were selected.',upper(mfilename));
 end

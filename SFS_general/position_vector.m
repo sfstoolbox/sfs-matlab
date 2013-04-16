@@ -55,5 +55,5 @@ isargposition(varargin{:});
 %% ===== Computation =====================================================
 % ensure row vector
 for ii = 1:nargin
-    vec = row_vector(varargin{ii});
+    varargout{ii} = row_vector(varargin{ii});
 end

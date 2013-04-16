@@ -88,6 +88,7 @@ driving_functions = conf.driving_functions;
 omega = 2*pi*f;
 
 if strcmp('2D',dimension)
+    % === 2-Dimensional ==================================================
     % Ensure 2D
     x0 = x0(:,1:2);
     nx0 = nx0(:,1:2);
@@ -116,6 +117,7 @@ if strcmp('2D',dimension)
     end
 
 elseif strcmp('2.5D',dimension)
+    % === 2.5-Dimensional ================================================
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
@@ -148,8 +150,35 @@ elseif strcmp('2.5D',dimension)
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D point source.'],upper(mfilename),driving_functions);
     end
+
 elseif strcmp('3D',dimension)
-    to_be_implemented;
+    % === 3-Dimensional ==================================================
+    if strcmp('default',driving_functions)
+        % --- SFS Toolbox ------------------------------------------------
+        % D_3D using a point source as source model
+        % FIXME: this should be the same as for the 2D case?
+        %
+        % D_3D(x0,w) =
+        %                    
+        %  /  i w      1    \  -2 (x0-xs) nx0
+        %  |  --- + ------- |  ---------------- e^(-i w/c |x0-xs|) .* weights
+        %  \   c    |x0-xs| /      |x0-xs|^2
+        %
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        % driving signal
+        D =  ( 1i*omega/c + 1./r ) .* -2*vector_product(x0-xs,nx0,2) ./ r.^2 .* ...
+            exp(-1i*omega/c.*r) .* equallyPointsWeights .* surfaceWeights;
+        %
+    elseif strcmp('delft1988',driving_functions)
+        % --- Delft 1988 -------------------------------------------------
+        to_be_implemented;
+        %
+    else
+        error(['%s: %s, this type of driving function is not implemented ', ...
+            'for a 3D point source.'],upper(mfilename),driving_functions);
+    end
+
 else
     error('%s: the dimension %s is unknown.',upper(mfilename),dimension);
 end

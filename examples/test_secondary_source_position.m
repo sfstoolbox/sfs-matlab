@@ -23,7 +23,7 @@ x0 = secondary_source_positions(conf.L,conf);
 
 %% Calculate active secondary sources
 x0 = x0(:,1:6);
-x0 = secondary_source_selection(x0,xs,'pw',conf.xref);
+x0 = secondary_source_selection(x0,xs,'pw');
 
 %% plot all secondary sources and active secondary sources to prove the evaluation
 figure

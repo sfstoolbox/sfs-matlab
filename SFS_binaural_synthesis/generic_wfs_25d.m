@@ -85,7 +85,8 @@ useplot = conf.useplot;       % Plot results?
 %% ===== Variables ======================================================
 % Secondary sources
 x0 = secondary_source_positions(L,conf);
-x0 = secondary_source_selection(x0,xs,src);
+nls_orig = size(x0,1);
+[x0,idx] = secondary_source_selection(x0,xs,src);
 nls = size(x0,1);
 % generate tapering window
 win = tapering_window(x0,conf);
@@ -99,29 +100,35 @@ dirac = zeros(1024,1);
 dirac(300) = 1;
 lenir = length(dirac);
 % Initial values
-ir = zeros(N,nls);
+ir = zeros(N,nls_orig);
 dt = zeros(1,nls);
 a = zeros(1,nls);
 
 % Create a IR for every single loudspeaker
-for n=1:nls
+counter = 1;
+for n=1:nls_orig
 
-    % ====================================================================
-    % Driving function to get weighting and delaying
-    [a(n),delay] = ...
-        driving_function_imp_wfs_25d(x0(n,:),xs,src,conf);
-    % Time delay in samples for the given loudspeaker
-    dt(n) = ceil( delay*fs ) + 500;
+    if idx(n)
+        % ====================================================================
+        % Driving function to get weighting and delaying
+        [~,delay,a(counter)] = ...
+            driving_function_imp_wfs_25d(x0(counter,:),xs,src,conf);
+        % Time delay in samples for the given loudspeaker
+        dt(counter) = ceil( delay*fs ) + 500;
 
-    % Check if the length of the IR (conf.N) is long enough for the
-    % needed time delay dt(n)
-    if N<(dt(n)+lenir)
-        error(['%s: The length of the IR conf.N is not large enough ' ...
-               'to handle the needed time delay dt(n).'],upper(mfilename));
+        % Check if the length of the IR (conf.N) is long enough for the
+        % needed time delay dt(n)
+        if N<(dt(counter)+lenir)
+            error(['%s: The length of the IR conf.N is not large enough ' ...
+                   'to handle the needed time delay dt(n).'],upper(mfilename));
+        end
+
+        % Generate impulse response for the desired loudspeaker
+        ir(:,counter) = ...
+            [zeros(1,dt(counter)) a(counter)*win(counter)*dirac' ...
+            zeros(1,N-dt(counter)-lenir)]';
+        counter = counter+1;
     end
-
-    % Generate impulse response for the desired loudspeaker
-    ir(:,n) = [zeros(1,dt(n)) a(n)*win(n)*dirac' zeros(1,N-dt(n)-lenir)]';
 
 end
 

@@ -3,9 +3,9 @@ Sound Field Synthesis Toolbox
 
 The Sound Field Synthesis Toolbox (SFS) for Matlab/Octave gives you the
 possibility to play around with sound field synthesis methods like Wave Field
-Synthesis (WFS) or Higher Order Ambisonics (HOA). There are functions to
-simulate monochromatic wave fields for different secondary source
-(loudspeaker) setups, time snapshots of full band impulses emitted by the
+Synthesis (WFS) or near-field compensated Higher Order Ambisonics (NFCHOA).
+There are functions to simulate monochromatic wave fields for different secondary
+source (loudspeaker) setups, time snapshots of full band impulses emitted by the
 secondary source distributions, or even generate Binaural Room Scanning (BRS)
 stimuli sets in order to simulate WFS with the SoundScape Renderer (SSR).
 

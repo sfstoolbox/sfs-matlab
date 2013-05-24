@@ -83,35 +83,23 @@ true;</code>.
 Credits and License
 -------------------
 
-This is the source distribution of Sound Field Synthesis-Toolbox (SFS) licensed
+This is the source distribution of Sound Field Synthesis Toolbox (SFS) licensed
 under the GPLv3+. Please consult the file COPYING for more information about
 this license.
  
-The wiki at http://dev.qu.tu-berlin.de/projects/sfs/wiki contains relevant
-informations about the SFS, including installation instructions and a detailed
-usage tutorial. Additional installation instructions can be found in the file
-INSTALL.
-
-For questions, bug reports and feature requests:
-
-Contact: sfstoolbox@googlemail.com
-
-
+For questions, bug reports and feature requests: 
+Contact: sfstoolbox@googlemail.com 
 Website: https://github.com/sfstoolbox/sfs
 
 
-Copyright (c) 2010-2013
-Quality & Usability Lab, together with
-Assessment of IP-based Applications
-Telekom Innovation Laboratories, TU Berlin
+Copyright (c) 2010-2013 
+Quality & Usability Lab, together with 
+Assessment of IP-based Applications 
+Telekom Innovation Laboratories, TU Berlin 
 Ernst-Reuter-Platz 7, 10587 Berlin, Germany
 
 
-Copyright (c) 2013
-
-Institut fuer Nachrichtentechnik
-
-Universitaet Rostock
-
+Copyright (c) 2013 
+Institut fuer Nachrichtentechnik 
+Universitaet Rostock 
 Richard-Wagner-Strasse 31, 18119 Rostock
-

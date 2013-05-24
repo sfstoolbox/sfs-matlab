@@ -24,14 +24,14 @@ subpathes.
 Requirements
 ------------
 
-*Matlab*  
+**Matlab**  
 You need Matlab version 2011b or newer to run the Toolbox.
 On older version the Toolbox should also work, but you need to add
-[narginchk.m](https://gist.github.com/hagenw/5642886) to the
+[narginchk.m](http://gist.github.com/hagenw/5642886) to the
 <code>SFS_helper</code>
 directory.
 
-*Octave*  
+**Octave**  
 You need Octave version 3.6 or newer to run the Toolbox. In addition, 
 you will need the following additional packages from 
 [octave-forge](http://octave.sourceforge.net/):
@@ -63,7 +63,7 @@ If you have a set of head-related transfer functions (HRTFs) you can simulate
 the ear signals reaching a listener sitting at a given point in the listening
 area for a specified WFS or NFCHOA system.
 You can even download a set of HRTFs, which will just work with the Toolbox at 
-https://dev.qu.tu-berlin.de/projects/measurements/wiki/2010-11-kemar-anechoic
+http://dev.qu.tu-berlin.de/projects/measurements/wiki/2010-11-kemar-anechoic
 
 The files dealing with the binaural simulations are in the folder
 <code>SFS_binaural_synthesis</code>. Files dealing with HRTFs are in the folder
@@ -102,7 +102,7 @@ this license.
  
 For questions, bug reports and feature requests:  
 Contact: sfstoolbox@googlemail.com  
-Website: https://github.com/sfstoolbox/sfs
+Website: http://github.com/sfstoolbox/sfs
 
 
 Copyright (c) 2010-2013  

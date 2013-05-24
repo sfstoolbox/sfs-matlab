@@ -87,8 +87,8 @@ This is the source distribution of Sound Field Synthesis Toolbox (SFS) licensed
 under the GPLv3+. Please consult the file COPYING for more information about
 this license.
  
-For questions, bug reports and feature requests: 
-Contact: sfstoolbox@googlemail.com 
+For questions, bug reports and feature requests:  
+Contact: sfstoolbox@googlemail.com  
 Website: https://github.com/sfstoolbox/sfs
 
 

@@ -20,8 +20,21 @@ can just use the default settings by leaving everything as it is.
 Then start the Toolbox with <code>SFS_start</code> which will add all needed
 subpathes.
 
-If you are using Octave you will need the following additional packages from 
-octave-forge (http://octave.sourceforge.net/):
+
+Requirements
+------------
+
+*Matlab*  
+You need Matlab version 2011b or newer to run the Toolbox.
+On older version the Toolbox should also work, but you need to add
+[narginchk.m](https://gist.github.com/hagenw/5642886) to the
+<code>SFS_helper</code>
+directory.
+
+*Octave*  
+You need Octave version 3.6 or newer to run the Toolbox. In addition, 
+you will need the following additional packages from 
+[octave-forge](http://octave.sourceforge.net/):
 * audio (e.g. for wavwrite)
 * signal (e.g. for firls)
 

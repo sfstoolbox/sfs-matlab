@@ -17,20 +17,70 @@ function x0 = secondary_source_positions(L,conf)
 %   (L). Alternatively, if conf.x0 is set, it returns the positions and
 %   directions specified there.
 %   The direction of the sources is given as their unit vectors pointing in the
-%   given driection.
+%   given driection. For a linear array the secondary sources are pointing
+%   towards the negative y-direction. If you create a linear array with default
+%   position conf.X0 = [0 0 0], your listening area is in the area y<0!
 %
-%   Geometry (for a linear array):
+%   Default geometry for a linear array:
 %
 %                                y-axis
 %                                   ^
 %                                   |
+%                                   |  secondary sources
+%                                   |        |
+%                                   |        v
+%       -------------x--x--x--x--x--x--x--x--x--x--x------------> x-axis
+%                    |  |  |  |  |  |  |  |  |  |  | <- secondary source direction
+%                                   |              
 %                                   |
 %                                   |
-%          v--v--v--v--v--v--v--v--v|-v--v
-%          |              X0        |
-%    (Loudspeaker)  (Array center)  |
+%
+%   Default geometry for a circular array:
+%
+%                                y-axis
+%                                   ^
 %                                   |
-%       --------------------------------------------------------> x-axis
+%                                   x
+%                              x    |     x
+%                              \    |     /
+%                         x_        |         _x
+%                           -       |        -
+%                      x-_          |          _-x
+%                                   |         
+%       --------------x---------------------------x------------------> x-axis
+%                        _          |          _
+%                      x-           |           -x
+%                         _-        |        -_
+%                        x          |          x
+%                             /     |     \
+%                             x     |     x
+%                                   x
+%                                   |
+%
+%
+%   Default geometry for a box-shape array:
+%
+%                                y-axis
+%                                   ^
+%                                   |
+%                       x   x   x   x   x   x   x  
+%                       |   |   |   |   |   |   |            
+%                    x--            |            --x
+%                                   |         
+%                    x--            |            --x
+%                                   |
+%                    x--            |            --x
+%                                   |
+%       -------------x-----------------------------x-----------------> x-axis
+%                                   |
+%                    x--            |            --x
+%                                   |
+%                    x--            |            --x
+%                                   |
+%                    x--            |            --x
+%                       |   |   |   |   |   |   |
+%                       x   x   x   x   x   x   x
+%                                   |
 %
 % see also: secondary_source_selection, secondary_source_number, tapering_window
 
@@ -112,8 +162,8 @@ if strcmp('linear',array)
     x0(:,1) = X0(1) + linspace(-L/2,L/2,nls)';
     x0(:,2) = X0(2) * ones(nls,1);
     x0(:,3) = X0(3) * ones(nls,1);
-    % Direction of the secondary sources
-    x0(:,4:6) = direction_vector(x0(:,1:3),x0(:,1:3)+repmat([0 1 0],nls,1));
+    % Direction of the secondary sources pointing to the -y direction
+    x0(:,4:6) = direction_vector(x0(:,1:3),x0(:,1:3)+repmat([0 -1 0],nls,1));
 elseif strcmp('circle',array) || strcmp('circular',array)
     % === Circular array ===
     % Azimuth angles

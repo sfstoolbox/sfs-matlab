@@ -197,17 +197,7 @@ if ~(p.usegnuplot)
 
     % Save as file
     if p.file && strcmp('png',p.file(end-2:end))
-        if isoctave
-            if ~strcmp('px',p.size_unit)
-                error('%s: unit has to be in px under Octave for a png plot', ...
-                    upper(mfilename));
-            end
-            res = sprintf('-S%i,%i',p.size(1),p.size(2));
-            print(p.file,'-dpng','-r150',res);
-        else
-            print(p.file,'-dpng','-r150');
-        end
-        close;
+        print_png(p.file,conf);
     elseif p.file && strcmp('eps',p.file(end-2:end))
         print(p.file,'-deps','-r150');
         close;

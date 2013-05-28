@@ -250,7 +250,8 @@ conf.plot.realloudspeakers = true; % boolean
 % Size of the loudspeaker
 conf.plot.lssize = conf.dx0; % m
 % Size of the plot
-conf.plot.size = [16,11.55]; % cm
+conf.plot.size_unit = 'px'; % 'px','cm','inches'
+conf.plot.size = [720 540];
 % Additional plot command
 conf.plot.cmd = '';
 % output of plot (file or screen)

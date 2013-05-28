@@ -1,26 +1,80 @@
-function h=figsize(x,y);
+function figsize(x,y,unit);
 %FIGSIZE changes the size of a figure
+%
+%   Usage: figsize(x,y,unit)
+%
+%   Input options:
+%       x,y         - x,y size of the figure
+%       unit        - unit in which the size is given, can be one of the
+%                     following: 'cm', 'px'
+%
+%   FIGSIZE(x,y,unit) sets the size of the last figure to x,y in the given unit.
+%
+%   see also: plot_wavefield
 
+%*****************************************************************************
+% Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
+%                         Assessment of IP-based Applications                *
+%                         Deutsche Telekom Laboratories, TU Berlin           *
+%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+%                                                                            *
+% Copyright (c) 2013      Institut fuer Nachrichtentechnik                   *
+%                         Universitaet Rostock                               *
+%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+%                                                                            *
+% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+%                                                                            *
+% The SFS is free software:  you can redistribute it and/or modify it  under *
+% the terms of the  GNU  General  Public  License  as published by the  Free *
+% Software Foundation, either version 3 of the License,  or (at your option) *
+% any later version.                                                         *
+%                                                                            *
+% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
+% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
+% FOR A PARTICULAR PURPOSE.                                                  *
+% See the GNU General Public License for more details.                       *
+%                                                                            *
+% You should  have received a copy  of the GNU General Public License  along *
+% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+%                                                                            *
+% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
+%                                                                            *
+% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
+%*****************************************************************************
+
+
+%% ===== Checking of input parameter =====================================
+nargmin = 0;
+nargmax = 3;
+narginchk(nargmin,nargmax);
 if nargin==0
-  x=10;
-  y=10;
+    x = 10;
+    y = 10;
+    unit = 'cm';
 end
-if nargin==1
-  y=x;
+isargpositivescalar(x,y)
+isargchar(unit)
+
+
+%% ===== Main ============================================================
+% convert to centimeters
+dpi = 150; % default dpi
+if strcmp('px',unit) || strcmp('pixel',unit)
+    x = x/dpi * 2.54;
+    y = y/dpi * 2.54;
+elseif strcmp('inches',unit)
+    x = x * 2.54;
+    y = y * 2.54;
 end
-% h=figure;
-% zoom on;
-% colormap(1-gray);
+
 set(gcf,'Position',[20,45,44*x,44*y]);
 x=x+2;
 y=y+2;
 %set(gca,'FontName','Times');
 %set(gca,'FontSize',8);
-% set(gca,'Position',[1/x,1/y,1-2/x,1-2/y]);
 set(gcf,'PaperUnits','centimeters');
-% FIXME: the following doesn't work with Octave (is this needed at all?)
-%set(gcf,'Papertype','A4')
 tmp=get(gcf,'Papersize');
 set(gcf,'PaperPosition',[(tmp(1)-x)/2,(tmp(2)-y)/2,x,y]);
 set(gcf,'Color',[1,1,1]);
-

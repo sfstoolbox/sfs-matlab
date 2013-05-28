@@ -100,6 +100,7 @@ p.cmd = conf.plot.cmd;
 p.usedb = conf.plot.usedb;
 p.mode = conf.plot.mode;
 p.size = conf.plot.size;
+p.size_unit = conf.plot.size_unit;
 p.caxis = conf.plot.caxis;
 p.colormap = conf.plot.colormap;
 p.loudspeakers = conf.plot.loudspeakers;
@@ -156,6 +157,9 @@ if ~(p.usegnuplot)
     %
     % Create a new figure
     figure;
+    % set size
+    %figsize(12.75,9.56,'cm')
+    figsize(p.size(1),p.size(2),p.size_unit);
 
     % Plotting
     if(p.usedb)
@@ -192,11 +196,20 @@ if ~(p.usegnuplot)
     end
 
     % Save as file
-    if strcmp('png',p.file(end-2:end))
-        print(p.file,'-dpng','-S640,480');
+    if p.file && strcmp('png',p.file(end-2:end))
+        if isoctave
+            if ~strcmp('px',p.size_unit)
+                error('%s: unit has to be in px under Octave for a png plot', ...
+                    upper(mfilename));
+            end
+            res = sprintf('-S%i,%i',p.size(1),p.size(2));
+            print(p.file,'-dpng','-r150',res);
+        else
+            print(p.file,'-dpng','-r150');
+        end
         close;
-    elseif strcmp('eps',p.file(end-2:end))
-        print(p.file,'-deps','-S320,240');
+    elseif p.file && strcmp('eps',p.file(end-2:end))
+        print(p.file,'-deps','-r150');
         close;
     end
 

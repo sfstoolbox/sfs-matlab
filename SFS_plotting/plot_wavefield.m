@@ -192,11 +192,11 @@ if ~(p.usegnuplot)
     end
 
     % Save as file
-    if strcmp('png',p.mode)
-        print(outfile,'-dpng','-S640,480');
+    if strcmp('png',p.file(end-2:end))
+        print(p.file,'-dpng','-S640,480');
         close;
-    elseif strcmp('paper',p.mode)
-        print(outfile,'-deps','-S320,240');
+    elseif strcmp('eps',p.file(end-2:end))
+        print(p.file,'-deps','-S320,240');
         close;
     end
 

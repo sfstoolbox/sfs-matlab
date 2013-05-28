@@ -1,16 +1,21 @@
 function draw_loudspeakers(x0,win,conf)
 %DRAW_LOUDSPEAKERS draws loudspeaker symbols or "x" at the given positions
 %
-%   Usage: draw_loudspeakers(x0,win,[conf])
+%   Usage: draw_loudspeakers(x0,[win,[conf]])
 %
 %   Input options:
-%       x0          - positions and directions of the loudspeakers (m)
-%       win         - tapering window (activity of the loudspeaker)
+%       x0          - positions and directions of the loudspeakers / m
+%       win         - tapering window, which is the activity of the loudspeaker
+%                     (default: 1)
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   DRAW_LOUDSPEAKERS(x0,win) draws loudspeaker symbols at
-%   the given secondary source positions. The loudspeaker symbols are pointing
-%   in their given direction.
+%   DRAW_LOUDSPEAKERS(x0,win) draws loudspeaker symbols or crosses at the given
+%   secondary source positions. This can be controlled by the
+%   conf.plot.realloudspeakers setting. The loudspeaker symbols are pointing in
+%   their given direction. In addition to the secondary source positions, the
+%   activity of the single secondary sources can be given by the win vector. For
+%   every secondary source it can contain a value between 0 and 1. 1 is fully
+%   active. If only one value if given, it is used for all secondary sources.
 %
 %   see also: plot_wavefield
 

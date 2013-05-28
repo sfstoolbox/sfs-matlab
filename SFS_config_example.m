@@ -121,7 +121,7 @@ conf.dx0 = 0.15; % m
 conf.X0 = [0 0 0]; % m
 % Array geometry
 % Possible values are: 'linear', 'box', 'circle', 'U', 'custom'
-conf.array = 'linear';
+conf.array = 'circular';
 % Vector containing custom secondary source positions and directions.
 % conf.x0 = [x0; y0; z0; phi];
 conf.x0 = []; % m; m; m; rad
@@ -167,7 +167,7 @@ conf.pinknoisefile = '';
 % The amplitude will be correct at the point xref for 2.5D
 % synthesis.
 % Thi point is also used to scale the wave field to 1 at this point.
-conf.xref = [0 2 0]; % m, m, m
+conf.xref = [0 0 0]; % m, m, m
 %
 % ===== Pre-Equalization =====
 % WFS can be implemented very efficiently using a delay-line with different

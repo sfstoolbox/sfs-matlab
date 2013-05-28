@@ -157,43 +157,21 @@ if ~(p.usegnuplot)
     % Create a new figure
     figure;
 
+    % Plotting
     if(p.usedb)
         % Plot the amplitude of the wave field in dB
         imagesc(x1,x2,20*log10(abs(P)),[-45 0]);
-        % Set the limits of the colormap and add a colorbar
-        if length(p.caxis)==2
-            caxis(p.caxis);
-        end
-        h = colorbar;
-        ylabel(h,'Amplitude (dB)');
-        % Get the font size and name of the figure and adjust the colorbar
-        fsize = get(gca,'FontSize');
-        fname = get(gca,'FontName');
-        set(h,'FontSize',fsize);
-        set(h,'FontName',fname);
-        temp = get(h,'Ylabel');
-        set(temp,'FontSize',fsize);
-        set(temp,'FontName',fname);
     else
         % Plot the wave field
         imagesc(x1,x2,real(P),[-1 1]);
-        % Set the limits of the colormap and add a colorbar
-        if length(p.caxis)==2
-            caxis(p.caxis);
-        end
-        colorbar;
     end
+
+    % Add color bar
+    set_colorbar(conf);
 
     % Set the y direction in normal mode (imagesc uses the reverse mode by
     % default)
     turn_imagesc;
-
-    % Change colormap (default: gray)
-    if p.colormap
-        colormap(p.colormap);
-    else
-        colormap(flipud(colormap('gray')));
-    end
 
     % Set the axis to use the same amount of space for the same length (m)
     axis image;
@@ -213,6 +191,7 @@ if ~(p.usegnuplot)
         end
     end
 
+    % Save as file
     if strcmp('png',p.mode)
         print(outfile,'-dpng','-S640,480');
         close;

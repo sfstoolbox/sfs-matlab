@@ -1,23 +1,15 @@
 function set_colorbar(conf)
 %SET_COLORBAR draws a color bar to the plot
 %
-%   Usage: draw_loudspeakers([conf])
+%   Usage: set_colorbar([conf])
 %
 %   Input options:
-%       x0          - positions and directions of the loudspeakers / m
-%       win         - tapering window, which is the activity of the loudspeaker
-%                     (default: 1)
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   DRAW_LOUDSPEAKERS(x0,win) draws loudspeaker symbols or crosses at the given
-%   secondary source positions. This can be controlled by the
-%   conf.plot.realloudspeakers setting. The loudspeaker symbols are pointing in
-%   their given direction. In addition to the secondary source positions, the
-%   activity of the single secondary sources can be given by the win vector. For
-%   every secondary source it can contain a value between 0 and 1. 1 is fully
-%   active. If only one value if given, it is used for all secondary sources.
+%   SET_COLORBAR() drwas a color bar on the figure and sets the map to the color
+%   specified in conf.plot.colormap.
 %
-%   see also: plot_wavefield
+%   see also: plot_wavefield, set_colormap
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -64,22 +56,32 @@ end
 
 
 %% ===== Configuration ===================================================
-p.caxis = plot.caxis;
-p.usedb = plot.usedb;
+p.caxis = conf.plot.caxis;
+p.usedb = conf.plot.usedb;
+p.colormap = conf.plot.colormap;
 
 
 %% ===== Plotting ========================================================
+% Change color map (default: gray)
+set_colormap(p.colormap);
+
 % Set the limits of the colormap and add a colorbar
 if length(p.caxis)==2
     caxis(p.caxis);
 end
-h = colorbar;
-ylabel(h,'Amplitude (dB)');
-% Get the font size and name of the figure and adjust the colorbar
-fsize = get(gca,'FontSize');
-fname = get(gca,'FontName');
-set(h,'FontSize',fsize);
-set(h,'FontName',fname);
-temp = get(h,'Ylabel');
-set(temp,'FontSize',fsize);
-set(temp,'FontName',fname);
+if p.usedb
+    h = colorbar;
+    ylabel(h,'Amplitude (dB)');
+    % Get the font size and name of the figure and adjust the colorbar
+    fsize = get(gca,'FontSize');
+    fname = get(gca,'FontName');
+    set(h,'FontSize',fsize);
+    set(h,'FontName',fname);
+    temp = get(h,'Ylabel');
+    set(temp,'FontSize',fsize);
+    set(temp,'FontName',fname);
+else
+    colorbar;
+end
+
+

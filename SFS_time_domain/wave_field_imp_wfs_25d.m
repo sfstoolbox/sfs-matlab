@@ -1,7 +1,7 @@
 function [x,y,p,x0,win] = wave_field_imp_wfs_25d(X,Y,xs,src,t,L,conf)
 %WAVE_FIELD_IMP_WFS_25D returns the wave field in time domain of an impulse
 %
-%   Usage: [x,y,p,win] = wave_field_imp_wfs_25d(X,Y,xs,src,t,L,[conf])
+%   Usage: [x,y,p,x0,win] = wave_field_imp_wfs_25d(X,Y,xs,src,t,L,[conf])
 %
 %   Input options:
 %       X           - length of the X axis (m); single value or [xmin,xmax]
@@ -19,6 +19,7 @@ function [x,y,p,x0,win] = wave_field_imp_wfs_25d(X,Y,xs,src,t,L,conf)
 %   Output options:
 %       x,y         - x- and y-axis of the wave field
 %       p           - wave field (length(y) x length(x))
+%       x0          - secondary source positions and directions / m
 %       win         - tapering window
 %
 %   WAVE_FIELD_IMP_WFS_25D(X,Y,xs,src,t,L,conf) simulates a wave field of the

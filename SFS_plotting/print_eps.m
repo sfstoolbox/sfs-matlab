@@ -58,5 +58,5 @@ end
 %% ===== Main ============================================================
 % Font type
 set_font_type('Arial');
-print(outfile,'-deps','-r150');
+print(outfile,'-depsc2','-r150');
 close;

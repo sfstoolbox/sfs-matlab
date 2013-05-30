@@ -118,14 +118,14 @@ if ~dimensions(1)
     % with the extra function, which can handle if the output should be
     % LaTeX or something else
     %str_xlabel = print_label('y','m',conf);
-    str_xlabel = 'y / m';
-    str_ylabel = 'z / m';
+    p.xlabel = 'y / m';
+    p.ylabel = 'z / m';
 elseif ~dimensions(2)
-    str_xlabel = 'x / m';
-    str_ylabel = 'z / m';
+    p.xlabel = 'x / m';
+    p.ylabel = 'z / m';
 elseif ~dimensions(3)
-    str_xlabel = 'x / m';
-    str_ylabel = 'y / m';
+    p.xlabel = 'x / m';
+    p.ylabel = 'y / m';
 else
     % FIXME: in this case every three axis should be plotted and we should
     % switch to use splot or some other alternativ to plot it in 3D.
@@ -149,6 +149,27 @@ if(p.usedb)
     end
 end
 
+% Check if we should plot loudspeakers symbols and fix the size of ls_activity
+if p.loudspeakers && dx0<=0.01
+    warning(['%s: the given loudspeaker distance is to small. ',...
+            'Disabling plotting of the loudspeakers'],upper(mfilename));
+    p.loudspeakers = 0;
+else
+    % fixing the length of ls_activity
+    if length(ls_activity)==1
+        ls_activity = repmat(ls_activity,size(x0));
+    end
+end
+
+% set the color bar axis to default values if not given otherwise
+if p.caxis else
+    if p.usedb
+        p.caxis = [-45,0];
+    else
+        p.caxis = [-1,1];
+    end
+end
+
 
 %% ===== Plotting ========================================================
 
@@ -158,16 +179,15 @@ if ~(p.usegnuplot)
     % Create a new figure
     figure;
     % set size
-    %figsize(12.75,9.56,'cm')
     figsize(p.size(1),p.size(2),p.size_unit);
 
     % Plotting
     if(p.usedb)
         % Plot the amplitude of the wave field in dB
-        imagesc(x1,x2,20*log10(abs(P)),[-45 0]);
+        imagesc(x1,x2,20*log10(abs(P)),p.caxis);
     else
         % Plot the wave field
-        imagesc(x1,x2,real(P),[-1 1]);
+        imagesc(x1,x2,real(P),p.caxis);
     end
 
     % Add color bar
@@ -180,19 +200,14 @@ if ~(p.usegnuplot)
     % Set the axis to use the same amount of space for the same length (m)
     axis image;
     % Labels etc. for the plot
-    xlabel(str_xlabel);
-    ylabel(str_ylabel);
+    xlabel(p.xlabel);
+    ylabel(p.ylabel);
 
     % Add loudspeaker to the plot
-    if(p.loudspeakers)
-        if dx0<=0.01
-            warning(['%s: the given loudspeaker distance is to small. ',...
-                     'Disabling plotting of the loudspeakers'],upper(mfilename));
-        elseif dimensions(1)&&dimensions(2)
-            hold on;
-            draw_loudspeakers(x0,ls_activity,conf);
-            hold off;
-        end
+    if p.loudspeakers && dimensions(1) && dimensions(2)
+        hold on;
+        draw_loudspeakers(x0,ls_activity,conf);
+        hold off;
     end
 
     % Save as file
@@ -207,191 +222,90 @@ else
 
 %% ===== Plot the wave field using Gnuplot ===============================
 
+    % ----- Store all the files needed for plotting ----------------------
     % tmp dir for storing temporary files
     if ~exist(tmpdir,'dir')
         mkdir(tmpdir);
     end
-
     % Create output file name
     if p.usefile
-        datafile = sprintf('%s.dat',p.file);
-        lsfile = sprintf('%s_ls.txt',p.file);
+        p.datafile = sprintf('%s.dat',p.file(end-2:end));
+        p.lsfile = sprintf('%s_ls.txt',p.file(end-2:end));
+        p.gnuplotfile = sprintf('%s.gnu',p.file(end-2:end));
     else
         % Generate a random number string for the tmp files
         rn = sprintf('%04.0f',10000*rand);
-        datafile = sprintf('%s/wavefield%s.dat',tmpdir,rn);
-        lsfile = sprintf('%s/loudspeakers%s.txt',tmpdir,rn);
+        p.datafile = sprintf('%s/wavefield%s.dat',tmpdir,rn);
+        p.lsfile = sprintf('%s/loudspeakers%s.txt',tmpdir,rn);
+        p.gnuplotfile = sprintf('%s/gnuplot%s.gnu',tmpdir,rn);
     end
-
-    % Check if we should plot the loudspeakers.
+    % Storing loudspeaker positions and activity
     if(p.loudspeakers)
-        % Loudspeaker positions and directions
-        if  dx0<= 0.01
-            warning(['%s: the given loudspeaker distance is to small. ',...
-                    'Disabling plotting of the loudspeakers'],upper(mfilename));
-            p.loudspeakers = 0;
-        else
-            % fixing the length of ls_activity
-            if length(ls_activity)==1
-                ls_activity = repmat(ls_activity,size(x0));
-            end
-            % Storing loudspeaker positions and activity
-            [phi,~] = cart2pol(x0(:,4),x0(:,5));
-            [x0,y0,phi,ls_activity] = column_vector(x0(:,1),x0(:,2),phi,ls_activity);
-            gp_save(lsfile,x0,[y0 phi ls_activity]);
-        end
+        [phi,~] = cart2pol(x0(:,4),x0(:,5));
+        [x0,y0,phi,ls_activity] = column_vector(x0(:,1),x0(:,2),phi,ls_activity);
+        gp_save(p.lsfile,x0,[y0 phi ls_activity]);
     end
 
     % Check if we should handle the wave field in dB
     if p.usedb
         % Save the data for plotting with Gnuplot
-        gp_save_matrix(datafile,x1,x2,db(abs(P)));
-        if p.caxis else
-            p.caxis = [-45,0];
-        end
-        cbtics = 5;
-        pdim = 'p';
-        punit = 'dB';
+        gp_save_matrix(p.datafile,x1,x2,db(abs(P)));
+        p.cbtics = 5;
+        p.dim = 'p';
+        p.unit = 'dB';
     else
         % Save the data for plotting with Gnuplot
-        gp_save_matrix(datafile,x1,x2,real(P));
-        if p.caxis else
-            p.caxis = [-1,1];
-        end
-        cbtics = 1;
-        pdim = 'P';
-        punit = '';
+        gp_save_matrix(p.datafile,x1,x2,real(P));
+        p.cbtics = 1;
+        p.dim = 'P';
+        p.unit = '';
     end
 
-    %% === set common Gnuplot commands
-    cmd = sprintf([...
-        '#!/usr/bin/gnuplot\n', ...
-        '# generated by plot_wavefield.m\n', ...
-        'unset key\n', ...
-        'set size ratio -1\n\n', ...
-        '# border\n', ...
-        'set style line 101 lc rgb ''#808080'' lt 1 lw 1\n', ...
-        'set border front ls 101\n\n', ...
-        'set colorbox\n', ...
-        'set palette gray negative\n', ...
-        'set xrange [%f:%f]\n', ...
-        'set yrange [%f:%f]\n', ...
-        'set cbrange [%f:%f]\n', ...
-        'set tics scale 0.75\n', ...
-        'set cbtics scale 0\n', ...
-        'set xtics 1\n', ...
-        'set ytics 1\n', ...
-        'set cbtics %f\n', ...
-        'set xlabel ''%s''\n', ...
-        'set ylabel ''%s''\n', ...
-        'set label ''%s'' at screen 0.84,0.14\n'], ...
-        x1(1),x1(end), ...
-        x2(1),x2(end), ...
-        p.caxis(1),p.caxis(2), ...
-        cbtics, ...
-        str_xlabel, ...
-        str_ylabel, ...
-        print_label(pdim,punit,conf));
-
-
-    if strcmp('paper',p.mode)
-        %% === Paper ===
-        % Therefore we use the epslatex terminal of Gnuplot, see:
-        % http://www.gnuplotting.org/introduction/output-terminals/#epslatex
-        cmd = sprintf([...
-            '%s\n', ...
-            'set t epslatex size %fcm,%fcm color colortext\n', ...
-            'set output ''%s.tex'';\n', ...
-            'set style line 1 lc rgb ''#000000'' pt 2 ps 2 lw 2\n', ...
-            'set format ''$%%g$''\n\n', ...
-            '%s\n', ...
-            '%s\n'], ...
-            cmd, ...
-            p.size(1),p.size(2), ...
-            p.file, ...
-            p.cmd);
-
-    elseif strcmp('talk',p.mode)
-        %% === Talk ===
-        % Therefore we use the epslatex terminal of Gnuplot, see:
-        % http://www.gnuplotting.org/introduction/output-terminals/#epslatex
-        cmd = sprintf([...
-            '%s\n', ...
-            'set t epslatex size %fcm,%fcm color colortext\n', ...
-            'set output ''%s.tex''\n', ...
-            'set style line 1 lc rgb ''#000000'' pt 2 ps 2 lw 3\n', ...
-            'set format ''$%%g$''\n\n', ...
-            '%s\n', ...
-            '%s\n'], ...
-            cmd, ...
-            p.size(1),p.size(2), ...
-            p.file, ...
-            p.cmd);
-
-    elseif strcmp('monitor',p.mode) || strcmp('screen',p.mode)
-        % === Monitor ===
-        % Therefore we use the wxt Gnuplot terminal
-        cmd = sprintf([...
-            '%s\n', ...
-            'set t wxt size 700,524 enhanced font ''Verdana,14'' persist\n', ...
-            'set style line 1 lc rgb ''#000000'' pt 2 ps 2 lw 2\n\n', ...
-            '%s\n'], ...
-            cmd, ...
-            p.cmd);
-
-    elseif strcmp('png',p.mode)
-        % === png ====
-        % Therefore we use the pngcairo Gnuplot terminal, see:
-        % http://www.gnuplotting.org/introduction/output-terminals/#pngsvg
-        cmd = sprintf([...
-            '%s\n', ...
-            'set t pngcairo size %fcm,%fcm enhanced font ''Verdana,12'';\n', ...
-            'set output ''%s.png'';\n', ...
-            'set style line 1 lc rgb ''#000000'' pt 2 ps 2 lw 2;\n\n', ...
-            '%s\n'], ...
-            cmd, ...
-            p.size(1),p.size(2), ...
-            p.file, ...
-            p.cmd);
+    % stor the x- and y-range
+    p.xmin = x1(1);
+    p.xmax = x1(end);
+    p.ymin = x2(1);
+    p.ymax = x2(end);
+    % plot the files
+    if ~isempty(p.file) && strcmp('png',p.file(end-2:end))
+        % png file
+        fprintf(1,'Plotted to file %s\n',p.file);
+        cmd = gp_print_png(p);
+    elseif ~isempty(p.file) && strcmp('eps',p.file(end-2:end))
+        % eps file
+        fprintf(1,'Plotted to file %s\n',p.file);
+        cmd = gp_print_eps(p);
+    elseif ~isempty(p.file) && strcmp('tex',p.file(end-2:end))
+        % epslatex file
+        fprintf(1,'Plotted to file %s\n',p.file);
+        cmd = gp_print_epslatex(p);
     else
-        error('%s: %s is not a valid plotting mode!',upper(mfilename),p.mode);
+        % on ths screen
+        cmd = gp_print_screen(p);
     end
 
-    % Adding loudspeaker drawing and plotting of the wave field
-    if p.loudspeakers && p.realloudspeakers
-        % Plotting real loudspeaker symbols
-        cmd = sprintf(['%s', ...
-            'call ''gp_draw_loudspeakers.gnu'' ''%s'' ''%f''\n', ...
-            'plot ''%s'' binary matrix with image'], ...
-            cmd,lsfile,p.lssize,datafile);
-    elseif p.loudspeakers
-        % Plotting only points at the loudspeaker positions
-        cmd = sprintf(['%s', ...
-            'plot ''%s'' binary matrix with image,\n', ...
-            '     ''%s'' u 1:2 w points ls 1'], ...
-            cmd,datafile,lsfile);
-    else
-        % plotting no loudspeakers at all
-        cmd = sprintf(['%s', ...
-            'plot ''%s'' binary matrix with image'], ...
-            cmd,datafile);
-    end
 
     if p.usefile
-        gnufile = sprintf('%s.gnu',p.file);
-        fid = fopen(gnufile,'w');
+        fid = fopen(p.gnuplotfile,'w');
         fprintf(fid,'%s',cmd);
         fclose(fid);
+        run_cmd = sprintf('gnuplot %s\n',p.gnuplotfile);
     else
-        cmd = sprintf('gnuplot<<EOC\n%s\nEOC\n',cmd);
-        % Start Gnuplot for plotting the data
-        system(cmd);
+        run_cmd = sprintf('gnuplot<<EOC\n%s\nEOC\n',cmd);
+    end
+    % Start Gnuplot for plotting the data
+    system(run_cmd);
+
+    if ~p.usefile
         % Remove tmp files
-        if exist(datafile,'file')
-            delete(datafile);
+        if exist(p.datafile,'file')
+            delete(p.datafile);
         end
-        if exist(lsfile,'file')
-            delete(lsfile);
+        if exist(p.lsfile,'file')
+            delete(p.lsfile);
+        end
+        if exist(p.gnuplotfile,'file')
+            delete(p.gnuplotfile);
         end
     end
 

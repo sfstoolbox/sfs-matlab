@@ -199,8 +199,7 @@ if ~(p.usegnuplot)
     if ~isempty(p.file) && strcmp('png',p.file(end-2:end))
         print_png(p.file,conf);
     elseif ~isempty(p.file) && strcmp('eps',p.file(end-2:end))
-        print(p.file,'-deps','-r150');
-        close;
+        print_eps(p.file,conf);
     end
 
 else

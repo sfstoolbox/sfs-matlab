@@ -1,16 +1,15 @@
 function print_png(outfile,conf);
-%FIGSIZE changes the size of a figure
+%PRINT_PNG stores a figure as png file
 %
-%   Usage: figsize(x,y,unit)
+%   Usage: print_png(outfile,[conf])
 %
 %   Input options:
-%       x,y         - x,y size of the figure
-%       unit        - unit in which the size is given, can be one of the
-%                     following: 'cm', 'px'
+%       outfile     - file name to store the figure
+%       conf        - optional configuration struct (see SFS_config)
 %
-%   FIGSIZE(x,y,unit) sets the size of the last figure to x,y in the given unit.
+%   PRINT_EPS(outfile) plots the last figure as an eps file to outfile.
 %
-%   see also: plot_wavefield
+%   see also: plot_wavefield, print_png
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

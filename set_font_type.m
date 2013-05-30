@@ -53,14 +53,11 @@ isargchar(font)
 %% ===== Apply settings ==================================================
 % Get handle for active figure
 h=gca;
-% Set the font type
+% set the font type for the axis tics
 set(h,'FontName',font);
-temp=get(h,'Xlabel');
-xlabel(get(temp,'String'));
-set(temp,'FontName',font);
-temp=get(h,'Ylabel');
-ylabel(get(temp,'String'));
-set(temp,'FontName',font);
-temp=get(h,'Title');
-title(get(temp,'String'));
-set(temp,'FontName',font);
+% set the font type for all text strings
+set(findall(h,'type','text'),'FontName',font);
+% FIXME: the following produces an segmentation fault under Octave
+% set the font type for colorbar tics
+%h=colorbar;
+%set(h,'FontName',font);

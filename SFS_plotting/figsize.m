@@ -69,12 +69,10 @@ elseif strcmp('inches',unit)
     y = y * 2.54;
 end
 
-set(gcf,'Position',[20,45,44*x,44*y]);
-x=x+2;
-y=y+2;
-%set(gca,'FontName','Times');
-%set(gca,'FontSize',8);
+% Adjust the font size to match the figure size
+%set_font_size(12);
+
+% Set the figure dimensions
 set(gcf,'PaperUnits','centimeters');
-tmp=get(gcf,'Papersize');
-set(gcf,'PaperPosition',[(tmp(1)-x)/2,(tmp(2)-y)/2,x,y]);
-set(gcf,'Color',[1,1,1]);
+set(gcf,'PaperSize',[y,x]);
+set(gcf,'PaperPosition',[0,0,x,y]);

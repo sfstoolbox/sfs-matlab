@@ -56,23 +56,8 @@ else
 end
 
 
-%% ===== Configuration ===================================================
-p.resolution = conf.plot.resolution;
-p.size = conf.plot.size;
-p.size_unit = conf.plot.size_unit;
-
-
 %% ===== Main ============================================================
-dpi = sprintf('-r%i',p.resolution);
-if isoctave
-    if ~strcmp('px',p.size_unit)
-        error('%s: unit has to be in px under Octave for a png plot', ...
-            upper(mfilename));
-    end
-    res = sprintf('-S%i,%i',p.size(1),p.size(2));
-    print(outfile,'-dpng',dpi,res);
-else
-    print(outfile,'-dpng',dpi);
-end
+% Font type
+set_font_type('Arial');
+print(outfile,'-dpng','-r150');
 close;
-

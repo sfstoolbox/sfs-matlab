@@ -1,21 +1,22 @@
-function label = print_label(dim,unit,conf)
-%PRINT_LABEL retruns a suitable axis label
+function label = gp_get_label(dim,unit,terminal)
+%GP_GET_LABEL returns a suitable axis label for gnuplot
 %
-%   Usage: label = print_label(dim,[unit,[conf]])
+%   Usage: label = gp_get_label(dim,[unit,[terminal]])
 %
 %   Input parameters:
-%       dim     - name of label dimension
-%       unit    - name of label unit, default: no unit
-%       conf    - optional configuration struct (see SFS_config)
+%       dim         - name of label dimension
+%       unit        - name of label unit (default: '')
+%       terminal    - name of the terminal (default: 'wxt')
+%                     available terminals are: 'wxt','png','eps','epslatex'
 %
 %   Ouput parameters:
 %       label   - label to put on an axis of a plot
 %
-%   PRINT_LABEL(DIM,UNIT) generates a label with the given axis dimension and
-%   unit. The formatting is depending on your plotting style, adding $$ for
-%   LaTeX labels.
+%   GP_GET_LABEL(dim,unit,terminal) generates a label with the given axis
+%   dimension and unit. The formatting is depending on the given terminal, 
+%   adding $$ for LaTeX labels.
 %
-%   see also:
+%   see also: gp_print_screen, gp_print_png, gp_print_eps, gp_print_epslatex
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -49,34 +50,22 @@ function label = print_label(dim,unit,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% FIXME: is this function needed anymore?
-
 
 %% ===== Checking of input parameter =====================================
 nargmin = 1;
 nargmax = 3;
 narginchk(nargmin,nargmax);
 if nargin==nargmax-1
-    if isstruct(unit)
-        conf = unit;
-        unit = '';
-    else
-        conf = SFS_config;
-    end
+    terminal = 'wxt';
 elseif nargin==nargmax-2
     unit = '';
-    conf = SFS_config;
+    terminal = 'wxt';
 end
-isargchar(dim,unit);
-isargstruct(conf);
-
-
-%% ===== Configuration ===================================================
-p.mode = conf.plot.mode;
+isargchar(dim,unit,terminal);
 
 
 %% ===== Main ============================================================
-if strcmp(p.mode,'paper') | strcmp(p.mode,'talk')
+if strcmp('epsterminal',terminal)
     if length(unit)>0
         label = sprintf('$%s /$\;%s',dim,unit);
     else

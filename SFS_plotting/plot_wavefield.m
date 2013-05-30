@@ -196,9 +196,9 @@ if ~(p.usegnuplot)
     end
 
     % Save as file
-    if p.file && strcmp('png',p.file(end-2:end))
+    if ~isempty(p.file) && strcmp('png',p.file(end-2:end))
         print_png(p.file,conf);
-    elseif p.file && strcmp('eps',p.file(end-2:end))
+    elseif ~isempty(p.file) && strcmp('eps',p.file(end-2:end))
         print(p.file,'-deps','-r150');
         close;
     end

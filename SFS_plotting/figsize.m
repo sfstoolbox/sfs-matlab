@@ -60,13 +60,12 @@ isargchar(unit)
 
 %% ===== Main ============================================================
 % convert to centimeters
-dpi = 150; % default dpi
 if strcmp('px',unit) || strcmp('pixel',unit)
-    x = x/dpi * 2.54;
-    y = y/dpi * 2.54;
+    x = px2cm(x);
+    y = px2cm(y);
 elseif strcmp('inches',unit)
-    x = x * 2.54;
-    y = y * 2.54;
+    x = in2cm(x);
+    y = in2cm(y);
 end
 
 % Adjust the font size to match the figure size

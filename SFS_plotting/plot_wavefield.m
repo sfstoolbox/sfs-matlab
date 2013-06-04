@@ -76,6 +76,7 @@ elseif nargin==nargmax-2
         x0 = [];
     else
         conf = SFS_config;
+        ls_activity = ones(1,size(x0,1));
     end
 elseif nargin==nargmax-3
     conf = SFS_config;
@@ -157,7 +158,7 @@ if p.loudspeakers && dx0<=0.01
 else
     % fixing the length of ls_activity
     if length(ls_activity)==1
-        ls_activity = repmat(ls_activity,size(x0));
+        ls_activity = repmat(ls_activity,[1 size(x0,1)]);
     end
 end
 

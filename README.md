@@ -40,8 +40,10 @@ you will need the following additional packages from
 
 Now you set up the Toolbox and can made on of the following things with it:
 
-Secondary Sources
------------------
+Usage
+-----
+
+### Secondary Sources
 
 The Toolbox comes with a function which can generate different common shapes of loudspeaker arrays for you.
 At the moment these include linear, circular and box shaped arrays.
@@ -54,30 +56,108 @@ conf = SFS_config;
 L = 3;
 ```
 
-### linear array
+#### linear array
 
 ```Matlab
+conf.array = 'linear';
+x0 = secondary_source_positions(L,conf);
+figure;
+figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
+draw_loudspeakers(x0);
+axis([-2 2 -2 1]);
+print_png('img/secondary_sources_linear.png');
 ```
 
 ![Image](doc/img/secondary_sources_linear.png)
 
-Simulate monochromatic sound fields
------------------------------------
+#### circular array
+
+```Matlab
+conf.array = 'circle'; % or 'circular'
+x0 = secondary_source_positions(L,conf);
+figure;
+figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
+draw_loudspeakers(x0);
+axis([-2 2 -2 2]);
+print_png('img/secondary_sources_circle.png');
+```
+
+![Image](doc/img/secondary_sources_circle.png)
+
+#### box shaped array
+
+```Matlab
+conf.array = 'box';
+x0 = secondary_source_positions(L,conf);
+figure;
+figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
+draw_loudspeakers(x0);
+axis([-2 2 -2 2]);
+print_png('img/secondary_sources_box.png');
+```
+
+![Image](doc/img/secondary_sources_box.png)
+
+#### arbitrary shaped arrays
+
+You can also create arbitrary shaped arrays by settings the values of the single
+loudspeaker directly in the <code>conf.x0</code> matrix, which has to be empty
+if you want to use one of the above predefined shapes. The rows of the matrix
+contain the single loudspeakers and the six columns are [x y z nx ny nz], the
+position and direction of the single loudspeakers.
+
+```Matlab
+% create a stadium like shape by combining two half circles with two linear
+% arrays
+% first getting a full circle with 56 loudspeakers
+conf.dx0 = L*pi/56;
+conf.array = 'circle';
+x0 = secondary_source_positions(L,conf);
+% store the first half cricle and move it up
+x01 = x0(2:28,:);
+x01(:,2) = x01(:,2) + ones(size(x01,1),1)*0.5;
+% store the second half circle and move it down
+x03 = x0(30:56,:);
+x03(:,2) = x03(:,2) - ones(size(x03,1),1)*0.5;
+% create a linear array
+conf.array = 'linear';
+x0 = secondary_source_positions(1+conf.dx0,conf);
+% rotate it and move it left
+R = rotation_matrix(pi/2);
+x02 = [(R*x0(:,1:2)')' x0(:,3) (R*x0(:,4:5)')' x0(:,6)];
+x02(:,1) = x02(:,1) - ones(size(x0,1),1)*1.5;
+% rotate it the other way around and move it right
+R = rotation_matrix(-pi/2);
+x04 = [(R*x0(:,1:2)')' x0(:,3) (R*x0(:,4:5)')' x0(:,6)];
+x04(:,1) = x04(:,1) + ones(size(x0,1),1)*1.5;
+% combine everything
+conf.x0 = [x01; x02; x03; x04];
+% if we gave the conf.x0 to the secondary_source_positions function it will
+% simply return the defined x0 matrix
+x0 = secondary_source_positions(L,conf);
+figure;
+figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
+draw_loudspeakers(x0);
+axis([-2 2 -2.5 2.5]);
+print_png('img/secondary_sources_arbitrary.png');
+
+![Image](doc/img/secondary_sources_arbitrary.png)
+
+
+### Simulate monochromatic sound fields
 
 With the files in <code>SFS_monochromatic</code> you can simulate a
 monochromatic sound field in a specified area for different techniques like WFS
 and NFCHOA.
 
 
-Simulate time snapshots of sound fields
----------------------------------------
+### Simulate time snapshots of sound fields
 
 With the files in <code>SFS_time_domain</code> you can simulate snapshots in
-time of an impulse sendiong out from your WFS or NFCHOA system
+time of an impulse sending out from your WFS or NFCHOA system
 
 
-Make binaural simulations of your systems
------------------------------------------
+### Make binaural simulations of your systems
 
 If you have a set of head-related transfer functions (HRTFs) you can simulate
 the ear signals reaching a listener sitting at a given point in the listening
@@ -91,8 +171,7 @@ The files dealing with the binaural simulations are in the folder
 may also want to have a look in <code>SFS_HRTF_extrapolation</code>.
 
 
-Small helper functions
-----------------------
+### Small helper functions
 
 The Toolbox provides you also with a set of useful small functions that may want
 to use. Here the highlights are angle conversion with <code>rad()</code> and
@@ -103,8 +182,7 @@ create noise signal <code>noise()</code>, rotation matrix
 <code>sphbesselj</code> <code>sphbessely</code>.
 
 
-Plotting with Matlab or Gnuplot
--------------------------------
+### Plotting with Matlab or gnuplot
 
 The Toolbox provides you with a variety of functions for plotting your simulated
 sound fields <code>plot_wavefield()</code> and adding loudspeaker symbols to the

@@ -30,6 +30,40 @@ figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 draw_loudspeakers(x0);
 axis([-2 2 -2 2]);
 print_png('img/secondary_sources_box.png');
+% arbitrary shaped arrays
+% create a stadium like shape by combining two half circles with two linear
+% arrays
+% first getting a full circle with 56 loudspeakers
+conf.dx0 = L*pi/56;
+conf.array = 'circle';
+x0 = secondary_source_positions(L,conf);
+% store the first half cricle and move it up
+x01 = x0(2:28,:);
+x01(:,2) = x01(:,2) + ones(size(x01,1),1)*0.5;
+% store the second half circle and move it down
+x03 = x0(30:56,:);
+x03(:,2) = x03(:,2) - ones(size(x03,1),1)*0.5;
+% create a linear array
+conf.array = 'linear';
+x0 = secondary_source_positions(1+conf.dx0,conf);
+% rotate it and move it left
+R = rotation_matrix(pi/2);
+x02 = [(R*x0(:,1:2)')' x0(:,3) (R*x0(:,4:5)')' x0(:,6)];
+x02(:,1) = x02(:,1) - ones(size(x0,1),1)*1.5;
+% rotate it the other way around and move it right
+R = rotation_matrix(-pi/2);
+x04 = [(R*x0(:,1:2)')' x0(:,3) (R*x0(:,4:5)')' x0(:,6)];
+x04(:,1) = x04(:,1) + ones(size(x0,1),1)*1.5;
+% combine everything
+conf.x0 = [x01; x02; x03; x04];
+% if we gave the conf.x0 to the secondary_source_positions function it will
+% simply return the defined x0 matrix
+x0 = secondary_source_positions(L,conf);
+figure;
+figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
+draw_loudspeakers(x0);
+axis([-2 2 -2.5 2.5]);
+print_png('img/secondary_sources_arbitrary.png');
 
 % --- monochromatic sound fields ---
 % simulating stereo setup

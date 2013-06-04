@@ -315,6 +315,9 @@ conf.plot.file = 'img/wave_field_nfchoa_25d_gnuplot.png';
 wave_field_mono_nfchoa_25d([-2 2],[-2 2],[0 -1],'pw',1000,3,conf);
 ```
 
+![Image](doc/img/wave_field_nfchoa_25d_gnuplot.png)
+
+
 Credits and License
 -------------------
 

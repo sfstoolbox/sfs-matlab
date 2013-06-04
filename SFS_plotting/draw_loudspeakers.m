@@ -59,7 +59,7 @@ narginchk(nargmin,nargmax);
 isargsecondarysource(x0)
 nls = size(x0,1);
 if nargin<nargmax-1
-    win = zeros(nls,1);
+    win = ones(nls,1);
 elseif length(win)==1
     win = win*ones(nls,1);
 end

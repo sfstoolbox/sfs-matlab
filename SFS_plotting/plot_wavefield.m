@@ -155,7 +155,8 @@ if p.loudspeakers && dx0<=0.01
     warning(['%s: the given loudspeaker distance is to small. ',...
             'Disabling plotting of the loudspeakers'],upper(mfilename));
     p.loudspeakers = 0;
-else
+end
+if p.loudspeakers
     % fixing the length of ls_activity
     if length(ls_activity)==1
         ls_activity = repmat(ls_activity,[1 size(x0,1)]);

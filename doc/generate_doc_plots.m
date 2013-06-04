@@ -101,6 +101,18 @@ wave_field_imp_nfchoa_25d([-2 2],[-2 2],[0 2],'ps',200,3,conf);
 print_png('img/wave_field_imp_nfchoa_25d.png');
 
 
+% --- impulse response of the system ---
+conf = SFS_config_example;
+irs = dummy_irs;
+ir = ir_wfs_25d([0 0],pi/2,[0 2.5],'ps',3,irs);
+[a,p,f] = easyfft(ir(:,1));
+figure;
+figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
+semilogx(f,20*log10(a));
+axis([10 20000]);
+print_png('img/impulse_response_wfs_25d.png');
+
+
 % --- gnuplot ---
 conf = SFS_config_example;
 conf.useplot = 1;

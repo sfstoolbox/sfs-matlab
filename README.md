@@ -230,10 +230,57 @@ area for a specified WFS or NFCHOA system.
 You can even download a set of HRTFs, which will just work with the Toolbox at 
 http://dev.qu.tu-berlin.de/projects/measurements/wiki/2010-11-kemar-anechoic
 
+In order to easily use different HRIR sets the toolbox incorporates its own
+[struct based file
+format](http://dev.qu.tu-berlin.de/projects/measurements/wiki/IRs_file_format)
+for HRIRs and BRIRs. The toolbox provides conversion functions for three other
+free available data sets (CIPIC,MIT,Oldenburg). In the future it will
+incoorperate the newly advancing [SOFA HRTF file
+format](http://sourceforge.net/projects/sofacoustics).
+
 The files dealing with the binaural simulations are in the folder
 <code>SFS_binaural_synthesis</code>. Files dealing with HRTFs are in the folder
 <code>SFS_ir</code>. If you want to extrapolate your HRTFs to plane waves you
 may also want to have a look in <code>SFS_HRTF_extrapolation</code>.
+
+For example the following code will load our HRTF data set for a distance of 3m, then
+a single impulse response for an angle of 30° is chosen from the set. If the
+desired angle of 30° is not available, a linear interpolation between the next
+two angles would be applied. Afterwards a noise signal is created and convolved
+with the impulse response by the <code>auralize_ir()</code> function.
+
+```Matlab
+irs = read_irs('QU_KEMAR_anechoic_3m.mat');
+ir = get_ir(irs,rad(30));
+nsig = randn(44100,1);
+sig = auralize_ir(ir,nsig);
+```
+
+To simulate the same source as a virtual point source synthesized by WFS and a
+circular array with a diameter of 3m, you have to do the following.
+
+```Matlab
+irs = read_irs('QU_KEMAR_anechoic_3m.mat');
+% ir = ir_wfs_25d(X,phi,xs,src,L,irs,conf);
+ir = ir_wfs_25d([0 0],pi/2,[0 3],'ps',3,irs);
+nsig = randn(44100,1);
+sig = auralize_ir(ir,nsig);
+```
+
+
+#### Using the SoundScape Renderer with the SFS Toolbox
+
+In addition to binaural synthesis, you may want to apply dynamic binaural
+synthesis, which means you track the position of the head of the listener and
+switches the used impulse responses regarding the head position. The [SoundScape
+Renderer]:(http://spatialaudio.net/ssr/) is able to do this. The SFS Toolbox
+provides functions to generate the needed wav files containing the impulse
+responses used by the SoundScape Renderer.
+
+```Matlab
+brs = brs_wfs_25d(X,phi,xs,src,L,irs,conf);
+wavwrite(brs,fs,16,'brs_set_for_SSR.wav');
+```
 
 
 ### Small helper functions

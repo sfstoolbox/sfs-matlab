@@ -1,5 +1,5 @@
 function set_font_size(fontsize)
-%SET_FONT_TYPE sets the figures font size
+%SET_FONT_SIZE sets the figures font size
 %
 %   Usage: set_font_size(fontsize)
 %

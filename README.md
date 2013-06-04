@@ -140,6 +140,7 @@ figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 draw_loudspeakers(x0);
 axis([-2 2 -2.5 2.5]);
 print_png('img/secondary_sources_arbitrary.png');
+```
 
 ![Image](doc/img/secondary_sources_arbitrary.png)
 
@@ -149,6 +150,50 @@ print_png('img/secondary_sources_arbitrary.png');
 With the files in <code>SFS_monochromatic</code> you can simulate a
 monochromatic sound field in a specified area for different techniques like WFS
 and NFCHOA.
+
+#### Near-field compensated higher order Ambisonics
+
+The following will simulate the field of a virtual plane wave traveling into the
+direction (0 -1), synthesized with 2.5D NFCHOA.
+
+```Matlab
+conf = SFS_config;
+conf.useplot = 1;
+% wave_field_mono_nfchoa_25d(X,Y,xs,src,f,L,conf);
+wave_field_mono_nfchoa_25d([-2 2],[-2 2],[0 -1],'pw',1000,3,conf);
+print_png('img/wave_field_nfchoa_25d.png');
+```
+
+![Image](doc/img/wave_field_nfchoa_25d.png)
+
+#### Wave Field Synthesis
+
+The following will simulate the field of a virtual point source placed at (0
+2.5)m synthesized with 2.5D WFS.
+
+```Matlab
+conf = SFS_config_example;
+conf.useplot = 1;
+% [x,y,P,x0,win] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,conf);
+[x,y,P,~,win] = wave_field_mono_wfs_25d([-2 2],[-2 2],[0 2.5],'ps',1000,3,conf);
+print_png('img/wave_field_wfs_25d.png');
+```
+
+![Image](doc/img/wave_field_wfs_25d.png)
+
+You can see that the Toolbox is plotting only the active loudspeakers for WFS.
+If you want to plot the whole array, you can do this by adding these commands.
+
+```Matlab
+x0 = secondary_source_positions(L,conf);
+[~,idx] = secondary_source_selection(x0,[0 2.5],'ps');
+win2 = zeros(1,size(x0,1));
+win2(idx) = win;
+plot_wavefield(x,y,P,x0,win2,conf);
+print_png('img/wave_field_wfs_25d_with_all_sources.png');
+```
+
+![Image](doc/img/wave_field_wfs_25d_with_all_sources.png)
 
 
 ### Simulate time snapshots of sound fields

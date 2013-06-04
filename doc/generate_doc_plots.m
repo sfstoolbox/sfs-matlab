@@ -101,3 +101,10 @@ wave_field_imp_nfchoa_25d([-2 2],[-2 2],[0 2],'ps',200,3,conf);
 print_png('img/wave_field_imp_nfchoa_25d.png');
 
 
+% --- gnuplot ---
+conf = SFS_config_example;
+conf.useplot = 1;
+conf.plot.usegnuplot = 1;
+conf.plot.file = 'img/wave_field_nfchoa_25d_gnuplot.png';
+wave_field_mono_nfchoa_25d([-2 2],[-2 2],[0 -1],'pw',1000,3,conf);
+

@@ -273,7 +273,7 @@ sig = auralize_ir(ir,nsig);
 In addition to binaural synthesis, you may want to apply dynamic binaural
 synthesis, which means you track the position of the head of the listener and
 switches the used impulse responses regarding the head position. The [SoundScape
-Renderer]:(http://spatialaudio.net/ssr/) is able to do this. The SFS Toolbox
+Renderer](http://spatialaudio.net/ssr/) is able to do this. The SFS Toolbox
 provides functions to generate the needed wav files containing the impulse
 responses used by the SoundScape Renderer.
 
@@ -302,6 +302,18 @@ figure <code>draw_loudspeakers</code>. If you have gnuplot installed, you can
 even use it with the Toolbox by setting <code>conf.plot.usegnuplot =
 true;</code>.
 
+The following code reproduces the monochromatic wave field for NFCHOA from
+above, but this time using gnuplot for plotting. The only difference is, that
+you cannot do the plotting to png afterwards like in Matlab, but have to specify
+the output file before. Note, that the same will work with Matlab.
+
+```Matlab
+conf = SFS_config;
+conf.useplot = 1;
+conf.plot.usegnuplot = 1;
+conf.plot.file = 'img/wave_field_nfchoa_25d_gnuplot.png';
+wave_field_mono_nfchoa_25d([-2 2],[-2 2],[0 -1],'pw',1000,3,conf);
+```
 
 Credits and License
 -------------------

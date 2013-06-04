@@ -151,10 +151,17 @@ With the files in <code>SFS_monochromatic</code> you can simulate a
 monochromatic sound field in a specified area for different techniques like WFS
 and NFCHOA.
 
+For all 2.5D functions the configuration <code>conf.xref</code> is important as
+it defines the point for which the amplitude is corrected in the wave field.
+The default entry is
+```Matlab
+conf.xref = [0 0 0];
+```
+
 #### Near-field compensated higher order Ambisonics
 
-The following will simulate the field of a virtual plane wave traveling into the
-direction (0 -1), synthesized with 2.5D NFCHOA.
+The following will simulate the field of a virtual plane wave with a frequency
+of 1kHz traveling into the direction (0 -1), synthesized with 2.5D NFCHOA.
 
 ```Matlab
 conf = SFS_config;
@@ -168,11 +175,11 @@ print_png('img/wave_field_nfchoa_25d.png');
 
 #### Wave Field Synthesis
 
-The following will simulate the field of a virtual point source placed at (0
-2.5)m synthesized with 2.5D WFS.
+The following will simulate the field of a virtual point source with a frequency
+of 1kHz placed at (0 2.5)m synthesized with 2.5D WFS.
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 conf.useplot = 1;
 % [x,y,P,x0,win] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,conf);
 [x,y,P,~,win] = wave_field_mono_wfs_25d([-2 2],[-2 2],[0 2.5],'ps',1000,3,conf);
@@ -199,7 +206,19 @@ print_png('img/wave_field_wfs_25d_with_all_sources.png');
 ### Simulate time snapshots of sound fields
 
 With the files in <code>SFS_time_domain</code> you can simulate snapshots in
-time of an impulse sending out from your WFS or NFCHOA system
+time of an impulse sending out from your WFS or NFCHOA system.
+
+The following will create a snapshot in time after 200 samples for a broadband 
+virtual point source placed at (0 2)m for 2.5D NFCHOA.
+
+```Matlab
+conf = SFS_config;
+conf.useplot = 1;
+% wave_field_imp_nfchoa_25d(X,Y,xs,src,t,L,conf)
+wave_field_imp_nfchoa_25d([-2 2],[-2 2],[0 2],'ps',200,3,conf);
+print_png('img/wave_field_imp_nfchoa_25d.png');
+
+![Image](doc/img/wave_field_imp_nfchoa_25d.png)
 
 
 ### Make binaural simulations of your systems

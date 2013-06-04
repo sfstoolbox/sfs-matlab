@@ -67,8 +67,8 @@ print_png('img/secondary_sources_arbitrary.png');
 
 % --- monochromatic sound fields ---
 % simulating stereo setup
-% [x,y,P] = wave_field_mono_point_source(X,Y,xs,f);
 conf = SFS_config_example;
+% [x,y,P] = wave_field_mono_point_source(X,Y,xs,f);
 [x,y,P1] = wave_field_mono_point_source([-2 2],[-1 3],[-1 2],1000);
 [x,y,P2] = wave_field_mono_point_source([-2 2],[-1 3],[1 2],1000);
 plot_wavefield(x,y,real(P1+P2),[-1 2 0 0 -1 0;1 2 0 0 -1 0],conf);
@@ -92,3 +92,12 @@ conf.useplot = 1;
 % wave_field_mono_nfchoa_25d(X,Y,xs,src,f,L,conf);
 wave_field_mono_nfchoa_25d([-2 2],[-2 2],[0 -1],'pw',1000,3,conf);
 print_png('img/wave_field_nfchoa_25d.png');
+
+% --- spatio-temporal snapshots of the sound field ---
+conf = SFS_config_example;
+conf.useplot = 1;
+% wave_field_imp_nfchoa_25d(X,Y,xs,src,t,L,conf)
+wave_field_imp_nfchoa_25d([-2 2],[-2 2],[0 2],'ps',200,3,conf);
+print_png('img/wave_field_imp_nfchoa_25d.png');
+
+

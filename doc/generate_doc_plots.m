@@ -106,13 +106,18 @@ conf = SFS_config_example;
 conf.usehcomp = 0;
 conf.usehpre = 0;
 irs = dummy_irs;
-ir = ir_wfs_25d([0 0],pi/2,[0 2.5],'ps',3,irs,conf);
-[a,p,f] = easyfft(ir(:,1)./max(abs(ir(:,1))));
+ir1 = ir_wfs_25d([0 0],pi/2,[0 2.5],'ps',3,irs,conf);
+conf.usehpre = 1;
+conf.hprefhigh = aliasing_frequency(conf.dx0);
+ir2 = ir_wfs_25d([0 0],pi/2,[0 2.5],'ps',3,irs,conf);
+[a1,p,f] = easyfft(ir1(:,1)./max(abs(ir1(:,1))));
+[a2,p,f] = easyfft(ir2(:,1)./max(abs(ir2(:,1))));
 figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-semilogx(f,20*log10(a));
+semilogx(f,20*log10(a1),'-b',f,20*log10(a2),'-r');
 axis([10 20000 -100 -60]);
 set(gca,'XTick',[10 100 250 1000 5000 20000]);
+legend('w pre-filter','w/o pre-filter');
 print_png('img/impulse_response_wfs_25d.png');
 
 

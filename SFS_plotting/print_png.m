@@ -1,11 +1,10 @@
-function print_png(outfile,conf);
+function print_png(outfile);
 %PRINT_PNG stores a figure as png file
 %
-%   Usage: print_png(outfile,[conf])
+%   Usage: print_png(outfile)
 %
 %   Input options:
 %       outfile     - file name to store the figure
-%       conf        - optional configuration struct (see SFS_config)
 %
 %   PRINT_EPS(outfile) plots the last figure as an eps file to outfile.
 %
@@ -46,13 +45,8 @@ function print_png(outfile,conf);
 
 %% ===== Checking of input parameter =====================================
 nargmin = 1;
-nargmax = 2;
+nargmax = 1;
 narginchk(nargmin,nargmax);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
 
 
 %% ===== Main ============================================================

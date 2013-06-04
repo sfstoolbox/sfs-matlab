@@ -40,6 +40,26 @@ you will need the following additional packages from
 
 Now you set up the Toolbox and can made on of the following things with it:
 
+Secondary Sources
+-----------------
+
+The Toolbox comes with a function which can generate different common shapes of loudspeaker arrays for you.
+At the moment these include linear, circular and box shaped arrays.
+
+Before showing the different geometries, we start with some common settings. First we get a configuration struct
+and set the array size/diameter to 3m.
+
+```Matlab
+conf = SFS_config;
+L = 3;
+```
+
+### linear array
+
+```Matlab
+```
+
+![Image](doc/img/secondary_sources_linear.png)
 
 Simulate monochromatic sound fields
 -----------------------------------

@@ -217,6 +217,7 @@ conf.useplot = 1;
 % wave_field_imp_nfchoa_25d(X,Y,xs,src,t,L,conf)
 wave_field_imp_nfchoa_25d([-2 2],[-2 2],[0 2],'ps',200,3,conf);
 print_png('img/wave_field_imp_nfchoa_25d.png');
+```
 
 ![Image](doc/img/wave_field_imp_nfchoa_25d.png)
 

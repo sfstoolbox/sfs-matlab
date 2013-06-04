@@ -117,7 +117,7 @@ figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 semilogx(f,20*log10(a1),'-b',f,20*log10(a2),'-r');
 axis([10 20000 -100 -60]);
 set(gca,'XTick',[10 100 250 1000 5000 20000]);
-legend('w pre-filter','w/o pre-filter');
+legend('w/o pre-filter','w pre-filter');
 print_png('img/impulse_response_wfs_25d.png');
 
 

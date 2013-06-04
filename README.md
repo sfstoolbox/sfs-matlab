@@ -267,6 +267,35 @@ nsig = randn(44100,1);
 sig = auralize_ir(ir,nsig);
 ```
 
+Binaural simulations are also a nice way to investigate the frequency response
+of your reproduction system. The following code will investigate the influence
+of the pre-equalization filter in WFS on the frequency response.
+For the redline the pre-filter is used and its upper frequency is set to the
+expected aliasing frequency of the system (above these frequency the spectrum
+becomes very noise as you can see in the figure).
+
+```Matlab
+conf = SFS_config;
+conf.usehcomp = 0; % disable headphone compensation
+irs = dummy_irs; % get dirac impulses as HRTFs
+conf.usehpre = 0;
+ir1 = ir_wfs_25d([0 0],pi/2,[0 2.5],'ps',3,irs,conf);
+conf.usehpre = 1;
+conf.hprefhigh = aliasing_frequency(conf.dx0);
+ir2 = ir_wfs_25d([0 0],pi/2,[0 2.5],'ps',3,irs,conf);
+[a1,p,f] = easyfft(ir1(:,1)./max(abs(ir1(:,1))));
+[a2,p,f] = easyfft(ir2(:,1)./max(abs(ir2(:,1))));
+figure;
+figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
+semilogx(f,20*log10(a1),'-b',f,20*log10(a2),'-r');
+axis([10 20000 -100 -60]);
+set(gca,'XTick',[10 100 250 1000 5000 20000]);
+legend('w pre-filter','w/o pre-filter');
+print_png('img/impulse_response_wfs_25d.png');
+```
+
+![Image](doc/img/impulse_response_wfs_25d.png)
+
 
 #### Using the SoundScape Renderer with the SFS Toolbox
 

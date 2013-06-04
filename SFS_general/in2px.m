@@ -11,7 +11,7 @@ function y = in2px(x)
 %
 %   IN2PX(x) returns the given value x in pixel.
 %
-%   see also: px2in, px2cm, cm2in, cm2px, in2cm 
+%   see also: in2cm, cm2px, cm2in, px2in, px2cm 
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

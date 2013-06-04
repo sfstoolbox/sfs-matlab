@@ -11,7 +11,7 @@ function y = px2in(x)
 %
 %   PX2IN(x) returns the given value x in inches.
 %
-%   see also: px2cm, in2cm, in2px
+%   see also: px2cm, in2cm, in2px, cm2px, cm2in
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

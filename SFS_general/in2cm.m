@@ -11,7 +11,7 @@ function y = in2cm(x)
 %
 %   IN2CM(x) returns the given value x in centimeters.
 %
-%   see also: px2cm
+%   see also: in2px, cm2px, cm2in, px2in, px2cm
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

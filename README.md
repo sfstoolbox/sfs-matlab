@@ -358,7 +358,7 @@ For questions, bug reports and feature requests:
 Contact: sfstoolbox@googlemail.com  
 Website: http://github.com/sfstoolbox/sfs
 
-If you use the Toolbox for your publications please cite our AES Convention Paper:  
+If you use the Toolbox for your publications please cite our AES Convention e-Brief:  
 H. Wierstorf, S. Spors - Sound Field Synthesis Toolbox.  
 In the Proceedings of *132nd Convention of the
 Audio Engineering Society*, 2012  

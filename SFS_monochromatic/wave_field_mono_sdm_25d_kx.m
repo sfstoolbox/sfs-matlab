@@ -1,7 +1,7 @@
-function [x,y,P] = wave_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,conf)
+function [P,x,y,z] = wave_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,conf)
 %WAVE_FIELD_SDM_WFS_25D_KX simulates the wave field of a given source for 25D SDM
 %IN THE SPATIAL FREQUENCY DOMAIN
-%   Usage: [x,y,P] = wave_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,[conf])
+%   Usage: [P,x,y,z] = wave_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
@@ -18,14 +18,15 @@ function [x,y,P] = wave_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
+%       P           - Simulated wave field
 %       x           - corresponding x axis
 %       y           - corresponding y axis
-%       P           - Simulated wave field
+%       z           - corresponding z axis
 %
 %   WAVE_FIELD_MONO_SDM_25D_KX(X,Y,Z,xs,src,f,L,conf) simulates a wave field of
 %   the given source type (src) using a SDM 2.5 dimensional driving function
 %   in the spectro-temporal freqeuncy domain. 
-%   To plot the result use plot_wavefield(x,y,z,P).
+%   To plot the result use plot_wavefield(P,x,y,z).
 %
 %   NOTE: due to numerical problems with the fft and the bessel functions needed
 %   in SDM (which resulted in an imaginary part which is hundreds of orders
@@ -183,5 +184,5 @@ P = norm_wave_field(P,x,y,z,conf);
 
 %% ===== Plotting ========================================================
 if(useplot)
-    plot_wavefield(x,y,z,P,conf);
+    plot_wavefield(P,x,y,z,conf);
 end

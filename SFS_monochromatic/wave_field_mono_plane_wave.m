@@ -1,7 +1,7 @@
-function [x,y,z,P] = wave_field_mono_plane_wave(X,Y,Z,xs,f,conf)
+function [P,x,y,z] = wave_field_mono_plane_wave(X,Y,Z,xs,f,conf)
 %WAVE_FIELD_MONO_PLANE_WAVE simulates a wave field of a plane wave
 %
-%   Usage: [x,y,P] = wave_field_mono_plane_wave(X,Y,Z,xs,f,[conf])
+%   Usage: [P,x,y,z] = wave_field_mono_plane_wave(X,Y,Z,xs,f,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
@@ -12,13 +12,14 @@ function [x,y,z,P] = wave_field_mono_plane_wave(X,Y,Z,xs,f,conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
+%       P           - Simulated wave field
 %       x           - corresponding x axis
 %       y           - corresponding y axis
-%       P           - Simulated wave field
+%       z           - corresponding z axis
 %
 %   WAVE_FIELD_MONO_PLANE_WAVE(X,Y,Z,xs,f,conf) simulates a wave
 %   field of a plane wave going in the direction xs.
-%   To plot the result use plot_wavefield(x,y,P).
+%   To plot the result use plot_wavefield(P,x,y,z).
 %
 %   References:
 %       Williams1999 - Fourier Acoustics (Academic Press)
@@ -75,4 +76,4 @@ end
 %% ===== Computation ====================================================
 % Disable the plotting of a source, because we have a plane wave
 conf.plot.loudspeakers = 0;
-[x,y,z,P] = wave_field_mono(X,Y,Z,[xs 0 1 0],'pw',1,f,conf);
+[P,x,y,z] = wave_field_mono(X,Y,Z,[xs 0 1 0],'pw',1,f,conf);

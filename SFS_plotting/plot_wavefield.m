@@ -1,11 +1,11 @@
-function plot_wavefield(x,y,z,P,x0,ls_activity,conf)
+function plot_wavefield(P,x,y,z,x0,ls_activity,conf)
 %PLOT_WAVEFIELD plot the given wavefield
 %
-%   Usage: plot_wavefield(x,y,z,P,[x0,[ls_activity]],[conf])
+%   Usage: plot_wavefield(P,x,y,z,[x0,[ls_activity]],[conf])
 %
 %   Input parameters:
-%       x,y,z       - vectors for the x-, y- and z-axis
 %       P           - matrix containing the wavefield in the format P = P(y,x)
+%       x,y,z       - vectors for the x-, y- and z-axis
 %       x0          - matrix containing the secondary source positions to plot.
 %                     Default: plot no secondary sources
 %       ls_activity - activity of the single secondary sources. Note: this option
@@ -14,8 +14,9 @@ function plot_wavefield(x,y,z,P,x0,ls_activity,conf)
 %                     active.
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   PLOT_WAVEFIELD(x,y,z,P,L,ls_activity,conf) plots the wavefield P in dependence
-%   of the x and y axes. Therefore the wavefield is normalized to 1 at its
+%   PLOT_WAVEFIELD(P,x,y,z,L,ls_activity,conf) plots the wavefield P in dependence
+%   of the axes that are not singleton. To calculate what axes these are you
+%   have to provide all three of them. The wavefield is normalized to 1 at its
 %   center position P(end/2,end/2). For a given set x0 of secondary sources the
 %   loudspeakers are added to the plot at their real positions. But only if
 %   distance between them is larger than 10cm. The ls_activity option specifies

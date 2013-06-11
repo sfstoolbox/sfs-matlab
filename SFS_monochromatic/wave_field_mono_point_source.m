@@ -1,7 +1,7 @@
-function [x,y,P] = wave_field_mono_point_source(X,Y,Z,xs,f,conf)
+function [P,x,y,z] = wave_field_mono_point_source(X,Y,Z,xs,f,conf)
 %WAVE_FIELD_MONO_POINT_SOURCE simulates a wave field for a point source
 %
-%   Usage: [x,y,P] = wave_field_mono_point_source(X,Y,Z,xs,f,[conf])
+%   Usage: [P,x,y,z] = wave_field_mono_point_source(X,Y,Z,xs,f,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
@@ -12,13 +12,14 @@ function [x,y,P] = wave_field_mono_point_source(X,Y,Z,xs,f,conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
+%       P           - Simulated wave field
 %       x           - corresponding x axis
 %       y           - corresponding y axis
-%       P           - Simulated wave field
+%       z           - corresponding z axis
 %
 %   WAVE_FIELD_MONO_POINT_SOURCE(X,Y,Z,xs,f,conf) simulates a wave
 %   field of a point source positioned at xs.
-%   To plot the result use plot_wavefield(x,y,P).
+%   To plot the result use plot_wavefield(P,x,y,z).
 %
 %   References:
 %       Williams1999 - Fourier Acoustics (Academic Press)
@@ -73,4 +74,4 @@ end
 
 
 %% ===== Computation ====================================================
-[x,y,z,P] = wave_field_mono(X,Y,Z,[xs 0 1 0],'ps',1,f,conf);
+[P,x,y,z] = wave_field_mono(X,Y,Z,[xs 0 1 0],'ps',1,f,conf);

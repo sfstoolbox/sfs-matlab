@@ -1,7 +1,7 @@
-function [x,y,z,P,x0] = wave_field_mono_sdm_25d(X,Y,Z,xs,src,f,L,conf)
+function [P,x,y,z,x0] = wave_field_mono_sdm_25d(X,Y,Z,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_SDM_25D simulates a wave field for 2.5D NFC-HOA
 %
-%   Usage: [x,y,P] = wave_field_mono_sdm_25d(X,Y,Z,xs,src,f,L,[conf])
+%   Usage: [P,x,y,z,x0] = wave_field_mono_sdm_25d(X,Y,Z,xs,src,f,L,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
@@ -18,16 +18,17 @@ function [x,y,z,P,x0] = wave_field_mono_sdm_25d(X,Y,Z,xs,src,f,L,conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
+%       P           - simulated wave field
 %       x           - corresponding x axis
 %       y           - corresponding y axis
-%       P           - simulated wave field
+%       z           - corresponding z axis
 %       x0          - secondary sources
 %
 %   WAVE_FIELD_MONO_SDM_25D(X,Y,Z,xs,src,f,L,conf) simulates a wave
 %   field of the given source type (src) using a SDM 2.5 dimensional driving
 %   function in the space/time-frequency domain. This means by calculating 
 %   the integral for P with a summation.
-%   To plot the result use plot_wavefield(x,y,z,P).
+%   To plot the result use plot_wavefield(P,x,y,z,x0).
 %
 %   References:
 %       
@@ -98,10 +99,10 @@ D = driving_function_mono_sdm_25d(x0,xs,src,f,conf) .* win;
 % disable plotting to handle the tapering window
 conf.useplot = 0;
 % Wave field
-[x,y,z,P] = wave_field_mono(X,Y,Z,x0,'ps',D,f,conf);
+[P,x,y,z] = wave_field_mono(X,Y,Z,x0,'ps',D,f,conf);
 
 
 % ===== Plotting =========================================================
 if(useplot)
-    plot_wavefield(x,y,z,P,x0,win,conf);
+    plot_wavefield(P,x,y,z,x0,win,conf);
 end

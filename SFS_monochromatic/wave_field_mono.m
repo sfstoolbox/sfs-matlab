@@ -1,8 +1,8 @@
-function [x,y,z,P] = wave_field_mono(X,Y,Z,x0,src,D,f,conf)
+function [P,x,y,z] = wave_field_mono(X,Y,Z,x0,src,D,f,conf)
 %WAVE_FIELD_MONO simulates a monofrequent wave field for the given driving
 %signals and secondary sources
 %
-%   Usage: [x,y,z,P] = wave_field_mono(X,Y,Z,x0,src,D,f,[conf])
+%   Usage: [P,x,y,z] = wave_field_mono(X,Y,Z,x0,src,D,f,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
@@ -20,10 +20,10 @@ function [x,y,z,P] = wave_field_mono(X,Y,Z,x0,src,D,f,conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
+%       P           - Simulated wave field
 %       x           - corresponding x axis
 %       y           - corresponding y axis
 %       z           - corresponding z axis
-%       P           - Simulated wave field
 %
 %   WAVE_FIELD_MONO(X,Y,Z,x0,src,D,f,conf) simulates a wave field
 %   for the given secondary sources, driven by the corresponding driving
@@ -32,7 +32,7 @@ function [x,y,z,P] = wave_field_mono(X,Y,Z,x0,src,D,f,conf)
 %   frequency in the frequency domain, by calculating the integral for P with a
 %   summation.
 %   
-%   To plot the result use plot_wavefield(x,y,P).
+%   To plot the result use plot_wavefield(P,x,y,z).
 %
 %   References:
 %       
@@ -129,5 +129,5 @@ P = norm_wave_field(P,x,y,z,conf);
 
 % ===== Plotting =========================================================
 if(useplot)
-    plot_wavefield(x,y,z,P,x0,conf);
+    plot_wavefield(P,x,y,z,x0,conf);
 end

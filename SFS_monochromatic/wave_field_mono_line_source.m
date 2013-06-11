@@ -1,23 +1,25 @@
-function [x,y,P] = wave_field_mono_line_source(X,Y,xs,f,conf)
+function [P,x,y,z] = wave_field_mono_line_source(X,Y,Z,xs,f,conf)
 %WAVE_FIELD_MONO_LINE_SOURCE simulates a wave field for a line source
 %
-%   Usage: [x,y,P] = wave_field_mono_line_source(X,Y,xs,f,[conf])
+%   Usage: [P,x,y,z] = wave_field_mono_line_source(X,Y,Z,xs,f,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
 %       Y           - [ymin,ymax]
+%       Z           - [zmin,zmax]
 %       xs          - position of line source (m)
 %       f           - monochromatic frequency (Hz)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
+%       P           - Simulated wave field
 %       x           - corresponding x axis
 %       y           - corresponding y axis
-%       P           - Simulated wave field
+%       z           - corresponding z axis
 %
-%   WAVE_FIELD_MONO_LINE_SOURCE(X,Y,xs,f,conf) simulates a wave
+%   WAVE_FIELD_MONO_LINE_SOURCE(X,Y,Z,xs,f,conf) simulates a wave
 %   field of a line source positioned at xs.
-%   To plot the result use plot_wavefield(x,y,P).
+%   To plot the result use plot_wavefield(P,x,y,z).
 %
 %   References:
 %       Williams1999 - Fourier Acoustics (Academic Press)
@@ -58,10 +60,10 @@ function [x,y,P] = wave_field_mono_line_source(X,Y,xs,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
+nargmin = 5;
+nargmax = 6;
 narginchk(nargmin,nargmax);
-isargvector(X,Y);
+isargvector(X,Y,Z);
 isargxs(xs);
 isargpositivescalar(f);
 if nargin<nargmax
@@ -72,4 +74,4 @@ end
 
 
 %% ===== Computation ====================================================
-[x,y,P] = wave_field_mono(X,Y,[xs 0 1 0],'ls',1,f,conf);
+[P,x,y,z] = wave_field_mono(X,Y,Z,[xs 0 -1 0],'ls',1,f,conf);

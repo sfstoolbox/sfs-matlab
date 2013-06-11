@@ -1,7 +1,7 @@
-function [x,y,z,P,x0,win] = wave_field_mono_wfs(X,Y,Z,xs,src,f,L,conf)
+function [P,x,y,z,x0,win] = wave_field_mono_wfs(X,Y,Z,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_WFS simulates a wave field for WFS
 %
-%   Usage: [x,y,z,P,x0,win] = wave_field_mono_wfs(X,Y,Z,xs,src,f,L,[conf])
+%   Usage: [P,x,y,z,x0,win] = wave_field_mono_wfs(X,Y,Z,xs,src,f,L,[conf])
 %
 %   Input parameters:
 %       X           - [xmin,xmax]
@@ -18,17 +18,17 @@ function [x,y,z,P,x0,win] = wave_field_mono_wfs(X,Y,Z,xs,src,f,L,conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
+%       P           - simulated wave field
 %       x           - corresponding x axis
 %       y           - corresponding y axis
 %       z           - corresponding z axis
-%       P           - simulated wave field
 %       x0          - active secondary sources
 %       win         - tapering window of the secondary sources
 %
 %   WAVE_FIELD_MONO_WFS(X,Y,Z,xs,L,f,src,conf) simulates a wave field for the
 %   given source type (src) using WFS driving functions in the temporal domain.
 %   This means by calculating the integral for P with a summation.
-%   To plot the result use plot_wavefield(x,y,z,P).
+%   To plot the result use plot_wavefield(P,x,y,z,x0,win).
 %
 %   References:
 %       Spors2009 - Physical and Perceptual Properties of Focused Sources in
@@ -102,10 +102,10 @@ D = driving_function_mono_wfs(x0,xs,src,f,conf) .* win;
 % disable plotting, in order to integrate the tapering window
 conf.useplot = 0;
 % calculate wave field
-[x,y,z,P] = wave_field_mono(X,Y,Z,x0,'ps',D,f,conf);
+[P,x,y,z] = wave_field_mono(X,Y,Z,x0,'ps',D,f,conf);
 
 
 % ===== Plotting =========================================================
 if(useplot)
-    plot_wavefield(x,y,z,P,x0,win,conf);
+    plot_wavefield(P,x,y,z,x0,win,conf);
 end

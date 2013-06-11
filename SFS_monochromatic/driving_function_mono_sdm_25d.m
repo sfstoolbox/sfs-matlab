@@ -115,5 +115,3 @@ else
     % No such source type for the driving function
     error('%s: src has to be one of "pw", "ps", "fs"!',upper(mfilename));
 end
-% Add phase to be able to simulate different time steps
-D = D .* exp(-1i*phase);

@@ -14,7 +14,7 @@ function G = greens_function_mono(x,y,z,xs,src,f,conf)
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       G       - Green's function evaluated at the points x,y
+%       G       - Green's function evaluated at the points x,y,z
 %
 %   GREENS_FUNCTION_MONO(x,y,z,xs,src,f) calculates the Green's function for the
 %   given source model located at xs for the given points x,y and the frequency
@@ -75,6 +75,7 @@ end
 
 %% ===== Configuration ==================================================
 c = conf.c;
+phase = conf.phase;
 
 
 %% ===== Computation =====================================================
@@ -150,3 +151,6 @@ else
     error('%s: %s is not a valid source model for the Green''s function', ...
         upper(mfilename),src);
 end
+
+% Add phase to be able to simulate different time steps
+G = G .* exp(-1i*phase);

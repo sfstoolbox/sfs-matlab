@@ -122,6 +122,3 @@ elseif strcmp('fs',src)
 else
     error('%s: %s is not a known source type.',upper(mfilename),src);
 end
-
-% Add phase to be able to simulate different time steps
-D = D .* exp(-1i*phase);

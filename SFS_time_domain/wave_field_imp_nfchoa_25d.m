@@ -1,7 +1,7 @@
-function [x,y,z,p,x0] = wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,t,L,conf)
+function [p,x,y,z,x0] = wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,t,L,conf)
 %WAVE_FIELD_IMP_NFCHOA_25D returns the wave field in time domain of an impulse
 %
-%   Usage: [x,y,z,p,x0] = wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,t,L,[conf])
+%   Usage: [p,x,y,z,x0] = wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,t,L,[conf])
 %
 %   Input options:
 %       X           - [xmin,xmax]
@@ -17,8 +17,10 @@ function [x,y,z,p,x0] = wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,t,L,conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output options:
-%       x,y         - x- and y-axis of the wave field
-%       p           - wave field (length(y) x length(x))
+%       p           - simulated wave field
+%       x           - corresponding x axis
+%       y           - corresponding y axis
+%       z           - corresponding z axis
 %       x0          - positions and directions of the secondary sources
 %
 %   WAVE_FIELD_IMP_NFCHOA_25D(X,Y,Z,xs,src,t,L,conf) simulates a wave field of the
@@ -28,7 +30,7 @@ function [x,y,z,p,x0] = wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,t,L,conf)
 %   To plot the result use:
 %   x0 = secondary_source_positions(L,conf);
 %   conf.plot.usedb = 1;
-%   plot_wavefield(x,y,z,p,x0,conf);
+%   plot_wavefield(p,x,y,z,x0,conf);
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -87,4 +89,4 @@ x0 = secondary_source_positions(L,conf);
 d = driving_function_imp_nfchoa_25d(x0,xs,src,L,conf);
 
 % Calculate wave field
-[x,y,z,p] = wave_field_imp_3d(X,Y,Z,x0,d,t,conf);
+[p,x,y,z] = wave_field_imp_3d(X,Y,Z,x0,d,t,conf);

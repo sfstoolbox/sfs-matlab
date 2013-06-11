@@ -1,8 +1,8 @@
-function [x,y,z,p] = wave_field_imp_3d(X,Y,Z,x0,d,t,conf)
+function [p,x,y,z] = wave_field_imp_3d(X,Y,Z,x0,d,t,conf)
 %WAVE_FIELD_IMP_3D returns the wave field in time domain with point sources as
 %secondary sources
 %
-%   Usage: [x,y,z,p] = wave_field_imp_3d(X,Y,Z,x0,d,[conf])
+%   Usage: [p,x,y,z] = wave_field_imp_3d(X,Y,Z,x0,d,[conf])
 %
 %   Input options:
 %       X           - length of the X axis (m); single value or [xmin,xmax]
@@ -14,8 +14,10 @@ function [x,y,z,p] = wave_field_imp_3d(X,Y,Z,x0,d,t,conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output options:
-%       x,y         - x- and y-axis of the wave field
-%       p           - wave field (length(y) x length(x))
+%       p           - simulated wave field
+%       x           - corresponding x axis
+%       y           - corresponding y axis
+%       z           - corresponding z axis
 %
 %   WAVE_FIELD_IMP(X,Y,Z,x0,d,t,conf) computes the wave field synthesized by 
 %   secondary sources driven by individual driving functions to the time t.
@@ -23,7 +25,7 @@ function [x,y,z,p] = wave_field_imp_3d(X,Y,Z,x0,d,t,conf)
 %
 %   To plot the result use:
 %   conf.plot.usedb = 1;
-%   plot_wavefield(x,y,p,conf);
+%   plot_wavefield(p,x,y,z,conf);
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -146,7 +148,7 @@ check_wave_field(p,t);
 % === Plotting ===
 if (useplot)
     conf.plot.usedb = 1;
-    plot_wavefield(x,y,z,p,x0,conf);
+    plot_wavefield(p,x,y,z,x0,conf);
 end
 
 % some debug stuff

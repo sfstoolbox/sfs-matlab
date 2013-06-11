@@ -106,7 +106,7 @@ conf.useplot = 0;
 
 
 %% ===== Plotting ========================================================
-if useplot
+if nargout==0 || useplot
     conf.plot.usedb = 1;
     plot_wavefield(p,x,y,z,x0,win,conf);
 end

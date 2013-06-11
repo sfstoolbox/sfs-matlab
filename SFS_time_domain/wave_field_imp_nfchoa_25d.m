@@ -1,4 +1,4 @@
-function [p,x,y,z,x0] = wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,t,L,conf)
+function varargout = wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,t,L,conf)
 %WAVE_FIELD_IMP_NFCHOA_25D returns the wave field in time domain of an impulse
 %
 %   Usage: [p,x,y,z,x0] = wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,t,L,[conf])
@@ -84,9 +84,9 @@ end
 %% ===== Computation =====================================================
 % Get secondary sources
 x0 = secondary_source_positions(L,conf);
-
 % Calculate driving function
 d = driving_function_imp_nfchoa_25d(x0,xs,src,L,conf);
-
 % Calculate wave field
-[p,x,y,z] = wave_field_imp_3d(X,Y,Z,x0,d,t,conf);
+[varargout{1:min(nargout,4)}] = wave_field_imp_3d(X,Y,Z,x0,d,t,conf);
+% Return secondary sources if desired
+if nargout==5 varargout{5}=x0; end

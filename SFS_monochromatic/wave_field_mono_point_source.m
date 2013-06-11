@@ -1,4 +1,4 @@
-function [P,x,y,z] = wave_field_mono_point_source(X,Y,Z,xs,varargin)
+function varargout = wave_field_mono_point_source(X,Y,Z,xs,varargin)
 %WAVE_FIELD_MONO_POINT_SOURCE simulates a wave field for a point source
 %
 %   Usage: [P,x,y,z] = wave_field_mono_point_source(X,Y,Z,xs,f,[conf])
@@ -67,4 +67,4 @@ isargxs(xs);
 
 
 %% ===== Computation ====================================================
-[P,x,y,z] = wave_field_mono(X,Y,Z,[xs 0 -1 0],'ps',1,varargin{:});
+[varargout{1:nargout}] = wave_field_mono(X,Y,Z,[xs 0 -1 0],'ps',1,varargin{:});

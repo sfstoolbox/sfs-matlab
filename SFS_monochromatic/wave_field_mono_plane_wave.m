@@ -1,4 +1,4 @@
-function [P,x,y,z] = wave_field_mono_plane_wave(X,Y,Z,xs,varargin)
+function varargout = wave_field_mono_plane_wave(X,Y,Z,xs,f,conf)
 %WAVE_FIELD_MONO_PLANE_WAVE simulates a wave field of a plane wave
 %
 %   Usage: [P,x,y,z] = wave_field_mono_plane_wave(X,Y,Z,xs,f,[conf])
@@ -64,9 +64,14 @@ nargmin = 5;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargxs(xs);
+if nargin<nargmax
+    conf = SFS_config;
+else
+    isargstruct(conf);
+end
 
 
 %% ===== Computation ====================================================
 % Disable the plotting of a source, because we have a plane wave
 conf.plot.loudspeakers = 0;
-[P,x,y,z] = wave_field_mono(X,Y,Z,[xs 0 1 0],'pw',1,varargin{:});
+[varargout{1:nargout}] = wave_field_mono(X,Y,Z,[xs 0 1 0],'pw',1,f,conf);

@@ -1,4 +1,4 @@
-function [P,x,y,z] = wave_field_mono_line_source(X,Y,Z,xs,f,conf)
+function varargout = wave_field_mono_line_source(X,Y,Z,xs,varargin)
 %WAVE_FIELD_MONO_LINE_SOURCE simulates a wave field for a line source
 %
 %   Usage: [P,x,y,z] = wave_field_mono_line_source(X,Y,Z,xs,f,[conf])
@@ -24,7 +24,7 @@ function [P,x,y,z] = wave_field_mono_line_source(X,Y,Z,xs,f,conf)
 %   References:
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: plot_wavefield, wave_field_imp_point_source
+%   see also: wave_field_mono, plot_wavefield, wave_field_imp_point_source
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -63,15 +63,8 @@ function [P,x,y,z] = wave_field_mono_line_source(X,Y,Z,xs,f,conf)
 nargmin = 5;
 nargmax = 6;
 narginchk(nargmin,nargmax);
-isargvector(X,Y,Z);
 isargxs(xs);
-isargpositivescalar(f);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
 
 
 %% ===== Computation ====================================================
-[P,x,y,z] = wave_field_mono(X,Y,Z,[xs 0 -1 0],'ls',1,f,conf);
+[varargout{1:nargout}] = wave_field_mono(X,Y,Z,[xs 0 -1 0],'ls',1,varargin{:});

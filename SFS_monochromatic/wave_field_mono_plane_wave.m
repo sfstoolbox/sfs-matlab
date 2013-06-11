@@ -1,4 +1,4 @@
-function [P,x,y,z] = wave_field_mono_plane_wave(X,Y,Z,xs,f,conf)
+function varargout = wave_field_mono_plane_wave(X,Y,Z,xs,f,conf)
 %WAVE_FIELD_MONO_PLANE_WAVE simulates a wave field of a plane wave
 %
 %   Usage: [P,x,y,z] = wave_field_mono_plane_wave(X,Y,Z,xs,f,[conf])
@@ -24,7 +24,7 @@ function [P,x,y,z] = wave_field_mono_plane_wave(X,Y,Z,xs,f,conf)
 %   References:
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: plot_wavefield, wave_field_mono_point_source
+%   see also: wave_field_mono, plot_wavefield, wave_field_mono_point_source
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -63,9 +63,7 @@ function [P,x,y,z] = wave_field_mono_plane_wave(X,Y,Z,xs,f,conf)
 nargmin = 5;
 nargmax = 6;
 narginchk(nargmin,nargmax);
-isargvector(X,Y,Z);
 isargxs(xs);
-isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -76,4 +74,4 @@ end
 %% ===== Computation ====================================================
 % Disable the plotting of a source, because we have a plane wave
 conf.plot.loudspeakers = 0;
-[P,x,y,z] = wave_field_mono(X,Y,Z,[xs 0 1 0],'pw',1,f,conf);
+[varargout{1:nargout}] = wave_field_mono(X,Y,Z,[xs 0 1 0],'pw',1,f,conf);

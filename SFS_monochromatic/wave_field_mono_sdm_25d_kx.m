@@ -106,10 +106,9 @@ withev = conf.withev;  % with evanescent waves
 % at y = yref).
 xref = conf.xref;
 c = conf.c;
-% Plotting
-useplot = conf.useplot;
 % xy resolution
 xysamples = conf.xysamples;
+useplot = conf.useplot;
 
 
 %% ===== Variables ======================================================
@@ -183,6 +182,6 @@ end
 P = norm_wave_field(P,x,y,z,conf);
 
 %% ===== Plotting ========================================================
-if(useplot)
+if nargout==0 || useplot
     plot_wavefield(P,x,y,z,conf);
 end

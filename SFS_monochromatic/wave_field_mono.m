@@ -128,6 +128,6 @@ end
 P = norm_wave_field(P,x,y,z,conf);
 
 % ===== Plotting =========================================================
-if nargout==0
+if nargout==0 || useplot
     plot_wavefield(P,x,y,z,x0,conf);
 end

@@ -165,7 +165,6 @@ of 1kHz traveling into the direction (0 -1), synthesized with 2.5D NFCHOA.
 
 ```Matlab
 conf = SFS_config;
-conf.useplot = 1;
 % wave_field_mono_nfchoa_25d(X,Y,xs,src,f,L,conf);
 wave_field_mono_nfchoa_25d([-2 2],[-2 2],[0 -1],'pw',1000,3,conf);
 print_png('img/wave_field_nfchoa_25d.png');
@@ -213,7 +212,6 @@ virtual point source placed at (0 2)m for 2.5D NFCHOA.
 
 ```Matlab
 conf = SFS_config;
-conf.useplot = 1;
 % wave_field_imp_nfchoa_25d(X,Y,xs,src,t,L,conf)
 wave_field_imp_nfchoa_25d([-2 2],[-2 2],[0 2],'ps',200,3,conf);
 print_png('img/wave_field_imp_nfchoa_25d.png');
@@ -338,7 +336,6 @@ the output file before. Note, that the same will work with Matlab.
 
 ```Matlab
 conf = SFS_config;
-conf.useplot = 1;
 conf.plot.usegnuplot = 1;
 conf.plot.file = 'img/wave_field_nfchoa_25d_gnuplot.png';
 wave_field_mono_nfchoa_25d([-2 2],[-2 2],[0 -1],'pw',1000,3,conf);

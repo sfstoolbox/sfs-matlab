@@ -91,6 +91,5 @@ x0 = secondary_source_positions(L,conf);
 D = driving_function_mono_nfchoa_25d(x0,xs,src,f,conf);
 % Wave field
 [varargout{1:min(nargout,4)}] = wave_field_mono(X,Y,Z,x0,'ps',D,f,conf);
-if nargout==5
-    varargout{5} = x0;
-end
+% Return secondary sources if desired
+if nargout==5 varargout{5}=x0; end

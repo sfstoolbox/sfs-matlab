@@ -258,7 +258,9 @@ conf.plot.resolution = 150;
 conf.plot.cmd = '';
 % output of plot (file or screen)
 conf.plot.usefile = 0;
-conf.plot.file = 'sfs';
+% File name, if this is provided with as *.png or *.eps file, the figure is
+% plotted to the regarding file
+conf.plot.file = '';
 %
 % === Gnuplot ===
 % Use gnuplot

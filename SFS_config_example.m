@@ -251,7 +251,7 @@ conf.plot.realloudspeakers = true; % boolean
 conf.plot.lssize = conf.dx0; % m
 % Size of the plot
 conf.plot.size_unit = 'px'; % 'px','cm','inches'
-conf.plot.size = [720 540];
+conf.plot.size = [540 404];
 % Resolution of plot in dpi
 conf.plot.resolution = 150;
 % Additional plot command

@@ -1,4 +1,4 @@
-function [P,x,y,z,x0] = wave_field_mono_nfchoa_25d(X,Y,Z,xs,src,f,L,conf)
+function varargout = wave_field_mono_nfchoa_25d(X,Y,Z,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_NFCHOA_25D simulates a wave field for 2.5D NFC-HOA
 %
 %   Usage: [P,x,y,z,x0] = wave_field_mono_nfchoa_25d(X,Y,Z,xs,src,f,L,[conf])
@@ -90,4 +90,7 @@ x0 = secondary_source_positions(L,conf);
 % Driving function D(x0,omega)
 D = driving_function_mono_nfchoa_25d(x0,xs,src,f,conf);
 % Wave field
-[P,x,y,z] = wave_field_mono(X,Y,Z,x0,'ps',D,f,conf);
+[varargout{1:min(nargout,4)}] = wave_field_mono(X,Y,Z,x0,'ps',D,f,conf);
+if nargout==5
+    varargout{5} = x0;
+end

@@ -9,6 +9,14 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
     - changed direction of focused source from the conf.xref vector directly
       into xs. For a focused source xs is now [1x6]
 
+0.2.4 (4 June 2013)
+
+    - added a documentation to the github README
+    - reworked the plotting, now simple saving to png is possible
+    - added a narginchk function for older Matlab versions
+    - replaced conf.frame with t in the imp functions
+    - lots of small bugs were fixed
+
 0.2.3 (9 April 2013)
 
     - summed up line, point, ... sources to green_function for mono and imp

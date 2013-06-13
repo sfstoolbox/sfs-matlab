@@ -1,7 +1,7 @@
-function g = greens_function_imp(x,y,z,xs,src,conf)
+function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 %GREENS_FUNCTION_IMP returns a Green's function in the time domain
 %
-%   Usage: g = greens_function_imp(x,y,z,xs,src,[conf])
+%   Usage: g = greens_function_imp(x,y,z,xs,src,t,[conf])
 %
 %   Input options:
 %       x,y     - x,y points for which the Green's function should be calculated
@@ -10,6 +10,7 @@ function g = greens_function_imp(x,y,z,xs,src,conf)
 %                   'ps' - point source
 %                   'ls' - line source
 %                   'pw' - plane wave
+%       t       - time in samples
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -59,12 +60,13 @@ function g = greens_function_imp(x,y,z,xs,src,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 7;
+nargmin = 7;
+nargmax = 8;
 narginchk(nargmin,nargmax);
 isargmatrix(x,y,z);
 isargposition(xs);
 isargchar(src);
+isargpositivescalar(t);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -77,13 +79,15 @@ end
 if strcmp('ps',src)
     % Source model for a point source: 3D Green's function.
     %
-    %              1  delta(t - |x-xs|/c)
-    % g(x-xs,t) = --- -------------------
-    %             4pi       |x-xs|
+    %                  1
+    % g(x-xs,t) = ---------- delta(t - |x-xs|/c)
+    %             4pi |x-xs|
     %
     % see: Williams1999, p. FIXME: ??
     %
-    g = 1./(4*pi) ./ sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
+    r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
+    g = 1./(4*pi)./r;
+    t = (r/c)*fs-t;
 
 elseif strcmp('ls',src)
     % Source model for a line source: 2D Green's function.
@@ -103,7 +107,6 @@ elseif strcmp('pw',src)
     %
     % see: Williams1999, p. FIXME
     %
-    % direction of plane wave
     g = 1;
 
 else

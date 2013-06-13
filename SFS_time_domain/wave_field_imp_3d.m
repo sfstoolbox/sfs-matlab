@@ -2,7 +2,7 @@ function [p,x,y,z] = wave_field_imp_3d(X,Y,Z,x0,d,t,conf)
 %WAVE_FIELD_IMP_3D returns the wave field in time domain with point sources as
 %secondary sources
 %
-%   Usage: [p,x,y,z] = wave_field_imp_3d(X,Y,Z,x0,d,[conf])
+%   Usage: [p,x,y,z] = wave_field_imp_3d(X,Y,Z,x0,d,t,[conf])
 %
 %   Input options:
 %       X           - length of the X axis (m); single value or [xmin,xmax]

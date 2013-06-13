@@ -165,8 +165,9 @@ of 1kHz traveling into the direction (0 -1), synthesized with 2.5D NFCHOA.
 
 ```Matlab
 conf = SFS_config;
-% wave_field_mono_nfchoa_25d(X,Y,xs,src,f,L,conf);
-wave_field_mono_nfchoa_25d([-2 2],[-2 2],[0 -1],'pw',1000,3,conf);
+conf.useplot = 1;
+% wave_field_mono_nfchoa_25d(X,Y,Z,xs,src,f,L,conf);
+wave_field_mono_nfchoa_25d([-2 2],[-2 2],0,[0 -1 0],'pw',1000,3,conf);
 print_png('img/wave_field_nfchoa_25d.png');
 ```
 
@@ -180,8 +181,8 @@ of 1kHz placed at (0 2.5)m synthesized with 2.5D WFS.
 ```Matlab
 conf = SFS_config;
 conf.useplot = 1;
-% [x,y,P,x0,win] = wave_field_mono_wfs_25d(X,Y,xs,src,f,L,conf);
-[x,y,P,~,win] = wave_field_mono_wfs_25d([-2 2],[-2 2],[0 2.5],'ps',1000,3,conf);
+% [P,x,y,z,x0,win] = wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,conf);
+[P,x,y,z,~,win] = wave_field_mono_wfs_25d([-2 2],[-2 2],0,[0 2.5 0],'ps',1000,3,conf);
 print_png('img/wave_field_wfs_25d.png');
 ```
 
@@ -192,10 +193,10 @@ If you want to plot the whole array, you can do this by adding these commands.
 
 ```Matlab
 x0 = secondary_source_positions(L,conf);
-[~,idx] = secondary_source_selection(x0,[0 2.5],'ps');
+[~,idx] = secondary_source_selection(x0,[0 2.5 0],'ps');
 win2 = zeros(1,size(x0,1));
 win2(idx) = win;
-plot_wavefield(x,y,P,x0,win2,conf);
+plot_wavefield(P,x,y,z,x0,win2,conf);
 print_png('img/wave_field_wfs_25d_with_all_sources.png');
 ```
 
@@ -212,8 +213,9 @@ virtual point source placed at (0 2)m for 2.5D NFCHOA.
 
 ```Matlab
 conf = SFS_config;
-% wave_field_imp_nfchoa_25d(X,Y,xs,src,t,L,conf)
-wave_field_imp_nfchoa_25d([-2 2],[-2 2],[0 2],'ps',200,3,conf);
+conf.useplot = 1;
+% wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,t,L,conf)
+wave_field_imp_nfchoa_25d([-2 2],[-2 2],0,[0 2 0],'ps',200,3,conf);
 print_png('img/wave_field_imp_nfchoa_25d.png');
 ```
 
@@ -249,7 +251,7 @@ with the impulse response by the <code>auralize_ir()</code> function.
 
 ```Matlab
 irs = read_irs('QU_KEMAR_anechoic_3m.mat');
-ir = get_ir(irs,rad(30));
+ir = get_ir(irs,rad(30)); % NOTE: this is broken in the threed branch at the moment
 nsig = randn(44100,1);
 sig = auralize_ir(ir,nsig);
 ```
@@ -260,7 +262,7 @@ circular array with a diameter of 3m, you have to do the following.
 ```Matlab
 irs = read_irs('QU_KEMAR_anechoic_3m.mat');
 % ir = ir_wfs_25d(X,phi,xs,src,L,irs,conf);
-ir = ir_wfs_25d([0 0],pi/2,[0 3],'ps',3,irs);
+ir = ir_wfs_25d([0 0 0],pi/2,[0 3 0],'ps',3,irs);
 nsig = randn(44100,1);
 sig = auralize_ir(ir,nsig);
 ```
@@ -277,10 +279,10 @@ conf = SFS_config;
 conf.usehcomp = 0; % disable headphone compensation
 irs = dummy_irs; % get dirac impulses as HRTFs
 conf.usehpre = 0;
-ir1 = ir_wfs_25d([0 0],pi/2,[0 2.5],'ps',3,irs,conf);
+ir1 = ir_wfs_25d([0 0 0],pi/2,[0 2.5 0],'ps',3,irs,conf);
 conf.usehpre = 1;
 conf.hprefhigh = aliasing_frequency(conf.dx0);
-ir2 = ir_wfs_25d([0 0],pi/2,[0 2.5],'ps',3,irs,conf);
+ir2 = ir_wfs_25d([0 0 0],pi/2,[0 2.5 0],'ps',3,irs,conf);
 [a1,p,f] = easyfft(ir1(:,1)./max(abs(ir1(:,1))));
 [a2,p,f] = easyfft(ir2(:,1)./max(abs(ir2(:,1))));
 figure;
@@ -338,7 +340,7 @@ the output file before. Note, that the same will work with Matlab.
 conf = SFS_config;
 conf.plot.usegnuplot = 1;
 conf.plot.file = 'img/wave_field_nfchoa_25d_gnuplot.png';
-wave_field_mono_nfchoa_25d([-2 2],[-2 2],[0 -1],'pw',1000,3,conf);
+wave_field_mono_nfchoa_25d([-2 2],[-2 2],0,[0 -1 0],'pw',1000,3,conf);
 ```
 
 ![Image](doc/img/wave_field_nfchoa_25d_gnuplot.png)
@@ -355,6 +357,12 @@ For questions, bug reports and feature requests:
 Contact: sfstoolbox@googlemail.com  
 Website: http://github.com/sfstoolbox/sfs
 
+If you use the Toolbox for your publications please cite our AES Convention e-Brief:  
+H. Wierstorf, S. Spors - Sound Field Synthesis Toolbox.  
+In the Proceedings of *132nd Convention of the
+Audio Engineering Society*, 2012  
+[ [pdf](http://audio.qu.tu-berlin.de/wp-content/uploads/publications/2012/wierstorf2012_SFS_toolbox_AES.pdf) ]
+[ [bibtex](doc/aes132_paper.bib) ]
 
 Copyright (c) 2010-2013  
 Quality & Usability Lab, together with  

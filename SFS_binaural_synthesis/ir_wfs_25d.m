@@ -4,14 +4,14 @@ function ir = ir_wfs_25d(X,phi,xs,src,L,irs,conf)
 %   Usage: ir_wfs = ir_wfs_25d(X,phi,xs,src,L,irs,[conf])
 %
 %   Input parameters:
-%       X       - listener position (m)
-%       phi     - listener direction [head orientation] (rad)
+%       X       - listener position / m
+%       phi     - listener direction [head orientation] / rad
 %                 0 means the head is oriented towards the x-axis.
-%       xs      - virtual source position [ys > Y0 => focused source] (m)
+%       xs      - virtual source position [ys > Y0 => focused source] / m
 %       src     - source type: 'pw' -plane wave
 %                              'ps' - point source
 %                              'fs' - focused source
-%       L       - Length of loudspeaker array (m)
+%       L       - Length of loudspeaker array / m
 %       irs     - IR data set for the secondary sources
 %       conf    - optional configuration struct (see SFS_config)
 %

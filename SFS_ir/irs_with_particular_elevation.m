@@ -6,7 +6,7 @@ function irs = irs_with_particular_elevation(irs,delta)
 %
 %   Input parameters:
 %       irs     - IR data set
-%       delta   - elevation angle for the desired IR (rad)
+%       delta   - elevation angle for the desired IR / rad
 %                 default: 0
 %
 %   Output parameters:

@@ -4,20 +4,20 @@ function [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf)
 %   Usage: [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,[conf])
 %
 %   Input parameters:
-%       X        - [xmin,xmax]
-%       Y        - [ymin,ymax]
-%       Z        - [zmin,zmax]
+%       X        - x-axis / m; single value or [xmin,xmax]
+%       Y        - y-axis / m; single value or [ymin,ymax]
+%       Z        - z-axis / m; single value or [zmin,zmax]
 %       conf     - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       xx,yy,zz - matrices representing the xy-grid
-%       x,y,z    - x-, y-, z-axis
+%       xx,yy,zz - matrices representing the xy-grid / m
+%       x,y,z    - x-, y-, z-axis / m
 %
 %   XYZ_GRID(X,Y,Z,conf) creates a xyz-grid to avoid a loop in the wave field
 %   calculation for the whole listening area. It returns also the x-, y-, z-axis
 %   for the listening area, defined by the points given with X,Y,Z.
 %
-%   see also: wave_field_mono_wfs_25d
+%   see also: wave_field_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *

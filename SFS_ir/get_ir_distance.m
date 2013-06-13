@@ -6,12 +6,12 @@ function d = get_ir_distance(irs,xs,coordinate_system)
 %   Input parameters:
 %       irs                 - IR data set
 %       xs                  - position of source in spherical (default) or
-%                             cartesian coordinates
+%                             cartesian coordinates / m
 %       coordinate_system   - 'spherical' (default)
 %                             'cartesian'
 %
 %   Output parameters:
-%       d       - distace for the given angles
+%       d       - distace for the given angles / m
 %
 %   GET_IR_DISTANCE(irs,xs,coordinate_system) returns the distance for the
 %   given source position. The source position can be specified in spherical

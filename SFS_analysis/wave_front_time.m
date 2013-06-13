@@ -4,21 +4,24 @@ function t = wave_front_time(X,xs,src,L,conf)
 %   Usage: wave_front_time(X,xs,src,L,[conf])
 %
 %   Input parameters:
-%       X       - listener position (m)
-%       xs      - position of the virtual source (m)
+%       X       - listener position / m
+%       xs      - position of the virtual source / m
 %       src     - source type of the virtual source
 %                     'pw' - plane wave (xs, ys are the direction of the
 %                            plane wave in this case)
 %                     'ps' - point source
 %                     'fs' - focused source
-%       L       - length of the linear loudspeaker array
+%       L       - length of the linear loudspeaker array / m
 %       conf    - optional configuration struct (see SFS_config)
+%
+%   Output parameters:
+%       t       - time / s
 %
 %   WAVE_FRONT_TIME(X,xs,src,L,conf) calculates the time of occurence of the
 %   single wave fronts at te listener positions. The single wave fronts are 
 %   omitted by the secondary sources.
 %
-%   see also: wave_front_direction, driving_function_imp_wfs_25d 
+%   see also: wave_front_direction, driving_function_imp_wfs 
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

@@ -4,19 +4,19 @@ function [xx,yy,x,y] = xy_grid(X,Y,conf)
 %   Usage: [xx,yy,x,y] = xy_grid(X,Y,[conf])
 %
 %   Input parameters:
-%       X       - [xmin,xmax]
-%       Y       - [ymin,ymax]
+%       X       - x-axis / m; single value or [xmin,xmax]
+%       Y       - y-axis / m; single value or [ymin,ymax]
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       xx,yy   - matrices representing the xy-grid
-%       x,y     - x-, y-axis
+%       xx,yy   - matrices representing the xy-grid / m
+%       x,y     - x-, y-axis / m
 %
 %   XYGRID(X,Y,conf) creates a xy-grid to avoid a loop in the wave field
 %   calculation for the whole listening area. It returns also the x-, y-axis for
 %   the listening area, defined by the points given with X,Y.
 %
-%   see also: wave_field_mono_wfs_25d
+%   see also: wave_field_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

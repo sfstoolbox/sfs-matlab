@@ -6,9 +6,8 @@ function gp_save_loudspeakers(file,x0,ls_activity)
 %
 %   Input parameters:
 %       file        - filename of the data file
-%       x0          - matrix containing secondary source poitions and directions
-%                     (nx6)
-%       ls_activity - activity of the speakers (nx1)
+%       x0          - secondary sources / m [nx6]
+%       ls_activity - activity of the speakers [nx1]
 %
 %   GP_SAVE_LOUDSPEAKERS(file,x0,ls_activity) saves x0(:,1:2) as positions of
 %   the speakers, an orientation value calculated from x0(:,4:6), and the

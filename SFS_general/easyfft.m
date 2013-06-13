@@ -10,9 +10,9 @@ function [amplitude,phase,f] = easyfft(sig,conf)
 %
 %   Output parameters:
 %       amplitude   - amplitude spectrum of the input signal
-%       phase       - phase spectrum of the input signal
+%       phase       - phase spectrum of the input signal / rad
 %       f           - corresponding frequency axis for the amplitude
-%                     spectrum (=> plot(f,amplitude) (Hz)
+%                     spectrum (=> plot(f,amplitude) / Hz
 %
 %   EASYFFT(sig) calculates the amplitude and phase of the sig spectrum by using
 %   the fast Fourier transformation. In addition to the amplitude and phase, the

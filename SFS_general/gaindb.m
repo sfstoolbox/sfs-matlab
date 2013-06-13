@@ -5,7 +5,7 @@ function inoutsig = gaindb(inoutsig,gn)
 %
 %   Input parameters:
 %       inoutsig    - signal for which the level should be changed
-%       gn          - gain of the level (dB)
+%       gn          - gain of the level / dB
 %
 %   Output parameters:
 %       inoutsig    - given signal with new level

@@ -4,9 +4,9 @@ function [x0,idx] = secondary_source_selection(x0,xs,src)
 %   Usage: [x0,idx] = secondary_source_selection(x0,xs,src)
 %
 %   Input options:
-%       x0          - secondary source positions and directions (m) [nx6]
+%       x0          - secondary source positions and directions / m [nx6]
 %       xs          - position and for focused sources also direction of the
-%                     desired source model (m) [1x3] or [1x6]
+%                     desired source model / m [1x3] or [1x6]
 %       src         - source type of the virtual source
 %                       'pw' - plane wave (xs is the direction of the
 %                              plane wave in this case)
@@ -14,7 +14,8 @@ function [x0,idx] = secondary_source_selection(x0,xs,src)
 %                       'fs' - focused source
 %
 %   Output options:
-%       x0          - secondary sources, containing only the active ones [mx6]
+%       x0          - secondary sources / m, containing only the active
+%                     ones [mx6]
 %       idx         - index of the selected sources from the original x0
 %                     matrix [mx1]
 %

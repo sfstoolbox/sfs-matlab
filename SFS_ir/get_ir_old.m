@@ -5,8 +5,8 @@ function ir = get_ir_old(irs,phi,delta)
 %
 %   Input parameters:
 %       irs     - IR data set
-%       phi     - azimuth angle for the desired IR (rad)
-%       delta   - elevation angle for the desired IR (rad)
+%       phi     - azimuth angle for the desired IR / rad
+%       delta   - elevation angle for the desired IR / rad
 %
 %   Output parameters:
 %       ir      - IR for the given angles (length of IR x 2)

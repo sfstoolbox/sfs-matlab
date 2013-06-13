@@ -4,25 +4,25 @@ function [P,x0,win] = wfs_3d(x,y,z,xs,src,f,L,conf)
 %   Usage: [P,x0,win] = wfs_3d(x,y,z,xs,src,f,L,[conf])
 %
 %   Input parameters:
-%       x           - x position(s)
-%       y           - y position(s)
-%       z           - z position(s)
-%       xs          - position of point source (m)
+%       x           - x position(s) / m
+%       y           - y position(s) / m
+%       z           - z position(s) / m
+%       xs          - position of point source / m
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
-%       f           - monochromatic frequency (Hz)
-%       L           - array length (m)
+%       f           - monochromatic frequency / Hz
+%       L           - array length / m
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - Simulated wave field
 %       win         - tapering window (activity of loudspeaker)
-%       x0          - positions of active secondary sources
+%       x0          - secondary sources / m
 % 
-%   WAVE_FIELD_MONO_WFS_3D(x,y,z,xs,L,f,src,conf) returns the sound pressure at
+%   WFS_3D(x,y,z,xs,L,f,src,conf) returns the sound pressure at
 %   the point(s) (x,y,z) for the given source type (src) using a WFS 3
 %   dimensional driving function in the temporal domain. This means by
 %   calculating the integral for P with a summation.
@@ -32,7 +32,7 @@ function [P,x0,win] = wfs_3d(x,y,z,xs,src,f,L,conf)
 %           Wave Field Synthesis (AES127)
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: wave_field_mono_wfs_25d
+%   see also: wave_field_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *

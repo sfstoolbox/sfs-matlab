@@ -6,7 +6,7 @@ function [C,idx] = findnearestneighbour_distance(A,b,X0)
 %   Input parameters:
 %       A                     - matrix
 %       b                     - colum to search for in A
-%       conf.X0               - listener position 
+%       X0                    - listener position / m
 %                              (in cartesian coordinates and as row vector)
 %
 %   output parameters:

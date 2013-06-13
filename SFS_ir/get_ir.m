@@ -5,10 +5,10 @@ function ir = get_ir(irs,phi,delta,r,X0)
 %
 %   Input parameters:
 %       irs     - IR data set
-%       phi     - azimuth angle for the desired IR (rad)
-%       delta   - elevation angle for the desired IR (rad)
-%       r       - distance for the desired IR (m)
-%       X0      - listener position [3x1]
+%       phi     - azimuth angle for the desired IR / rad
+%       delta   - elevation angle for the desired IR / rad
+%       r       - distance for the desired IR / m
+%       X0      - listener position [3x1] / m
 %
 %   Output parameters:
 %       ir      - IR for the given angles (length of IR x 2)

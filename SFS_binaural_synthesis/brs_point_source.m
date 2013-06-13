@@ -4,9 +4,9 @@ function brs = brs_point_source(X,phi,xs,irs,conf)
 %   Usage: brs = brs_point_source(X,phi,xs,irs,[conf])
 %
 %   Input parameters:
-%       X       - listener position (m)
-%       phi     - listener direction [head orientation] (rad)
-%       xs      - source position (m)
+%       X       - listener position / m
+%       phi     - listener direction [head orientation] / rad
+%       xs      - source position / m
 %       irs     - IR data set for the second sources
 %       conf    - optional configuration struct (see SFS_config)
 %

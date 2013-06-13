@@ -6,14 +6,14 @@ function [Dkx] = driving_function_mono_sdm_25d_kx(kx,xs,src,f,conf)
 %
 %   Input parameters:
 %       kx          - position of the secondary source in the spectro-temporal
-%                     domain (m)
-%       xs          - position of virtual source or direction of plane wave (m)
+%                     domain / m
+%       xs          - position of virtual source or direction of plane wave / m
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
-%       f           - frequency of the monochromatic source (Hz)
+%       f           - frequency of the monochromatic source / Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:

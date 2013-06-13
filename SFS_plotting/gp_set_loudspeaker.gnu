@@ -2,10 +2,10 @@
 #   Usage: call 'gp_set_loudspeaker.gnu' 'x0' 'y0' 'phi' 'activity' 'lssize'
 #
 #   Input parameters:
-#       x0, y0      - loudspeaker position
-#       phi         - orientation of the loudspeaker
+#       x0, y0      - loudspeaker position / m
+#       phi         - orientation of the loudspeaker / rad
 #       activity    - activity of the loudspeaker (0..1)
-#       lssize      - size of the loudspeaker
+#       lssize      - size of the loudspeaker / m
 #
 #   gp_set_loudspeaker sets a single gnuplot object in the
 #   form of a loudspeaker at the given position and for the given orientation.

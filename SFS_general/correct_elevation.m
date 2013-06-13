@@ -4,10 +4,10 @@ function delta = correct_elevation(delta)
 %   Usage: delta = correct_elevation(delta)
 %
 %   Input parameters:
-%       delta     - elevation (rad). Can be a single value or a matrix.
+%       delta     - elevation / rad. Can be a single value or a matrix.
 %
 %   Output paramteres:
-%       delta     - angle between -pi/2 and +pi/2
+%       delta     - angle between -pi/2 and +pi/2 / rad
 %
 %   CORRECT_ELEVATION(delta) returns a value for elevation delta between
 %   -pi/2 and pi/2.

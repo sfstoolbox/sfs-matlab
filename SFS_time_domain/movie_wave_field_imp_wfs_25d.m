@@ -4,15 +4,15 @@ function movie_wave_field_imp_wfs_25d(X,Y,xs,src,L,outfile,conf)
 %   Usage: movie_wave_field_imp_wfs_25d(X,Y,xs,src,L,outfile,[conf])
 %
 %   Input parameters:
-%       X           - length of the X axis (m); single value or [xmin,xmax]
-%       Y           - length of the Y axis (m); single value or [ymin,ymax]
-%       xs          - position of point source (m)
+%       X           - x-axis / m; single value or [xmin,xmax] 
+%       Y           - y-axis / m; single value or [ymin,ymax]
+%       xs          - position of point source / m
 %       src         - sourcetype of the virtual source:
 %                         'pw' - plane wave (xs, ys are the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
-%       L           - array length (m)
+%       L           - array length / m
 %       outfile     - name for the movie file
 %       conf        - optional configuration struct (see SFS_config)
 %

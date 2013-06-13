@@ -5,16 +5,16 @@ function ir = intpol_ir(desired_point,x0_1,ir1,x0_2,ir2,x0_3,ir3)
 %
 %   Input parameters:
 %       ir1     - IR 1
-%       phi1    - azimuth angle of ir1 (rad)
-%       theta1  - elevation angle of ir1 (rad)
+%       phi1    - azimuth angle of ir1 / rad
+%       theta1  - elevation angle of ir1 / rad
 %       ir2     - IR 2
-%       phi2    - azimuth angle of ir2 (rad)
-%       theta2  - elevation angle of ir2 (rad)
+%       phi2    - azimuth angle of ir2 / rad
+%       theta2  - elevation angle of ir2 / rad
 %       ir3     - IR 3
-%       phi3    - azimuth angle of ir3 (rad)
-%       theta3  - elevation angle of ir3 (rad)
-%       alpha   - azimuth angle of the desired IR (rad)
-%       beta    - elevation angle of the desired IR (rad)
+%       phi3    - azimuth angle of ir3 / rad
+%       theta3  - elevation angle of ir3 / rad
+%       alpha   - azimuth angle of the desired IR / rad
+%       beta    - elevation angle of the desired IR / rad
 %
 %   Output parameters:
 %       ir      - IR for the given angles alpha,beta (length(IR1),2)

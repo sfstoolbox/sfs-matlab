@@ -4,14 +4,14 @@ function [D] = driving_function_mono_nfchoa_25d(x0,xs,src,f,conf)
 %   Usage: D = driving_function_mono_nfchoa_25d(x0,xs,src,f,[conf])
 %
 %   Input parameters:
-%       x0          - position and direction of the secondary sources (m)
-%       xs          - position of virtual source or direction of plane wave (m)
+%       x0          - position and direction of the secondary sources / m
+%       xs          - position of virtual source or direction of plane wave / m
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
-%       f           - frequency of the monochromatic source (Hz)
+%       f           - frequency of the monochromatic source / Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:

@@ -6,7 +6,7 @@ function irs = irs_with_particular_azimuth(irs,phi)
 %
 %   Input parameters:
 %       irs     - IR data set
-%       phi     - azimuth angle for the desired IR (rad)
+%       phi     - azimuth angle for the desired IR / rad
 %                 default: 0
 %
 %   Output parameters:

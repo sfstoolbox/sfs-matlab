@@ -4,10 +4,10 @@ function phi = correct_azimuth(phi)
 %   Usage: phi = correct_azimuth(phi)
 %
 %   Input parameters:
-%       phi     - azimuth (rad). Can be a single value or a matrix.
+%       phi     - azimuth / rad. Can be a single value or a matrix.
 %
 %   Output paramteres:
-%       phi     - angle between -pi and +pi-eps
+%       phi     - angle between -pi and +pi-eps / rad
 %
 %   CORRECT_AZIMUTH(phi) returns a value for azimuth phi between
 %   -pi and +pi-eps.

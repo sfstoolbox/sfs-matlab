@@ -5,7 +5,7 @@ function sig = delayline(sig,dt,weight,conf)
 %
 %   Input parameter:
 %       sig     - input signal (vector)
-%       dt      - delay (samples)
+%       dt      - delay / samples
 %       weight  - amplitude weighting factor
 %       conf    - optional configuration struct (see SFS_config)
 %
@@ -17,7 +17,7 @@ function sig = delayline(sig,dt,weight,conf)
 %   The delay is implemented as integer delays or a fractional delay
 %   filter, see SFS_config.
 %
-%   see also: driving_function_imp_wfs_25d
+%   see also: driving_function_imp_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

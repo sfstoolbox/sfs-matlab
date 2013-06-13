@@ -5,19 +5,19 @@ function [alpha,a,t] = wave_front_direction(X,phi,xs,src,L,conf)
 %   Usage: [alpha,a,t] = wave_front_direction(X,phi,xs,src,L,[conf])
 %
 %   Input parameters:
-%       X,phi   - listener position and direction (m),(rad)
-%       xs      - virtual source position (m)
+%       X,phi   - listener position and direction / m, rad
+%       xs      - virtual source position / m
 %       src     - used source model:
 %                   'pw' - plane wave
 %                   'ps' - point source
 %                   'fs' - focused source
-%       L       - length of the linear loudspeaker array (m)
+%       L       - length of the linear loudspeaker array / m
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       alpha   - angle of incident for every echo (rad)
+%       alpha   - angle of incident for every echo / rad
 %       a       - amplitudes of the echos
-%       t       - time of the wave fronts (s)
+%       t       - time of the wave fronts / s
 %
 %   WAVE_FRONT_DIRECTION(X,phi,xs,src,L) calculates the direction of the single wave
 %   fronts (due to aliasing artifacts) arriving from the loudspeakers for a

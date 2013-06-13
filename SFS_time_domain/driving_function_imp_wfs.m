@@ -4,8 +4,8 @@ function [d,delay,weight] = driving_function_imp_wfs(x0,xs,src,conf)
 %   Usage: [d,delay,weight] = driving_function_imp_wfs(x0,xs,src,[conf]);
 %
 %   Input parameters:
-%       x0      - positions and directions of secondary sources (m) [nx6]
-%       xs      - position of virtual source or direction of plane wave (m)
+%       x0      - positions and directions of secondary sources / m [nx6]
+%       xs      - position of virtual source or direction of plane wave / m
 %                 [1x3]
 %       src     - source type of the virtual source
 %                     'pw' - plane wave (xs, ys are the direction of the
@@ -16,7 +16,7 @@ function [d,delay,weight] = driving_function_imp_wfs(x0,xs,src,conf)
 %
 %   Output parameters:
 %       d       - driving signals [mxn]
-%       delay   - delay of the driving function (s) [nx1]
+%       delay   - delay of the driving function / s [nx1]
 %       weight  - weight (amplitude) of the driving function [nx1]
 %
 %   DRIVING_FUNCTION_IMP_WFS(x0,xs,src,conf) returns the driving signals and

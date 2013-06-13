@@ -4,20 +4,21 @@ function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 %   Usage: [g,t] = greens_function_imp(x,y,z,xs,src,t,[conf])
 %
 %   Input options:
-%       x       - x points
-%       y       - y points
-%       z       - z points
-%       xs      - position of the source
+%       x       - x points / m
+%       y       - y points / m
+%       z       - z points / m
+%       xs      - position of the source / m
 %       src     - source model of the Green's function. Valid models are:
 %                   'ps' - point source
 %                   'ls' - line source
 %                   'pw' - plane wave
-%       t       - time in samples
+%       t       - time / samples
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       g       - Green's function evaluated at the points x,y,z
-%       t       - Correspondiong time values with integrated time shift
+%       t       - Correspondiong time values with integrated time
+%                 shift / samples
 %
 %   GREENS_FUNCTION_IMP(x,y,z,xs,src,t) calculates the Green's function for the
 %   given source model located at xs for the given points x,y,z. Note, that the

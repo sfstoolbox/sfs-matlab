@@ -2,8 +2,8 @@
 #   Usage: call 'gp_set_head.gnu' 'x' 'y' 'phi'
 #
 #   Input parameters:
-#       x, y        - head position
-#       phi         - orientation of the head (rad)
+#       x, y        - head position / m
+#       phi         - orientation of the head / rad
 #
 #   gp_set_head sets two gnuplot objects in the form of a head consisting of one
 #   circle and a triangle for the nose at the given position and with the nose

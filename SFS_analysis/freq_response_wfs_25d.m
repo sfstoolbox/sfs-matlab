@@ -4,17 +4,17 @@ function [f,S] = freq_response_wfs_25d(X,xs,src,L,conf)
 %   Usage: [f,S] = freq_response_wfs_25d(X,xs,src,L,[conf])
 %
 %   Input parameters:
-%       X           - listener position (m)
-%       xs          - position of virtual source (m)
+%       X           - listener position / m
+%       xs          - position of virtual source / m
 %       src         - source type of the virtual source
 %                         'pw' -plane wave
 %                         'ps' - point source
 %                         'fs' - focused source
-%       L           - array length (m)
+%       L           - array length / m
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       f           - corresponding frequency (x) axis
+%       f           - corresponding frequency (x) axis / Hz
 %       S           - simulated frequency response
 %
 %   FREQ_RESPONSE_WFS_25D(X,xs,src,L,conf) simulates the frequency

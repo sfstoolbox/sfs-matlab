@@ -4,11 +4,11 @@ function fal = aliasing_frequency(x0,conf)
 %   Usage: fal = aliasing_frequency(x0,[conf])
 %
 %   Input options:
-%       x0      - secondary sources
+%       x0      - secondary sources / m
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output options:
-%       fal     - aliasing frequency (Hz)
+%       fal     - aliasing frequency / Hz
 %
 %   ALIASING_FREQUENCY(x0,conf) returns the aliasing frequency for the given
 %   secondary sources. The value is calculated after Spors (2009).

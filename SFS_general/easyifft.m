@@ -5,7 +5,7 @@ function outsig = easyifft(amplitude,phase)
 %
 %   Input parameters:
 %       amplitude   - the amplitude spectrum
-%       phase       - the phase spectrum
+%       phase       - the phase spectrum / rad
 %
 %   Output parameters:
 %       outsig      - a one channel signal

@@ -4,8 +4,8 @@ function win = hanningwin(onset,offset,nsamples)
 %   Usage: win = hanningwin(onset,offset,nsamples)
 %
 %   Input parameters:
-%       onset       - onset in samples (0 for no onset)
-%       offset      - offset in samples (0 for no offset)
+%       onset       - onset / samples (0 for no onset)
+%       offset      - offset / samples (0 for no offset)
 %       nsamples    - length of the whole window (including on- and offset)
 %
 %   Output parameters:

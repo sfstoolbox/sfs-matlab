@@ -5,11 +5,11 @@ function [fal] = aliasing_frequency_3d(x0,conf)
 %   Usage: fal = aliasing_frequency(x0,[conf])
 %
 %   Input options:
-%       x0      - points of active secondary sources on a sphere
+%       x0      - secondary sources / m
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output options:
-%       fal     - aliasing frequency (Hz)
+%       fal     - aliasing frequency / Hz
 %
 %   ALIASING_FREQUENCY(x0,conf) returns the aliasing frequency for the given
 %   interspacing of secondary sources. The value is calculated.

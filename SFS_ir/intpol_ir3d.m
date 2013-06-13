@@ -5,11 +5,11 @@ function ir = intpol_ir3d(desired_point,ir1,ir2,ir3,L)
 %
 %   Input parameters:
 %       desired_point   - point at which the 3 IRs should be interpolated
-%                         (in cartesian coordinates)
+%                         (in cartesian coordinates) / m
 %       ir1             - IR 1
 %       ir2             - IR 2
 %       ir3             - IR 3
-%       L               - Matrix containing the positions of the 3 IRs
+%       L               - Matrix containing the positions of the 3 IRs / m
 %
 %   Output parameters:
 %       ir      - IR for the desired position

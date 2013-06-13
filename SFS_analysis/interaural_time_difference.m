@@ -7,7 +7,7 @@ function [itd,idxleft,idxright] = interaural_time_difference(insigleft,insigrigh
 %       insigleft   - left ear signal. This can also be a matrix containing
 %                     left signals for different frequency bands
 %       insigright  - the same as insigleft, but for the right ear
-%       fs          - sampling rate
+%       fs          - sampling rate / Hz
 %       mode        - describes which algorith was used: simple is default
 %                   - you should use 'int' too and compare results
 %                   - 'simple'      - fast, use only for low frequencies (default)
@@ -22,7 +22,7 @@ function [itd,idxleft,idxright] = interaural_time_difference(insigleft,insigrigh
 %   Output parameters:
 %       itd         - ITD for the given signals. A single value for two
 %                     given signals or a vector with values for every
-%                     frequency band
+%                     frequency band / ms
 %
 %   INTERAURAL_TIME_DIFFERENCE(insigleft,insigright,fs) extractes the ITD between
 %   the left and right signal(s) by using an edge detection algorithm to identify

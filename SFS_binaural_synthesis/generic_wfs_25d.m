@@ -4,11 +4,11 @@ function ir = generic_wfs_25d(xs,src,L,conf)
 %   Usage: ir = generic_wfs_25d(xs,src,L,[conf])
 %
 %   Input parameters:
-%       xs      - virtual source position [ys > Y0 => focused source] (m)
+%       xs      - virtual source position [ys > Y0 => focused source] / m
 %       src     - source type: 'pw' -plane wave
 %                              'ps' - point source
 %                              'fs' - focused source
-%       L       - Length of linear loudspeaker array (m)
+%       L       - Length of linear loudspeaker array / m
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:

@@ -4,8 +4,8 @@ function [d] = driving_function_imp_nfchoa_25d(x0,xs,src,L,conf)
 %   Usage: [d] = driving_function_imp_nfchoa_25d(x0,xs,src,[conf]);
 %
 %   Input parameters:
-%       x0      - position  and direction of secondary sources (m)
-%       xs      - position of virtual source or direction of plane wave (m)
+%       x0      - position  and direction of secondary sources / m
+%       xs      - position of virtual source or direction of plane wave / m
 %       src     - source type of the virtual source
 %                     'pw' - plane wave (xs, ys are the direction of the
 %                            plane wave in this case)

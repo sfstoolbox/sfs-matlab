@@ -4,17 +4,17 @@ function movie_wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,outfile,conf)
 %   Usage: movie_wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,outfile,[conf])
 %
 %   Input parameters:
-%       X           - [xmin,xmax]
-%       Y           - [ymin,ymax]
-%       Z           - [zmin,zmax]
-%       xs          - position of point source (m)
+%       X           - x-axis / m; single value or [xmin,xmax]
+%       Y           - y-axis / m; single value or [ymin,ymax]
+%       Z           - z-axis / m; single value or [zmin,zmax]
+%       xs          - position of point source / m
 %       src         - sourcetype of the virtual source:
 %                         'pw' - plane wave (xs, ys are the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
-%       f           - monochromatic frequency (Hz)
-%       L           - array length (m)
+%       f           - monochromatic frequency / Hz
+%       L           - array length / m
 %       outfile     - name for the movie file
 %       conf        - optional configuration struct (see SFS_config)
 %

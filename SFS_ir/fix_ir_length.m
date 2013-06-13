@@ -6,8 +6,8 @@ function ir = fix_ir_length(ir,N,dt)
 %   Input parameters:
 %       ir  - impulse response (IR)
 %       N   - number of samples the calculated BRIR should have
-%       dt  - time delay for the given setup the IR will be shifted with, 
-%             default: 0
+%       dt  - time delay for the given setup the IR will be shifted
+%             with / samples (default: 0)
 %
 %   Output paramteres:
 %       ir  - corrected IR

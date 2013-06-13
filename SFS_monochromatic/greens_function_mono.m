@@ -4,13 +4,14 @@ function G = greens_function_mono(x,y,z,xs,src,f,conf)
 %   Usage: G = greens_function_mono(x,y,z,xs,src,f,[conf])
 %
 %   Input options:
-%       x,y,z   - x,y,z points for which the Green's function should be calculated
+%       x,y,z   - x,y,z points for which the Green's function should be
+%                 calculated / m
 %       xs      - position of the source
 %       src     - source model of the Green's function. Valid models are:
 %                   'ps' - point source
 %                   'ls' - line source
 %                   'pw' - plane wave
-%       f       - frequency of the source
+%       f       - frequency of the source / Hz
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:

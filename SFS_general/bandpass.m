@@ -4,18 +4,18 @@ function sig =  bandpass(sig,flow,fhigh,conf)
 %   Usage: sig = bandpass(sig,flow,fhigh,[conf])
 %
 %   Input parameters:
-%       sig  - input signal (vector)
-%       flow - start frequency of bandpass
-%       fhigh - stop frequency of bandpass
-%       conf - optional configuration struct (see SFS_config)
+%       sig    - input signal (vector)
+%       flow   - start frequency of bandpass
+%       fhigh  - stop frequency of bandpass
+%       conf   - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       sig  - filtered signal
+%       sig    - filtered signal
 %
 %   BANDPASS(sig,flow,fhigh) filters the given signal with a bandpass filter
 %   with cutoff frequencies of flow and fhigh.
 %
-%   see also: wave_field_imp_wfs_25d
+%   see also: wave_field_imp_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

@@ -4,10 +4,10 @@ function phi = degree(phi)
 %   Usage: phi = degree(phi)
 %
 %   Input options:
-%       phi     - angle, can be a scalar or matrix (rad)
+%       phi     - angle / rad, can be a scalar or matrix (rad)
 %
 %   Output options:
-%       phi     - angle (degree)
+%       phi     - angle / degree
 %
 %   DEGREE(phi) returns the given angles phi in degree.
 %

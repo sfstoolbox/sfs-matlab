@@ -4,7 +4,7 @@ function outsig = noise(samples,nsigs,noisetype)
 %   Usage: outsig = noise(samples,[nsigs,[type]])
 %
 %   Input parameters:
-%       samples     - length of the noise signal
+%       samples     - length of the noise signal / samples
 %       nsigs       - number of noise signals, default: 1
 %       type        - type of noise:
 %                         'white' (default)

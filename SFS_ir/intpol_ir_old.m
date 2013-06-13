@@ -5,10 +5,10 @@ function ir = intpol_ir_old(ir1,beta1,ir2,beta2,alpha)
 %
 %   Input parameters:
 %       ir1     - IR with lower angle
-%       beta1   - angle of ir1 (rad)
+%       beta1   - angle of ir1 / rad
 %       ir2     - IR with bigger angle
-%       beta2   - angle of ir2 (rad)
-%       alpha   - angle of the desired IR (rad)
+%       beta2   - angle of ir2 / rad
+%       alpha   - angle of the desired IR / rad
 %
 %   Output parameters:
 %       ir      - IR for the given angle alpha (length(IR1),2)

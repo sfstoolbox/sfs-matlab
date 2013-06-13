@@ -11,7 +11,7 @@ function ild = interaural_level_difference(insigleft,insigright)
 %   Output parameters:
 %       ild         - ILD for the given signals. A single value for two
 %                     given signals or a vector with values for every
-%                     frequency band
+%                     frequency band / dB
 %
 %   INTERAURAL_LEVEL_DIFFERENCE(insigleft,insigright) extractes the ILD
 %   between the left and right signal(s) by subtracting the dB value of

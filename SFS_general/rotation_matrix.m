@@ -4,7 +4,7 @@ function R = rotation_matrix(phi,dim,orientation)
 %   Usage: R = rotation_matrix(phi,[dim,[orientation]])
 %
 %   Input parameters:
-%       phi         - angle to rotate the given dim dimension vector (rad)
+%       phi         - angle to rotate the given dim dimension vector / rad
 %       dim         - dimension to turn around (default: 3, z-axis)
 %       orientation - orientation of the rotation, 'clockwise' or
 %                     'counterclockwise' (default: 'counterclockwise')

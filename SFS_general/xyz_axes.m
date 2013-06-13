@@ -4,13 +4,13 @@ function [x,y,z] = xyz_axes(X,Y,Z,conf)
 %   Usage: [x,y,z] = xyz_aex(X,Y,Z,[conf])
 %
 %   Input parameters:
-%       X        - [xmin,xmax]
-%       Y        - [ymin,ymax]
-%       Z        - [zmin,zmax]
+%       X        - x-axis / m; single value or [xmin,xmax]
+%       Y        - y-axis / m; single value or [ymin,ymax]
+%       Z        - z-axis / m; single value or [zmin,zmax]
 %       conf     - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       x,y,z    - x-, y-, z-axis
+%       x,y,z    - x-, y-, z-axis / m
 %
 %   XYZ_AXES(X,Y,Z,conf) creates the x-, y-, and -z-axis for the listening area.
 %

@@ -5,7 +5,7 @@ function P = norm_wave_field(P,x,y,z,conf)
 %
 %   Input options:
 %       P       - wave field
-%       x,y,z   - vectors conatining the x-, y- and z-axis values
+%       x,y,z   - vectors conatining the x-, y- and z-axis values / m
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output options:
@@ -14,7 +14,7 @@ function P = norm_wave_field(P,x,y,z,conf)
 %   NORM_WAVE_FIELD(P,x,y,z,conf) normalizes the given wave field P to 1 at
 %   the position conf.xref.
 %
-%   see also: wave_field_mono_wfs_25d
+%   see also: wave_field_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

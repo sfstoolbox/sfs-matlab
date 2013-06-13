@@ -6,12 +6,12 @@ function check_wave_field(P,t)
 %
 %   Input parameters:
 %       P       - wave field
-%       t       - time t (samples)
+%       t       - time t / samples
 %
 %   CHECK_WAVE_FIELD(P,t) checks if the wave field is different from zero.
 %   If this is not the case it returns a warning.
 %
-%   see also: wave_field_imp_wfs_25d, norm_wave_field
+%   see also: wave_field_imp_wfs, norm_wave_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

@@ -4,8 +4,8 @@ function [] = draw_head(X,Y,phi)
 %   Usage: draw_head(X,Y,phi)
 %
 %   Input options:
-%       X,Y         - positions of the head (m)
-%       phi         - directions of the head (rad)
+%       X,Y         - positions of the head / m
+%       phi         - directions of the head / rad
 %
 %   DRAW_HEAD(X,Y,phi) draws a head symbols at the given position. The head
 %   symbol is pointing in the direction given by phi.

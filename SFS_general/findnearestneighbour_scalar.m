@@ -7,18 +7,18 @@ function [ir1,ir2,ir3,x0,desired_point] = findnearestneighbour_scalar(irs,phi,de
 %
 %   Input parameters:
 %       irs                  - data set containing the IRs
-%       phi                  - azimuth angle of the desired point
-%       delta                - elevation angle of the desired point
-%       r                    - radius of the desired point
+%       phi                  - azimuth angle of the desired point / rad
+%       delta                - elevation angle of the desired point / rad
+%       r                    - radius of the desired point / m
 %       number_of_neighbours - determines how much neighbours are
 %                              calculated. 2 for 2d case or 3 for 3d case 
 %                              are possible inputs
-%       X0                   - listener position 
+%       X0                   - listener position / m
 %
 %   Output parameters:
 %       ir1,ir2,ir3      - IRs next to the position of the desired IR  
-%       x0               - Matrix containing postions of ir1,ir2,ir3
-%       desired_point    - position where the IR should be calculated
+%       x0               - Matrix containing postions of ir1,ir2,ir3 / m
+%       desired_point    - position where the IR should be calculated / m
 %   
 %FINDNEARESTNEIGHBOUR_SCALAR(irs,phi,delta,r,number_of_neighbours,X0)
 %   Finds the 2 or 3 nearest neighbours of a desired position by 

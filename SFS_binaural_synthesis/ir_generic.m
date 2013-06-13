@@ -4,10 +4,10 @@ function ir = ir_generic(X,phi,x0,d,irs,conf)
 %   Usage: ir = ir_generic(X,phi,x0,d,irs,[conf])
 %
 %   Input parameters:
-%       X       - listener position (m)
-%       phi     - listener direction [head orientation] (rad)
+%       X       - listener position / m
+%       phi     - listener direction [head orientation] / rad
 %                 0 means the head is oriented towards the x-axis.
-%       x0      - secondary sources [n x 6]
+%       x0      - secondary sources [n x 6] / m
 %       d       - driving signals [m x n]
 %       irs     - IR data set for the secondary sources
 %       conf    - optional configuration struct (see SFS_config) 

@@ -5,13 +5,13 @@ function [nls,L] = secondary_source_number(L,conf)
 %   Usage: [nls,L] = secondary_source_number(L,[conf])
 %
 %   Input parameters:
-%       L       - length of the loudspeaker array (m)
+%       L       - length of the loudspeaker array / m
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       nls     - number of needed loudspeaker
 %       L       - real length of the loudspeaker array (corresponding to
-%                 conf.dx0)
+%                 conf.dx0) / m
 %
 %   SECONDARAY_SOURCE_NUMBER(L,conf) calculates the number of needed loudspeaker for
 %   the given array length L, using the config loudspeaker distance conf.dx0.

@@ -6,9 +6,9 @@ function ir = intpol_ir2d(ir1,ir2,x0,desired_point)
 %   Input parameters:
 %       ir1             - IR 1
 %       ir2             - IR 2
-%       x0              - Matrix containing the positions of ir1 and ir2
+%       x0              - Matrix containing the positions of ir1 and ir2 / m
 %       desired_point   - point at which the 3 IRs should be interpolated
-%                         (in cartesian coordinates)
+%                         (in cartesian coordinates) / m
 %
 %   Output parameters:
 %       ir      - IR for the desired position

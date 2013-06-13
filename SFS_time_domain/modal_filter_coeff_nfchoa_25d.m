@@ -5,12 +5,12 @@ function [b,a] = modal_filter_coeff_nfchoa_25d(order,R,src,r,conf)
 %
 %   Input parameters:
 %       order   - order of filter
-%       R       - radius of secondary source distribution (m)
+%       R       - radius of secondary source distribution / m
 %       src     - source type of the virtual source
 %                     'pw' - plane wave (xs, ys are the direction of the
 %                            plane wave in this case)
 %                     'ps' - point source
-%       r       - distance of virtual point source (m)
+%       r       - distance of virtual point source / m
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:

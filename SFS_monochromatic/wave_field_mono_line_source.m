@@ -4,18 +4,18 @@ function varargout = wave_field_mono_line_source(X,Y,Z,xs,varargin)
 %   Usage: [P,x,y,z] = wave_field_mono_line_source(X,Y,Z,xs,f,[conf])
 %
 %   Input parameters:
-%       X           - [xmin,xmax]
-%       Y           - [ymin,ymax]
-%       Z           - [zmin,zmax]
-%       xs          - position of line source (m)
-%       f           - monochromatic frequency (Hz)
+%       X           - x-axis / m; single value or [xmin,xmax]
+%       Y           - y-axis / m; single value or [ymin,ymax]
+%       Z           - z-axis / m; single value or [zmin,zmax]
+%       xs          - position of line source / m
+%       f           - monochromatic frequency / Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - Simulated wave field
-%       x           - corresponding x axis
-%       y           - corresponding y axis
-%       z           - corresponding z axis
+%       x           - corresponding x axis / m
+%       y           - corresponding y axis / m
+%       z           - corresponding z axis / m
 %
 %   WAVE_FIELD_MONO_LINE_SOURCE(X,Y,Z,xs,f,conf) simulates a wave
 %   field of a line source positioned at xs.

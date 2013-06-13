@@ -4,24 +4,24 @@ function [P,x,y,z] = wave_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,conf)
 %   Usage: [P,x,y,z] = wave_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,[conf])
 %
 %   Input parameters:
-%       X           - [xmin,xmax]
-%       Y           - [ymin,ymax]
-%       Z           - [zmin,zmax]
-%       xs          - position of point source (m)
+%       X           - x-axis / m; single value or [xmin,xmax]
+%       Y           - y-axis / m; single value or [ymin,ymax]
+%       Z           - z-axis / m; single value or [zmin,zmax]
+%       xs          - position of point source / m
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
-%       f           - monochromatic frequency (Hz)
-%       L           - array length (m)
+%       f           - monochromatic frequency / Hz
+%       L           - array length / m
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - Simulated wave field
-%       x           - corresponding x axis
-%       y           - corresponding y axis
-%       z           - corresponding z axis
+%       x           - corresponding x axis / m
+%       y           - corresponding y axis / m
+%       z           - corresponding z axis / m
 %
 %   WAVE_FIELD_MONO_SDM_25D_KX(X,Y,Z,xs,src,f,L,conf) simulates a wave field of
 %   the given source type (src) using a SDM 2.5 dimensional driving function
@@ -42,7 +42,7 @@ function [P,x,y,z] = wave_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,conf)
 %       Spors2010 - Analysis and Improvement of Pre-equalization in
 %       2.5-Dimensional Wave Field Synthesis
 %
-%   see also: plot_wavefield, wave_field_mono_wfs_25d
+%   see also: plot_wavefield, wave_field_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

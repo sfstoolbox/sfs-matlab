@@ -5,10 +5,10 @@ function [P,x,y,z] = wave_field_mono(X,Y,Z,x0,src,D,f,conf)
 %   Usage: [P,x,y,z] = wave_field_mono(X,Y,Z,x0,src,D,f,[conf])
 %
 %   Input parameters:
-%       X           - [xmin,xmax]
-%       Y           - [ymin,ymax]
-%       Z           - [zmin zmax]
-%       x0          - secondary sources [n x 6]
+%       X           - x-axis / m; single value or [xmin,xmax]
+%       Y           - y-axis / m; single value or [ymin,ymax]
+%       Z           - z-axis / m; single value or [zmin,zmax]
+%       x0          - secondary sources [n x 6] / m
 %       src         - source model for the secondary sources. This describes the
 %                     Green's function, that is used for the modeling of the
 %                     sound propagation. Valid models are:
@@ -16,14 +16,14 @@ function [P,x,y,z] = wave_field_mono(X,Y,Z,x0,src,D,f,conf)
 %                       'ls' - line source
 %                       'pw' - plane wave
 %       D           - driving signals for the secondary sources [m x n]
-%       f           - monochromatic frequency (Hz)
+%       f           - monochromatic frequency / Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - Simulated wave field
-%       x           - corresponding x axis
-%       y           - corresponding y axis
-%       z           - corresponding z axis
+%       x           - corresponding x axis / m
+%       y           - corresponding y axis / m
+%       z           - corresponding z axis / m
 %
 %   WAVE_FIELD_MONO(X,Y,Z,x0,src,D,f,conf) simulates a wave field
 %   for the given secondary sources, driven by the corresponding driving

@@ -4,18 +4,18 @@ function varargout = wave_field_imp_point_source(X,Y,Z,xs,varargin)
 %   Usage: [P,x,y,z] = wave_field_imp_point_source(X,Y,Z,xs,t,[conf])
 %
 %   Input parameters:
-%       X           - [xmin,xmax]
-%       Y           - [ymin,ymax]
-%       Z           - [zmin,zmax]
-%       xs          - position of point source (m)
-%       t           - time (samples)
+%       X           - x-axis / m; single value or [xmin,xmax]
+%       Y           - y-axis / m; single value or [ymin,ymax]
+%       Z           - z-axis / m; single value or [zmin,zmax]
+%       xs          - position of point source / m
+%       t           - time / samples
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - Simulated wave field
-%       x           - corresponding x axis
-%       y           - corresponding y axis
-%       z           - corresponding z axis
+%       x           - corresponding x axis / m
+%       y           - corresponding y axis / m
+%       z           - corresponding z axis / m
 %
 %   WAVE_FIELD_IMP_POINT_SOURCE(X,Y,Z,xs,t,conf) simulates a wave
 %   field of a point source positioned at xs.
@@ -24,7 +24,7 @@ function varargout = wave_field_imp_point_source(X,Y,Z,xs,varargin)
 %   References:
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: wave_field_mono, plot_wavefield, wave_field_mono_point_source
+%   see also: wave_field_imp, plot_wavefield, wave_field_mono_point_source
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

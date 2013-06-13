@@ -1,10 +1,12 @@
 function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 %GREENS_FUNCTION_IMP returns a Green's function in the time domain
 %
-%   Usage: g = greens_function_imp(x,y,z,xs,src,t,[conf])
+%   Usage: [g,t] = greens_function_imp(x,y,z,xs,src,t,[conf])
 %
 %   Input options:
-%       x,y     - x,y points for which the Green's function should be calculated
+%       x       - x points
+%       y       - y points
+%       z       - z points
 %       xs      - position of the source
 %       src     - source model of the Green's function. Valid models are:
 %                   'ps' - point source
@@ -14,17 +16,20 @@ function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       g       - Green's function evaluated at the points x,y
+%       g       - Green's function evaluated at the points x,y,z
+%       t       - Correspondiong time values with integrated time shift
 %
-%   GREENS_FUNCTION_IMP(x,y,xs,src) calculates the Green's function for the
-%   given source model located at xs for the given points x,y. Note, that the
-%   delta function for the time t is not performed and the result is independent
-%   of t.
-%
+%   GREENS_FUNCTION_IMP(x,y,z,xs,src,t) calculates the Green's function for the
+%   given source model located at xs for the given points x,y,z. Note, that the
+%   delta function for the time t is returned as an extra argument. If you want
+%   the value of the Green's function only to this specific time you should have
+%   a look at wave_field_imp() and apply the folowing command:
+%   [p,x,y,z] = wave_field_imp(X,Y,Z,[xs 0 -1 0],src,1,t,conf);
+%   
 %   References:
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: greens_function_mono, wave_field_mono
+%   see also: greens_function_mono, wave_field_imp
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

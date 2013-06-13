@@ -4,25 +4,25 @@ function [p,x,y,z,x0,win] = wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf)
 %   Usage: [p,x,y,z,x0,win] = wave_field_imp_wfs(X,Y,Z,xs,src,t,L,[conf])
 %
 %   Input options:
-%       X           - [xmin,xmax]
-%       Y           - [ymin,ymax]
-%       Z           - [zmin,zmax]
-%       xs          - position of point source (m)
+%       X           - x-axis / m; single value or [xmin,xmax]
+%       Y           - y-axis / m; single value or [ymin,ymax]
+%       Z           - z-axis / m; single value or [zmin,zmax]
+%       xs          - position of point source / m
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs, ys are the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
-%       t           - time point t of the wave field (samples)
-%       L           - array length (m)
+%       t           - time point t of the wave field / samples
+%       L           - array length / m
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output options:
 %       p           - simulated wave field
-%       x           - corresponding x axis
-%       y           - corresponding y axis
-%       z           - corresponding z axis
-%       x0          - secondary sources
+%       x           - corresponding x axis / m
+%       y           - corresponding y axis / m
+%       z           - corresponding z axis / m
+%       x0          - secondary sources / m
 %       win         - tapering window
 %
 %   WAVE_FIELD_IMP_WFS(X,Y,Z,xs,src,t,L,conf) simulates a wave field of the
@@ -32,6 +32,8 @@ function [p,x,y,z,x0,win] = wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf)
 %   To plot the result use:
 %   conf.plot.usedb = 1;
 %   plot_wavefield(p,x,y,z,x0,win,conf);
+%
+%   see also: driving_function_imp_wfs, wave_field_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

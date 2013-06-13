@@ -4,25 +4,25 @@ function [P,x,y,z,x0,win] = wave_field_mono_wfs(X,Y,Z,xs,src,f,L,conf)
 %   Usage: [P,x,y,z,x0,win] = wave_field_mono_wfs(X,Y,Z,xs,src,f,L,[conf])
 %
 %   Input parameters:
-%       X           - [xmin,xmax]
-%       Y           - [ymin,ymax]
-%       Z           - [zmin,zmax]
-%       xs          - position of virtual source (m)
+%       X           - x-axis / m; single value or [xmin,xmax]
+%       Y           - y-axis / m; single value or [ymin,ymax]
+%       Z           - z-axis / m; single value or [zmin,zmax]
+%       xs          - position of virtual source / m
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
-%       f           - monochromatic frequency (Hz)
-%       L           - array length (m)
+%       f           - monochromatic frequency / Hz
+%       L           - array length / m
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - simulated wave field
-%       x           - corresponding x axis
-%       y           - corresponding y axis
-%       z           - corresponding z axis
-%       x0          - active secondary sources
+%       x           - corresponding x axis / m
+%       y           - corresponding y axis / m
+%       z           - corresponding z axis / m
+%       x0          - active secondary sources / m
 %       win         - tapering window of the secondary sources
 %
 %   WAVE_FIELD_MONO_WFS(X,Y,Z,xs,L,f,src,conf) simulates a wave field for the

@@ -4,33 +4,34 @@ function varargout = wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,t,L,conf)
 %   Usage: [p,x,y,z,x0] = wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,t,L,[conf])
 %
 %   Input options:
-%       X           - [xmin,xmax]
-%       Y           - [ymin,ymax]
-%       Z           - [zmin,zmax]
-%       xs          - position of point source (m)
+%       X           - x-axis / m; single value or [xmin,xmax]
+%       Y           - y-axis / m; single value or [ymin,ymax] 
+%       Z           - z-axis / m; single value or [zmin,zmax]
+%       xs          - position of point source / m
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs, ys are the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
-%       t           - time point t (samples)
-%       L           - array length (m)
+%       t           - time point t / samples
+%       L           - array length / m
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output options:
 %       p           - simulated wave field
-%       x           - corresponding x axis
-%       y           - corresponding y axis
-%       z           - corresponding z axis
-%       x0          - positions and directions of the secondary sources
+%       x           - corresponding x axis / m
+%       y           - corresponding y axis / m
+%       z           - corresponding z axis / m
+%       x0          - positions and directions of the secondary sources / m
 %
 %   WAVE_FIELD_IMP_NFCHOA_25D(X,Y,Z,xs,src,t,L,conf) simulates a wave field of the
 %   given source type (src) using a NFC-HOA 2.5 dimensional driving
 %   function at the time point t.
 %
 %   To plot the result use:
-%   x0 = secondary_source_positions(L,conf);
 %   conf.plot.usedb = 1;
 %   plot_wavefield(p,x,y,z,x0,conf);
+%
+%   see also: driving_function_imp_nfchoa_25d, wave_field_mono_nfchoa_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

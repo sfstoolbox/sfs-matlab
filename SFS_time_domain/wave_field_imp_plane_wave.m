@@ -4,27 +4,27 @@ function varargout = wave_field_imp_plane_wave(X,Y,Z,xs,t,conf)
 %   Usage: [P,x,y,z] = wave_field_imp_plane_wave(X,Y,Z,xs,t,[conf])
 %
 %   Input parameters:
-%       X           - [xmin,xmax]
-%       Y           - [ymin,ymax]
-%       Z           - [zmin,zmax]
-%       xs          - direction of the plane wave
-%       t           - time (samples)
+%       X           - x-axis / m; single value or [xmin,xmax]
+%       Y           - y-axis / m; single value or [ymin,ymax]
+%       Z           - z-axis / m; single value or [zmin,zmax]
+%       xs          - direction of the plane wave / m
+%       t           - time / samples
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - Simulated wave field
-%       x           - corresponding x axis
-%       y           - corresponding y axis
-%       z           - corresponding z axis
+%       x           - corresponding x axis / m
+%       y           - corresponding y axis / m
+%       z           - corresponding z axis / m
 %
-%   WAVE_FIELD_IMP_PLANE_WAVE(X,Y,Z,xs,f,conf) simulates a wave
+%   WAVE_FIELD_IMP_PLANE_WAVE(X,Y,Z,xs,t,conf) simulates a wave
 %   field of a plane wave going in the direction xs.
 %   To plot the result use plot_wavefield(P,x,y,z).
 %
 %   References:
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: wave_field_mono, plot_wavefield, wave_field_mono_plane_wave
+%   see also: wave_field_imp, plot_wavefield, wave_field_mono_plane_wave
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

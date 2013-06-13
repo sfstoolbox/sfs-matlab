@@ -4,20 +4,23 @@ function [p,x,y,z] = wave_field_imp(X,Y,Z,x0,src,d,t,conf)
 %   Usage: [p,x,y,z] = wave_field_imp(X,Y,Z,x0,d,t,[conf])
 %
 %   Input options:
-%       X           - length of the X axis (m); single value or [xmin,xmax]
-%       Y           - length of the Y axis (m); single value or [ymin,ymax]
-%       Z           - [zmin,zmax]
-%       x0          - positions of secondary sources
-%       src
+%       X           - x-axis / m; single value or [xmin,xmax]
+%       Y           - y-axis / m; single value or [ymin,ymax]
+%       Z           - z-axis / m; single value or [zmin,zmax]
+%       x0          - positions of secondary sources / m
+%       src         - source model of the Green's function. Valid models are:
+%                       'ps' - point source
+%                       'ls' - line source
+%                       'pw' - plane wave
 %       d           - driving function of secondary sources
-%       t           - time (samples)
+%       t           - time / samples
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output options:
 %       p           - simulated wave field
-%       x           - corresponding x axis
-%       y           - corresponding y axis
-%       z           - corresponding z axis
+%       x           - corresponding x axis / m
+%       y           - corresponding y axis / m
+%       z           - corresponding z axis / m
 %
 %   WAVE_FIELD_IMP(X,Y,Z,x0,d,t,conf) computes the wave field synthesized by 
 %   secondary sources driven by individual driving functions to the time t.
@@ -26,6 +29,8 @@ function [p,x,y,z] = wave_field_imp(X,Y,Z,x0,src,d,t,conf)
 %   To plot the result use:
 %   conf.plot.usedb = 1;
 %   plot_wavefield(p,x,y,z,conf);
+%  
+%   see also: wave_field_mono, plot_wavefield, greens_function_imp
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

@@ -87,6 +87,6 @@ x0 = secondary_source_positions(L,conf);
 % Calculate driving function
 d = driving_function_imp_nfchoa_25d(x0,xs,src,L,conf);
 % Calculate wave field
-[varargout{1:min(nargout,4)}] = wave_field_imp_3d(X,Y,Z,x0,d,t,conf);
+[varargout{1:min(nargout,4)}] = wave_field_imp(X,Y,Z,x0,'ps',d,t,conf);
 % Return secondary sources if desired
 if nargout==5 varargout{5}=x0; end

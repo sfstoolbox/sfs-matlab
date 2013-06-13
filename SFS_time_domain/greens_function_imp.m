@@ -60,18 +60,23 @@ function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 7;
-nargmax = 8;
+nargmin = 6;
+nargmax = 7;
 narginchk(nargmin,nargmax);
 isargmatrix(x,y,z);
 isargposition(xs);
 isargchar(src);
-isargpositivescalar(t);
+isargscalar(t);
 if nargin<nargmax
     conf = SFS_config;
 else
     isargstruct(conf);
 end
+
+
+%% ===== Configuration ===================================================
+c = conf.c;
+fs = conf.fs;
 
 
 %% ===== Computation =====================================================
@@ -86,8 +91,10 @@ if strcmp('ps',src)
     % see: Williams1999, p. FIXME: ??
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
-    g = 1./(4*pi)./r;
     t = (r/c)*fs-t;
+    %raxis = 0.01:0.01:max(r(:));
+    %g = interp1(raxis,1./(4*pi)./raxis,t/fs*c,'spline');
+    g = 1./(4*pi)./r;
 
 elseif strcmp('ls',src)
     % Source model for a line source: 2D Green's function.

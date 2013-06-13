@@ -1,14 +1,14 @@
-function [p,x,y,z] = wave_field_imp_3d(X,Y,Z,x0,d,t,conf)
-%WAVE_FIELD_IMP_3D returns the wave field in time domain with point sources as
-%secondary sources
+function [p,x,y,z] = wave_field_imp(X,Y,Z,x0,src,d,t,conf)
+%WAVE_FIELD_IMP returns the wave field in time domain
 %
-%   Usage: [p,x,y,z] = wave_field_imp_3d(X,Y,Z,x0,d,t,[conf])
+%   Usage: [p,x,y,z] = wave_field_imp(X,Y,Z,x0,d,t,[conf])
 %
 %   Input options:
 %       X           - length of the X axis (m); single value or [xmin,xmax]
 %       Y           - length of the Y axis (m); single value or [ymin,ymax]
 %       Z           - [zmin,zmax]
 %       x0          - positions of secondary sources
+%       src
 %       d           - driving function of secondary sources
 %       t           - time (samples)
 %       conf        - optional configuration struct (see SFS_config)
@@ -61,11 +61,12 @@ function [p,x,y,z] = wave_field_imp_3d(X,Y,Z,x0,d,t,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 7;
+nargmin = 7;
+nargmax = 8;
 narginchk(nargmin,nargmax);
 isargvector(X,Y);
 isargmatrix(x0,d);
+isargchar(src);
 isargscalar(t);
 if nargin<nargmax
     conf = SFS_config;
@@ -98,13 +99,44 @@ bandpassfhigh = conf.bandpassfhigh;
 % Spatial grid
 [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
 
-% FIXME: this needs a little bit more explanation!
+
+% === Reshaping of the driving signal ===
+%
 % time reversal of driving function due to propagation of sound
 % later parts of the driving function are emitted later by secondary
 % sources
+%
+% ^      _     
+% |     / \    driving function
+% |    /   --
+% | ---      --------
+%  -----------------------------------> t
+%
+% ^            _
+% |           / \  sound coming out of
+% |         --   \ the secondary source
+% | --------      ---
+%  -----------------------------------> x
+%   ^
+%   position of secondary source
+%
 d = d(end:-1:1,:);
+%
+% Add additional zeros to the driving signal to ensure an amplitude of 0 in the
+% whole listening area before and after the real driving signal.
+% First get the maximum distance of the listening area and convert it into time
+% samples
+[~,x1,x2] = xyz_axes_selection(x,y,z); % get active axes
+max_distance_in_samples = norm([x1(1) x2(1)]-[x1(end) x2(end)])/c * fs;
+% Append zeros at the beginning of the driving signal
+d = [zeros(max_distance_in_samples,size(d,2)); d];
 % correct time vector to work with inverted driving functions
+% this will lead to a time point of t=0 for the starting of emitting the driving
+% signal
 t_inverted = t-size(d,1);
+% Append zeros at the end of the driving signal
+d = [d; zeros(max_distance_in_samples,size(d,2))];
+
 
 % Initialize empty wave field
 p = zeros(length(y),length(x));
@@ -120,20 +152,14 @@ for ii = 1:size(x0,1)
     % ================================================================
     % Secondary source model: Greens function g3D(x,t)
     % distance of secondary source to receiver position
-    r = sqrt((xx-x0(ii,1)).^2 + (yy-x0(ii,2)).^2 + (zz-x0(ii,3)).^2 );
-    % amplitude decay for a 3D monopole
-    g = 1./(4*pi*r);
-    %g = greens_function_imp(xx,yy,x0(ii,1:3),src);
-
-    % shift driving function
-    d(:,ii) = delayline(d(:,ii)',t_inverted,1,conf)';
+    [g,t_delta] = greens_function_imp(xx,yy,zz,x0(ii,1:3),src,t_inverted,conf);
 
     % Interpolate the driving function w.r.t. the propagation delay from
-    % the secondary sources to a field point.
+    % the secondary sources to a field point. The t returned from the Green's
+    % function already inlcudes the desired time shift of the driving signal.
     % NOTE: the interpolation is required to account for the fractional
     % delay times from the loudspeakers to the field points
-    t_vector = 1:length(d(:,ii));
-    ds = interp1(t_vector,d(:,ii),r/c*fs,'spline');
+    ds = interp1(1:length(d(:,ii)),d(:,ii),t_delta,'spline');
 
     % ================================================================
     % Wave field p(x,t)

@@ -102,7 +102,7 @@ d = bsxfun(@times,d,win');
 % disable plotting in order to integrate the tapering window
 conf.useplot = 0;
 % Calculate wave field
-[p,x,y,z] = wave_field_imp_3d(X,Y,Z,x0,d,t,conf);
+[p,x,y,z] = wave_field_imp(X,Y,Z,x0,'ps',d,t,conf);
 
 
 %% ===== Plotting ========================================================

@@ -12,3 +12,5 @@ octave-core
 # tmp files
 *.swp
 *.asv
+# pdf files
+*.pdf

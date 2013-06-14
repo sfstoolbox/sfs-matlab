@@ -6,6 +6,10 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
       positioned plane in 3D
     - added 3D WFS functions
     - make the Toolbox work in 3D, which brakes backwards compability!
+    - now all monochromatic functions have a time_domain counterpart
+    - reordered the argouts for the wave field functions; now P is always the
+      first argout
+    - automatically plotting of the wave fields if no argouts are wanted
     - changed direction of focused source from the conf.xref vector directly
       into xs. For a focused source xs is now [1x6]
 

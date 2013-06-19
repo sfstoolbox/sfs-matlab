@@ -232,9 +232,9 @@ else
     end
     % Create output file name
     if p.usefile
-        p.datafile = sprintf('%s.dat',p.file(end-2:end));
-        p.lsfile = sprintf('%s_ls.txt',p.file(end-2:end));
-        p.gnuplotfile = sprintf('%s.gnu',p.file(end-2:end));
+        p.datafile = sprintf('%s.dat',p.file(1:end-4));
+        p.lsfile = sprintf('%s_ls.txt',p.file(1:end-4));
+        p.gnuplotfile = sprintf('%s.gnu',p.file(1:end-4));
     else
         % Generate a random number string for the tmp files
         rn = sprintf('%04.0f',10000*rand);

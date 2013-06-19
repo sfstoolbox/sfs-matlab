@@ -85,7 +85,8 @@ usehpre = conf.usehpre;
 if usehpre
     hpre = wfs_prefilter(conf);
 else
-    hpre = 1; % dirac pulse
+    %hpre = 1; % dirac pulse
+    hpre = hanningwin(5,5,10);
 end
 
 % Secondary source positions and directions
@@ -123,7 +124,7 @@ delay = delay-min(delay);
 % the delayline function cuts into the end of the driving signals in order to
 % delay them. NOTE: 800 is only a guess, we should check, if the value is large
 % enough for common cases.
-d_proto = [column_vector(hpre') zeros(1,800)];
+d_proto = [row_vector(hpre) zeros(1,800)];
 d = zeros(length(d_proto),size(x0,1));
 for ii=1:size(x0,1)
     % Shift and weight prototype driving function

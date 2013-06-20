@@ -96,7 +96,7 @@ end
 % compute impulse responses of modal filters
 dm = zeros(order+1,N);
 for n=1:order+1
-    dm(n,:) = [zeros(1,N0) 1 zeros(1,N-1-N0)];
+    dm(n,:) = [zeros(1,N0) hanningwin(5,5,10)' zeros(1,N-10-N0)];
     [b,a] = modal_filter_coeff_nfchoa_25d(n-1,R,src,r_src,conf);
     for ii=1:length(b)
         dm(n,:) = filter(b{ii},a{ii},dm(n,:));

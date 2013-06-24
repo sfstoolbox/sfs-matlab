@@ -1,4 +1,4 @@
-function [fal] = aliasing_frequency_3d(x0,conf)
+function [fal,dx0] = aliasing_frequency_3d(x0,conf)
 %ALIASING_FREQUENCY_3d returns the aliasing frequency for a 
 % 3d spherical grid
 %
@@ -55,14 +55,20 @@ end
 c = conf.c;
 
 %% ===== Computation =====================================================
-scalarproduct = (x0(1,:)*x0.')';
-% calculate L2-norm
-for ii = 1:length(x0)
-    norm_vec(ii,1) = norm(x0(ii,:));
+% calculate the distance to the nearest secondary source for all secondary
+% sources
+for ii=1:size(x0,1)
+    % first secondary source position
+    x01 = x0(ii,1:3);
+    % all other positions
+    x02 = [x0(1:ii-1,1:3); x0(ii+1:end,1:3)];
+    % get distance between points
+    dist = bsxfun(@minus,x02,x01);
+    dist = vector_norm(dist,2);
+    % get the smallest distance
+    dx0(ii) = min(dist);
 end
-% calculate distance between points
-cos_angle = scalarproduct./(norm_vec.*norm(x0(1,:)));
-cos_angle = cos_angle(2:end);
-dx0 = acos(max(cos_angle))*sqrt(x0(1,1)^2+x0(1,2)^2+x0(1,3)^2);
+% get the mean distance between all speakers
+dx0 = mean(dx0);
 % calculate aliasing frequency
 fal = c/(2*dx0);

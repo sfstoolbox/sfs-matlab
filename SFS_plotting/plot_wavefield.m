@@ -186,8 +186,10 @@ if ~(p.usegnuplot)
 
     % Plotting
     if(p.usedb)
+        P_dB = 20*log10(abs(P));
+        P_dB = P_dB - max(P_dB(:));
         % Plot the amplitude of the wave field in dB
-        imagesc(x1,x2,20*log10(abs(P)),p.caxis);
+        imagesc(x1,x2,P_dB,p.caxis);
     else
         % Plot the wave field
         imagesc(x1,x2,real(P),p.caxis);

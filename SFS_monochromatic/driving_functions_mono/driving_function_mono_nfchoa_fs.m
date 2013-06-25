@@ -1,27 +1,27 @@
-function D = driving_function_mono_nfchoa_ps(x0,nx0,xs,f,conf)
-%DRIVING_FUNCTION_MONO_NFCHOA_PS returns the driving signal D for a point source
+function D = driving_function_mono_nfchoa_fs(x0,nx0,xs,f,conf)
+%DRIVING_FUNCTION_MONO_NFCHOA_FS returns the driving signal D for a focused source
 %in NFCHOA
 %
-%   Usage: D = driving_function_mono_nfchoa_ps(x0,nx0,xs,f,[conf])
+%   Usage: D = driving_function_mono_nfchoa_fs(x0,nx0,xs,f,[conf])
 %
 %   Input parameters:
 %       x0          - position of the secondary sources (m) [nx3]
 %       nx0         - directions of the secondary sources (m) [nx3]
-%       xs          - position of virtual point source (m) [nx3]
+%       xs          - position of focused source (m) [nx3]
 %       f           - frequency of the monochromatic source (Hz)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
 %
-%   DRIVING_FUNCTION_MONO_NFCHOA_PS(x0,xs,f,src,conf) returns NFCHOA driving
-%   signals for the given secondary sources, the virtual point source position
+%   DRIVING_FUNCTION_MONO_NFCHOA_FS(x0,xs,f,src,conf) returns NFCHOA driving
+%   signals for the given secondary sources, the focused source position
 %   and the frequency f.
 %
 %   References:
 %       FIXME: Update references
 %
-%   see also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_ps
+%   see also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_fs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -88,7 +88,7 @@ if strcmp('2D',dimension)
         to_be_implemented;
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
-            'for a 2D point source.'],upper(mfilename),driving_functions);
+            'for a 2D focused source.'],upper(mfilename),driving_functions);
     end
 
 
@@ -103,7 +103,7 @@ elseif strcmp('2.5D',dimension)
         to_be_implemented;
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
-            'for a 2.5D point source.'],upper(mfilename),driving_functions);
+            'for a 2.5D focused source.'],upper(mfilename),driving_functions);
     end
 
 
@@ -116,7 +116,7 @@ elseif strcmp('3D',dimension)
         to_be_implemented;
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
-            'for a 3D point source.'],upper(mfilename),driving_functions);
+            'for a 3D focused source.'],upper(mfilename),driving_functions);
     end
 
 else

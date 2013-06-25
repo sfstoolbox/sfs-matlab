@@ -1,23 +1,22 @@
-function [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf)
+function [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z)
 %XY_GRID returns a xy-grid for the listening area
 %
-%   Usage: [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,[conf])
+%   Usage: [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z)
 %
 %   Input parameters:
 %       X        - x-axis / m; single value or [xmin,xmax]
 %       Y        - y-axis / m; single value or [ymin,ymax]
 %       Z        - z-axis / m; single value or [zmin,zmax]
-%       conf     - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       xx,yy,zz - matrices representing the xy-grid / m
 %       x,y,z    - x-, y-, z-axis / m
 %
-%   XYZ_GRID(X,Y,Z,conf) creates a xyz-grid to avoid a loop in the wave field
+%   XYZ_GRID(X,Y,Z) creates a xyz-grid to avoid a loop in the wave field
 %   calculation for the whole listening area. It returns also the x-, y-, z-axis
 %   for the listening area, defined by the points given with X,Y,Z.
 %
-%   see also: wave_field_mono_wfs
+%   see also: xyz_axes, xyz_axes_selection, wave_field_mono
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -49,18 +48,9 @@ function [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf)
 
 %% ===== Checking input parameters =======================================
 nargmin = 3;
-nargmax = 4;
-error(nargchk(nargmin,nargmax,nargin));
-isargvector(X,Y);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
-
-
-% ===== Configuration ====================================================
-zreferenceaxis = conf.zreferenceaxis;
+nargmax = 3;
+narginchk(nargmin,nargmax);
+isargvector(X,Y,Z);
 
 
 %% ===== Computation =====================================================
@@ -69,18 +59,27 @@ zreferenceaxis = conf.zreferenceaxis;
 % check which dimensions will be non singleton
 dimensions = xyz_axes_selection(x,y,z);
 % create xyz-grid
-if dimensions(1) && dimensions(2)
+if all(dimensions)
+    % create a 3D grid => size(xx)==[xysamples xysamples xysamples]
+    [xx,yy,zz] = meshgrid(x,y,z);
+elseif dimensions(1) && dimensions(2)
+    % create a 2D grid => size(xx)==[xysamples xysamples]
     [xx,yy] = meshgrid(x,y);
-    % create the z grid regarding its reference axis.
-    % this means that z changes its values along this particular axis.
-    if strcmp('y',zreferenceaxis)
-        [~,zz] = meshgrid(x,z);
-    elseif strcmp('x',zreferenceaxis)
-        zz = meshgrid(z,y);
-    else
-        error('%s: zreferenceaxis has to be ''y'' or ''x''.',upper(mfilename));
-    end
-else
+    zz = meshgrid(z,y);
+elseif dimensions(1) && dimensions(3)
+    [xx,zz] = meshgrid(x,z);
+    yy = meshgrid(y,z);
+elseif dimensions(2) && dimensions(3)
     [yy,zz] = meshgrid(y,z);
-    xx = meshgrid(x,y);
+    xx = meshgrid(x,z);
+elseif any(dimensions)
+    % create a 1D grid => size(xx)==[xysamples 1]
+    xx = x;
+    yy = y;
+    zz = z;
+else
+    % create a 0D grid => size(xx)==[1 1]
+    xx = x(1);
+    yy = y(1);
+    zz = z(1);
 end

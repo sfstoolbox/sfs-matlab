@@ -117,8 +117,6 @@ conf.frame = 1000;
 % '2.5D'  - point sources as secondary sources, arranged in a circle, line, ...
 % '3D'    - point sources as secondary sources, arranged in a sphere, plane, ...
 conf.dimension = '2.5D';
-% Reference axis for changing of z, by zmin==zmax (singleton)
-conf.zreferenceaxis = 'y';
 % Implementation of driving functions. For the default ones use 'default'. These
 % functions are described in the PDF documentation, in the doc folder of the
 % SFS-Toolbox. For possible other flags have a look into the driving functions.

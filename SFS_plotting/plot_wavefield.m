@@ -63,7 +63,7 @@ nargmin = 4;
 nargmax = 7;
 narginchk(nargmin,nargmax);
 isargvector(x,y,z);
-isargmatrix(P);
+isargnumeric(P);
 if nargin==nargmax-1
     if isstruct(ls_activity)
         conf = ls_activity;
@@ -115,7 +115,15 @@ p.file = conf.plot.file;
 %% ===== Calculation =====================================================
 % Handle the given axis and check which should be plotted
 [dimensions,x1,x2] = xyz_axes_selection(x,y,z);
-if ~dimensions(1)
+if all(dimensions)
+    error(['%s: at the moment no method is implemented to plot ', ...
+        'a complete 3D cube of points. Your wave field has the ', ...
+        'dimension [%i %i %i]. Discard one of the dimension for ', ...
+        'plotting.'],upper(mfilename),size(P,1),size(P,2),size(P,3));
+elseif ~any(dimensions)
+    error(['%s: you have only one point in the wave field. ', ...
+        'Omitting the plotting.'],upper(mfilename));
+elseif ~dimensions(1)
     % FIXME: in order to work with gnuplot the label should be prtinted
     % with the extra function, which can handle if the output should be
     % LaTeX or something else
@@ -132,11 +140,6 @@ else
     % FIXME: in this case every three axis should be plotted and we should
     % switch to use splot or some other alternativ to plot it in 3D.
     to_be_implemented(mfilename);
-end
-
-% Check the size of x,y and P
-if size(P,1)~=length(x2) || size(P,2)~=length(x1)
-    error('%s: the size of P has to be x2 x x1.',upper(mfilename));
 end
 
 if(p.usedb)
@@ -184,35 +187,53 @@ if ~(p.usegnuplot)
     % set size
     figsize(p.size(1),p.size(2),p.size_unit);
 
-    % Plotting
-    if(p.usedb)
+    % Scale dB value if needed
+    if p.usedb
         P_dB = 20*log10(abs(P));
         P_dB = P_dB - max(P_dB(:));
-        % Plot the amplitude of the wave field in dB
-        imagesc(x1,x2,P_dB,p.caxis);
-    else
-        % Plot the wave field
-        imagesc(x1,x2,real(P),p.caxis);
     end
 
-    % Add color bar
-    set_colorbar(conf);
+    % Plotting
+    if sum(dimensions)==1 % singleton dimension
+        if p.usedb
+            plot(x1,P_dB);
+            xlabel(p.xlabel);
+            ylabel('Amplitude / dB');
+        else
+            plot(x1,real(P));
+            xlabel(p.xlabel);
+            ylabel('Amplitude');
+        end
+    else
 
-    % Set the y direction in normal mode (imagesc uses the reverse mode by
-    % default)
-    turn_imagesc;
+        if(p.usedb)
+            P_dB = 20*log10(abs(P));
+            P_dB = P_dB - max(P_dB(:));
+            % Plot the amplitude of the wave field in dB
+            imagesc(x1,x2,P_dB,p.caxis);
+        else
+            % Plot the wave field
+            imagesc(x1,x2,real(P),p.caxis);
+        end
 
-    % Set the axis to use the same amount of space for the same length (m)
-    axis image;
-    % Labels etc. for the plot
-    xlabel(p.xlabel);
-    ylabel(p.ylabel);
+        % Add color bar
+        set_colorbar(conf);
 
-    % Add loudspeaker to the plot
-    if p.loudspeakers && dimensions(1) && dimensions(2)
-        hold on;
-        draw_loudspeakers(x0,ls_activity,conf);
-        hold off;
+        % Set the y direction in normal mode (imagesc uses the reverse mode by
+        % default)
+        turn_imagesc;
+
+        % Set the axis to use the same amount of space for the same length (m)
+        axis image;
+        % Labels etc. for the plot
+        xlabel(p.xlabel);
+        ylabel(p.ylabel);
+        % Add loudspeaker to the plot
+        if p.loudspeakers && dimensions(1) && dimensions(2)
+            hold on;
+            draw_loudspeakers(x0,ls_activity,conf);
+            hold off;
+        end
     end
 
     % Save as file

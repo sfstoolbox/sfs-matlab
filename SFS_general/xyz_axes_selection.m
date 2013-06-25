@@ -69,33 +69,33 @@ if z(1)==z(end)
 end
 
 % Return the axis
-x1=x; str1='x';
-x2=y; str2='y';
-x3=z; str3='z';
+x1=x;
+x2=y;
+x3=z;
 if all(dimensions)
     % do nothing
 elseif dimensions(1) && dimensions(2)
-    x3=[]; str3='';
+    x3=z(1);
 elseif dimensions(1) && dimensions(3)
-    x2=z; str2='z';
-    x3=[]; str3='';
+    x2=z;
+    x3=y(1);
 elseif dimensions(2) && dimensions(3)
-    x1=y; str1='y';
-    x2=z; str2='z';
-    x3=[]; str3='';
+    x1=y;
+    x2=z;
+    x3=x(1);
 elseif dimensions(1)
-    x2=[]; str2='';
-    x3=[]; str3='';
+    x2=y(1);
+    x3=z(1);
 elseif dimensions(2)
-    x1=y; str1='y';
-    x2=[]; str2='';
-    x3=[]; str3='';
+    x1=y;
+    x2=x(1);
+    x3=z(1);
 elseif dimensions(3)
-    x1=z; str1='z';
-    x2=[]; str2='';
-    x3=[]; str3='';
+    x1=z;
+    x2=x(1);
+    x3=z(1);
 else
-    x1=[]; str1='';
-    x2=[]; str2='';
-    x3=[]; str3='';
+    x1=x(1);
+    x2=y(1);
+    x3=z(1);
 end

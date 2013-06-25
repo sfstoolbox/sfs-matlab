@@ -69,32 +69,42 @@ xysamples = conf.xysamples;
 
 %% ===== Computation =====================================================
 % Get our active axis
-[dimensions,x1,x2,x3,str1,str2,str3] = xyz_axes_selection(x,y,z);
+[dimensions] = xyz_axes_selection(x,y,z);
 
-% switch xref entries, if axes are switched (due to empty x-axis)
-if all(dimensions) || (dimensions(1)&&dimensions(2)) || dimensions(1)
-    % do nothing
-elseif dimensions(2)
-    xref(1) = xref(2);
-    xref(2) = xref(3);
-elseif dimensions(3)
-    xref(2) = xref(3);
-end
-    
 % Use the half of the x axis and xref
-if x1 [~,idx1]=find(x1>xref(1),1); check_idx(idx1,x1,xref(1),str1,xysamples); end
-if x2 [~,idx2]=find(x2>xref(2),1); check_idx(idx2,x2,xref(2),str2,xysamples); end
-if x3 [~,idx3]=find(x3>xref(3),1); check_idx(idx3,x3,xref(3),str3,xysamples); end
+if dimensions(1)
+    [~,xidx] = find(x>xref(1),1);
+    check_idx(xidx,x,xref(1),'X',xysamples);
+end
+if dimensions(2)
+    [~,yidx] = find(y>xref(2),1);
+    check_idx(yidx,y,xref(2),'Y',xysamples);
+end
+if dimensions(3)
+    [~,zidx] = find(z>xref(3),1);
+    check_idx(zidx,z,xref(3),'Z',xysamples);
+end
 
 % Scale signal to 1
 if all(dimensions)
     % FIXME: this is for a future version, but I don't know if it will work
-    P = 1*P/abs(P(idx3,idx2,idx1));
-elseif sum(dimensions)==2
-    P = 1*P/abs(P(idx2,idx1));
-elseif sum(dimensions)==1
-    P = 1*P/abs(P(idx1));
+    scale = abs(P(zidx,yidx,xidx));
+elseif dimensions(1) && dimensions(2)
+    scale = abs(P(yidx,xidx));
+elseif dimensions(1) && dimensions(3)
+    scale = abs(P(zidx,xidx));
+elseif dimensions(2) && dimensions(3)
+    scale = abs(P(zidx,yidx));
+elseif dimensions(1)
+    scale = abs(P(xidx));
+elseif dimensions(2)
+    scale = abs(P(yidx));
+elseif dimensions(3)
+    scale = abs(P(zidx));
+else
+    scale = 1;
 end
+P = P/scale;
 
 end % of function
 

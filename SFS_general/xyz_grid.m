@@ -80,9 +80,9 @@ elseif dimensions(2) && dimensions(3)
     xx = meshgrid(x,z);
 elseif any(dimensions)
     % create a 1D grid => size(xx)==[xysamples 1]
-    xx = x;
-    yy = y;
-    zz = z;
+    xx = x';
+    yy = y';
+    zz = z';
 else
     % create a 0D grid => size(xx)==[1 1]
     xx = x(1);

@@ -83,7 +83,7 @@ usehpre = conf.usehpre;
 
 % Calculate pre-equalization filter if required
 if usehpre
-    hpre = wfs_prefilter(conf);
+    hpre = conv(hanningwin(5,5,10),wfs_prefilter(conf));
 else
     %hpre = 1; % dirac pulse
     hpre = hanningwin(5,5,10);

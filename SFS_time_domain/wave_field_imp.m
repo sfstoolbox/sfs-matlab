@@ -131,7 +131,7 @@ d = d(end:-1:1,:);
 % whole listening area before and after the real driving signal.
 % First get the maximum distance of the listening area and convert it into time
 % samples
-[dimensions,x1,x2] = xyz_axes_selection(x,y,z); % get active axes
+[dimensions,x1,x2,x3] = xyz_axes_selection(x,y,z); % get active axes
 if all(dimensions)
     max_distance_in_samples = ...
         norm([x(1) y(1) z(1)]-[x(end) y(end) z(end)])/c * fs;
@@ -148,8 +148,8 @@ t_inverted = t-size(d,1);
 d = [d; zeros(max_distance_in_samples,size(d,2))];
 
 
-% Initialize empty wave field
-p = zeros(length(y),length(x));
+% Initialize empty wave field (dependent on the axes we want)
+p = squeeze(zeros(length(x3),length(x2),length(x1)));
 
 % Integration over loudspeaker
 for ii = 1:size(x0,1)

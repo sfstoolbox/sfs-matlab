@@ -63,7 +63,7 @@ function G = greens_function_mono(x,y,z,xs,src,f,conf)
 nargmin = 6;
 nargmax = 7;
 narginchk(nargmin,nargmax);
-isargmatrix(x,y);
+isargnumeric(x,y,z);
 isargposition(xs);
 isargchar(src);
 isargpositivescalar(f);

@@ -80,11 +80,6 @@ else
 end
 
 
-%% ===== Configuration ==================================================
-% phase of omega
-phase = conf.phase;
-
-
 %% ===== Computation ====================================================
 
 % Calculate the driving function in time-frequency domain

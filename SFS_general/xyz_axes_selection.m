@@ -1,8 +1,8 @@
-function [dimensions,x1,x2] = xyz_axes_selection(x,y,z)
+function [dimensions,x1,x2,x3,str1,str2,str3] = xyz_axes_selection(x,y,z)
 %XYZ_AXES_SELECTION returns the first two active dimensions and a vector
 %indicating which axes are selected
 %
-%   Usage: [dimensions,x1,x2] = xyz_axes_selection(x,y,z)
+%   Usage: [dimensions,x1,x2,x3] = xyz_axes_selection(x,y,z)
 %
 %   Input options:
 %       x,y,z      - vectors conatining the x-, y- and z-axis values / m
@@ -10,12 +10,13 @@ function [dimensions,x1,x2] = xyz_axes_selection(x,y,z)
 %   Output options:
 %       dimensions - 1x3 vector containing 1 or 0 to indicate the activity
 %                    of the single dimensions in the order [x y z]
-%       x1         - vector containing the first active axis / m
-%       x2         - vector containing the second active axis / m
+%       x1         - vector containing the first axis / m
+%       x2         - vector containing the second axis / m
+%       x3         - vector containing the third axis / m
 %
-%   XYZ_AXES_SELECTION(x,y,z) returns a vector indicating for the x-, y- and
+%   XYZ_AXES_SELECTION(x,y,z) returns a indicating vector for the x-, y- and
 %   z-axis if we have any activity on this axis or if it is a singleton axis.
-%   In addition the first non-singleton axis a returned.
+%   In addition the first non-singleton axis are returned.
 %
 %   see also: norm_wavefield, plot_wavefield, xyz_axes, xyz_grid
 
@@ -50,24 +51,51 @@ function [dimensions,x1,x2] = xyz_axes_selection(x,y,z)
 %% ===== Checking of input parameters ====================================
 nargmin = 3;
 nargmax = 3;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 isargvector(x,y,z);
 
 
 %% ===== Computation =====================================================
 dimensions = [1 1 1];
-x1 = x;
-x2 = y;
 % Check if we have any inactive dimensions
 if x(1)==x(end)
     dimensions(1) = 0;
-    x1 = y;
-    x2 = z;
 end
 if y(1)==y(end)
     dimensions(2) = 0;
-    x2 = z;
 end
 if z(1)==z(end)
     dimensions(3) = 0;
+end
+
+% Return the axis
+x1=x; str1='x';
+x2=y; str2='y';
+x3=z; str3='z';
+if all(dimensions)
+    % do nothing
+elseif dimensions(1) && dimensions(2)
+    x3=[]; str3='';
+elseif dimensions(1) && dimensions(3)
+    x2=z; str2='z';
+    x3=[]; str3='';
+elseif dimensions(2) && dimensions(3)
+    x1=y; str1='y';
+    x2=z; str2='z';
+    x3=[]; str3='';
+elseif dimensions(1)
+    x2=[]; str2='';
+    x3=[]; str3='';
+elseif dimensions(2)
+    x1=y; str1='y';
+    x2=[]; str2='';
+    x3=[]; str3='';
+elseif dimensions(3)
+    x1=z; str1='z';
+    x2=[]; str2='';
+    x3=[]; str3='';
+else
+    x1=[]; str1='';
+    x2=[]; str2='';
+    x3=[]; str3='';
 end

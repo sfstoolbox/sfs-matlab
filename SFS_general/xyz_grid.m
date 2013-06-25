@@ -1,4 +1,4 @@
-function [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z)
+function [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf)
 %XY_GRID returns a xy-grid for the listening area
 %
 %   Usage: [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z)
@@ -7,6 +7,7 @@ function [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z)
 %       X        - x-axis / m; single value or [xmin,xmax]
 %       Y        - y-axis / m; single value or [ymin,ymax]
 %       Z        - z-axis / m; single value or [zmin,zmax]
+%       conf     - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       xx,yy,zz - matrices representing the xy-grid / m
@@ -48,9 +49,14 @@ function [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z)
 
 %% ===== Checking input parameters =======================================
 nargmin = 3;
-nargmax = 3;
+nargmax = 4;
 narginchk(nargmin,nargmax);
 isargvector(X,Y,Z);
+if nargin<nargmax
+    conf = SFS_config;
+else
+    isargstruct(conf);
+end
 
 
 %% ===== Computation =====================================================

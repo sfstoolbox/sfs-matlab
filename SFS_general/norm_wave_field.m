@@ -53,7 +53,7 @@ function P = norm_wave_field(P,x,y,z,conf)
 nargmin = 4;
 nargmax = 5;
 narginchk(nargmin,nargmax);
-isargmatrix(P);
+isargnumeric(P);
 isargvector(x,y,z);
 if nargin<nargmax
     conf = SFS_config;
@@ -69,25 +69,43 @@ xysamples = conf.xysamples;
 
 %% ===== Computation =====================================================
 % Get our active axis
-[dimensions,x1,x2] = xyz_axes_selection(x,y,z);
-if ~dimensions(1)
+[dimensions,x1,x2,x3,str1,str2,str3] = xyz_axes_selection(x,y,z);
+
+% switch xref entries, if axes are switched (due to empty x-axis)
+if all(dimensions) || (dimensions(1)&&dimensions(2)) || dimensions(1)
+    % do nothing
+elseif dimensions(2)
     xref(1) = xref(2);
     xref(2) = xref(3);
-elseif ~dimensions(2)
+elseif dimensions(3)
     xref(2) = xref(3);
 end
     
 % Use the half of the x axis and xref
-[a,x1idx] = find(x1>xref(1),1);
-[a,x2idx] = find(x2>xref(2),1);
-% abs(x(1)-x(end))/xysamples gives us the maximum distance between to samples.
-% If abs(x(xidx)-xref(1)) is greater this indicates that we are out of our
-% bounds
-if isempty(x1idx) || abs(x1(x1idx)-xref(1))>2*abs(x1(1)-x1(end))/xysamples
-    error('%s: your used conf.xref is out of your X boundaries',upper(mfilename));
-end
-if isempty(x2idx) || abs(x2(x2idx)-xref(2))>2*abs(x2(1)-x2(end))/xysamples
-    error('%s: your used conf.xref is out of your Y boundaries',upper(mfilename));
-end
+if x1 [~,idx1]=find(x1>xref(1),1); check_idx(idx1,x1,xref(1),str1,xysamples); end
+if x2 [~,idx2]=find(x2>xref(2),1); check_idx(idx2,x2,xref(2),str2,xysamples); end
+if x3 [~,idx3]=find(x3>xref(3),1); check_idx(idx3,x3,xref(3),str3,xysamples); end
+
 % Scale signal to 1
-P = 1*P/abs(P(x2idx,x1idx));
+if all(dimensions)
+    % FIXME: this is for a future version, but I don't know if it will work
+    P = 1*P/abs(P(idx3,idx2,idx1));
+elseif sum(dimensions)==2
+    P = 1*P/abs(P(idx2,idx1));
+elseif sum(dimensions)==1
+    P = 1*P/abs(P(idx1));
+end
+
+end % of function
+
+
+%% ===== Subfunctions ====================================================
+function check_idx(idx,x,xref,str,xysamples)
+    % abs(x(1)-x(end))/xysamples gives us the maximum distance between to samples.
+    % If abs(x(xidx)-xref(1)) is greater this indicates that we are out of our
+    % bounds
+    if isempty(idx) || abs(x(idx)-xref)>2*abs(x(1)-x(end))/xysamples
+        error('%s: your used conf.xref is out of your %s boundaries', ...
+            upper(mfilename),str);
+    end
+end

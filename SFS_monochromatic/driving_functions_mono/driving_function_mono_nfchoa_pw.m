@@ -1,12 +1,11 @@
-function D = driving_function_mono_nfchoa_pw(x0,nx0,nk,f,conf)
+function D = driving_function_mono_nfchoa_pw(x0,nk,f,conf)
 %DRIVING_FUNCTION_MONO_NFCHOA_PW returns the driving signal D for a plane wave
 %in NFCHOA
 %
-%   Usage: D = driving_function_mono_nfchoa_pw(x0,nx0,nk,f,[conf])
+%   Usage: D = driving_function_mono_nfchoa_pw(x0,nk,f,[conf])
 %
 %   Input parameters:
 %       x0          - position of the secondary sources (m) [nx3]
-%       nx0         - directions of the secondary sources (m) [nx3]
 %       nk          - direction of virtual plane wave (m) [nx3]
 %       f           - frequency of the monochromatic source (Hz)
 %       conf        - optional configuration struct (see SFS_config)
@@ -14,7 +13,7 @@ function D = driving_function_mono_nfchoa_pw(x0,nx0,nk,f,conf)
 %   Output parameters:
 %       D           - driving function signal [nx1]
 %
-%   DRIVING_FUNCTION_MONO_NFCHOA_PW(x0,nx0,nk,f,src,conf) returns NFCHOA driving
+%   DRIVING_FUNCTION_MONO_NFCHOA_PW(x0,nk,f,src,conf) returns NFCHOA driving
 %   signals for the given secondary sources, the virtual plane wave direction
 %   and the frequency f.
 %
@@ -57,10 +56,10 @@ function D = driving_function_mono_nfchoa_pw(x0,nx0,nk,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
+nargmin = 3;
+nargmax = 4;
 narginchk(nargmin,nargmax);
-isargmatrix(x0,nx0,nk);
+isargmatrix(x0,nk);
 isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
@@ -71,6 +70,7 @@ end
 
 %% ===== Configuration ==================================================
 xref = conf.xref;
+X0 = conf.X0;
 c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
@@ -80,7 +80,7 @@ driving_functions = conf.driving_functions;
 % Calculate the driving function in time-frequency domain
 
 % angle of the secondary sources
-[alpha_x0,beta_x0] = cart2sph(-nx0);
+[alpha_x0,beta_x0] = cart2sph(bsxfun(@minus,x0,X0));
 % angle of plane wave
 [alpha_pw,beta_pw] = cart2sph(nk);
 % wavenumber

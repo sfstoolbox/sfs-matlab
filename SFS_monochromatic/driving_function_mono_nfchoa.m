@@ -79,8 +79,7 @@ end
 
 % Calculate the driving function in time-frequency domain
 
-% Secondary source positions and directions
-nx0 = x0(:,4:6);
+% Secondary source positions
 x0 = x0(:,1:3);
 
 % Source position
@@ -92,22 +91,22 @@ if strcmp('pw',src)
     % Direction of plane wave
     nk = bsxfun(@rdivide,xs,vector_norm(xs,2));
     % Driving signal
-    D = driving_function_mono_nfchoa_pw(x0,nx0,nk,f,conf);
+    D = driving_function_mono_nfchoa_pw(x0,nk,f,conf);
 
 elseif strcmp('ps',src)
     % === Point source ===================================================
     % Driving Signal
-    D = driving_function_mono_nfchoa_ps(x0,nx0,xs,f,conf);
+    D = driving_function_mono_nfchoa_ps(x0,xs,f,conf);
 
 elseif strcmp('ls',src)
     % === Line source ====================================================
     % Driving signal
-    D = driving_function_mono_nfchoa_ls(x0,nx0,xs,f,conf);
+    D = driving_function_mono_nfchoa_ls(x0,xs,f,conf);
 
 elseif strcmp('fs',src)
     % === Focused source =================================================
     % Driving Signal
-    D = driving_function_mono_nfchoa_fs(x0,nx0,xs,f,conf);
+    D = driving_function_mono_nfchoa_fs(x0,xs,f,conf);
 
 else
     error('%s: %s is not a known source type.',upper(mfilename),src);

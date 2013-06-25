@@ -125,8 +125,9 @@ conf.driving_functions = 'default';
 
 
 % ===== Secondary Sources =======================
-% Interspacing (distance) between the secondary sources
-conf.dx0 = 0.15; % m
+% Interspacing (distance) between the secondary sources. This will give us 56
+% secondary sources for a circular array with a diameter of 3m.
+conf.dx0 = 0.16830; % m
 % Array position
 conf.X0 = [0 0 0]; % m
 % Array geometry

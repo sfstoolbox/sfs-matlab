@@ -1,7 +1,7 @@
-function varargout = wave_field_mono_nfchoa_25d(X,Y,Z,xs,src,f,L,conf)
-%WAVE_FIELD_MONO_NFCHOA_25D simulates a wave field for 2.5D NFC-HOA
+function varargout = wave_field_mono_nfchoa(X,Y,Z,xs,src,f,L,conf)
+%WAVE_FIELD_MONO_NFCHOA simulates a wave field for NFC-HOA
 %
-%   Usage: [P,x,y,z,x0] = wave_field_mono_nfchoa_25d(X,Y,Z,xs,src,f,L,[conf])
+%   Usage: [P,x,y,z,x0] = wave_field_mono_nfchoa(X,Y,Z,xs,src,f,L,[conf])
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax]
@@ -23,8 +23,8 @@ function varargout = wave_field_mono_nfchoa_25d(X,Y,Z,xs,src,f,L,conf)
 %       z           - corresponding z axis / m
 %       x0          - secondary sources / m
 %
-%   WAVE_FIELD_MONO_NFCHOA_25D(X,Y,Z,xs,src,f,L,conf) simulates a wave
-%   field of the given source type (src) using a NFC-HOA 2.5 dimensional driving
+%   WAVE_FIELD_MONO_NFCHOA(X,Y,Z,xs,src,f,L,conf) simulates a wave
+%   field of the given source type (src) using a NFC-HOA driving
 %   function in the frequency domain. This means by calculating the integral for
 %   P with a summation.
 %   To plot the result use plot_wavefield(P,x,y,z,x0).
@@ -33,7 +33,7 @@ function varargout = wave_field_mono_nfchoa_25d(X,Y,Z,xs,src,f,L,conf)
 %       
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: plot_wavefield, wave_field_imp_nfchoa_25d
+%   see also: plot_wavefield, wave_field_imp_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -87,7 +87,7 @@ end
 % Get the position of the loudspeakers
 x0 = secondary_source_positions(L,conf);
 % Driving function D(x0,omega)
-D = driving_function_mono_nfchoa_25d(x0,xs,src,f,conf);
+D = driving_function_mono_nfchoa(x0,xs,src,f,conf);
 % Wave field
 [varargout{1:min(nargout,4)}] = wave_field_mono(X,Y,Z,x0,'ps',D,f,conf);
 % Return secondary sources if desired

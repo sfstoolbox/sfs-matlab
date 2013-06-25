@@ -1,4 +1,4 @@
-function [P,x,y,z] = wave_field_mono(X,Y,Z,x0,src,D,f,conf)
+function varargout = wave_field_mono(X,Y,Z,x0,src,D,f,conf)
 %WAVE_FIELD_MONO simulates a monofrequent wave field for the given driving
 %signals and secondary sources
 %
@@ -101,8 +101,11 @@ useplot = conf.useplot;
 %% ===== Computation ====================================================
 % Create a x-y-grid
 [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
+% Check what are the active axes to create an empty wave field with the correct
+% size
+[~,x1,x2,x3]  = xyz_axes_selection(x,y,z);
 % Initialize empty wave field
-P = zeros(length(y),length(x));
+P = squeeze(zeros(length(x3),length(x2),length(x1)));
 % Integration over secondary source positions
 for ii = 1:size(x0,1)
 
@@ -126,6 +129,12 @@ end
 
 % === Scale signal (at xref) ===
 P = norm_wave_field(P,x,y,z,conf);
+
+% return parameter
+if nargout>0 varargout{1}=P; end
+if nargout>1 varargout{2}=x; end
+if nargout>2 varargout{3}=y; end
+if nargout>3 varargout{4}=z; end
 
 % ===== Plotting =========================================================
 if nargout==0 || useplot

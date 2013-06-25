@@ -47,7 +47,7 @@ function [x,y,z] = xyz_axes(X,Y,Z,conf)
 %% ===== Checking input parameters =======================================
 nargmin = 3;
 nargmax = 4;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 [X,Y,Z] = axis_vector(X,Y,Z);
 if nargin<nargmax
     conf = SFS_config;
@@ -62,6 +62,6 @@ xysamples = conf.xysamples;
 
 %% ===== Computation =====================================================
 % creating x-, y-, and z-axis
-x = linspace(X(1),X(2),xysamples);
-y = linspace(Y(1),Y(2),xysamples);
-z = linspace(Z(1),Z(2),xysamples);
+x=linspace(X(1),X(2),xysamples);
+y=linspace(Y(1),Y(2),xysamples);
+z=linspace(Z(1),Z(2),xysamples);

@@ -112,8 +112,6 @@ elseif strcmp('2.5D',dimension)
     
     % === 2.5-Dimensional ================================================
     
-    % Reference point
-    xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         %
@@ -123,7 +121,9 @@ elseif strcmp('2.5D',dimension)
         %    n=-N..N  -ik H|n| (k|x0-xref|)  
         %                      
         % R = |x0-xref|
-        R = vector_norm(x0-xref,2);
+        % NOTE: it makes only sense to use the center point as reference point.
+        % Otherwise we will have no radius at all.
+        R = norm(x0(1,:)-X0,2);
         for n=-N:N
             D = D + 4.*pi .* 1i.^(-abs(n)) ./ ...
                 ( -1i .* k .* sphbesselh(abs(n),2,k.*R) ) .* exp(1i.*n.*(alpha_x0-alpha_pw));

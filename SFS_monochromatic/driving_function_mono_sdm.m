@@ -1,12 +1,12 @@
-function D = driving_function_mono_sdm_25d(x0,xs,src,f,conf)
-%DRIVING_FUNCTION_MONO_SDM_25D returns the driving signal D for 2.5D SDM
+function D = driving_function_mono_sdm(x0,xs,src,f,conf)
+%DRIVING_FUNCTION_MONO_SDM returns the driving signal D for SDM
 %
-%
-%   Usage: D = driving_function_mono_sdm_25d(x0,xs,src,f,[conf])
+%   Usage: D = driving_function_mono_sdm(x0,xs,src,f,[conf])
 %
 %   Input parameters:
-%       x           - positions of the secondary sources / m
-%       xs          - position of virtual source or direction of plane wave / m
+%       x0          - position and direction of the secondary source / m [nx6]
+%       xs          - position of virtual source or direction of plane
+%                     wave / m [1x3]
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
@@ -16,12 +16,17 @@ function D = driving_function_mono_sdm_25d(x0,xs,src,f,conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       D         - driving function
+%       D           - driving function signal [nx1]
 %
-%   DRIVING_FUNCTION_MONO_SDM_25D(x0,xs,f,src,conf) returns the
-%   driving signal for the given secondary sources and 
-%   desired source type (src). The driving signal is calculated for the 
-%   SDM 2.5 dimensional case.
+%   DRIVING_FUNCTION_MONO_SDM(x0,xs,f,src,conf) returns the driving signal for
+%   the given secondary sources, desired source type (src), and frequency.
+%   To derive the driving signals the spectral division method (SDM) is used.
+%
+%   References:
+%       FIXME: add references
+%       Williams1999 - Fourier Acoustics (Academic Press)
+%
+%   see also: plot_wavefield, wave_field_mono_sdm, driving_function_imp_sdm
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -71,47 +76,40 @@ else
 end
 
 
-%% ===== Configuration ==================================================
-phase = conf.phase;
-xref = conf.xref;
-c = conf.c;
+%% ===== Computation ====================================================
 
+% Calculate the driving function in time-frequency domain
 
-%% ===== Variables =======================================================
-% Omega
-omega = 2*pi*f;
-% positions and angles of secondary sources
+% Secondary source positions and directions
+nx0 = x0(:,4:6);
 x0 = x0(:,1:3);
-% virtual source angle
-al_pw=atan2(xs(2),xs(1));
 
+% Source position
+xs = repmat(xs(1:3),[size(x0,1) 1]);
 
-
-%% ===== Spectrum of driving function ====================================
-D = zeros(size(x0,1),1);
-
+% Get driving signals
 if strcmp('pw',src)
-
-    % ===== PLANE WAVE ===================================================
-    kx=omega/c*cos(al_pw);
-    ky=omega/c*sin(al_pw);
-
-    for n=1:size(x0,1)
-        D(n) = 4*1i*exp(-1i*ky*xref(2))./besselh(0,2,ky*xref(2)).*exp(-1i*(kx*x0(n,1)+ky*x0(n,2)));
-    end
-    
+    % === Plane wave =====================================================
+    % Direction of plane wave
+    nk = bsxfun(@rdivide,xs,vector_norm(xs,2));
+    % Driving signal
+    D = driving_function_mono_sdm_pw(x0,nx0,nk,f,conf);
 
 elseif strcmp('ps',src)
+    % === Point source ===================================================
+    % Driving Signal
+    D = driving_function_mono_sdm_ps(x0,nx0,xs,f,conf);
 
-    % ===== POINT SOURCE =================================================
-    to_be_implemented(mfilename);
+elseif strcmp('ls',src)
+    % === Line source ====================================================
+    % Driving signal
+    D = driving_function_mono_sdm_ls(x0,nx0,xs,f,conf);
 
 elseif strcmp('fs',src)
-
-    % ===== FOCUSED SOURCE ===============================================
-    to_be_implemented(mfilename);
+    % === Focused source =================================================
+    % Driving Signal
+    D = driving_function_mono_sdm_fs(x0,nx0,xs,f,conf);
 
 else
-    % No such source type for the driving function
-    error('%s: src has to be one of "pw", "ps", "fs"!',upper(mfilename));
+    error('%s: %s is not a known source type.',upper(mfilename),src);
 end

@@ -1,13 +1,13 @@
-function [P,x,y,z,x0] = wave_field_mono_sdm_25d(X,Y,Z,xs,src,f,L,conf)
-%WAVE_FIELD_MONO_SDM_25D simulates a wave field for 2.5D NFC-HOA
+function varargout = wave_field_mono_sdm(X,Y,Z,xs,src,f,L,conf)
+%WAVE_FIELD_MONO_SDM simulates a wave field for WFS
 %
-%   Usage: [P,x,y,z,x0] = wave_field_mono_sdm_25d(X,Y,Z,xs,src,f,L,[conf])
+%   Usage: [P,x,y,z,x0,win] = wave_field_mono_sdm(X,Y,Z,xs,src,f,L,[conf])
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax]
 %       Y           - y-axis / m; single value or [ymin,ymax]
 %       Z           - z-axis / m; single value or [zmin,zmax]
-%       xs          - position of point source / m
+%       xs          - position of virtual source / m
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
@@ -22,19 +22,20 @@ function [P,x,y,z,x0] = wave_field_mono_sdm_25d(X,Y,Z,xs,src,f,L,conf)
 %       x           - corresponding x axis / m
 %       y           - corresponding y axis / m
 %       z           - corresponding z axis / m
-%       x0          - secondary sources / m
+%       x0          - active secondary sources / m
+%       win         - tapering window of the secondary sources
 %
-%   WAVE_FIELD_MONO_SDM_25D(X,Y,Z,xs,src,f,L,conf) simulates a wave
-%   field of the given source type (src) using a SDM 2.5 dimensional driving
-%   function in the space/time-frequency domain. This means by calculating 
-%   the integral for P with a summation.
-%   To plot the result use plot_wavefield(P,x,y,z,x0).
+%   WAVE_FIELD_MONO_SDM(X,Y,Z,xs,L,f,src,conf) simulates a wave field for the
+%   given source type (src) using SDM driving functions in the temporal domain.
+%   This means by calculating the integral for P with a summation.
+%   To plot the result use plot_wavefield(P,x,y,z,x0,win).
 %
 %   References:
-%       
+%       Spors2009 - Physical and Perceptual Properties of Focused Sources in
+%           Wave Field Synthesis (AES127)
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: plot_wavefield, wave_field_mono_sdm_25d_kx
+%   see also: plot_wavefield, wave_field_imp_wfs, driving_function_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -85,21 +86,31 @@ end
 
 
 %% ===== Configuration ==================================================
-% Plotting result
 useplot = conf.useplot;
+xref = conf.xref;
 
 
 %% ===== Computation ====================================================
-% Get the position of the loudspeakers
+% Get the position of the loudspeakers and its activity
 x0 = secondary_source_positions(L,conf);
+x0 = secondary_source_selection(x0,xs,src);
 % Generate tapering window
 win = tapering_window(x0,conf);
-% Driving function D(x0,omega)
-D = driving_function_mono_sdm_25d(x0,xs,src,f,conf) .* win;
-% disable plotting to handle the tapering window
-conf.useplot = 0;
+% Driving function
+D = driving_function_mono_sdm(x0,xs,src,f,conf) .* win;
 % Wave field
+% disable plotting, in order to integrate the tapering window
+conf.useplot = 0;
+% calculate wave field
 [P,x,y,z] = wave_field_mono(X,Y,Z,x0,'ps',D,f,conf);
+
+% fill return values
+if nargout>0 nargout{1}=P; end
+if nargout>1 nargout{2}=x; end
+if nargout>2 nargout{3}=y; end
+if nargout>3 nargout{4}=z; end
+if nargout>4 nargout{5}=x0; end
+if nargout>5 nargout{6}=win; end
 
 
 % ===== Plotting =========================================================

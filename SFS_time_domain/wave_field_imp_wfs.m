@@ -1,4 +1,4 @@
-function [p,x,y,z,x0,win] = wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf)
+function varargout = wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf)
 %WAVE_FIELD_IMP_WFS returns the wave field in time domain of an impulse
 %
 %   Usage: [p,x,y,z,x0,win] = wave_field_imp_wfs(X,Y,Z,xs,src,t,L,[conf])
@@ -105,6 +105,14 @@ d = bsxfun(@times,d,win');
 conf.useplot = 0;
 % Calculate wave field
 [p,x,y,z] = wave_field_imp(X,Y,Z,x0,'ps',d,t,conf);
+
+% fill return values
+if nargout>0 nargout{1}=P; end
+if nargout>1 nargout{2}=x; end
+if nargout>2 nargout{3}=y; end
+if nargout>3 nargout{4}=z; end
+if nargout>4 nargout{5}=x0; end
+if nargout>5 nargout{6}=win; end
 
 
 %% ===== Plotting ========================================================

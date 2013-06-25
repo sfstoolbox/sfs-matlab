@@ -1,4 +1,4 @@
-function [P,x,y,z,x0,win] = wave_field_mono_wfs(X,Y,Z,xs,src,f,L,conf)
+function varargout = wave_field_mono_wfs(X,Y,Z,xs,src,f,L,conf)
 %WAVE_FIELD_MONO_WFS simulates a wave field for WFS
 %
 %   Usage: [P,x,y,z,x0,win] = wave_field_mono_wfs(X,Y,Z,xs,src,f,L,[conf])
@@ -103,6 +103,14 @@ D = driving_function_mono_wfs(x0,xs,src,f,conf) .* win;
 conf.useplot = 0;
 % calculate wave field
 [P,x,y,z] = wave_field_mono(X,Y,Z,x0,'ps',D,f,conf);
+
+% fill return values
+if nargout>0 nargout{1}=P; end
+if nargout>1 nargout{2}=x; end
+if nargout>2 nargout{3}=y; end
+if nargout>3 nargout{4}=z; end
+if nargout>4 nargout{5}=x0; end
+if nargout>5 nargout{6}=win; end
 
 
 % ===== Plotting =========================================================

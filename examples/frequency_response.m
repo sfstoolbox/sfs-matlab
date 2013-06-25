@@ -12,13 +12,13 @@ conf.usehcomp = 0;
 irs = dummy_irs;
 % 1. loudspeaker spacing = 0.16m
 conf.dx0 = 0.16;
-conf.hprefhigh = aliasing_frequency(conf.dx0);
+conf.hprefhigh = conf.c/(2*dx0);
 ir = ir_wfs_25d(X,phi,xs,src,L,irs,conf);
 [a,p,f] = easyfft(ir(:,1),conf);
 figure; semilogx(f,db(a));
 % 2. loudspeaker spacing = 0.32m
 conf.dx0 = 0.32;
-conf.hprefhigh = aliasing_frequency(conf.dx0);
+conf.hprefhigh = conf.c/(2*dx0);
 ir = ir_wfs_25d(X,phi,xs,src,L,irs,conf);
 [a,p,f] = easyfft(ir(:,1),conf);
 figure; semilogx(f,db(a));

@@ -1,7 +1,7 @@
-function draw_loudspeakers(x0,win,conf)
+function draw_loudspeakers(x0,dimensions,win,conf)
 %DRAW_LOUDSPEAKERS draws loudspeaker symbols or "x" at the given positions
 %
-%   Usage: draw_loudspeakers(x0,[win,[conf]])
+%   Usage: draw_loudspeakers(x0,[dimensions,[win,[conf]])
 %
 %   Input options:
 %       x0          - positions and directions of the loudspeakers / m
@@ -54,11 +54,14 @@ function draw_loudspeakers(x0,win,conf)
 
 %% ===== Checking of input parameter =====================================
 nargmin = 1;
-nargmax = 3;
+nargmax = 4;
 narginchk(nargmin,nargmax);
 isargsecondarysource(x0)
 nls = size(x0,1);
-if nargin<nargmax-1
+if nargin<nargmax-2
+    dimensions = [1 1 0];
+    win = ones(nls,1);
+elseif nargin<nargmax-1
     win = ones(nls,1);
 elseif length(win)==1
     win = win*ones(nls,1);
@@ -77,11 +80,39 @@ p.lssize = conf.plot.lssize;
 
 
 %% ===== Plotting ========================================================
-% Plot only "x" at the loudspeaker positions
-if(~p.realloudspeakers)
-    plot(x0(:,1),x0(:,2),'wx','linewidth',1,...
-        'Color',[.01 .01 .01]);
+% Check in which plane we should plot the secondary sources and shift them
+% around accordingly
+if ~any(dimensions)
+    return;
+elseif ~dimensions(1)
+    x0(:,1:2) = x0(:,2:3);
+elseif ~dimensions(2)
+    x0(:,2) = x0(:,3);
+end
+
+% Plot only "x" at the loudspeaker positions, use this as default for all cases
+% that are not the x-y-plane
+if ~p.realloudspeakers || ~(dimensions(1)&&dimensions(2))
+    if ~(dimensions(1)&&dimensions(2))
+        warning('%s: Real loudspeaker can only be drawn in the x-y-plane', ...
+            upper(mfilename));
+    end
+    % fill color of symbols
+    fc = [.11 .11 .11];
+    % if you want to use the tapering window indicated by color as well, use the
+    % following code
+    %sc = 1;
+    %fc = [(1-sc.*win), ...
+    %      (1-sc.*win), ...
+    %      (1-sc.*win)];
+    scatter(x0(:,1),x0(:,2),20,fc,'wx','linewidth',2.5)
 else
+    % Set fill color for active loudspeakers
+    % Scale the color. sc = 1 => black. sc = 0.5 => gray.
+    sc = 0.6;
+    fc = [(1-sc.*win), ...
+          (1-sc.*win), ...
+          (1-sc.*win)];
 
     w = p.lssize;
     h = p.lssize;
@@ -119,21 +150,10 @@ else
         v02(1,:) = vr2(1,:) + x0(n,1);
         v02(2,:) = vr2(2,:) + x0(n,2);
 
-        if(win(n)>0)
-            % Set fill color for active loudspeakers
-            % Scale the color. sc = 1 => black. sc = 0.5 => gray.
-            sc = 0.5;
-            fc = [(1-sc*win(n)), ...
-                  (1-sc*win(n)), ...
-                  (1-sc*win(n))];
-        else
-            % set fill color to white for inactive loudspeakers
-            fc = [1,1,1];
-        end
 
         % Draw speakers
-        fill(v01(1,:),v01(2,:),fc);
-        fill(v02(1,:),v02(2,:),fc);
+        fill(v01(1,:),v01(2,:),fc(n,:));
+        fill(v02(1,:),v02(2,:),fc(n,:));
 
     end
 

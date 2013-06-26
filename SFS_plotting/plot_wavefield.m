@@ -229,9 +229,10 @@ if ~(p.usegnuplot)
         xlabel(p.xlabel);
         ylabel(p.ylabel);
         % Add loudspeaker to the plot
-        if p.loudspeakers && dimensions(1) && dimensions(2)
+        %x0(:,1:2) = x0(:,2:3);
+        if p.loudspeakers % && dimensions(1) && dimensions(2)
             hold on;
-            draw_loudspeakers(x0,ls_activity,conf);
+            draw_loudspeakers(x0,dimensions,ls_activity,conf);
             hold off;
         end
     end

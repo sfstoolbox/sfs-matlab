@@ -84,10 +84,9 @@ N = conf.N;
 
 % Calculate pre-equalization filter if required
 if usehpre
-    hpre = conv(hanningwin(5,5,10),wfs_prefilter(conf));
+    pulse = conv(dirac_imp(),wfs_prefilter(conf));
 else
-    %hpre = 1; % dirac pulse
-    hpre = hanningwin(5,5,10);
+    pulse = dirac_imp();
 end
 
 % Secondary source positions and directions
@@ -124,7 +123,7 @@ delay = delay-min(delay);
 % Append zeros at the end of the driving function. This is necessary, because
 % the delayline function cuts into the end of the driving signals in order to
 % delay them. NOTE: this is can be changed by the conf.N setting
-d_proto = [row_vector(hpre) zeros(1,N)];
+d_proto = [row_vector(pulse) zeros(1,N-length(pulse))];
 d = zeros(length(d_proto),size(x0,1));
 for ii=1:size(x0,1)
     % Shift and weight prototype driving function

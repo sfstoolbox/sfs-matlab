@@ -1,7 +1,7 @@
-function [d] = driving_function_imp_nfchoa_25d(x0,xs,src,L,conf)
-%DRIVING_FUNCTION_IMP_NFCHOA_25D calculates the NFC-HOA 2.5D driving function
+function [d] = driving_function_imp_nfchoa(x0,xs,src,L,conf)
+%DRIVING_FUNCTION_IMP_NFCHOA calculates the NFC-HOA driving function
 %
-%   Usage: [d] = driving_function_imp_nfchoa_25d(x0,xs,src,[conf]);
+%   Usage: [d] = driving_function_imp_nfchoa(x0,xs,src,[conf]);
 %
 %   Input parameters:
 %       x0      - position  and direction of secondary sources / m
@@ -16,11 +16,11 @@ function [d] = driving_function_imp_nfchoa_25d(x0,xs,src,L,conf)
 %   Output parameters:
 %       d  - matrix of driving signals
 %
-%   DRIVING_FUNCTION_IMP_NFCHOA_25D(x0,xs,src,conf) returns the
-%   driving function of 2.5D NFC-HOA for the given source type and position,
+%   DRIVING_FUNCTION_IMP_NFCHOA(x0,xs,src,conf) returns the
+%   driving function of NFC-HOA for the given source type and position,
 %    and loudspeaker positions.
 %
-%   see also: modal_filter_coeff_nfchoa_25d, wave_field_imp_nfchoa_25d
+%   see also: modal_filter_coeff_nfchoa_ps, wave_field_imp_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -74,13 +74,9 @@ end
 R = L/2;
 nls = size(x0,1);
 N = conf.N;
-N0 = 0;       % pre-delay
 
-if(isodd(nls))
-    order=(nls-1)/2;    %  max order of spherical harmonics
-else
-    order=floor((nls+1)/2);
-end
+% get maximum order of spherical harmonics
+order = nfchoa_order(nls);
 
 % if-request as a workaround for the right direction of the wave field
 if strcmpi(src,'pw')
@@ -96,7 +92,8 @@ end
 % compute impulse responses of modal filters
 dm = zeros(order+1,N);
 for n=1:order+1
-    dm(n,:) = [zeros(1,N0) hanningwin(5,5,10)' zeros(1,N-10-N0)];
+    pulse = dirac_imp();
+    dm(n,:) = [pulse zeros(1,N-length(pulse))];
     [b,a] = modal_filter_coeff_nfchoa_25d(n-1,R,src,r_src,conf);
     for ii=1:length(b)
         dm(n,:) = filter(b{ii},a{ii},dm(n,:));

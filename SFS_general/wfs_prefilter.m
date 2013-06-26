@@ -103,4 +103,4 @@ H(1:idxflow) = H(idxflow)*ones(1,idxflow);
 hpre = firls(Nfilt,2*f/fs,H);
 
 % Truncate length to power of 2
-hpre = hpre(1:end-1);
+hpre = row_vector(hpre(1:end-1));

@@ -107,7 +107,7 @@ conf.useplot = 0;
 [p,x,y,z] = wave_field_imp(X,Y,Z,x0,'ps',d,t,conf);
 
 % fill return values
-if nargout>0 nargout{1}=P; end
+if nargout>0 nargout{1}=p; end
 if nargout>1 nargout{2}=x; end
 if nargout>2 nargout{3}=y; end
 if nargout>3 nargout{4}=z; end

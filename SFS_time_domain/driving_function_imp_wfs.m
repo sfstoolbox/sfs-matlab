@@ -77,6 +77,7 @@ c = conf.c;
 xref = conf.xref;
 fs = conf.fs;
 usehpre = conf.usehpre;
+N = conf.N;
 
 
 %% ===== Computation =====================================================
@@ -122,9 +123,8 @@ end
 delay = delay-min(delay);
 % Append zeros at the end of the driving function. This is necessary, because
 % the delayline function cuts into the end of the driving signals in order to
-% delay them. NOTE: 800 is only a guess, we should check, if the value is large
-% enough for common cases.
-d_proto = [row_vector(hpre) zeros(1,800)];
+% delay them. NOTE: this is can be changed by the conf.N setting
+d_proto = [row_vector(hpre) zeros(1,N)];
 d = zeros(length(d_proto),size(x0,1));
 for ii=1:size(x0,1)
     % Shift and weight prototype driving function

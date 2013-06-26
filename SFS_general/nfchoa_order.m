@@ -1,31 +1,22 @@
-function D = driving_function_mono_nfchoa(x0,xs,src,f,conf)
-%DRIVING_FUNCTION_MONO_NFCHOA returns the driving signal D for NFCHOA
+function N = nfchoa_order(nls)
+%NFCHOA_ORDER returns the maximum order for the spherical harmonics for the
+%given number of secondary sources
 %
-%   Usage: D = driving_function_mono_nfchoa(x0,xs,src,f,[conf])
+%   Usage: N = nfchoa_order(nls)
 %
 %   Input parameters:
-%       x0          - position and direction of the secondary source / m [nx6]
-%       xs          - position of virtual source or direction of plane
-%                     wave / m [1x3]
-%       src         - source type of the virtual source
-%                         'pw' - plane wave (xs is the direction of the
-%                                plane wave in this case)
-%                         'ps' - point source
-%                         'fs' - focused source
-%       f           - frequency of the monochromatic source / Hz
-%       conf        - optional configuration struct (see SFS_config)
+%       nls     - number of secondary sources
 %
 %   Output parameters:
-%       D           - driving function signal [nx1]
+%       N       - spherical harmonics order
 %
-%   DRIVING_FUNCTION_MONO_NFCHOA(x0,xs,f,src,conf) returns the driving signal for
-%   the given secondary source and desired source type (src) for NFCHOA for the
-%   given frequency.
+%   NFCHOA_ORDER(nls) returns the maximum order of spherical harmonics for the
+%   given number of loudspeakers. This is calculated after ... with N = nls/2.
 %
 %   References:
-%       FIXME: add something
+%       FIXME: add one
 %
-%   see also: plot_wavefield, wave_field_mono_nfchoa, driving_function_imp_nfchoa
+%   see also: driving_function_imp_nfchoa, driving_function_mono_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -60,57 +51,17 @@ function D = driving_function_mono_nfchoa(x0,xs,src,f,conf)
 %*****************************************************************************
 
 
-%% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
+%% ===== Checking input parameters =======================================
+nargmin = 1;
+nargmax = 1;
 narginchk(nargmin,nargmax);
-isargsecondarysource(x0);
-isargxs(xs);
-isargpositivescalar(f);
-isargchar(src);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargpositivescalar(nls)
 
 
-%% ===== Computation ====================================================
-
-% Calculate the driving function in time-frequency domain
-
-% Secondary source positions
-x0 = x0(:,1:3);
-
+%% ===== Computation =====================================================
 % get maximum order of spherical harmonics
-N = nfchoa_order(size(x0,1));
-
-% Source position
-xs = repmat(xs(1:3),[size(x0,1) 1]);
-
-% Get driving signals
-if strcmp('pw',src)
-    % === Plane wave =====================================================
-    % Direction of plane wave
-    nk = bsxfun(@rdivide,xs,vector_norm(xs,2));
-    % Driving signal
-    D = driving_function_mono_nfchoa_pw(x0,nk,f,N,conf);
-
-elseif strcmp('ps',src)
-    % === Point source ===================================================
-    % Driving Signal
-    D = driving_function_mono_nfchoa_ps(x0,xs,f,N,conf);
-
-elseif strcmp('ls',src)
-    % === Line source ====================================================
-    % Driving signal
-    D = driving_function_mono_nfchoa_ls(x0,xs,f,N,conf);
-
-elseif strcmp('fs',src)
-    % === Focused source =================================================
-    % Driving Signal
-    D = driving_function_mono_nfchoa_fs(x0,xs,f,N,conf);
-
+if isodd(nls)
+    N = (nls-1)/2;
 else
-    error('%s: %s is not a known source type.',upper(mfilename),src);
+    N = floor((nls+1)/2);
 end

@@ -1,19 +1,20 @@
-function D = driving_function_mono_nfchoa_pw(x0,nk,f,conf)
+function D = driving_function_mono_nfchoa_pw(x0,nk,f,N,conf)
 %DRIVING_FUNCTION_MONO_NFCHOA_PW returns the driving signal D for a plane wave
 %in NFCHOA
 %
-%   Usage: D = driving_function_mono_nfchoa_pw(x0,nk,f,[conf])
+%   Usage: D = driving_function_mono_nfchoa_pw(x0,nk,f,N,[conf])
 %
 %   Input parameters:
-%       x0          - position of the secondary sources (m) [nx3]
-%       nk          - direction of virtual plane wave (m) [nx3]
-%       f           - frequency of the monochromatic source (Hz)
+%       x0          - position of the secondary sources / m [nx3]
+%       nk          - direction of virtual plane wave / m [nx3]
+%       f           - frequency of the monochromatic source / Hz
+%       N           - maximum order of spherical harmonics
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
 %
-%   DRIVING_FUNCTION_MONO_NFCHOA_PW(x0,nk,f,src,conf) returns NFCHOA driving
+%   DRIVING_FUNCTION_MONO_NFCHOA_PW(x0,nk,f,N,conf) returns NFCHOA driving
 %   signals for the given secondary sources, the virtual plane wave direction
 %   and the frequency f.
 %
@@ -56,11 +57,11 @@ function D = driving_function_mono_nfchoa_pw(x0,nk,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
-nargmax = 4;
+nargmin = 4;
+nargmax = 5;
 narginchk(nargmin,nargmax);
 isargmatrix(x0,nk);
-isargpositivescalar(f);
+isargpositivescalar(f,N);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -85,15 +86,8 @@ driving_functions = conf.driving_functions;
 [alpha_pw,beta_pw] = cart2sph(nk);
 % wavenumber
 k = 2*pi*f/c;
-% max order of spherical harmonics
-M = size(x0,1);
-if(isodd(M))
-    N=(M-1)/2;
-else
-    N=floor((M+1)/2);
-end
 % initialize empty driving signal
-D = zeros(M,1);
+D = zeros(size(x0,1),1);
 
 if strcmp('2D',dimension)
     
@@ -126,7 +120,8 @@ elseif strcmp('2.5D',dimension)
         R = norm(x0(1,:)-X0,2);
         for n=-N:N
             D = D + 4.*pi .* 1i.^(-abs(n)) ./ ...
-                ( -1i .* k .* sphbesselh(abs(n),2,k.*R) ) .* exp(1i.*n.*(alpha_x0-alpha_pw));
+                ( -1i .* k .* sphbesselh(abs(n),2,k.*R) ) .* ...
+                exp(1i.*n.*(alpha_x0-alpha_pw));
         end
     else
         error(['%s: %s, this type of driving function is not implemented ', ...

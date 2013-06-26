@@ -1,19 +1,20 @@
-function D = driving_function_mono_nfchoa_ps(x0,xs,f,conf)
+function D = driving_function_mono_nfchoa_ps(x0,xs,f,N,conf)
 %DRIVING_FUNCTION_MONO_NFCHOA_PS returns the driving signal D for a point source
 %in NFCHOA
 %
-%   Usage: D = driving_function_mono_nfchoa_ps(x0,xs,f,[conf])
+%   Usage: D = driving_function_mono_nfchoa_ps(x0,xs,f,N,[conf])
 %
 %   Input parameters:
-%       x0          - position of the secondary sources (m) [nx3]
-%       xs          - position of virtual point source (m) [nx3]
-%       f           - frequency of the monochromatic source (Hz)
+%       x0          - position of the secondary sources / m [nx3]
+%       xs          - position of virtual point source / m [nx3]
+%       f           - frequency of the monochromatic source / Hz
+%       N           - maximum order of spherical harmonics
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
 %
-%   DRIVING_FUNCTION_MONO_NFCHOA_PS(x0,xs,f,conf) returns NFCHOA driving
+%   DRIVING_FUNCTION_MONO_NFCHOA_PS(x0,xs,f,N,conf) returns NFCHOA driving
 %   signals for the given secondary sources, the virtual point source position
 %   and the frequency f.
 %
@@ -56,11 +57,11 @@ function D = driving_function_mono_nfchoa_ps(x0,xs,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
-nargmax = 4;
+nargmin = 4;
+nargmax = 5;
 narginchk(nargmin,nargmax);
 isargmatrix(x0,xs);
-isargpositivescalar(f);
+isargpositivescalar(f,N);
 if nargin<nargmax
     conf = SFS_config;
 else

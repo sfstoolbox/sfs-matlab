@@ -189,14 +189,10 @@ if nargout>3 varargout{4}=z; end
 
 % === Plotting ===
 if nargout==0 || useplot
-    conf.plot.usedb = 1;
     plot_wavefield(p,x,y,z,x0,conf);
 end
 
 % some debug stuff
 if debug
     figure; imagesc(db(abs(d))); title('driving functions'); caxis([-100 0]); colorbar;
-    % figure; plot(win); title('tapering window');
-    % figure; plot(delay*fs); title('delay (samples)');
-    % figure; plot(weight); title('weight');
 end

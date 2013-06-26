@@ -5,10 +5,10 @@ function D = driving_function_mono_wfs_fs(x0,nx0,xs,f,conf)
 %   Usage: D = driving_function_mono_wfs_fs(x0,nx0,xs,f,[conf])
 %
 %   Input parameters:
-%       x0          - position of the secondary sources (m) [nx3]
-%       nx0         - directions of the secondary sources (m) [nx3]
-%       xs          - position of virtual focused source (m) [nx3]
-%       f           - frequency of the monochromatic source (Hz)
+%       x0          - position of the secondary sources / m [nx3]
+%       nx0         - directions of the secondary sources / m [nx3]
+%       xs          - position of virtual focused source / m [nx3]
+%       f           - frequency of the monochromatic source / Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:

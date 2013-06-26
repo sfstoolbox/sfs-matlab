@@ -5,9 +5,9 @@ function D = driving_function_mono_sdm_fs(x0,nk,f,conf)
 %   Usage: D = driving_function_mono_sdm_fs(x0,nk,f,[conf])
 %
 %   Input parameters:
-%       x0          - position of the secondary sources (m) [nx3]
-%       nk          - position of focused source (m) [nx3]
-%       f           - frequency of the monochromatic source (Hz)
+%       x0          - position of the secondary sources / m [nx3]
+%       nk          - position of focused source / m [nx3]
+%       f           - frequency of the monochromatic source / Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:

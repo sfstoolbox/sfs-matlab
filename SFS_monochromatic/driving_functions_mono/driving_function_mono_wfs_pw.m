@@ -5,10 +5,10 @@ function D = driving_function_mono_wfs_pw(x0,nx0,nk,f,conf)
 %   Usage: D = driving_function_mono_wfs_pw(x0,nx0,nk,f,[conf])
 %
 %   Input parameters:
-%       x0          - position of the secondary sources (m) [nx3]
-%       nx0         - directions of the secondary sources (m) [nx3]
-%       nk          - direction of plane wave (m) [nx3]
-%       f           - frequency of the monochromatic source (Hz)
+%       x0          - position of the secondary sources / m [nx3]
+%       nx0         - directions of the secondary sources / m [nx3]
+%       nk          - direction of plane wave / m [nx3]
+%       f           - frequency of the monochromatic source / Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:

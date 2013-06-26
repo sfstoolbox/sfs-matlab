@@ -1,12 +1,12 @@
 function pulse = dirac_imp()
-%DIRAC_IMP retruns a pulse as stimulus for the imp driving functions
+%DIRAC_IMP returns a pulse as stimulus for the imp driving functions
 %
 %   Usage: pulse = dirac_imp()
 %
 %   Output parameters:
 %       pulse    - short pulse signal
 %
-%   DIRAC_IMP() returns a 10 sample slong hann shaped pulse.
+%   DIRAC_IMP() returns a 1 sample long dirac pulse.
 %
 %   see also: hanningwin, driving_function_imp_wfs, driving_function_imp_nfchoa
 
@@ -50,4 +50,9 @@ narginchk(nargmin,nargmax);
 
 
 %% ===== Computation =====================================================
-pulse = row_vector(hanningwin(5,5,10));
+% FIXME. maybe we should enable switching via a conf entry
+% for simulation of a sound field the usage of a hann shaped pulse could be a
+% better choice
+%pulse = row_vector(hanningwin(5,5,10));
+% for binaural simulations we should stick to a dirac pulse
+pulse = 1;

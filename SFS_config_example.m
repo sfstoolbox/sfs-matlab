@@ -122,6 +122,8 @@ conf.dimension = '2.5D';
 % SFS-Toolbox. For possible other flags have a look into the driving functions.
 % Most users can safely use the 'default' flag here.
 conf.driving_functions = 'default';
+% normalize the simulated wave field?
+conf.usenormalisation = 1;
 
 
 % ===== Secondary Sources =======================

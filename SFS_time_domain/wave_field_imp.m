@@ -179,6 +179,8 @@ end
 
 % === Checking of wave field ===
 check_wave_field(p,t);
+% normalize field
+p = norm_wave_field(p,conf);
 
 % return parameter
 if nargout>0 varargout{1}=p; end

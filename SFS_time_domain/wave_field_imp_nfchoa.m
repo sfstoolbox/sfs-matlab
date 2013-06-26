@@ -1,7 +1,7 @@
-function varargout = wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,t,L,conf)
-%WAVE_FIELD_IMP_NFCHOA_25D returns the wave field in time domain of an impulse
+function varargout = wave_field_imp_nfchoa(X,Y,Z,xs,src,t,L,conf)
+%WAVE_FIELD_IMP_NFCHOA returns the wave field in time domain for NFC-HOA
 %
-%   Usage: [p,x,y,z,x0] = wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,t,L,[conf])
+%   Usage: [p,x,y,z,x0] = wave_field_imp_nfchoa(X,Y,Z,xs,src,t,L,[conf])
 %
 %   Input options:
 %       X           - x-axis / m; single value or [xmin,xmax]
@@ -23,15 +23,14 @@ function varargout = wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,t,L,conf)
 %       z           - corresponding z axis / m
 %       x0          - positions and directions of the secondary sources / m
 %
-%   WAVE_FIELD_IMP_NFCHOA_25D(X,Y,Z,xs,src,t,L,conf) simulates a wave field of the
-%   given source type (src) using a NFC-HOA 2.5 dimensional driving
-%   function at the time point t.
+%   WAVE_FIELD_IMP_NFCHOA(X,Y,Z,xs,src,t,L,conf) simulates a wave field of the
+%   given source type (src) using a NFC-HOA driving function at the time point t.
 %
 %   To plot the result use:
 %   conf.plot.usedb = 1;
 %   plot_wavefield(p,x,y,z,x0,conf);
 %
-%   see also: driving_function_imp_nfchoa_25d, wave_field_mono_nfchoa_25d
+%   see also: driving_function_imp_nfchoa, wave_field_mono_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -86,7 +85,7 @@ end
 % Get secondary sources
 x0 = secondary_source_positions(L,conf);
 % Calculate driving function
-d = driving_function_imp_nfchoa_25d(x0,xs,src,L,conf);
+d = driving_function_imp_nfchoa(x0,xs,src,conf);
 % Calculate wave field
 [varargout{1:min(nargout,4)}] = wave_field_imp(X,Y,Z,x0,'ps',d,t,conf);
 % Return secondary sources if desired

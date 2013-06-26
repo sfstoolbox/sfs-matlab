@@ -1,4 +1,4 @@
-function [d] = driving_function_imp_nfchoa(x0,xs,src,L,conf)
+function [d] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %DRIVING_FUNCTION_IMP_NFCHOA calculates the NFC-HOA driving function
 %
 %   Usage: [d] = driving_function_imp_nfchoa(x0,xs,src,[conf]);
@@ -10,7 +10,6 @@ function [d] = driving_function_imp_nfchoa(x0,xs,src,L,conf)
 %                     'pw' - plane wave (xs, ys are the direction of the
 %                            plane wave in this case)
 %                     'ps' - point source
-%       L       - diameter of loudspeaker array
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -18,9 +17,9 @@ function [d] = driving_function_imp_nfchoa(x0,xs,src,L,conf)
 %
 %   DRIVING_FUNCTION_IMP_NFCHOA(x0,xs,src,conf) returns the
 %   driving function of NFC-HOA for the given source type and position,
-%    and loudspeaker positions.
+%   and loudspeaker positions.
 %
-%   see also: modal_filter_coeff_nfchoa_ps, wave_field_imp_nfchoa
+%   see also: driving_function_imp_nfchoa_ps, wave_field_imp_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -56,13 +55,12 @@ function [d] = driving_function_imp_nfchoa(x0,xs,src,L,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
+nargmin = 3;
+nargmax = 4;
 narginchk(nargmin,nargmax);
 isargsecondarysource(x0)
 isargxs(xs);
 isargchar(src);
-isargpositivescalar(L);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -71,10 +69,17 @@ end
 
 
 %% ===== Configuration ==================================================
-R = L/2;
 nls = size(x0,1);
 N = conf.N;
+X0 = conf.X0;
 
+
+%% ===== Computation =====================================================
+
+% generate stimulus pusle
+pulse = dirac_imp();
+% radius of array
+R = norm(x0(1,1:3)-X0);
 % get maximum order of spherical harmonics
 order = nfchoa_order(nls);
 
@@ -87,14 +92,30 @@ else
     [theta_src, r_src] = cart2pol(xs(1),xs(2));
 end
 
-%% ===== Computation =====================================================
-
 % compute impulse responses of modal filters
 dm = zeros(order+1,N);
 for n=1:order+1
-    pulse = dirac_imp();
     dm(n,:) = [pulse zeros(1,N-length(pulse))];
-    [b,a] = modal_filter_coeff_nfchoa_25d(n-1,R,src,r_src,conf);
+    
+    % get the second-order sections for the different virtual sources
+    if strcmp('pw',src)
+        % === Plane wave =================================================
+        sos = driving_function_imp_nfchoa_pw(n-1,R,conf);
+    elseif strcmp('ps',src)
+        % === Point source ===============================================
+        sos = driving_function_imp_nfchoa_ps(n-1,R,r_src,conf);
+    elseif strcmp('ls',src)
+        % === Line source ================================================
+        sos = driving_function_imp_nfchoa_ls(n-1,R,r_src,conf);
+    elseif strcmp('fs',src)
+        % === Focussed source ============================================
+        sos = driving_function_imp_nfchoa_fs(n-1,R,r_src,conf);
+    else
+        error('%s: %s is not a known source type.',upper(mfilename),src);
+    end
+
+    % apply them by a bilinear transform and filtering
+    [b,a] = bilinear_transform(sos,conf);
     for ii=1:length(b)
         dm(n,:) = filter(b{ii},a{ii},dm(n,:));
     end

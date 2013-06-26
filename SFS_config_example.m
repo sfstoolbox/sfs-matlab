@@ -247,7 +247,7 @@ conf.plot.colormap = ''; % (default: a flipud version of gray)
 % Plot loudspeakers in the wave field plots
 conf.plot.loudspeakers = true; % boolean
 % Use real loudspeakers symbols (otherwise crosses are used)
-conf.plot.realloudspeakers = true; % boolean
+conf.plot.realloudspeakers = false; % boolean
 % Size of the loudspeaker
 conf.plot.lssize = conf.dx0; % m
 % Size of the plot

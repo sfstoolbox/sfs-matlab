@@ -105,12 +105,12 @@ conf.useplot = 0;
 [P,x,y,z] = wave_field_mono(X,Y,Z,x0,'ps',D,f,conf);
 
 % fill return values
-if nargout>0 nargout{1}=P; end
-if nargout>1 nargout{2}=x; end
-if nargout>2 nargout{3}=y; end
-if nargout>3 nargout{4}=z; end
-if nargout>4 nargout{5}=x0; end
-if nargout>5 nargout{6}=win; end
+if nargout>0 varargout{1}=P; end
+if nargout>1 varargout{2}=x; end
+if nargout>2 varargout{3}=y; end
+if nargout>3 varargout{4}=z; end
+if nargout>4 varargout{5}=x0; end
+if nargout>5 varargout{6}=win; end
 
 
 % ===== Plotting =========================================================

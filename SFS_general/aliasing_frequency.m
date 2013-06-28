@@ -26,7 +26,8 @@ function [fal,dx0] = aliasing_frequency(x0,conf)
 %       E. Start - Direct Sound Enhancement by Wave Field Synthesis. TU Delft,
 %       1997.
 %
-%   See also: wave_field_mono_wfs, secondary_source_positions
+%   see also: wave_field_mono_wfs, secondary_source_positions,
+%       secondary_source_distance
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -75,20 +76,7 @@ c = conf.c;
 
 
 %% ===== Computation =====================================================
-% calculate the distance to the nearest secondary source for all secondary
-% sources
-for ii=1:size(x0,1)
-    % first secondary source position
-    x01 = x0(ii,1:3);
-    % all other positions
-    x02 = [x0(1:ii-1,1:3); x0(ii+1:end,1:3)];
-    % get distance between x01 and all secondary sources within x02
-    dist = bsxfun(@minus,x02,x01);
-    dist = vector_norm(dist,2);
-    % get the smallest distance (which is the one to the next source)
-    dx0(ii) = min(dist);
-end
-% get the mean distance between all secondary sources
-dx0 = mean(dx0);
+% get average distance between secondary sources
+dx0 = secondary_source_distance(x0);
 % calculate aliasing frequency
 fal = c/(2*dx0);

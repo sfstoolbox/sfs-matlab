@@ -72,10 +72,10 @@ tapwinlen = conf.tapwinlen;
 nls = size(x0,1);
 if usetapwin && nls>2
     win = ones(1,nls);
-    % use only positions
-    x0 = x0(:,1:3);
     % get the mean distance between secondary sources
     dx0 = secondary_source_distance(x0);
+    % use only positions
+    x0 = x0(:,1:3);
     % find the edges of the array
     edges = [];
     for ii=1:nls-1

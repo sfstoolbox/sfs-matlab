@@ -1,7 +1,7 @@
-function win = hanningwin(onset,offset,nsamples)
-%HANNINGWIN generates a hanning window with on and off ramp
+function win = hannwin(onset,offset,nsamples)
+%HANNWIN generates a Hann window with on and off ramp
 %
-%   Usage: win = hanningwin(onset,offset,nsamples)
+%   Usage: win = hannwin(onset,offset,nsamples)
 %
 %   Input parameters:
 %       onset       - onset / samples (0 for no onset)
@@ -9,7 +9,7 @@ function win = hanningwin(onset,offset,nsamples)
 %       nsamples    - length of the whole window (including on- and offset)
 %
 %   Output parameters:
-%       win         - a hanning window (nsamples x 1) for multiplication
+%       win         - a Hann window (nsamples x 1) for multiplication
 %                     with the desired signal to be windowed
 %
 %   see also: click
@@ -82,15 +82,18 @@ offset=ceil(offset);
 if onset==0
     onsetwin = [];
 else
-    tmp = hanning(2*onset);
-    onsetwin = tmp(1:onset);
+    % generate an uneven window, see issue #18
+    tmp = hann(2*onset+1);
+    % disregard the first entry, because its zero
+    onsetwin = tmp(2:onset+1);
 end
 % Generate offset window
 if offset==0
     offsetwin = [];
 else
-    tmp = hanning(2*offset);
-    offsetwin = tmp(offset+1:end);
+    tmp = hann(2*offset+1);
+    % disregard the last entry, becaus its zero
+    offsetwin = tmp(offset+1:end-1);
 end
 
 % Generate the complete window

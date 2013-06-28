@@ -1,7 +1,7 @@
-function win = hannwin(onset,offset,nsamples)
-%HANNWIN generates a Hann window with on and off ramp
+function win = hann_window(onset,offset,nsamples)
+%HANN_WINDOW generates a Hann window with on and off ramp
 %
-%   Usage: win = hannwin(onset,offset,nsamples)
+%   Usage: win = hann_window(onset,offset,nsamples)
 %
 %   Input parameters:
 %       onset       - onset / samples (0 for no onset)
@@ -12,7 +12,7 @@ function win = hannwin(onset,offset,nsamples)
 %       win         - a Hann window (nsamples x 1) for multiplication
 %                     with the desired signal to be windowed
 %
-%   see also: click
+%   see also: click, tapering_window
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

@@ -80,7 +80,7 @@ else
 end
 
 % Window HRIR
-win = hannwin(ceil(0.15*nsamples),ceil(0.10*nsamples),nsamples).^2;
+win = hann_window(ceil(0.15*nsamples),ceil(0.10*nsamples),nsamples).^2;
 
 % Find maximum of resampled HRIR
 % Find maximum in each channel and calculate the mean of the index

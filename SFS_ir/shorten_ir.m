@@ -58,6 +58,6 @@ isargpositivescalar(nsamples);
 %% ===== Computation ====================================================
 
 % Window IR
-win = hannwin(0,ceil(0.05*nsamples),nsamples);
+win = hann_window(0,ceil(0.05*nsamples),nsamples);
 
 ir = ir(1:nsamples,:) .* repmat(win,[1 size(ir,2)]);

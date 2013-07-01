@@ -1,26 +1,25 @@
-function [nls,L] = secondary_source_number(L,conf)
+function [number,L] = secondary_source_number(L,dx0,conf)
 %SECONDARY_SOURCE_NUMBER calculate the number of secondary sources for the
-%   given array size
+%   given loudspeaker distance
 %
-%   Usage: [nls,L] = secondary_source_number(L,[conf])
+%   Usage: number = secondary_source_number(dx0,[conf])
 %
 %   Input parameters:
-%       L       - length of the loudspeaker array / m
+%       L       - length/diameter of secondary source array / m
+%       dx0     - distance between secondary sources / m
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       nls     - number of needed loudspeaker
-%       L       - real length of the loudspeaker array (corresponding to
-%                 conf.dx0) / m
+%       number  - number of needed loudspeaker
+%       L       - corrected array size, corresponding to the given dx0
 %
-%   SECONDARAY_SOURCE_NUMBER(L,conf) calculates the number of needed loudspeaker for
-%   the given array length L, using the config loudspeaker distance conf.dx0.
-%   Also the real length L of such a loudspeaker array will returned. This is
-%   neccessary because the user given length L is probably not compatible to the
-%   given value conf.dx0.
+%   SECONDARAY_SOURCE_NUMBER(L,dx0,conf) calculates the number of secondary
+%   sources for the given distance dx0 and array size, considering the array
+%   geometry conf.secondary_sources.geometry. It returns also a corrected array
+%   size L, because for some geometries like a circle it could be that the given
+%   distance dx0 does not fit completely to the given perimeter. 
 %
-%   see also: secondary_source_positions, secondary_source_selection,
-%       secondary_source_selection
+%   see also: secondary_source_positions, secondary_source_selection
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -56,10 +55,10 @@ function [nls,L] = secondary_source_number(L,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
-nargmax = 2;
+nargmin = 2;
+nargmax = 3;
 narginchk(nargmin,nargmax),
-isargpositivescalar(L);
+isargpositivescalar(dx0,L);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -69,37 +68,35 @@ end
 
 %% ===== Configuration ==================================================
 % Array type
-array = conf.array;
-% Distance between secondary sources
-dx0 = conf.dx0;
+geometry = conf.secondary_sources.geometry;
 % Predefined secondary sources
-x0 = conf.x0;
+x0 = conf.secondary_sources.x0;
 
 
 %% ===== Calculation ====================================================
 % Check if we have given secondary sources
 if ~isempty(x0)
     isargsecondarysource(x0);
-    nls = size(x0,1);
-elseif strcmp('linear',array)
-    % Number of loudspeaker
-    nls = fix(L/dx0)+1;
+    number = size(x0,1);
+elseif strcmp('linear',geometry)
+    % Number of secondary sources
+    number = fix(L/dx0)+1;
     % Corresponding size of loudspeaker array
-    L = (nls-1)*dx0;
-elseif strcmp('circle',array) || strcmp('circular',array) || strcmp('spherical',array) || ...
-       strcmp('sphere',array)
+    L = (number-1)*dx0;
+elseif strcmp('circle',geometry) || strcmp('circular',geometry) || ...
+       strcmp('spherical',geometry) || strcmp('sphere',geometry)
     % L is the diameter!
     % Perimeter of the circle
     P = pi*L;
     % Number of loudspeakers
     nls = round(P/dx0);
     % Corresponding size of loudspeaker array
-    L = (nls*dx0)/pi;
-elseif strcmp('box',array)
+    L = (number*dx0)/pi;
+elseif strcmp('box',geometry)
     % Number of loudspeakers
-    nls = 4*(fix(L/dx0)+1);
+    number = 4*(fix(L/dx0)+1);
     % Corresponding size of loudspeaker array
-    L = (nls/4-1)*dx0;
+    L = (number/4-1)*dx0;
 else
-    error('%s: %s is a unknown array type.',upper(mfilename),array);
+    error('%s: %s is a unknown array geometry.',upper(mfilename),geometry);
 end

@@ -129,18 +129,20 @@ conf.usenormalisation = 1;
 % ===== Secondary Sources =======================
 % Number of secondary sources
 conf.secondary_sources.number = 56;
-% Interspacing (distance) between the secondary sources. This will give us 56
-% secondary sources for a circular array with a diameter of 3m.
-conf.dx0 = 0.16830; % m
-% Center of array X0
-conf.secondary_sources.center = [0 0 0];
-conf.X0 = [0 0 0]; % m
+% Diameter/Length of secondary source array
+conf.secondary_sources.size = 3; % / m
+% Center of array, X0
+conf.secondary_sources.center = [0 0 0]; % / m
 % Array geometry
-% Possible values are: 'linear', 'box', 'circle', 'U', 'custom'
+% Possible values are: 'linear', 'box', 'circle', 'sphere'
 conf.secondary_sources.geometry = 'circle';
 % Vector containing custom secondary source positions and directions.
-% conf.x0 = [x0; y0; z0; nx0; ny0; nz0];
-conf.secondary_sources.x0 = []; % m
+% conf.secondary_sources.x0 = [x0; y0; z0; nx0; ny0; nz0];
+conf.secondary_sources.x0 = []; % / m
+% Grid for the spherical array. Note, that you have to download and install the
+% spherical grids from an additiona source. For available grids see:
+% http://github.com/sfstoolbox/data/tree/master/spherical_grids
+conf.secondary_sources.grid = 'equally_spaced_points';
 
 
 % ===== Binaural reproduction ===================
@@ -194,13 +196,13 @@ conf.xref = [0 0 0]; % m, m, m
 % frequency (which means the frequency response over the aliasing frequency is
 % allready "correct") [Reference]
 % Use WFS preequalization-filter
-conf.usehpre = false; % boolean
+conf.wfs.usehpre = false; % boolean
 % Lower frequency limit of preequalization filter (~ frequency when
 % subwoofer is active)
-conf.hpreflow = 50; % Hz
+conf.wfs.hpreflow = 50; % Hz
 % Upper frequency limit of preequalization filter (~ aliasing frequency of
 % system)
-conf.hprefhigh = 1200; % Hz
+conf.wfs.hprefhigh = 1200; % Hz
 %
 % ===== Tapering =====
 % The truncation of the loudspeaker array leads to diffraction of the
@@ -211,9 +213,9 @@ conf.hprefhigh = 1200; % Hz
 % function at the edges of the array. This method is called tapering and
 % implemented using a Hanning window.
 % Use tapering window
-conf.usetapwin = true; % boolean
+conf.wfs.usetapwin = true; % boolean
 % Size of the tapering window
-conf.tapwinlen = 0.3; % percent of array length 0..1
+conf.wfs.tapwinlen = 0.3; % percent of array length 0..1
 %
 % === Virtual Sources ===
 % Pre-delay for causality for focused sources
@@ -233,7 +235,7 @@ conf.withev = true; % boolean
 
 % ===== Plotting ================================
 % Plot the results (wave fields etc.) directly
-conf.useplot = false; % boolean
+conf.plot.useplot = false; % boolean
 % Plot mode (uses the GraphDefaults function). Avaiable modes are:
 %   'monitor'   - displays the plot on the monitor
 %   'paper'     - eps output in conf.plot.outfile

@@ -13,9 +13,7 @@ function dx0 = secondary_source_distance(x0)
 %   SECONDARAY_SOURCE_DISTANCE(x0) calculates the average distance dx0 between
 %   the given secondary sources. First, the distance to its nearest source is
 %   calculated for every single secondary source, afterwads the mean about these
-%   values is returned. For with secondary_source_positions created secondary
-%   sources dx0 should correspond to conf.dx0, but can slightly differ for
-%   circular and other irregular shaped arrays.
+%   values is returned.
 %
 %   see also: aliasing_frequency, secondary_source_positions, tapering_window
 

@@ -1,25 +1,25 @@
-function x0 = secondary_source_positions(L,conf)
+function x0 = secondary_source_positions(conf)
 %SECONDARY_SOURCE_POSITIONS Generates the positions and directions of the
 %   secondary sources
 %
-%   Usage: x0 = secondary_source_positions(L,[conf])
+%   Usage: x0 = secondary_source_positions([conf])
 %
 %   Input options:
-%       L           - the size of the array (length for a linear array,
-%                     diameter for a circle or a box) / m
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output options:
 %       x0          - secondary source positions and directions / m
 %
-%   SECONDARY_SOURCES_POSITIONS(L,conf) generates the positions and directions
-%   x0 of secondary sources for a given geometry (conf.array) and array size
-%   (L). Alternatively, if conf.x0 is set, it returns the positions and
-%   directions specified there.
+%   SECONDARY_SOURCES_POSITIONS(conf) generates the positions and directions
+%   x0 of secondary sources for a given geometry
+%   (conf.secondary_sources.geometry) and array size
+%   (conf.secondary_sources.size). Alternatively, if conf.secondary_sources.x0
+%   is set, it returns the positions and directions specified there.
 %   The direction of the sources is given as their unit vectors pointing in the
-%   given driection. For a linear array the secondary sources are pointing
+%   given direction. For a linear array the secondary sources are pointing
 %   towards the negative y-direction. If you create a linear array with default
-%   position conf.X0 = [0 0 0], your listening area is in the area y<0!
+%   position conf.secondary_sources.center = [0 0 0], your listening area is in
+%   the area y<0, which means the y value of conf.xref should also be <0!
 %
 %   Default geometry for a linear array:
 %
@@ -35,7 +35,7 @@ function x0 = secondary_source_positions(L,conf)
 %                                   |
 %                                   |
 %
-%   Default geometry for a circular array:
+%   Default geometry for a circular/spherical array:
 %
 %                                y-axis
 %                                   ^
@@ -122,10 +122,9 @@ function x0 = secondary_source_positions(L,conf)
 
 
 %% ===== Checking of input  parameters ===================================
-nargmin = 1;
-nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin));
-isargpositivescalar(L);
+nargmin = 0;
+nargmax = 1;
+narginchk(nargmin,nargmax);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -135,13 +134,15 @@ end
 
 %% ===== Configuration ===================================================
 % Array type
-array = conf.array;
+geometry = conf.secondary_sources.geometry;
 % Center of the array
-X0 = conf.X0;
-% Distance between secondary sources
-dx0 = conf.dx0;
+X0 = conf.secondary_sources.center;
+% Number of secondary sources
+nls = conf.secondary_sources.number;
+% Diameter/length of array
+L = conf.secondary_sources.size;
 % Given secondary sources
-x0 = conf.x0;
+x0 = conf.secondary_sources.x0;
 
 
 %% ===== Main ============================================================
@@ -152,9 +153,63 @@ if ~isempty(x0)
     return
 end
 
-if strcmp('spherical',array)
+x0 = zeros(nls,6);
+if strcmp('line',geometry) || strcmp('linear',geometry)
+    % === Linear array ===
+    % Positions of the secondary sources
+    x0(:,1) = X0(1) + linspace(-L/2,L/2,nls)';
+    x0(:,2) = X0(2) * ones(nls,1);
+    x0(:,3) = X0(3) * ones(nls,1);
+    % Direction of the secondary sources pointing to the -y direction
+    x0(:,4:6) = direction_vector(x0(:,1:3),x0(:,1:3)+repmat([0 -1 0],nls,1));
+elseif strcmp('circle',geometry) || strcmp('circular',geometry)
+    % === Circular array ===
+    % Azimuth angles
+    phi = linspace(0,(2-2/nls)*pi,nls)'; % 0..2pi
+    %phi = linspace(pi/2,(5/2-2/nls)*pi,nls)'; % pi/2..5/2pi, Room Pinta
+    % Elevation angles
+    theta = zeros(nls,1);
+    % Positions of the secondary sources
+    [cx,cy,cz] = sph2cart(phi,theta,L/2);
+    x0(:,1:3) = [cx,cy,cz] + repmat(X0,nls,1);
+    % Direction of the secondary sources
+    x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1).*ones(nls,3));  
+elseif strcmp('box',geometry)
+    % === Boxed loudspeaker array ===
+    % Number of secondary sources per linear array
+    % Note, that the call to the secondary_source_number function above
+    % ensures that nls/4 is always an integer.
+    nbox = round(nls/4);
+    % distance between secondary sources
+    dx0 = L/(nbox-1);
+    % Position and direction of the loudspeakers
+    % top
+    x0(1:nbox,1) = X0(1) + linspace(-L/2,L/2,nbox)';
+    x0(1:nbox,2) = X0(2) + ones(nbox,1) * L/2 + dx0;
+    x0(1:nbox,3) = X0(3) + zeros(nbox,1);
+    x0(1:nbox,4:6) = direction_vector(x0(1:nbox,1:3), ...
+    x0(1:nbox,1:3)+repmat([0 -1 0],nbox,1));
+    % right
+    x0(nbox+1:2*nbox,1) = X0(1) + ones(nbox,1) * L/2 + dx0;
+    x0(nbox+1:2*nbox,2) = X0(2) + linspace(L/2,-L/2,nbox)';
+    x0(nbox+1:2*nbox,3) = X0(3) + zeros(nbox,1);
+    x0(nbox+1:2*nbox,4:6) = direction_vector(x0(nbox+1:2*nbox,1:3), ...
+    x0(nbox+1:2*nbox,1:3)+repmat([-1 0 0],nbox,1));
+    % bottom
+    x0(2*nbox+1:3*nbox,1) = X0(1) + linspace(L/2,-L/2,nbox)';
+    x0(2*nbox+1:3*nbox,2) = X0(2) - ones(nbox,1) * L/2 - dx0;
+    x0(2*nbox+1:3*nbox,3) = X0(3) + zeros(nbox,1);
+    x0(2*nbox+1:3*nbox,4:6) = direction_vector(x0(2*nbox+1:3*nbox,1:3), ...
+    x0(2*nbox+1:3*nbox,1:3)+repmat([0 1 0],nbox,1));
+    % left
+    x0(3*nbox+1:nls,1) = X0(1) - ones(nbox,1) * L/2 - dx0;
+    x0(3*nbox+1:nls,2) = X0(2) + linspace(-L/2,L/2,nbox)';
+    x0(3*nbox+1:nls,3) = X0(3) + zeros(nbox,1);
+    x0(3*nbox+1:nls,4:6) = direction_vector(x0(3*nbox+1:nls,1:3), ...
+    x0(3*nbox+1:nls,1:3)+repmat([1 0 0],nbox,1));
+elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)
     % need to be set in SFS_config->conf.grid
-    if strcmp('MinimumEnergyPoints',conf.grid)
+    if strcmp('equally_spaced_points',conf.secondary_sources.grid)
         % uses secondary source position of the MinimumEnergyPoints
         % Approach stated by Fliege&Maier (equally spaced points on a 
         % sphere with weights)
@@ -170,73 +225,12 @@ if strcmp('spherical',array)
         x0(:,4:6) = direction_vector(x0(:,1:3),repmat([0 0 0],...
                                      length(irs.left),1)); 
         % integration element of the sphere applied as weight
-        x0(:,7) = cos(irs.apparent_elevation); 
+        %x0(:,7) = cos(irs.apparent_elevation); 
         % weights for secondary source positions
-        x0(:,8) = weights_for_points_on_a_sphere_rectangle(...
-                  irs.apparent_azimuth,irs.apparent_elevation);
+        %x0(:,8) = weights_for_points_on_a_sphere_rectangle(...
+        %          irs.apparent_azimuth,irs.apparent_elevation);
     end
 
 else
-
-    % Get the number of secondary sources
-    [nls, L] = secondary_source_number(L,conf);
-
-    x0 = zeros(nls,6);
-    if strcmp('linear',array)
-        % === Linear array ===
-        % Positions of the secondary sources
-        x0(:,1) = X0(1) + linspace(-L/2,L/2,nls)';
-        x0(:,2) = X0(2) * ones(nls,1);
-        x0(:,3) = X0(3) * ones(nls,1);
-        % Direction of the secondary sources pointing to the -y direction
-        x0(:,4:6) = direction_vector(x0(:,1:3),x0(:,1:3)+repmat([0 -1 0],nls,1));
-    elseif strcmp('circle',array) || strcmp('circular',array)
-        % === Circular array ===
-        % Azimuth angles
-        phi = linspace(0,(2-2/nls)*pi,nls)'; % 0..2pi
-        %phi = linspace(pi/2,(5/2-2/nls)*pi,nls)'; % pi/2..5/2pi, Room Pinta
-        % Elevation angles
-        theta = zeros(nls,1);
-        % Positions of the secondary sources
-        [cx,cy,cz] = sph2cart(phi,theta,L/2);
-        x0(:,1:3) = [cx,cy,cz] + repmat(X0,nls,1);
-        % Direction of the secondary sources
-        x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1).*ones(nls,3));  
-    elseif strcmp('box',array)
-        % === Boxed loudspeaker array ===
-        % Number of secondary sources per linear array
-        % Note, that the call to the secondary_source_number function above
-        % ensures that nls/4 is always an integer.
-        nbox = nls/4;
-        % Position and direction of the loudspeakers
-        % top
-        x0(1:nbox,1) = X0(1) + linspace(-L/2,L/2,nbox)';
-        x0(1:nbox,2) = X0(2) + ones(nbox,1) * L/2 + dx0;
-        x0(1:nbox,3) = X0(3) + zeros(nbox,1);
-        x0(1:nbox,4:6) = direction_vector(x0(1:nbox,1:3), ...
-        x0(1:nbox,1:3)+repmat([0 -1 0],nbox,1));
-        % right
-        x0(nbox+1:2*nbox,1) = X0(1) + ones(nbox,1) * L/2 + dx0;
-        x0(nbox+1:2*nbox,2) = X0(2) + linspace(L/2,-L/2,nbox)';
-        x0(nbox+1:2*nbox,3) = X0(3) + zeros(nbox,1);
-        x0(nbox+1:2*nbox,4:6) = direction_vector(x0(nbox+1:2*nbox,1:3), ...
-        x0(nbox+1:2*nbox,1:3)+repmat([-1 0 0],nbox,1));
-        % bottom
-        x0(2*nbox+1:3*nbox,1) = X0(1) + linspace(L/2,-L/2,nbox)';
-        x0(2*nbox+1:3*nbox,2) = X0(2) - ones(nbox,1) * L/2 - dx0;
-        x0(2*nbox+1:3*nbox,3) = X0(3) + zeros(nbox,1);
-        x0(2*nbox+1:3*nbox,4:6) = direction_vector(x0(2*nbox+1:3*nbox,1:3), ...
-        x0(2*nbox+1:3*nbox,1:3)+repmat([0 1 0],nbox,1));
-        % left
-        x0(3*nbox+1:nls,1) = X0(1) - ones(nbox,1) * L/2 - dx0;
-        x0(3*nbox+1:nls,2) = X0(2) + linspace(-L/2,L/2,nbox)';
-        x0(3*nbox+1:nls,3) = X0(3) + zeros(nbox,1);
-        x0(3*nbox+1:nls,4:6) = direction_vector(x0(3*nbox+1:nls,1:3), ...
-        x0(3*nbox+1:nls,1:3)+repmat([1 0 0],nbox,1));
-    elseif strcmp('U',array)
-        to_be_implemented(mfilename);
-    else
-        error('%s: %s is not a valid array type.',upper(mfilename),array);
-    end
-end    
+    error('%s: %s is not a valid array geometry.',upper(mfilename),geometry);
 end

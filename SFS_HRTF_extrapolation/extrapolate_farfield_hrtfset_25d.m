@@ -78,15 +78,13 @@ amplitude_correction = -1.7 * sin(irs.apparent_azimuth);
 
 R = irs.distance;
 L = 2*R;
-nls = length(irs.apparent_azimuth);
 
 % get virtual loudspeaker positions from HRTF dataset
-conf.array = 'circle';
-conf.dx0 = 2*pi*R/nls;
-conf.xref = [0 0 0];
-conf.x0 = zeros(nls,6);
-conf.x0(:,1:2) = [R*cos(irs.apparent_azimuth) ; R*sin(irs.apparent_azimuth)]';
-conf.x0(:,4:6) = direction_vector(conf.x0(:,1:3),repmat(conf.xref,nls,1));
+conf.secondary_sources.geometry = 'circle';
+conf.secondary_sources.number = length(irs.apparent_azimuth);
+conf.secondary_sources.x0 = zeros(nls,6);
+conf.secondary_sources.x0(:,1:2) = [R*cos(irs.apparent_azimuth) ; R*sin(irs.apparent_azimuth)]';
+conf.secondary_sources.x0(:,4:6) = direction_vector(conf.x0(:,1:3),repmat(conf.xref,nls,1));
 
 
 %% ===== Computation =====================================================

@@ -127,17 +127,20 @@ conf.usenormalisation = 1;
 
 
 % ===== Secondary Sources =======================
+% Number of secondary sources
+conf.secondary_sources.number = 56;
 % Interspacing (distance) between the secondary sources. This will give us 56
 % secondary sources for a circular array with a diameter of 3m.
 conf.dx0 = 0.16830; % m
-% Array position
+% Center of array X0
+conf.secondary_sources.center = [0 0 0];
 conf.X0 = [0 0 0]; % m
 % Array geometry
 % Possible values are: 'linear', 'box', 'circle', 'U', 'custom'
-conf.array = 'circle';
+conf.secondary_sources.geometry = 'circle';
 % Vector containing custom secondary source positions and directions.
 % conf.x0 = [x0; y0; z0; nx0; ny0; nz0];
-conf.x0 = []; % m
+conf.secondary_sources.x0 = []; % m
 
 
 % ===== Binaural reproduction ===================

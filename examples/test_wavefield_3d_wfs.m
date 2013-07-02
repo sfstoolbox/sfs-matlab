@@ -13,25 +13,23 @@ clear all
 close all
 % properties of SFS_conf
 conf = SFS_config_example;
-conf.zreferenceaxis = 'y'; % set a plot reference axis
-conf.useplot = 1; % plot the results = 1 ; otherwise = 0
-conf.array = 'spherical'; % array type
-conf.usetapwin = 0; % do not use tapering window, it's not needed in the 3D case
+conf.plot.useplot = 1; % plot the results = 1 ; otherwise = 0
 conf.plot.loudspeakers = 0; % do not plot loudspeakers in the 3D case, because it's a mess ;)
+r = 1.6883; % radius of the sphere
+conf.secondary_sources.geometry = 'spherical'; % array type
+conf.secondary_sources.number = 81^2; 
+conf.secondary_sources.grid = 'equally_spaced_points';
+conf.secondary_sources.size = 2*r;
+conf.usetapwin = 0; % do not use tapering window, it's not needed in the 3D case
 conf.usehpre = 1; % use preequalization filter
 conf.hprefhigh = 12000;
-conf.number_of_points_on_sphere = 81^2; % number of points on the sphere, if spherical array is choosen
 conf.debug = 1; % debug=1 allows to plot results of different evaluation steps
-conf.frame = 0; % set a frame to show the wavefield in the time domain
 conf.xref = [0 0 0]; % ps/fs: 'listener position' ; pw:  place where the wavefield is scaled to one
 % properties of desired wavefield
 xs = [0 0.5 0]; % position of point source or focus source / inicidence angle of plane wave
-r = 1.6883; % radius of the sphere
-L = 2*r; % diameter of the sphere
 src = 'fs'; % select source type pw/ps/fs
 f = 1000; % evaluation frequency
-conf.grid = ''; % two grids available: MinimumEnergyPoints and HRTFgrid (if you type anything else then 'MinimumEnergyPoints')
-conf.dimension = '3d';
+conf.dimension = '3D';
 % plot properties
 scale_axis_1 = [0 0];
 scale_axis_2 = [-2 2];
@@ -47,7 +45,7 @@ scale_axis_3 = [0.5 0.5];
 % title('WFS 3D spherical array r = 1.5m, plane wave [0,1,0], mono-frequent f = 1000Hz')
 
 %% calculate wavefield in time domain
-wave_field_imp_wfs_3d(scale_axis_2,scale_axis_2,scale_axis_1,xs,src,250,L,conf);
+wave_field_imp_wfs(scale_axis_2,scale_axis_2,scale_axis_1,xs,src,250,conf);
 grid on
 % title('WFS 3D spherical array r = 1.5m, plane wave [0,1,0],time domain')
 % wave_field_imp_wfs_3d(scale_axis_2,scale_axis_3,scale_axis_2,xs,src,L,conf);

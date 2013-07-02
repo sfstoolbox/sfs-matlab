@@ -209,7 +209,7 @@ elseif strcmp('box',geometry)
     x0(3*nbox+1:nls,1:3)+repmat([1 0 0],nbox,1));
 elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)
     % get spherical grid + weights
-    [points,weight] = get_sphercial_grid(nls,conf);
+    [points,weight] = get_spherical_grid(nls,conf);
     % secondary source positions
     x0(:,1:3) = L/2 * points;
     % secondary source directions

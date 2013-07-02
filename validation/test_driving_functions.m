@@ -60,7 +60,7 @@ conf = SFS_config;
 L = 3;
 f = 1000;
 t = 200;
-conf.useplot = modus;
+conf.plot.useplot = modus;
 conf.driving_functions = 'default';
 % test scenarios
 scenarios = { ...

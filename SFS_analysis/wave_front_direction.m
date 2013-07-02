@@ -81,7 +81,7 @@ end
 % Speed of sound
 c = conf.c;
 % use plotting?
-useplot = conf.useplot;
+useplot = conf.plot.useplot;
 % Use gnuplot?
 usegnuplot = conf.plot.usegnuplot;
 

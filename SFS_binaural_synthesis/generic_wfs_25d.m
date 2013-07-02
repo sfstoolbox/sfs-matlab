@@ -79,7 +79,7 @@ end
 fs = conf.fs;                 % sampling frequency
 c = conf.c;                   % speed of sound
 N = conf.N;                   % target length of BRS impulse responses
-useplot = conf.useplot;       % Plot results?
+useplot = conf.plot.useplot;  % Plot results?
 
 
 %% ===== Variables ======================================================

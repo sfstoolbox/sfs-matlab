@@ -95,7 +95,7 @@ end
 
 %% ===== Configuration ==================================================
 % Plotting result
-useplot = conf.useplot;
+useplot = conf.plot.useplot;
 
 
 %% ===== Computation ====================================================

@@ -108,7 +108,7 @@ xref = conf.xref;
 c = conf.c;
 % xy resolution
 xysamples = conf.xysamples;
-useplot = conf.useplot;
+useplot = conf.plot.useplot;
 
 
 %% ===== Variables ======================================================

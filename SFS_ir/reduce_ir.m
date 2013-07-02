@@ -67,7 +67,7 @@ end
 
 %% ===== Configuration ==================================================
 ofs = conf.fs;  % original fs
-useplot = conf.useplot;
+useplot = conf.plot.useplot;
 
 
 %% ===== Computation ====================================================

@@ -1,14 +1,16 @@
-function dx0 = secondary_source_distance(x0)
+function [dx0,dx0_single] = secondary_source_distance(x0)
 %SECONDARY_SOURCE_DISTANCE calculates the average distance between the secondary
 %sources
 %
 %   Usage: dx0 = secondary_source_distance(x0)
 %
 %   Input parameters:
-%       x0      - secondary sources / m
+%       x0          - secondary sources / m
 %
 %   Output parameters:
-%       dx0     - average distance of secondary sources / m
+%       dx0         - average distance of secondary sources / m
+%       dx0_single  - vector containing the minimum distances of
+%                     all secondary sources to the other ones / m
 %
 %   SECONDARAY_SOURCE_DISTANCE(x0) calculates the average distance dx0 between
 %   the given secondary sources. First, the distance to its nearest source is
@@ -60,6 +62,7 @@ isargsecondarysource(x0);
 %% ===== Calculation ====================================================
 % calculate the distance to the nearest secondary source for all secondary
 % sources
+dx0_single = zeros(size(x0,1),1);
 for ii=1:size(x0,1)
     % first secondary source position
     x01 = x0(ii,1:3);
@@ -69,7 +72,7 @@ for ii=1:size(x0,1)
     dist = bsxfun(@minus,x02,x01);
     dist = vector_norm(dist,2);
     % get the smallest distance (which is the one to the next source)
-    dx0(ii) = min(dist);
+    dx0_single(ii) = min(dist);
 end
 % get the mean distance between all secondary sources
-dx0 = mean(dx0);
+dx0 = mean(dx0_single);

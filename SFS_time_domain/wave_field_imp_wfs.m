@@ -1,7 +1,7 @@
-function varargout = wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf)
+function varargout = wave_field_imp_wfs(X,Y,Z,xs,src,t,conf)
 %WAVE_FIELD_IMP_WFS returns the wave field in time domain of an impulse
 %
-%   Usage: [p,x,y,z,x0,win] = wave_field_imp_wfs(X,Y,Z,xs,src,t,L,[conf])
+%   Usage: [p,x,y,z,x0,win] = wave_field_imp_wfs(X,Y,Z,xs,src,t,[conf])
 %
 %   Input options:
 %       X           - x-axis / m; single value or [xmin,xmax]
@@ -14,7 +14,6 @@ function varargout = wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf)
 %                         'ps' - point source
 %                         'fs' - focused source
 %       t           - time point t of the wave field / samples
-%       L           - array length / m
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output options:
@@ -25,7 +24,7 @@ function varargout = wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf)
 %       x0          - secondary sources / m
 %       win         - tapering window
 %
-%   WAVE_FIELD_IMP_WFS(X,Y,Z,xs,src,t,L,conf) simulates a wave field of the
+%   WAVE_FIELD_IMP_WFS(X,Y,Z,xs,src,t,conf) simulates a wave field of the
 %   given source type (src) using a WFS driving function with a delay line at
 %   the time t.
 %
@@ -69,12 +68,11 @@ function varargout = wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 7;
-nargmax = 8;
+nargmin = 6;
+nargmax = 7;
 narginchk(nargmin,nargmax);
 isargvector(X,Y,Z);
 isargxs(xs);
-isargpositivescalar(L);
 isargchar(src);
 isargscalar(t);
 if nargin<nargmax
@@ -86,12 +84,12 @@ end
 
 %% ===== Configuration ==================================================
 xref = conf.xref;
-useplot = conf.useplot;
+useplot = conf.plot.useplot;
 
 
 %% ===== Computation =====================================================
 % Get secondary sources
-x0 = secondary_source_positions(L,conf);
+x0 = secondary_source_positions(conf);
 x0 = secondary_source_selection(x0,xs,src);
 % Generate tapering window
 win = tapering_window(x0,conf);
@@ -102,7 +100,7 @@ d = driving_function_imp_wfs(x0,xs,src,conf);
 d = bsxfun(@times,d,win');
 
 % disable plotting in order to integrate the tapering window
-conf.useplot = 0;
+conf.plot.useplot = 0;
 % Calculate wave field
 [p,x,y,z] = wave_field_imp(X,Y,Z,x0,'ps',d,t,conf);
 

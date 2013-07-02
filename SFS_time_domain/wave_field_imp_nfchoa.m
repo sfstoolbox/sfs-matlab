@@ -1,7 +1,7 @@
-function varargout = wave_field_imp_nfchoa(X,Y,Z,xs,src,t,L,conf)
+function varargout = wave_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
 %WAVE_FIELD_IMP_NFCHOA returns the wave field in time domain for NFC-HOA
 %
-%   Usage: [p,x,y,z,x0] = wave_field_imp_nfchoa(X,Y,Z,xs,src,t,L,[conf])
+%   Usage: [p,x,y,z,x0] = wave_field_imp_nfchoa(X,Y,Z,xs,src,t,[conf])
 %
 %   Input options:
 %       X           - x-axis / m; single value or [xmin,xmax]
@@ -13,7 +13,6 @@ function varargout = wave_field_imp_nfchoa(X,Y,Z,xs,src,t,L,conf)
 %                                plane wave in this case)
 %                         'ps' - point source
 %       t           - time point t / samples
-%       L           - array length / m
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output options:
@@ -23,7 +22,7 @@ function varargout = wave_field_imp_nfchoa(X,Y,Z,xs,src,t,L,conf)
 %       z           - corresponding z axis / m
 %       x0          - positions and directions of the secondary sources / m
 %
-%   WAVE_FIELD_IMP_NFCHOA(X,Y,Z,xs,src,t,L,conf) simulates a wave field of the
+%   WAVE_FIELD_IMP_NFCHOA(X,Y,Z,xs,src,t,conf) simulates a wave field of the
 %   given source type (src) using a NFC-HOA driving function at the time point t.
 %
 %   To plot the result use:
@@ -66,12 +65,11 @@ function varargout = wave_field_imp_nfchoa(X,Y,Z,xs,src,t,L,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 7;
-nargmax = 8;
+nargmin = 6;
+nargmax = 7;
 narginchk(nargmin,nargmax);
 isargvector(X,Y,Z);
 isargxs(xs);
-isargpositivescalar(L);
 isargchar(src);
 isargscalar(t);
 if nargin<nargmax
@@ -83,7 +81,7 @@ end
 
 %% ===== Computation =====================================================
 % Get secondary sources
-x0 = secondary_source_positions(L,conf);
+x0 = secondary_source_positions(conf);
 % Calculate driving function
 d = driving_function_imp_nfchoa(x0,xs,src,conf);
 % Calculate wave field

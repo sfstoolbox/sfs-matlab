@@ -1,7 +1,7 @@
-function varargout = wave_field_mono_nfchoa(X,Y,Z,xs,src,f,L,conf)
+function varargout = wave_field_mono_nfchoa(X,Y,Z,xs,src,f,conf)
 %WAVE_FIELD_MONO_NFCHOA simulates a wave field for NFC-HOA
 %
-%   Usage: [P,x,y,z,x0] = wave_field_mono_nfchoa(X,Y,Z,xs,src,f,L,[conf])
+%   Usage: [P,x,y,z,x0] = wave_field_mono_nfchoa(X,Y,Z,xs,src,f,[conf])
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax]
@@ -13,7 +13,6 @@ function varargout = wave_field_mono_nfchoa(X,Y,Z,xs,src,f,L,conf)
 %                                plane wave in this case)
 %                         'ps' - point source
 %       f           - monochromatic frequency / Hz
-%       L           - array length / m
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -23,7 +22,7 @@ function varargout = wave_field_mono_nfchoa(X,Y,Z,xs,src,f,L,conf)
 %       z           - corresponding z axis / m
 %       x0          - secondary sources / m
 %
-%   WAVE_FIELD_MONO_NFCHOA(X,Y,Z,xs,src,f,L,conf) simulates a wave
+%   WAVE_FIELD_MONO_NFCHOA(X,Y,Z,xs,src,f,conf) simulates a wave
 %   field of the given source type (src) using a NFC-HOA driving
 %   function in the frequency domain. This means by calculating the integral for
 %   P with a summation.
@@ -69,12 +68,12 @@ function varargout = wave_field_mono_nfchoa(X,Y,Z,xs,src,f,L,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 7;
-nargmax = 8;
+nargmin = 6;
+nargmax = 7;
 narginchk(nargmin,nargmax);
 isargvector(X,Y,Z);
 isargxs(xs);
-isargpositivescalar(L,f);
+isargpositivescalar(f);
 isargchar(src);
 if nargin<nargmax
     conf = SFS_config;
@@ -85,7 +84,7 @@ end
 
 %% ===== Computation ====================================================
 % Get the position of the loudspeakers
-x0 = secondary_source_positions(L,conf);
+x0 = secondary_source_positions(conf);
 % Driving function D(x0,omega)
 D = driving_function_mono_nfchoa(x0,xs,src,f,conf);
 % Wave field

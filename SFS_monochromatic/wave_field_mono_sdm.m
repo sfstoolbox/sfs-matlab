@@ -1,7 +1,7 @@
-function varargout = wave_field_mono_sdm(X,Y,Z,xs,src,f,L,conf)
+function varargout = wave_field_mono_sdm(X,Y,Z,xs,src,f,conf)
 %WAVE_FIELD_MONO_SDM simulates a wave field for WFS
 %
-%   Usage: [P,x,y,z,x0,win] = wave_field_mono_sdm(X,Y,Z,xs,src,f,L,[conf])
+%   Usage: [P,x,y,z,x0,win] = wave_field_mono_sdm(X,Y,Z,xs,src,f,[conf])
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax]
@@ -14,7 +14,6 @@ function varargout = wave_field_mono_sdm(X,Y,Z,xs,src,f,L,conf)
 %                         'ps' - point source
 %                         'fs' - focused source
 %       f           - monochromatic frequency / Hz
-%       L           - array length / m
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -25,7 +24,7 @@ function varargout = wave_field_mono_sdm(X,Y,Z,xs,src,f,L,conf)
 %       x0          - active secondary sources / m
 %       win         - tapering window of the secondary sources
 %
-%   WAVE_FIELD_MONO_SDM(X,Y,Z,xs,L,f,src,conf) simulates a wave field for the
+%   WAVE_FIELD_MONO_SDM(X,Y,Z,xs,src,f,conf) simulates a wave field for the
 %   given source type (src) using SDM driving functions in the temporal domain.
 %   This means by calculating the integral for P with a summation.
 %   To plot the result use plot_wavefield(P,x,y,z,x0,win).
@@ -71,12 +70,12 @@ function varargout = wave_field_mono_sdm(X,Y,Z,xs,src,f,L,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 7;
-nargmax = 8;
+nargmin = 6;
+nargmax = 7;
 narginchk(nargmin,nargmax);
 isargvector(X,Y,Z);
 isargxs(xs);
-isargpositivescalar(L,f);
+isargpositivescalar(f);
 isargchar(src);
 if nargin<nargmax
     conf = SFS_config;
@@ -86,13 +85,13 @@ end
 
 
 %% ===== Configuration ==================================================
-useplot = conf.useplot;
+useplot = conf.plot.useplot;
 xref = conf.xref;
 
 
 %% ===== Computation ====================================================
 % Get the position of the loudspeakers and its activity
-x0 = secondary_source_positions(L,conf);
+x0 = secondary_source_positions(conf);
 x0 = secondary_source_selection(x0,xs,src);
 % Generate tapering window
 win = tapering_window(x0,conf);
@@ -100,7 +99,7 @@ win = tapering_window(x0,conf);
 D = driving_function_mono_sdm(x0,xs,src,f,conf) .* win;
 % Wave field
 % disable plotting, in order to integrate the tapering window
-conf.useplot = 0;
+conf.plot.useplot = 0;
 % calculate wave field
 [P,x,y,z] = wave_field_mono(X,Y,Z,x0,'ps',D,f,conf);
 

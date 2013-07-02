@@ -93,7 +93,7 @@ end
 % Plot only "x" at the loudspeaker positions, use this as default for all cases
 % that are not the x-y-plane
 if ~p.realloudspeakers || ~(dimensions(1)&&dimensions(2))
-    if ~(dimensions(1)&&dimensions(2))
+    if p.realloudspeakers && ~(dimensions(1)&&dimensions(2))
         warning('%s: Real loudspeaker can only be drawn in the x-y-plane', ...
             upper(mfilename));
     end

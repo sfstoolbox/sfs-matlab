@@ -1,27 +1,26 @@
-function movie_wave_field_imp_wfs_25d(X,Y,xs,src,L,outfile,conf)
-%MOVIE_WAVE_FIELD_IMP_WFS_25D generates movie a 2.5D WFS wave field
+function movie_wave_field_imp_wfs(X,Y,Z,xs,src,outfile,conf)
+%MOVIE_WAVE_FIELD_IMP_WFS generates movie a WFS wave field
 %
-%   Usage: movie_wave_field_imp_wfs_25d(X,Y,xs,src,L,outfile,[conf])
+%   Usage: movie_wave_field_imp_wfs_25d(X,Y,Z,xs,src,outfile,[conf])
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] 
 %       Y           - y-axis / m; single value or [ymin,ymax]
+%       Z           - z-axis / m; single value or [zmin,zmax]
 %       xs          - position of point source / m
 %       src         - sourcetype of the virtual source:
 %                         'pw' - plane wave (xs, ys are the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
-%       L           - array length / m
 %       outfile     - name for the movie file
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   MOVIE_WAVE_FIELD_IMP_WFS_25D(X,Y,xs,src,L,outfile,conf) generates a
-%   movie of simulations of a wave field of the given source positioned at xs, ys
-%   using a WFS 2.5 dimensional driving function in the temporal domain with
-%   different phase.
+%   MOVIE_WAVE_FIELD_IMP_WFS(X,Y,Z,xs,src,outfile,conf) generates a movie of
+%   simulations of a wave field of the given source positioned at xs
+%   using a WFS driving function in the temporal domain with different phase.
 %
-%   see also: wave_field_imp_wfs_25d, plot_wavefield, generate_movie
+%   see also: wave_field_imp_wfs, plot_wavefield, generate_movie
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -60,9 +59,8 @@ function movie_wave_field_imp_wfs_25d(X,Y,xs,src,L,outfile,conf)
 nargmin = 6;
 nargmax = 7;
 narginchk(nargmin,nargmax);
-isargvector(X,Y);
+isargvector(X,Y,Z);
 isargxs(xs);
-isargpositivescalar(L);
 isargchar(src,outfile);
 if nargin<nargmax
     conf = SFS_config;
@@ -73,43 +71,37 @@ end
 
 %% ===== Configuration ==================================================
 % Plotting
-useplot = conf.useplot;
+useplot = conf.plot.useplot;
 % Temporary dir
 tmpdir = conf.tmpdir;
 
 
 %% ===== Simulation =====================================================
-%phase = linspace(0,2*pi,25);
-frame = round(linspace(-200,900,7*25));
+t = round(linspace(-20,900,10*25));
 % Generate a random number string for the tmp files
 rn = sprintf('%04.0f',10000*rand);
 % Disable the empty wave field warning
 warning('off','SFS:check_wave_field');
+conf.plot.useplot = 0;
+conf.usenormalisation = 0;
 % Simulate the time by different phase values
-for ii = 1:length(frame)-1
-    conf.frame = frame(ii);
-    conf.useplot = 0;
+for ii = 1:length(t)-1
     % Calculate wave field for the given phase
-    [x,y,P] = wave_field_imp_wfs_25d(X,Y,xs,src,L,conf);
-    x0 = secondary_source_positions(L,conf);
-    x0 = secondary_source_selection(x0,xs,src);
-    % Generate tapering window
-    ls_activity = tapering_window(x0,conf);
+    [p,x,y,z,x0,win] = wave_field_imp_wfs(X,Y,Z,xs,src,t(ii),conf);
 
     % === Save temporary data ===
     if ~exist(tmpdir,'dir')
         mkdir(tmpdir);
     end
-    pngfile = sprintf('%s/%s_%04.0f.png',tmpdir,rn,ii);
-    conf.plot.mode = 'png';
-    conf.plot.usedb = 1;
-    plot_wavefield(x,y,P,L,ls_activity,pngfile,conf);
+    conf.plot.file = sprintf('%s/%s_%04.0f.png',tmpdir,rn,ii);
+    %conf.plot.usedb = 1;
+    plot_wavefield(p,x,y,z,x0,win,conf);
 end
 % Enable the empty wave field warning
 warning('on','SFS:check_wave_field');
 
 %% ===== Create movie ====================================================
-conf.useplot = useplot;
+conf.plot.useplot = useplot;
 generate_movie(outfile,tmpdir,rn);
 
 % Clean up tmp files

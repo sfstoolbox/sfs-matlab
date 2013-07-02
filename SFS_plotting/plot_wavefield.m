@@ -91,11 +91,10 @@ isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
-dx0 = conf.dx0;
 % Tmp dir
 tmpdir = conf.tmpdir;
 % Center position of array
-X0 = conf.X0;
+X0 = conf.secondary_sources.center;
 % Plotting
 p.usegnuplot = conf.plot.usegnuplot;
 p.cmd = conf.plot.cmd;
@@ -113,6 +112,8 @@ p.file = conf.plot.file;
 
 
 %% ===== Calculation =====================================================
+% Distances between the secondary sources
+dx0 = secondary_source_distance(x0);
 % Handle the given axis and check which should be plotted
 [dimensions,x1,x2] = xyz_axes_selection(x,y,z);
 if all(dimensions)
@@ -239,9 +240,9 @@ if ~(p.usegnuplot)
 
     % Save as file
     if ~isempty(p.file) && strcmp('png',p.file(end-2:end))
-        print_png(p.file,conf);
+        print_png(p.file);
     elseif ~isempty(p.file) && strcmp('eps',p.file(end-2:end))
-        print_eps(p.file,conf);
+        print_eps(p.file);
     end
 
 else

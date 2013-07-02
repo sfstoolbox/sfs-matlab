@@ -1,7 +1,7 @@
-function movie_wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,outfile,conf)
-%MOVIE_WAVE_FIELD_MONO_WFS_25D generates movie a 2.5D WFS wave field
+function movie_wave_field_mono_wfs(X,Y,Z,xs,src,f,outfile,conf)
+%MOVIE_WAVE_FIELD_MONO_WFS_25D generates movie a WFS wave field
 %
-%   Usage: movie_wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,outfile,[conf])
+%   Usage: movie_wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,outfile,[conf])
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax]
@@ -14,16 +14,14 @@ function movie_wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,outfile,conf)
 %                         'ps' - point source
 %                         'fs' - focused source
 %       f           - monochromatic frequency / Hz
-%       L           - array length / m
 %       outfile     - name for the movie file
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   MOVIE_WAVE_FIELD_MONO_WFS_25D(X,Y,Z,xs,src,f,L,outfile,conf) generates a
+%   MOVIE_WAVE_FIELD_MONO_WFS(X,Y,Z,xs,src,f,L,outfile,conf) generates a
 %   movie of simulations of a wave field of the given source positioned at xs
-%   using a WFS 2.5 dimensional driving function in the temporal domain with
-%   different phase.
+%   using a WFS driving function in the temporal domain with different phase.
 %
-%   see also: wave_field_mono_wfs_25d, plot_wavefield
+%   see also: wave_field_mono_wfs, plot_wavefield
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -59,12 +57,12 @@ function movie_wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,outfile,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 8;
-nargmax = 9;
+nargmin = 7;
+nargmax = 8;
 narginchk(nargmin,nargmax);
 isargvector(X,Y,Z);
 isargxs(xs);
-isargpositivescalar(L,f);
+isargpositivescalar(f);
 isargchar(src,outfile);
 if nargin<nargmax
     conf = SFS_config;
@@ -76,38 +74,35 @@ end
 %% ===== Configuration ==================================================
 
 % Plotting
-useplot = conf.useplot;
+useplot = conf.plot.useplot;
 % Temporary dir
 tmpdir = conf.tmpdir;
 
 
 %% ===== Simulation =====================================================
-phase = linspace(0,2*pi,25);
+% FIXME: the direction of the phase could be wrong depending on the direction of
+% the virtual source
+phase = linspace(2*pi,0,25);
 % Generate a random number string for the tmp files
 rn = sprintf('%04.0f',10000*rand);
 % Simulate the time by different phase values
 for ii = 1:length(phase)-1
     conf.phase = phase(ii);
-    conf.useplot = 0;
+    conf.plot.useplot = 0;
     % Calculate wave field for the given phase
-    [x,y,P,ls_activity] = wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,conf);
-    x0 = secondary_source_positions(L,conf);
-    x0 = secondary_source_selection(x0,xs,src);
+    [P,x,y,z,x0,win] = wave_field_mono_wfs(X,Y,Z,xs,src,f,conf);
 
     % === Save temporary data ===
     if ~exist(tmpdir,'dir')
         mkdir(tmpdir);
     end
-    pngfile = sprintf('%s/%s_%i.png',tmpdir,rn,ii+10);
-    conf.plot.mode = 'png';
-    % FIXME: this is broken at the moment, because pngfile is not handled by the
-    % plotting function
-    plot_wavefield(x,y,z,P,x0,ls_activity,pngfile,conf);
+    conf.plot.file = sprintf('%s/%s_%i.png',tmpdir,rn,ii+10);
+    plot_wavefield(P,x,y,z,x0,win,conf);
 end
 
 
 %% ===== Create movie ====================================================
-conf.useplot = useplot;
+conf.plot.useplot = useplot;
 generate_movie(outfile,tmpdir,rn);
 
 % Clean up tmp files

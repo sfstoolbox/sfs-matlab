@@ -64,14 +64,19 @@ isargstruct(conf);
 %% ===== Configuration ==================================================
 usetapwin = conf.usetapwin;
 tapwinlen = conf.tapwinlen;
+geometry = conf.secondary_sources.geometry;
 
 
 %% ===== Calculation =====================================================
 % number of speakers
 nls = size(x0,1);
-if usetapwin && nls>2
+% FIXME: at the moment the tapering window is not working for spherical arrays,
+% because we are not able to find the edges of the array.
+if usetapwin && nls>2 && ...
+   ~(strcmp('sphere',geometry)||strcmp('spherical',geometry))
     win = ones(1,nls);
-    % get the mean distance between secondary sources
+    % get the mean distance between secondary sources and the smallest distance
+    % to neighbour source for every secondary source
     dx0 = secondary_source_distance(x0);
     % use only positions
     x0 = x0(:,1:3);

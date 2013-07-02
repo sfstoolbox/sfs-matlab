@@ -1,12 +1,8 @@
-function SFS_start()
-%SFS_START Start the Sound Field Synthesis Toolbox
+function path = get_sfs_path()
+%GET_SFS_PATH returns the base path of the SFS Toolbox
 %
-%   Usage: SFS_start;
+%   Usage: path = get_sfs_path();
 %
-%   SFS_START starts the Sound Field Synthesis Toolbox (SFS). 
-%   This function must be run first in order to add the path's to Matlab.
-%
-%   see also: SFS_config, SFS_version
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -41,54 +37,10 @@ function SFS_start()
 %*****************************************************************************
 
 
-%% ===== Configuration ===================================================
-printbanner = false;
-
-
-%% ===== Adding Path's ===================================================
-
-basepath = get_sfs_path();
-
-% Add the base path and the needed sub-directories
-if exist('addpath')
-    addpath(basepath);
-    addpath([basepath,'/SFS_analysis']);
-    addpath([basepath,'/SFS_binaural_synthesis']);
-    addpath([basepath,'/SFS_general']);
-    addpath([basepath,'/SFS_helper']);
-    addpath([basepath,'/SFS_ir']);
-    addpath([basepath,'/SFS_monochromatic']);
-    addpath([basepath,'/SFS_monochromatic/driving_functions_mono']);
-    addpath([basepath,'/SFS_plotting']);
-    addpath([basepath,'/SFS_time_domain']);
-    addpath([basepath,'/SFS_time_domain/driving_functions_imp']);
-    addpath([basepath,'/SFS_HRTF_extrapolation']);
-    addpath([basepath,'/validation']);
-    if isoctave
-        addpath([basepath,'/SFS_octave']);
-    end
-else
-    path(path,basepath);
-    path(path,[basepath,'/SFS_analysis']);
-    path(path,[basepath,'/SFS_binaural_synthesis']);
-    path(path,[basepath,'/SFS_general']);
-    path(path,[basepath,'/SFS_helper']);
-    path(path,[basepath,'/SFS_ir']);
-    path(path,[basepath,'/SFS_monochromatic']);
-    path(path,[basepath,'/SFS_monochromatic/driving_functions_mono']);
-    path(path,[basepath,'/SFS_plotting']);
-    path(path,[basepath,'/SFS_time_domain']);
-    path(path,[basepath,'/SFS_time_domain/driving_functions_imp']);
-    path([basepath,'/SFS_HRTF_extrapolation']);
-    path(path,[basepath,'/validation']);
-    if isoctave
-        path(path,[basepath,'/SFS_octave']);
-    end
-end
-
-
-%% ===== Banner ==========================================================
-if(printbanner)
-    printf('SFS %1.1f successfully initialized.\n',SFS_version);
-end
-
+%% ===== Main ============================================================
+% Get the basepath as the directory this function resides in.
+% The 'which' solution below is more portable than 'mfilename'
+% becase old versions of Matlab does not have "mfilename('fullpath')"
+path=which('SFS_start');
+% Kill the function name from the path.
+path=path(1:end-12);

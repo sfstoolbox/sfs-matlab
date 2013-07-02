@@ -47,7 +47,12 @@ printbanner = false;
 
 %% ===== Adding Path's ===================================================
 
-basepath = get_sfs_path();
+% Get the basepath as the directory this function resides in.
+% The 'which' solution below is more portable than 'mfilename'
+% becase old versions of Matlab does not have "mfilename('fullpath')"
+basepath=which('SFS_start');
+% Kill the function name from the path.
+basepath=basepath(1:end-12);
 
 % Add the base path and the needed sub-directories
 if exist('addpath')

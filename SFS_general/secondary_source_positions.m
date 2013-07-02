@@ -208,29 +208,12 @@ elseif strcmp('box',geometry)
     x0(3*nbox+1:nls,4:6) = direction_vector(x0(3*nbox+1:nls,1:3), ...
     x0(3*nbox+1:nls,1:3)+repmat([1 0 0],nbox,1));
 elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)
-    % need to be set in SFS_config->conf.grid
-    if strcmp('equally_spaced_points',conf.secondary_sources.grid)
-        % uses secondary source position of the MinimumEnergyPoints
-        % Approach stated by Fliege&Maier (equally spaced points on a 
-        % sphere with weights)
-        x0 = equally_spaced_points_on_sphere(L,conf);
-    else
-        % uses the measurement grid of the 3D HRTF dataset recorded with
-        % FABIAN
-        % load dataset
-        irs = read_irs('FABIAN_3D_anechoic.mat');
-        % get positions of secondary sources
-        x0(:,1:3) = irs.source_position.'; 
-        % get directions of secondary sources
-        x0(:,4:6) = direction_vector(x0(:,1:3),repmat([0 0 0],...
-                                     length(irs.left),1)); 
-        % integration element of the sphere applied as weight
-        %x0(:,7) = cos(irs.apparent_elevation); 
-        % weights for secondary source positions
-        %x0(:,8) = weights_for_points_on_a_sphere_rectangle(...
-        %          irs.apparent_azimuth,irs.apparent_elevation);
-    end
-
+    % get spherical grid + weights
+    [points,weight] = get_sphercial_grid(nls,conf);
+    % secondary source positions
+    x0(:,1:3) = L/2 * points;
+    % secondary source directions
+    x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1));
 else
     error('%s: %s is not a valid array geometry.',upper(mfilename),geometry);
 end

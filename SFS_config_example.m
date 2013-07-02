@@ -107,10 +107,6 @@ conf.xysamples = 300; % samples
 % Phase of omega of wavefield (change this value to create monochromatic wave
 % fields with different phases for a movie)
 conf.phase = 0; % rad
-% FIXME: this is depraceted now and should be removed.
-% Time frame to simulate for wave field in time domain (change this value to
-% create impulse response movies of the wave field
-conf.frame = 1000;
 % Dimensionality of the secondary sources and the sound field synthesis driving
 % functions:
 % '2D'    - line sources as secondary sources, arranged in a circle, line, ...
@@ -196,13 +192,13 @@ conf.xref = [0 0 0]; % m, m, m
 % frequency (which means the frequency response over the aliasing frequency is
 % allready "correct") [Reference]
 % Use WFS preequalization-filter
-conf.wfs.usehpre = false; % boolean
+conf.usehpre = false; % boolean
 % Lower frequency limit of preequalization filter (~ frequency when
 % subwoofer is active)
-conf.wfs.hpreflow = 50; % Hz
+conf.hpreflow = 50; % Hz
 % Upper frequency limit of preequalization filter (~ aliasing frequency of
 % system)
-conf.wfs.hprefhigh = 1200; % Hz
+conf.hprefhigh = 1200; % Hz
 %
 % ===== Tapering =====
 % The truncation of the loudspeaker array leads to diffraction of the
@@ -213,9 +209,9 @@ conf.wfs.hprefhigh = 1200; % Hz
 % function at the edges of the array. This method is called tapering and
 % implemented using a Hanning window.
 % Use tapering window
-conf.wfs.usetapwin = true; % boolean
+conf.usetapwin = true; % boolean
 % Size of the tapering window
-conf.wfs.tapwinlen = 0.3; % percent of array length 0..1
+conf.tapwinlen = 0.3; % percent of array length 0..1
 %
 % === Virtual Sources ===
 % Pre-delay for causality for focused sources
@@ -254,7 +250,7 @@ conf.plot.loudspeakers = true; % boolean
 % Use real loudspeakers symbols (otherwise crosses are used)
 conf.plot.realloudspeakers = false; % boolean
 % Size of the loudspeaker
-conf.plot.lssize = conf.dx0; % m
+conf.plot.lssize = 0.16; % m
 % Size of the plot
 conf.plot.size_unit = 'px'; % 'px','cm','inches'
 conf.plot.size = [540 404];

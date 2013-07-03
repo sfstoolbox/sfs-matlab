@@ -76,18 +76,13 @@ end
 c = conf.c;
 xref = conf.xref;
 fs = conf.fs;
-usehpre = conf.wfs.usehpre;
 N = conf.N;
 
 
 %% ===== Computation =====================================================
 
 % Calculate pre-equalization filter if required
-if usehpre
-    pulse = conv(dirac_imp(),wfs_prefilter(conf));
-else
-    pulse = dirac_imp();
-end
+pulse = wfs_preequalization(dirac_imp(),conf);
 
 % Secondary source positions and directions
 nx0 = x0(:,4:6);

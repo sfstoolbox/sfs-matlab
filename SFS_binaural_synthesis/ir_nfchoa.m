@@ -1,30 +1,26 @@
-function brs = brs_wfs_25d(X,phi,xs,src,L,irs,conf)
-%BRS_WFS_25D generates a BRS set for use with the SoundScapeRenderer
+function ir = ir_nfchoa(X,phi,xs,src,irs,conf)
+%IR_NFCHOA Generate a IR for NFCHOA
 %
-%   Usage: brs = brs_wfs_25d(X,phi,xs,src,L,irs,[conf])
+%   Usage: ir = ir_nfchoa(X,phi,xs,src,irs,[conf])
 %
 %   Input parameters:
 %       X       - listener position / m
 %       phi     - listener direction [head orientation] / rad
+%                 0 means the head is oriented towards the x-axis.
 %       xs      - virtual source position [ys > Y0 => focused source] / m
-%       src     - source type: 'pw' - plane wave
+%       src     - source type: 'pw' -plane wave
 %                              'ps' - point source
-%                              'fs' - focused source
-%       L       - Length of linear loudspeaker array / m
-%       irs     - IR data set for the second sources
-%       conf    - optional configuration struct (see SFS_config)
+%       irs     - IR data set for the secondary sources
+%       conf    - optional configuration struct (see SFS_config) 
 %
 %   Output parameters:
-%       brs     - conf.N x 2*nangles matrix containing all brs (2
-%                 channels) for every angles of the BRS set
+%       ir      - Impulse response for the desired HOA synthesis (nx2 matrix)
 %
-%   BRS_WFS_25D(X,phi,xs,src,L,irs,conf) prepares a BRS set for
-%   a virtual source at xs for a linear WFS array and the given
-%   listener position.
-%   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
-%   http://www.tu-berlin.de/?id=ssr
+%   IR_NFCHOA(X,phi,xs,src,L,irs,conf) calculates a binaural room impulse
+%   response for a virtual source at xs for a virtual NFCHOA array and a
+%   listener located at X.
 %
-%   see also: SFS_config, brs_wfs_25d, brs_point_source
+%   see also: brs_nfchoa, ir_wfs, ir_point_source, auralize_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -63,34 +59,31 @@ function brs = brs_wfs_25d(X,phi,xs,src,L,irs,conf)
 nargmin = 6;
 nargmax = 7;
 narginchk(nargmin,nargmax);
-isargposition(X);
-isargxs8xs);
-isargscalar(phi);
-isargpositivescalar(L);
-check_irs(irs);
-if nargin<nargmax
+if nargin==nargmax-1
     conf = SFS_config;
-else
-    isargstruct(conf);
+end
+if conf.debug
+    isargposition(X);
+    isargxs(xs);
+    isargscalar(phi);
+    isargpositivescalar(L);
+    isargchar(src);
+    check_irs(irs);
 end
 
 
-%% ===== Configuration ===================================================
-N = conf.N;                     % Target length of BRIR impulse responses
-angles = rad(conf.brsangles);   % Angles for the BRIRs
+%% ===== Configuration ==================================================
+N = conf.N;                   % target length of IR impulse responses
 
 
-%% ===== Computation =====================================================
-% secondary sources
-x0 = secondary_source_positions(L,conf);
+%% ===== Variables ======================================================
+% Loudspeaker positions
+x0 = secondary_source_positions(conf);
+
+
+%% ===== BRIR ===========================================================
 % calculate driving function
-d = driving_function_imp_wfs_25d(x0,xs,src,L,conf);
+d = driving_function_imp_nfchoa(x0,xs,src,conf);
 
-% Initial values
-brs = zeros(N,2*length(angles));
-% Generate a BRS set for all given angles
-for ii = 1:length(angles)
-    % Compute BRIR for the desired WFS system
-    brs(:,(ii-1)*2+1:ii*2) = ...
-        ir_generic(X,angles(ii)+phi,x0,d,irs,conf);
-end
+% generate the impulse response for NFCHOA
+ir = ir_generic(X,phi,x0,d,irs,conf);

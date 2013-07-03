@@ -1,7 +1,7 @@
-function ir = generic_wfs_25d(xs,src,L,conf)
-%GENRIC_WFS_25D Generate a IR for the generic renderer of the SSR
+function ir = generic_wfs(xs,src,conf)
+%GENRIC_WFS Generate a IR for the generic renderer of the SSR
 %
-%   Usage: ir = generic_wfs_25d(xs,src,L,[conf])
+%   Usage: ir = generic_wfs(xs,src,[conf])
 %
 %   Input parameters:
 %       xs      - virtual source position [ys > Y0 => focused source] / m
@@ -15,12 +15,11 @@ function ir = generic_wfs_25d(xs,src,L,conf)
 %       ir      - Impulse response for the desired WFS array loudspeaker
 %                 (nx1)
 %
-%   GENERIC_WFS_25D(xs,src,L,conf) calculates an impulse
-%   response for a virtual source at xs for the loudspeakers of a WFS
-%   array. every loudspeaker of the array is represented by one column in
-%   the impulse response.
+%   GENERIC_WFS(xs,src,conf) calculates an impulse response for a virtual
+%   source at xs for the loudspeakers of a WFS array. every loudspeaker of
+%   the array is represented by one column in the impulse response.
 %
-% see also: brs_wfs_25d, brs_point_source, auralize_ir
+% see also: brs_wfs, brs_point_source, auralize_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -61,13 +60,11 @@ function ir = generic_wfs_25d(xs,src,L,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
-nargmax = 4;
+nargmin = 2;
+nargmax = 3;
 narginchk(nargmin,nargmax);
 isargxs(xs);
-isargpositivescalar(L);
 isargchar(src);
-
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -84,7 +81,7 @@ useplot = conf.plot.useplot;  % Plot results?
 
 %% ===== Variables ======================================================
 % Secondary sources
-x0 = secondary_source_positions(L,conf);
+x0 = secondary_source_positions(conf);
 nls_orig = size(x0,1);
 [x0,idx] = secondary_source_selection(x0,xs,src);
 nls = size(x0,1);
@@ -112,7 +109,7 @@ for n=1:nls_orig
         % ====================================================================
         % Driving function to get weighting and delaying
         [~,delay,a(counter)] = ...
-            driving_function_imp_wfs_25d(x0(counter,:),xs,src,conf);
+            driving_function_imp_wfs(x0(counter,:),xs,src,conf);
         % Time delay in samples for the given loudspeaker
         dt(counter) = ceil( delay*fs ) + 500;
 

@@ -1,27 +1,29 @@
-function ir = ir_nfchoa_25d(X,phi,xs,src,L,irs,conf)
-%IR_NFCHOA_25D Generate a IR for NFCHOA
+function brs = brs_nfchoa(X,phi,xs,src,irs,conf)
+%BRS_NFCHOA generates a BRS set for use with the SoundScapeRenderer
 %
-%   Usage: ir = ir_nfchoa_25d(X,phi,xs,src,L,irs,[conf])
+%   Usage: brs = brs_nfchoa(X,phi,xs,src,irs,[conf])
 %
 %   Input parameters:
 %       X       - listener position / m
 %       phi     - listener direction [head orientation] / rad
-%                 0 means the head is oriented towards the x-axis.
 %       xs      - virtual source position [ys > Y0 => focused source] / m
-%       src     - source type: 'pw' -plane wave
+%       src     - source type: 'pw' - plane wave
 %                              'ps' - point source
-%       L       - Length of loudspeaker array / m
-%       irs     - IR data set for the secondary sources
-%       conf    - optional configuration struct (see SFS_config) 
+%                              'fs' - focused source
+%       irs     - IR data set for the second sources
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       ir      - Impulse response for the desired HOA synthesis (nx2 matrix)
+%       brs     - conf.N x 2*nangles matrix containing all brs (2
+%                 channels) for every angles of the BRS set
 %
-%   IR_NFCHOA_25D(X,phi,xs,src,L,irs,conf) calculates a binaural room impulse
-%   response for a virtual source at xs for a virtual NFCHOA array and a
-%   listener located at X.
+%   BRS_NFCHOA(X,phi,xs,src,irs,conf) prepares a BRS set for a virtual source
+%   at position xs for a virtual loudspeaker array driven by nearfield
+%   compensated higher order Ambisonics (NFCHOA) and the given listener position.
+%   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
+%   http://www.tu-berlin.de/?id=ssr
 %
-%   see also: brs_nfchoa_25d, ir_wfs_25d, ir_point_source, auralize_ir
+%   see also: SFS_config, ir_generic, ir_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -57,34 +59,36 @@ function ir = ir_nfchoa_25d(X,phi,xs,src,L,irs,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 7;
+nargmin = 5;
+nargmax = 6;
 narginchk(nargmin,nargmax);
-if nargin==nargmax-1
+isargposition(X);
+isargxs(xs);
+isargscalar(phi);
+check_irs(irs);
+if nargin<nargmax
     conf = SFS_config;
-end
-if conf.debug
-    isargposition(X);
-    isargxs(xs);
-    isargscalar(phi);
-    isargpositivescalar(L);
-    isargchar(src);
-    check_irs(irs);
+else
+    isargstruct(conf);
 end
 
 
-%% ===== Configuration ==================================================
-N = conf.N;                   % target length of IR impulse responses
+%% ===== Configuration ===================================================
+N = conf.N;                     % Target length of BRIR impulse responses
+angles = rad(conf.ir.brsangles);% Angles for the BRIRs
 
 
-%% ===== Variables ======================================================
-% Loudspeaker positions
-x0 = secondary_source_positions(L,conf);
-
-
-%% ===== BRIR ===========================================================
+%% ===== Computation =====================================================
+% secondary sources
+x0 = secondary_source_positions(conf);
 % calculate driving function
-d = driving_function_imp_nfchoa_25d(x0,xs,src,L,conf);
+d = driving_function_imp_nfchoa(x0,xs,src,conf);
 
-% generate the impulse response for NFCHOA
-ir = ir_generic(X,phi,x0,d,irs,conf);
+% Initial values
+brs = zeros(N,2*length(angles));
+% Generate a BRS set for all given angles
+for ii = 1:length(angles)
+    % Compute BRIR for the desired HOA system
+    brs(:,(ii-1)*2+1:ii*2) = ...
+        ir_generic(X,angles(ii)+phi,x0,d,irs,conf);
+end

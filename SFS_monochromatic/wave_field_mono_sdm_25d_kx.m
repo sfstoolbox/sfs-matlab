@@ -101,7 +101,7 @@ X0 = conf.X0;
 % NOTE: if dLS <= dx, than we have a continous loudspeaker
 dx = conf.dx0;
 % Method to calculate driving function (only for non-aliased part)
-withev = conf.withev;  % with evanescent waves
+withev = conf.sdm.withev;  % with evanescent waves
 % Reference position for the amplitude (correct reproduction of amplitude
 % at y = yref).
 xref = conf.xref;

@@ -4,9 +4,9 @@ function hpre = wfs_prefilter3d(conf)
 
 %% ===== Configuration ==================================================
 fs = conf.fs;               % Sampling rate
-flow = conf.hpreflow;       % Lower frequency limit of preequalization
+flow = conf.wfs.hpreflow;   % Lower frequency limit of preequalization
                             % filter (= frequency when subwoofer is active)
-fhigh = conf.hprefhigh;     % Upper frequency limit of preequalization
+fhigh = conf.wfs.hprefhigh; % Upper frequency limit of preequalization
                             % filter (= aliasing frequency of system)
 
 %% ===== Variables ======================================================

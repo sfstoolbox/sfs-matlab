@@ -21,8 +21,8 @@ conf.secondary_sources.number = 81^2;
 conf.secondary_sources.grid = 'equally_spaced_points';
 conf.secondary_sources.size = 2*r;
 conf.usetapwin = 0; % do not use tapering window, it's not needed in the 3D case
-conf.usehpre = 1; % use preequalization filter
-conf.hprefhigh = 12000;
+conf.wfs.usehpre = 1; % use preequalization filter
+conf.wfs.hprefhigh = 12000;
 conf.debug = 1; % debug=1 allows to plot results of different evaluation steps
 conf.xref = [0 0 0]; % ps/fs: 'listener position' ; pw:  place where the wavefield is scaled to one
 % properties of desired wavefield

@@ -70,7 +70,7 @@ fs = conf.fs;                   % sampling frequency
 %% ===== Variables ======================================================
 conf.array = 'spherical';
 conf.usetapwin = 0;
-conf.usehpre = 1;
+conf.wfs.usehpre = 1;
 conf.usefracdelay = 0;
 conf.xref = [0 0 0];
 x0 = zeros(length(irs.source_position),8);
@@ -81,8 +81,8 @@ x0(:,7) = (irs.distance.^2)' .* cos(irs.apparent_elevation)';
 x0(1,7) = x0(2,7);
 x0(:,8) = weights_for_points_on_a_sphere_rectangle(irs.apparent_azimuth,...
           irs.apparent_elevation,irs.distance)';
-conf.hprefhigh = aliasing_frequency(x0,conf);
-conf.hpreflow = 1;
+conf.wfs.hprefhigh = aliasing_frequency(x0,conf);
+conf.wfs.hpreflow = 1;
 %% ===== Computation =====================================================
 % get virtual secondary source positions
 % x0_all = secondary_source_positions(L,conf);

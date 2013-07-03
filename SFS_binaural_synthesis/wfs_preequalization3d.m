@@ -61,7 +61,7 @@ end
 
 
 %% ===== Configuration ==================================================
-usehpre = conf.usehpre;
+usehpre = conf.wfs.usehpre;
 
 
 %% ===== Computation =====================================================

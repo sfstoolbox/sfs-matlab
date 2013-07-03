@@ -10,7 +10,8 @@ function hpre = wfs_prefilter(conf)
 %       hpre - pre-equalization filter
 %
 %   WFS_PREFILTER(conf) calculates a sqrt(j k) pre-equalization filter for
-%   Wave Field Synthesis (from conf.hpreflow to conf.hprefhigh, see SFS_config).
+%   Wave Field Synthesis (from conf.wfs.hpreflow to conf.wfs.hprefhigh,
+%   see SFS_config).
 %
 %   see also: wfs_preequalization, SFS_config, brs_wfs_25d
 
@@ -61,9 +62,9 @@ end
 
 %% ===== Configuration ==================================================
 fs = conf.fs;               % Sampling rate
-flow = conf.hpreflow;       % Lower frequency limit of preequalization
+flow = conf.wfs.hpreflow;   % Lower frequency limit of preequalization
                             % filter (= frequency when subwoofer is active)
-fhigh = conf.hprefhigh;     % Upper frequency limit of preequalization
+fhigh = conf.wfs.hprefhigh; % Upper frequency limit of preequalization
                             % filter (= aliasing frequency of system)
 
 

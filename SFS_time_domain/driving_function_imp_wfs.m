@@ -76,7 +76,7 @@ end
 c = conf.c;
 xref = conf.xref;
 fs = conf.fs;
-usehpre = conf.usehpre;
+usehpre = conf.wfs.usehpre;
 N = conf.N;
 
 

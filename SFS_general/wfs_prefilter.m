@@ -62,6 +62,7 @@ end
 
 %% ===== Configuration ==================================================
 fs = conf.fs;               % Sampling rate
+dimension = conf.dimension; % dimensionality
 flow = conf.wfs.hpreflow;   % Lower frequency limit of preequalization
                             % filter (= frequency when subwoofer is active)
 fhigh = conf.wfs.hprefhigh; % Upper frequency limit of preequalization
@@ -93,11 +94,20 @@ H = ones(1,length(f));
 %   -------------------------> f
 %
 % Pre-equilization filter from flow to fhigh
-%           _______
-%  H(f) = \|f/fhigh, for f >= flow
-%
-H(idxflow:idxfhigh) = sqrt(f(idxflow:idxfhigh)./fhigh);
-% Set the response for idxf < idxflow to the value at idxflow
+if strcmp('2D',dimension) || strcmp('2.5D',dimension)
+    %           _______
+    %  H(f) = \|f/fhigh, for flow<=f<=fhigh
+    %
+    H(idxflow:idxfhigh) = sqrt(f(idxflow:idxfhigh)./fhigh);
+elseif strcmp('3D',dimension)
+    %         
+    %  H(f) = f/fhigh, for flow<=f<=fhigh
+    %
+    H(idxflow:idxfhigh) = f(idxflow:idxfhigh)./fhigh;
+else
+    error('%s: %s is not a valid conf.dimension entry',upper(mfilename));
+end
+% % Set the response for idxf < idxflow to the value at idxflow
 H(1:idxflow) = H(idxflow)*ones(1,idxflow);
 
 % Compute filter

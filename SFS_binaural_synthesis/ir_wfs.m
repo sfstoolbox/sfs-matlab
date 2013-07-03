@@ -1,28 +1,27 @@
-function ir = ir_wfs_25d(X,phi,xs,src,L,irs,conf)
-%BRS_WFS_25D Generate a IR for WFS
+function ir = ir_wfs(X,phi,xs,src,irs,conf)
+%IR_WFS generate a impulse response simulating WFS
 %
-%   Usage: ir_wfs = ir_wfs_25d(X,phi,xs,src,L,irs,[conf])
+%   Usage: ir = ir_wfs(X,phi,xs,src,L,irs,[conf])
 %
 %   Input parameters:
 %       X       - listener position / m
 %       phi     - listener direction [head orientation] / rad
 %                 0 means the head is oriented towards the x-axis.
-%       xs      - virtual source position [ys > Y0 => focused source] / m
+%       xs      - virtual source position / m
 %       src     - source type: 'pw' -plane wave
 %                              'ps' - point source
 %                              'fs' - focused source
-%       L       - Length of loudspeaker array / m
 %       irs     - IR data set for the secondary sources
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ir      - Impulse response for the desired WFS array (nx2 matrix)
 %
-%   IR_WFS_25D(X,phi,xs,src,L,irs,conf) calculates a binaural room impulse
+%   IR_WFS(X,phi,xs,src,irs,conf) calculates a binaural room impulse
 %   response for a virtual source at xs for a virtual WFS array and a
 %   listener located at X.
 %
-% see also: brs_wfs_25d, ir_point_source, auralize_ir
+% see also: brs_wfs, ir_point_source, auralize_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -58,17 +57,16 @@ function ir = ir_wfs_25d(X,phi,xs,src,L,irs,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 7;
-error(nargchk(nargmin,nargmax,nargin));
-if nargin==nargmax-1
+nargmin = 5;
+nargmax = 6;
+narginchk(nargmin,nargmax);
+if nargin<nargmax
     conf = SFS_config;
 end
 if conf.debug
     isargposition(X);
     isargxs(xs);
     isargscalar(phi);
-    isargpositivescalar(L);
     isargchar(src);
     check_irs(irs);
 end
@@ -80,13 +78,13 @@ xref = conf.xref;
 
 %% ===== Computation =====================================================
 % Get secondary sources
-x0 = secondary_source_positions(L,conf);
+x0 = secondary_source_positions(conf);
 x0 = secondary_source_selection(x0,xs,src);
 % Generate tapering window
 win = tapering_window(x0,conf);
 
 % Get driving signals
-[d,delay] = driving_function_imp_wfs_25d(x0,xs,src,conf);
+[d,delay] = driving_function_imp_wfs(x0,xs,src,conf);
 % Apply tapering window
 d = bsxfun(@times,d,win');
 

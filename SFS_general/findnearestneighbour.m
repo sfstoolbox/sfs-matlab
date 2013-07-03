@@ -61,11 +61,8 @@ end
 
 
 %% ===== Computation =====================================================
-% loop through the points
-distance = zeros(1,size(A,2));
-for ii=1:size(A,2)
-    distance(ii) = norm(A(:,ii)-b);
-end
+% calculate distance between points
+distance = vector_norm(bsxfun(@minus,A,b),2);
 % sort the distances in order to find the n lowest once
 [~,idx] = sort(distance);
 idx = idx(1:number_of_neighbours);

@@ -69,8 +69,7 @@ for ii=1:size(x0,1)
     % all other positions
     x02 = [x0(1:ii-1,1:3); x0(ii+1:end,1:3)];
     % get distance between x01 and all secondary sources within x02
-    dist = bsxfun(@minus,x02,x01);
-    dist = vector_norm(dist,2);
+    dist = vector_norm(bsxfun(@minus,x02,x01),2);
     % get the smallest distance (which is the one to the next source)
     dx0_single(ii) = min(dist);
 end

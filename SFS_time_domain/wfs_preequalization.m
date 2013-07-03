@@ -13,7 +13,7 @@ function ir = wfs_preequalization(ir,conf)
 %   WFS_PREEQUALIZATION(ir,conf) applies the pre-equalization filter for
 %   Wave Field Synthesis to the given impulse response.
 %
-%   see also: wfs_prefilter, SFS_config, ir_wfs_25d
+%   see also: wfs_prefilter, SFS_config, ir_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

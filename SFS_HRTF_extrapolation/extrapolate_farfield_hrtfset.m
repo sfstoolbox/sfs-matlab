@@ -1,4 +1,4 @@
-function irs_pw = extrapolate_farfield_hrtfset_25d(irs,conf)
+function irs_pw = extrapolate_farfield_hrtfset(irs,conf)
 %EXTRAPOLATE_FARFIELD_HRTFSET far-field extrapolation of a given HRTF dataset
 %
 %   Usage: irs_pw = extrapolate_farfield_hrtfset(irs,[conf])
@@ -13,7 +13,7 @@ function irs_pw = extrapolate_farfield_hrtfset_25d(irs,conf)
 %   EXTRAPOLATE_FARFIELD_HRTFSET(IRS) generates a far-field extrapolated set of
 %   impulse responses, using the given irs set. Far-field means that the
 %   resulting impulse responses are plane waves. The extrapolation is done via
-%   2.5D WFS.
+%   WFS.
 %
 %   References:
 %       S. Spors and J. Ahrens. Generation of far-field head-related transfer
@@ -69,22 +69,26 @@ end
 
 %% ===== Configuration ===================================================
 fs = conf.fs;                   % sampling frequency
+dimension = conf.dimension;
 
 
 %% ===== Variables ======================================================
-% Apply a amplitude correction, due to 2.5D. This will result in a correct
-% reproduced ILD in the resulting impulse responses (see, Spors 2011)
-amplitude_correction = -1.7 * sin(irs.apparent_azimuth);
-
 R = irs.distance;
 L = 2*R;
-
-% get virtual loudspeaker positions from HRTF dataset
-conf.secondary_sources.geometry = 'circle';
 conf.secondary_sources.number = length(irs.apparent_azimuth);
 conf.secondary_sources.x0 = zeros(nls,6);
 conf.secondary_sources.x0(:,1:2) = [R*cos(irs.apparent_azimuth) ; R*sin(irs.apparent_azimuth)]';
 conf.secondary_sources.x0(:,4:6) = direction_vector(conf.x0(:,1:3),repmat(conf.xref,nls,1));
+conf.wfs.hprefhigh = aliasing_frequency(x0,conf);
+%conf.wfs.hpreflow = 1;
+if strcmp('2.5D',dimension)
+    % Apply a amplitude correction, due to 2.5D. This will result in a correct
+    % reproduced ILD in the resulting impulse responses (see, Spors 2011)
+    amplitude_correction = -1.7 * sin(irs.apparent_azimuth);
+else
+    amplitude_correction = zeros(size(irs.apparent_azimuth));
+end
+
 
 
 %% ===== Computation =====================================================
@@ -113,19 +117,18 @@ for ii = 1:length(irs.apparent_azimuth)
 
     % sum up contributions from individual virtual speakers
     %     delay = [];
-    [~,delay,weight] = driving_function_imp_wfs_25d(x0,xs,'pw',conf);
+    [~,delay,weight] = driving_function_imp_wfs(x0,xs,'pw',conf);
     for l=1:size(x0,1)
-        dt = delay(l)*fs + round(R/conf.c*fs);
-        w=weight(l)*win(l);
+        dt = delay(l)*fs + R/conf.c*fs;
+        w = weight(l) * win(l);
         % get IR for the secondary source position
         [phi,theta,r] = cart2sph(x0(l,1),x0(l,2),x0(l,3));
-        ir_tmp = get_ir(irs,phi,theta,r,conf.xref);
+        ir_tmp = get_ir(irs,[phi theta r],'spherical',conf);
         % truncate IR length
-        irl = fix_ir_length(ir_tmp(:,1),length(ir_tmp(:,1)),0);
-        irr = fix_ir_length(ir_tmp(:,2),length(ir_tmp(:,2)),0);
+        ir = fix_ir_length(ir_tmp,size(ir_tmp,1),dt);
         % delay and weight HRTFs
-        irs_pw.left(:,ii) = irs_pw.left(:,ii) + delayline(irl',dt,w,conf)';
-        irs_pw.right(:,ii) = irs_pw.right(:,ii) + delayline(irr',dt,w,conf)';
+        irs_pw.left(:,ii) = irs_pw.left(:,ii) + delayline(ir(:,1)',dt,w,conf)';
+        irs_pw.right(:,ii) = irs_pw.right(:,ii) + delayline(ir(:,2)',dt,w,conf)';
     end
     irs_pw.left(:,ii) = irs_pw.left(:,ii)/10^(amplitude_correction(ii)/20);
     irs_pw.right(:,ii) = irs_pw.right(:,ii)/10^(-amplitude_correction(ii)/20);

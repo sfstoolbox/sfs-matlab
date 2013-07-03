@@ -121,6 +121,14 @@ conf.dimension = '2.5D';
 % Most users can safely use the 'default' flag here.
 conf.driving_functions = 'default';
 %
+% === Impulse responses ===
+% Length of impulse responses used in the time domain driving functions
+% and for the creation of the binaural simulations.
+% (2^14 may be enough for your purposes, but for a large distance between 
+% source and listener, this will be not enough to contain the desired time
+% delay. But don't worry, SFS checks for you if conf.N is large enough)
+conf.N = 2^15; % samples
+%
 % === 2.5D ===
 % The amplitude will be correct at the point xref for 2.5D
 % synthesis.
@@ -156,7 +164,7 @@ conf.usenormalisation = true; % boolean
 
 % ===== Secondary Sources =======================
 % Number of secondary sources
-conf.secondary_sources.number = 56;
+conf.secondary_sources.number = 64;
 % Diameter/Length of secondary source array
 conf.secondary_sources.size = 3; % / m
 % Center of array, X0
@@ -207,11 +215,6 @@ conf.sdm.withev = true; % boolean
 % Settings regarding all the stuff with impulse responses from the SFS_ir and
 % SFS_binaural_synthesis folders
 %
-% Target length of BRIR impulse responses (2^14 may be enough for your
-% purposes, but for a large distance between source and listener, this will
-% be not enough to contain the desired time delay. But don't worry, SFS
-% checks for you if conf.N is large enough)
-conf.ir.N = 2^15; % samples
 %
 % === Headphone compensation ===
 % Headphone compensation

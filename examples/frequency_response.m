@@ -7,7 +7,7 @@ src = 'ps';
 xs = [0 2.5];
 conf.xref = [0 0];
 conf.wfs.usehpre = 1;
-conf.usehcomp = 0;
+conf.ir.usehcomp = 0;
 % get dirac impulses as impulse responses
 irs = dummy_irs;
 % 1. loudspeaker spacing = 0.16m
@@ -24,8 +24,8 @@ ir = ir_wfs_25d(X,phi,xs,src,L,irs,conf);
 figure; semilogx(f,db(a));
 % if you want to listen to the result, you should include the headphone
 % compensation
-conf.usehcomp = 1;
+conf.ir.usehcomp = 1;
 ir = ir_wfs_25d(X,phi,xs,src,L,irs,conf);
-% make sure you have set conf.speechfile in SFS_config.m
+% make sure you have set conf.ir.speechfile in SFS_config.m
 sig = auralize_ir(ir,'speech');
 sound(sig,conf.fs);

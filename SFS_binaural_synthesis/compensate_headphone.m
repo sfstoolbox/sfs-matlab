@@ -13,7 +13,7 @@ function ir = compensate_headphone(ir,conf)
 %   COMPENSATE_HEADPHONE(ir,conf) applies a headphone compensation to the
 %   given impulse response. Which headphone compensation it should use is
 %   mentioned in the conf struct.
-%   The compensation is only applied, if the conf.usehcomp value is not false.
+%   The compensation is only applied, if the conf.ir.usehcomp value is not false.
 %
 %   see also: SFS_config, ir_wfs_25d, ir_point_source
 
@@ -63,9 +63,9 @@ end
 
 
 %% ===== Configuration ===================================================
-usehcomp = conf.usehcomp;
-hcomplfile = conf.hcomplfile;
-hcomprfile = conf.hcomprfile;
+usehcomp = conf.ir.usehcomp;
+hcomplfile = conf.ir.hcomplfile;
+hcomprfile = conf.ir.hcomprfile;
 
 
 %% ===== Computation =====================================================

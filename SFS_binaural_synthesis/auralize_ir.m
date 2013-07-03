@@ -80,11 +80,11 @@ isargstruct(conf);
 % Sampling rate
 fs = conf.fs;
 % Auralisation files
-speechfile = conf.speechfile;
-cellofile = conf.cellofile;
-castanetsfile = conf.castanetsfile;
-noisefile = conf.noisefile;
-pinknoisefile = conf.pinknoisefile;
+speechfile = conf.ir.speechfile;
+cellofile = conf.ir.cellofile;
+castanetsfile = conf.ir.castanetsfile;
+noisefile = conf.ir.noisefile;
+pinknoisefile = conf.ir.pinknoisefile;
 
 
 %% ===== Get the right content ==========================================

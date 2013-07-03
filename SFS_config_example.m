@@ -229,9 +229,9 @@ conf.ir.hcomprfile = ...
 % To use a dynamic binaural simulation together with the SoundScape Renderer
 % (SSR) and a headtracker, brs sets can be created. If these sets should be
 % used in BRS mode of the SSR, the angles have to be:
-% conf.brsangles = 0:1:359;
+% conf.ir.brsangles = 0:1:359;
 % If the brs set should be used as IRs for the SSR, the angles have to be:
-% conf.brsangles = 360:-1:1;
+% conf.ir.brsangles = 360:-1:1;
 conf.ir.brsangles = 0:1:359; % / degree
 %
 % === Auralisation ===

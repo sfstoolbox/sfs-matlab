@@ -50,7 +50,7 @@ error(nargchk(nargmin,nargmax,nargin));
 conf = SFS_config;
 L = 3;
 irs = read_irs('QU_KEMAR_anechoic_3m.mat');
-conf.usehcomp = false;
+conf.ir.usehcomp = false;
 
 
 %% ===== WFS 2.5D ========================================================

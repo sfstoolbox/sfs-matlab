@@ -88,7 +88,7 @@ end
 
 %% ===== Configuration ===================================================
 N = conf.N;                     % Target length of BRIR impulse responses
-angles = rad(conf.brsangles);   % Angles for the BRIRs
+angles = rad(conf.ir.brsangles);% Angles for the BRIRs
 
 
 %% ===== Computation =====================================================

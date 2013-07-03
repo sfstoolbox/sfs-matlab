@@ -95,7 +95,7 @@ for ii = 1:length(t)-1
     end
     conf.plot.file = sprintf('%s/%s_%04.0f.png',tmpdir,rn,ii);
     %conf.plot.usedb = 1;
-    plot_wavefield(p,x,y,z,x0,win,conf);
+    plot_wavefield(2*p,x,y,z,x0,win,conf);
 end
 % Enable the empty wave field warning
 warning('on','SFS:check_wave_field');

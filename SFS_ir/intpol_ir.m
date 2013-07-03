@@ -1,23 +1,17 @@
-function ir = intpol_ir(desired_point,x0_1,ir1,x0_2,ir2,x0_3,ir3)
+function ir = intpol_ir(varargin)
 %INTPOL_IR interpolates three given IRs for the given angle
 %
-%   Usage: ir = intpol_ir(ir1,phi1,theta1,ir2,phi2,theta2,ir3,phi3,theta3,alpha,beta)
+%   Usage: ir = intpol_ir(ir1,ir2,[ir3],x0,xs)
 %
 %   Input parameters:
 %       ir1     - IR 1
-%       phi1    - azimuth angle of ir1 / rad
-%       theta1  - elevation angle of ir1 / rad
 %       ir2     - IR 2
-%       phi2    - azimuth angle of ir2 / rad
-%       theta2  - elevation angle of ir2 / rad
 %       ir3     - IR 3
-%       phi3    - azimuth angle of ir3 / rad
-%       theta3  - elevation angle of ir3 / rad
-%       alpha   - azimuth angle of the desired IR / rad
-%       beta    - elevation angle of the desired IR / rad
+%       x0      - matrix containing positions of single IRs / rad
+%       xs      - desired position after interpolation / rad
 %
 %   Output parameters:
-%       ir      - IR for the given angles alpha,beta (length(IR1),2)
+%       ir      - IR for the given position (length(IR1),2)
 %
 %   INTPOL_IR(ir1,phi1,theta1,ir2,phi2,theta2,ir3,phi3,theta3,alpha,beta)
 %   interpolates the three given IRs ir1,ir2 and ir3 with their corresponding 
@@ -60,35 +54,36 @@ function ir = intpol_ir(desired_point,x0_1,ir1,x0_2,ir2,x0_3,ir3)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 7;
-error(nargchk(nargmin,nargmax,nargin));
-
-if nargin == 5
-
-    if length(ir1)~=length(ir2)
-    error('%s: the given IRs have not the same length.',upper(mfilename));
-    end
-    
-    L = [x0_1,x0_2];
-    p = desired_point';
-    g = p\L^-1;
-    % calculate desired ir with linear combination of ir1,ir2 
-    ir = g(1,1)*ir1 + g(1,2)*ir2;
-    
+nargmin = 4;
+nargmax = 5;
+narginchk(nargmin,nargmax);
 
 %% ===== Computation ====================================================
+% --- 1D interpolation ---
+if nargin==4
+    ir1 = varargin{1};
+    ir2 = varargin{2};
+    x0 = varargin{3};
+    xs = varargin{4};
+    if length(ir1)~=length(ir2)
+        error('%s: the given IRs have not the same length.',upper(mfilename));
+    end
+    % calculate weighting factors
+    w = column_vector(xs)\x0.';
+    % calculate desired ir with linear combination of ir1,ir2 
+    ir = w(1)*ir1 + w(2)*ir2;
 else
+    ir1 = varargin{1};
+    ir2 = varargin{2};
+    ir3 = varargin{3};
+    x0 = varargin{4};
+    xs = varargin{5};
     % check if the length of the found IRs are the same
     if length(ir1)~=length(ir2) || length(ir2)~=length(ir3) || length(ir1)~=length(ir3)
         error('%s: the given IRs have not the same length.',upper(mfilename));
     end
-
-    % Solve linear equation system to get the desired weight factors g(n)
-    L = [x0_1,x0_2,x0_3];
-    p = desired_point';
-    g = p\L^-1;
+    % calculate weighting factors
+    w = row_vector(xs)\x0.';
     % calculate desired ir with linear combination of ir1,ir2 and ir3
-    ir = g(1,1)*ir1 + g(1,2)*ir2 + g(1,3)*ir3;
-    
+    ir = w(1)*ir1 + w(2)*ir2 + w(3)*ir3;
 end

@@ -1,7 +1,7 @@
-function ir = generic_wfs(xs,src,conf)
-%GENRIC_WFS Generate a IR for the generic renderer of the SSR
+function ir = generic_nfchoa(xs,src,conf)
+%GENRIC_NFCHOA Generate a IR for the generic renderer of the SSR
 %
-%   Usage: ir = generic_wfs(xs,src,[conf])
+%   Usage: ir = generic_nfchoa(xs,src,[conf])
 %
 %   Input parameters:
 %       xs      - virtual source position / m
@@ -13,11 +13,11 @@ function ir = generic_wfs(xs,src,conf)
 %   Output parameters:
 %       ir      - impulse response for the desired loudspeaker array
 %
-%   GENERIC_WFS(xs,src,conf) calculates an impulse response for a virtual
-%   source at xs for the loudspeakers of a WFS array. Every loudspeaker of
+%   GENERIC_NFCHOA(xs,src,conf) calculates an impulse response for a virtual
+%   source at xs for the loudspeakers of a NFC-HOA array. Every loudspeaker of
 %   the array is represented by one column in the impulse response.
 %
-% see also: generic_nfchoa, brs_wfs, driving_function_imp_wfs
+% see also: generic_wfs, brs_nfchoa, driving_function_imp_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -69,16 +69,8 @@ end
 isargstruct(conf);
 
 
-%% ===== Configuration ==================================================
-N = conf.N;
-
-
 %% ===== Main ============================================================
 % Secondary sources
 x0 = secondary_source_positions(conf);
-% create empty impulse response for all secondary sources
-ir = zeros(N,size(x0,1));
-[x0,idx] = secondary_source_selection(x0,xs,src);
-x0 = secondary_source_tapering(x0,conf);
-% driving signals for the active speakers
-ir(:,idx) = driving_function_imp_wfs(x0,xs,src,conf);
+% driving signals for the secondary sources
+ir = driving_function_imp_nfchoa(x0,xs,src,conf);

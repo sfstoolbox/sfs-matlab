@@ -82,7 +82,8 @@ function x0 = secondary_source_positions(conf)
 %                       x   x   x   x   x   x   x
 %                                   |
 %
-% see also: secondary_source_selection, secondary_source_number, tapering_window
+% see also: secondary_source_selection, secondary_source_number,
+% secondary_source_tapering 
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

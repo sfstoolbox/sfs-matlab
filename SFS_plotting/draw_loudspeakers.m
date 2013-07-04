@@ -1,21 +1,16 @@
-function draw_loudspeakers(x0,dimensions,win,conf)
+function draw_loudspeakers(x0,dimensions,conf)
 %DRAW_LOUDSPEAKERS draws loudspeaker symbols or "x" at the given positions
 %
-%   Usage: draw_loudspeakers(x0,[dimensions,[win,[conf]])
+%   Usage: draw_loudspeakers(x0,[dimensions],[conf])
 %
 %   Input options:
 %       x0          - positions and directions of the loudspeakers / m
-%       win         - tapering window, which is the activity of the loudspeaker
-%                     (default: 1)
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   DRAW_LOUDSPEAKERS(x0,win) draws loudspeaker symbols or crosses at the given
-%   secondary source positions. This can be controlled by the
+%   DRAW_LOUDSPEAKERS(x0,dimensions) draws loudspeaker symbols or crosses at
+%   the given secondary source positions. This can be controlled by the
 %   conf.plot.realloudspeakers setting. The loudspeaker symbols are pointing in
-%   their given direction. In addition to the secondary source positions, the
-%   activity of the single secondary sources can be given by the win vector. For
-%   every secondary source it can contain a value between 0 and 1. 1 is fully
-%   active. If only one value if given, it is used for all secondary sources.
+%   their given direction.
 %
 %   see also: plot_wavefield
 
@@ -54,23 +49,20 @@ function draw_loudspeakers(x0,dimensions,win,conf)
 
 %% ===== Checking of input parameter =====================================
 nargmin = 1;
-nargmax = 4;
+nargmax = 3;
 narginchk(nargmin,nargmax);
 isargsecondarysource(x0)
 nls = size(x0,1);
-if nargin<nargmax-2
-    dimensions = [1 1 0];
-    win = ones(nls,1);
-elseif nargin<nargmax-1
-    win = ones(nls,1);
-elseif length(win)==1
-    win = win*ones(nls,1);
-end
-isargvector(win);
-if nargin<nargmax
+if nargin==nargmax-1
+    if isstruct(dimensions)
+        conf = dimensions;
+        dimensions = [1 1 0];
+    else
+        conf = SFS_config;
+    end
+elseif nargin==nargmax-2
     conf = SFS_config;
-else
-    isargstruct(conf);
+    dimensions = [1 1 0];
 end
 
 
@@ -89,6 +81,9 @@ elseif ~dimensions(1)
 elseif ~dimensions(2)
     x0(:,2) = x0(:,3);
 end
+
+% Weightings of the single sources
+win = x0(:,7);
 
 % Plot only "x" at the loudspeaker positions, use this as default for all cases
 % that are not the x-y-plane

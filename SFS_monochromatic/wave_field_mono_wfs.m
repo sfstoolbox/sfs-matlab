@@ -1,7 +1,7 @@
 function varargout = wave_field_mono_wfs(X,Y,Z,xs,src,f,conf)
 %WAVE_FIELD_MONO_WFS simulates a wave field for WFS
 %
-%   Usage: [P,x,y,z,x0,win] = wave_field_mono_wfs(X,Y,Z,xs,src,f,[conf])
+%   Usage: [P,x,y,z,x0] = wave_field_mono_wfs(X,Y,Z,xs,src,f,[conf])
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax]
@@ -22,7 +22,6 @@ function varargout = wave_field_mono_wfs(X,Y,Z,xs,src,f,conf)
 %       y           - corresponding y axis / m
 %       z           - corresponding z axis / m
 %       x0          - active secondary sources / m
-%       win         - tapering window of the secondary sources
 %
 %   WAVE_FIELD_MONO_WFS(X,Y,Z,xs,src,f,conf) simulates a wave field for the
 %   given source type (src) using WFS driving functions in the temporal domain.
@@ -93,26 +92,10 @@ xref = conf.xref;
 % Get the position of the loudspeakers and its activity
 x0 = secondary_source_positions(conf);
 x0 = secondary_source_selection(x0,xs,src);
-% Generate tapering window
-win = tapering_window(x0,conf);
+x0 = secondary_source_tapering(x0,conf);
 % Driving function
-D = driving_function_mono_wfs(x0,xs,src,f,conf) .* win;
+D = driving_function_mono_wfs(x0,xs,src,f,conf);
 % Wave field
-% disable plotting, in order to integrate the tapering window
-conf.plot.useplot = 0;
-% calculate wave field
-[P,x,y,z] = wave_field_mono(X,Y,Z,x0,'ps',D,f,conf);
-
-% fill return values
-if nargout>0 varargout{1}=P; end
-if nargout>1 varargout{2}=x; end
-if nargout>2 varargout{3}=y; end
-if nargout>3 varargout{4}=z; end
-if nargout>4 varargout{5}=x0; end
-if nargout>5 varargout{6}=win; end
-
-
-% ===== Plotting =========================================================
-if nargout==0 || useplot
-    plot_wavefield(P,x,y,z,x0,win,conf);
-end
+[varargout{1:min(nargout,4)}] = wave_field_mono(X,Y,Z,x0,'ps',D,f,conf);
+% Return secondary sources if desired
+if nargout==5 varargout{5}=x0; end

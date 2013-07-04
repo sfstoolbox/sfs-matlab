@@ -80,13 +80,8 @@ xref = conf.xref;
 % Get secondary sources
 x0 = secondary_source_positions(conf);
 x0 = secondary_source_selection(x0,xs,src);
-% Generate tapering window
-win = tapering_window(x0,conf);
-
+x0 = secondary_source_tapering(x0,conf);
 % Get driving signals
-[d,delay] = driving_function_imp_wfs(x0,xs,src,conf);
-% Apply tapering window
-d = bsxfun(@times,d,win');
-
+d = driving_function_imp_wfs(x0,xs,src,conf);
 % generate the impulse response for WFS
 ir = ir_generic(X,phi,x0,d,irs,conf);

@@ -112,15 +112,15 @@ for ii = 1:length(irs.apparent_azimuth)
     % calculate active virtual speakers
     x0 = secondary_source_selection(x0_all,xs,'pw');
 
-    % generate tapering window
-    win = tapering_window(x0,conf);
+    % apply tapering window
+    x0 = secondary_source_tapering(x0,conf);
 
     % sum up contributions from individual virtual speakers
     %     delay = [];
     [~,delay,weight] = driving_function_imp_wfs(x0,xs,'pw',conf);
     for l=1:size(x0,1)
         dt = delay(l)*fs + R/conf.c*fs;
-        w = weight(l) * win(l);
+        w = weight(l);
         % get IR for the secondary source position
         [phi,theta,r] = cart2sph(x0(l,1),x0(l,2),x0(l,3));
         ir_tmp = get_ir(irs,[phi theta r],'spherical',conf);

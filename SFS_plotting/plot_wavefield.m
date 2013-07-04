@@ -1,29 +1,23 @@
-function plot_wavefield(P,x,y,z,x0,ls_activity,conf)
+function plot_wavefield(P,x,y,z,x0,conf)
 %PLOT_WAVEFIELD plot the given wavefield
 %
-%   Usage: plot_wavefield(P,x,y,z,[x0,[ls_activity]],[conf])
+%   Usage: plot_wavefield(P,x,y,z,[x0],[conf])
 %
 %   Input parameters:
 %       P           - matrix containing the wavefield in the format P = P(y,x)
 %       x,y,z       - vectors for the x-, y- and z-axis
 %       x0          - matrix containing the secondary source positions to plot.
 %                     Default: plot no secondary sources
-%       ls_activity - activity of the single secondary sources. Note: this option
-%                     is only valid, if you give also x0 as an input parameter.
-%                     The default behavior is to plot all secondary sources as 
-%                     active.
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   PLOT_WAVEFIELD(P,x,y,z,L,ls_activity,conf) plots the wavefield P in dependence
+%   PLOT_WAVEFIELD(P,x,y,z,x0,conf) plots the wavefield P in dependence
 %   of the axes that are not singleton. To calculate what axes these are you
 %   have to provide all three of them. The wavefield is normalized to 1 at its
 %   center position P(end/2,end/2). For a given set x0 of secondary sources the
 %   loudspeakers are added to the plot at their real positions. But only if
-%   distance between them is larger than 10cm. The ls_activity option specifies
-%   the color shade of the speakers, going from 0 (white) to 1(dark gray). The
-%   default behavior is to set all speakers to 1.
+%   distance between them is larger than 10cm.
 %
-%   see also: wave_field_mono_wfs_25d
+%   see also: wave_field_mono, wave_field_imp
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -60,27 +54,19 @@ function plot_wavefield(P,x,y,z,x0,ls_activity,conf)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 4;
-nargmax = 7;
+nargmax = 6;
 narginchk(nargmin,nargmax);
 isargvector(x,y,z);
 isargnumeric(P);
 if nargin==nargmax-1
-    if isstruct(ls_activity)
-        conf = ls_activity;
-        ls_activity = ones(1,size(x0,1));
-    else
-        conf = SFS_config;
-    end
+    conf = SFS_config;
 elseif nargin==nargmax-2
     if isstruct(x0)
         conf = x0;
         x0 = [];
     else
         conf = SFS_config;
-        ls_activity = ones(1,size(x0,1));
     end
-elseif nargin==nargmax-3
-    conf = SFS_config;
 end
 if ~exist('x0','var') || length(x0)==0
     conf.plot.loudspeakers = 0;
@@ -155,17 +141,11 @@ if(p.usedb)
     end
 end
 
-% Check if we should plot loudspeakers symbols and fix the size of ls_activity
+% Check if we should plot loudspeakers symbols
 if p.loudspeakers && dx0<=0.01
     warning(['%s: the given loudspeaker distance is to small. ',...
             'Disabling plotting of the loudspeakers'],upper(mfilename));
     p.loudspeakers = 0;
-end
-if p.loudspeakers
-    % fixing the length of ls_activity
-    if length(ls_activity)==1
-        ls_activity = repmat(ls_activity,[1 size(x0,1)]);
-    end
 end
 
 % set the color bar axis to default values if not given otherwise
@@ -233,7 +213,7 @@ if ~(p.usegnuplot)
         %x0(:,1:2) = x0(:,2:3);
         if p.loudspeakers % && dimensions(1) && dimensions(2)
             hold on;
-            draw_loudspeakers(x0,dimensions,ls_activity,conf);
+            draw_loudspeakers(x0,dimensions,conf);
             hold off;
         end
     end
@@ -270,8 +250,8 @@ else
     % Storing loudspeaker positions and activity
     if(p.loudspeakers)
         [phi,~] = cart2pol(x0(:,4),x0(:,5));
-        [x0,y0,phi,ls_activity] = column_vector(x0(:,1),x0(:,2),phi,ls_activity);
-        gp_save(p.lsfile,x0,[y0 phi ls_activity]);
+        [x0,y0,phi,win] = column_vector(x0(:,1),x0(:,2),phi,x0(:,7));
+        gp_save(p.lsfile,x0,[y0 phi win]);
     end
 
     % Check if we should handle the wave field in dB

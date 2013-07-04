@@ -27,7 +27,7 @@ function [x0,idx] = secondary_source_selection(x0,xs,src)
 %       S. Spors, R. Rabenstein, J. Ahrens: "The Theory of Wave Field Synthesis
 %       Revisited", in 124th AES Convention, Amsterdam, 2008
 %
-% see also: secondary_source_positions, secondary_source_number, tapering_window
+% see also: secondary_source_positions, secondary_source_tapering
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

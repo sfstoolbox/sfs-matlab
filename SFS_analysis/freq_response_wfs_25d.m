@@ -103,7 +103,7 @@ S = zeros(1,length(f));
 x0 = secondary_source_selection(x0,xs,src);
 nls = size(x0,1);
 % Tapering window
-win = tapering_window(x0,conf);
+x0 = secondary_source_tapering(x0,conf);
 % Get the result for all frequencies
 for ii = 1:length(f)
     P = 0;
@@ -128,7 +128,7 @@ for ii = 1:length(f)
         %
         % see: Spors2009, Williams1993 p. 36
         %
-        P = P + win(n)*D.*G;
+        P = P + *D.*G.*x0(:,7);
     end
     S(ii) = abs(P);
 end

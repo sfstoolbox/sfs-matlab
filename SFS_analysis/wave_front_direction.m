@@ -96,12 +96,10 @@ outfiledB = sprintf('direction_L%i_xs%i_ys%i_X%.1f_Y%.1f_dB.txt',...
 
 % Loudspeaker positions
 x0 = secondary_source_positions(L,conf);
+x0 = secondary_source_selection(x0,xs,src);
+x0 = secondary_source_tapering(x0,conf);
 % Number of loudspeaker
 nls = size(x0,1);
-
-% === Design tapering window ===
-% See SFS_config if it is applied
-win = tapering_window(x0,conf);
 
 %% ===== Calculate direction of the echos ===============================
 
@@ -135,8 +133,7 @@ for ii = 1:nls
     % === Time, in which pre-echos occur ===
     t(ii) = norm(X-x0(ii,1:3))/c + delay - norm(X-xs)/c;
 
-    % === Applying tapering window to the amplitude
-    a(ii) = weight * win(ii);
+    a(ii) = weight;
 
     % === Direction of the wave fronts (in radian) ===
     % Angle between listener and secondary source (-pi < alpha <= pi,

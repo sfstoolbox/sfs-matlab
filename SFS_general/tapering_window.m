@@ -4,7 +4,7 @@ function win = tapering_window(x0,conf)
 %   Usage: win = tapering_window(x0,[conf])
 %
 %   Input parameters:
-%       x0          - secondary source positions / m
+%       x0          - secondary sources / m
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:

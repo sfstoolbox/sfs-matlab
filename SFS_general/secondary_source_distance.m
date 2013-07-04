@@ -17,7 +17,7 @@ function [dx0,dx0_single] = secondary_source_distance(x0)
 %   calculated for every single secondary source, afterwads the mean about these
 %   values is returned.
 %
-%   see also: aliasing_frequency, secondary_source_positions, tapering_window
+%   see also: aliasing_frequency, secondary_source_positions
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

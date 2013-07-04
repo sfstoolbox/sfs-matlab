@@ -79,7 +79,7 @@ end
 useinterpolation = conf.ir.useinterpolation;
 % Precission of the wanted angle. If a IR within the given precission could be
 % found no interpolation is applied.
-prec = 0.001; % rad
+prec = 0.001; % ~ 0.05 deg
 
 
 %% ===== Computation ====================================================

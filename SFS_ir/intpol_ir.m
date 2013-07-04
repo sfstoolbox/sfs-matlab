@@ -6,17 +6,20 @@ function ir = intpol_ir(varargin)
 %   Input parameters:
 %       ir1     - IR 1
 %       ir2     - IR 2
-%       ir3     - IR 3
+%       ir3     - IR 3 (optional)
 %       x0      - matrix containing positions of single IRs / rad
 %       xs      - desired position after interpolation / rad
 %
 %   Output parameters:
-%       ir      - IR for the given position (length(IR1),2)
+%       ir      - IR for the given position
 %
 %   INTPOL_IR(ir1,phi1,theta1,ir2,phi2,theta2,ir3,phi3,theta3,alpha,beta)
 %   interpolates the three given IRs ir1,ir2 and ir3 with their corresponding 
 %   angles (phi1,theta1),(phi2,theta2) and (phi3,theta3) for the given
 %   angles (alpha,beta) and returns an interpolated IR.
+%   Note that the given parameter are not checked if they have all the right
+%   dimensions in order to save computational time, because this function could
+%   be called quiet often.
 %
 %   see also: get_ir, shorten_ir, read_irs
 
@@ -65,25 +68,27 @@ if nargin==4
     ir2 = varargin{2};
     x0 = varargin{3};
     xs = varargin{4};
-    if length(ir1)~=length(ir2)
-        error('%s: the given IRs have not the same length.',upper(mfilename));
-    end
-    % calculate weighting factors
-    w = column_vector(xs)\x0.';
-    % calculate desired ir with linear combination of ir1,ir2 
-    ir = w(1)*ir1 + w(2)*ir2;
+    % linear interpolation
+    ir = ir1 + (ir2-ir1) * norm(xs-x0(:,1))/norm(x0(:,2)-x0(:,1));
 else
     ir1 = varargin{1};
     ir2 = varargin{2};
     ir3 = varargin{3};
     x0 = varargin{4};
     xs = varargin{5};
-    % check if the length of the found IRs are the same
-    if length(ir1)~=length(ir2) || length(ir2)~=length(ir3) || length(ir1)~=length(ir3)
-        error('%s: the given IRs have not the same length.',upper(mfilename));
+    % linear interpolation
+    %
+    %           x0(:,ii) xs
+    % w(ii) = --------------
+    %         |x0(:,ii)||xs|
+    %
+    w = vector_product(x0,repmat(xs',[1 3]),1) / ...
+        ( vector_norm(x0,1)./norm(xs));
+    % The interpolation with 3 points hasn't been checked yet, hence we are
+    % including a checking of the w parameters
+    if any(w<0)
+        error('%s: one of your interpolation weights is <0.',upper(mfilename));
     end
-    % calculate weighting factors
-    w = row_vector(xs)\x0.';
     % calculate desired ir with linear combination of ir1,ir2 and ir3
     ir = w(1)*ir1 + w(2)*ir2 + w(3)*ir3;
 end

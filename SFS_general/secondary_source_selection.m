@@ -19,7 +19,7 @@ function [x0,idx] = secondary_source_selection(x0,xs,src)
 %       idx         - index of the selected sources from the original x0
 %                     matrix [mx1]
 %
-%   SECONDARY_SOURCES_SELECTION(x0,xs,src) returns only the active secondary
+%   SECONDARY_SOURCE_SELECTION(x0,xs,src) returns only the active secondary
 %   sources for the given geometry and virtual source. In addition the index of
 %   the chosen secondary sources is returned.
 %

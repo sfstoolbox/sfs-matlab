@@ -151,7 +151,7 @@ d = [d; zeros(max_distance_in_samples,size(d,2))];
 % Initialize empty wave field (dependent on the axes we want)
 p = squeeze(zeros(length(x3),length(x2),length(x1)));
 
-% Integration over loudspeaker
+% Integration over secondary sources
 for ii = 1:size(x0,1)
 
     % Apply bandbass filter
@@ -172,8 +172,16 @@ for ii = 1:size(x0,1)
     ds = interp1(1:length(d(:,ii)),d(:,ii),t_delta,'spline');
 
     % ================================================================
-    % Wave field p(x,t)
-    p = p + ds .* g;
+    % Integration
+    %          /
+    % p(x,t) = | d(x0,t) g(x-x0,t) dx0
+    %          /
+    %
+    % see: Spors2009, Williams1993 p. 36
+    % x0(ii,7) is a weight for the single secondary sources which includes for
+    % example a tapering window for WFS or a weighting of the sources for
+    % integration on a sphere.
+    p = p + ds .* g .* x0(:,7);
 
 end
 

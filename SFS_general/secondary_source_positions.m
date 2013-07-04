@@ -222,6 +222,11 @@ elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)
     x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1));
     % secondary source weights
     x0(:,7) = weights;
+    % add integration weights (because we integrate over a sphere) to the grid
+    % weights
+    [~,theta] = cart2sph(x0(:,1),x0(:,2),x0(:,3)); % get elevation
+    x0(:,7) = x0(:,7) .* cos(theta);
+    
 else
     error('%s: %s is not a valid array geometry.',upper(mfilename),geometry);
 end

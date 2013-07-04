@@ -215,6 +215,11 @@ conf.sdm.withev = true; % boolean
 % Settings regarding all the stuff with impulse responses from the SFS_ir and
 % SFS_binaural_synthesis folders
 %
+% Use interpolation to get the desired HRTF for binaural simulation. If this is
+% disabled the HRTF returned by a nearest neighbour search is used instead.
+% Depending on the geometry of the measured HRTF data set, the interpolation
+% will be done between the two or three nearest HRTFs.
+conf.ir.useinterpolation = true; % boolean
 %
 % === Headphone compensation ===
 % Headphone compensation

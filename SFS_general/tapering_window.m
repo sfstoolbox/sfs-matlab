@@ -1,4 +1,4 @@
-function [win,win2] = tapering_window(x0,conf)
+function win = tapering_window(x0,conf)
 %TAPWIN generate a tapering window for a loudspeaker array
 %
 %   Usage: win = tapering_window(x0,[conf])
@@ -15,7 +15,7 @@ function [win,win2] = tapering_window(x0,conf)
 %   If the secondary source distribution has some gaps, every joint part gets
 %   its own tapering.
 %
-%   see also: secondary_source_position, wave_field_wfs_25d, hann
+%   see also: secondary_source_position, wave_field_mono_wfs, hann
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

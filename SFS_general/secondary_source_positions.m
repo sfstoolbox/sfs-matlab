@@ -8,7 +8,7 @@ function x0 = secondary_source_positions(conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output options:
-%       x0          - secondary source positions and directions / m
+%       x0          - secondary source positions, directions and weights / m
 %
 %   SECONDARY_SOURCES_POSITIONS(conf) generates the positions and directions
 %   x0 of secondary sources for a given geometry
@@ -153,7 +153,7 @@ if ~isempty(x0)
     return
 end
 
-x0 = zeros(nls,6);
+x0 = zeros(nls,7);
 if strcmp('line',geometry) || strcmp('linear',geometry)
     % === Linear array ===
     % Positions of the secondary sources
@@ -162,6 +162,8 @@ if strcmp('line',geometry) || strcmp('linear',geometry)
     x0(:,3) = X0(3) * ones(nls,1);
     % Direction of the secondary sources pointing to the -y direction
     x0(:,4:6) = direction_vector(x0(:,1:3),x0(:,1:3)+repmat([0 -1 0],nls,1));
+    % equal weights for all sources
+    x0(:,7) = ones(nls,1);
 elseif strcmp('circle',geometry) || strcmp('circular',geometry)
     % === Circular array ===
     % Azimuth angles
@@ -174,6 +176,8 @@ elseif strcmp('circle',geometry) || strcmp('circular',geometry)
     x0(:,1:3) = [cx,cy,cz] + repmat(X0,nls,1);
     % Direction of the secondary sources
     x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1).*ones(nls,3));  
+    % equal weights for all sources
+    x0(:,7) = ones(nls,1);
 elseif strcmp('box',geometry)
     % === Boxed loudspeaker array ===
     % Number of secondary sources per linear array
@@ -207,13 +211,17 @@ elseif strcmp('box',geometry)
     x0(3*nbox+1:nls,3) = X0(3) + zeros(nbox,1);
     x0(3*nbox+1:nls,4:6) = direction_vector(x0(3*nbox+1:nls,1:3), ...
     x0(3*nbox+1:nls,1:3)+repmat([1 0 0],nbox,1));
+    % equal weights for all sources
+    x0(:,7) = ones(nls,1);
 elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)
     % get spherical grid + weights
-    [points,weight] = get_spherical_grid(nls,conf);
+    [points,weights] = get_spherical_grid(nls,conf);
     % secondary source positions
     x0(:,1:3) = L/2 * points;
     % secondary source directions
     x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1));
+    % secondary source weights
+    x0(:,7) = weights;
 else
     error('%s: %s is not a valid array geometry.',upper(mfilename),geometry);
 end

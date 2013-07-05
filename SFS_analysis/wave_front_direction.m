@@ -1,4 +1,4 @@
-function [alpha,a,t] = wave_front_direction(X,phi,xs,src,L,conf)
+function varargout = wave_front_direction(X,phi,xs,src,conf)
 %WAVE_FRONT_DIRECTION returns direction, amplitude and time of the single wave
 %   fronts for WFS
 %
@@ -11,7 +11,6 @@ function [alpha,a,t] = wave_front_direction(X,phi,xs,src,L,conf)
 %                   'pw' - plane wave
 %                   'ps' - point source
 %                   'fs' - focused source
-%       L       - length of the linear loudspeaker array / m
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -19,12 +18,12 @@ function [alpha,a,t] = wave_front_direction(X,phi,xs,src,L,conf)
 %       a       - amplitudes of the echos
 %       t       - time of the wave fronts / s
 %
-%   WAVE_FRONT_DIRECTION(X,phi,xs,src,L) calculates the direction of the single wave
+%   WAVE_FRONT_DIRECTION(X,phi,xs,src) calculates the direction of the single wave
 %   fronts (due to aliasing artifacts) arriving from the loudspeakers for a
 %   WFS array at the given listener position X for the given virtual source
 %   xs and given array length L.
 %
-%   see also: ir_wfs_25d
+%   see also: ir_wfs, driving_function_imp_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -62,40 +61,28 @@ function [alpha,a,t] = wave_front_direction(X,phi,xs,src,L,conf)
 
 
 %% ===== Checking of input parameters ====================================
-nargmin = 5;
-nargmax = 6;
+nargmin = 4;
+nargmax = 5;
 narginchk(nargmin,nargmax);
 isargposition(X);
 isargxs(xs),
 isargscalar(phi);
-isargpositivescalar(L);
-
 if nargin<nargmax
     conf = SFS_config;
-else
-    isargstruct(conf);
 end
+isargstruct(conf);
 
 
 %% ===== Configuration ===================================================
-% Speed of sound
 c = conf.c;
-% use plotting?
 useplot = conf.plot.useplot;
-% Use gnuplot?
 usegnuplot = conf.plot.usegnuplot;
 
 
 %% ===== Variables =======================================================
 phi = correct_azimuth(phi);
-% name of the data file to store the result
-outfile = sprintf('direction_L%i_xs%i_ys%i_X%.1f_Y%.1f.txt', ...
-    L,xs(1),xs(2),X(1),X(2));
-outfiledB = sprintf('direction_L%i_xs%i_ys%i_X%.1f_Y%.1f_dB.txt',...
-                    L,xs(1),xs(2),X(1),X(2));
-
 % Loudspeaker positions
-x0 = secondary_source_positions(L,conf);
+x0 = secondary_source_positions(conf);
 x0 = secondary_source_selection(x0,xs,src);
 x0 = secondary_source_tapering(x0,conf);
 % Number of loudspeaker
@@ -107,8 +94,8 @@ nls = size(x0,1);
 %           x0(ii,:)                 X0
 % x-axis <-^--^--^--^--^--^--^--^--^-|-^--^--^--^--^--^--^--^--^--
 %             |                      |
-%         R2 |  |                    |
-%           |     | R                |
+%            |  |                    |
+%           |     |                  |
 %          x        |                |
 %         xs          |              |
 %                       O            |
@@ -116,57 +103,61 @@ nls = size(x0,1);
 %                                    v
 %                                  y-axis
 %
-% Distance between x0 and listener: R
-% Distance between x0 and virtual source: R2
 
-alpha = zeros(nls,1);
-a = zeros(nls,1);
-v = zeros(nls,2);
-vdB = zeros(nls,2);
-t = zeros(nls,1);
-for ii = 1:nls
+% Get time delay and weighting factor for a single echo
+[~,delay,a] = driving_function_imp_wfs(x0,xs,src,conf);
+% Time, in which pre-echos occur:
+% time_from_secondary_source_to_listener + delay
+t = vector_norm(bsxfun(@minus,X,x0(:,1:3)),2)./c + delay -norm(X-xs(:,1:3))/c;
+% set start to t=0
+t = t-min(t);
+% Direction of the wave fronts / rad 
+% angle between listener and secondary source (-pi < alpha <= pi,
+% without phi)
+% Note: phi is the orientation of the listener (see first graph)
+[alpha_tmp,~,~] = cart2sph(x0(:,1)-X(1),x0(:,2)-X(2),x0(:,3)-X(3));
+alpha = alpha_tmp - phi;
 
-    % Get time delay and weighting factor for a single echo
-    [weight,delay] = ...
-        driving_function_imp_wfs_25d(x0(ii,:),xs,src,conf);
-
-    % === Time, in which pre-echos occur ===
-    t(ii) = norm(X-x0(ii,1:3))/c + delay - norm(X-xs)/c;
-
-    a(ii) = weight;
-
-    % === Direction of the wave fronts (in radian) ===
-    % Angle between listener and secondary source (-pi < alpha <= pi,
-    % without phi)
-    % Note: phi is the orientation of the listener (see first graph)
-    [alpha_tmp,theta_tmp,r_tmp] = cart2sph(x0(ii,1)-X(1),x0(ii,2)-X(2),0);
-    alpha(ii) = alpha_tmp - phi;
-
-    % === Direction and amplitude in vector notation ===
-    % Rotation matrix (see: http://en.wikipedia.org/wiki/Rotation_matrix)
-    % RM = [cos(alpha(i)) -sin(alpha(i)); ...
-    %       sin(alpha(i)) cos(alpha(i))];
-    RM = rotation_matrix(alpha(ii),3,'counterclockwise');
-    % Vector notation of angle and amplitude (in x,y coordinates)
-    v(ii,:) = a(ii) .* (RM * [0 1]');
-    %                 \____  ____/
-    %                      \/
-    %           unit vector in direction
-    %           of the given loudspeaker
-    % In dB notation
-    vdB(ii,:) = (20*log10(a(ii))+100) .* (RM * [0 1]');
-end
+% return values
+if nargout>0 varargout{1}=alpha; end
+if nargout>1 varargout{2}=a; end
+if nargout>2 varargout{3}=t; end
 
 
 %% ===== Plotting =======================================================
-if(useplot)
+if (nargout==0 || useplot) && ~usegnuplot
     % Plot the amplitude (dB) over time
-    figure; plot(t,20*log10(a)+100);
-end
-
+    figure; plot(t,20*log10(a)+100,'xb');
+    xlabel('t / s');
+    ylabel('Amplitude / dB');
 
 %% ===== Generate data structures for plotting with gnuplot =============
-if(usegnuplot)
+elseif (nargout==0 || useplot) && usegnuplot
+
+    v = zeros(nls,3);
+    vdB = zeros(nls,3);
+    for ii = 1:nls
+        % === Direction and amplitude in vector notation ===
+        % Rotation matrix (see: http://en.wikipedia.org/wiki/Rotation_matrix)
+        % RM = [cos(alpha) -sin(alpha); ...
+        %       sin(alpha) cos(alpha)];
+        RM = rotation_matrix(alpha(ii),3,'counterclockwise');
+        % Vector notation of angle and amplitude (in x,y coordinates)
+        v(ii,:) = a(ii) .* (RM * [0 1 0]');
+        %                   \____  ____/
+        %                        \/
+        %             unit vector in direction
+        %             of the given loudspeaker
+        % In dB notation
+        vdB(ii,:) = (20*log10(a(ii))+100) .* (RM * [0 1 0]');
+    end
+
+    % name of the data file to store the result
+    outfile = sprintf('direction_nls%i_xs%i_ys%i_X%.1f_Y%.1f.txt', ...
+        nls,xs(1),xs(2),X(1),X(2));
+    outfiledB = sprintf('direction_nls%i_xs%i_ys%i_X%.1f_Y%.1f_dB.txt',...
+                    nls,xs(1),xs(2),X(1),X(2));
+
 
     % === Amplitude and direction of the direct sound from the virtual
     % source ===
@@ -174,10 +165,11 @@ if(usegnuplot)
     % definition at t = 0
     A = sum(a);
     % Calculate the direction of the virtual source pulse (rad)
-    [alpha_ds,theta_tmp,r_tmp] = cart2sph(xs(1)-X(1),xs(2)-X(2),0) - phi;
+    [alpha_ds,~,~] = cart2sph(xs(1)-X(1),xs(2)-X(2),xs(3)-X(3));
+    alpha_ds = alpha_ds - phi;
     RM_ds = rotation_matrix(alpha_ds,3,'counterclockwise');
-    X_ds = A .* (RM_ds * [0 1]');
-    X_dsdB = (20*log10(A)+100) .* (RM_ds * [0 1]');
+    X_ds = A .* (RM_ds * [0 1 0]');
+    X_dsdB = (20*log10(A)+100) .* (RM_ds * [0 1 0]');
 
     % Position of the listener
     Xn = X(1).*ones(nls,1);
@@ -186,16 +178,18 @@ if(usegnuplot)
     fiddB = fopen(outfiledB,'w');
     % Angle and amplitude in vector notation
     % Generate matrix for gnuplot plot
-    gnuM = [Xn t v(:,1) v(:,2)];
+    gnuM = [Xn t v];
     % Directions weighted by the amplitude of the echos
     %gnudB = [ Xn t sign(v(:,1)).*(20.*log10(abs(v(:,1)+eps))+100) sign(v(:,2)).*(20.*log10(abs(v(:,2)+eps))+100) ];
-    gnudB = [Xn t vdB(:,1) vdB(:,2)];
+    gnudB = [Xn t vdB];
     % Store data
     %save(outfile,'gnuM','-ascii');
-    fprintf(fid,'#X\tt\tx\ty\n');
+    fprintf(fid,'#X\tt\tx\ty\tz\n');
     fprintf(fiddB,'#X\tt\tx\ty\tA\n');
-    fprintf(fid,'%f\t%f\t%f\t%f\n',gnuM');
-    fprintf(fiddB,'%f\t%f\t%f\t%f\t%f\n',[gnudB'; (20*log10(a')+100)]);
+    fprintf(fid,'%f\t%f\t%f\t%f\t%f\n',gnuM);
+    fprintf(fiddB,'%f\t%f\t%f\t%f\t%f\t%f\n',[gnudB (20*log10(a)+100)]);
     fprintf(fid,'\n\n%f\t0\t%f\t%f\t%f',X(1),X_ds(1),X_ds(2),A);
     fprintf(fiddB,'\n\n%f\t0\t%f\t%f\t%f',X(1),X_dsdB(1),X_dsdB(2),20*log10(A)+100);
+    fclose(fid);
+    fclose(fiddB);
 end

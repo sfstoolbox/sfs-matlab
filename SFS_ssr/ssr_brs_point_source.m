@@ -1,23 +1,27 @@
-function ir = generic_nfchoa(xs,src,conf)
-%GENRIC_NFCHOA Generate a IR for the generic renderer of the SSR
+function brs = ssr_brs_point_source(X,phi,xs,irs,conf)
+%SSR_BRS_POINT_SOURCE generates a binaural room scanning (BRS) set for use with
+%the SoundScape Renderer
 %
-%   Usage: ir = generic_nfchoa(xs,src,[conf])
+%   Usage: brs = ssr_brs_point_source(X,phi,xs,irs,[conf])
 %
 %   Input parameters:
-%       xs      - virtual source position / m
-%       src     - source type: 'pw' -plane wave
-%                              'ps' - point source
-%                              'fs' - focused source
+%       X       - listener position / m
+%       phi     - listener direction [head orientation] / rad
+%       xs      - source position / m
+%       irs     - IR data set for the second sources
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       ir      - impulse response for the desired loudspeaker array
+%       brs     - conf.N x 2*nangles matrix containing all impulse responses (2
+%                 channels) for every angles of the BRS set
 %
-%   GENERIC_NFCHOA(xs,src,conf) calculates an impulse response for a virtual
-%   source at xs for the loudspeakers of a NFC-HOA array. Every loudspeaker of
-%   the array is represented by one column in the impulse response.
+%   SSR_BRS_POINT_SOURCE(X,phi,xs,irs,conf) prepares a BRS set for
+%   a reference source (single point source) for the given listener
+%   position.
+%   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
+%   http://spatialaudio.net/ssr/
 %
-% see also: generic_wfs, brs_nfchoa, driving_function_imp_nfchoa
+%   see also: ir_generic, ir_point_source, get_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -51,26 +55,34 @@ function ir = generic_nfchoa(xs,src,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% FIXME: at the moment the first loudspeaker of your array has to be on the x-axis
-% (which means phi=0). If you have another setup (like we have in Pinta) you
-% have to manually edit the secondary_source_positions.m function in order to
-% get the first loudspeaker at the desired location.
-
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
-nargmax = 3;
+nargmin = 4;
+nargmax = 5;
 narginchk(nargmin,nargmax);
+isargposition(X);
 isargxs(xs);
-isargchar(src);
+isargscalar(phi);
+check_irs(irs);
 if nargin<nargmax
     conf = SFS_config;
 end
 isargstruct(conf);
 
 
-%% ===== Main ============================================================
-% Secondary sources
-x0 = secondary_source_positions(conf);
-% driving signals for the secondary sources
-ir = driving_function_imp_nfchoa(x0,xs,src,conf);
+%% ===== Configuration ===================================================
+N = conf.N;                     % Target length of BRIR impulse responses
+angles = rad(conf.ir.brsangles);% Angles for the BRIRs
+
+
+%% ===== Computation =====================================================
+% Initial values
+brs = zeros(N,2*length(angles));
+
+% Generate a BRS set for all given angles
+warning('off','SFS:irs_intpol');
+for ii=1:length(angles)
+    % Compute IR for a reference (single loudspeaker at xs)
+    brs(:,(ii-1)*2+1:ii*2) = ir_point_source(X,angles(ii)+phi,xs,irs,conf);
+end
+warning('on','SFS:irs_intpol');

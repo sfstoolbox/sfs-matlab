@@ -20,7 +20,7 @@ function ir = ir_nfchoa(X,phi,xs,src,irs,conf)
 %   response for a virtual source at xs for a virtual NFCHOA array and a
 %   listener located at X.
 %
-%   see also: brs_nfchoa, ir_wfs, ir_point_source, auralize_ir
+%   see also: ssr_brs_nfchoa, ir_nfchoa, ir_point_source, auralize_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

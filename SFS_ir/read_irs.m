@@ -14,8 +14,7 @@ function irs = read_irs(irsfile)
 %   specific fields. For a description of the mat format for the IR datasets,
 %   see IR_format.txt.
 %
-%   see also: get_ir, intpol_ir, dummy_irs, new_irs, brs_wfs_25d,
-%       brs_point_source
+%   see also: get_ir, intpol_ir, dummy_irs, new_irs, ir_point_source
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

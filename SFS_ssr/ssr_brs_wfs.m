@@ -1,42 +1,29 @@
-function brs = brs_point_source(X,phi,xs,irs,conf)
-%BRS_POINT_SOURCE generates a BRS set for use with the SoundScapeRenderer
+function brs = ssr_brs_wfs(X,phi,xs,src,irs,conf)
+%SSR_BRS_WFS generates a binaural room scanning (BRS) set for use with the
+%SoundScape Renderer
 %
-%   Usage: brs = brs_point_source(X,phi,xs,irs,[conf])
+%   Usage: brs = ssr_brs_wfs(X,phi,xs,src,irs,[conf])
 %
 %   Input parameters:
 %       X       - listener position / m
 %       phi     - listener direction [head orientation] / rad
-%       xs      - source position / m
+%       xs      - virtual source position [ys > Y0 => focused source] / m
+%       src     - source type: 'pw' - plane wave
+%                              'ps' - point source
+%                              'fs' - focused source
 %       irs     - IR data set for the second sources
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       brs     - conf.N x 2*nangles matrix containing all brs (2
+%       brs     - conf.N x 2*nangles matrix containing all impulse responses (2
 %                 channels) for every angles of the BRS set
 %
-%   BRS_POINT_SOURCE(X,phi,xs,irs,conf) prepares a BRS set for
-%   a reference source (single point source) for the given listener
-%   position.
+%   SSR_BRS_WFS(X,phi,xs,src,irs,conf) prepares a BRS set for a virtual source
+%   at xs for WFS and the given listener position.
 %   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
-%   http://www.tu-berlin.de/?id=ssr
+%   http://spatialaudio.net/ssr/
 %
-%   Geometry:
-%
-%                                 y-axis
-%                                   ^
-%                                   |
-%                                   |
-%                                   |
-%                                   |    listener
-%                                   |       O X, phi=-pi/2
-%                                   |       |
-%               source              |
-%                 o xs              |
-%                                   |
-%                                   |
-%       ----------------------------|---------------------------> x-axis
-%
-%   see also: SFS_config, ir_point_source, brs_wfs_25d
+%   see also: ir_generic, ir_wfs, driving_function_imp_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -72,8 +59,8 @@ function brs = brs_point_source(X,phi,xs,irs,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
+nargmin = 5;
+nargmax = 6;
 narginchk(nargmin,nargmax);
 isargposition(X);
 isargxs(xs);
@@ -81,9 +68,8 @@ isargscalar(phi);
 check_irs(irs);
 if nargin<nargmax
     conf = SFS_config;
-else
-    isargstruct(conf);
 end
+isargstruct(conf);
 
 
 %% ===== Configuration ===================================================
@@ -92,13 +78,16 @@ angles = rad(conf.ir.brsangles);% Angles for the BRIRs
 
 
 %% ===== Computation =====================================================
+% secondary sources
+x0 = secondary_source_positions(conf);
+% calculate driving function
+d = driving_function_imp_wfs(x0,xs,src,conf);
+
 % Initial values
 brs = zeros(N,2*length(angles));
-
 % Generate a BRS set for all given angles
-warning('off','SFS:irs_intpol');
-for ii=1:length(angles)
-    % Compute IR for a reference (single loudspeaker at xs)
-    brs(:,(ii-1)*2+1:ii*2) = ir_point_source(X,angles(ii)+phi,xs,irs,conf);
+for ii = 1:length(angles)
+    % Compute BRIR for the desired WFS system
+    brs(:,(ii-1)*2+1:ii*2) = ...
+        ir_generic(X,angles(ii)+phi,x0,d,irs,conf);
 end
-warning('on','SFS:irs_intpol');

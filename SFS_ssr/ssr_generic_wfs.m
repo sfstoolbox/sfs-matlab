@@ -1,29 +1,24 @@
-function brs = brs_nfchoa(X,phi,xs,src,irs,conf)
-%BRS_NFCHOA generates a BRS set for use with the SoundScapeRenderer
+function ir = ssr_generic_wfs(xs,src,conf)
+%SSR_GENRIC_WFS generates an impulse response for the generic renderer of the
+%SoundScape Renderer
 %
-%   Usage: brs = brs_nfchoa(X,phi,xs,src,irs,[conf])
+%   Usage: ir = ssr_generic_wfs(xs,src,[conf])
 %
 %   Input parameters:
-%       X       - listener position / m
-%       phi     - listener direction [head orientation] / rad
-%       xs      - virtual source position [ys > Y0 => focused source] / m
-%       src     - source type: 'pw' - plane wave
+%       xs      - virtual source position / m
+%       src     - source type: 'pw' -plane wave
 %                              'ps' - point source
 %                              'fs' - focused source
-%       irs     - IR data set for the second sources
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       brs     - conf.N x 2*nangles matrix containing all brs (2
-%                 channels) for every angles of the BRS set
+%       ir      - impulse response for the desired loudspeaker array
 %
-%   BRS_NFCHOA(X,phi,xs,src,irs,conf) prepares a BRS set for a virtual source
-%   at position xs for a virtual loudspeaker array driven by nearfield
-%   compensated higher order Ambisonics (NFCHOA) and the given listener position.
-%   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
-%   http://www.tu-berlin.de/?id=ssr
+%   SSR_GENERIC_WFS(xs,src,conf) calculates an impulse response for a virtual
+%   source at xs for the loudspeakers of a WFS array. Every loudspeaker of
+%   the array is represented by one column in the impulse response.
 %
-%   see also: SFS_config, ir_generic, ir_nfchoa
+% see also: generic_nfchoa, brs_wfs, driving_function_imp_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -57,38 +52,34 @@ function brs = brs_nfchoa(X,phi,xs,src,irs,conf)
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
 
+% FIXME: at the moment the first loudspeaker of your array has to be on the x-axis
+% (which means phi=0). If you have another setup (like we have in Pinta) you
+% have to manually edit the secondary_source_positions.m function in order to
+% get the first loudspeaker at the desired location.
+
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 6;
+nargmin = 2;
+nargmax = 3;
 narginchk(nargmin,nargmax);
-isargposition(X);
 isargxs(xs);
-isargscalar(phi);
-check_irs(irs);
+isargchar(src);
 if nargin<nargmax
     conf = SFS_config;
-else
-    isargstruct(conf);
 end
+isargstruct(conf);
 
 
-%% ===== Configuration ===================================================
-N = conf.N;                     % Target length of BRIR impulse responses
-angles = rad(conf.ir.brsangles);% Angles for the BRIRs
+%% ===== Configuration ==================================================
+N = conf.N;
 
 
-%% ===== Computation =====================================================
-% secondary sources
+%% ===== Main ============================================================
+% Secondary sources
 x0 = secondary_source_positions(conf);
-% calculate driving function
-d = driving_function_imp_nfchoa(x0,xs,src,conf);
-
-% Initial values
-brs = zeros(N,2*length(angles));
-% Generate a BRS set for all given angles
-for ii = 1:length(angles)
-    % Compute BRIR for the desired HOA system
-    brs(:,(ii-1)*2+1:ii*2) = ...
-        ir_generic(X,angles(ii)+phi,x0,d,irs,conf);
-end
+% create empty impulse response for all secondary sources
+ir = zeros(N,size(x0,1));
+[x0,idx] = secondary_source_selection(x0,xs,src);
+x0 = secondary_source_tapering(x0,conf);
+% driving signals for the active speakers
+ir(:,idx) = driving_function_imp_wfs(x0,xs,src,conf);

@@ -21,7 +21,7 @@ function ir = ir_wfs(X,phi,xs,src,irs,conf)
 %   response for a virtual source at xs for a virtual WFS array and a
 %   listener located at X.
 %
-% see also: brs_wfs, ir_point_source, auralize_ir
+% see also: ssr_brs_wfs, ir_point_source, auralize_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

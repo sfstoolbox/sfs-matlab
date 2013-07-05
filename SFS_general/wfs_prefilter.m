@@ -13,7 +13,7 @@ function hpre = wfs_prefilter(conf)
 %   Wave Field Synthesis (from conf.wfs.hpreflow to conf.wfs.hprefhigh,
 %   see SFS_config).
 %
-%   see also: wfs_preequalization, SFS_config, brs_wfs_25d
+%   see also: wfs_preequalization, wave_field_imp_wfs, ir_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

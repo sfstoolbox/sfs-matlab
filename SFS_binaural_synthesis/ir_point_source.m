@@ -18,7 +18,7 @@ function ir = ir_point_source(X,phi,xs,irs,conf)
 %   into direction phi. Whereby at phi = 0 the listener is looking in the
 %   direction of the x-axis.
 %
-% see also: SFS_config, ir_wfs_25d, auralize_ir, brs_point_source
+% see also: ssr_brs_point_source, get_ir, ir_wfs, auralize_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

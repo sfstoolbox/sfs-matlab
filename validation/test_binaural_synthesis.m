@@ -43,7 +43,7 @@ function test_binaural_synthesis()
 %% ===== Checking of input  parameters ===================================
 nargmin = 0;
 nargmax = 0;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 
 
 %% ===== Main ============================================================

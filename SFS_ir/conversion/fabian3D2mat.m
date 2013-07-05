@@ -17,11 +17,14 @@ function fabian3D2mat(irsset)
 %
 % AUTHOR: Vincent Kuscher
 
+
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
 nargmax = 1;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 outdir = 'ir_databases';
+
+
 %% ===== Computation =====================================================
 irs = irsset;
 irs.apparent_azimuth = correct_azimuth(rad(irs.source_azimuth)');

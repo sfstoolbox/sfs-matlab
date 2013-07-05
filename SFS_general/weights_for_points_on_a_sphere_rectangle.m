@@ -47,7 +47,7 @@ function [w] = weights_for_points_on_a_sphere_rectangle(phi,theta)
 %% ===== Checking of input  parameters ==================================
 nargmin = 2;
 nargmax = 2;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 
 
 %% ===== Computation ====================================================

@@ -57,7 +57,7 @@ function [ir1,ir2,ir3,x0,desired_point] = findnearestneighbour_scalar(irs,phi,de
 %% ===== Checking of input  parameters ==================================
 nargmin = 5;
 nargmax = 6;
-error(nargchk(nargmin,nargmax,nargin));
+narginchk(nargmin,nargmax);
 if nargin == 5
     X0 = [0 0 0];
 end

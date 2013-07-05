@@ -1,8 +1,8 @@
-function varargout = wave_front_direction(X,phi,xs,src,conf)
-%WAVE_FRONT_DIRECTION returns direction, amplitude and time of the single wave
+function varargout = wave_fronts_wfs(X,phi,xs,src,conf)
+%WAVE_FRONTS_WFS returns direction, amplitude and time of the single wave
 %   fronts for WFS
 %
-%   Usage: [alpha,a,t] = wave_front_direction(X,phi,xs,src,L,[conf])
+%   Usage: [alpha,a,t] = wave_fronts_wfs(X,phi,xs,src,[conf])
 %
 %   Input parameters:
 %       X,phi   - listener position and direction / m, rad
@@ -18,10 +18,10 @@ function varargout = wave_front_direction(X,phi,xs,src,conf)
 %       a       - amplitudes of the echos
 %       t       - time of the wave fronts / s
 %
-%   WAVE_FRONT_DIRECTION(X,phi,xs,src) calculates the direction of the single wave
+%   WAVE_FRONTS_WFS(X,phi,xs,src) calculates the direction of the single wave
 %   fronts (due to aliasing artifacts) arriving from the loudspeakers for a
 %   WFS array at the given listener position X for the given virtual source
-%   xs and given array length L.
+%   xs.
 %
 %   see also: ir_wfs, driving_function_imp_wfs
 

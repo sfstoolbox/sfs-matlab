@@ -73,5 +73,7 @@ end
 hpre = wfs_prefilter(conf);
 % Apply the filter
 for ii = 1:size(ir,2)
-    ir(:,ii) = conv(hpre,ir(1:end-length(hpre)+1,ii));
+    ir_tmp(:,ii) = conv(hpre,ir(:,ii));
 end
+% Fix length of ir to be conf.N
+ir = ir_tmp(1:size(ir,1),:);

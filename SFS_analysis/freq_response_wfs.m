@@ -1,7 +1,8 @@
-function [f,S] = freq_response_wfs_25d(X,xs,src,L,conf)
-%FREQ_RESPONSE_WFS_25D simulates the frequency response for 2.5D WFS
+function varargout = freq_response_wfs(X,xs,src,conf)
+%FREQ_RESPONSE_WFS simulates the frequency response for WFS at the given
+%listener position
 %
-%   Usage: [f,S] = freq_response_wfs_25d(X,xs,src,L,[conf])
+%   Usage: [S,f] = freq_response_wfs(X,xs,src,[conf])
 %
 %   Input parameters:
 %       X           - listener position / m
@@ -10,17 +11,15 @@ function [f,S] = freq_response_wfs_25d(X,xs,src,L,conf)
 %                         'pw' -plane wave
 %                         'ps' - point source
 %                         'fs' - focused source
-%       L           - array length / m
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       f           - corresponding frequency (x) axis / Hz
 %       S           - simulated frequency response
+%       f           - corresponding frequency axis / Hz
 %
-%   FREQ_RESPONSE_WFS_25D(X,xs,src,L,conf) simulates the frequency
-%   response of the wave field at the given position X. The wave field is
-%   simulated for the given source type (src) using a WFS 2.5 dimensional
-%   driving function in the temporal domain.
+%   FREQ_RESPONSE_WFS(X,xs,src,conf) simulates the frequency response of the
+%   wave field at the given position X. The wave field is simulated for the
+%   given source type (src) using a monochromatic WFS driving function.
 %
 %   References:
 %       Spors2009 - Physical and Perceptual Properties of Focused Sources in
@@ -29,7 +28,7 @@ function [f,S] = freq_response_wfs_25d(X,xs,src,L,conf)
 %           2.5-Dimensional Wave Field Synthesis (AES128)
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: wave_field_mono_wfs_25d, wave_field_time_domain_wfs_25d
+%   see also: wave_field_mono_wfs, wave_field_imp_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -65,19 +64,16 @@ function [f,S] = freq_response_wfs_25d(X,xs,src,L,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
+nargmin = 3;
+nargmax = 4;
 narginchk(nargmin,nargmax);
 isargposition(X);
 isargxs(xs);
-isargpositivescalar(L);
 isargchar(src);
-
 if nargin<nargmax
     conf = SFS_config;
-else
-    isargstruct(conf);
 end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
@@ -86,56 +82,30 @@ useplot = conf.plot.useplot;
 
 
 %% ===== Computation ====================================================
-% Calculate the wave field in time domain
-
 % Get the position of the loudspeakers
-x0 = secondary_source_positions(L,conf);
-
+x0 = secondary_source_positions(conf);
+x0 = secondary_source_selection(x0,xs,src);
+x0 = secondary_source_tapering(x0,conf);
 % Generate frequencies (10^0-10^5)
 f = logspace(0,5,500);
 % We want only frequencies until f = 20000Hz
 idx = find(f>20000,1);
 f = f(1:idx);
-
 S = zeros(1,length(f));
-
-% Activity of secondary sources
-x0 = secondary_source_selection(x0,xs,src);
 nls = size(x0,1);
-% Tapering window
-x0 = secondary_source_tapering(x0,conf);
 % Get the result for all frequencies
 for ii = 1:length(f)
-    P = 0;
-    % Integration over secondary source positions
-    for n = 1:nls
-
-        % ================================================================
-        % Secondary source model
-        % This is the model for the loudspeakers we apply. We use closed cabinet
-        % loudspeakers and therefore the 3D Green's function is our model.
-        G = point_source(X(1),X(2),x0(n,1:3),f(ii),conf);
-
-        % ================================================================
-        % Driving function D(x0,omega)
-        D = driving_function_mono_wfs_25d(x0(n,:),xs,src,f(ii),conf);
-
-        % ================================================================
-        % Integration
-        %              /
-        % P(x,omega) = | D(x0,omega) G(x-xs,omega) dx0
-        %              /
-        %
-        % see: Spors2009, Williams1993 p. 36
-        %
-        P = P + *D.*G.*x0(:,7);
-    end
+    % calculate wave field at the listener position
+    P = wave_field_mono_wfs(X(1),X(2),X(3),xs,src,f(ii),conf);
     S(ii) = abs(P);
 end
 
+% return parameter
+if nargout>0 varargout{1}=S; end
+if nargout>1 varargout{2}=f; end
 
 % ===== Plotting =========================================================
-if(useplot)
+if nargout==0 || useplot
     figure; semilogx(f,db(S));
     ylabel('Amplitude (dB)');
     xlabel('Frequency (Hz)');

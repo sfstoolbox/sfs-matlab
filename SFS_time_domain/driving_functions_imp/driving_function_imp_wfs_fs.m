@@ -105,15 +105,15 @@ elseif strcmp('2.5D',dimension)
         %
         % d_2.5D using a line sink as source model
         %
-        %                        g0 (x0-xs) nx0
-        % d_2.5D(x0,t) = h(t) * --- ------------- delta(t - 1/c |x0-xs|)
-        %                       2pi |x0-xs|^(3/2)
+        %                        g0 (xs-x0) nx0
+        % d_2.5D(x0,t) = h(t) * --- ------------- delta(t - 1/c |xs-x0|)
+        %                       2pi |xs-x0|^(3/2)
         %
-        % r = |x0-xs|
-        r = vector_norm(x0-xs,2);
+        % r = |xs-x0|
+        r = vector_norm(xs-x0,2);
         % Delay and amplitude weight
         delay =  -1/c .* r;
-        weight = g0/(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
+        weight = g0/(2*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3/2);
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D focused source.'],upper(mfilename),driving_functions);
@@ -129,13 +129,13 @@ elseif strcmp('3D',dimension)
         % d_3D using a point sink as source model
         % FIXME: check driving function
         %
-        % d_3D(x0,t) = ... delta(t - 1/c |x0-xs|)
+        % d_3D(x0,t) = ... delta(t - 1/c |xs-x0|)
         %
-        % r = |x0-xs|
-        r = vector_norm(x0-xs,2);
+        % r = |xs-x0|
+        r = vector_norm(xs-x0,2);
         % Delay and amplitude weight
         delay = -1/c .* r;
-        weight = -2 .* (1/c+1./r) .* vector_product(x0-xs,nx0,2) ./ r.^2;
+        weight = -2 .* (1/c+1./r) .* vector_product(xs-x0,nx0,2) ./ r.^2;
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 3D focused source.'],upper(mfilename),driving_functions);

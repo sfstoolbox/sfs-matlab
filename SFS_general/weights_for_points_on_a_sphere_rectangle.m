@@ -2,20 +2,19 @@ function [w] = weights_for_points_on_a_sphere_rectangle(phi,theta)
 %WEIGHTS_FOR_POINTS_ON_A_SPHERE_RECTANGLE returns the weights for a given 
 % set of points on a sphere.
 %
-%   Usage: [w] = weights_for_points_on_a_sphere_rectangle(phi,theta,r)
+%   Usage: [w] = weights_for_points_on_a_sphere_rectangle(phi,theta)
 %
 %   Input parameters:
-%       phi           - azimuth angles of given points (row vector)
-%       theta         - elevation angles of given points (row vector) 
-%       r             - distance to origin of given points (row vector)
+%       phi           - azimuth angles of given points (row vector) / rad
+%       theta         - elevation angles of given points (row vector) / rad
 % 
 %   Output parameters:
 %       w             - weights for given set of points on the sphere  
 % 
-%WEIGHTS_FOR_POINTS_ON_A_SPHERE_RECTANGLE(phi,theta,r) returns the weights 
-% for a given set of points on a sphere. The weights will be achieved by 
-% calculating a rectangle around every point given by its azimuth angle  
-% (phi), elevation(theta) angle and distance to the origin (r).
+%   WEIGHTS_FOR_POINTS_ON_A_SPHERE_RECTANGLE(phi,theta) returns the weights 
+%   for a given set of points on a sphere. The weights will be achieved by 
+%   calculating a rectangle around every point given by its azimuth angle  
+%   (phi), elevation (theta) angle.
  
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *
@@ -43,12 +42,15 @@ function [w] = weights_for_points_on_a_sphere_rectangle(phi,theta)
 %                                                                            *
 % http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
 %*****************************************************************************
+
+
 %% ===== Checking of input  parameters ==================================
 nargmin = 2;
 nargmax = 2;
 error(nargchk(nargmin,nargmax,nargin));
-%% ===== Computation ====================================================
 
+
+%% ===== Computation ====================================================
 weights = [];%zeros(1,1); % initialize empty weight vector
 
 for ii=1:length(theta)-1

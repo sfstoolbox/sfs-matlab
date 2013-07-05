@@ -1,7 +1,22 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
-0.3.0
+1.0.0-beta
 
+    - chnaged default plotting style of loudspeakers to
+      conf.plot.realloudspeaker=false
+    - hann_window() now uses (2*n+1) instead of (2*n) to generate the window
+    - replaced the input parameter L by conf.secondary_sources.size
+    - the aliasing frequency is now calculated by the mean distance between the
+      given secondary sources
+    - added nearest neighbour search and 3D interpolation to get_ir()
+    - moved the tapering window into x0(:,7), added new function
+      secondary_source_tapering to achieve this
+    - added a seventh column to x0 which includes integrational weights
+    - added extra directory for SSR renderer functions
+    - added 3D HRTF extrapolation
+    - changed array configuration to use number of secondary sources instead of
+      distance between them
+    - changed SFS_config to use substructs like conf.secondary_sources.*
     - added the possibility to calculate the wave field for a arbritrary
       positioned plane in 3D
     - added 3D WFS functions
@@ -12,6 +27,11 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
     - automatically plotting of the wave fields if no argouts are wanted
     - changed direction of focused source from the conf.xref vector directly
       into xs. For a focused source xs is now [1x6]
+
+0.2.5
+
+    - fixed a bug causing the wrong loudspeaker position in the output of
+      generic_wfs()
 
 0.2.4 (4 June 2013)
 

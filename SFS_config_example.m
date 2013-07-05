@@ -124,10 +124,8 @@ conf.driving_functions = 'default';
 % === Impulse responses ===
 % Length of impulse responses used in the time domain driving functions
 % and for the creation of the binaural simulations.
-% (2^14 may be enough for your purposes, but for a large distance between 
-% source and listener, this will be not enough to contain the desired time
-% delay. But don't worry, SFS checks for you if conf.N is large enough)
-conf.N = 2^15; % samples
+% Don't worry, SFS checks for you if conf.N is large enough)
+conf.N = 2048; % samples
 %
 % === 2.5D ===
 % The amplitude will be correct at the point xref for 2.5D
@@ -230,15 +228,6 @@ conf.ir.hcomplfile = ...
 conf.ir.hcomprfile = ...
     '~/data/ir_databases/headphone_compensations/TU_FABIAN_AKGK601_hcompr.wav';
 %
-% === BRS (binaural room scanning) ===
-% To use a dynamic binaural simulation together with the SoundScape Renderer
-% (SSR) and a headtracker, brs sets can be created. If these sets should be
-% used in BRS mode of the SSR, the angles have to be:
-% conf.ir.brsangles = 0:1:359;
-% If the brs set should be used as IRs for the SSR, the angles have to be:
-% conf.ir.brsangles = 360:-1:1;
-conf.ir.brsangles = 0:1:359; % / degree
-%
 % === Auralisation ===
 % These files are used for the auralization of impulse responses by the
 % auralize_ir() function.
@@ -248,6 +237,15 @@ conf.ir.cellofile = '';
 conf.ir.castanetsfile = '';
 conf.ir.noisefile = '';
 conf.ir.pinknoisefile = '';
+%
+% === SoundScape Renderer ===
+% To use a dynamic binaural simulation together with the SoundScape Renderer
+% (SSR) and a headtracker, brs sets can be created. If these sets should be
+% used in BRS mode of the SSR, the angles have to be:
+% conf.ir.brsangles = 0:1:359;
+% If the brs set should be used as IRs for the SSR, the angles have to be:
+% conf.ir.brsangles = 360:-1:1;
+conf.ir.brsangles = 0:1:359; % / degree
 
 
 %% ===== Plotting ========================================================

@@ -181,7 +181,7 @@ for ii = 1:size(x0,1)
     % x0(ii,7) is a weight for the single secondary sources which includes for
     % example a tapering window for WFS or a weighting of the sources for
     % integration on a sphere.
-    p = p + ds .* g .* x0(:,7);
+    p = p + ds .* g .* x0(ii,7);
 
 end
 

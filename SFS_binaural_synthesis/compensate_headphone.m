@@ -80,14 +80,8 @@ if(usehcomp)
             'compensation filter.']);
     end
     % Apply filter
-    % The following is the original code from Sascha, but it will work only if
-    % the length of the IR is sufficient greater than the length of the
-    % headphone compensation filter.
-    %ir(:,1) = conv(hcomp(:,1),ir(1:end-length(hcomp)+1,1));
-    %ir(:,2) = conv(hcomp(:,2),ir(1:end-length(hcomp)+1,2));
-    % Therefore we use this one
-    tmp1 = conv(hcomp(:,1),ir(:,1));
-    tmp2 = conv(hcomp(:,2),ir(:,2));
+    tmp1 = convolution(hcomp(:,1),ir(:,1));
+    tmp2 = convolution(hcomp(:,2),ir(:,2));
     len = length(ir(:,1));
     ir(:,1) = tmp1(1:len);
     ir(:,2) = tmp2(1:len);

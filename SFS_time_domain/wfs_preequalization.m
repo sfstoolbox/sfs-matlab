@@ -75,10 +75,7 @@ if strcmp('FIR',hpretype)
     % get FIR filter
     hpre = wfs_fir_prefilter(conf);
     % apply filter
-    for ii = 1:size(ir,2)
-        ir_tmp(:,ii) = conv(hpre,ir(:,ii));
-    end
-    ir = ir_tmp;
+    ir = convolution(hpre,ir);
 elseif strcmp('IIR',hpretype)
     % get IIR filter
     hpre = wfs_iir_prefilter(conf);

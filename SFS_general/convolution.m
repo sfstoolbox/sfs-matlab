@@ -1,21 +1,23 @@
-function sig =  bandpass(sig,flow,fhigh,conf)
-%BANDPASS filters a signal by a bandpass
+function z = convolution(x,y)
+%CONVOLUTION convolve the signals x and y
 %
-%   Usage: sig = bandpass(sig,flow,fhigh,[conf])
+%   Usage: z = convolution(x,y)
 %
 %   Input parameters:
-%       sig    - input signal (vector)
-%       flow   - start frequency of bandpass
-%       fhigh  - stop frequency of bandpass
-%       conf   - optional configuration struct (see SFS_config)
+%       x       - matrix/vector with signals as columns
+%       y       - matrix/vector with signals as columns, note that only one of
+%                 the signals can be a matrix
 %
 %   Output parameters:
-%       sig    - filtered signal
+%       z       - convolved signal
 %
-%   BANDPASS(sig,flow,fhigh) filters the given signal with a bandpass filter
-%   with cutoff frequencies of flow and fhigh.
+%   CONVOLUTION(x,y) convolves the signals given with x and y. One of the input
+%   signals can be a matrix containing the signals as column vectors, the other
+%   one has to be a column vector. The convolution is done in the frequency
+%   domain and it is checked if we have only real signals to speed up the
+%   calculation. The length of z is length(x)+length(y)-1.
 %
-%   see also: wave_field_imp_wfs
+%   see also: fft_real, ifft_real, fft, ifft
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -50,33 +52,30 @@ function sig =  bandpass(sig,flow,fhigh,conf)
 %*****************************************************************************
 
 
-%% ===== Checking of input  parameters ==================================
-nargmin = 3;
-nargmax = 4;
+%% ===== Checking input parameters =======================================
+nargmin = 2;
+nargmax = 2;
 narginchk(nargmin,nargmax);
-isargvector(sig);
-isargpositivescalar(flow,fhigh);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
+isargmatrix(x,y);
+% check if only one of the inputs is a matrix
+if all(size(x)>1) && all(size(y)>1)
+    error('%s: Only one of the inputs can be multi-dimensional.', ...
+        upper(mfilename));
 end
 
 
-%% ===== Configuration ==================================================
-fs = conf.fs;
-N = 128;
-
-
 %% ===== Computation =====================================================
-% design bandpass filter
-% FIXME: this doesn't work fine for all frequencies! Check if it is
-% possible to use a fraction of the desired freqeuncies for all frequency
-% ranges.
-Hf = [0 2*flow/fs 4*flow/fs 1.8*fhigh/fs 2*fhigh/fs 1];
-Hm = [0 0 1 1 0 0];
-b = fir2(N,Hf,Hm);
-% filter signal
-sig = convolution(sig,b);
-% compensate for delay & truncate result
-sig = sig(N/2:end-(N/2)-1);
+% if one of the input signals is a matrix repmat the vector of the other signal
+if all(size(x)>1)
+    y = repmat(y,1,size(x,2));
+elseif all(size(y)>1)
+    x = repmat(x,1,size(y,2));
+end
+% length of output signal
+N = size(x,1)+size(y,1)-1;
+% convolve the signals in frequency domain
+if isreal(x) && isreal(y)
+    z = ifft_real(fft_real(postpad(x,N)).*fft_real(postpad(y,N)),N);
+else
+    z = ifft(fft(postpad(x,N)).*fft(postpad(y,N)));
+end

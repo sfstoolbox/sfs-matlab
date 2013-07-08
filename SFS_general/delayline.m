@@ -91,7 +91,7 @@ if(usefracdelay)
         sig = delayline(sig,idt,weight,conf2);
         if(abs(dt-idt)>0)
             h = hgls2(Lls,dt-idt,0.90);
-            sig = conv(sig,h);
+            sig = convolution(sig,h);
             sig = sig(Lls/2:end-Lls/2);
         end
 

@@ -128,14 +128,8 @@ end
 if size(ir,2)>2
     warning('Your impulse response has more than two channels.');
 end
-% Use convolve function from LTFAT if possible
-if exist('convolve','file')
-    outsig = convolve(ir,content);
-else
-    for ii = 1:size(ir,2)
-        outsig(:,ii) = conv(ir(:,ii),content);
-    end
-end
+% Convolve the impulse responses with the content signal
+outsig = convolution(ir,content);
 % Scale output
 if(usenorm)
     outsig = norm_signal(outsig);

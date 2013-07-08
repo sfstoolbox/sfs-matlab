@@ -102,10 +102,8 @@ for ii=1:size(x0,1)
     % === Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay ===
     % Also applying the weights of the secondary sources including integration
     % weights or tapering windows etc.
-    ir_generic(:,1) = ir_generic(:,1) + ...
-        fix_ir_length(conv(ir(:,1),d(:,ii)),N) .* g .* x0(ii,7);
-    ir_generic(:,2) = ir_generic(:,2) + ...
-        fix_ir_length(conv(ir(:,2),d(:,ii)),N) .* g .* x0(ii,7);
+    ir_generic = ir_generic + ...
+        fix_ir_length(convolution(ir,d(:,ii)),N) .* g .* x0(ii,7);
 
 end
 warning('on','SFS:irs_intpol');

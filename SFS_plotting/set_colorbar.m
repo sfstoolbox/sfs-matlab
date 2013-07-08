@@ -80,8 +80,6 @@ if p.usedb
     temp = get(h,'Ylabel');
     set(temp,'FontSize',fsize);
     set(temp,'FontName',fname);
-else
-    colorbar;
 end
 
 

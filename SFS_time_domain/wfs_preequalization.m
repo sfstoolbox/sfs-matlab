@@ -78,13 +78,12 @@ if strcmp('FIR',hpretype)
     for ii = 1:size(ir,2)
         ir_tmp(:,ii) = conv(hpre,ir(:,ii));
     end
+    ir = ir_tmp;
 elseif strcmp('IIR',hpretype)
     % get IIR filter
     hpre = wfs_iir_prefilter(conf);
     % apply filter
-    ir_tmp = filter(hpre.b,hpre.a,ir);
+    ir = filter(hpre.b,hpre.a,ir);
 else
     error('%s: %s is an unknown filter type.',upper(mfilename),hpretype);
 end
-% Fix length of ir to be conf.N
-ir = ir_tmp(1:size(ir,1),:);

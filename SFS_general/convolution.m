@@ -62,6 +62,9 @@ if all(size(x)>1) && all(size(y)>1)
     error('%s: Only one of the inputs can be multi-dimensional.', ...
         upper(mfilename));
 end
+% ensure column vectors
+if ~all(size(x)>1), x=column_vector(x); end
+if ~all(size(y)>1), y=column_vector(y); end
 
 
 %% ===== Computation =====================================================

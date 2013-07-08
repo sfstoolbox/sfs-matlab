@@ -1,14 +1,14 @@
-function irs_pw = extrapolate_farfield_hrtfset(irs,conf)
+function irs = extrapolate_farfield_hrtfset(irs,conf)
 %EXTRAPOLATE_FARFIELD_HRTFSET far-field extrapolation of a given HRTF dataset
 %
-%   Usage: irs_pw = extrapolate_farfield_hrtfset(irs,[conf])
+%   Usage: irs = extrapolate_farfield_hrtfset(irs,[conf])
 %
 %   Input parameters:
 %       irs     - IR data set for the virtual secondary sources
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       irs_pw  - IR data set extra polated to conation plane wave IRs
+%       irs     - IR data set extra polated to conation plane wave IRs
 %
 %   EXTRAPOLATE_FARFIELD_HRTFSET(IRS) generates a far-field extrapolated set of
 %   impulse responses, using the given irs set. Far-field means that the
@@ -20,7 +20,7 @@ function irs_pw = extrapolate_farfield_hrtfset(irs,conf)
 %       functions using sound field synthesis.
 %       In German Annual Conference on Acoustics (DAGA), 2011.
 %
-%   see also: ir_point_source, get_ir, driving_function_imp_wfs_25d
+%   see also: get_ir, driving_function_imp_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -68,18 +68,48 @@ end
 
 
 %% ===== Configuration ===================================================
-fs = conf.fs;                   % sampling frequency
+fs = conf.fs;
+c = conf.c;
 dimension = conf.dimension;
+conf.ir.usehcomp = false;
 
 
 %% ===== Variables ======================================================
-R = irs.distance;
-L = 2*R;
-conf.secondary_sources.number = length(irs.apparent_azimuth);
-conf.secondary_sources.x0 = zeros(nls,6);
-conf.secondary_sources.x0(:,1:2) = [R*cos(irs.apparent_azimuth) ; R*sin(irs.apparent_azimuth)]';
-conf.secondary_sources.x0(:,4:6) = direction_vector(conf.x0(:,1:3),repmat(conf.xref,nls,1));
-conf.wfs.hprefhigh = aliasing_frequency(x0,conf);
+nls = length(irs.apparent_azimuth);
+if length(irs.distance)==1
+    R = repmat(irs.distance,nls,1);
+else
+    R = irs.distance';
+end
+phi = irs.apparent_azimuth';
+theta = irs.apparent_elevation';
+conf.secondary_sources.number = nls;
+conf.secondary_sources.x0 = zeros(nls,7);
+conf.secondary_sources.x0(:,1:3) = sph2cart(phi,theta,R);
+conf.secondary_sources.x0(:,4:6) = ...
+    direction_vector(conf.secondary_sources.x0(:,1:3),repmat(conf.xref,nls,1));
+% weights
+if strcmp('3D',dimension)
+    conf.secondary_sources.x0(:,7) = ...
+        weights_for_points_on_a_sphere_rectangle(phi,theta);
+else
+    conf.secondary_sources.x0(:,7) = ones(nls,1);
+end
+% check if we have a 2D or 3D secondary source setup
+if any(irs.apparent_elevation-irs.apparent_elevation(1)) && ...
+    any(irs.apparent_azimuth-irs.apparent_azimuth(1))
+    % 3D case
+    conf.usetapwin = false;
+    if ~strcmp('3D',dimension)
+        warning(['You have a 3D HRTF data set, but are not using ', ...
+            'conf.dimension="3D".']);
+    end
+else
+    if strcmp('3D',dimension)
+        warning(['You are using a 2D HRTF data set, but are using ', ...
+            'conf.dimension="3D".']);
+    end
+end
 %conf.wfs.hpreflow = 1;
 if strcmp('2.5D',dimension)
     % Apply a amplitude correction, due to 2.5D. This will result in a correct
@@ -90,28 +120,30 @@ else
 end
 
 
-
 %% ===== Computation =====================================================
 % get virtual secondary source positions
-x0_all = secondary_source_positions(L,conf);
+x0_all = secondary_source_positions(conf);
+conf.wfs.hprefhigh = aliasing_frequency(x0_all,conf);
 
 % Initialize new irs set
 irs_pw = irs;
 irs_pw.description = 'Extrapolated HRTF set containing plane waves';
 irs_pw.left = zeros(size(irs_pw.left));
 irs_pw.right = zeros(size(irs_pw.right));
-irs_pw.distance = 'Inf';
+irs_pw.distance = Inf;
+
 
 % Generate a irs set for all given angles
-for ii = 1:length(irs.apparent_azimuth)
+for ii = 1:nls
+
+    % show progress
+    progress_bar(ii,nls);
 
     % direction of plane wave
-    xs = -[cos(irs.apparent_azimuth(ii)) ...
-        sin(irs.apparent_azimuth(ii))];
+    xs = -sph2cart(phi(ii),theta(ii),R(ii));
 
     % calculate active virtual speakers
     x0 = secondary_source_selection(x0_all,xs,'pw');
-
     % apply tapering window
     x0 = secondary_source_tapering(x0,conf);
 
@@ -119,13 +151,12 @@ for ii = 1:length(irs.apparent_azimuth)
     %     delay = [];
     [~,delay,weight] = driving_function_imp_wfs(x0,xs,'pw',conf);
     for l=1:size(x0,1)
-        dt = delay(l)*fs + R/conf.c*fs;
+        dt = delay(l)*fs + R(ii)/c*fs;
         w = weight(l);
         % get IR for the secondary source position
-        [phi,theta,r] = cart2sph(x0(l,1),x0(l,2),x0(l,3));
-        ir_tmp = get_ir(irs,[phi theta r],'spherical',conf);
+        ir = get_ir(irs,x0(l,1:3),'cartesian',conf);
         % truncate IR length
-        ir = fix_ir_length(ir_tmp,size(ir_tmp,1),dt);
+        ir = fix_ir_length(ir,size(ir,1),dt);
         % delay and weight HRTFs
         irs_pw.left(:,ii) = irs_pw.left(:,ii) + delayline(ir(:,1)',dt,w,conf)';
         irs_pw.right(:,ii) = irs_pw.right(:,ii) + delayline(ir(:,2)',dt,w,conf)';
@@ -138,3 +169,5 @@ end
 %% ===== Pre-equalization ===============================================
 irs_pw.left = wfs_preequalization(irs_pw.left,conf);
 irs_pw.right = wfs_preequalization(irs_pw.right,conf);
+
+irs = irs_pw;

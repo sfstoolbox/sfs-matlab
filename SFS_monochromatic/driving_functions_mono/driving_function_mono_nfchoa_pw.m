@@ -70,7 +70,6 @@ end
 
 
 %% ===== Configuration ==================================================
-xref = conf.xref;
 X0 = conf.secondary_sources.center;
 c = conf.c;
 dimension = conf.dimension;
@@ -81,9 +80,10 @@ driving_functions = conf.driving_functions;
 % Calculate the driving function in time-frequency domain
 
 % angle of the secondary sources
-[alpha_x0,beta_x0] = cart2sph(bsxfun(@minus,x0,X0));
+points = bsxfun(@minus,x0,X0);
+[alpha_x0,~,~] = cart2sph(points(:,1),points(:,2),points(:,3));
 % angle of plane wave
-[alpha_pw,beta_pw] = cart2sph(nk);
+[alpha_pw,~,~] = cart2sph(nk(:,1),nk(:,2),nk(:,3));
 % wavenumber
 k = 2*pi*f/c;
 % initialize empty driving signal

@@ -73,8 +73,6 @@ end
 
 
 %% ===== Configuration ==================================================
-c = conf.c;
-xref = conf.xref;
 fs = conf.fs;
 N = conf.N;
 

@@ -131,13 +131,10 @@ d = d(end:-1:1,:);
 % whole listening area before and after the real driving signal.
 % First get the maximum distance of the listening area and convert it into time
 % samples
-[dimensions,x1,x2,x3] = xyz_axes_selection(x,y,z); % get active axes
-if all(dimensions)
-    max_distance_in_samples = ...
-        norm([x(1) y(1) z(1)]-[x(end) y(end) z(end)])/c * fs;
-else
-    max_distance_in_samples = norm([x1(1) x2(1)]-[x1(end) x2(end)])/c * fs;
-end
+[~,x1,x2,x3] = xyz_axes_selection(x,y,z); % get active axes
+max_distance_in_samples = ...
+        round(norm([x(1) y(1) z(1)]-[x(end) y(end) z(end)])/c * fs);
+
 % Append zeros at the beginning of the driving signal
 d = [zeros(max_distance_in_samples,size(d,2)); d];
 % correct time vector to work with inverted driving functions
@@ -191,10 +188,10 @@ check_wave_field(p,t);
 p = norm_wave_field(p,conf);
 
 % return parameter
-if nargout>0 varargout{1}=p; end
-if nargout>1 varargout{2}=x; end
-if nargout>2 varargout{3}=y; end
-if nargout>3 varargout{4}=z; end
+if nargout>0, varargout{1}=p; end
+if nargout>1, varargout{2}=x; end
+if nargout>2, varargout{3}=y; end
+if nargout>3, varargout{4}=z; end
 
 
 % === Plotting ===

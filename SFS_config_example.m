@@ -192,12 +192,19 @@ conf.secondary_sources.grid = 'equally_spaced_points';
 % allready "correct") [Reference]
 % Use WFS preequalization-filter
 conf.wfs.usehpre = false; % boolean
+% FIR or IIR pre-equalization filter
+% NOTE: only FIR is working under octave at the moment
+conf.wfs.hpretype = 'FIR'; % 'FIR' or 'IIR'
 % Lower frequency limit of preequalization filter (~ frequency when
 % subwoofer is active)
 conf.wfs.hpreflow = 50; % / Hz
 % Upper frequency limit of preequalization filter (~ aliasing frequency of
 % system)
 conf.wfs.hprefhigh = 1200; % / Hz
+% IIR bandwidth for the Lagrange interpolation region
+conf.wfs.hpreBandwidth_in_Oct = 2; % / octaves
+% desired IIR filter order
+conf.wfs.hpreIIRorder = 4;
 
 
 %% ===== SDM =============================================================

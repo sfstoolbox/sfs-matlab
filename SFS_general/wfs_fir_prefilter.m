@@ -1,7 +1,7 @@
-function hpre = wfs_prefilter(conf)
-%WFS_PREFILTER creates a pre-equalization filter for WFS
+function hpre = wfs_fir_prefilter(conf)
+%WFS_FIR_PREFILTER creates a pre-equalization filter for WFS
 %
-%   Usage: hpre = wfs_prefilter([conf])
+%   Usage: hpre = wfs_fir_prefilter([conf])
 %
 %   Input parameters:
 %       conf - optional configuration struct (see SFS_config)
@@ -9,11 +9,11 @@ function hpre = wfs_prefilter(conf)
 %   Output parameters:
 %       hpre - pre-equalization filter
 %
-%   WFS_PREFILTER(conf) calculates a sqrt(j k) pre-equalization filter for
+%   WFS_FIR_PREFILTER(conf) calculates a sqrt(j k) pre-equalization filter for
 %   Wave Field Synthesis (from conf.wfs.hpreflow to conf.wfs.hprefhigh,
 %   see SFS_config).
 %
-%   see also: wfs_preequalization, wave_field_imp_wfs, ir_wfs
+%   see also: wfs_preequalization, wfs_iir_prefilter, wave_field_imp_wfs, ir_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

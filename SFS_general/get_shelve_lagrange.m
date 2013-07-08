@@ -1,4 +1,4 @@
-function [H] = get_Shelve_Lagrange(f,H,FlagSub,fSub,FlagAliasing,fAliasing,Bandwidth_in_Oct)
+function [H] = get_shelve_lagrange(f,H,FlagSub,fSub,FlagAliasing,fAliasing,Bandwidth_in_Oct)
 %
 %   this function will be called from hpre = wfs_iir_prefilter(conf)
 %

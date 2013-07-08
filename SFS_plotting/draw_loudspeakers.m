@@ -92,15 +92,11 @@ if ~p.realloudspeakers || ~(dimensions(1)&&dimensions(2))
         warning('%s: Real loudspeaker can only be drawn in the x-y-plane', ...
             upper(mfilename));
     end
-    % fill color of symbols
-    fc = [.11 .11 .11];
-    % if you want to use the tapering window indicated by color as well, use the
-    % following code
-    %sc = 1;
-    %fc = [(1-sc.*win), ...
-    %      (1-sc.*win), ...
-    %      (1-sc.*win)];
-    scatter(x0(:,1),x0(:,2),20,fc,'wx','linewidth',2.5)
+    % plot all secondary sources with the same color + symbol
+    plot(x0(:,1),x0(:,2),'o', ...
+        'MarkerFaceColor','k', ...
+        'MarkerEdgeColor','k', ...
+        'MarkerSize',4);
 else
     % Set fill color for active loudspeakers
     % Scale the color. sc = 1 => black. sc = 0.5 => gray.
@@ -154,7 +150,7 @@ else
 
     hold off;
     
-    % set equal axis ratio
-    axis image
-
 end
+
+% set equal axis ratio
+axis image

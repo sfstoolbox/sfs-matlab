@@ -71,7 +71,7 @@ end
 %% ===== Configuration ==================================================
 nls = size(x0,1);
 N = conf.N;
-X0 = conf.X0;
+X0 = conf.secondary_sources.center;
 
 
 %% ===== Computation =====================================================

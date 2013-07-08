@@ -71,7 +71,7 @@ end
 
 %% ===== Configuration ==================================================
 xref = conf.xref;
-X0 = conf.X0;
+X0 = conf.secondary_sources.center;
 c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;

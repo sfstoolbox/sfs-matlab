@@ -74,4 +74,4 @@ end
 %% ===== Computation ====================================================
 % Disable the plotting of a source, because we have a plane wave
 conf.plot.loudspeakers = 0;
-[varargout{1:nargout}] = wave_field_imp(X,Y,Z,[xs 0 1 0],'pw',1,t,conf);
+[varargout{1:nargout}] = wave_field_imp(X,Y,Z,[xs 0 1 0 1],'pw',1,t,conf);

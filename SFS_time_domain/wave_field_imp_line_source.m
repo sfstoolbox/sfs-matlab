@@ -67,4 +67,4 @@ isargxs(xs);
 
 
 %% ===== Computation ====================================================
-[varargout{1:nargout}] = wave_field_imp(X,Y,Z,[xs 0 -1 0],'ls',1,varargin{:});
+[varargout{1:nargout}] = wave_field_imp(X,Y,Z,[xs 0 -1 0 1],'ls',1,varargin{:});

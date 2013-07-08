@@ -14,6 +14,7 @@ figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 draw_loudspeakers(x0);
 axis([-2 2 -2 1]);
+pause(1)
 print_png('img/secondary_sources_linear.png');
 % circular
 conf.secondary_sources.geometry = 'circle';
@@ -49,6 +50,7 @@ x03(:,2) = x03(:,2) - ones(size(x03,1),1)*0.5;
 % create a linear array
 conf.secondary_sources.geometry = 'linear';
 conf.secondary_sources.number = 7;
+conf.secondary_sources.size = 1;
 x0 = secondary_source_positions(conf);
 % rotate it and move it left
 R = rotation_matrix(pi/2);
@@ -75,14 +77,14 @@ print_png('img/secondary_sources_arbitrary.png');
 % simulating stereo setup
 conf = SFS_config_example;
 % [P,x,y,z] = wave_field_mono_point_source(X,Y,Z,xs,f);
-[P1,x,y,z] = wave_field_mono_point_source([-2 2],[-1 3],0,[-1 2 0],1000);
+[P1,x,y,z] = wave_field_mono_point_source([-2 2],[-1 3],0,[-1 2 0],1000,conf);
 P2 = wave_field_mono_point_source([-2 2],[-1 3],0,[1 2 0],1000);
 plot_wavefield(real(P1+P2),x,y,z,[-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1],conf);
 print_png('img/wave_field_stereo.png');
 % simulating 2.5D WFS with circular array and a point source
 conf = SFS_config_example;
 conf.dimension = '2.5D';
-conf.useplot = 1;
+conf.plot.useplot = 1;
 % [P,x,y,z,x0] = wave_field_mono_wfs(X,Y,Z,xs,src,f,conf);
 [P,x,y,z,x0] = wave_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',1000,conf);
 print_png('img/wave_field_wfs_25d.png');
@@ -118,18 +120,22 @@ conf.wfs.usehpre = 1;
 conf.wfs.hprefhigh = aliasing_frequency(x0);
 ir2 = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
 [a1,p,f] = easyfft(ir1(:,1)./max(abs(ir1(:,1))));
-[a2,p,f] = easyfft(ir2(:,1)./max(abs(ir2(:,1))));
+a2 = easyfft(ir2(:,1)./max(abs(ir2(:,1))));
+max(abs(a1(:)))
+max(abs(a2(:)))
 figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 semilogx(f,20*log10(a1),'-b',f,20*log10(a2),'-r');
-axis([10 20000 -100 -60]);
+axis([10 20000 -80 -40]);
 set(gca,'XTick',[10 100 250 1000 5000 20000]);
 legend('w/o pre-filter','w pre-filter');
 print_png('img/impulse_response_wfs_25d.png');
 
 
 % --- gnuplot ---
-conf = SFS_config_example;
-conf.plot.usegnuplot = 1;
-conf.plot.file = 'img/wave_field_nfchoa_25d_gnuplot.png';
-wave_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',1000,conf);
+if ~system('gnuplot -V')
+    conf = SFS_config_example;
+    conf.plot.usegnuplot = 1;
+    conf.plot.file = 'img/wave_field_nfchoa_25d_gnuplot.png';
+    wave_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',1000,conf);
+end

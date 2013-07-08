@@ -62,6 +62,7 @@ end
 
 %% ===== Configuration ==================================================
 usehpre = conf.wfs.usehpre;
+hpretype = conf.wfs.hpretype;
 
 
 %% ===== Computation =====================================================
@@ -70,10 +71,20 @@ if ~usehpre
     return;
 end
 % Get the filter
-hpre = wfs_prefilter(conf);
-% Apply the filter
-for ii = 1:size(ir,2)
-    ir_tmp(:,ii) = conv(hpre,ir(:,ii));
+if strcmp('FIR',hpretype)
+    % get FIR filter
+    hpre = wfs_fir_prefilter(conf);
+    % apply filter
+    for ii = 1:size(ir,2)
+        ir_tmp(:,ii) = conv(hpre,ir(:,ii));
+    end
+elseif strcmp('IIR',hpretype)
+    % get IIR filter
+    hpre = wfs_iir_prefilter(conf);
+    % apply filter
+    ir_tmp = filter(hpre.b,hpre.a,ir);
+else
+    error('%s: %s is an unknown filter type.',upper(mfilename),hpretype);
 end
 % Fix length of ir to be conf.N
 ir = ir_tmp(1:size(ir,1),:);

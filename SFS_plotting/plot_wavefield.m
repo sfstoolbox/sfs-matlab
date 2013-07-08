@@ -68,7 +68,7 @@ elseif nargin==nargmax-2
         conf = SFS_config;
     end
 end
-if ~exist('x0','var') || length(x0)==0
+if ~exist('x0','var') || isempty(x0)
     conf.plot.loudspeakers = 0;
 else
 %      isargsecondarysource(x0);
@@ -79,8 +79,6 @@ isargstruct(conf);
 %% ===== Configuration ==================================================
 % Tmp dir
 tmpdir = conf.tmpdir;
-% Center position of array
-X0 = conf.secondary_sources.center;
 % Plotting
 p.usegnuplot = conf.plot.usegnuplot;
 p.cmd = conf.plot.cmd;
@@ -149,7 +147,7 @@ if p.loudspeakers && dx0<=0.01
 end
 
 % set the color bar axis to default values if not given otherwise
-if p.caxis else
+if p.caxis, else
     if p.usedb
         p.caxis = [-45,0];
     else

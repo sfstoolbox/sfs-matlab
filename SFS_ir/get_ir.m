@@ -97,6 +97,11 @@ else
     error('%s: unknown coordinate system type.',upper(mfilename));
 end
 
+% ensure irs.distance is a vector
+if length(irs.distance)==1
+    irs.distance = repmat(irs.distance,1,length(irs.apparent_azimuth));
+end
+
 % === Get the direction ===
 % get all the impulse response positions
 x0 = [irs.apparent_azimuth' irs.apparent_elevation']; % / rad
@@ -152,10 +157,12 @@ end
 end
 
 function ir = correct_radius(ir,ir_distance,r,conf)
+    % Fix large distances
+    if ir_distance>3 ir_distance = 3; end
     % Define an offset to ensure r-ir_distance+offset > 0
     % % FIXME: is this really neccessary or should this be handled by the
     % delayline() function?
-    offset = 0; % / m
+    offset = 1; % / m
     % Time delay of the source (at the listener position)
     delay = (r-ir_distance+offset)/conf.c*conf.fs; % / samples
     % Amplitude weighting (point source model)

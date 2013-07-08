@@ -73,10 +73,6 @@ if conf.debug
 end
 
 
-%% ===== Configuration ===================================================
-xref = conf.xref;
-
-
 %% ===== Computation =====================================================
 % Get secondary sources
 x0 = secondary_source_positions(conf);

@@ -1,4 +1,4 @@
-function ir = ir_nfchoa(X,phi,xs,src,irs,conf)
+function [ir,x0] = ir_nfchoa(X,phi,xs,src,irs,conf)
 %IR_NFCHOA Generate a IR for NFCHOA
 %
 %   Usage: ir = ir_nfchoa(X,phi,xs,src,irs,[conf])
@@ -14,7 +14,8 @@ function ir = ir_nfchoa(X,phi,xs,src,irs,conf)
 %       conf    - optional configuration struct (see SFS_config) 
 %
 %   Output parameters:
-%       ir      - Impulse response for the desired HOA synthesis (nx2 matrix)
+%       ir      - impulse response for the desired HOA synthesis (nx2 matrix)
+%       x0      - secondary sources
 %
 %   IR_NFCHOA(X,phi,xs,src,L,irs,conf) calculates a binaural room impulse
 %   response for a virtual source at xs for a virtual NFCHOA array and a

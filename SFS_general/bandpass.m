@@ -4,7 +4,7 @@ function sig =  bandpass(sig,flow,fhigh,conf)
 %   Usage: sig = bandpass(sig,flow,fhigh,[conf])
 %
 %   Input parameters:
-%       sig    - input signal (vector)
+%       sig    - input signal (matrix)
 %       flow   - start frequency of bandpass
 %       fhigh  - stop frequency of bandpass
 %       conf   - optional configuration struct (see SFS_config)
@@ -54,7 +54,7 @@ function sig =  bandpass(sig,flow,fhigh,conf)
 nargmin = 3;
 nargmax = 4;
 narginchk(nargmin,nargmax);
-isargvector(sig);
+isargmatrix(sig);
 isargpositivescalar(flow,fhigh);
 if nargin<nargmax
     conf = SFS_config;
@@ -79,4 +79,4 @@ b = fir2(N,Hf,Hm);
 % filter signal
 sig = convolution(sig,b);
 % compensate for delay & truncate result
-sig = sig(N/2:end-(N/2)-1);
+sig = sig(N/2:end-(N/2)-1,:);

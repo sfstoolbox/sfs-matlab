@@ -53,13 +53,16 @@ isargpositivescalar(ii,nii);
 %% ===== Generate the progress bar =======================================
 % \r is not working under some Windows systems, therefore we use \b to clear the
 % line
-str_length = 30; % this allows to handle integers up to 12 characters
 if ii==nii
-    clear_line(str_length);
-    fprintf(1,'Run %.0f/%.0f\n',ii,nii);
+    str = sprintf('\nRun %.0f/%.0f\n',ii,nii);
 else
-    clear_line(str_length);
-    fprintf(1,'Run %.0f/%.0f',ii,nii);
+    str = sprintf('Run %.0f/%.0f',ii,nii);
+end
+if ii==1
+    fprintf(1,str);
+else
+    clear_line(length(str));
+    fprintf(1,str);
 end
 % Octave didn't show the output directly in a function call, in order to do so
 % it has explicitly flushed to stdout

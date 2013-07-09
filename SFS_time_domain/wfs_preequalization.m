@@ -80,7 +80,7 @@ elseif strcmp('IIR',hpretype)
     % get IIR filter
     hpre = wfs_iir_prefilter(conf);
     % apply filter
-    ir = filter(hpre.b,hpre.a,ir);
+    ir = filter(hpre.b,hpre.a,ir,2);
 else
     error('%s: %s is an unknown filter type.',upper(mfilename),hpretype);
 end

@@ -2,7 +2,9 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
 1.0.0-beta
 
-    - chnaged default plotting style of loudspeakers to
+    - added convolution() which is faster than conv and can handle
+      multidimensional signals
+    - changed default plotting style of loudspeakers to
       conf.plot.realloudspeaker=false
     - hann_window() now uses (2*n+1) instead of (2*n) to generate the window
     - replaced the input parameter L by conf.secondary_sources.size

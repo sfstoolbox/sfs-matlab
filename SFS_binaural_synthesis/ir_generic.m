@@ -18,7 +18,7 @@ function ir = ir_generic(X,phi,x0,d,irs,conf)
 %   IR_GENERIC(X,phi,x0,d,irs,conf) calculates a binaural room impulse
 %   response for the given secondary sources and driving signals.
 %
-%   see also: ir_wfs_25d, ir_nfchoa_25d, ir_point_source, auralize_ir
+%   see also: ir_wfs, ir_nfchoa, ir_point_source, auralize_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

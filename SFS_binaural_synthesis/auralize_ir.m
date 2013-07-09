@@ -25,7 +25,7 @@ function outsig = auralize_ir(ir,content,usenorm,conf)
 %   'speech', 'noise', 'pinknoise', 'cello' or 'castanets' is given, the
 %   corresponding content file is used.
 %
-%   see also: auralize_ir_file, ir_wfs_25d, ir_point_source
+%   see also: auralize_ir_file, ir_wfs, ir_generic, ir_point_source
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

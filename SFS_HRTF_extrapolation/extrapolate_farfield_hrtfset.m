@@ -139,7 +139,7 @@ irs_pw.distance = Inf;
 for ii = 1:nls
 
     % show progress
-    %progress_bar(ii,nls);
+    progress_bar(ii,nls);
 
     % direction of plane wave
     [xs(1),xs(2),xs(3)] = sph2cart(phi(ii),theta(ii),R(ii));

@@ -53,11 +53,35 @@ isargpositivescalar(ii,nii);
 %% ===== Generate the progress bar =======================================
 % \r is not working under some Windows systems, therefore we use \b to clear the
 % line
-str = sprintf('Run %.0f/%.0f',ii,nii);
+% calculate percentage
+perc = ii/nii * 100;
+% get bar
+if perc<10
+    bar = '[.         ]';
+elseif perc<20
+    bar = '[..        ]';
+elseif perc<30
+    bar = '[...       ]';
+elseif perc<40
+    bar = '[....      ]';
+elseif perc<50
+    bar = '[.....     ]';
+elseif perc<60
+    bar = '[......    ]';
+elseif perc<70
+    bar = '[.......   ]';
+elseif perc<80
+    bar = '[........  ]';
+elseif perc<90
+    bar = '[......... ]';
+else
+    bar = '[..........]';
+end
+str = sprintf('Progress: %s %3.0f%%%%',bar,perc);
 if ii==1
     fprintf(1,str);
 else
-    clear_line(length(str));
+    clear_line(length(str)-1);
     fprintf(1,str);
 end
 if ii==nii

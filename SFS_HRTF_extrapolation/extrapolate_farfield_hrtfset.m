@@ -93,7 +93,8 @@ conf.secondary_sources.x0(:,4:6) = ...
 % weights
 if strcmp('3D',dimension)
     conf.secondary_sources.x0(:,7) = ...
-        weights_for_points_on_a_sphere_rectangle(phi,theta);
+        weights_for_points_on_a_sphere_rectangle(phi,theta) .* ...
+        R.^2 .* cos(theta);
 else
     conf.secondary_sources.x0(:,7) = ones(nls,1);
 end

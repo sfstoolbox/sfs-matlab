@@ -148,13 +148,14 @@ d = [d; zeros(max_distance_in_samples,size(d,2))];
 % Initialize empty wave field (dependent on the axes we want)
 p = squeeze(zeros(length(x3),length(x2),length(x1)));
 
+% Apply bandbass filter
+if usebandpass
+    d = bandpass(d,bandpassflow,bandpassfhigh,conf);
+end
+    
+    
 % Integration over secondary sources
 for ii = 1:size(x0,1)
-
-    % Apply bandbass filter
-    if usebandpass
-        d(:,ii) = bandpass(d(:,ii),bandpassflow,bandpassfhigh,conf);
-    end
 
     % ================================================================
     % Secondary source model: Greens function g3D(x,t)

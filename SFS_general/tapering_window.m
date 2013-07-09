@@ -1,11 +1,10 @@
-function win = tapering_window(x0,dx0,conf)
+function win = tapering_window(x0,conf)
 %TAPWIN generate a tapering window for a loudspeaker array
 %
-%   Usage: win = tapering_window(x0,[dx0],[conf])
+%   Usage: win = tapering_window(x0,[conf])
 %
 %   Input parameters:
 %       x0          - secondary sources / m
-%       dx0         - distance between secondary sources / m
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -16,10 +15,7 @@ function win = tapering_window(x0,dx0,conf)
 %   If the secondary source distribution has some gaps, every joint part gets
 %   its own tapering.
 %   The mean distance of the secondary sources is calculated within this
-%   function in order to identify edges of the array. If you call this function
-%   within a loop with the same secondary sources, you could calculate the mean
-%   distance once with dx0=secondary_source_distance(x0); and pass it as a second
-%   argument.
+%   function in order to identify edges of the array.
 %
 %   see also: secondary_source_position, wave_field_mono_wfs, hann
 
@@ -58,22 +54,13 @@ function win = tapering_window(x0,dx0,conf)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
-nargmax = 3;
+nargmax = 2;
 narginchk(nargmin,nargmax);
 isargsecondarysource(x0);
 if nargin==nargmax-1
-    if isstruct(dx0)
-        conf = dx0;
-        dx0 = [];
-    else
-        conf = SFS_config;
-    end
-elseif nargin==nargmax-2
     conf = SFS_config;
-    dx0 = [];
 end
 isargstruct(conf);
-isargpositivescalar(dx0);
 
 
 %% ===== Configuration ==================================================
@@ -90,11 +77,9 @@ nls = size(x0,1);
 if usetapwin && nls>2 && ...
    ~(strcmp('sphere',geometry)||strcmp('spherical',geometry))
     win = ones(1,nls);
-    if isempty(dx0)
-        % get the mean distance between secondary sources and the smallest distance
-        % to neighbour source for every secondary source
-        dx0 = secondary_source_distance(x0);
-    end
+    % get the mean distance between secondary sources and the smallest distance
+    % to neighbour source for every secondary source
+    dx0 = secondary_source_distance(x0);
     % use only positions
     x0 = x0(:,1:3);
     % find the edges of the array
@@ -109,7 +94,7 @@ if usetapwin && nls>2 && ...
     end
     % if we have any edges in our array apply a tapering window for every array
     % part, consiting of two edges
-    if length(edges)>0
+    if ~isempty(edges)
         % generate tapwin for every array part within the x0 vector
         for ii=2:length(edges)-2
             part_nls = edges(ii+1)-edges(ii)+1;
@@ -118,7 +103,6 @@ if usetapwin && nls>2 && ...
         % generate tapwin for every array part consiting of the first and the
         % last edge within the x0 vector
         if edges(1)==nls
-            part_nls = nls;
             win = part_hann_win(nls,tapwinlen);
         else
             part_nls = edges(1) + nls-edges(end)+1;

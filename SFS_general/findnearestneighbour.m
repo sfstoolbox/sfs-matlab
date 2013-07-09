@@ -53,7 +53,10 @@ narginchk(nargmin,nargmax);
 if nargin==nargmax-1
     number_of_neighbours = 1;
 end
-b = column_vector(b);
+% ensure column vector
+if size(b,2)>1
+    b=b';
+end
 if number_of_neighbours>size(A,2)
     error(['%s: your number of neighbours is larger than the available ', ...
         'points.'],upper(mfilename));

@@ -75,8 +75,6 @@ isargchar(src);
 isargscalar(t);
 if nargin<nargmax
     conf = SFS_config;
-else
-    isargstruct(conf);
 end
 
 

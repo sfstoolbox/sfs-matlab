@@ -49,11 +49,13 @@ function y = vector_norm(x,dim)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
-nargmax = 2;
-narginchk(nargmin,nargmax)
-isargmatrix(x)
-isargpositivescalar(dim)
+% NOTE: this is disabled due to performance issues in HRTF extrapolation, where
+% this function is called multiple times.
+%nargmin = 2;
+%nargmax = 2;
+%narginchk(nargmin,nargmax)
+%isargmatrix(x)
+%isargpositivescalar(dim)
 
 
 %% ===== Computation =====================================================

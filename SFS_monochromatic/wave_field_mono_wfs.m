@@ -83,11 +83,6 @@ else
 end
 
 
-%% ===== Configuration ==================================================
-useplot = conf.plot.useplot;
-xref = conf.xref;
-
-
 %% ===== Computation ====================================================
 % Get the position of the loudspeakers and its activity
 x0 = secondary_source_positions(conf);
@@ -98,4 +93,4 @@ D = driving_function_mono_wfs(x0,xs,src,f,conf);
 % Wave field
 [varargout{1:min(nargout,4)}] = wave_field_mono(X,Y,Z,x0,'ps',D,f,conf);
 % Return secondary sources if desired
-if nargout==5 varargout{5}=x0; end
+if nargout==5, varargout{5}=x0; end

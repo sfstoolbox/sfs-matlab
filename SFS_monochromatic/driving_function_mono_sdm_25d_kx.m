@@ -73,7 +73,6 @@ end
 
 
 %% ===== Configuration ==================================================
-phase = conf.phase;
 xref = conf.xref;
 X0 = conf.X0;
 c = conf.c;

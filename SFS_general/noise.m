@@ -108,7 +108,10 @@ switch noisetype
         outsig = ifftreal([ones(1,nsigs); sig; ...
             1/(fmax+2)*ones(1,nsigs)],samples);
 
-    case 'red' || 'brown'
+    case 'red'
+        outsig = cumsum(randn(samples,nsigs));
+        
+    case 'brown'
         outsig = cumsum(randn(samples,nsigs));
 
     otherwise

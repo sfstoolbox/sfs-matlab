@@ -158,7 +158,7 @@ end
 
 function ir = correct_radius(ir,ir_distance,r,conf)
     % Fix large distances
-    if ir_distance>3 ir_distance = 3; end
+    if ir_distance>3, ir_distance = 3; end
     % Define an offset to ensure r-ir_distance+offset > 0
     % % FIXME: is this really neccessary or should this be handled by the
     % delayline() function?

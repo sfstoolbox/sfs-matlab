@@ -1,4 +1,4 @@
-function [dimensions,x1,x2,x3,str1,str2,str3] = xyz_axes_selection(x,y,z)
+function [dimensions,x1,x2,x3] = xyz_axes_selection(x,y,z)
 %XYZ_AXES_SELECTION returns the first two active dimensions and a vector
 %indicating which axes are selected
 %

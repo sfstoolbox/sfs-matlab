@@ -1,4 +1,4 @@
-function [amplitude,phase,f] = easyfft(sig,conf)
+function varargout = easyfft(sig,conf)
 %EASYFFT calculates the FFT of a signal and returns the corresponding frequency
 %   axis
 %
@@ -87,3 +87,14 @@ amplitude = 2*amplitude / samples;
 
 % Calculate corresponding frequency axis
 f = fs*(0:ceil(samples/2)-1)/samples;
+
+% return values
+if nargout>0, varargout{1}=amplitude; end
+if nargout>1, varargout{2}=phase; end
+if nargout>2, varargout{3}=f; end
+
+
+%% ===== Plotting ========================================================
+if nargout==0 || useplot
+    figure; semilogx(f,20*log10(abs(amplitude)));
+end

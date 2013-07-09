@@ -74,6 +74,7 @@ end
 %% ===== Computation =====================================================
 % It is better to use 'norm' instead of explicitly summing the squares, as
 % norm (hopefully) attempts to avoid numerical overflow.
+y = zeros(1,size(insig,2));
 switch(lower(options))
     case 'ac'
         for ii=1:size(insig,2)

@@ -134,10 +134,10 @@ end
 P = norm_wave_field_at_xref(P,x,y,z,conf);
 
 % return parameter
-if nargout>0 varargout{1}=P; end
-if nargout>1 varargout{2}=x; end
-if nargout>2 varargout{3}=y; end
-if nargout>3 varargout{4}=z; end
+if nargout>0, varargout{1}=P; end
+if nargout>1, varargout{2}=x; end
+if nargout>2, varargout{3}=y; end
+if nargout>3, varargout{4}=z; end
 
 % ===== Plotting =========================================================
 if nargout==0 || useplot

@@ -1,4 +1,4 @@
-function figsize(x,y,unit);
+function figsize(x,y,unit)
 %FIGSIZE changes the size of a figure
 %
 %   Usage: figsize(x,y,unit)

@@ -50,14 +50,7 @@ nsamples = 1024;
 ir = zeros(nsamples,1);
 ir(300) = 1;
 
-
-nsamples = 1024;
-ir = zeros(nsamples,1);
-ir(300) = 1;
-
-
 irs = new_irs();
-
 
 for ii=0:359
     irs.left(:,ii+1) = ir;

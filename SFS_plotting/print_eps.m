@@ -1,11 +1,10 @@
-function print_eps(outfile,conf);
+function print_eps(outfile)
 %PRINT_EPS stores the figure as eps file
 %
-%   Usage: print_eps(outfile,[conf])
+%   Usage: print_eps(outfile)
 %
 %   Input options:
 %       outfile     - file name to store the figure
-%       conf        - optional configuration struct (see SFS_config)
 %
 %   PRINT_EPS(outfile) prints the figure as eps file.
 %
@@ -46,13 +45,8 @@ function print_eps(outfile,conf);
 
 %% ===== Checking of input parameter =====================================
 nargmin = 1;
-nargmax = 2;
+nargmax = 1;
 narginchk(nargmin,nargmax);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
 
 
 %% ===== Main ============================================================

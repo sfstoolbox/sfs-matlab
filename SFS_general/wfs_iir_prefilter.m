@@ -118,12 +118,9 @@ IIRorder = conf.hpreIIRorder;
 %% ===== Variables ======================================================
 NFFT = fs;                  %FFT length, note that we assume that fs and thus NFFT is EVEN!!!
 df = fs/NFFT;               %FFT resolution is 1Hz!
-f = [0:df:fs-df]';          %frequency vector
+f = (0:df:fs-df)';          %frequency vector
 %allocate memory:
-H_Pre3dB = f*0;
-H_Pre3dB_Shv_Lagrange = H_Pre3dB;
-H = zeros(1,NFFT/2+1);
-F = H;
+
 
 %% ===== Computation ====================================================
 %get +3dB/oct. ideal slope:
@@ -153,16 +150,13 @@ if debug
 isstable(Hd_lpnorm)
 isminphase(Hd_lpnorm)
 end
-[hpre.z,hpre.p,hpre.k] = sos2zp(Hd_lpnorm.sosMatrix,Hd_lpnorm.ScaleValues)
+[hpre.z,hpre.p,hpre.k] = sos2zp(Hd_lpnorm.sosMatrix,Hd_lpnorm.ScaleValues);
 %don't use b,a for higher order IIR filters directly for stability reasons!
-[hpre.b,hpre.a] =  sos2zp(Hd_lpnorm.sosMatrix,Hd_lpnorm.ScaleValues)
+[hpre.b,hpre.a] =  sos2zp(Hd_lpnorm.sosMatrix,Hd_lpnorm.ScaleValues);
 hpre.sos = Hd_lpnorm.sosMatrix;
 hpre.g = Hd_lpnorm.ScaleValues;
 %check deviation in dB:
 [H_Pre3dB_Shv_Lagrange_IIR] = freqz(Hd_lpnorm,f,fs);
-ep_dB = max(20*log10(abs(H_Pre3dB_Shv_Lagrange(1:NFFT/2+1)))-20*log10(abs(H_Pre3dB_Shv_Lagrange_IIR(1:NFFT/2+1))));
-em_dB = min(20*log10(abs(H_Pre3dB_Shv_Lagrange(1:NFFT/2+1)))-20*log10(abs(H_Pre3dB_Shv_Lagrange_IIR(1:NFFT/2+1))));
-max_dev_dB = max(abs([ep_dB em_dB]));
 %plot:
 if debug
 figure

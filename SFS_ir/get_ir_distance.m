@@ -68,11 +68,10 @@ end
 
 % === Coordinate system conversion ===
 if strcmp(coordinate_system,'cartesian') || strcmp(coordinate_system,'cart')
-    [phi,theta,r] = cart2sph(xs(1),xs(2),xs(3));
+    [phi,theta,~] = cart2sph(xs(1),xs(2),xs(3));
 else
     phi = xs(1);
     theta = xs(2);
-    r = xs(3);
 end
 
 % === Check the given angles ===

@@ -89,7 +89,7 @@ elseif strcmp('circle',geometry) || strcmp('circular',geometry) || ...
     % Perimeter of the circle
     P = pi*L;
     % Number of loudspeakers
-    nls = round(P/dx0);
+    number = round(P/dx0);
     % Corresponding size of loudspeaker array
     L = (number*dx0)/pi;
 elseif strcmp('box',geometry)

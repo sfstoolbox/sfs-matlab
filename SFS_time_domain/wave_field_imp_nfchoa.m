@@ -87,4 +87,4 @@ d = driving_function_imp_nfchoa(x0,xs,src,conf);
 % Calculate wave field
 [varargout{1:min(nargout,4)}] = wave_field_imp(X,Y,Z,x0,'ps',d,t,conf);
 % Return secondary sources if desired
-if nargout==5 varargout{5}=x0; end
+if nargout==5, varargout{5}=x0; end

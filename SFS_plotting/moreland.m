@@ -48,12 +48,12 @@ m_table=[ 59, 76, 192;...
     192, 40, 47;...
     180, 4, 38;];
 
+m = zeros(n,3);
 for i=1:n
     for j=1:3
         m(i,j)=interp1(linspace(1,n,32),m_table(:,j),i);
     end
 end
-
 m=m/256;
 
 

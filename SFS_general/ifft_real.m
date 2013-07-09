@@ -57,11 +57,9 @@ isargpositivescalar(N);
 
 
 %% ===== Computation =====================================================
-N2=floor(N/2)+1;
-
 % Force IFFT along dimension 1
 if rem(N,2)==0
-  y= [x; flipud(conj(x(2:end-1,:)))];
+  y = [x; flipud(conj(x(2:end-1,:)))];
 else
   y = [x; flipud(conj(x(2:end,:)))];
 end;

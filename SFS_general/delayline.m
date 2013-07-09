@@ -83,7 +83,7 @@ if(usefracdelay)
        sig = resample(sig2,1,rfactor);
 
     case 'least_squares'
-        if ~exist('hgls2')
+        if ~exist('hgls2','file')
             error(['%s: the least_squares methods needs the hgls2 function ',...
                 'which you have to look for in the web ;)']);
         end

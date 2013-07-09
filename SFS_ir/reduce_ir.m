@@ -84,8 +84,8 @@ win = hann_window(ceil(0.15*nsamples),ceil(0.10*nsamples),nsamples).^2;
 
 % Find maximum of resampled HRIR
 % Find maximum in each channel and calculate the mean of the index
-[a,idx1] = max(abs(resamp_ir(:,1)));
-[a,idx2] = max(abs(resamp_ir(:,2)));
+[~,idx1] = max(abs(resamp_ir(:,1)));
+[~,idx2] = max(abs(resamp_ir(:,2)));
 idx = round((idx1+idx2)/2);
 
 % Cut the HRIR around the maximum

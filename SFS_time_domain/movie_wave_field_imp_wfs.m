@@ -110,7 +110,7 @@ delete([tmpdir,'/',rn,'*.png']);
 
 %% ===== Show movie ======================================================
 if useplot
-    [status,mplayer] = system('which mplayer');
+    status = system('which mplayer');
     if status
         error('%s: mplayer is needed to show this movie.',upper(mfilename));
     else

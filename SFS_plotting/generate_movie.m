@@ -65,7 +65,7 @@ isargdir(directory);
 %% ===== Movie ===========================================================
 
 % Generate a movie from the png files with MEncoder
-[status,encoder] = system('which mencoder');
+status = system('which mencoder');
 if status
     error('%s: mencoder is needed to generate the movie.',upper(mfilename));
 else

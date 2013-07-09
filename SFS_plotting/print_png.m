@@ -1,4 +1,4 @@
-function print_png(outfile);
+function print_png(outfile)
 %PRINT_PNG stores a figure as png file
 %
 %   Usage: print_png(outfile)

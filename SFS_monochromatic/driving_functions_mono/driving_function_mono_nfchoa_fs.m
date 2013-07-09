@@ -71,7 +71,6 @@ end
 
 %% ===== Configuration ==================================================
 xref = conf.xref;
-c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
 

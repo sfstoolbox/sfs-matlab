@@ -119,9 +119,9 @@ t = t-min(t);
 alpha = alpha_tmp - phi;
 
 % return values
-if nargout>0 varargout{1}=alpha; end
-if nargout>1 varargout{2}=a; end
-if nargout>2 varargout{3}=t; end
+if nargout>0, varargout{1}=alpha; end
+if nargout>1, varargout{2}=a; end
+if nargout>2, varargout{3}=t; end
 
 
 %% ===== Plotting =======================================================

@@ -92,7 +92,6 @@ f = logspace(0,5,500);
 idx = find(f>20000,1);
 f = f(1:idx);
 S = zeros(1,length(f));
-nls = size(x0,1);
 % Get the result for all frequencies
 for ii = 1:length(f)
     % calculate wave field at the listener position
@@ -101,8 +100,8 @@ for ii = 1:length(f)
 end
 
 % return parameter
-if nargout>0 varargout{1}=S; end
-if nargout>1 varargout{2}=f; end
+if nargout>0, varargout{1}=S; end
+if nargout>1, varargout{2}=f; end
 
 % ===== Plotting =========================================================
 if nargout==0 || useplot

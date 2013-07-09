@@ -96,15 +96,9 @@ end
 
 %% ===== Configuration ==================================================
 % Array position (m)
-X0 = conf.X0;
-% Loudspeaker distcane
-% NOTE: if dLS <= dx, than we have a continous loudspeaker
-dx = conf.dx0;
+X0 = conf.secondary_sources.center;
 % Method to calculate driving function (only for non-aliased part)
 withev = conf.sdm.withev;  % with evanescent waves
-% Reference position for the amplitude (correct reproduction of amplitude
-% at y = yref).
-xref = conf.xref;
 c = conf.c;
 % xy resolution
 xysamples = conf.xysamples;
@@ -114,16 +108,13 @@ useplot = conf.plot.useplot;
 %% ===== Variables ======================================================
 % General
 omega = 2*pi*f;
-% init variables
-kxrep=2*pi/dx;
-Nrep=6;             % number of spectral repetitions
 % Aliasing condition
 kxal = omega/c;
 % Factor by which kx is extended of kx = omega/c criteria
 Nkx=1.5;
 %kx = linspace(-Nkx*kxal,Nkx*kxal,Nkx*2000);
 kx = linspace(-Nkx*kxal,Nkx*kxal,Nkx*xysamples*10);
-[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
+[~,~,~,x,y,z] = xyz_grid(X,Y,Z,conf);
 % Indexes for evanescent contributions and propagating part of the wave field
 idxpr = (( abs(kx) <= (omega/c) ));
 idxev = (( abs(kx) > (omega/c) ));

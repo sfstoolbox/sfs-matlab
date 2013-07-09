@@ -56,44 +56,32 @@ narginchk(nargmin,nargmax);
 
 
 %% ===== Computation ====================================================
-weights = [];%zeros(1,1); % initialize empty weight vector
-
-for ii=1:length(theta)-1
-    
+weights = zeros(1,length(theta)-1);
+for ii=1:length(theta)-1  
     idx = theta(ii); % actual azimuth = idx
-    
     % if the next azimuth is not equal to the previous one -> calculate new weight
     if idx ~= theta(ii+1) 
         % calculate rectangle around the point with 
         % b*a = (r*cos(theta)d_phi) * (r*d_theta)
         a = (theta(ii)-theta(ii+1));
-        
         % special case: north pole d_phi to the next point would be inf.
         % Therefore the 2nd nearest d_phi is used at this time
-         if ii==1
-             b = (phi(ii+3))-(phi(ii+2));
-             actual_weight = a*b; % calculate area element
-             weights = [weights actual_weight];
-         else
-            
+        if ii==1
+            b = (phi(ii+3))-(phi(ii+2));
+            weights(ii) = a*b; % calculate area element
+        else    
             b = (phi(ii+1))-(phi(ii));
-            actual_weight = a*b; % calculate area element
-            weights = [weights actual_weight];
-                
-            
-         end
-        
+            weights(ii) = a*b; % calculate area element
+        end
     else
-        
-        weights = [weights actual_weight];
-        
+        % FIXME: what happens if the the first element comes to this point?
+        weights(ii) = weights(ii-1);
     end
-        
 end
 
 % northpole weight shouldn't be zero
 if weights(1)==0
-    weights(1)=weights(2);
+    weights(1) = weights(2);
 end
 
 w = 100*[weights,weights(end-1)];

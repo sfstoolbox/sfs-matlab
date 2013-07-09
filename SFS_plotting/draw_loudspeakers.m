@@ -121,7 +121,7 @@ else
     for n=1:nls
 
         % Get the azimuth direction of the secondary sources
-        [phi,r_tmp] = cart2pol(x0(n,4),x0(n,5));
+        [phi,~] = cart2pol(x0(n,4),x0(n,5));
 
         % Rotation matrix (orientation of the speakers)
         % R = [cos(phi(n)) -sin(phi(n));sin(phi(n)) cos(phi(n))];

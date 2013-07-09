@@ -66,8 +66,8 @@ fs = conf.fs;
 
 
 %% ===== Computation =====================================================
-a = {};
-b = {};
+a = cell(size(sos,1),1);
+b = a;
 for n=1:size(sos,1)
     if isoctave
         [bz,az] = bilinear(sos(n,1:3),sos(n,4:6),1/fs);

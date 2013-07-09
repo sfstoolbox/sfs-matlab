@@ -73,10 +73,6 @@ if conf.debug
 end
 
 
-%% ===== Configuration ==================================================
-N = conf.N;                   % target length of IR impulse responses
-
-
 %% ===== Variables ======================================================
 % Loudspeaker positions
 x0 = secondary_source_positions(conf);

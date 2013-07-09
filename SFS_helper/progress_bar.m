@@ -53,16 +53,15 @@ isargpositivescalar(ii,nii);
 %% ===== Generate the progress bar =======================================
 % \r is not working under some Windows systems, therefore we use \b to clear the
 % line
-if ii==nii
-    str = sprintf('\nRun %.0f/%.0f\n',ii,nii);
-else
-    str = sprintf('Run %.0f/%.0f',ii,nii);
-end
+str = sprintf('Run %.0f/%.0f',ii,nii);
 if ii==1
     fprintf(1,str);
 else
     clear_line(length(str));
     fprintf(1,str);
+end
+if ii==nii
+    fprintf(1,'\n');
 end
 % Octave didn't show the output directly in a function call, in order to do so
 % it has explicitly flushed to stdout

@@ -85,7 +85,9 @@ phi = irs.apparent_azimuth';
 theta = irs.apparent_elevation';
 conf.secondary_sources.number = nls;
 conf.secondary_sources.x0 = zeros(nls,7);
-conf.secondary_sources.x0(:,1:3) = sph2cart(phi,theta,R);
+[conf.secondary_sources.x0(:,1), ...
+ conf.secondary_sources.x0(:,2), ...
+ conf.secondary_sources.x0(:,3)] = sph2cart(phi,theta,R);
 conf.secondary_sources.x0(:,4:6) = ...
     direction_vector(conf.secondary_sources.x0(:,1:3),repmat(conf.xref,nls,1));
 % weights
@@ -137,10 +139,11 @@ irs_pw.distance = Inf;
 for ii = 1:nls
 
     % show progress
-    progress_bar(ii,nls);
+    %progress_bar(ii,nls);
 
     % direction of plane wave
-    xs = -sph2cart(phi(ii),theta(ii),R(ii));
+    [xs(1),xs(2),xs(3)] = sph2cart(phi(ii),theta(ii),R(ii));
+    xs = -xs;
 
     % calculate active virtual speakers
     x0 = secondary_source_selection(x0_all,xs,'pw');

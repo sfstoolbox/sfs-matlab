@@ -23,7 +23,7 @@ function ir = get_ir(irs,xs,coordinate_system,conf)
 %   an interpolation is applied to create the desired angles.
 %   (Note: get_ir can be used for 2D and 3D HRTF datasets.)
 %
-%   see also: read_irs, slice_irs, intpol_ir2d, intpol_ir3d 
+%   see also: read_irs, slice_irs, intpol_ir 
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -159,15 +159,21 @@ end
 function ir = correct_radius(ir,ir_distance,r,conf)
     % Fix large distances
     if ir_distance>3, ir_distance = 3; end
-    % Define an offset to ensure r-ir_distance+offset > 0
-    % % FIXME: is this really neccessary or should this be handled by the
-    % delayline() function?
-    offset = 1; % / m
-    % Time delay of the source (at the listener position)
-    delay = (r-ir_distance+offset)/conf.c*conf.fs; % / samples
-    % Amplitude weighting (point source model)
-    weight = 1/(4*pi*(r-ir_distance+offset));
-    % Apply delay and weighting
-    ir(:,1) = delayline(ir(:,1)',delay,weight,conf)';
-    ir(:,2) = delayline(ir(:,2)',delay,weight,conf)';
+    % add some extra zeros add the beginning of the impulse response (~3m)
+    ir = [zeros(350,2); ir];
+    % delay only if we have an delay other than 0
+    if (r-ir_distance+offset)~=0
+        disp('delay');
+        % Time delay of the source (at the listener position)
+        delay = (r-ir_distance+offset)/conf.c*conf.fs; % / samples
+        % Amplitude weighting (point source model)
+        weight = 1/(4*pi*(r-ir_distance+offset));
+        if abs(delay)>size(ir,1)
+            error(['%s: your impulse response is to short for a desired ', ...
+                'delay of %i samples.'],upper(mfilename),delay);
+        end
+        % Apply delay and weighting
+        ir(:,1) = delayline(ir(:,1)',delay,weight,conf)';
+        ir(:,2) = delayline(ir(:,2)',delay,weight,conf)';
+    end
 end

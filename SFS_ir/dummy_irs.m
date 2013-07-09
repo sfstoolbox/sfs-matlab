@@ -7,7 +7,7 @@ function irs = dummy_irs()
 %       irs   - irs struct
 %
 %   DUMMY_IRS() creates a dummy IR data set (Dirac impulse) to check
-%   processing without IRs.
+%   processing without IRs. It has a resolution of 1 deg for phi and theta.
 %
 %   See also: new_irs, IR_format.txt
 
@@ -45,19 +45,21 @@ function irs = dummy_irs()
 
 
 %% ===== Computation =====================================================
-% Create dirac pulse
+% create dirac pulse
 nsamples = 1024;
 ir = zeros(nsamples,1);
 ir(300) = 1;
-
+% angles of dummy irs
+theta = rad(-90:89);
+phi = rad(-180:179);
+% replicate ir for all directions
+ir = repmat(ir,1,length(phi)*length(theta));
+% store data
 irs = new_irs();
-for ii=0:359
-    irs.left(:,ii+1) = ir;
-    irs.right(:,ii+1) = ir;
-    irs.apparent_azimuth(ii+1) = correct_azimuth(ii/180*pi);
-    irs.apparent_elevation(ii+1) = correct_elevation(0);
-end
+irs.left = ir;
+irs.right = ir;
+tmp = repmat(phi,length(theta),1);
+irs.apparent_azimuth = tmp(:)';
+irs.apparent_elevation = repmat(theta,1,length(phi));
 irs.description = ['HRIR dummy set (Dirac pulse) for testing your',...
                    'frequency response, etc.'];
-% Reorder entries
-irs = correct_irs_angle_order(irs);

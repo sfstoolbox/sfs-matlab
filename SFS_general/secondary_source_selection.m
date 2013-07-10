@@ -99,7 +99,7 @@ if strcmp('pw',src)
     %      \ 0, else
     %
     % Direction of plane wave (nxs) is set above
-    idx = (( diag(nk*nx0')>=eps ));
+    idx = (( vector_product(nk,nx0,2)>=eps ));
     x0 = x0_tmp(idx,:);
 
 elseif strcmp('ps',src) || strcmp('ls',src)
@@ -110,7 +110,7 @@ elseif strcmp('ps',src) || strcmp('ls',src)
     % a = <
     %      \ 0, else
     %
-    idx = (( diag((x0-xs)*nx0')>0 ));
+    idx = (( vector_product(x0-xs,nx0,2)>=eps ));
     x0 = x0_tmp(idx,:);
 
 elseif strcmp('fs',src)
@@ -124,7 +124,7 @@ elseif strcmp('fs',src)
     %
     nxs = xs(:,4:6);
     xs = xs(:,1:3);
-    idx = (( diag(nxs*(xs-x0)')>0 ));
+    idx = (( vector_product(nxs,xs-x0,2)>=eps ));
     x0 = x0_tmp(idx,:);
 else
     error('%s: %s is not a supported source type!',upper(mfilename),src);

@@ -1,4 +1,4 @@
-function irs = extrapolate_farfield_hrtfset(irs,conf)
+function irs_pw = extrapolate_farfield_hrtfset(irs,conf)
 %EXTRAPOLATE_FARFIELD_HRTFSET far-field extrapolation of a given HRTF dataset
 %
 %   Usage: irs = extrapolate_farfield_hrtfset(irs,[conf])
@@ -120,7 +120,8 @@ end
 if strcmp('2.5D',dimension)
     % Apply a amplitude correction, due to 2.5D. This will result in a correct
     % reproduced ILD in the resulting impulse responses (see, Spors 2011)
-    amplitude_correction = -1.7 * sin(irs.apparent_azimuth);
+    %amplitude_correction = -1.7 * sin(irs.apparent_azimuth);
+    amplitude_correction = zeros(size(irs.apparent_azimuth));
 else
     amplitude_correction = zeros(size(irs.apparent_azimuth));
 end
@@ -141,16 +142,16 @@ irs_pw.distance = Inf;
 
 
 % Get all HRTFs for the secondary source positions
-ir = zeros(size(irs.left,1),nls,2);
+ir_all = zeros(size(irs.left,1),2,nls);
 for ii=1:nls
-    ir_all(:,ii,:) = get_ir(irs,x0_all(ii,1:3),'cartesian',conf);
+    ir_all(:,:,ii) = get_ir(irs,x0_all(ii,1:3),'cartesian',conf);
 end
 
 % Generate a irs set for all given angles
 for ii=1:nls
 
     % show progress
-    %progress_bar(ii,nls);
+    progress_bar(ii,nls);
 
     % direction of plane wave
     [xs(1),xs(2),xs(3)] = sph2cart(phi(ii),theta(ii),R(ii));
@@ -158,7 +159,7 @@ for ii=1:nls
 
     % calculate active virtual speakers
     [x0,idx] = secondary_source_selection(x0_all,xs,'pw');
-    ir = ir_all(:,idx,:);
+    ir = ir_all(:,:,idx);
     % apply tapering window
     x0 = secondary_source_tapering(x0,conf);
 
@@ -168,17 +169,18 @@ for ii=1:nls
     conf.wfs.usehpre = false;
     [~,delay,weight] = driving_function_imp_wfs(x0,xs,'pw',conf);
     conf.wfs.usehpre = tmp_usehpre;
+    % delay in samples; we remove the 350 samples that get_ir() adds
+    % before every impulse response
+    delay = delay.*fs - 350;
     % sum up contributions from individual virtual speakers
-    for l=1:size(x0,1)
-        dt = delay(l)*fs + R(ii)/c*fs;
-        w = weight(l);
-        % get IR for the secondary source position
-        %ir = get_ir(irs,x0(l,1:3),'cartesian',conf);
+    for jj=1:size(x0,1)
         % truncate IR length
-        ir_single = fix_ir_length(ir(:,l,:),N,dt);
+        ir_single = fix_ir_length(ir(:,:,jj),N,max(delay));
         % delay and weight HRTFs
-        irs_pw.left(:,ii) = irs_pw.left(:,ii) + delayline(ir_single(:,1)',dt,w,conf)';
-        irs_pw.right(:,ii) = irs_pw.right(:,ii) + delayline(ir_single(:,2)',dt,w,conf)';
+        irs_pw.left(:,ii) = irs_pw.left(:,ii) + ...
+            delayline(ir_single(:,1),delay(jj),weight(jj),conf);
+        irs_pw.right(:,ii) = irs_pw.right(:,ii) + ...
+            delayline(ir_single(:,2),delay(jj),weight(jj),conf);
     end
     irs_pw.left(:,ii) = irs_pw.left(:,ii)/10^(amplitude_correction(ii)/20);
     irs_pw.right(:,ii) = irs_pw.right(:,ii)/10^(-amplitude_correction(ii)/20);
@@ -188,5 +190,3 @@ end
 %% ===== Pre-equalization ===============================================
 irs_pw.left = wfs_preequalization(irs_pw.left,conf);
 irs_pw.right = wfs_preequalization(irs_pw.right,conf);
-
-irs = irs_pw;

@@ -84,4 +84,4 @@ if weights(1)==0
     weights(1) = weights(2);
 end
 
-w = 100*[weights,weights(end-1)];
+w = 100*[weights,weights(end-1)]';

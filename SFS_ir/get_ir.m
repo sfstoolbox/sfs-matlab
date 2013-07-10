@@ -21,7 +21,13 @@ function ir = get_ir(irs,xs,coordinate_system,conf)
 %   GET_IR(irs,phi,delta,r,X0) returns a single IR set for the given angles 
 %   phi and delta. If the desired angles are not present in the IR data set 
 %   an interpolation is applied to create the desired angles.
-%   (Note: get_ir can be used for 2D and 3D HRTF datasets.)
+%   The desired radius is achieved by delaying and weighting the impulse
+%   response. To ensure negative delays for short distances, 350 zeros are
+%   padded at the begining of every impulse response before the delaying
+%   process. The same amount of zeros are removed at the end of the impulse
+%   response in order to return an impulse response with the same length as in
+%   irs. Note, that this behavior will not work with extrem short impulse
+%   response <400 samples!
 %
 %   see also: read_irs, slice_irs, intpol_ir 
 
@@ -154,6 +160,8 @@ else
         ir = intpot_ir(ir1,ir2,ir3,[neighbours; 1 1 1],[xs;1]);
     end
 end
+% return an impulse response that has a length of the original one
+ir = fix_ir_length(ir,size(irs.left(:,1)));
 end
 
 function ir = correct_radius(ir,ir_distance,r,conf)

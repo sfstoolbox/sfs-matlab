@@ -1,4 +1,4 @@
-function x0 = secondary_source_tapering(x0,conf)
+function x0 = secondary_source_tapering(x0,varargin)
 %SECONDARY_SOURCE_TAPERING applies a tapering window to the secondary sources
 %
 %   Usage: x0 = secondary_source_tapering(x0,conf)
@@ -54,13 +54,8 @@ function x0 = secondary_source_tapering(x0,conf)
 nargmin = 1;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-isargsecondarysource(x0);
-if nargin==nargmax-1
-    conf = SFS_config;
-end
-isargstruct(conf);
 
 
 %% ===== Calculation ====================================================
 % Apply tapering window to secondary sources
-x0(:,7) = x0(:,7) .* tapering_window(x0,conf);
+x0(:,7) = x0(:,7) .* tapering_window(x0,varargin{:});

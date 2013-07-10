@@ -162,8 +162,7 @@ function ir = correct_radius(ir,ir_distance,r,conf)
     % add some extra zeros add the beginning of the impulse response (~3m)
     ir = [zeros(350,2); ir];
     % delay only if we have an delay other than 0
-    if (r-ir_distance)~=0
-        disp('delay');
+    if abs(r-ir_distance)>0.0001 % ~0.01 samples
         % Time delay of the source (at the listener position)
         delay = (r-ir_distance)/conf.c*conf.fs; % / samples
         % Amplitude weighting (point source model)

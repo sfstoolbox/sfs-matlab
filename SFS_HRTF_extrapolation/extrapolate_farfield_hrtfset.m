@@ -71,6 +71,7 @@ end
 fs = conf.fs;
 c = conf.c;
 dimension = conf.dimension;
+N = conf.N;
 conf.ir.usehcomp = false;
 
 
@@ -115,7 +116,6 @@ else
             'conf.dimension="3D".']);
     end
 end
-%conf.wfs.hpreflow = 1;
 if strcmp('2.5D',dimension)
     % Apply a amplitude correction, due to 2.5D. This will result in a correct
     % reproduced ILD in the resulting impulse responses (see, Spors 2011)
@@ -128,13 +128,14 @@ end
 %% ===== Computation =====================================================
 % get virtual secondary source positions
 x0_all = secondary_source_positions(conf);
+conf.wfs.hpreflow = 50;
 conf.wfs.hprefhigh = aliasing_frequency(x0_all,conf);
 
 % Initialize new irs set
 irs_pw = irs;
 irs_pw.description = 'Extrapolated HRTF set containing plane waves';
-irs_pw.left = zeros(size(irs_pw.left));
-irs_pw.right = zeros(size(irs_pw.right));
+irs_pw.left = zeros(N,nls);
+irs_pw.right = zeros(N,nls);
 irs_pw.distance = Inf;
 
 
@@ -142,7 +143,7 @@ irs_pw.distance = Inf;
 for ii = 1:nls
 
     % show progress
-    progress_bar(ii,nls);
+    %progress_bar(ii,nls);
 
     % direction of plane wave
     [xs(1),xs(2),xs(3)] = sph2cart(phi(ii),theta(ii),R(ii));
@@ -162,7 +163,7 @@ for ii = 1:nls
         % get IR for the secondary source position
         ir = get_ir(irs,x0(l,1:3),'cartesian',conf);
         % truncate IR length
-        ir = fix_ir_length(ir,size(ir,1),dt);
+        ir = fix_ir_length(ir,N,dt);
         % delay and weight HRTFs
         irs_pw.left(:,ii) = irs_pw.left(:,ii) + delayline(ir(:,1)',dt,w,conf)';
         irs_pw.right(:,ii) = irs_pw.right(:,ii) + delayline(ir(:,2)',dt,w,conf)';

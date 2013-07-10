@@ -1,25 +1,19 @@
-function [points,weights] = get_spherical_grid(number,conf)
-%GET_SPHERICAL_GRID retruns grid points and weights
+function success = download_file(url,outfile)
+%DOWNLOAD_FILE downloads a file to your computer
 %
-%   Usage: [points,weights] = get_spherical_grid(number,[conf])
+%   Usage: success = download_file(url,outfile)
 %
 %   Input parameters:
-%       number  - number of grid points
-%       conf    - optional configuration struct (see SFS_config)
+%       url     - url to download
+%       outfile - path to store the file
 %
 %   Output parameters:
-%       points  - grid points
-%       weights - integration weights for the grid points
+%       success  - 0 or 1
 %
-%   GET_SPHERICAL_GRID(number) returns the points and weights for a grid on a
-%   sphere. The type of grid is specified by conf.secondary_sources.grid.
-%   For available grids, have a look at http://github.com/sfstoolbox/data.
-%   It expects the grid files at SFS_basepath/data/spherical_grids. If the
-%   desired file is not available on the hard disk, the function tries to
-%   download it directly from github.
+%   DOWNLOAD_FILE(url,file) downloads the given url and stores it at outfile.
+%   If outfile contains directories that do not exist yet, they will be created.
 %
-%   see also: secondary_source_positions,
-%       weights_for_points_on_a_sphere_rectangle
+%   see also: get_spherical_grid
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -55,43 +49,25 @@ function [points,weights] = get_spherical_grid(number,conf)
 
 
 %% ===== Checking input parameters =======================================
-nargmin = 1;
+nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-isargpositivescalar(number);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
-
-
-%% ===== Configuration ===================================================
-spherical_grid = conf.secondary_sources.grid;
+isargchar(url,outfile)
 
 
 %% ===== Main ============================================================
-filename = sprintf('%06.0fpoints.mat',number);
-basepath = get_sfs_path();
-
-if strcmp('equally_spaced_points',spherical_grid)
-    % check if we have a squared number of points, because only for those values
-    % are equally spaced points grids available.
-    if mod(number,sqrt(number))~=0
-        error('%s: number has to be a squared number.',upper(mfilename));
+% download if file is not present
+if ~exist(outfile,'file')
+    % replace '\' with '/'
+    outfile = strrep(outfile,'\','/');
+    % create dir
+    dirs = strsplit(outfile,'/');
+    for ii=1:length(dirs)
+        mkdir(dirs{ii});
     end
-    file = [basepath '/data/spherical_grids/equally_spaced_points/' filename];
-    url = ['http://github.com/sfstoolbox/data/raw/master/spherical_grids/' ...
-        'equally_spaced_points/' filename];
-    % download file if not present
-    if ~exist(file,'file')
-        download_file(url,file);
-    end
-    tmp = load(file,'-ascii');
-    points = tmp(:,1:3);
-    weights = tmp(:,4);
+    warning('Downloading file %s',url);
+    [~,success] = urlwrite(url,outfile);
 else
-    error(['%s: the given spherical grid is not available, have a look at ' ...
-        'http://github.com/sfstoolbox/data for avialable grids.'], ...
-        upper(mfilename));
+    success = 0;
+    error('%s: file exist.',upper(mfilename));
 end

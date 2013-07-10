@@ -55,21 +55,25 @@ function sig = delayline(sig,dt,weight,conf)
 %% ===== Configuration ==================================================
 usefracdelay = conf.usefracdelay;
 fracdelay_method = conf.fracdelay_method;
-rfactor = 100; % resample factor (1/stepsize of fractional delays)
-Lls = 30;      % length of least-squares factional delay filter
 
 
 %% ===== Computation =====================================================
+samples = size(sig,1);
+channels = size(sig,2);
+
 if usefracdelay
 
+    rfactor = 100; % resample factor (1/stepsize of fractional delays)
+    Lls = 30;      % length of least-squares factional delay filter
+    
     % Defining a temporary conf struct for recursive calling of delayline
-    conf2.usefracdelay = 0;
+    conf2.usefracdelay = false;
     conf2.fracdelay_method = '';
 
     switch fracdelay_method
     case 'resample'
        sig2 = resample(sig,rfactor,1);
-       sig2 = delayline(sig2,rfactor*dt,weight,conf2);
+       sig2 = delayline(sig2,rfactor.*dt,weight,conf2);
        sig = resample(sig2,1,rfactor);
 
     case 'least_squares'
@@ -79,17 +83,22 @@ if usefracdelay
         end
         idt = floor(dt);
         sig = delayline(sig,idt,weight,conf2);
-        if(abs(dt-idt)>0)
-            h = hgls2(Lls,dt-idt,0.90);
+        if abs(dt-idt)>0
+            h = zeros(channels,1);
+            for ii=1:channels
+                h(ii) = hgls2(Lls,dt(ii)-idt(ii),0.90);
+            end
             sig = convolution(sig,h);
-            sig = sig(Lls/2:end-Lls/2);
+            sig = sig(Lls/2:end-Lls/2,:);
         end
 
     case 'interp1'
         idt = floor(dt);
         sig = delayline(sig,idt,weight,conf2);
-        t = 1:length(sig);
-        sig = interp1(t,sig,-(dt-idt)+t,'spline');
+        t = (1:samples)';
+        for ii=1:channels
+            sig(:,ii) = interp1(t,sig(:,ii),-(dt(ii)-idt(ii))+t,'spline');
+        end
 
     otherwise
         disp('Delayline: Unknown fractional delay method');
@@ -100,14 +109,14 @@ else
     idt = round(dt);
     
     % handling of too long delay values (returns vector of zeros)
-    if(abs(idt)>length(sig))
-        idt=length(sig);
-    end
+    idt(abs(idt)>samples) = samples;
     
     % handle positive or negative delays
-    if idt>=0
-        sig = [zeros(1,idt) weight*sig(1:end-idt)];
-    else
-        sig = [weight*sig(-idt+1:end) zeros(1,-idt)];
+    for ii=1:channels
+        if idt(ii)>=0
+            sig(:,ii) = [zeros(idt(ii),1); weight(ii)*sig(1:end-idt(ii),ii)];
+        else
+            sig(:,ii) = [weight(ii)*sig(-idt(ii)+1:end,ii); zeros(-idt(ii),1)];
+        end
     end
 end

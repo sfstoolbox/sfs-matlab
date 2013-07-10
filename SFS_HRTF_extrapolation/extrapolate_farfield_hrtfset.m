@@ -140,8 +140,14 @@ irs_pw.right = zeros(N,nls);
 irs_pw.distance = Inf;
 
 
+% Get all HRTFs for the secondary source positions
+ir = zeros(size(irs.left,1),nls,2);
+for ii=1:nls
+    ir_all(:,ii,:) = get_ir(irs,x0_all(ii,1:3),'cartesian',conf);
+end
+
 % Generate a irs set for all given angles
-for ii = 1:nls
+for ii=1:nls
 
     % show progress
     %progress_bar(ii,nls);
@@ -151,7 +157,8 @@ for ii = 1:nls
     xs = -xs;
 
     % calculate active virtual speakers
-    x0 = secondary_source_selection(x0_all,xs,'pw');
+    [x0,idx] = secondary_source_selection(x0_all,xs,'pw');
+    ir = ir_all(:,idx,:);
     % apply tapering window
     x0 = secondary_source_tapering(x0,conf);
 
@@ -166,12 +173,12 @@ for ii = 1:nls
         dt = delay(l)*fs + R(ii)/c*fs;
         w = weight(l);
         % get IR for the secondary source position
-        ir = get_ir(irs,x0(l,1:3),'cartesian',conf);
+        %ir = get_ir(irs,x0(l,1:3),'cartesian',conf);
         % truncate IR length
-        ir = fix_ir_length(ir,N,dt);
+        ir_single = fix_ir_length(ir(:,l,:),N,dt);
         % delay and weight HRTFs
-        irs_pw.left(:,ii) = irs_pw.left(:,ii) + delayline(ir(:,1)',dt,w,conf)';
-        irs_pw.right(:,ii) = irs_pw.right(:,ii) + delayline(ir(:,2)',dt,w,conf)';
+        irs_pw.left(:,ii) = irs_pw.left(:,ii) + delayline(ir_single(:,1)',dt,w,conf)';
+        irs_pw.right(:,ii) = irs_pw.right(:,ii) + delayline(ir_single(:,2)',dt,w,conf)';
     end
     irs_pw.left(:,ii) = irs_pw.left(:,ii)/10^(amplitude_correction(ii)/20);
     irs_pw.right(:,ii) = irs_pw.right(:,ii)/10^(-amplitude_correction(ii)/20);

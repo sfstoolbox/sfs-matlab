@@ -59,17 +59,23 @@ isargchar(url,outfile)
 % download if file is not present
 if ~exist(outfile,'file')
     % replace '\' with '/'
-    outfile = strrep(outfile,'\','/')
+    outfile = strrep(outfile,'\','/');
     % create dir
-    dirs = strsplit(outfile,'/');
+    % NOTE: newer versions of Matlab can do the following with the strsplit
+    % function
+    %dirs = strsplit(outfile,'/');
+    dirs = regexp(outfile,'/','split');
     dir_path = [];
     for ii=1:length(dirs)-1
-        dir_path = [dir_path '/' dirs{ii}];
-        mkdir(dir_path);
+        if ii==1 && iswindows
+            dir_path = [dir_path dirs{ii}];
+        else
+            dir_path = [dir_path '/' dirs{ii}];
+        end
+        [~,~] = mkdir(dir_path);
     end
     warning('Downloading file %s',url);
     [~,success] = urlwrite(url,outfile);
 else
-    success = 0;
     error('%s: file exist.',upper(mfilename));
 end

@@ -1,15 +1,14 @@
-function addirspath(varargin)
+function addirspath(conf)
 %ADDIRSPATH adds directories containing irs files to the path
 %
-%   Usage: addirspath(varargin)
+%   Usage: addirspath(conf)
 %
 %   Input parameters:
-%       varargin - path or pathe containing irs data sets.
-%                  Default: '~/svn/ir_databases' and '~/svn/measurements'
+%       conf    - optional configuration struct (see SFS_config)
 %
-%   ADDIRSPATH(varargin) adds the given directorysand its subdirectories to
-%   the path. If no directory is given, '~/svn/ir_databases' and
-%   '~/svn/measurements' are added.
+%   ADDIRSPATH(conf) adds the directories specified in conf.ir.dir to your
+%   search path for easy loading with read_irs(). If you have more than one
+%   directory they have to be seperated by ':'.
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -46,19 +45,24 @@ function addirspath(varargin)
 
 % ===== Checking of input parameters ====================================
 nargmin = 0;
-nargmax = inf;
+nargmax = 1;
 narginchk(nargmin,nargmax);
-if nargin==nargmin
-    dirs{1} = '~/svn/ir_databases';
-    dirs{2} = '~/svn/measurements';
-else
-    isargdir(char(varargin));
-    dirs = varargin;
+if nargin==nargmax-1
+    conf = SFS_config;
 end
+isargstruct(conf);
+
+
+%% ===== Configuration ==================================================
+dirs = strsplit(conf.ir.path,':');
 
 
 %% ===== Adding pathes ==================================================
 for ii = 1:length(dirs)
-    path = genpath(dirs{ii});
-    addpath(path,'-end');
+    if exist(dirs{ii},'dir')
+        path = genpath(dirs{ii});
+        addpath(path,'-end');
+    else
+        warning('%s: %s does not exist.',upper(mfilename),dirs{ii});
+    end
 end

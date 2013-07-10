@@ -220,6 +220,12 @@ conf.sdm.withev = true; % boolean
 % Settings regarding all the stuff with impulse responses from the SFS_ir and
 % SFS_binaural_synthesis folders
 %
+% Directory containing HRTF data bases, you want to use. Note, that also all
+% subdirectories will be added to the path. This is not done automatically, but
+% by calling addirspath;
+% If you have more than one path, seperate them by :
+conf.ir.path = 'data/HRTFs:~/svn/ir_databases:~/svn/measurements';
+%
 % Use interpolation to get the desired HRTF for binaural simulation. If this is
 % disabled the HRTF returned by a nearest neighbour search is used instead.
 % Depending on the geometry of the measured HRTF data set, the interpolation

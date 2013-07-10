@@ -3,10 +3,12 @@ if ~exist('img','dir');
     mkdir('img');
 end
 
-% --- secondary sources ---
+
+%% ===== Secondary sources ===============================================
 conf = SFS_config_example;
 conf.secondary_sources.size = 3;
-% linear
+
+% === linear ===
 conf.secondary_sources.geometry = 'line';
 conf.secondary_sources.number = 21;
 x0 = secondary_source_positions(conf);
@@ -16,7 +18,8 @@ draw_loudspeakers(x0);
 axis([-2 2 -2 1]);
 pause(1)
 print_png('img/secondary_sources_linear.png');
-% circular
+
+% === circular ===
 conf.secondary_sources.geometry = 'circle';
 conf.secondary_sources.number = 56;
 x0 = secondary_source_positions(conf);
@@ -25,7 +28,8 @@ figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 draw_loudspeakers(x0);
 axis([-2 2 -2 2]);
 print_png('img/secondary_sources_circle.png');
-% box shaped
+
+% === box shaped ===
 conf.secondary_sources.geometry = 'box';
 conf.secondary_sources.number = 84;
 x0 = secondary_source_positions(conf);

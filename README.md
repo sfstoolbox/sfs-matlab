@@ -46,21 +46,22 @@ Usage
 ### Secondary Sources
 
 The Toolbox comes with a function which can generate different common shapes of loudspeaker arrays for you.
-At the moment these include linear, circular and box shaped arrays.
+At the moment these include linear, circular, box shaped and spherical arrays.
 
 Before showing the different geometries, we start with some common settings. First we get a configuration struct
 and set the array size/diameter to 3m.
 
 ```Matlab
 conf = SFS_config;
-L = 3;
+conf.secondary_sources.size = 3;
 ```
 
 #### linear array
 
 ```Matlab
-conf.array = 'linear';
-x0 = secondary_source_positions(L,conf);
+conf.secondary_sources.geometry = 'line'; % or 'linear'
+conf.secondary_sources.number = 21;
+x0 = secondary_source_positions(conf);
 figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 draw_loudspeakers(x0);
@@ -73,8 +74,9 @@ print_png('img/secondary_sources_linear.png');
 #### circular array
 
 ```Matlab
-conf.array = 'circle'; % or 'circular'
-x0 = secondary_source_positions(L,conf);
+conf.secondary_sources.geometry = 'circle'; % or 'circular'
+conf.secondary_sources.number = 56;
+x0 = secondary_source_positions(conf);
 figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 draw_loudspeakers(x0);
@@ -87,8 +89,9 @@ print_png('img/secondary_sources_circle.png');
 #### box shaped array
 
 ```Matlab
-conf.array = 'box';
-x0 = secondary_source_positions(L,conf);
+conf.secondary_sources.geometry = 'box';
+conf.secondary_sources.number = 84;
+x0 = secondary_source_positions(conf);
 figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 draw_loudspeakers(x0);
@@ -98,21 +101,41 @@ print_png('img/secondary_sources_box.png');
 
 ![Image](doc/img/secondary_sources_box.png)
 
+#### spherical array
+
+```Matlab
+conf.secondary_sources.geometry = 'sphere'; % or 'spherical'
+conf.secondary_sources.number = 225;
+x0 = secondary_source_positions(conf);
+figure;
+figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
+draw_loudspeakers(x0);
+axis([-2 2 -2 2]);
+print_png('img/secondary_sources_sphere.png');
+```
+
+![Image](doc/img/secondary_sources_sphere.png)
+
 #### arbitrary shaped arrays
 
 You can also create arbitrary shaped arrays by settings the values of the single
-loudspeaker directly in the <code>conf.x0</code> matrix, which has to be empty
-if you want to use one of the above predefined shapes. The rows of the matrix
-contain the single loudspeakers and the six columns are [x y z nx ny nz], the
-position and direction of the single loudspeakers.
+loudspeaker directly in the <code>conf.secondary_sources.x0</code> matrix, which
+has to be empty if you want to use one of the above predefined shapes. The rows
+of the matrix contain the single loudspeakers and the six columns are
+[x y z nx ny nz w], the position and direction and weight of the single
+loudspeakers. The weight w is a factor the driving function of this particular
+loudspeaker is multiplied with in a function that calculates the sound field
+from the given driving signals and secondary sources. For WFS w could include
+the tapering window, a spherical grid weight, and the r^2 cos(theta)
+integrational weighting for integration on a sphere.
 
 ```Matlab
 % create a stadium like shape by combining two half circles with two linear
 % arrays
 % first getting a full circle with 56 loudspeakers
-conf.dx0 = L*pi/56;
-conf.array = 'circle';
-x0 = secondary_source_positions(L,conf);
+conf.secondary_sources.geometry = 'circle';
+conf.secondary_sources.number = 56;
+x0 = secondary_source_positions(conf);
 % store the first half cricle and move it up
 x01 = x0(2:28,:);
 x01(:,2) = x01(:,2) + ones(size(x01,1),1)*0.5;
@@ -120,21 +143,24 @@ x01(:,2) = x01(:,2) + ones(size(x01,1),1)*0.5;
 x03 = x0(30:56,:);
 x03(:,2) = x03(:,2) - ones(size(x03,1),1)*0.5;
 % create a linear array
-conf.array = 'linear';
-x0 = secondary_source_positions(1+conf.dx0,conf);
+conf.secondary_sources.geometry = 'line';
+conf.secondary_sources.number = 7;
+conf.secondary_sources.size = 1;
+x0 = secondary_source_positions(conf);
 % rotate it and move it left
 R = rotation_matrix(pi/2);
-x02 = [(R*x0(:,1:2)')' x0(:,3) (R*x0(:,4:5)')' x0(:,6)];
+x02 = [(R*x0(:,1:3)')' (R*x0(:,4:6)')'];
 x02(:,1) = x02(:,1) - ones(size(x0,1),1)*1.5;
+x02(:,7) = x0(:,7);
 % rotate it the other way around and move it right
-R = rotation_matrix(-pi/2);
-x04 = [(R*x0(:,1:2)')' x0(:,3) (R*x0(:,4:5)')' x0(:,6)];
+x04 = [(R*x0(:,1:3)')' (R*x0(:,4:6)')'];
 x04(:,1) = x04(:,1) + ones(size(x0,1),1)*1.5;
+x04(:,7) = x0(:,7);
 % combine everything
-conf.x0 = [x01; x02; x03; x04];
+conf.secondary_sources.x0 = [x01; x02; x03; x04];
 % if we gave the conf.x0 to the secondary_source_positions function it will
 % simply return the defined x0 matrix
-x0 = secondary_source_positions(L,conf);
+x0 = secondary_source_positions(conf);
 figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 draw_loudspeakers(x0);
@@ -149,7 +175,9 @@ print_png('img/secondary_sources_arbitrary.png');
 
 With the files in <code>SFS_monochromatic</code> you can simulate a
 monochromatic sound field in a specified area for different techniques like WFS
-and NFCHOA.
+and NFCHOA. The area can be a 3D cube, a 2D plane, a line or only one point.
+This depends on the specification of X,Y,Z. For example [-2 2],[-2 2],[-2 2]
+will be a 3D cube; [-2 2],0,[-2 2] the xz-plane; 3,2,1 a single point.
 
 For all 2.5D functions the configuration <code>conf.xref</code> is important as
 it defines the point for which the amplitude is corrected in the wave field.
@@ -157,6 +185,49 @@ The default entry is
 ```Matlab
 conf.xref = [0 0 0];
 ```
+
+#### Wave Field Synthesis
+
+The following will simulate the field of a virtual point source with a frequency
+of 1kHz placed at (0 2.5 0)m synthesized with 3D WFS.
+
+```Matlab
+conf = SFS_config;
+conf.dimension = '3D';
+conf.secondary_sources.size = 3;
+conf.secondary_sources.number = 225;
+conf.secondary_sources.geometry = 'sphere';
+% [P,x,y,z,x0,win] = wave_field_mono_wfs_25d(X,Y,Z,xs,src,fconf);
+wave_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',1000,conf);
+print_png('img/wave_field_wfs_3d_xy.png');
+wave_field_mono_wfs([-2 2],0,[-2 2],[0 2.5 0],'ps',1000,conf);
+print_png('img/wave_field_wfs_3d_xz.png');
+wave_field_mono_wfs(0,[-2 2],[-2 2],[0 2.5 0],'ps',1000,conf);
+print_png('img/wave_field_wfs_3d_yz.png');
+```
+
+![Image](doc/img/wave_field_wfs_3d_xy.png)
+
+![Image](doc/img/wave_field_wfs_3d_xz.png)
+
+![Image](doc/img/wave_field_wfs_3d_yz.png)
+
+
+You can see that the Toolbox is plotting only the active loudspeakers for WFS.
+If you want to plot the whole array, you can do this by adding these commands.
+
+```Matlab
+x0 = secondary_source_positions(conf);
+[~,idx] = secondary_source_selection(x0,[0 2.5 0],'ps');
+win2 = zeros(1,size(x0,1));
+win2(idx) = win;
+[P,x,y,z] = wave_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',1000,conf);
+plot_wavefield(P,x,y,z,x0,win2,conf);
+print_png('img/wave_field_wfs_3d_xy_with_all_sources.png');
+```
+
+![Image](doc/img/wave_field_wfs_3d_xy_with_all_sources.png)
+
 
 #### Near-field compensated higher order Ambisonics
 
@@ -172,36 +243,6 @@ print_png('img/wave_field_nfchoa_25d.png');
 ```
 
 ![Image](doc/img/wave_field_nfchoa_25d.png)
-
-#### Wave Field Synthesis
-
-The following will simulate the field of a virtual point source with a frequency
-of 1kHz placed at (0 2.5)m synthesized with 2.5D WFS.
-
-```Matlab
-conf = SFS_config;
-conf.useplot = 1;
-% [P,x,y,z,x0,win] = wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,L,conf);
-[P,x,y,z,~,win] = wave_field_mono_wfs_25d([-2 2],[-2 2],0,[0 2.5 0],'ps',1000,3,conf);
-print_png('img/wave_field_wfs_25d.png');
-```
-
-![Image](doc/img/wave_field_wfs_25d.png)
-
-You can see that the Toolbox is plotting only the active loudspeakers for WFS.
-If you want to plot the whole array, you can do this by adding these commands.
-
-```Matlab
-x0 = secondary_source_positions(L,conf);
-[~,idx] = secondary_source_selection(x0,[0 2.5 0],'ps');
-win2 = zeros(1,size(x0,1));
-win2(idx) = win;
-plot_wavefield(P,x,y,z,x0,win2,conf);
-print_png('img/wave_field_wfs_25d_with_all_sources.png');
-```
-
-![Image](doc/img/wave_field_wfs_25d_with_all_sources.png)
-
 
 ### Simulate time snapshots of sound fields
 

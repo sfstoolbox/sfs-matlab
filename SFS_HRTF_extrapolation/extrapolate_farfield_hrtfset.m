@@ -72,6 +72,7 @@ fs = conf.fs;
 c = conf.c;
 dimension = conf.dimension;
 N = conf.N;
+usehpre = conf.wfs.usehpre;
 conf.ir.usehcomp = false;
 
 
@@ -154,9 +155,13 @@ for ii = 1:nls
     % apply tapering window
     x0 = secondary_source_tapering(x0,conf);
 
-    % sum up contributions from individual virtual speakers
-    %     delay = [];
+    % get driving signals, temporarely deactivate WFS pre-filter, because it
+    % will be applied once at the end
+    tmp_usehpre = conf.wfs.usehpre;
+    conf.wfs.usehpre = false;
     [~,delay,weight] = driving_function_imp_wfs(x0,xs,'pw',conf);
+    conf.wfs.usehpre = tmp_usehpre;
+    % sum up contributions from individual virtual speakers
     for l=1:size(x0,1)
         dt = delay(l)*fs + R(ii)/c*fs;
         w = weight(l);

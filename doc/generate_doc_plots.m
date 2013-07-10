@@ -77,14 +77,31 @@ draw_loudspeakers(x0);
 axis([-2 2 -2.5 2.5]);
 print_png('img/secondary_sources_arbitrary.png');
 
-% --- monochromatic sound fields ---
-% simulating stereo setup
+
+%% ===== Monochromatic sound fields ======================================
+% === stereo setup ===
 conf = SFS_config_example;
 % [P,x,y,z] = wave_field_mono_point_source(X,Y,Z,xs,f);
 [P1,x,y,z] = wave_field_mono_point_source([-2 2],[-1 3],0,[-1 2 0],1000,conf);
 P2 = wave_field_mono_point_source([-2 2],[-1 3],0,[1 2 0],1000);
 plot_wavefield(real(P1+P2),x,y,z,[-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1],conf);
 print_png('img/wave_field_stereo.png');
+
+% === WFS 3D ===
+conf = SFS_config_example;
+conf.dimension = '3D';
+conf.secondary_sources.size = 3;
+conf.secondary_sources.number = 225;
+conf.secondary_sources.geometry = 'sphere';
+% [P,x,y,z,x0,win] = wave_field_mono_wfs_25d(X,Y,Z,xs,src,fconf);
+wave_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',1000,conf);
+print_png('img/wave_field_wfs_3d_xy.png');
+wave_field_mono_wfs([-2 2],0,[-2 2],[0 2.5 0],'ps',1000,conf);
+print_png('img/wave_field_wfs_3d_xz.png');
+wave_field_mono_wfs(0,[-2 2],[-2 2],[0 2.5 0],'ps',1000,conf);
+print_png('img/wave_field_wfs_3d_yz.png');
+
+
 % simulating 2.5D WFS with circular array and a point source
 conf = SFS_config_example;
 conf.dimension = '2.5D';

@@ -70,6 +70,8 @@ hpretype = conf.wfs.hpretype;
 if ~usehpre
     return;
 end
+% Store original length
+len_ir = size(ir,1);
 % Get the filter
 if strcmp('FIR',hpretype)
     % get FIR filter
@@ -83,4 +85,8 @@ elseif strcmp('IIR',hpretype)
     ir = filter(hpre.b,hpre.a,ir,2);
 else
     error('%s: %s is an unknown filter type.',upper(mfilename),hpretype);
+end
+% Correct length of ir
+if len_ir>length(hpre)+1
+    ir = ir(1:len_ir,:);
 end

@@ -63,7 +63,6 @@ end
 
 %% ===== Configuration ==================================================
 usefracdelay = conf.usefracdelay;
-fracdelay_method = conf.fracdelay_method;
 
 rfactor = 100; % resample factor (1/stepsize of fractional delays)
 Lls = 30;      % length of least-squares factional delay filter
@@ -72,6 +71,8 @@ Lls = 30;      % length of least-squares factional delay filter
 %% ===== Computation =====================================================
 if(usefracdelay)
 
+    fracdelay_method = conf.fracdelay_method;
+    
     % Defining a temporary conf struct for recursive calling of delayline
     conf2.usefracdelay = 0;
     conf2.fracdelay_method = '';

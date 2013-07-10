@@ -22,12 +22,7 @@ function ir = get_ir(irs,xs,coordinate_system,conf)
 %   phi and delta. If the desired angles are not present in the IR data set 
 %   an interpolation is applied to create the desired angles.
 %   The desired radius is achieved by delaying and weighting the impulse
-%   response. To ensure negative delays for short distances, 350 zeros are
-%   padded at the begining of every impulse response before the delaying
-%   process. The same amount of zeros are removed at the end of the impulse
-%   response in order to return an impulse response with the same length as in
-%   irs. Note, that this behavior will not work with extrem short impulse
-%   response <400 samples!
+%   response.
 %
 %   see also: read_irs, slice_irs, intpol_ir 
 
@@ -161,19 +156,19 @@ else
     end
 end
 % return an impulse response that has a length of the original one
-ir = fix_ir_length(ir,size(irs.left(:,1)));
+%ir = fix_ir_length(ir,size(irs.left(:,1)));
 end
 
 function ir = correct_radius(ir,ir_distance,r,conf)
     % Fix large distances
-    if ir_distance>3, ir_distance = 3; end
-    % add some extra zeros add the beginning of the impulse response (~3m)
-    ir = [zeros(350,2); ir];
+    if ir_distance>10, ir_distance = 10; end
     % delay only if we have an delay other than 0
     if abs(r-ir_distance)>0.0001 % ~0.01 samples
         % Time delay of the source (at the listener position)
         delay = (r-ir_distance)/conf.c*conf.fs; % / samples
         % Amplitude weighting (point source model)
+        % FIXME: this formula is wrong. It shouldn't be absolute with very large
+        % values near the real distance, but with weight=1 in this region.
         weight = 1/(4*pi*(r-ir_distance));
         if abs(delay)>size(ir,1)
             error(['%s: your impulse response is to short for a desired ', ...

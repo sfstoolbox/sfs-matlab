@@ -1,7 +1,7 @@
-function irs = read_irs(irsfile)
+function irs = read_irs(irsfile,conf)
 %READ_IRS Read a HRIR/BRIR dataset
 %
-%   Usage: irs = read_irs(irsfile)
+%   Usage: irs = read_irs(irsfile,[conf])
 %
 %   Input parameters:
 %       irsfile - filename of irs mat file
@@ -9,6 +9,7 @@ function irs = read_irs(irsfile)
 %   Output paramteres:
 %       irs   - irs struct. For details on the containing fields have a look at
 %               the IR_format.txt file.
+%       conf  - optional configuration struct (see SFS_config)
 %
 %   READ_IRS(irsfile) loads a IR dataset as a struct containing the format
 %   specific fields. For a description of the mat format for the IR datasets,
@@ -51,9 +52,13 @@ function irs = read_irs(irsfile)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
-nargmax = 1;
+nargmax = 2;
 narginchk(nargmin,nargmax);
+if nargin==nargmax-1
+    conf = SFS_config;
+end
 isargfile(irsfile);
+isargstruct(conf);
 
 
 %% ===== Read IR files ================================================
@@ -61,3 +66,5 @@ isargfile(irsfile);
 load(irsfile);
 % Check irs format
 check_irs(irs);
+% Correct beginning zeros of impulse response
+irs = fix_irs_length(irs,conf);

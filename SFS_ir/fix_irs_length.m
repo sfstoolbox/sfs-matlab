@@ -1,15 +1,22 @@
-function irs = dummy_irs()
-% DUMMY_IRS creates a dummy dirac pulse IR set
+function irs = fix_irs_length(irs,conf)
+%FIX_IRS_LENGTH pads zeros at the beginning of irs set corresponding to its
+%maximum claimed distance
 %
-%   Usage: irs = dummy_irs()
+%   Usage: irs = fix_irs_length(irs,[conf])
 %
-%   Output parameters:
-%       irs   - irs struct
+%   Input parameters:
+%       irs  - impulse response data set, e.g. HRTFs
+%       conf - optional configuration struct (see SFS_config)
 %
-%   DUMMY_IRS() creates a dummy IR data set (Dirac impulse) to check
-%   processing without IRs. It has a resolution of 1 deg for phi and theta.
+%   Output paramteres:
+%       irs  - corrected impulse response data set
 %
-%   See also: new_irs, IR_format.txt
+%   FIX_IRS_LENGTH(IRS) pads zeros at the beginning of the given impulse
+%   response data set in order to have as many zeros at the beginning as the
+%   maximum distance within the data set. This will ensure correct distance
+%   extrapolation in get_ir().
+%
+%   see also: get_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -44,23 +51,35 @@ function irs = dummy_irs()
 %*****************************************************************************
 
 
-%% ===== Computation =====================================================
-% create dirac pulse
-nsamples = 1024;
-ir = zeros(nsamples,1);
-ir(300) = 1;
-% angles of dummy irs
-theta = rad(-90:89);
-phi = rad(-180:179);
-% replicate ir for all directions
-ir = repmat(ir,1,length(phi)*length(theta));
-% store data
-irs = new_irs();
-irs.left = ir;
-irs.right = ir;
-tmp = repmat(phi,length(theta),1);
-irs.apparent_azimuth = tmp(:)';
-irs.apparent_elevation = repmat(theta,1,length(phi));
-irs.distance = 2.3;
-irs.description = ['HRIR dummy set (Dirac pulse) for testing your',...
-                   'frequency response, etc.'];
+%% ===== Checking of input  parameters ==================================
+nargmin = 1;
+nargmax = 2;
+narginchk(nargmin,nargmax);
+if nargin==nargmax-1
+    conf = SFS_config;
+end
+isargstruct(conf);
+
+
+%% ===== Configuration ===================================================
+c = conf.c;
+fs = conf.fs;
+
+
+%% ===== Main ============================================================
+% get distance of HRTF data set
+dist = max(irs.distance);
+if dist>10
+    warning(['%s: Your maximum distance of the HRTF set is more than 10m. ', ...
+        'We will only pad zeros for 10m, this can lead to problems with ', ...
+        'get_ir().'],upper(mfilename));
+    dist = 10;
+end
+% append zeros at the beginning of the HRTFs corresponding to its maximum
+% distance
+samples = dist/c * fs;
+channels = size(irs.left,2);
+irs.left  = [zeros(samples,channels); irs.left];
+irs.right = [zeros(samples,channels); irs.right];
+% TODO: fix also the overall length to conf.N and get rid completly of
+% fix_ir_length?

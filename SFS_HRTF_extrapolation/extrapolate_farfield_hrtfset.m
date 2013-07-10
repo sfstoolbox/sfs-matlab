@@ -175,7 +175,7 @@ for ii=1:nls
     % sum up contributions from individual virtual speakers
     for jj=1:size(x0,1)
         % truncate IR length
-        ir_single = fix_ir_length(ir(:,:,jj),N,max(delay));
+        %ir_single = fix_ir_length(ir(:,:,jj),N,max(delay));
         % delay and weight HRTFs
         irs_pw.left(:,ii) = irs_pw.left(:,ii) + ...
             delayline(ir_single(:,1),delay(jj),weight(jj),conf);

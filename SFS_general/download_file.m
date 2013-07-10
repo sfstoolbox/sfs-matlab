@@ -59,11 +59,13 @@ isargchar(url,outfile)
 % download if file is not present
 if ~exist(outfile,'file')
     % replace '\' with '/'
-    outfile = strrep(outfile,'\','/');
+    outfile = strrep(outfile,'\','/')
     % create dir
     dirs = strsplit(outfile,'/');
-    for ii=1:length(dirs)
-        mkdir(dirs{ii});
+    dir_path = [];
+    for ii=1:length(dirs)-1
+        dir_path = [dir_path '/' dirs{ii}];
+        mkdir(dir_path);
     end
     warning('Downloading file %s',url);
     [~,success] = urlwrite(url,outfile);

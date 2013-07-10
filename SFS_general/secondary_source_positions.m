@@ -134,6 +134,14 @@ end
 
 
 %% ===== Configuration ===================================================
+% Given secondary sources
+x0 = conf.secondary_sources.x0;
+% Check if we have already predefined secondary sources
+if ~isempty(x0)
+    isargsecondarysource(x0);
+    % If we have predefined secondary sources return at this point
+    return
+end
 % Array type
 geometry = conf.secondary_sources.geometry;
 % Center of the array
@@ -142,18 +150,9 @@ X0 = conf.secondary_sources.center;
 nls = conf.secondary_sources.number;
 % Diameter/length of array
 L = conf.secondary_sources.size;
-% Given secondary sources
-x0 = conf.secondary_sources.x0;
 
 
 %% ===== Main ============================================================
-% Check if we have already predefined secondary sources
-if ~isempty(x0)
-    isargsecondarysource(x0);
-    % If we have predefined secondary sources return at this point
-    return
-end
-
 x0 = zeros(nls,7);
 if strcmp('line',geometry) || strcmp('linear',geometry)
     % === Linear array ===

@@ -64,7 +64,7 @@ if ~ischar(map)
 elseif strcmp('default',map) || strcmp('',map)
     % Default SFS Toolbox color: blue,white,red
     % see: http://www.sandia.gov/~kmorel/documents/ColorMaps/
-    colormap(moreland);
+    colormap(moreland(256));
 elseif strcmp('gray',map) || strcmp('grey',map) 
     colormap(flipud(colormap('gray')));
 else

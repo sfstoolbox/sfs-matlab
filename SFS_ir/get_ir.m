@@ -180,7 +180,6 @@ function ir = correct_radius(ir,ir_distance,r,conf)
                 'delay of %i samples.'],upper(mfilename),delay);
         end
         % Apply delay and weighting
-        ir(:,1) = delayline(ir(:,1)',delay,weight,conf)';
-        ir(:,2) = delayline(ir(:,2)',delay,weight,conf)';
+        ir = delayline(ir,delay,weight,conf);
     end
 end

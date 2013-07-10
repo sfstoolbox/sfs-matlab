@@ -117,15 +117,5 @@ delay = delay-min(delay);
 % the delayline function cuts into the end of the driving signals in order to
 % delay them. NOTE: this is can be changed by the conf.N setting
 d_proto = repmat([row_vector(pulse) zeros(1,N-length(pulse))]',1,size(x0,1));
+% Shift and weight prototype driving function
 d = delayline(d_proto,delay*fs,weight,conf);
-
-%d = zeros(length(d_proto),size(x0,1));
-%for ii=1:size(x0,1)
-%    % Shift and weight prototype driving function
-%    % - less delay in driving function is more propagation time in sound
-%    %   field, hence the sign of the delay has to be reversed in the
-%    %   argument of the delayline function
-%    % - the propagation time from the source to the nearest secondary source
-%    %   is removed
-%    d(:,ii) = delayline(d_proto,delay(ii)*fs,weight(ii),conf);
-%end

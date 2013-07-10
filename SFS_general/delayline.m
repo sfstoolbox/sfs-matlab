@@ -7,7 +7,7 @@ function sig = delayline(sig,dt,weight,conf)
 %       sig     - input signal (vector)
 %       dt      - delay / samples
 %       weight  - amplitude weighting factor
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - mandatory configuration struct (see SFS_config)
 %
 %   Output parameter:
 %       sig     - delayed signal
@@ -17,7 +17,7 @@ function sig = delayline(sig,dt,weight,conf)
 %   The delay is implemented as integer delays or a fractional delay
 %   filter, see SFS_config.
 %
-%   see also: driving_function_imp_wfs
+%   see also: get_ir, driving_function_imp_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -52,15 +52,6 @@ function sig = delayline(sig,dt,weight,conf)
 %*****************************************************************************
 
 
-%% ===== Checking of input  parameters ==================================
-nargmin = 3;
-nargmax = 4;
-narginchk(nargmin,nargmax)
-if nargin==nargmax-1
-    conf = SFS_config;
-end
-
-
 %% ===== Configuration ==================================================
 usefracdelay = conf.usefracdelay;
 fracdelay_method = conf.fracdelay_method;
@@ -69,7 +60,7 @@ Lls = 30;      % length of least-squares factional delay filter
 
 
 %% ===== Computation =====================================================
-if(usefracdelay)
+if usefracdelay
 
     % Defining a temporary conf struct for recursive calling of delayline
     conf2.usefracdelay = 0;

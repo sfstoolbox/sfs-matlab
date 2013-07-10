@@ -64,7 +64,7 @@ wpi = w*pi;
 wpi2=wpi(2:L);
 
 % set up input signal
-insig = zeros(1,L);
+insig = zeros(L,1);
 insig(L/2) = 1;
 
 

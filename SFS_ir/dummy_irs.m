@@ -61,6 +61,8 @@ irs.right = ir;
 tmp = repmat(phi,length(theta),1);
 irs.apparent_azimuth = tmp(:)';
 irs.apparent_elevation = repmat(theta,1,length(phi));
-irs.distance = 2.3;
+irs.source_position = [0 2.333 0]';
+irs.head_position = [0 0 0]';
+irs.distance = 2.333;
 irs.description = ['HRIR dummy set (Dirac pulse) for testing your',...
                    'frequency response, etc.'];

@@ -67,6 +67,7 @@ end
 
 %% ===== Configuration ===================================================
 fs = conf.fs;
+useplot = conf.plot.useplot;
 
 
 %% ===== Calcualate spectrum =============================================

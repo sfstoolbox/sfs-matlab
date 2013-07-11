@@ -208,7 +208,8 @@ monochromatic sound field in a specified area for different techniques like WFS
 and NFC-HOA. The area can be a 3D cube, a 2D plane, a line or only one point.
 This depends on the specification of <code>X,Y,Z</code>. For example 
 <code>[-2 2],[-2 2],[-2 2]</code> will be a 3D cube;
-<code>[-2 2],0,[-2 2]</code> the xz-plane; <code>3,2,1</code> a single point.
+<code>[-2 2],0,[-2 2]</code> the xz-plane; <code>[-2 2],0,0</code> a line along
+the x-axis; <code>3,2,1</code> a single point.
 
 For all 2.5D functions the configuration <code>conf.xref</code> is important as
 it defines the point for which the amplitude is corrected in the wave field.

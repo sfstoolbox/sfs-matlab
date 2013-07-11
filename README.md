@@ -319,9 +319,9 @@ print_png('img/wave_field_stereo.png');
 ### Simulate time snapshots of sound fields
 
 With the files in <code>SFS_time_domain</code> you can simulate snapshots in
-time of an impulse sending out from your WFS or NFC-HOA system.
+time of an impulse originating from your WFS or NFC-HOA system.
 
-The following will create a snapshot in time after 200 samples for a broadband 
+In the following we will create a snapshot in time after 200 samples for a broadband 
 virtual point source placed at (0 2 0) m for 2.5D NFC-HOA.
 
 ```Matlab
@@ -336,9 +336,10 @@ print_png('img/wave_field_imp_nfchoa_25d.png');
 ![Image](doc/img/wave_field_imp_nfchoa_25d.png)
 
 The output can also be plotted in dB by setting <code>conf.plot.usedb =
-true;</code>. In this case also a color map is shown. Without a color map
-presented the color coding goes always from -1 to 1. In addition we change
-the color map to the Matlab default one.
+true;</code>. In this case also a color map is shown. For none dB plots no
+color bar is shown in the plots. In these cases the color coding goes always from
+-1 to 1, with clipping of larger values.
+We change also the color map to the Matlab default one.
 
 ```Matlab
 conf.plot.usedb = true;
@@ -374,7 +375,7 @@ may also want to have a look in <code>SFS_HRTF_extrapolation</code>.
 For example the following code will load our HRTF data set for a distance of 3m, then
 a single impulse response for an angle of 30° is chosen from the set. If the
 desired angle of 30° is not available, a linear interpolation between the next
-two angles would be applied. Afterwards a noise signal is created and convolved
+two available angles will be applied. Afterwards a noise signal is created and convolved
 with the impulse response by the <code>auralize_ir()</code> function.
 
 ```Matlab

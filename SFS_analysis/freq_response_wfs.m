@@ -94,8 +94,9 @@ f = f(1:idx);
 S = zeros(1,length(f));
 % Get the result for all frequencies
 for ii = 1:length(f)
+    D = driving_function_mono_wfs(x0,xs,src,f(ii),conf);
     % calculate wave field at the listener position
-    P = wave_field_mono_wfs(X(1),X(2),X(3),xs,src,f(ii),conf);
+    P = wave_field_mono(X(1),X(2),X(3),x0,'ps',D,f(ii),conf);
     S(ii) = abs(P);
 end
 

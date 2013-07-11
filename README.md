@@ -186,7 +186,7 @@ axis([-2 2 -2.5 2.5]);
 print_png('img/secondary_sources_arbitrary_realloudspeakers.png');
 ```
 
-![Image](img/secondary_sources_arbitrary_realloudspeakers.png)
+![Image](doc/img/secondary_sources_arbitrary_realloudspeakers.png)
 
 
 ### Simulate monochromatic sound fields

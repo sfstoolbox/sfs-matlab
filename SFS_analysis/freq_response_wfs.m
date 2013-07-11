@@ -106,7 +106,10 @@ if nargout>1, varargout{2}=f; end
 
 % ===== Plotting =========================================================
 if nargout==0 || useplot
-    figure; semilogx(f,db(S));
+    figure;
+    figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
+    semilogx(f,db(S));
+    set(gca,'XTick',[10 100 250 1000 5000 20000]);
     ylabel('Amplitude (dB)');
     xlabel('Frequency (Hz)');
 end

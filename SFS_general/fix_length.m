@@ -1,19 +1,19 @@
-function ir = fix_ir_length(ir,N)
-%FIX_IR_LENGTH pads zeros or removes entries from the IR according to length N
+function sig = fix_length(sig,N)
+%FIX_LENGTH pads zeros or removes entries from the signal according to length N
 %
-%   Usage: ir = fix_ir_length(ir,N)
+%   Usage: sig = fix_length(sig,N)
 %
 %   Input parameters:
-%       ir  - impulse response (IR)
-%       N   - number of samples the calculated BRIR should have
+%       sig - input signal (matrix with sigs as columns)
+%       N   - number of samples size(sig,1) should be
 %
 %   Output paramteres:
-%       ir  - corrected IR
+%       sig - corrected sig
 %
-%   FIX_IR_LENGTH(IR,N) pads zeros or removes the end of the given IR in
-%   order to have a IR with a length of N.
+%   FIX_LENGTH(sig,N) pads zeros or removes the end of the given signal in
+%   order to have a sig with a size(sig,1)==N.
 %
-%   see also: fix_irs_length, get_ir, read_irs
+%   see also: fix_irs_length, convolution
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -56,13 +56,13 @@ narginchk(nargmin,nargmax);
 
 %% ===== Fix IR ==========================================================
 % length of IR
-samples = size(ir,1);
-channels = size(ir,2);
+samples = size(sig,1);
+channels = size(sig,2);
 
 if samples<N
     % append zeros if to short
-    ir = [ir; zeros(N-samples,channels)];
+    sig = [sig; zeros(N-samples,channels)];
 else
     % remove the end of the IR, if to long
-    ir = ir(1:N,:);
+    sig = sig(1:N,:);
 end

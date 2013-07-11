@@ -17,7 +17,7 @@ function irs = fix_irs_length(irs,conf)
 %   extrapolation in get_ir(). Also set the overall length to conf.N if
 %   conf.ir.useoriglength is set to "false".
 %
-%   see also: read_irs, fix_ir_length
+%   see also: read_irs, fix_length
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -86,5 +86,5 @@ if N-samples<128
         upper(mfilename),N-samples);
 end
 channels = size(irs.left,2);
-irs.left  = [zeros(samples,channels); fix_ir_length(irs.left,N-samples)];
-irs.right = [zeros(samples,channels); fix_ir_length(irs.right,N-samples)];
+irs.left  = [zeros(samples,channels); fix_length(irs.left,N-samples)];
+irs.right = [zeros(samples,channels); fix_length(irs.right,N-samples)];

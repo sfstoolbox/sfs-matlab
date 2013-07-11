@@ -78,7 +78,7 @@ end
 N = size(x,1)+size(y,1)-1;
 % convolve the signals in frequency domain
 if isreal(x) && isreal(y)
-    z = ifft_real(fft_real(postpad(x,N)).*fft_real(postpad(y,N)),N);
+    z = ifft_real(fft_real(fix_length(x,N)).*fft_real(fix_length(y,N)),N);
 else
-    z = ifft(fft(postpad(x,N)).*fft(postpad(y,N)));
+    z = ifft(fft(fix_length(x,N)).*fft(fix_length(y,N)));
 end

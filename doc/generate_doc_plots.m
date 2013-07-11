@@ -170,6 +170,17 @@ axis([10 20000 -80 -40]);
 set(gca,'XTick',[10 100 250 1000 5000 20000]);
 legend('w/o pre-filter','w pre-filter');
 print_png('img/impulse_response_wfs_25d.png');
+% alternative variant
+conf = SFS_config_example;
+conf.wfs.usehpre = 0;
+[a1,f] = freq_response_wfs([0 0 0],[0 2.5 0],'ps',conf);
+conf.wfs.usehpre = 1;
+a2 = freq_response_wfs([0 0 0],[0 2.5 0],'ps',conf);
+figure;
+figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
+semilogx(f,20*log10(a1),'-b',f,20*log10(a2),'-r');
+
+
 
 
 % --- gnuplot ---

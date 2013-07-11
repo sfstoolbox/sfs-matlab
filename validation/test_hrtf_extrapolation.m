@@ -89,20 +89,20 @@ if strcmp('QU_KEMAR',hrtf_set)
     irs_pw = extrapolate_farfield_hrtfset(irs,conf);
     % plot the original HRTF data set
     figure;
-    imagesc(degree(irs.apparent_azimuth),1:size(irs.left,1),irs.left);
+    imagesc(deg(irs.apparent_azimuth),1:size(irs.left,1),irs.left);
     title('QU KEMAR anechoic 3m');
     xlabel('phi / deg');
     % plot the interplated HRTF data set
     figure;
-    imagesc(degree(irs_pw.apparent_azimuth),1:size(irs_pw.left,1),irs_pw.left);
+    imagesc(deg(irs_pw.apparent_azimuth),1:size(irs_pw.left,1),irs_pw.left);
     title('QU KEMAR anechoic extrapolated');
     xlabel('phi / deg');
     % ILD of both HRTF sets
     ild1 = interaural_level_difference(irs.left,irs.right);
     ild2 = interaural_level_difference(irs_pw.left,irs_pw.right);
     figure;
-    plot(degree(irs.apparent_azimuth),ild1,'-b', ...
-         degree(irs.apparent_azimuth),ild2,'-r');
+    plot(deg(irs.apparent_azimuth),ild1,'-b', ...
+         deg(irs.apparent_azimuth),ild2,'-r');
     legend('original','extrapolated');
     title('Interaural Level Differences');
 elseif strcmp('FABIAN_3D',hrtf_set)
@@ -134,20 +134,20 @@ elseif strcmp('FABIAN_3D',hrtf_set)
     save FABIAN_3D_extrapolated.mat irs_pw
     % plot the original HRTF data set
 %     figure;
-%     imagesc(degree(irs.apparent_azimuth),1:size(irs.left,1),irs.left);
+%     imagesc(deg(irs.apparent_azimuth),1:size(irs.left,1),irs.left);
 %     title('SEACEN FABIAN anechoic 1.7m');
 %     xlabel('phi / deg');
 %     % plot the interplated HRTF data set
 %     figure;
-%     imagesc(degree(irs_pw.apparent_azimuth),1:size(irs_pw.left,1),irs_pw.left);
+%     imagesc(deg(irs_pw.apparent_azimuth),1:size(irs_pw.left,1),irs_pw.left);
 %     title('SEACEN FABIAN anechoic extrapolated');
 %     xlabel('phi / deg');
 %     % ILD of both HRTF sets
 %     ild1 = interaural_level_difference(irs.left,irs.right);
 %     ild2 = interaural_level_difference(irs_pw.left,irs_pw.right);
 %     figure;
-%     plot(degree(irs.apparent_azimuth),ild1,'-b', ...
-%          degree(irs.apparent_azimuth),ild2,'-r');
+%     plot(deg(irs.apparent_azimuth),ild1,'-b', ...
+%          deg(irs.apparent_azimuth),ild2,'-r');
 %     legend('original','extrapolated');
 %     title('Interaural Level Differences');
 end

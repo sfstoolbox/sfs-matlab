@@ -1,7 +1,7 @@
-function phi = degree(phi)
-%DEGREE returns the given angle in degree
+function phi = deg(phi)
+%DEG returns the given angle in deg
 %
-%   Usage: phi = degree(phi)
+%   Usage: phi = deg(phi)
 %
 %   Input options:
 %       phi     - angle / rad, can be a scalar or matrix (rad)
@@ -9,7 +9,7 @@ function phi = degree(phi)
 %   Output options:
 %       phi     - angle / degree
 %
-%   DEGREE(phi) returns the given angles phi in degree.
+%   DEG(phi) returns the given angles phi in degree.
 %
 %   see also: rad
 

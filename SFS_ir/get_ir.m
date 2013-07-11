@@ -165,9 +165,8 @@ function ir = correct_radius(ir,ir_distance,r,conf)
         % Time delay of the source (at the listener position)
         delay = (r-ir_distance)/conf.c*conf.fs; % / samples
         % Amplitude weighting (point source model)
-        % FIXME: this formula is wrong. It shouldn't be absolute with very large
-        % values near the real distance, but with weight=1 in this region.
-        weight = 1/(4*pi*(r-ir_distance));
+        % This gives weight=1 for r==ir_distance
+        weight = 1/(r-ir_distance+20) * 20;
         if abs(delay)>size(ir,1)
             error(['%s: your impulse response is to short for a desired ', ...
                 'delay of %i samples.'],upper(mfilename),delay);

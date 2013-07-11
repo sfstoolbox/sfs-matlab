@@ -282,9 +282,14 @@ conf.plot.usedb = false; % boolean
 % caxis settings (leave blank, if you would use the default values of the given
 % plot function)
 conf.plot.caxis = '';
-% Default colormap to use (note this is not working with gnuplot at the moment)
-% Try 'jet' to get the default Matlab color map
-conf.plot.colormap = ''; % (default: a flipud version of gray)
+% Default colormap to use
+% The Toolbox comes with two own color maps, if you set 'default' or 'moreland'
+% you will get a blue/red-colormap after
+% http://www.sandia.gov/~kmorel/documents/ColorMaps/
+% If you set 'gray' or 'grey' you will get a colormap ranging from white to
+% black. In addition you can add every other map you can specify in
+% Matlab/Octave. For example to get the Matlab default colormap ser 'jet'.
+conf.plot.colormap = 'default';
 % Plot loudspeakers in the wave field plots
 conf.plot.loudspeakers = true; % boolean
 % Use real loudspeakers symbols (otherwise crosses are used)

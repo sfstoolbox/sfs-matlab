@@ -155,8 +155,6 @@ else
         ir = intpot_ir(ir1,ir2,ir3,[neighbours; 1 1 1],[xs;1]);
     end
 end
-% return an impulse response that has a length of the original one
-%ir = fix_ir_length(ir,size(irs.left(:,1)));
 end
 
 function ir = correct_radius(ir,ir_distance,r,conf)
@@ -175,6 +173,6 @@ function ir = correct_radius(ir,ir_distance,r,conf)
                 'delay of %i samples.'],upper(mfilename),delay);
         end
         % Apply delay and weighting
-        ir = delayline(ir,delay,weight,conf);
+        ir = delayline(ir,[delay; delay],[weight; weight],conf);
     end
 end

@@ -74,6 +74,7 @@ if strcmp('QU_KEMAR',hrtf_set)
     conf.usefracdelay = false;
     conf.fracdelay_method = 'resample';
     conf.ir.useinterpolation = true;
+    conf.ir.useoriglength = false;
     % check if HRTF data set is available, download otherwise
     basepath = get_sfs_path();
     hrtf_file = [basepath '/data/HRTFs/QU_KEMAR_anechoic_3m.mat'];
@@ -123,6 +124,7 @@ elseif strcmp('FABIAN_3D',hrtf_set)
     conf.fracdelay_method = 'resample';
     conf.ir.useinterpolation = true;
     conf.ir.path = 'D:\svn\ir_databases\';
+    conf.ir.useoriglength = false;
     addirspath(conf);
     hrtf_file = 'FABIAN_3d_anechoic.mat';
     % load HRTF data set

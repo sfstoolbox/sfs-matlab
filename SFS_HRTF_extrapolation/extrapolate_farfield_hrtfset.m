@@ -69,7 +69,6 @@ end
 
 %% ===== Configuration ===================================================
 fs = conf.fs;
-c = conf.c;
 dimension = conf.dimension;
 N = size(irs.left,1);
 conf.ir.usehcomp = false;
@@ -119,8 +118,7 @@ end
 if strcmp('2.5D',dimension)
     % Apply a amplitude correction, due to 2.5D. This will result in a correct
     % reproduced ILD in the resulting impulse responses (see, Spors 2011)
-    %amplitude_correction = -1.7 * sin(irs.apparent_azimuth);
-    amplitude_correction = zeros(size(irs.apparent_azimuth));
+    amplitude_correction = -1.7 * sin(irs.apparent_azimuth);
 else
     amplitude_correction = zeros(size(irs.apparent_azimuth));
 end

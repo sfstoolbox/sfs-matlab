@@ -266,11 +266,15 @@ print_png('img/wave_field_wfs_25d.png');
 ![Image](doc/img/wave_field_wfs_25d.png)
 
 If you want to plot the whole array and not only the active secondary sources,
-you can do this by adding these commands.
+you can do this by adding these commands. First we store all sources in an extra
+variable <code>x0_all</code>, then we get the active ones <code>x0</code> and
+the corresponding indices of these active ones in <code>x0_all</code>.
+Afterwards we set all sources in <code>x0_all</code> to zero, which is inactive
+and only the active ones to <code>x0(:,7)</code>.
 
 ```Matlab
 x0_all = secondary_source_positions(conf);
-[~,idx] = secondary_source_selection(x0,[0 2.5 0],'ps');
+[x0,idx] = secondary_source_selection(x0_all,[0 2.5 0],'ps');
 x0_all(:,7) = zeros(1,size(x0_all,1));
 x0_all(idx,7) = x0(:,7);
 plot_wavefield(P,x,y,z,x0_all,conf);

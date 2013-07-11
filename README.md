@@ -38,7 +38,7 @@ you will need the following additional packages from
 * audio (e.g. for wavwrite)
 * signal (e.g. for firls)
 
-Now you set up the Toolbox and can made on of the following things with it:
+After setting up the the Toolbox and can made one of the magic following things with it:
 
 Usage
 -----
@@ -46,7 +46,8 @@ Usage
 ### Secondary Sources
 
 The Toolbox comes with a function which can generate different common shapes of loudspeaker arrays for you.
-At the moment these include linear, circular, box shaped and spherical arrays.
+At the moment linear, circular, box shaped and spherical arrays are included out
+of the box.
 
 Before showing the different geometries, we start with some common settings. First we get a configuration struct
 and set the array size/diameter to 3m.
@@ -103,6 +104,18 @@ print_png('img/secondary_sources_box.png');
 
 #### spherical array
 
+For a spherical array you need a grid to place the secondary sources on the
+sphere. At the moment we provide grids with the Toolbox, that can be find here:
+http://github.com/sfstoolbox/data/tree/master/spherical_grids  
+You have to specifiy your desired grid, for example
+<code>conf.secondary_sources.grid = 'equally_spaced_points'</code>. The
+<code>secondary_source_positions()</code> functions will then automatically
+download the desired grid from that webpage and stores it under
+<code><$SFS_MAIN_PATH>/data</code>. If the download is not working (which can
+happen under Matlab and Windows at the moment) you can alternatively checkout or
+download the whole [data repository](http://github.com/sfstoolbox/data) to the
+<code>data</code> folder.
+
 ```Matlab
 conf.secondary_sources.geometry = 'sphere'; % or 'spherical'
 conf.secondary_sources.number = 225;
@@ -118,7 +131,7 @@ print_png('img/secondary_sources_sphere.png');
 
 #### arbitrary shaped arrays
 
-You can also create arbitrary shaped arrays by settings the values of the single
+You can create arbitrarily shaped arrays by settings the values of the single
 loudspeaker directly in the <code>conf.secondary_sources.x0</code> matrix, which
 has to be empty if you want to use one of the above predefined shapes. The rows
 of the matrix contain the single loudspeakers and the six columns are
@@ -127,8 +140,7 @@ single loudspeakers. The weight <code>w</code> is a factor the driving function
 of this particular loudspeaker is multiplied with in a function that calculates
 the sound field from the given driving signals and secondary sources. For WFS
 <code>w</code> could include the tapering window, a spherical grid weight, and
-the <code>r^2 cos(theta)</code> integrational weighting for integration on a
-sphere.
+the <code>r^2 cos(theta)</code> weights for integration on a sphere.
 
 ```Matlab
 % create a stadium like shape by combining two half circles with two linear
@@ -174,8 +186,8 @@ print_png('img/secondary_sources_arbitrary.png');
 
 #### plot loudspeaker symbols
 
-You can also plot two dimensional setups of secondary sources with loudspeaker
-symbols, for example the following will plot the last array.
+For two dimensional setups you can plot the secondary sources with loudspeaker
+symbols, for example the following will replot the last array.
 
 ```Matlab
 conf.plot.realloudspeakers = true;
@@ -233,14 +245,14 @@ print_png('img/wave_field_wfs_3d_yz.png');
 
 
 You can see that the Toolbox is now projecting all the secondary source positions
-into the plane for plotting them. In addition the axis are automatically
-labeled.plotting only the active loudspeakers for WFS.
+into the plane for plotting them. In addition the axis are automatically chosen
+and labeled.
 
-Now we use only a two dimensional array, 2.5D WFS and a virtual point source
-located at (0 2.5 0) m. The results above showed you, that the wave fields are
+In the next plot we use a two dimensional array, 2.5D WFS and a virtual point source
+located at (0 2.5 0) m. The 3D example showed you, that the wave fields are
 automatically plotted if we specify now output arguments. If we specify one, we
-have to explicitly say if we want also plotting, by <code>conf.plot.useplot =
-true;</code>.
+have to explicitly say if we want also plot the results, by
+<code>conf.plot.useplot = true;</code>.
 
 ```Matlab
 conf = SFS_config;
@@ -253,7 +265,7 @@ print_png('img/wave_field_wfs_25d.png');
 
 ![Image](doc/img/wave_field_wfs_25d.png)
 
-If you want to plot the whole array and not only the selected secondary sources,
+If you want to plot the whole array and not only the active secondary sources,
 you can do this by adding these commands.
 
 ```Matlab
@@ -270,7 +282,7 @@ print_png('img/wave_field_wfs_25d_with_all_sources.png');
 
 #### Near-field compensated higher order Ambisonics
 
-The following will simulate the field of a virtual plane wave with a frequency
+In the following we will simulate the field of a virtual plane wave with a frequency
 of 800 Hz traveling into the direction (0 -1 0), synthesized with 2.5D NFC-HOA.
 
 ```Matlab
@@ -282,6 +294,23 @@ print_png('img/wave_field_nfchoa_25d.png');
 ```
 
 ![Image](doc/img/wave_field_nfchoa_25d.png)
+
+
+#### Stereo
+
+The Toolbox includes not only WFS and NFCHOA, but also some generic wave field
+functions that are doing only the integration of the driving signals of the
+single secondary sources to the resulting sound field. With these function you
+can for example easily simulate a stereophonic setup.
+
+```Matlab
+x0 = [-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1];
+% [P,x,y,z] = wave_field_mono(X,Y,Z,x0,src,D,f,conf)
+wave_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800)
+print_png('img/wave_field_stereo.png');
+```
+![Image](doc/img/wave_field_stereo.png)
+
 
 ### Simulate time snapshots of sound fields
 

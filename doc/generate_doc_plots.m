@@ -97,10 +97,9 @@ print_png('img/secondary_sources_arbitrary_realloudspeakers.png');
 %% ===== Monochromatic sound fields ======================================
 % === stereo setup ===
 conf = SFS_config_example;
-% [P,x,y,z] = wave_field_mono_point_source(X,Y,Z,xs,f);
-[P1,x,y,z] = wave_field_mono_point_source([-2 2],[-1 3],0,[-1 2 0],800,conf);
-P2 = wave_field_mono_point_source([-2 2],[-1 3],0,[1 2 0],800);
-plot_wavefield(real(P1+P2),x,y,z,[-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1],conf);
+x0 = [-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1];
+% [P,x,y,z] = wave_field_mono(X,Y,Z,x0,src,D,f,conf)
+wave_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800,conf)
 print_png('img/wave_field_stereo.png');
 
 % === WFS 3D ===

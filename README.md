@@ -228,12 +228,12 @@ conf.dimension = '3D';
 conf.secondary_sources.size = 3;
 conf.secondary_sources.number = 225;
 conf.secondary_sources.geometry = 'sphere';
-% [P,x,y,z,x0,win] = wave_field_mono_wfs_25d(X,Y,Z,xs,src,fconf);
-wave_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',1000,conf);
+% [P,x,y,z,x0,win] = wave_field_mono_wfs(X,Y,Z,xs,src,f,conf);
+wave_field_mono_wfs([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
 print_png('img/wave_field_wfs_3d_xy.png');
-wave_field_mono_wfs([-2 2],0,[-2 2],[0 2.5 0],'ps',1000,conf);
+wave_field_mono_wfs([-2 2],0,[-2 2],[0 -1 0],'pw',800,conf);
 print_png('img/wave_field_wfs_3d_xz.png');
-wave_field_mono_wfs(0,[-2 2],[-2 2],[0 2.5 0],'ps',1000,conf);
+wave_field_mono_wfs(0,[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
 print_png('img/wave_field_wfs_3d_yz.png');
 ```
 

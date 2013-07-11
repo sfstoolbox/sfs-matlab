@@ -21,8 +21,8 @@ function conf = SFS_config()
 %                         Deutsche Telekom Laboratories, TU Berlin           *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013      Institut für Nachrichtentechnik                    *
-%                         Universität Rostock                                *
+% Copyright (c) 2013      Institut fuer Nachrichtentechnik                   *
+%                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
 % This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
@@ -225,6 +225,14 @@ conf.sdm.withev = true; % boolean
 % by calling addirspath;
 % If you have more than one path, seperate them by :
 conf.ir.path = 'data/HRTFs:~/svn/ir_databases:~/svn/measurements';
+%
+% If we load an HRTF data set we are most likely interested to modify its
+% existing length, to enable a delaying of the impulse responses without
+% problems. If these value is set to "false", zeros are padded at the
+% beginning of all HRTFs corresponding to the maximum distance of the whole
+% set. In addition the overall length of the impulse responses is set to
+% conf.N. This is applied directly if you load a HRTF set with read_irs().
+conf.ir.useoriglength = false;
 %
 % Use interpolation to get the desired HRTF for binaural simulation. If this is
 % disabled the HRTF returned by a nearest neighbour search is used instead.

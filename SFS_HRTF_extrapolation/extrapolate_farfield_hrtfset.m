@@ -71,8 +71,7 @@ end
 fs = conf.fs;
 c = conf.c;
 dimension = conf.dimension;
-N = conf.N;
-usehpre = conf.wfs.usehpre;
+N = size(irs.left,1);
 conf.ir.usehcomp = false;
 
 
@@ -169,18 +168,15 @@ for ii=1:nls
     conf.wfs.usehpre = false;
     [~,delay,weight] = driving_function_imp_wfs(x0,xs,'pw',conf);
     conf.wfs.usehpre = tmp_usehpre;
-    % delay in samples; we remove the 350 samples that get_ir() adds
-    % before every impulse response
-    delay = delay.*fs - 350;
+    % delay in samples
+    delay = delay.*fs;
     % sum up contributions from individual virtual speakers
     for jj=1:size(x0,1)
-        % truncate IR length
-        %ir_single = fix_ir_length(ir(:,:,jj),N,max(delay));
         % delay and weight HRTFs
         irs_pw.left(:,ii) = irs_pw.left(:,ii) + ...
-            delayline(ir_single(:,1),delay(jj),weight(jj),conf);
+            delayline(ir(:,1,jj),delay(jj),weight(jj),conf);
         irs_pw.right(:,ii) = irs_pw.right(:,ii) + ...
-            delayline(ir_single(:,2),delay(jj),weight(jj),conf);
+            delayline(ir(:,2,jj),delay(jj),weight(jj),conf);
     end
     irs_pw.left(:,ii) = irs_pw.left(:,ii)/10^(amplitude_correction(ii)/20);
     irs_pw.right(:,ii) = irs_pw.right(:,ii)/10^(-amplitude_correction(ii)/20);

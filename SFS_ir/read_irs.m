@@ -61,10 +61,16 @@ isargfile(irsfile);
 isargstruct(conf);
 
 
+%% ===== Configuration ================================================
+useoriglength = conf.ir.useoriglength;
+
+
 %% ===== Read IR files ================================================
 % Load the mat file
 load(irsfile);
 % Check irs format
 check_irs(irs);
-% Correct beginning zeros of impulse response
-irs = fix_irs_length(irs,conf);
+if ~useoriglength
+    % Correct beginning zeros and length of impulse response
+    irs = fix_irs_length(irs,conf);
+end

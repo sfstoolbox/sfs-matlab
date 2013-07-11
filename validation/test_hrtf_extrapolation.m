@@ -59,8 +59,21 @@ narginchk(nargmin,nargmax);
 if strcmp('QU_KEMAR',hrtf_set)
     % QU KEMAR horizontal HRTFs
     disp('Extrapolate QU KEMAR anechoic 3m ...');
-    %conf = SFS_config_example;
+    % extrapolation settings
     conf.dimension = '2.5D';
+    conf.N = 1024;
+    conf.c = 343;
+    conf.fs = 44100;
+    conf.xref = [0 0 0];
+    conf.usetapwin = true;
+    conf.tapwinlen = 0.3;
+    conf.secondary_sources.geometry = 'circle';
+    conf.wfs.usehpre = true;
+    conf.wfs.hpretype = 'FIR';
+    conf.driving_functions = 'default';
+    conf.usefracdelay = false;
+    conf.fracdelay_method = 'resample';
+    conf.ir.useinterpolation = true;
     % check if HRTF data set is available, download otherwise
     basepath = get_sfs_path();
     hrtf_file = [basepath '/data/HRTFs/QU_KEMAR_anechoic_3m.mat'];
@@ -70,22 +83,7 @@ if strcmp('QU_KEMAR',hrtf_set)
         download_file(url,hrtf_file);
     end
     % load HRTF data set
-    irs = read_irs(hrtf_file);
-    % extrapolation settings
-    conf.dimension = '2.5D';
-    conf.fs = 44100;
-    conf.c = 343;
-    conf.xref = [0 0 0];
-    conf.usetapwin = true;
-    conf.tapwinlen = 0.3;
-    conf.secondary_sources.geometry = 'circle';
-    conf.N = 2048;
-    conf.wfs.usehpre = true;
-    conf.wfs.hpretype = 'FIR';
-    conf.driving_functions = 'default';
-    conf.usefracdelay = false;
-    conf.fracdelay_method = 'resample';
-    conf.ir.useinterpolation = true;
+    irs = read_irs(hrtf_file,conf);
     % do the extrapolation
     irs_pw = extrapolate_farfield_hrtfset(irs,conf);
     % plot the original HRTF data set
@@ -109,11 +107,6 @@ if strcmp('QU_KEMAR',hrtf_set)
 elseif strcmp('FABIAN_3D',hrtf_set)
     % SEACEN FABIAN 3D HRTFs
     disp('Extrapolate SEACEN FABIAN anechoic ...');
-    conf.ir.path = 'D:\svn\ir_databases\';
-    addirspath(conf);
-    hrtf_file = 'FABIAN_3d_anechoic.mat';
-    % load HRTF data set
-    irs = read_irs(hrtf_file);
     % extrapolation settings
     conf.dimension = '3D';
     conf.fs = 44100;
@@ -122,13 +115,18 @@ elseif strcmp('FABIAN_3D',hrtf_set)
     conf.usetapwin = false;
     conf.tapwinlen = 0.3;
     conf.secondary_sources.geometry = 'sphere';
-    conf.N = 2048;
+    conf.N = 1024;
     conf.wfs.usehpre = true;
     conf.wfs.hpretype = 'FIR';
     conf.driving_functions = 'default';
     conf.usefracdelay = false;
     conf.fracdelay_method = 'resample';
     conf.ir.useinterpolation = true;
+    conf.ir.path = 'D:\svn\ir_databases\';
+    addirspath(conf);
+    hrtf_file = 'FABIAN_3d_anechoic.mat';
+    % load HRTF data set
+    irs = read_irs(hrtf_file,conf);
     % do the extrapolation
     irs_pw = extrapolate_farfield_hrtfset(irs,conf);
     save FABIAN_3D_extrapolated.mat irs_pw

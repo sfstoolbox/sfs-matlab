@@ -1,22 +1,19 @@
-function ir = fix_ir_length(ir,N,dt)
+function ir = fix_ir_length(ir,N)
 %FIX_IR_LENGTH pads zeros or removes entries from the IR according to length N
 %
-%   Usage: ir = fix_ir_length(ir,N,[dt])
+%   Usage: ir = fix_ir_length(ir,N)
 %
 %   Input parameters:
 %       ir  - impulse response (IR)
 %       N   - number of samples the calculated BRIR should have
-%       dt  - time delay for the given setup the IR will be shifted
-%             with / samples (default: 0)
 %
 %   Output paramteres:
 %       ir  - corrected IR
 %
-%   FIX_IR_LENGTH(IR,N,DT) pads zeros or removes the end of the given IR in
-%   order to have a IR with the correct length to feed it with the time delay dt
-%   in the desired BRIR with the length N.
+%   FIX_IR_LENGTH(IR,N) pads zeros or removes the end of the given IR in
+%   order to have a IR with a length of N.
 %
-%   see also: brs_point_source, get_ir
+%   see also: fix_irs_length, get_ir, read_irs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -53,22 +50,19 @@ function ir = fix_ir_length(ir,N,dt)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 2;
-nargmax = 3;
+nargmax = 2;
 narginchk(nargmin,nargmax);
-if nargin==nargmax-1
-    dt = 0;
-end
 
 
 %% ===== Fix IR ==========================================================
 % length of IR
-lenir = length(ir(:,1));
-% ensure integer delays
-dt = round(dt);
-% append zeros if to short
-if(lenir<N+abs(dt))
-    ir = cat(1,ir,zeros(N-lenir,size(ir,2)));
-% remove the end of the IR, if to long
+samples = size(ir,1);
+channels = size(ir,2);
+
+if samples<N
+    % append zeros if to short
+    ir = [ir; zeros(N-samples,channels)];
 else
-    ir=ir(1:N,:);
+    % remove the end of the IR, if to long
+    ir = ir(1:N,:);
 end

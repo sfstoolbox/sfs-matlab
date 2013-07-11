@@ -14,9 +14,10 @@ function irs = fix_irs_length(irs,conf)
 %   FIX_IRS_LENGTH(IRS) pads zeros at the beginning of the given impulse
 %   response data set in order to have as many zeros at the beginning as the
 %   maximum distance within the data set. This will ensure correct distance
-%   extrapolation in get_ir().
+%   extrapolation in get_ir(). Also set the overall length to conf.N if
+%   conf.ir.useoriglength is set to "false".
 %
-%   see also: get_ir
+%   see also: read_irs, fix_ir_length
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -64,6 +65,7 @@ isargstruct(conf);
 %% ===== Configuration ===================================================
 c = conf.c;
 fs = conf.fs;
+N = conf.N;
 
 
 %% ===== Main ============================================================
@@ -77,9 +79,12 @@ if dist>10
 end
 % append zeros at the beginning of the HRTFs corresponding to its maximum
 % distance
-samples = dist/c * fs;
+samples = ceil(dist/c * fs);
+if N-samples<128
+    error(['%s: choose a larger conf.N value, because otherwise you ', ...
+        'will have only %i samples of your original impulse response.'], ...
+        upper(mfilename),N-samples);
+end
 channels = size(irs.left,2);
-irs.left  = [zeros(samples,channels); irs.left];
-irs.right = [zeros(samples,channels); irs.right];
-% TODO: fix also the overall length to conf.N and get rid completly of
-% fix_ir_length?
+irs.left  = [zeros(samples,channels); fix_ir_length(irs.left,N-samples)];
+irs.right = [zeros(samples,channels); fix_ir_length(irs.right,N-samples)];

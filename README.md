@@ -122,12 +122,13 @@ You can also create arbitrary shaped arrays by settings the values of the single
 loudspeaker directly in the <code>conf.secondary_sources.x0</code> matrix, which
 has to be empty if you want to use one of the above predefined shapes. The rows
 of the matrix contain the single loudspeakers and the six columns are
-[x y z nx ny nz w], the position and direction and weight of the single
-loudspeakers. The weight w is a factor the driving function of this particular
-loudspeaker is multiplied with in a function that calculates the sound field
-from the given driving signals and secondary sources. For WFS w could include
-the tapering window, a spherical grid weight, and the r^2 cos(theta)
-integrational weighting for integration on a sphere.
+<code>[x y z nx ny nz w]</code>, the position and direction and weight of the
+single loudspeakers. The weight <code>w</code> is a factor the driving function
+of this particular loudspeaker is multiplied with in a function that calculates
+the sound field from the given driving signals and secondary sources. For WFS
+<code>w</code> could include the tapering window, a spherical grid weight, and
+the <code>r^2 cos(theta)</code> integrational weighting for integration on a
+sphere.
 
 ```Matlab
 % create a stadium like shape by combining two half circles with two linear
@@ -171,13 +172,31 @@ print_png('img/secondary_sources_arbitrary.png');
 ![Image](doc/img/secondary_sources_arbitrary.png)
 
 
+#### plot loudspeaker symbols
+
+You can also plot two dimensional setups of secondary sources with loudspeaker
+symbols, for example the following will plot the last array.
+
+```Matlab
+conf.plot.realloudspeakers = true;
+figure;
+figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
+draw_loudspeakers(x0,conf);
+axis([-2 2 -2.5 2.5]);
+print_png('img/secondary_sources_arbitrary_realloudspeakers.png');
+```
+
+![Image]('img/secondary_sources_arbitrary_realloudspeakers.png');
+
+
 ### Simulate monochromatic sound fields
 
 With the files in <code>SFS_monochromatic</code> you can simulate a
 monochromatic sound field in a specified area for different techniques like WFS
 and NFCHOA. The area can be a 3D cube, a 2D plane, a line or only one point.
-This depends on the specification of X,Y,Z. For example [-2 2],[-2 2],[-2 2]
-will be a 3D cube; [-2 2],0,[-2 2] the xz-plane; 3,2,1 a single point.
+This depends on the specification of <code>X,Y,Z</code>. For example 
+<code>[-2 2],[-2 2],[-2 2]</code> will be a 3D cube;
+<code>[-2 2],0,[-2 2]</code> the xz-plane; <code>3,2,1</code> a single point.
 
 For all 2.5D functions the configuration <code>conf.xref</code> is important as
 it defines the point for which the amplitude is corrected in the wave field.
@@ -188,8 +207,8 @@ conf.xref = [0 0 0];
 
 #### Wave Field Synthesis
 
-The following will simulate the field of a virtual point source with a frequency
-of 1kHz placed at (0 2.5 0)m synthesized with 3D WFS.
+The following will simulate the field of a virtual plane wave with a frequency
+of 800 Hz going into the direction of (0 -1 0) synthesized with 3D WFS.
 
 ```Matlab
 conf = SFS_config;
@@ -213,32 +232,52 @@ print_png('img/wave_field_wfs_3d_yz.png');
 ![Image](doc/img/wave_field_wfs_3d_yz.png)
 
 
-You can see that the Toolbox is plotting only the active loudspeakers for WFS.
-If you want to plot the whole array, you can do this by adding these commands.
+You can see that the Toolbox is now projecting all the secondary source positions
+into the plane for plotting them. In addition the axis are automatically
+labeled.plotting only the active loudspeakers for WFS.
+
+Now we use only a two dimensional array, 2.5D WFS and a virtual point source
+located at (0 2.5 0) m. The results above showed you, that the wave fields are
+automatically plotted if we specify now output arguments. If we specify one, we
+have to explicitly say if we want also plotting, by <code>conf.plot.useplot =
+true;</code>.
 
 ```Matlab
-x0 = secondary_source_positions(conf);
-[~,idx] = secondary_source_selection(x0,[0 2.5 0],'ps');
-win2 = zeros(1,size(x0,1));
-win2(idx) = win;
-[P,x,y,z] = wave_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',1000,conf);
-plot_wavefield(P,x,y,z,x0,win2,conf);
-print_png('img/wave_field_wfs_3d_xy_with_all_sources.png');
+conf = SFS_config_example;
+conf.dimension = '2.5D';
+conf.plot.useplot = 1;
+% [P,x,y,z,x0] = wave_field_mono_wfs(X,Y,Z,xs,src,f,conf);
+[P,x,y,z,x0] = wave_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf);
+print_png('img/wave_field_wfs_25d.png');
 ```
 
-![Image](doc/img/wave_field_wfs_3d_xy_with_all_sources.png)
+![Image](doc/img/wave_field_wfs_25d.png)
+
+If you want to plot the whole array and not only the selected secondary sources,
+you can do this by adding these commands.
+
+```Matlab
+x0_all = secondary_source_positions(conf);
+[~,idx] = secondary_source_selection(x0,[0 2.5 0],'ps');
+x0_all(:,7) = zeros(1,size(x0_all,1));
+x0_all(idx,7) = x0(:,7);
+plot_wavefield(P,x,y,z,x0_all,conf);
+print_png('img/wave_field_wfs_25d_with_all_sources.png');
+```
+
+![Image](doc/img/wave_field_wfs_25d_xy_with_all_sources.png)
 
 
 #### Near-field compensated higher order Ambisonics
 
 The following will simulate the field of a virtual plane wave with a frequency
-of 1kHz traveling into the direction (0 -1), synthesized with 2.5D NFCHOA.
+of 800 Hz traveling into the direction (0 -1 0), synthesized with 2.5D NFC-HOA.
 
 ```Matlab
 conf = SFS_config;
-conf.useplot = 1;
-% wave_field_mono_nfchoa_25d(X,Y,Z,xs,src,f,L,conf);
-wave_field_mono_nfchoa_25d([-2 2],[-2 2],0,[0 -1 0],'pw',1000,3,conf);
+conf.dimension = '2.5D';
+% wave_field_mono_nfchoa(X,Y,Z,xs,src,f,conf);
+wave_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
 print_png('img/wave_field_nfchoa_25d.png');
 ```
 
@@ -247,27 +286,42 @@ print_png('img/wave_field_nfchoa_25d.png');
 ### Simulate time snapshots of sound fields
 
 With the files in <code>SFS_time_domain</code> you can simulate snapshots in
-time of an impulse sending out from your WFS or NFCHOA system.
+time of an impulse sending out from your WFS or NFC-HOA system.
 
 The following will create a snapshot in time after 200 samples for a broadband 
-virtual point source placed at (0 2)m for 2.5D NFCHOA.
+virtual point source placed at (0 2 0) m for 2.5D NFC-HOA.
 
 ```Matlab
 conf = SFS_config;
-conf.useplot = 1;
-% wave_field_imp_nfchoa_25d(X,Y,Z,xs,src,t,L,conf)
-wave_field_imp_nfchoa_25d([-2 2],[-2 2],0,[0 2 0],'ps',200,3,conf);
+conf.dimension = '2.5D';
+conf.plot.useplot = true;
+% wave_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
+[p,x,y,z,x0] = wave_field_imp_nfchoa([-2 2],[-2 2],0,[0 2 0],'ps',200,conf);
 print_png('img/wave_field_imp_nfchoa_25d.png');
 ```
 
 ![Image](doc/img/wave_field_imp_nfchoa_25d.png)
+
+The output can also be plotted in dB by setting <code>conf.plot.usedb =
+true;</code>. In this case also a color map is shown. Without a color map
+presented the color coding goes always from -1 to 1. In addition we change
+the color map to the Matlab default one.
+
+```Matlab
+conf.plot.usedb = true;
+conf.plot.colormap = 'jet';
+plot_wavefield(p,x,y,z,x0,conf);
+print_png('img/wave_field_imp_nfchoa_25d_dB.png');
+```
+
+![Image](doc/img/wave_field_imp_nfchoa_25d_dB.png)
 
 
 ### Make binaural simulations of your systems
 
 If you have a set of head-related transfer functions (HRTFs) you can simulate
 the ear signals reaching a listener sitting at a given point in the listening
-area for a specified WFS or NFCHOA system.
+area for a specified WFS or NFC-HOA system.
 You can even download a set of HRTFs, which will just work with the Toolbox at 
 http://dev.qu.tu-berlin.de/projects/measurements/wiki/2010-11-kemar-anechoic
 
@@ -291,19 +345,26 @@ two angles would be applied. Afterwards a noise signal is created and convolved
 with the impulse response by the <code>auralize_ir()</code> function.
 
 ```Matlab
+conf = SFS_config;
 irs = read_irs('QU_KEMAR_anechoic_3m.mat');
-ir = get_ir(irs,rad(30)); % NOTE: this is broken in the threed branch at the moment
+ir = get_ir(irs,[rad(30) 0 3]);
 nsig = randn(44100,1);
 sig = auralize_ir(ir,nsig);
+sound(sig,conf.fs);
 ```
 
 To simulate the same source as a virtual point source synthesized by WFS and a
-circular array with a diameter of 3m, you have to do the following.
+circular array with a diameter of 3 m, you have to do the following.
 
 ```Matlab
+conf = SFS_config;
+conf.secondary_sources.size = 3;
+conf.secondary_sources.number = 56;
+conf.secondary_sources.geometry = 'circle';
+conf.dimension = '2.5D';
 irs = read_irs('QU_KEMAR_anechoic_3m.mat');
-% ir = ir_wfs_25d(X,phi,xs,src,L,irs,conf);
-ir = ir_wfs_25d([0 0 0],pi/2,[0 3 0],'ps',3,irs);
+% ir = ir_wfs(X,phi,xs,src,irs,conf);
+ir = ir_wfs([0 0 0],pi/2,[0 3 0],'ps',irs,conf);
 nsig = randn(44100,1);
 sig = auralize_ir(ir,nsig);
 ```
@@ -311,32 +372,42 @@ sig = auralize_ir(ir,nsig);
 Binaural simulations are also a nice way to investigate the frequency response
 of your reproduction system. The following code will investigate the influence
 of the pre-equalization filter in WFS on the frequency response.
-For the redline the pre-filter is used and its upper frequency is set to the
+For the red line the pre-filter is used and its upper frequency is set to the
 expected aliasing frequency of the system (above these frequency the spectrum
 becomes very noise as you can see in the figure).
 
 ```Matlab
 conf = SFS_config;
-conf.usehcomp = 0; % disable headphone compensation
-irs = dummy_irs; % get dirac impulses as HRTFs
-conf.usehpre = 0;
-ir1 = ir_wfs_25d([0 0 0],pi/2,[0 2.5 0],'ps',3,irs,conf);
-conf.usehpre = 1;
-x0 = secondary_source_positions(3,conf);
-conf.hprefhigh = aliasing_frequency(x0,conf);
-ir2 = ir_wfs_25d([0 0 0],pi/2,[0 2.5 0],'ps',3,irs,conf);
+conf.ir.usehcomp = 0;
+conf.wfs.usehpre = 0;
+irs = dummy_irs;
+[ir1,x0] = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
+conf.wfs.usehpre = 1;
+conf.wfs.hprefhigh = aliasing_frequency(x0);
+ir2 = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
 [a1,p,f] = easyfft(ir1(:,1)./max(abs(ir1(:,1))));
-[a2,p,f] = easyfft(ir2(:,1)./max(abs(ir2(:,1))));
+a2 = easyfft(ir2(:,1)./max(abs(ir2(:,1))));
 figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 semilogx(f,20*log10(a1),'-b',f,20*log10(a2),'-r');
-axis([10 20000 -100 -60]);
+axis([10 20000 -80 -40]);
 set(gca,'XTick',[10 100 250 1000 5000 20000]);
-legend('w pre-filter','w/o pre-filter');
+legend('w/o pre-filter','w pre-filter');
 print_png('img/impulse_response_wfs_25d.png');
 ```
 
 ![Image](doc/img/impulse_response_wfs_25d.png)
+
+The same can be done in the frequency domain, but in this case we are not able
+to set a maximum frequency of the pre-equalization filter and the whole
+frequency range will be affected.
+
+```Matlab
+freq_response_wfs([0 0 0],[0 2.5 0],'ps',conf);
+print_png('img/impulse_response_wfs_25d_mono.png');
+```
+
+![Image](doc/img/impulse_response_wfs_25d_mono.png)
 
 
 #### Using the SoundScape Renderer with the SFS Toolbox
@@ -344,12 +415,13 @@ print_png('img/impulse_response_wfs_25d.png');
 In addition to binaural synthesis, you may want to apply dynamic binaural
 synthesis, which means you track the position of the head of the listener and
 switches the used impulse responses regarding the head position. The [SoundScape
-Renderer](http://spatialaudio.net/ssr/) is able to do this. The SFS Toolbox
+Renderer (SSR)](http://spatialaudio.net/ssr/) is able to do this. The SFS Toolbox
 provides functions to generate the needed wav files containing the impulse
 responses used by the SoundScape Renderer.
+All functions regarding the SSR are stored in <code>SFS_ssr</code>.
 
 ```Matlab
-brs = brs_wfs_25d(X,phi,xs,src,L,irs,conf);
+brs = ssr_brs_wfs(X,phi,xs,src,irs,conf);
 wavwrite(brs,fs,16,'brs_set_for_SSR.wav');
 ```
 
@@ -380,9 +452,10 @@ the output file before. Note, that the same will work with Matlab.
 
 ```Matlab
 conf = SFS_config;
+conf.plot.colormap = 'gray';
 conf.plot.usegnuplot = 1;
 conf.plot.file = 'img/wave_field_nfchoa_25d_gnuplot.png';
-wave_field_mono_nfchoa_25d([-2 2],[-2 2],0,[0 -1 0],'pw',1000,3,conf);
+wave_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',1000,conf);
 ```
 
 ![Image](doc/img/wave_field_nfchoa_25d_gnuplot.png)

@@ -3,7 +3,7 @@ Sound Field Synthesis Toolbox
 
 The Sound Field Synthesis Toolbox (SFS) for Matlab/Octave gives you the
 possibility to play around with sound field synthesis methods like Wave Field
-Synthesis (WFS) or near-field compensated Higher Order Ambisonics (NFCHOA).
+Synthesis (WFS) or near-field compensated Higher Order Ambisonics (NFC-HOA).
 There are functions to simulate monochromatic wave fields for different secondary
 source (loudspeaker) setups, time snapshots of full band impulses emitted by the
 secondary source distributions, or even generate Binaural Room Scanning (BRS)
@@ -38,7 +38,7 @@ you will need the following additional packages from
 * audio (e.g. for wavwrite)
 * signal (e.g. for firls)
 
-After setting up the the Toolbox and can made one of the magic following things with it:
+After setting up the Toolbox and can made one of the magic following things with it:
 
 Usage
 -----
@@ -107,10 +107,10 @@ print_png('img/secondary_sources_box.png');
 For a spherical array you need a grid to place the secondary sources on the
 sphere. At the moment we provide grids with the Toolbox, that can be find here:
 http://github.com/sfstoolbox/data/tree/master/spherical_grids  
-You have to specifiy your desired grid, for example
+You have to specify your desired grid, for example
 <code>conf.secondary_sources.grid = 'equally_spaced_points'</code>. The
 <code>secondary_source_positions()</code> functions will then automatically
-download the desired grid from that webpage and stores it under
+download the desired grid from that web page and stores it under
 <code><$SFS_MAIN_PATH>/data</code>. If the download is not working (which can
 happen under Matlab and Windows at the moment) you can alternatively checkout or
 download the whole [data repository](http://github.com/sfstoolbox/data) to the
@@ -205,7 +205,7 @@ print_png('img/secondary_sources_arbitrary_realloudspeakers.png');
 
 With the files in <code>SFS_monochromatic</code> you can simulate a
 monochromatic sound field in a specified area for different techniques like WFS
-and NFCHOA. The area can be a 3D cube, a 2D plane, a line or only one point.
+and NFC-HOA. The area can be a 3D cube, a 2D plane, a line or only one point.
 This depends on the specification of <code>X,Y,Z</code>. For example 
 <code>[-2 2],[-2 2],[-2 2]</code> will be a 3D cube;
 <code>[-2 2],0,[-2 2]</code> the xz-plane; <code>3,2,1</code> a single point.
@@ -302,7 +302,7 @@ print_png('img/wave_field_nfchoa_25d.png');
 
 #### Stereo
 
-The Toolbox includes not only WFS and NFCHOA, but also some generic wave field
+The Toolbox includes not only WFS and NFC-HOA, but also some generic wave field
 functions that are doing only the integration of the driving signals of the
 single secondary sources to the resulting sound field. With these function you
 can for example easily simulate a stereophonic setup.
@@ -363,7 +363,7 @@ In order to easily use different HRIR sets the toolbox incorporates its own
 format](http://dev.qu.tu-berlin.de/projects/measurements/wiki/IRs_file_format)
 for HRIRs and BRIRs. The toolbox provides conversion functions for three other
 free available data sets (CIPIC,MIT,Oldenburg). In the future it will
-incoorperate the newly advancing [SOFA HRTF file
+incorporate the newly advancing [SOFA HRTF file
 format](http://sourceforge.net/projects/sofacoustics).
 
 The files dealing with the binaural simulations are in the folder
@@ -478,7 +478,7 @@ figure <code>draw_loudspeakers</code>. If you have gnuplot installed, you can
 even use it with the Toolbox by setting <code>conf.plot.usegnuplot =
 true;</code>.
 
-The following code reproduces the monochromatic wave field for NFCHOA from
+The following code reproduces the monochromatic wave field for NFC-HOA from
 above, but this time using gnuplot for plotting. The only difference is, that
 you cannot do the plotting to png afterwards like in Matlab, but have to specify
 the output file before. Note, that the same will work with Matlab.

@@ -243,7 +243,7 @@ have to explicitly say if we want also plotting, by <code>conf.plot.useplot =
 true;</code>.
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 conf.dimension = '2.5D';
 conf.plot.useplot = 1;
 % [P,x,y,z,x0] = wave_field_mono_wfs(X,Y,Z,xs,src,f,conf);

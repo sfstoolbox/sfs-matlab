@@ -186,7 +186,7 @@ axis([-2 2 -2.5 2.5]);
 print_png('img/secondary_sources_arbitrary_realloudspeakers.png');
 ```
 
-![Image]('img/secondary_sources_arbitrary_realloudspeakers.png');
+![Image](img/secondary_sources_arbitrary_realloudspeakers.png)
 
 
 ### Simulate monochromatic sound fields
@@ -265,7 +265,7 @@ plot_wavefield(P,x,y,z,x0_all,conf);
 print_png('img/wave_field_wfs_25d_with_all_sources.png');
 ```
 
-![Image](doc/img/wave_field_wfs_25d_xy_with_all_sources.png)
+![Image](doc/img/wave_field_wfs_25d_with_all_sources.png)
 
 
 #### Near-field compensated higher order Ambisonics

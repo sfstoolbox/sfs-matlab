@@ -53,7 +53,7 @@ nargmin = 0;
 nargmax = 1;
 narginchk(nargmin,nargmax);
 if nargin<nargmax
-    map = '';
+    map = 'default';
 end
 
 
@@ -61,7 +61,7 @@ end
 % Change color map (default: gray)
 if ~ischar(map)
     colormap(map);
-elseif strcmp('default',map) || strcmp('',map)
+elseif strcmp('default',map) || strcmp('moreland',map)
     % Default SFS Toolbox color: blue,white,red
     % see: http://www.sandia.gov/~kmorel/documents/ColorMaps/
     colormap(moreland(256));

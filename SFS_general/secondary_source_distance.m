@@ -62,16 +62,21 @@ isargsecondarysource(x0);
 %% ===== Calculation ====================================================
 % calculate the distance to the nearest secondary source for all secondary
 % sources
-dx0_single = zeros(size(x0,1),1);
-for ii=1:size(x0,1)
-    % first secondary source position
-    x01 = x0(ii,1:3);
-    % all other positions
-    x02 = [x0(1:ii-1,1:3); x0(ii+1:end,1:3)];
-    % get distance between x01 and all secondary sources within x02
-    dist = vector_norm(bsxfun(@minus,x02,x01),2);
-    % get the smallest distance (which is the one to the next source)
-    dx0_single(ii) = min(dist);
+if size(x0,1)==1
+    % if we have only one speaker
+    dx0 = Inf;
+else
+    dx0_single = zeros(size(x0,1),1);
+    for ii=1:size(x0,1)
+        % first secondary source position
+        x01 = x0(ii,1:3);
+        % all other positions
+        x02 = [x0(1:ii-1,1:3); x0(ii+1:end,1:3)];
+        % get distance between x01 and all secondary sources within x02
+        dist = vector_norm(bsxfun(@minus,x02,x01),2);
+        % get the smallest distance (which is the one to the next source)
+        dx0_single(ii) = min(dist);
+    end
+    % get the mean distance between all secondary sources
+    dx0 = mean(dx0_single);
 end
-% get the mean distance between all secondary sources
-dx0 = mean(dx0_single);

@@ -66,10 +66,10 @@ end
 dimensions = xyz_axes_selection(x,y,z);
 % create xyz-grid
 if all(dimensions)
-    % create a 3D grid => size(xx)==[xysamples xysamples xysamples]
+    % create a 3D grid => size(xx)==[resolution resolution resolution]
     [xx,yy,zz] = meshgrid(x,y,z);
 elseif dimensions(1) && dimensions(2)
-    % create a 2D grid => size(xx)==[xysamples xysamples]
+    % create a 2D grid => size(xx)==[resolution resolution]
     [xx,yy] = meshgrid(x,y);
     zz = meshgrid(z,y);
 elseif dimensions(1) && dimensions(3)
@@ -79,7 +79,7 @@ elseif dimensions(2) && dimensions(3)
     [yy,zz] = meshgrid(y,z);
     xx = meshgrid(x,z);
 elseif any(dimensions)
-    % create a 1D grid => size(xx)==[xysamples 1]
+    % create a 1D grid => size(xx)==[resolution 1]
     xx = x';
     yy = y';
     zz = z';

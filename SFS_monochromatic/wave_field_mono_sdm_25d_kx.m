@@ -101,7 +101,7 @@ X0 = conf.secondary_sources.center;
 withev = conf.sdm.withev;  % with evanescent waves
 c = conf.c;
 % xy resolution
-xysamples = conf.xysamples;
+resolution = conf.resolution;
 useplot = conf.plot.useplot;
 
 
@@ -113,7 +113,7 @@ kxal = omega/c;
 % Factor by which kx is extended of kx = omega/c criteria
 Nkx=1.5;
 %kx = linspace(-Nkx*kxal,Nkx*kxal,Nkx*2000);
-kx = linspace(-Nkx*kxal,Nkx*kxal,Nkx*xysamples*10);
+kx = linspace(-Nkx*kxal,Nkx*kxal,Nkx*resolution*10);
 [~,~,~,x,y,z] = xyz_grid(X,Y,Z,conf);
 % Indexes for evanescent contributions and propagating part of the wave field
 idxpr = (( abs(kx) <= (omega/c) ));
@@ -166,7 +166,7 @@ for n=1:length(x)
     %for m=1:length(y)
     %    P(m,n) = sum ( Pkx(:,m) .* exp(-1j*kx*x(n))' )';
     %end
-    P(:,n) = sum ( Pkx .* repmat(exp(-1j*kx*x(n))',1,xysamples),1 )';
+    P(:,n) = sum ( Pkx .* repmat(exp(-1j*kx*x(n))',1,resolution),1 )';
 end
 
 % === Scale signal (at [xref yref]) ===

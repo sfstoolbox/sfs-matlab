@@ -65,7 +65,7 @@ end
 %% ===== Configuration ===================================================
 usenormalisation = conf.usenormalisation;
 xref = conf.xref;
-xysamples = conf.xysamples;
+resolution = conf.resolution;
 
 
 %% ===== Computation =====================================================
@@ -76,15 +76,15 @@ if usenormalisation
     % Use the half of the x axis and xref
     if dimensions(1)
         [~,xidx] = find(x>xref(1),1);
-        check_idx(xidx,x,xref(1),'X',xysamples);
+        check_idx(xidx,x,xref(1),'X',resolution);
     end
     if dimensions(2)
         [~,yidx] = find(y>xref(2),1);
-        check_idx(yidx,y,xref(2),'Y',xysamples);
+        check_idx(yidx,y,xref(2),'Y',resolution);
     end
     if dimensions(3)
         [~,zidx] = find(z>xref(3),1);
-        check_idx(zidx,z,xref(3),'Z',xysamples);
+        check_idx(zidx,z,xref(3),'Z',resolution);
     end
 
     % Scale signal to 1
@@ -113,11 +113,11 @@ end % of function
 
 
 %% ===== Subfunctions ====================================================
-function check_idx(idx,x,xref,str,xysamples)
-    % abs(x(1)-x(end))/xysamples gives us the maximum distance between to samples.
+function check_idx(idx,x,xref,str,resolution)
+    % abs(x(1)-x(end))/resolution gives us the maximum distance between to samples.
     % If abs(x(xidx)-xref(1)) is greater this indicates that we are out of our
     % bounds
-    if isempty(idx) || abs(x(idx)-xref)>2*abs(x(1)-x(end))/xysamples
+    if isempty(idx) || abs(x(idx)-xref)>2*abs(x(1)-x(end))/resolution
         error('%s: your used conf.xref is out of your %s boundaries', ...
             upper(mfilename),str);
     end

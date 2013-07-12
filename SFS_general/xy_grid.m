@@ -64,12 +64,12 @@ end
 
 
 % ===== Configuration ====================================================
-xysamples = conf.xysamples;
+resolution = conf.resolution;
 
 
 %% ===== Computation =====================================================
 % creating x-, y-axis
-x = linspace(X(1),X(2),xysamples);
-y = linspace(Y(1),Y(2),xysamples);
+x = linspace(X(1),X(2),resolution);
+y = linspace(Y(1),Y(2),resolution);
 % create xy-grid
 [xx,yy] = meshgrid(x,y);

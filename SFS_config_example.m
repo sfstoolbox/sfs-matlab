@@ -152,7 +152,7 @@ conf.tapwinlen = 0.3; % / percent of array length, 0..1
 %
 % xyz-resolution for wavefield simulations, this value is applied along every
 % desired dimension, expect if only one point is desired
-conf.xysamples = 300; % / samples
+conf.resolution = 300; % / samples
 % Phase of omega of wave field (change this value to create monochromatic wave
 % fields with different phases, for example this can be useful to create a movie)
 conf.phase = 0; % / rad

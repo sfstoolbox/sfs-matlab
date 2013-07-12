@@ -96,8 +96,6 @@ p.file = conf.plot.file;
 
 
 %% ===== Calculation =====================================================
-% Distances between the secondary sources
-dx0 = secondary_source_distance(x0);
 % Handle the given axis and check which should be plotted
 [dimensions,x1,x2] = xyz_axes_selection(x,y,z);
 if all(dimensions)
@@ -140,10 +138,10 @@ if(p.usedb)
 end
 
 % Check if we should plot loudspeakers symbols
-if p.loudspeakers && dx0<=0.01
-    warning(['%s: the given loudspeaker distance is to small. ',...
-            'Disabling plotting of the loudspeakers'],upper(mfilename));
-    p.loudspeakers = 0;
+if p.realloudspeakers && size(x0,1)>1000
+    warning(['%s: the given number of loudspeaker is >1000. ',...
+            'Switching back to non loudspeaker symbols.'],upper(mfilename));
+    p.realloudspeakers = 0;
 end
 
 % set the color bar axis to default values if not given otherwise

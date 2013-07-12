@@ -244,10 +244,8 @@ else
         p.gnuplotfile = sprintf('%s/gnuplot%s.gnu',tmpdir,rn);
     end
     % Storing loudspeaker positions and activity
-    if(p.loudspeakers)
-        [phi,~] = cart2pol(x0(:,4),x0(:,5));
-        [x0,y0,phi,win] = column_vector(x0(:,1),x0(:,2),phi,x0(:,7));
-        gp_save(p.lsfile,x0,[y0 phi win]);
+    if p.loudspeakers
+        gp_save_loudspeakers(p.lsfile,x0);
     end
 
     % Check if we should handle the wave field in dB

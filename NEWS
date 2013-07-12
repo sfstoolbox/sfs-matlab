@@ -1,5 +1,11 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
+0.2.5 (12 July 2013)
+
+    - added IIR WFS pre-filter
+    - fixed a bug causing the wrong loudspeaker position in the output of
+      generic_wfs()
+
 0.2.4 (4 June 2013)
 
     - added a documentation to the github README

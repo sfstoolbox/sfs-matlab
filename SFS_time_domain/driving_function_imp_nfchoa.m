@@ -81,7 +81,7 @@ pulse = dirac_imp();
 % radius of array
 R = norm(x0(1,1:3)-X0);
 % get maximum order of spherical harmonics
-order = nfchoa_order(nls);
+order = nfchoa_order(nls,conf);
 
 % if-request as a workaround for the right direction of the wave field
 if strcmpi(src,'pw')

@@ -83,7 +83,7 @@ end
 x0 = x0(:,1:3);
 
 % get maximum order of spherical harmonics
-N = nfchoa_order(size(x0,1));
+N = nfchoa_order(size(x0,1),conf);
 
 % Source position
 xs = repmat(xs(1:3),[size(x0,1) 1]);

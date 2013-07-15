@@ -112,17 +112,19 @@ elseif strcmp('fabian',spherical_grid)
     points = tmp(:,1:3);
     weights = tmp(:,4);
 elseif strcmp('gauss',spherical_grid)
-    % the number of secondary sources needs to be 4,7,10,13, ... , 
+    % the number of secondary sources needs to be 2,8,18,32, ... , 
     % see Ahrens (2012)
-    if mod(number,-1/4+sqrt(1/16+number/2))~=0
+    if mod(number,sqrt(number/2))~=0
         error(['%s: the number of secondary sources needs to be ', ...
-            '2*n^2+n for a gauss grid.'],upper(mfilename));
+            '2*n^2 for a gauss grid.'],upper(mfilename));
     end
-    number = -1/4+sqrt(1/16+number/2);
+    number = sqrt(number/2);
     % get gauss points and weights
     [p,w] = legpts(number);
     % sampling points along azimuth
-    PHI = linspace( 0, 2*pi, 2*number + 1 );
+    PHI = linspace(0,2*pi,2*number+1);
+    % remove the last one, because phi=0 and phi=2pi are the same
+    PHI = PHI(1:end-1);
     % sampling points along elevation
     THETA = acos(p)-pi/2;
     % get grid points

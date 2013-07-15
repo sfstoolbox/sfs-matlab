@@ -59,19 +59,18 @@ narginchk(nargmin,nargmax);
 isargvector(x,y,z);
 isargnumeric(P);
 if nargin==nargmax-1
-    conf = SFS_config;
-elseif nargin==nargmax-2
     if isstruct(x0)
         conf = x0;
         x0 = [];
     else
         conf = SFS_config;
     end
+elseif nargin==nargmax-2
+    conf = SFS_config;
+    x0 = [];
 end
-if ~exist('x0','var') || isempty(x0)
+if isempty(x0)
     conf.plot.loudspeakers = 0;
-else
-%      isargsecondarysource(x0);
 end
 isargstruct(conf);
 

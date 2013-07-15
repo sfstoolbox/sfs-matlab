@@ -1,4 +1,4 @@
-function N = nfchoa_order(nls)
+function M = nfchoa_order(nls)
 %NFCHOA_ORDER returns the maximum order for the spherical harmonics for the
 %given number of secondary sources
 %
@@ -8,13 +8,18 @@ function N = nfchoa_order(nls)
 %       nls     - number of secondary sources
 %
 %   Output parameters:
-%       N       - spherical harmonics order
+%       M       - spherical harmonics order
 %
 %   NFCHOA_ORDER(nls) returns the maximum order of spherical harmonics for the
-%   given number of loudspeakers. This is calculated after ... with N = nls/2.
+%   given number of secondary sources in order to avoid spectral repetitions
+%   (spatial aliasing) of the dirving signals. The order is
+%
+%        / nls/2-1,     even nls
+%   M = <
+%        \ (nls-1)/2    odd nls
 %
 %   References:
-%       FIXME: add one
+%       Ahrens, J.: Analytic Methods of Sound Field Synthesis, Springer, 2012
 %
 %   see also: driving_function_imp_nfchoa, driving_function_mono_nfchoa
 
@@ -59,9 +64,9 @@ isargpositivescalar(nls)
 
 
 %% ===== Computation =====================================================
-% get maximum order of spherical harmonics
+% get maximum order of spherical harmonics, see Ahrens (2012)
 if isodd(nls)
-    N = (nls-1)/2;
+    M = (nls-1)/2;
 else
-    N = floor((nls+1)/2);
+    M = nls/2-1;
 end

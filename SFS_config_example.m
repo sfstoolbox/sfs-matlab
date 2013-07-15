@@ -176,6 +176,8 @@ conf.secondary_sources.x0 = []; % / m
 % Grid for the spherical array. Note, that you have to download and install the
 % spherical grids from an additiona source. For available grids see:
 % http://github.com/sfstoolbox/data/tree/master/spherical_grids
+% An exception are Gauss grids, which are available via 'gauss' and will be
+% calculated on the fly allowing very high number of secondary sources.
 conf.secondary_sources.grid = 'equally_spaced_points';
 
 

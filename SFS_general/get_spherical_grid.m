@@ -17,6 +17,11 @@ function [points,weights] = get_spherical_grid(number,conf)
 %   It expects the grid files at SFS_basepath/data/spherical_grids. If the
 %   desired file is not available on the hard disk, the function tries to
 %   download it directly from github.
+%   For conf.secondary_sources.grid='gauss' the grid positions are calculated
+%   after Ahrens (2012), p. 121
+%
+%   References:
+%       Ahrens, J.: Analytic Methods of Sound Field Synthesis, Springer, 2012
 %
 %   see also: secondary_source_positions,
 %       weights_for_points_on_a_sphere_rectangle
@@ -90,6 +95,44 @@ if strcmp('equally_spaced_points',spherical_grid)
     tmp = load(file,'-ascii');
     points = tmp(:,1:3);
     weights = tmp(:,4);
+elseif strcmp('fabian',spherical_grid)
+    % here we have only one number of secondary sources available
+    if number~=11345
+        error('%s: this grid is only available for 11345 sources.', ...
+            upper(mfilename));
+    end
+    file = [basepath '/data/spherical_grids/fabian/' filename];
+    url = ['http://github.com/sfstoolbox/data/raw/master/spherical_grids/' ...
+        'fabian/' filename];
+    % download file if not present
+    if ~exist(file,'file')
+        download_file(url,file);
+    end
+    tmp = load(file,'-ascii');
+    points = tmp(:,1:3);
+    weights = tmp(:,4);
+elseif strcmp('gauss',spherical_grid)
+    % the number of secondary sources needs to be 4,7,10,13, ... , 
+    % see Ahrens (2012)
+    if mod(number,-1/4+sqrt(1/16+number/2))~=0
+        error(['%s: the number of secondary sources needs to be ', ...
+            '2*n^2+n for a gauss grid.'],upper(mfilename));
+    end
+    number = -1/4+sqrt(1/16+number/2);
+    % get gauss points and weights
+    [p,w] = legpts(number);
+    % sampling points along azimuth
+    PHI = linspace( 0, 2*pi, 2*number + 1 );
+    % sampling points along elevation
+    THETA = acos(p)-pi/2;
+    % get grid points
+    [phi,theta] = meshgrid(PHI,THETA);
+    [~,weights] = meshgrid(PHI,w);
+    r = ones(size(phi));
+    % convert to cartesian
+    [points(:,1) points(:,2) points(:,3)] = sph2cart(phi(:),theta(:),r(:));
+    % incorporating integration weights
+    weights = weights(:).*cos(theta(:));
 else
     error(['%s: the given spherical grid is not available, have a look at ' ...
         'http://github.com/sfstoolbox/data for avialable grids.'], ...

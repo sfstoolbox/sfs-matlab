@@ -97,6 +97,7 @@ debug = conf.debug;
 usebandpass = conf.usebandpass;
 bandpassflow = conf.bandpassflow;
 bandpassfhigh = conf.bandpassfhigh;
+L = conf.secondary_sources.size;
 
 
 %% ===== Computation =====================================================
@@ -130,10 +131,11 @@ d = d(end:-1:1,:);
 % Add additional zeros to the driving signal to ensure an amplitude of 0 in the
 % whole listening area before and after the real driving signal.
 % First get the maximum distance of the listening area and convert it into time
-% samples
+% samples, than compare it to the size of the secondary sources. If the size is
+% biger use this for padding zeros.
 [~,x1,x2,x3] = xyz_axes_selection(x,y,z); % get active axes
 max_distance_in_samples = ...
-        round(norm([x(1) y(1) z(1)]-[x(end) y(end) z(end)])/c * fs);
+        max(round(norm([x(1) y(1) z(1)]-[x(end) y(end) z(end)])/c*fs),2*L/c*fs);
 
 % Append zeros at the beginning of the driving signal
 d = [zeros(max_distance_in_samples,size(d,2)); d];

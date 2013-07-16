@@ -78,6 +78,7 @@ isargstruct(conf);
 %% ===== Configuration ==================================================
 % Tmp dir
 tmpdir = conf.tmpdir;
+usenormalisation = conf.usenormalisation;
 % Plotting
 p.usegnuplot = conf.plot.usegnuplot;
 p.cmd = conf.plot.cmd;
@@ -166,7 +167,9 @@ if ~(p.usegnuplot)
     % Scale dB value if needed
     if p.usedb
         P_dB = 20*log10(abs(P));
-        P_dB = P_dB - max(P_dB(:));
+        if usenormalisation
+            P_dB = P_dB - max(P_dB(:));
+        end
     end
 
     % Plotting
@@ -182,9 +185,7 @@ if ~(p.usegnuplot)
         end
     else
 
-        if(p.usedb)
-            P_dB = 20*log10(abs(P));
-            P_dB = P_dB - max(P_dB(:));
+        if p.usedb
             % Plot the amplitude of the wave field in dB
             imagesc(x1,x2,P_dB,p.caxis);
         else

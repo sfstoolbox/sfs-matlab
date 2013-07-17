@@ -53,7 +53,7 @@ function out = sphbesselh(nu,k,z)
 nargmin = 3;
 nargmax = 3;
 narginchk(nargmin,nargmax);
-isargpositivescalar(nu)
+isargscalar(nu)
 if (k==1)
     sign = 1;
 elseif (k==2)

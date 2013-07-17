@@ -53,7 +53,7 @@ function out = sphbessely(nu,z)
 nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-isargpositivescalar(nu)
+isargscalar(nu)
 isargnumeric(z)
 
 

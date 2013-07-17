@@ -19,7 +19,7 @@ function D = driving_function_mono_nfchoa_ps(x0,xs,f,N,conf)
 %   and the frequency f.
 %
 %   References:
-%       FIXME: Update references
+%       Ahrens, J.: Analytic Methods of Sound Field Synthesis, Springer, 2012
 %
 %   see also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_ps
 
@@ -74,10 +74,21 @@ xref = conf.xref;
 c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
+X0 = conf.secondary_sources.center;
 
 
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
+
+% secondary source positions
+x00 = bsxfun(@minus,x0,X0);
+[alpha0,beta0,r0] = cart2sph(x00(:,1),x00(:,2),x00(:,3));
+% point source
+[alpha,beta,r] = cart2sph(xs(:,1),xs(:,2),xs(:,3));
+% wavenumber
+omega = 2*pi*f;
+% initialize empty driving signal
+D = zeros(size(x0,1),1);
 
 if strcmp('2D',dimension)
     
@@ -100,7 +111,19 @@ elseif strcmp('2.5D',dimension)
     xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        to_be_implemented;
+        % 2.5D point source, after Ahrens (2012), p. 186, eq. 5.8
+        %
+        %                      __     (2)
+        %                 1    \      h|m| (w/c r)
+        % D(alpha0,w) = -----  /__   ------------- e^(i m (alpha0-alpha))
+        %               2pi R m=-N..N (2)
+        %                             h|m| (w/c R)
+        %
+        R = r0;
+        for m=-N:N
+            D = D + 1./(2.*pi.*R) .* sphbesselh(abs(m),2,omega/c.*r) ./ ...
+                sphbesselh(abs(m),2,omega/c.*R) .* exp(1i.*m.*(alpha0-alpha));
+        end
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D point source.'],upper(mfilename),driving_functions);
@@ -113,7 +136,23 @@ elseif strcmp('3D',dimension)
     
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        to_be_implemented;
+        % 3D point source, after Ahrens (2012), p. 185, eq. 5.7
+        %
+        %                              N_   n_  (2)
+        %                        1    \    \    hn (w/c r)   -m             
+        % D(alpha0,beta0,w) = ------- /__  /__  ------------ Yn(beta,alpha) ...
+        %                     2pi R^2 n=0 m=-n  (2)
+        %                                       hn (w/c R)
+        %                      m
+        %                     Yn(beta0,alpha0)
+        for n=0:N
+            for m=-n:n
+                D = D + 1./(2.*pi.*r0.^2) .* sphbesselh(n,2,omega/c.*r) ./ ...
+                    sphbesselh(n,2,omega/c.*r0) .* ...
+                    sphharmonics(n,-m,beta,alpha) .* ...
+                    sphharmonics(n,m,beta0,alpha0);
+            end
+        end
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 3D point source.'],upper(mfilename),driving_functions);

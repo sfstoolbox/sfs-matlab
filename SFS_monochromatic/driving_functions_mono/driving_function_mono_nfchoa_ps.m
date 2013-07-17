@@ -116,8 +116,8 @@ elseif strcmp('2.5D',dimension)
         %                      __     (2)
         %                 1    \      h|m| (w/c r)
         % D(alpha0,w) = -----  /__   ------------- e^(i m (alpha0-alpha))
-        %               2pi R m=-N..N (2)
-        %                             h|m| (w/c R)
+        %               2pi r0 m=-N..N (2)
+        %                             h|m| (w/c r0)
         %
         R = r0;
         for m=-N:N
@@ -138,11 +138,11 @@ elseif strcmp('3D',dimension)
         % --- SFS Toolbox ------------------------------------------------
         % 3D point source, after Ahrens (2012), p. 185, eq. 5.7
         %
-        %                              N_   n_  (2)
-        %                        1    \    \    hn (w/c r)   -m             
-        % D(alpha0,beta0,w) = ------- /__  /__  ------------ Yn(beta,alpha) ...
-        %                     2pi R^2 n=0 m=-n  (2)
-        %                                       hn (w/c R)
+        %                               N_   n_  (2)
+        %                        1     \    \    hn (w/c r)   -m             
+        % D(alpha0,beta0,w) = -------  /__  /__  ------------ Yn(beta,alpha) ...
+        %                     2pi r0^2 n=0 m=-n  (2)
+        %                                       hn (w/c r0)
         %                      m
         %                     Yn(beta0,alpha0)
         for n=0:N

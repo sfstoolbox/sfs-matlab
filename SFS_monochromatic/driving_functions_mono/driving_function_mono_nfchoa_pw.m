@@ -81,9 +81,9 @@ driving_functions = conf.driving_functions;
 
 % angle of the secondary sources
 points = bsxfun(@minus,x0,X0);
-[alpha_x0,~,~] = cart2sph(points(:,1),points(:,2),points(:,3));
+[alpha0,beta0,r0] = cart2sph(points(:,1),points(:,2),points(:,3));
 % angle of plane wave
-[alpha_pw,~,~] = cart2sph(nk(:,1),nk(:,2),nk(:,3));
+[alpha,beta,~] = cart2sph(nk(:,1),nk(:,2),nk(:,3));
 % wavenumber
 k = 2*pi*f/c;
 % initialize empty driving signal
@@ -95,7 +95,16 @@ if strcmp('2D',dimension)
     
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        to_be_implemented;
+        %                          __
+        %                  2i     \        i^-n
+        % D(alpha_x0) = - -----   /__   ----------  e^(i n (alpha0-alpha))
+        %                 pi r0 n=-N..N  (2)
+        %                               Hn  (k r0)
+        %
+        for n=-N:N
+            D = D + 2.*1i./(pi.*r0) .* 1i^(-n)./besselh(n,2,k.*r0) .* ...
+                exp(1i.*n.*(alpha0-alpha));
+        end
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2D plane wave.'],upper(mfilename),driving_functions);
@@ -117,11 +126,11 @@ elseif strcmp('2.5D',dimension)
         % R = |x0-xref|
         % NOTE: it makes only sense to use the center point as reference point.
         % Otherwise we will have no radius at all.
-        R = norm(x0(1,:)-X0,2);
+        R = r0;
         for n=-N:N
             D = D + 4.*pi .* 1i.^(-abs(n)) ./ ...
                 ( -1i .* k .* sphbesselh(abs(n),2,k.*R) ) .* ...
-                exp(1i.*n.*(alpha_x0-alpha_pw));
+                exp(1i.*n.*(alpha0-alpha));
         end
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
@@ -135,6 +144,11 @@ elseif strcmp('3D',dimension)
     
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
+        %                  __    __                 m     *
+        %           1     \     \       4pi (-i)^n Yn (nk)       m
+        % D(nx0) = -----  /__   /_      -----------------------_Yn (nx0)
+        %          2pi R n=0..N m=-n..n         (2)
+        %                                  -ik Hn  (kR)
         to_be_implemented;
     else
         error(['%s: %s, this type of driving function is not implemented ', ...

@@ -1,4 +1,4 @@
-function [ Ynm ] = sphharmonics(n,m,beta,alpha);
+function [ Ynm ] = sphharmonics(n,m,theta,phi);
 % SPHHARMONICS spherical harmonics function
 %
 %   Usage: Ynm = sphbesselh(n,m,beta,alpha)
@@ -6,15 +6,15 @@ function [ Ynm ] = sphharmonics(n,m,beta,alpha);
 %   Input parameters:
 %       n     - spherical harmonic degree
 %       m     - spherical harmonic order
-%       beta  - colatitude to be calculated
-%       alpha - azimuth to be calculated
+%       theta - elevation angle
+%       phi   - azimuth angle
 %
 %   Output parameters:
 %       Ynm   - values of spherical harmonics function
 %
-%   SPHHARMONICS(n,m,alpha,beta) spherical harmonics function of degree n and
-%   order m for the angles alpha, beta.
-%   alpha and beta can be arrays but have to be of same size or one of them
+%   SPHHARMONICS(n,m,theta,phi) spherical harmonics function of degree n and
+%   order m for the angles phi, theta.
+%   phi and theta can be arrays but have to be of same size or one of them
 %   has to be a scalar.
 %
 %   see also: sphbesselj, sphbessely, sphbesselh, asslegendre
@@ -60,10 +60,10 @@ nargmax = 4;
 narginchk(nargmin,nargmax);
 isargpositivescalar(n)
 isargscalar(m)
-isargnumeric(alpha,beta)
+isargnumeric(phi,theta)
 if n<abs(m)
     warning( 'Absolute value of order m must be less than or equal to the degree n.' ); 
-    Ynm = zeros(size(alpha));
+    Ynm = zeros(size(phi));
     return;
 end
 phi = correct_azimuth(phi);
@@ -73,7 +73,7 @@ theta = correct_elevation(theta);
 %% ===== Computation =====================================================
 % convert theta to other coordinate system, see Ahrens (2012) Fig.A.1
 theta = abs(theta-pi/2);
-Lnm = asslegendre( n, abs(m), cos( beta ) );
+Lnm = asslegendre( n, abs(m), cos( theta ) );
 factor_1 = ( 2*n + 1 ) / ( 4*pi );
 factor_2 = factorial( n - abs(m) ) ./ factorial( n + abs(m) );
-Ynm = (-1).^m .* sqrt( factor_1 .* factor_2 ) .* Lnm .* exp( 1i .* m .* alpha );
+Ynm = (-1).^m .* sqrt( factor_1 .* factor_2 ) .* Lnm .* exp( 1i .* m .* phi );

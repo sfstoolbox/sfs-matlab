@@ -66,9 +66,13 @@ if n<abs(m)
     Ynm = zeros(size(alpha));
     return;
 end
+phi = correct_azimuth(phi);
+theta = correct_elevation(theta);
 
 
 %% ===== Computation =====================================================
+% convert theta to other coordinate system, see Ahrens (2012) Fig.A.1
+theta = abs(theta-pi/2);
 Lnm = asslegendre( n, abs(m), cos( beta ) );
 factor_1 = ( 2*n + 1 ) / ( 4*pi );
 factor_2 = factorial( n - abs(m) ) ./ factorial( n + abs(m) );

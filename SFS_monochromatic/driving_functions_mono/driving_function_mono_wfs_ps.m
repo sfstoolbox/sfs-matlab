@@ -112,7 +112,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         %
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
-            'for a 2D point source.'],upper(mfilename),driving_functions);
+            'for a point source.'],upper(mfilename),driving_functions);
     end
 
 

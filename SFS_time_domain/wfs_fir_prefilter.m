@@ -94,12 +94,12 @@ H = ones(1,length(f));
 %   -------------------------> f
 %
 % Pre-equilization filter from flow to fhigh
-if strcmp('2D',dimension) || strcmp('2.5D',dimension)
+if strcmp('2.5D',dimension)
     %           _______
     %  H(f) = \|f/fhigh, for flow<=f<=fhigh
     %
     H(idxflow:idxfhigh) = sqrt(f(idxflow:idxfhigh)./fhigh);
-elseif strcmp('3D',dimension)
+elseif strcmp('3D',dimension) || strcmp('2D',dimension)
     %         
     %  H(f) = f/fhigh, for flow<=f<=fhigh
     %

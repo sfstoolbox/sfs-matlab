@@ -82,7 +82,14 @@ if strcmp('2D',dimension)
 
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        to_be_implemented;
+        % d_2D using a plane wave as source model
+        %
+        % d_2D(x0,t) = h(t) * -2 nk nx0 delta(t - 1/c nk x0)
+        %
+        %
+        % Delay and amplitude weight
+        delay = 1/c * vector_product(nk,x0,2);
+        weight = -2 .* vector_product(nk,nx0,2);
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2D plane wave.'],upper(mfilename),driving_functions);
@@ -105,11 +112,11 @@ elseif strcmp('2.5D',dimension)
         %
         % d_2.5D using a plane wave as source model
         %
-        % d_2.5D(x0,t) = h(t) * 2 g0 nk nx0 delta(t + 1/c nk x0)
+        % d_2.5D(x0,t) = h(t) * -2 g0 nk nx0 delta(t - 1/c nk x0)
         % 
         % Delay and amplitude weight
         delay = 1/c .* vector_product(nk,x0,2);
-        weight = 2*g0 .* vector_product(nk,nx0,2);
+        weight = -2*g0 .* vector_product(nk,nx0,2);
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D plane wave.'],upper(mfilename),driving_functions);
@@ -123,14 +130,13 @@ elseif strcmp('3D',dimension)
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % d_3D using a plane wave as source model
-        % FIXME: check driving function
         %
-        % d_3D(x0,t) = 2 nk nx0 delta(t + 1/c nk x0)
+        % d_3D(x0,t) = h(t) * -2 nk nx0 delta(t - 1/c nk x0)
         %
         %
         % Delay and amplitude weight
         delay = 1/c * vector_product(nk,x0,2);
-        weight = 2 .* vector_product(nk,nx0,2);
+        weight = -2 .* vector_product(nk,nx0,2);
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 3D plane wave.'],upper(mfilename),driving_functions);

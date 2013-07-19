@@ -105,7 +105,7 @@ if strcmp('2D',dimension)
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % driving signal
-        D = -1i*omega/(2*c) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* ...
+        D = -1i*omega/(2*c) .* vector_product(x0-xs,nx0,2) ./ r .* ...
             besselh(1,2,omega/c.*r);
         %
     elseif strcmp('delft1988',driving_functions)
@@ -132,7 +132,17 @@ elseif strcmp('2.5D',dimension)
         %
         g0 = sqrt(2*pi*vector_norm(xref-x0,2));
         %
-        to_be_implemented;
+        % D_2.5D using a line source
+        %                        ___
+        %                   1   |i w  (x0-xs) nx0   (2)/ w         \
+        % D_2.5D(x0,w) =  - - _ |---  -----------  H1  | - |x0-xs| |
+        %                   2  \| c    |x0-xs|         \ c         /
+        %
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        % driving signal
+        D = -1/2.*g0 .* sqrt(i*omega/c) .* vector_product(x0-xs,nx0,2) ./ r .* ...
+            besselh(1,2,omega/c.*r);
         %
     elseif strcmp('delft1988',driving_functions)
         % --- Delft 1988 -------------------------------------------------
@@ -146,15 +156,26 @@ elseif strcmp('2.5D',dimension)
 
 elseif strcmp('3D',dimension)
     
+
     % === 3-Dimensional ==================================================
     
     if strcmp('default',driving_functions)
+        warning(['%s: you use conf.dimension="3D" together with a line ', ...
+            'which will give no meaningfull results.',upper(mfilename));
         % --- SFS Toolbox ------------------------------------------------
-        to_be_implemented;
+        % D_3D using a line source
         %
-    elseif strcmp('delft1988',driving_functions)
-        % --- Delft 1988 -------------------------------------------------
-        to_be_implemented;
+        %                 iw (x0-xs) nx0   (2)/ w         \
+        % D_3D(x0,w) =  - -- -----------  H1  | - |x0-xs| |
+        %                 2c   |x0-xs|        \ c         /
+        %
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        % driving signal
+        D = -1i*omega/(2*c) .* vector_product(x0-xs,nx0,2) ./ r .* ...
+            besselh(1,2,omega/c.*r);
+        %
+        to_be
         %
     else
         error(['%s: %s, this type of driving function is not implemented ', ...

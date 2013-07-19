@@ -76,9 +76,9 @@ driving_functions = conf.driving_functions;
 %% ===== Computation =====================================================
 
 % Get the delay and weighting factors
-if strcmp('2D',dimension)
+if strcmp('2D',dimension) || strcmp('3D',dimension)
 
-    % === 2-Dimensional ==================================================
+    % === 2- or 3-Dimensional ============================================
 
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
@@ -92,7 +92,7 @@ if strcmp('2D',dimension)
         weight = -2 .* vector_product(nk,nx0,2);
     else
         error(['%s: %s, this type of driving function is not implemented', ...
-            'for a 2D plane wave.'],upper(mfilename),driving_functions);
+            'for a plane wave.'],upper(mfilename),driving_functions);
     end
 
 
@@ -120,26 +120,6 @@ elseif strcmp('2.5D',dimension)
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D plane wave.'],upper(mfilename),driving_functions);
-    end
-
-
-elseif strcmp('3D',dimension)
-
-    % === 3-Dimensional ==================================================
-
-    if strcmp('default',driving_functions)
-        % --- SFS Toolbox ------------------------------------------------
-        % d_3D using a plane wave as source model
-        %
-        % d_3D(x0,t) = h(t) * -2 nk nx0 delta(t - 1/c nk x0)
-        %
-        %
-        % Delay and amplitude weight
-        delay = 1/c * vector_product(nk,x0,2);
-        weight = -2 .* vector_product(nk,nx0,2);
-    else
-        error(['%s: %s, this type of driving function is not implemented', ...
-            'for a 3D plane wave.'],upper(mfilename),driving_functions);
     end
 
 else

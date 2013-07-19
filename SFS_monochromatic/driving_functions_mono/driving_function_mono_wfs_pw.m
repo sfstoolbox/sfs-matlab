@@ -100,11 +100,11 @@ if strcmp('2D',dimension)
         % --- SFS Toolbox ------------------------------------------------
         % D_2D using a plane wave as source model
         %
-        %                i w
-        % D_2D(x0,w) = 2 --- nk nx0  e^(-i w/c nk x0)
-        %                 c
+        %                 i w
+        % D_2D(x0,w) = -2 --- nk nx0  e^(-i w/c nk x0)
+        %                  c
         %
-        D = 2*1i*omega/c .* vector_product(nk,nx0,2) .*  ...
+        D = -2*1i*omega/c .* vector_product(nk,nx0,2) .*  ...
             exp(-1i*omega/c.*vector_product(nk,x0,2));
         %
     elseif strcmp('delft1988',driving_functions)
@@ -132,12 +132,12 @@ elseif strcmp('2.5D',dimension)
         g0 = sqrt(2*pi*vector_norm(xref-x0,2));
         %
         % D_2.5D using a plane wave as source model
-        %                               ___
-        %                              | w |
-        % D_2.5D(x0,w) = 2 g0 nk nx0 _ |---  e^(-i w/c nk x0)
-        %                             \|i c
+        %                                ___
+        %                               | w |
+        % D_2.5D(x0,w) = -2 g0 nk nx0 _ |---  e^(-i w/c nk x0)
+        %                              \|i c
         %
-        D = 2*g0 .* vector_product(nk,nx0,2) .* sqrt(omega/(1i*c)) .* ...
+        D = -2*g0 .* vector_product(nk,nx0,2) .* sqrt(omega/(1i*c)) .* ...
             exp(-1i*omega/c.*vector_product(nk,x0,2));
         %
     elseif strcmp('delft1988',driving_functions)
@@ -157,10 +157,9 @@ elseif strcmp('3D',dimension)
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % D_3D using a plane wave as source model
-        % FIXME: in 2D case it is 2, here it is -2
         %
         %                  i w 
-        % D_3D(x0,w) =  -2 --- nk nx0  e^(-i w/c nk x0) .* weights
+        % D_3D(x0,w) =  -2 --- nk nx0  e^(-i w/c nk x0)
         %                   c
         %
         D = -2*1i*omega/c .* vector_product(nk,nx0,2) .* ...

@@ -88,21 +88,17 @@ driving_functions = conf.driving_functions;
 omega = 2*pi*f;
 
 
-if strcmp('2D',dimension)
+if strcmp('2D',dimension) || strcmp('3D',dimension)
     
-    % === 2-Dimensional ==================================================
+    % === 2- or 3-Dimensional ============================================
     
-    % Ensure 2D
-    x0 = x0(:,1:2);
-    nx0 = nx0(:,1:2);
-    nk = nk(:,1:2);
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        % D_2D using a plane wave as source model
+        % D using a plane wave as source model
         %
-        %                 i w
-        % D_2D(x0,w) = -2 --- nk nx0  e^(-i w/c nk x0)
-        %                  c
+        %              i w
+        % D(x0,w) = -2 --- nk nx0  e^(-i w/c nk x0)
+        %               c
         %
         D = -2*1i*omega/c .* vector_product(nk,nx0,2) .*  ...
             exp(-1i*omega/c.*vector_product(nk,x0,2));
@@ -113,7 +109,7 @@ if strcmp('2D',dimension)
         %
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
-            'for a 2D plane wave.'],upper(mfilename),driving_functions);
+            'for a plane wave.'],upper(mfilename),driving_functions);
     end
 
 
@@ -147,31 +143,6 @@ elseif strcmp('2.5D',dimension)
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D plane wave.'],upper(mfilename),driving_functions);
-    end
-
-
-elseif strcmp('3D',dimension)
-    
-    % === 3-Dimensional ==================================================
-    
-    if strcmp('default',driving_functions)
-        % --- SFS Toolbox ------------------------------------------------
-        % D_3D using a plane wave as source model
-        %
-        %                  i w 
-        % D_3D(x0,w) =  -2 --- nk nx0  e^(-i w/c nk x0)
-        %                   c
-        %
-        D = -2*1i*omega/c .* vector_product(nk,nx0,2) .* ...
-            exp(-1i*omega/c.*vector_product(nk,x0,2));
-        %
-    elseif strcmp('delft1988',driving_functions)
-        % --- Delft 1988 -------------------------------------------------
-        to_be_implemented;
-        %
-    else
-        error(['%s: %s, this type of driving function is not implemented ', ...
-            'for a 3D plane wave.'],upper(mfilename),driving_functions);
     end
 
 else

@@ -88,26 +88,22 @@ driving_functions = conf.driving_functions;
 omega = 2*pi*f;
 
 
-if strcmp('2D',dimension)
+if strcmp('2D',dimension) || strcmp('3D',dimension)
     
-    % === 2-Dimensional ==================================================
+    % === 2- or 3-Dimensional ============================================
     
-    % Ensure 2D
-    x0 = x0(:,1:2);
-    nx0 = nx0(:,1:2);
-    xs = xs(:,1:2);
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        % D_2D using a point source as source model
+        % D using a point source as source model
         %
-        %                1  / iw      1    \  (x0-xs) nx0
-        % D_2D(x0,w) =  --- | -- - ------- |  ----------- e^(-i w/c |x0-xs|)
-        %               2pi \  c   |x0-xs| /   |x0-xs|^2
+        %              1  / i w      1    \  (x0-xs) nx0
+        % D(x0,w) = - --- | --- - ------- |  ----------- e^(-i w/c |x0-xs|)
+        %             2pi \  c    |x0-xs| /   |x0-xs|^2
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % driving signal
-        D = 1/(2*pi) .* ( (1i*omega)/c - 1./r ) .* ...
+        D = -1/(2*pi) .* ( (1i*omega)/c - 1./r ) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(-1i*omega/c.*r);
         %
     elseif strcmp('delft1988',driving_functions)
@@ -138,14 +134,14 @@ elseif strcmp('2.5D',dimension)
         %
         % D_2.5D(x0,w) =
         %             ___       ___
-        %    g0  /   | w |     |i c|    1    \  (x0-xs) nx0
+        %    g0  /   |i w      | c      1    \  (x0-xs) nx0
         %   ---  | _ |---  - _ |---  ------- |  ----------- e^(-i w/c |x0-xs|)
-        %   2pi  \  \|i c     \| w   |x0-xs| /   |x0-xs|^2
+        %   2pi  \  \| c      \|i w  |x0-xs| /   |x0-xs|^2
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % driving signal
-        D = g0/(2*pi) .* ( sqrt(omega/(1i*c)) - sqrt(1i*c/omega) ./ r ) .* ...
+        D = g0/(2*pi) .* ( sqrt(1i*omega/c) - sqrt(c/(1i*omega) ./ r ) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(-1i*omega/c .* r);
         %
     elseif strcmp('delft1988',driving_functions)
@@ -155,37 +151,6 @@ elseif strcmp('2.5D',dimension)
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D point source.'],upper(mfilename),driving_functions);
-    end
-
-
-elseif strcmp('3D',dimension)
-    
-    % === 3-Dimensional ==================================================
-    
-    if strcmp('default',driving_functions)
-        % --- SFS Toolbox ------------------------------------------------
-        % D_3D using a point source as source model
-        % FIXME: this should be the same as for the 2D case?
-        %
-        % D_3D(x0,w) =
-        %                    
-        %  /  i w      1    \  -2 (x0-xs) nx0
-        %  |  --- + ------- |  ---------------- e^(-i w/c |x0-xs|) .* weights
-        %  \   c    |x0-xs| /      |x0-xs|^2
-        %
-        % r = |x0-xs|
-        r = vector_norm(x0-xs,2);
-        % driving signal
-        D =  ( 1i.*omega/c + 1./r ) .* -2.*vector_product(x0-xs,nx0,2) ./ r.^2 .* ...
-            exp(-1i*omega/c.*r);
-        %
-    elseif strcmp('delft1988',driving_functions)
-        % --- Delft 1988 -------------------------------------------------
-        to_be_implemented;
-        %
-    else
-        error(['%s: %s, this type of driving function is not implemented ', ...
-            'for a 3D point source.'],upper(mfilename),driving_functions);
     end
 
 else

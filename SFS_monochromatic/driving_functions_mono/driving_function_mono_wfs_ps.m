@@ -141,7 +141,7 @@ elseif strcmp('2.5D',dimension)
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % driving signal
-        D = g0/(2*pi) .* ( sqrt(1i*omega/c) - sqrt(c/(1i*omega) ./ r ) .* ...
+        D = g0/(2*pi) .* ( sqrt(1i*omega/c) - sqrt(c/(1i*omega) ./ r ) ) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(-1i*omega/c .* r);
         %
     elseif strcmp('delft1988',driving_functions)

@@ -88,20 +88,43 @@ driving_functions = conf.driving_functions;
 omega = 2*pi*f;
 
 
-if strcmp('2D',dimension)
+if strcmp('2D',dimension) || strcmp('3D',dimension)
     
-    % === 2-Dimensional ==================================================
+    % === 2- or 3-Dimensional ============================================
     
-    % Ensure 2D
-    x0 = x0(:,1:2);
-    nx0 = nx0(:,1:2);
-    xs = xs(:,1:2);
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        % D_2D using a line sink as source model
+        % D using an approximated point sink as source model
+        %                  
+        %              1  i w (x0-xs) nx0
+        % D(x0,w) = - --- --- ------------- e^(i w/c |x0-xs|)
+        %             2pi  c  |x0-xs|^(3/2)
+        %
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        % driving signal
+        D = -1/(2*pi) * 1i*omega/c .* ...
+            vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(1i*omega/c.*r);
+        %
+    elseif strcmp('point_sink',driving_functions)
+        % D using a point sink as source model
+        %
+        % D(x0,w) =
+        %                    
+        %  /  i w      1    \  -2 (x0-xs) nx0
+        %  |- --- + ------- |  -------------- e^(i w/c |x0-xs|) .* weights
+        %  \   c    |x0-xs| /     |x0-xs|^2
+        %
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        % driving signal
+        D = ( -1i.*omega/c + 1./r ) .* ...
+            -2.*vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(1i*omega./c.*r);
+    elseif strcmp('line_sink',driving_functions)
+        % D using a line sink as source model
         %
         %                 iw (x0-xs)nk  (1)/ w         \
-        % D_2D(x0,w) =  - -- --------- H1  | - |x0-xs| |
+        % D(x0,w) =  - -- --------- H1  | - |x0-xs| |
         %                 2c  |x0-xs|      \ c         /
         %
         % r = |x0-xs|
@@ -116,7 +139,7 @@ if strcmp('2D',dimension)
         %
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
-            'for a 2D focused source.'],upper(mfilename),driving_functions);
+            'for a focused source.'],upper(mfilename),driving_functions);
     end
 
 
@@ -127,6 +150,26 @@ elseif strcmp('2.5D',dimension)
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
+        % --- SFS Toolbox ------------------------------------------------
+        % 2.5D correction factor
+        %        ______________
+        % g0 = \| 2pi |xref-x0|
+        %
+        g0 = sqrt(2*pi*vector_norm(xref-x0,2));
+        %
+        % D_2.5D using an approximated point sink as source model
+        %                        ___
+        %                -g0    |i w (x0-xs) nx0
+        % D_2.5D(x0,w) = ---  _ |--- ------------- e^(i w/c |x0-xs|)
+        %                2pi   \| c  |x0-xs|^(3/2)
+        %
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        % driving signal
+        D = -g0/(2*pi) * sqrt( 1i*omega/c ) .* ...
+            vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(1i*omega/c.*r);
+        %
+    elseif strcmp('spors2009eq7',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D correction factor
         %        ______________
@@ -201,37 +244,6 @@ elseif strcmp('2.5D',dimension)
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D focused source.'],upper(mfilename),driving_functions);
-    end
-
-
-elseif strcmp('3D',dimension)
-
-    % === 3-Dimensional ==================================================
-
-    if strcmp('default',driving_functions)
-        % --- SFS Toolbox ------------------------------------------------
-        % D_3D using a point sink as source model
-        % FIXME: check driving function
-        %
-        % D_3D(x0,w) =
-        %                    
-        %  /  i w      1    \  -2 (x0-xs) nx0
-        %  |- --- + ------- |  -------------- e^(i w/c |x0-xs|) .* weights
-        %  \   c    |x0-xs| /     |x0-xs|^2
-        %
-        % r = |x0-xs|
-        r = vector_norm(x0-xs,2);
-        % driving signal
-        D = ( -1i.*omega/c + 1./r ) .* ...
-            -2.*vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(1i*omega./c.*r);
-        %
-    elseif strcmp('delft1988',driving_functions)
-        % --- Delft 1988 -------------------------------------------------
-        to_be_implemented;
-        %
-    else
-        error(['%s: %s, this type of driving function is not implemented ', ...
-            'for a 3D focused source.'],upper(mfilename),driving_functions);
     end
 
 else

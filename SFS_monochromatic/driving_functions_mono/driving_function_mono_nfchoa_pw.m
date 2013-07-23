@@ -81,11 +81,11 @@ driving_functions = conf.driving_functions;
 
 % angle of the secondary sources
 points = bsxfun(@minus,x0,X0);
-[alpha0,beta0,r0] = cart2sph(points(:,1),points(:,2),points(:,3));
+[phi0,theta0,r0] = cart2sph(points(:,1),points(:,2),points(:,3));
 % angle of plane wave
-[alpha,beta,~] = cart2sph(nk(:,1),nk(:,2),nk(:,3));
+[phi_pw,theta_pw,~] = cart2sph(nk(:,1),nk(:,2),nk(:,3));
 % wavenumber
-k = 2*pi*f/c;
+w = 2*pi*f;
 % initialize empty driving signal
 D = zeros(size(x0,1),1);
 
@@ -95,15 +95,15 @@ if strcmp('2D',dimension)
     
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        %                          __
-        %                  2i     \        i^-n
-        % D(alpha_x0) = - -----   /__   ----------  e^(i n (alpha0-alpha))
-        %                 pi r0 n=-N..N  (2)
-        %                               Hn  (k r0)
+        %                        __
+        %                2i     \        i^-m
+        % D(phi0,w) = - -----   /__   ----------  e^(i m (phi0-phi_pw))
+        %               pi r0 m=-N..N  (2)
+        %                             Hm  (w/c r0)
         %
-        for n=-N:N
-            D = D + 2.*1i./(pi.*r0) .* 1i^(-n)./besselh(n,2,k.*r0) .* ...
-                exp(1i.*n.*(alpha0-alpha));
+        for m=-N:N
+            D = D + 2.*1i./(pi.*r0) .* 1i^(-m)./besselh(m,2,w/c.*r0) .* ...
+                exp(1i.*m.*(phi0-phi_pw));
         end
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
@@ -117,20 +117,18 @@ elseif strcmp('2.5D',dimension)
     
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        %
-        %       __           4pi i^|n|
-        %      \      --------------------- e^(i n (alpha_x0-alpha_pw) )
-        % D =  /__          (2) 
-        %    n=-N..N  -ik H|n| (k|x0-xref|)  
+        %                      __
+        %                 2i  \            i^|m|
+        % D_25D(phi0,w) = --  /__    ------------------ e^(i m (phi0-phi_pw) )
+        %                 r0 m=-N..N       (2)
+        %                             w/c h|m| (w/c r0)  
         %                      
-        % R = |x0-xref|
         % NOTE: it makes only sense to use the center point as reference point.
         % Otherwise we will have no radius at all.
-        R = r0;
-        for n=-N:N
-            D = D + 4.*pi .* 1i.^(-abs(n)) ./ ...
-                ( -1i .* k .* sphbesselh(abs(n),2,k.*R) ) .* ...
-                exp(1i.*n.*(alpha0-alpha));
+        for m=-N:N
+            D = D + 2.*1i./r0 .* 1i.^(-abs(m)) ./ ...
+                ( w/c .* sphbesselh(abs(m),2,w/c.*r0) ) .* ...
+                exp(1i.*m.*(phi0-phi_pw));
         end
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
@@ -144,12 +142,18 @@ elseif strcmp('3D',dimension)
     
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        %                  __    __                 m     *
-        %           1     \     \       4pi (-i)^n Yn (nk)       m
-        % D(nx0) = -----  /__   /_      -----------------------_Yn (nx0)
-        %          2pi R n=0..N m=-n..n         (2)
-        %                                  -ik Hn  (kR)
-        to_be_implemented;
+        %                         __    __             -m
+        %                    2i  \     \       i^(-n) Yn (theta_pw,phi_pw)  m
+        % D(theta0,phi0,w) = --  /__   /__     --------------------------- Yn (theta0,phi0)
+        %                    r0 n=0..N m=-n..n           (2)
+        %                                           w/c hn  (w/c r0)
+        for n=0:N
+            for m=-n:n
+                D = D + 2.*1i./r0 .* 1i.^(-n).*sphharmonics(n,m,theta_pw,phi_pw) ./...
+                    ( w./c .* sphbesselh(n,2,w./c.*r0) ) .* ...
+                    sphharmonics(n,m,theta0,phi0);
+            end
+        end
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 3D plane wave.'],upper(mfilename),driving_functions);

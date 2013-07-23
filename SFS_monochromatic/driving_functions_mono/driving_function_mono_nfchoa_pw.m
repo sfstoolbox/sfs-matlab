@@ -123,8 +123,6 @@ elseif strcmp('2.5D',dimension)
         %                 r0 m=-N..N       (2)
         %                             w/c h|m| (w/c r0)  
         %                      
-        % NOTE: it makes only sense to use the center point as reference point.
-        % Otherwise we will have no radius at all.
         for m=-N:N
             D = D + 2.*1i./r0 .* 1i.^(-abs(m)) ./ ...
                 ( w/c .* sphbesselh(abs(m),2,w/c.*r0) ) .* ...
@@ -142,14 +140,14 @@ elseif strcmp('3D',dimension)
     
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        %                         __    __             -m
-        %                    2i  \     \       i^(-n) Yn (theta_pw,phi_pw)  m
-        % D(theta0,phi0,w) = --  /__   /__     --------------------------- Yn (theta0,phi0)
-        %                    r0 n=0..N m=-n..n           (2)
-        %                                           w/c hn  (w/c r0)
+        %                           __    __             -m
+        %                    2i    \     \       i^(-n) Yn (theta_pw,phi_pw)  m
+        % D(theta0,phi0,w) = ----  /__   /__     --------------------------- Yn (theta0,phi0)
+        %                    r0^2 n=0..N m=-n..n           (2)
+        %                                             w/c hn  (w/c r0)
         for n=0:N
             for m=-n:n
-                D = D + 2.*1i./r0 .* 1i.^(-n).*sphharmonics(n,m,theta_pw,phi_pw) ./...
+                D = D + 2.*1i./r0.^.^22 .* 1i.^(-n).*sphharmonics(n,m,theta_pw,phi_pw) ./...
                     ( w./c .* sphbesselh(n,2,w./c.*r0) ) .* ...
                     sphharmonics(n,m,theta0,phi0);
             end

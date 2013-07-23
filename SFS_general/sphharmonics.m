@@ -71,9 +71,9 @@ theta = correct_elevation(theta);
 
 
 %% ===== Computation =====================================================
-% convert theta to other coordinate system, see Ahrens (2012) Fig.A.1
-theta = abs(theta-pi/2);
-Lnm = asslegendre( n, abs(m), cos( theta ) );
-factor_1 = ( 2*n + 1 ) / ( 4*pi );
-factor_2 = factorial( n - abs(m) ) ./ factorial( n + abs(m) );
-Ynm = (-1).^m .* sqrt( factor_1 .* factor_2 ) .* Lnm .* exp( 1i .* m .* phi );
+% NOTE: we use here sin(theta) opposite to cos(theta) as presented in Ahrens (2012),
+% because we have another coordinate system convention -- compare Ahrens, Fig.A.1
+Lnm = asslegendre(n,abs(m),sin(theta));
+factor_1 = (2*n+1) / (4*pi);
+factor_2 = factorial(n-abs(m)) ./ factorial(n+abs(m));
+Ynm = (-1).^m .* sqrt(factor_1.*factor_2) .* Lnm .* exp(1i.*m.*phi);

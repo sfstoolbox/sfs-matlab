@@ -82,9 +82,9 @@ X0 = conf.secondary_sources.center;
 
 % secondary source positions
 x00 = bsxfun(@minus,x0,X0);
-[alpha0,beta0,r0] = cart2sph(x00(:,1),x00(:,2),x00(:,3));
+[phi0,theta0,r0] = cart2sph(x00(:,1),x00(:,2),x00(:,3));
 % point source
-[alpha,beta,r] = cart2sph(xs(:,1),xs(:,2),xs(:,3));
+[phi,theta,r] = cart2sph(xs(:,1),xs(:,2),xs(:,3));
 % wavenumber
 omega = 2*pi*f;
 % initialize empty driving signal
@@ -113,16 +113,15 @@ elseif strcmp('2.5D',dimension)
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D point source, after Ahrens (2012), p. 186, eq. 5.8
         %
-        %                      __     (2)
-        %                 1    \      h|m| (w/c r)
-        % D(alpha0,w) = -----  /__   ------------- e^(i m (alpha0-alpha))
-        %               2pi r0 m=-N..N (2)
+        %                      __      (2)
+        %               1     \       h|m| (w/c r)
+        % D(phi0,w) = -----   /__    ------------- e^(i m (phi0-phi))
+        %             2pi r0 m=-N..N  (2)
         %                             h|m| (w/c r0)
         %
-        R = r0;
         for m=-N:N
-            D = D + 1./(2.*pi.*R) .* sphbesselh(abs(m),2,omega/c.*r) ./ ...
-                sphbesselh(abs(m),2,omega/c.*R) .* exp(1i.*m.*(alpha0-alpha));
+            D = D + 1./(2.*pi.*r0) .* sphbesselh(abs(m),2,omega/c.*r) ./ ...
+                sphbesselh(abs(m),2,omega/c.*r0) .* exp(1i.*m.*(phi0-phi));
         end
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
@@ -138,19 +137,19 @@ elseif strcmp('3D',dimension)
         % --- SFS Toolbox ------------------------------------------------
         % 3D point source, after Ahrens (2012), p. 185, eq. 5.7
         %
-        %                               N_   n_  (2)
-        %                        1     \    \    hn (w/c r)   -m             
-        % D(alpha0,beta0,w) = -------  /__  /__  ------------ Yn(beta,alpha) ...
-        %                     2pi r0^2 n=0 m=-n  (2)
+        %                              N_   n_  (2)
+        %                       1     \    \    hn (w/c r)   -m             
+        % D(theta0,phi0,w) = -------  /__  /__  ------------ Yn(theta,phi) ...
+        %                    2pi r0^2 n=0 m=-n  (2)
         %                                       hn (w/c r0)
         %                      m
-        %                     Yn(beta0,alpha0)
+        %                     Yn(theta0,phi0)
         for n=0:N
             for m=-n:n
                 D = D + 1./(2.*pi.*r0.^2) .* sphbesselh(n,2,omega/c.*r) ./ ...
                     sphbesselh(n,2,omega/c.*r0) .* ...
-                    sphharmonics(n,-m,beta,alpha) .* ...
-                    sphharmonics(n,m,beta0,alpha0);
+                    sphharmonics(n,-m,theta,phi) .* ...
+                    sphharmonics(n,m,theta0,phi0);
             end
         end
     else

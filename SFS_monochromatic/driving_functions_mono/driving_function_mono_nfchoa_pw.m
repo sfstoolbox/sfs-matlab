@@ -102,7 +102,7 @@ if strcmp('2D',dimension)
         %                             Hm  (w/c r0)
         %
         for m=-N:N
-            D = D + 2.*1i./(pi.*r0) .* 1i^(-m)./besselh(m,2,w/c.*r0) .* ...
+            D = D - 2.*1i./(pi.*r0) .* 1i^(-m)./besselh(m,2,w/c.*r0) .* ...
                 exp(1i.*m.*(phi0-phi_pw));
         end
     else

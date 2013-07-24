@@ -18,12 +18,9 @@ function D = driving_function_mono_sdm_pw(x0,nk,f,conf)
 %   frequency f.
 %
 %   References:
-%       FIXME: Update references
-%       Spors2009 - Physical and Perceptual Properties of Focused Sources in
-%           Wave Field Synthesis (AES127)
-%       Spors2010 - Analysis and Improvement of Pre-equalization in
-%           2.5-Dimensional Wave Field Synthesis (AES128)
-%       Williams1999 - Fourier Acoustics (Academic Press)
+%       J. Ahrens, S. Spors - "Sound Field Reproduction Using Planar and Linear
+%       Arrays of Loudspeakers", Transactions on Audio, Speech and Language
+%       Processing, Volume 18(8), p. 2038-2050, 2010
 %
 %   see also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
@@ -111,14 +108,13 @@ elseif strcmp('2.5D',dimension)
     xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        % D_2.5D using a plane wave as source model
-        % FIXME: add reference and check if 3D ready
+        % D_2.5D using a plane wave as source model, after Ahrens (2010) eq. 17
         %                  
-        %                    e^(-i w/c nky*xrefy)
+        %                   e^(-i w/c nky*xrefy)
         % D_2.5D(x0,w) = 4i ---------------------- e^(-i w/c nk x0)
-        %                      (2) /w          \
-        %                     H0  | - nky*xrefy |
-        %                          \c          /
+        %                     (2) /w          \
+        %                    H0  | - nky*xrefy |
+        %                         \c          /
         %
         D = 4*1i.*exp(-1i*omega/c.*nk(:,2).*xref(:,2)) ./ ...
             besselh(0,2,omega/c.*nk(:,2).*xref(:,2)) .* ...

@@ -74,6 +74,7 @@ if size(x0,1)==1
     dx0 = Inf;
 else
     if approx
+        % approximate by using only the first <=100 sources
         x0 = x0(1:min(100,size(x0,1)),:);
     end
     dx0_single = zeros(size(x0,1),1);

@@ -78,8 +78,11 @@ if usetapwin && nls>2 && ...
    ~(strcmp('sphere',geometry)||strcmp('spherical',geometry))
     win = ones(1,nls);
     % get the mean distance between secondary sources and the smallest distance
-    % to neighbour source for every secondary source
-    dx0 = secondary_source_distance(x0);
+    % to neighbour source for every secondary source. Due to long computing time
+    % for really large secondary source numbers, the distance is approximated by
+    % the first 100 (or less) sources. If you don't want this behavior, change
+    % the following command to dx0 = secondary_source_distance(x0,0);
+    dx0 = secondary_source_distance(x0,1);
     % use only positions
     x0 = x0(:,1:3);
     % find the edges of the array

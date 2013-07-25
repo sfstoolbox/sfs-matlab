@@ -1,21 +1,25 @@
-function [dx0,dx0_single] = secondary_source_distance(x0)
+function [dx0,dx0_single] = secondary_source_distance(x0,approx)
 %SECONDARY_SOURCE_DISTANCE calculates the average distance between the secondary
 %sources
 %
-%   Usage: dx0 = secondary_source_distance(x0)
+%   Usage: dx0 = secondary_source_distance(x0,[approx])
 %
 %   Input parameters:
 %       x0          - secondary sources / m
+%       approx      - flag (0/1). If set only the first 100 secondary sources
+%                     are used to calculate the distance. This can speed up a
+%                     lot the calculation if you are using many secondary
+%                     sources. Default: 0.
 %
 %   Output parameters:
 %       dx0         - average distance of secondary sources / m
 %       dx0_single  - vector containing the minimum distances of
 %                     all secondary sources to the other ones / m
 %
-%   SECONDARAY_SOURCE_DISTANCE(x0) calculates the average distance dx0 between
-%   the given secondary sources. First, the distance to its nearest source is
-%   calculated for every single secondary source, afterwads the mean about these
-%   values is returned.
+%   SECONDARAY_SOURCE_DISTANCE,approx(x0) calculates the average distance dx0
+%   between the given secondary sources. First, the distance to its nearest
+%   source is calculated for every single secondary source, afterwads the mean
+%   about these values is returned.
 %
 %   see also: aliasing_frequency, secondary_source_positions
 
@@ -54,9 +58,12 @@ function [dx0,dx0_single] = secondary_source_distance(x0)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
-nargmax = 1;
+nargmax = 2;
 narginchk(nargmin,nargmax),
 isargsecondarysource(x0);
+if nargin==nargmax-1
+    approx = false;
+end
 
 
 %% ===== Calculation ====================================================
@@ -66,6 +73,9 @@ if size(x0,1)==1
     % if we have only one speaker
     dx0 = Inf;
 else
+    if approx
+        x0 = x0(1:min(100,size(x0,1)),:);
+    end
     dx0_single = zeros(size(x0,1),1);
     for ii=1:size(x0,1)
         % first secondary source position

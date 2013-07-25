@@ -66,13 +66,8 @@ function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
+% disabled checking for performance reasons
 nargmax = 7;
-narginchk(nargmin,nargmax);
-isargmatrix(x,y,z);
-isargposition(xs);
-isargchar(src);
-isargscalar(t);
 if nargin<nargmax
     conf = SFS_config;
 end

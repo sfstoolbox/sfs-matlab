@@ -60,13 +60,8 @@ function G = greens_function_mono(x,y,z,xs,src,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
+% disabled checking for performance reasons
 nargmax = 7;
-narginchk(nargmin,nargmax);
-isargnumeric(x,y,z);
-isargposition(xs);
-isargchar(src);
-isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
 end

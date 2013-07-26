@@ -83,6 +83,9 @@ conf.tmpdir = '/tmp/sfs';
 %   0 - normal mode
 %   1 - debug modus, showing interim results and plots
 conf.debug = 0;
+% Show a progress bar in the loops (for example wave_field_mono). This can be
+% useful if you are using secondary sources with >1000 loudspeakers
+conf.showprogress = 0;
 
 
 %% ===== Audio ===========================================================

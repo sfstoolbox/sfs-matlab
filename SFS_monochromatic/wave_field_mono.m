@@ -96,6 +96,7 @@ end
 %% ===== Configuration ==================================================
 % Plotting result
 useplot = conf.plot.useplot;
+showprogress = conf.showprogress;
 
 
 %% ===== Computation ====================================================
@@ -108,6 +109,9 @@ useplot = conf.plot.useplot;
 P = squeeze(zeros(length(x3),length(x2),length(x1)));
 % Integration over secondary source positions
 for ii = 1:size(x0,1)
+
+    % progress bar
+    if showprogress, progressbar(ii,size(x0,1)); end
 
     % ====================================================================
     % Secondary source model G(x-x0,omega)

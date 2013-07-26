@@ -71,6 +71,7 @@ end
 fs = conf.fs;
 dimension = conf.dimension;
 N = size(irs.left,1);
+showprogress = conf.showprogress;
 conf.ir.usehcomp = false;
 
 
@@ -148,7 +149,7 @@ end
 for ii=1:nls
 
     % show progress
-    progress_bar(ii,nls);
+    if showprogress, progress_bar(ii,nls); end;
 
     % direction of plane wave
     [xs(1),xs(2),xs(3)] = sph2cart(phi(ii),theta(ii),R(ii));

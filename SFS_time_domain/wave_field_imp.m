@@ -93,6 +93,8 @@ c = conf.c;
 fs = conf.fs;
 % Debug mode
 debug = conf.debug;
+% Progress bar
+showprogress = conf.showprogress;
 % Bandpass
 usebandpass = conf.usebandpass;
 bandpassflow = conf.bandpassflow;
@@ -158,6 +160,9 @@ end
     
 % Integration over secondary sources
 for ii = 1:size(x0,1)
+
+    % progress bar
+    if showprogress, progress_bar(ii,size(x0,1)); end
 
     % ================================================================
     % Secondary source model: Greens function g3D(x,t)

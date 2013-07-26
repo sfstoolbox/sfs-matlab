@@ -1,16 +1,14 @@
-function brs = ssr_brs_wfs(X,phi,xs,src,irs,conf)
-%SSR_BRS_WFS generates a binaural room scanning (BRS) set for use with the
+function brs = ssr_brs(X,phi,x0,d,irs,conf)
+%SSR_BRS generates a binaural room scanning (BRS) set for use with the
 %SoundScape Renderer
 %
-%   Usage: brs = ssr_brs_wfs(X,phi,xs,src,irs,[conf])
+%   Usage: brs = ssr_brs(X,phi,x0,d,irs,[conf])
 %
 %   Input parameters:
 %       X       - listener position / m
 %       phi     - listener direction [head orientation] / rad
-%       xs      - virtual source position [ys > Y0 => focused source] / m
-%       src     - source type: 'pw' - plane wave
-%                              'ps' - point source
-%                              'fs' - focused source
+%       x0      - secondary sources
+%       d       - corresponding driving signals
 %       irs     - IR data set for the second sources
 %       conf    - optional configuration struct (see SFS_config)
 %
@@ -18,12 +16,12 @@ function brs = ssr_brs_wfs(X,phi,xs,src,irs,conf)
 %       brs     - conf.N x 2*nangles matrix containing all impulse responses (2
 %                 channels) for every angles of the BRS set
 %
-%   SSR_BRS_WFS(X,phi,xs,src,irs,conf) prepares a BRS set for a virtual source
-%   at xs for WFS and the given listener position.
+%   SSR_BRS(X,phi,x0,d,irs,conf) prepares a BRS set for the given secondary
+%   sources and its driving signals for the given listener position.
 %   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
 %   http://spatialaudio.net/ssr/
 %
-%   see also: ir_generic, ir_wfs, driving_function_imp_wfs
+%   see also: ssr_brs_wfs, ssr_brs_nfchoa, ir_generic
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -63,7 +61,8 @@ nargmin = 5;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargposition(X);
-isargxs(xs);
+isargsecondarysource(x0);
+isargmatrix(d);
 isargscalar(phi);
 check_irs(irs);
 if nargin<nargmax
@@ -72,10 +71,21 @@ end
 isargstruct(conf);
 
 
+%% ===== Configuration ===================================================
+N = conf.N;                       % Target length of BRIR impulse responses
+angles = rad(conf.ir.brsangles);  % Angles for the BRIRs
+showprogress = conf.showprogress; % Progress bar
+
+
 %% ===== Computation =====================================================
-% secondary sources
-x0 = secondary_source_positions(conf);
-% calculate driving function
-d = driving_function_imp_wfs(x0,xs,src,conf);
-% calculate brs set
-brs = brs_ssr(X,phi,x0,d,irs,conf);
+nangles = length(angles);
+% Initial values
+brs = zeros(N,2*nangles);
+% Generate a BRS set for all given angles
+for ii = 1:nangles
+    % progress bar
+    if showprogress, progress_bar(ii,nangles); end
+    % compute BRIR for the desired driving signals
+    brs(:,(ii-1)*2+1:ii*2) = ...
+        ir_generic(X,angles(ii)+phi,x0,d,irs,conf);
+end

@@ -73,24 +73,10 @@ end
 isargstruct(conf);
 
 
-%% ===== Configuration ===================================================
-N = conf.N;                     % Target length of BRIR impulse responses
-angles = rad(conf.ir.brsangles);% Angles for the BRIRs
-
-
 %% ===== Computation =====================================================
 % secondary sources
 x0 = secondary_source_positions(conf);
 % calculate driving function
 d = driving_function_imp_nfchoa(x0,xs,src,conf);
-
-nangles = length(angles);
-% Initial values
-brs = zeros(N,2*nangles);
-% Generate a BRS set for all given angles
-for ii = 1:nangles
-    progress_bar(ii,nangles);
-    % Compute BRIR for the desired HOA system
-    brs(:,(ii-1)*2+1:ii*2) = ...
-        ir_generic(X,angles(ii)+phi,x0,d,irs,conf);
-end
+% calculate brs set
+brs = ssr_brs(X,phi,x0,d,irs,conf);

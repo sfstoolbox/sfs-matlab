@@ -70,19 +70,5 @@ end
 isargstruct(conf);
 
 
-%% ===== Configuration ===================================================
-N = conf.N;                     % Target length of BRIR impulse responses
-angles = rad(conf.ir.brsangles);% Angles for the BRIRs
-
-
 %% ===== Computation =====================================================
-% Initial values
-brs = zeros(N,2*length(angles));
-
-% Generate a BRS set for all given angles
-warning('off','SFS:irs_intpol');
-for ii=1:length(angles)
-    % Compute IR for a reference (single loudspeaker at xs)
-    brs(:,(ii-1)*2+1:ii*2) = ir_point_source(X,angles(ii)+phi,xs,irs,conf);
-end
-warning('on','SFS:irs_intpol');
+brs = ssr_brs(X,phi,[xs 0 -1 0 1],1,irs,conf);

@@ -69,4 +69,4 @@ end
 
 
 %% ===== Computation =====================================================
-ir = ir_generic(X,phi,xs,1,irs,conf);
+ir = ir_generic(X,phi,[xs 0 -1 0 1],1,irs,conf);

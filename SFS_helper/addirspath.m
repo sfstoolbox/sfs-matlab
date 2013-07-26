@@ -56,8 +56,8 @@ isargstruct(conf);
 %% ===== Configuration ==================================================
 % NOTE: newer versions of Matlab can do the following with the strsplit
 % function
-%dirs = strsplit(conf.ir.path,'/');
-dirs = regexp(conf.ir.path,'/','split');
+%dirs = strsplit(conf.ir.path,':');
+dirs = regexp(conf.ir.path,':','split')
 
 
 %% ===== Adding pathes ==================================================

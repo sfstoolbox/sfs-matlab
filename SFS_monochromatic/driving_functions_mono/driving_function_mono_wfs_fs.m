@@ -112,7 +112,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % D(x0,w) =
         %                    
         %  /  i w      1    \  -2 (x0-xs) nx0
-        %  |- --- + ------- |  -------------- e^(i w/c |x0-xs|) .* weights
+        %  |- --- + ------- |  -------------- e^(i w/c |x0-xs|)
         %  \   c    |x0-xs| /     |x0-xs|^2
         %
         % r = |x0-xs|
@@ -123,9 +123,9 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
     elseif strcmp('line_sink',driving_functions)
         % D using a line sink as source model
         %
-        %                 iw (x0-xs)nk  (1)/ w         \
+        %              iw (x0-xs)nk  (1)/ w         \
         % D(x0,w) =  - -- --------- H1  | - |x0-xs| |
-        %                 2c  |x0-xs|      \ c         /
+        %              2c  |x0-xs|      \ c         /
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);

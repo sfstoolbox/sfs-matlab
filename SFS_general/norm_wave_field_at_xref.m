@@ -63,51 +63,51 @@ end
 
 
 %% ===== Configuration ===================================================
-usenormalisation = conf.usenormalisation;
+if ~conf.usenormalisation
+    return;
+end
 xref = conf.xref;
 resolution = conf.resolution;
 
 
 %% ===== Computation =====================================================
-if usenormalisation
-    % Get our active axis
-    [dimensions] = xyz_axes_selection(x,y,z);
+% Get our active axis
+[dimensions] = xyz_axes_selection(x,y,z);
 
-    % Use the half of the x axis and xref
-    if dimensions(1)
-        [~,xidx] = find(x>xref(1),1);
-        check_idx(xidx,x,xref(1),'X',resolution);
-    end
-    if dimensions(2)
-        [~,yidx] = find(y>xref(2),1);
-        check_idx(yidx,y,xref(2),'Y',resolution);
-    end
-    if dimensions(3)
-        [~,zidx] = find(z>xref(3),1);
-        check_idx(zidx,z,xref(3),'Z',resolution);
-    end
-
-    % Scale signal to 1
-    if all(dimensions)
-        % FIXME: this is for a future version, but I don't know if it will work
-        scale = abs(P(zidx,yidx,xidx));
-    elseif dimensions(1) && dimensions(2)
-        scale = abs(P(yidx,xidx));
-    elseif dimensions(1) && dimensions(3)
-        scale = abs(P(zidx,xidx));
-    elseif dimensions(2) && dimensions(3)
-        scale = abs(P(zidx,yidx));
-    elseif dimensions(1)
-        scale = abs(P(xidx));
-    elseif dimensions(2)
-        scale = abs(P(yidx));
-    elseif dimensions(3)
-        scale = abs(P(zidx));
-    else
-        scale = 1;
-    end
-    P = P/scale;
+% Use the half of the x axis and xref
+if dimensions(1)
+    [~,xidx] = find(x>xref(1),1);
+    check_idx(xidx,x,xref(1),'X',resolution);
 end
+if dimensions(2)
+    [~,yidx] = find(y>xref(2),1);
+    check_idx(yidx,y,xref(2),'Y',resolution);
+end
+if dimensions(3)
+    [~,zidx] = find(z>xref(3),1);
+    check_idx(zidx,z,xref(3),'Z',resolution);
+end
+
+% Scale signal to 1
+if all(dimensions)
+    % FIXME: this is for a future version, but I don't know if it will work
+    scale = abs(P(zidx,yidx,xidx));
+elseif dimensions(1) && dimensions(2)
+    scale = abs(P(yidx,xidx));
+elseif dimensions(1) && dimensions(3)
+    scale = abs(P(zidx,xidx));
+elseif dimensions(2) && dimensions(3)
+    scale = abs(P(zidx,yidx));
+elseif dimensions(1)
+    scale = abs(P(xidx));
+elseif dimensions(2)
+    scale = abs(P(yidx));
+elseif dimensions(3)
+    scale = abs(P(zidx));
+else
+    scale = 1;
+end
+P = P/scale;
 
 end % of function
 

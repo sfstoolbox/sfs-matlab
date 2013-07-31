@@ -217,7 +217,7 @@ elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)
     % get spherical grid + weights
     [points,weights] = get_spherical_grid(nls,conf);
     % secondary source positions
-    x0(:,1:3) = L/2 * points;
+    x0(:,1:3) = L/2 * points + repmat(X0,nls,1);
     % secondary source directions
     x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1));
     % secondary source weights

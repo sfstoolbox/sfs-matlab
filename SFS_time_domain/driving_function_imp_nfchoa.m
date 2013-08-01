@@ -135,3 +135,21 @@ end
 d = circshift(d,[order+1 0]);
 d = (2*order+1)*ifft(d,[],1);
 d = real(d');
+
+% subsample d if we have fewer secondary sources than the applied order
+if size(d,2)<nls
+    error('%s: the given order %i is to low for %i secondary sources.', ...
+        upper(mfilename),order,nls);
+elseif size(d,2)>nls
+    if mod(size(d,2),nls)~=0
+        c.nfchoa.order = [];
+        error(['%s: the given number of driving signals (%i) can not ', ...
+            'be subsampled to %i secondary sources. Choose a NFC-HOA ', ...
+            'order that is a multiple of %i.'], ...
+            upper(mfilename),size(d,2),nls,nfchoa_order(nls));
+    end
+    % sub sample d
+    ratio = size(d,2)/nls;
+    d = d(:,1:ratio:end);
+end
+

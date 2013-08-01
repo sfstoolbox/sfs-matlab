@@ -218,7 +218,10 @@ conf.sdm.withev = true; % boolean
 
 
 %% ===== HOA =============================================================
-% TODO
+% normally the order of NFC-HOA is set by the nfchoa_order() function which
+% returns the highest order for which no aliasing occurs. If you wish to use
+% another order you can set it manually here, otherwise leave it blank
+conf.nfchoa.order = [];
 
 
 %% ===== Binaural reproduction ===========================================

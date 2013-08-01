@@ -19,6 +19,12 @@ function M = nfchoa_order(nls,conf)
 %   M = <
 %        \ (nls-1)/2    odd nls
 %
+%   for a circular array and 
+%         _____
+%   M = \|nls/2
+%
+%   for a spherical array.
+%
 %   References:
 %       Ahrens, J.: Analytic Methods of Sound Field Synthesis, Springer, 2012
 %
@@ -69,6 +75,10 @@ isargstruct(conf);
 
 
 %% ===== Configuration ===================================================
+if conf.nfchoa.order
+    M = conf.nfchoa.order;
+    return;
+end
 dimension = conf.dimension;
 
 

@@ -1,20 +1,39 @@
-function P = norm_wave_field_at_xref(P,x,y,z,conf)
-%NORM_WAVE_FIELD_AT_XREF normalizes the wave field to 1 at xref
+function varargout = sound_field_mono_sdm(X,Y,Z,xs,src,f,conf)
+%SOUND_FIELD_MONO_SDM simulates a sound field for WFS
 %
-%   Usage: P = norm_wave_field_at_xref(P,x,y,z,[conf])
+%   Usage: [P,x,y,z,x0] = sound_field_mono_sdm(X,Y,Z,xs,src,f,[conf])
 %
-%   Input options:
-%       P       - wave field
-%       x,y,z   - vectors conatining the x-, y- and z-axis values / m
-%       conf    - optional configuration struct (see SFS_config)
+%   Input parameters:
+%       X           - x-axis / m; single value or [xmin,xmax]
+%       Y           - y-axis / m; single value or [ymin,ymax]
+%       Z           - z-axis / m; single value or [zmin,zmax]
+%       xs          - position of virtual source / m
+%       src         - source type of the virtual source
+%                         'pw' - plane wave (xs is the direction of the
+%                                plane wave in this case)
+%                         'ps' - point source
+%                         'fs' - focused source
+%       f           - monochromatic frequency / Hz
+%       conf        - optional configuration struct (see SFS_config)
 %
-%   Output options:
-%       P       - normalized wave field
+%   Output parameters:
+%       P           - simulated sound field
+%       x           - corresponding x axis / m
+%       y           - corresponding y axis / m
+%       z           - corresponding z axis / m
+%       x0          - active secondary sources / m
 %
-%   NORM_WAVE_FIELD_AT_XREF(P,x,y,z,conf) normalizes the given wave field P to 1 at
-%   the position conf.xref.
+%   SOUND_FIELD_MONO_SDM(X,Y,Z,xs,src,f,conf) simulates a sound field for the
+%   given source type (src) using SDM driving functions in the temporal domain.
+%   This means by calculating the integral for P with a summation.
+%   To plot the result use plot_sound_field(P,x,y,z,x0,win).
 %
-%   see also: norm_wave_field, wave_field_mono
+%   References:
+%       Spors2009 - Physical and Perceptual Properties of Focused Sources in
+%           Wave Field Synthesis (AES127)
+%       Williams1999 - Fourier Acoustics (Academic Press)
+%
+%   see also: plot_sound_field, sound_field_imp_wfs, driving_function_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -49,12 +68,14 @@ function P = norm_wave_field_at_xref(P,x,y,z,conf)
 %*****************************************************************************
 
 
-%% ===== Checking of input parameters ====================================
-nargmin = 4;
-nargmax = 5;
+%% ===== Checking of input  parameters ==================================
+nargmin = 6;
+nargmax = 7;
 narginchk(nargmin,nargmax);
-isargnumeric(P);
-isargvector(x,y,z);
+isargvector(X,Y,Z);
+isargxs(xs);
+isargpositivescalar(f);
+isargchar(src);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -62,63 +83,23 @@ else
 end
 
 
-%% ===== Configuration ===================================================
-if ~conf.usenormalisation
-    return;
-end
-xref = conf.xref;
-resolution = conf.resolution;
-
-
-%% ===== Computation =====================================================
-% Get our active axis
-[dimensions] = xyz_axes_selection(x,y,z);
-
-% Use the half of the x axis and xref
-if dimensions(1)
-    [~,xidx] = find(x>xref(1),1);
-    check_idx(xidx,x,xref(1),'X',resolution);
-end
-if dimensions(2)
-    [~,yidx] = find(y>xref(2),1);
-    check_idx(yidx,y,xref(2),'Y',resolution);
-end
-if dimensions(3)
-    [~,zidx] = find(z>xref(3),1);
-    check_idx(zidx,z,xref(3),'Z',resolution);
-end
-
-% Scale signal to 1
-if all(dimensions)
-    % FIXME: this is for a future version, but I don't know if it will work
-    scale = abs(P(zidx,yidx,xidx));
-elseif dimensions(1) && dimensions(2)
-    scale = abs(P(yidx,xidx));
-elseif dimensions(1) && dimensions(3)
-    scale = abs(P(zidx,xidx));
-elseif dimensions(2) && dimensions(3)
-    scale = abs(P(zidx,yidx));
-elseif dimensions(1)
-    scale = abs(P(xidx));
-elseif dimensions(2)
-    scale = abs(P(yidx));
-elseif dimensions(3)
-    scale = abs(P(zidx));
+%% ===== Configuration ==================================================
+if strcmp('2D',conf.dimension)
+    greens_function = 'ls';
 else
-    scale = 1;
+    greens_function = 'ps';
 end
-P = P/scale;
-
-end % of function
 
 
-%% ===== Subfunctions ====================================================
-function check_idx(idx,x,xref,str,resolution)
-    % abs(x(1)-x(end))/resolution gives us the maximum distance between to samples.
-    % If abs(x(xidx)-xref(1)) is greater this indicates that we are out of our
-    % bounds
-    if isempty(idx) || abs(x(idx)-xref)>2*abs(x(1)-x(end))/resolution
-        error('%s: your used conf.xref is out of your %s boundaries', ...
-            upper(mfilename),str);
-    end
-end
+%% ===== Computation ====================================================
+% Get the position of the loudspeakers and its activity
+x0 = secondary_source_positions(conf);
+x0 = secondary_source_selection(x0,xs,src);
+x0 = secondary_source_tapering(x0,conf);
+% Driving function
+D = driving_function_mono_sdm(x0,xs,src,f,conf);
+% Wave field
+[varargout{1:min(nargout,4)}] = ...
+    sound_field_mono(X,Y,Z,x0,greens_function,D,f,conf);
+% Return secondary sources if desired
+if nargout==5, varargout{5}=x0; end

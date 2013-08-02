@@ -19,7 +19,7 @@ function [d] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %   driving function of NFC-HOA for the given source type and position,
 %   and loudspeaker positions.
 %
-%   see also: driving_function_imp_nfchoa_ps, wave_field_imp_nfchoa
+%   see also: driving_function_imp_nfchoa_ps, sound_field_imp_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -83,7 +83,7 @@ R = norm(x0(1,1:3)-X0);
 % get maximum order of spherical harmonics
 order = nfchoa_order(nls,conf);
 
-% if-request as a workaround for the right direction of the wave field
+% if-request as a workaround for the right direction of the sound field
 if strcmpi(src,'pw')
     [theta_src, r_src] = cart2pol(-xs(1),xs(2));
 elseif strcmpi(src,'ps')

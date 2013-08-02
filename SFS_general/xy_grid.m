@@ -12,11 +12,11 @@ function [xx,yy,x,y] = xy_grid(X,Y,conf)
 %       xx,yy   - matrices representing the xy-grid / m
 %       x,y     - x-, y-axis / m
 %
-%   XYGRID(X,Y,conf) creates a xy-grid to avoid a loop in the wave field
+%   XYGRID(X,Y,conf) creates a xy-grid to avoid a loop in the sound field
 %   calculation for the whole listening area. It returns also the x-, y-axis for
 %   the listening area, defined by the points given with X,Y.
 %
-%   see also: wave_field_mono_wfs
+%   see also: sound_field_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

@@ -17,7 +17,7 @@ function [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs,conf)
 %   DRIVING_FUNCTION_IMP_WFS_PS(x0,nx0,xs,conf) returns delays and weights for
 %   the WFS driving function for a point source as source model.
 %
-%   see also: wave_field_imp, wave_field_imp_wfs, driving_function_mono_wfs_ps
+%   see also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_ps
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

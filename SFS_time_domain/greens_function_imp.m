@@ -24,13 +24,13 @@ function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 %   given source model located at xs for the given points x,y,z. Note, that the
 %   delta function for the time t is returned as an extra argument. If you want
 %   the value of the Green's function only to this specific time you should have
-%   a look at wave_field_imp() and apply the folowing command:
-%   [p,x,y,z] = wave_field_imp(X,Y,Z,[xs 0 -1 0],src,1,t,conf);
+%   a look at sound_field_imp() and apply the folowing command:
+%   [p,x,y,z] = sound_field_imp(X,Y,Z,[xs 0 -1 0],src,1,t,conf);
 %   
 %   References:
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: greens_function_mono, wave_field_imp
+%   see also: greens_function_mono, sound_field_imp
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

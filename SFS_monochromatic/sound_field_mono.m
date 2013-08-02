@@ -1,39 +1,44 @@
-function varargout = wave_field_mono_wfs(X,Y,Z,xs,src,f,conf)
-%WAVE_FIELD_MONO_WFS simulates a wave field for WFS
+function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
+%SOUND_FIELD_MONO simulates a monofrequent sound field for the given driving
+%signals and secondary sources
 %
-%   Usage: [P,x,y,z,x0] = wave_field_mono_wfs(X,Y,Z,xs,src,f,[conf])
+%   Usage: [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,[conf])
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax]
 %       Y           - y-axis / m; single value or [ymin,ymax]
 %       Z           - z-axis / m; single value or [zmin,zmax]
-%       xs          - position of virtual source / m
-%       src         - source type of the virtual source
-%                         'pw' - plane wave (xs is the direction of the
-%                                plane wave in this case)
-%                         'ps' - point source
-%                         'fs' - focused source
+%       x0          - secondary sources [n x 6] / m
+%       src         - source model for the secondary sources. This describes the
+%                     Green's function, that is used for the modeling of the
+%                     sound propagation. Valid models are:
+%                       'ps' - point source
+%                       'ls' - line source
+%                       'pw' - plane wave
+%       D           - driving signals for the secondary sources [m x n]
 %       f           - monochromatic frequency / Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       P           - simulated wave field
+%       P           - Simulated sound field
 %       x           - corresponding x axis / m
 %       y           - corresponding y axis / m
 %       z           - corresponding z axis / m
-%       x0          - active secondary sources / m
 %
-%   WAVE_FIELD_MONO_WFS(X,Y,Z,xs,src,f,conf) simulates a wave field for the
-%   given source type (src) using WFS driving functions in the temporal domain.
-%   This means by calculating the integral for P with a summation.
-%   To plot the result use plot_wavefield(P,x,y,z,x0,win).
+%   SOUND_FIELD_MONO(X,Y,Z,x0,src,D,f,conf) simulates a sound field
+%   for the given secondary sources, driven by the corresponding driving
+%   signals. The given source model src is applied by the corresponding Green's
+%   function for the secondary sources. The simulation is done for one
+%   frequency in the frequency domain, by calculating the integral for P with a
+%   summation.
+%   
+%   To plot the result use plot_sound_field(P,x,y,z).
 %
 %   References:
-%       Spors2009 - Physical and Perceptual Properties of Focused Sources in
-%           Wave Field Synthesis (AES127)
+%       
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: plot_wavefield, wave_field_imp_wfs, driving_function_mono_wfs
+%   see also: plot_sound_field, sound_field_mono_wfs_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -69,11 +74,11 @@ function varargout = wave_field_mono_wfs(X,Y,Z,xs,src,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 7;
+nargmin = 7;
+nargmax = 8;
 narginchk(nargmin,nargmax);
-isargvector(X,Y,Z);
-isargxs(xs);
+isargvector(X,Y,Z,D);
+isargsecondarysource(x0);
 isargpositivescalar(f);
 isargchar(src);
 if nargin<nargmax
@@ -81,25 +86,64 @@ if nargin<nargmax
 else
     isargstruct(conf);
 end
-
-
-%% ===== Configuration ==================================================
-if strcmp('2D',conf.dimension)
-    greens_function = 'ls';
-else
-    greens_function = 'ps';
+if size(x0,1)~=length(D)
+    error(['%s: The number of secondary sources (%i) and driving ', ...
+        'signals (%i) does not correspond.'], ...
+        upper(mfilename),size(x0,1),length(D));
 end
 
 
+%% ===== Configuration ==================================================
+% Plotting result
+useplot = conf.plot.useplot;
+showprogress = conf.showprogress;
+
+
 %% ===== Computation ====================================================
-% Get the position of the loudspeakers and its activity
-x0 = secondary_source_positions(conf);
-x0 = secondary_source_selection(x0,xs,src);
-x0 = secondary_source_tapering(x0,conf);
-% Driving function
-D = driving_function_mono_wfs(x0,xs,src,f,conf);
-% Wave field
-[varargout{1:min(nargout,4)}] = ...
-    wave_field_mono(X,Y,Z,x0,greens_function,D,f,conf);
-% Return secondary sources if desired
-if nargout==5, varargout{5}=x0; end
+% Create a x-y-grid
+[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
+% Check what are the active axes to create an empty sound field with the correct
+% size
+[~,x1,x2,x3]  = xyz_axes_selection(x,y,z);
+% Initialize empty sound field
+P = squeeze(zeros(length(x3),length(x2),length(x1)));
+% Integration over secondary source positions
+for ii = 1:size(x0,1)
+
+    % progress bar
+    if showprogress, progress_bar(ii,size(x0,1)); end
+
+    % ====================================================================
+    % Secondary source model G(x-x0,omega)
+    % This is the model for the secondary sources we apply.
+    % The exact function is given by the dimensionality of the problem, e.g. a
+    % point source for 3D
+    G = greens_function_mono(xx,yy,zz,x0(ii,1:3),src,f,conf);
+
+    % ====================================================================
+    % Integration
+    %              /
+    % P(x,omega) = | D(x0,omega) G(x-x0,omega) dx0
+    %              /
+    %
+    % see: Spors2009, Williams1993 p. 36
+    % x0(ii,7) is a weight for the single secondary sources which includes for
+    % example a tapering window for WFS or a weighting of the sources for
+    % integration on a sphere.
+    P = P + D(ii) .* G .* x0(ii,7);
+
+end
+
+% === Scale signal (at xref) ===
+P = norm_sound_field_at_xref(P,x,y,z,conf);
+
+% return parameter
+if nargout>0, varargout{1}=P; end
+if nargout>1, varargout{2}=x; end
+if nargout>2, varargout{3}=y; end
+if nargout>3, varargout{4}=z; end
+
+% ===== Plotting =========================================================
+if nargout==0 || useplot
+    plot_sound_field(P,x,y,z,x0,conf);
+end

@@ -1,30 +1,27 @@
-function varargout = wave_field_imp_line_source(X,Y,Z,xs,varargin)
-%WAVE_FIELD_IMP_LINE_SOURCE simulates a wave field for a line source
+function movie_sound_field_mono_wfs(X,Y,Z,xs,src,f,outfile,conf)
+%MOVIE_SOUND_FIELD_MONO_WFS_25D generates movie a WFS sound field
 %
-%   Usage: [P,x,y,z] = wave_field_imp_line_source(X,Y,Z,xs,t,[conf])
+%   Usage: movie_sound_field_mono_wfs_25d(X,Y,Z,xs,src,f,outfile,[conf])
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax]
 %       Y           - y-axis / m; single value or [ymin,ymax]
 %       Z           - z-axis / m; single value or [zmin,zmax]
-%       xs          - position of line source / m
-%       t           - time / samples
+%       xs          - position of point source / m
+%       src         - sourcetype of the virtual source:
+%                         'pw' - plane wave (xs, ys are the direction of the
+%                                plane wave in this case)
+%                         'ps' - point source
+%                         'fs' - focused source
+%       f           - monochromatic frequency / Hz
+%       outfile     - name for the movie file
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   Output parameters:
-%       P           - Simulated wave field
-%       x           - corresponding x axis / m
-%       y           - corresponding y axis / m
-%       z           - corresponding z axis / m
+%   MOVIE_SOUND_FIELD_MONO_WFS(X,Y,Z,xs,src,f,L,outfile,conf) generates a
+%   movie of simulations of a sound field of the given source positioned at xs
+%   using a WFS driving function in the temporal domain with different phase.
 %
-%   WAVE_FIELD_IMP_LINE_SOURCE(X,Y,Z,xs,t,conf) simulates a wave
-%   field of a line source positioned at xs.
-%   To plot the result use plot_wavefield(P,x,y,z).
-%
-%   References:
-%       Williams1999 - Fourier Acoustics (Academic Press)
-%
-%   see also: wave_field_imp, plot_wavefield, wave_field_mono_line_source
+%   see also: sound_field_mono_wfs, plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -60,11 +57,65 @@ function varargout = wave_field_imp_line_source(X,Y,Z,xs,varargin)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 6;
+nargmin = 7;
+nargmax = 8;
 narginchk(nargmin,nargmax);
+isargvector(X,Y,Z);
 isargxs(xs);
+isargpositivescalar(f);
+isargchar(src,outfile);
+if nargin<nargmax
+    conf = SFS_config;
+else
+    isargstruct(conf);
+end
 
 
-%% ===== Computation ====================================================
-[varargout{1:nargout}] = wave_field_imp(X,Y,Z,[xs 0 -1 0 1],'ls',1,varargin{:});
+%% ===== Configuration ==================================================
+
+% Plotting
+useplot = conf.plot.useplot;
+% Temporary dir
+tmpdir = conf.tmpdir;
+
+
+%% ===== Simulation =====================================================
+% FIXME: the direction of the phase could be wrong depending on the direction of
+% the virtual source
+phase = linspace(2*pi,0,25);
+% Generate a random number string for the tmp files
+rn = sprintf('%04.0f',10000*rand);
+% Simulate the time by different phase values
+for ii = 1:length(phase)-1
+    conf.phase = phase(ii);
+    conf.plot.useplot = 0;
+    % Calculate sound field for the given phase
+    [P,x,y,z,x0,win] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
+
+    % === Save temporary data ===
+    if ~exist(tmpdir,'dir')
+        mkdir(tmpdir);
+    end
+    conf.plot.file = sprintf('%s/%s_%i.png',tmpdir,rn,ii+10);
+    plot_sound_field(P,x,y,z,x0,win,conf);
+end
+
+
+%% ===== Create movie ====================================================
+conf.plot.useplot = useplot;
+generate_movie(outfile,tmpdir,rn);
+
+% Clean up tmp files
+delete([tmpdir,'/',rn,'*.png']);
+
+
+%% ===== Show movie ======================================================
+if useplot
+    status = system('which mplayer');
+    if status
+        error('%s: mplayer is needed to show this movie.',upper(mfilename));
+    else
+        cmd = sprintf('mplayer %s -loop 0',outfile);
+        system(cmd);
+    end
+end

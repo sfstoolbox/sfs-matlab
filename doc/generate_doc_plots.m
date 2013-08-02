@@ -98,9 +98,9 @@ print_png('img/secondary_sources_arbitrary_realloudspeakers.png');
 % === stereo setup ===
 conf = SFS_config_example;
 x0 = [-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1];
-% [P,x,y,z] = wave_field_mono(X,Y,Z,x0,src,D,f,conf)
-wave_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800,conf)
-print_png('img/wave_field_stereo.png');
+% [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
+sound_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800,conf)
+print_png('img/sound_field_stereo.png');
 
 % === WFS 3D ===
 conf = SFS_config_example;
@@ -108,47 +108,47 @@ conf.dimension = '3D';
 conf.secondary_sources.size = 3;
 conf.secondary_sources.number = 225;
 conf.secondary_sources.geometry = 'sphere';
-% [P,x,y,z,x0,win] = wave_field_mono_wfs_25d(X,Y,Z,xs,src,fconf);
-wave_field_mono_wfs([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
-print_png('img/wave_field_wfs_3d_xy.png');
-wave_field_mono_wfs([-2 2],0,[-2 2],[0 -1 0],'pw',800,conf);
-print_png('img/wave_field_wfs_3d_xz.png');
-wave_field_mono_wfs(0,[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
-print_png('img/wave_field_wfs_3d_yz.png');
+% [P,x,y,z,x0,win] = sound_field_mono_wfs_25d(X,Y,Z,xs,src,fconf);
+sound_field_mono_wfs([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
+print_png('img/sound_field_wfs_3d_xy.png');
+sound_field_mono_wfs([-2 2],0,[-2 2],[0 -1 0],'pw',800,conf);
+print_png('img/sound_field_wfs_3d_xz.png');
+sound_field_mono_wfs(0,[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
+print_png('img/sound_field_wfs_3d_yz.png');
 
 
 % simulating 2.5D WFS with circular array and a point source
 conf = SFS_config_example;
 conf.dimension = '2.5D';
 conf.plot.useplot = 1;
-% [P,x,y,z,x0] = wave_field_mono_wfs(X,Y,Z,xs,src,f,conf);
-[P,x,y,z,x0] = wave_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf);
-print_png('img/wave_field_wfs_25d.png');
+% [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
+[P,x,y,z,x0] = sound_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf);
+print_png('img/sound_field_wfs_25d.png');
 % plotting WFS with all secondary sources
 x0_all = secondary_source_positions(conf);
 [~,idx] = secondary_source_selection(x0,[0 2.5 0],'ps');
 x0_all(:,7) = zeros(1,size(x0_all,1));
 x0_all(idx,7) = x0(:,7);
-plot_wavefield(P,x,y,z,x0_all,conf);
-print_png('img/wave_field_wfs_25d_with_all_sources.png');
+plot_sound_field(P,x,y,z,x0_all,conf);
+print_png('img/sound_field_wfs_25d_with_all_sources.png');
 % simulating 2.5D NFCHOA with circular array and a plane wave
 conf = SFS_config_example;
 conf.dimension = '2.5D';
-% wave_field_mono_nfchoa(X,Y,Z,xs,src,f,conf);
-wave_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
-print_png('img/wave_field_nfchoa_25d.png');
+% sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf);
+sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
+print_png('img/sound_field_nfchoa_25d.png');
 
 % --- spatio-temporal snapshots of the sound field ---
 conf = SFS_config_example;
 conf.dimension = '2.5D';
 conf.plot.useplot = true;
-% wave_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
-[p,x,y,z,x0] = wave_field_imp_nfchoa([-2 2],[-2 2],0,[0 2 0],'ps',200,conf);
-print_png('img/wave_field_imp_nfchoa_25d.png');
+% sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
+[p,x,y,z,x0] = sound_field_imp_nfchoa([-2 2],[-2 2],0,[0 2 0],'ps',200,conf);
+print_png('img/sound_field_imp_nfchoa_25d.png');
 conf.plot.usedb = true;
 conf.plot.colormap = 'jet';
-plot_wavefield(p,x,y,z,x0,conf);
-print_png('img/wave_field_imp_nfchoa_25d_dB.png');
+plot_sound_field(p,x,y,z,x0,conf);
+print_png('img/sound_field_imp_nfchoa_25d_dB.png');
 
 
 % --- impulse response of the system ---
@@ -184,6 +184,6 @@ print_png('img/impulse_response_wfs_25d_mono.png');
 if ~system('gnuplot -V')
     conf = SFS_config_example;
     conf.plot.usegnuplot = 1;
-    conf.plot.file = 'img/wave_field_nfchoa_25d_gnuplot.png';
-    wave_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',1000,conf);
+    conf.plot.file = 'img/sound_field_nfchoa_25d_gnuplot.png';
+    sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',1000,conf);
 end

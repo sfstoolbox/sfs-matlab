@@ -25,7 +25,7 @@ function D = driving_function_mono_nfchoa(x0,xs,src,f,conf)
 %   References:
 %       FIXME: add something
 %
-%   see also: plot_wavefield, wave_field_mono_nfchoa, driving_function_imp_nfchoa
+%   see also: plot_sound_field, sound_field_mono_nfchoa, driving_function_imp_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

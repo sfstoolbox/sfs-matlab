@@ -1,23 +1,22 @@
-function plot_wavefield(P,x,y,z,x0,conf)
-%PLOT_WAVEFIELD plot the given wavefield
+function plot_sound_field(P,x,y,z,x0,conf)
+%PLOT_SOUND_FIELD plot the given sound field
 %
-%   Usage: plot_wavefield(P,x,y,z,[x0],[conf])
+%   Usage: plot_sound_field(P,x,y,z,[x0],[conf])
 %
 %   Input parameters:
-%       P           - matrix containing the wavefield in the format P = P(y,x)
+%       P           - matrix containing the sound field in the format P = P(y,x)
 %       x,y,z       - vectors for the x-, y- and z-axis
 %       x0          - matrix containing the secondary source positions to plot.
 %                     Default: plot no secondary sources
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   PLOT_WAVEFIELD(P,x,y,z,x0,conf) plots the wavefield P in dependence
+%   PLOT_SOUND_FIELD(P,x,y,z,x0,conf) plots the sound field P in dependence
 %   of the axes that are not singleton. To calculate what axes these are you
-%   have to provide all three of them. The wavefield is normalized to 1 at its
-%   center position P(end/2,end/2). For a given set x0 of secondary sources the
-%   loudspeakers are added to the plot at their real positions. But only if
-%   distance between them is larger than 10cm.
+%   have to provide all three of them. For a given set x0 of secondary sources
+%   the secondary sources are added as dots or loudspeaker symbols depending on
+%   your setting of conf.plot.realloudspeakers.
 %
-%   see also: wave_field_mono, wave_field_imp
+%   see also: sound_field_mono, sound_field_imp
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -100,11 +99,11 @@ p.file = conf.plot.file;
 [dimensions,x1,x2] = xyz_axes_selection(x,y,z);
 if all(dimensions)
     error(['%s: at the moment no method is implemented to plot ', ...
-        'a complete 3D cube of points. Your wave field has the ', ...
+        'a complete 3D cube of points. Your sound field has the ', ...
         'dimension [%i %i %i]. Discard one of the dimension for ', ...
         'plotting.'],upper(mfilename),size(P,1),size(P,2),size(P,3));
 elseif ~any(dimensions)
-    error(['%s: you have only one point in the wave field. ', ...
+    error(['%s: you have only one point in the sound field. ', ...
         'Omitting the plotting.'],upper(mfilename));
 elseif ~dimensions(1)
     % FIXME: in order to work with gnuplot the label should be prtinted
@@ -126,12 +125,12 @@ else
 end
 
 if(p.usedb)
-    % Check if we have any activity in the wave field
+    % Check if we have any activity in the sound field
     if max(abs(P(:)))~=0
         % For the dB case scale the signal maximum to 0 dB
         %P = P./max(abs(P(:)));
     else
-        % If we have only zeros in the wave field set the field to eps to avoid
+        % If we have only zeros in the sound field set the field to eps to avoid
         % problems with log(0).
         P(:) = eps;
     end
@@ -157,7 +156,7 @@ end
 %% ===== Plotting ========================================================
 
 if ~(p.usegnuplot)
-    % ===== Plot the wave field with Matlab/Octave =======================
+    % ===== Plot the sound field with Matlab/Octave =======================
     %
     % Create a new figure
     figure;
@@ -186,10 +185,10 @@ if ~(p.usegnuplot)
     else
 
         if p.usedb
-            % Plot the amplitude of the wave field in dB
+            % Plot the amplitude of the sound field in dB
             imagesc(x1,x2,P_dB,p.caxis);
         else
-            % Plot the wave field
+            % Plot the sound field
             imagesc(x1,x2,real(P),p.caxis);
         end
 
@@ -224,7 +223,7 @@ if ~(p.usegnuplot)
 else
 
 
-%% ===== Plot the wave field using Gnuplot ===============================
+%% ===== Plot the sound field using Gnuplot ==============================
 
     % ----- Store all the files needed for plotting ----------------------
     % tmp dir for storing temporary files
@@ -239,7 +238,7 @@ else
     else
         % Generate a random number string for the tmp files
         rn = sprintf('%04.0f',10000*rand);
-        p.datafile = sprintf('%s/wavefield%s.dat',tmpdir,rn);
+        p.datafile = sprintf('%s/sound_field%s.dat',tmpdir,rn);
         p.lsfile = sprintf('%s/loudspeakers%s.txt',tmpdir,rn);
         p.gnuplotfile = sprintf('%s/gnuplot%s.gnu',tmpdir,rn);
     end
@@ -248,7 +247,7 @@ else
         gp_save_loudspeakers(p.lsfile,x0);
     end
 
-    % Check if we should handle the wave field in dB
+    % Check if we should handle the sound field in dB
     if p.usedb
         % Save the data for plotting with Gnuplot
         gp_save_matrix(p.datafile,x1,x2,db(abs(P)));

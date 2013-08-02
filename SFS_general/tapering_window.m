@@ -17,7 +17,7 @@ function win = tapering_window(x0,conf)
 %   The mean distance of the secondary sources is calculated within this
 %   function in order to identify edges of the array.
 %
-%   see also: secondary_source_position, wave_field_mono_wfs, hann
+%   see also: secondary_source_position, sound_field_mono_wfs, hann
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

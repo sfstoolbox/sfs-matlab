@@ -1,18 +1,18 @@
-function P = norm_wave_field(P,conf)
-%NORM_WAVE_FIELD normalizes the wave field to 1 at xref
+function P = norm_sound_field(P,conf)
+%NORM_SOUND_FIELD normalizes the sound field to 1 at xref
 %
-%   Usage: P = norm_wave_field(P,[conf])
+%   Usage: P = norm_sound_field(P,[conf])
 %
 %   Input options:
-%       P       - wave field
+%       P       - sound field
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output options:
-%       P       - normalized wave field
+%       P       - normalized sound field
 %
-%   NORM_WAVE_FIELD(P,x,y,z,conf) normalizes the given wave field P to 1.
+%   NORM_SOUND_FIELD(P,x,y,z,conf) normalizes the given sound field P to 1.
 %
-%   see also: norm_wave_field_at_xref, wave_field_imp
+%   see also: norm_sound_field_at_xref, sound_field_imp
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

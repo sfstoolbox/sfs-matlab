@@ -18,7 +18,7 @@ function varargout = freq_response_nfchoa(X,xs,src,conf)
 %       f           - corresponding frequency axis / Hz
 %
 %   FREQ_RESPONSE_NFCHOA(X,xs,src,conf) simulates the frequency response of the
-%   wave field at the given position X. The wave field is simulated for the
+%   sound field at the given position X. The sound field is simulated for the
 %   given source type (src) using a monochromatic NFC-HOA driving function.
 %
 %   References:
@@ -28,7 +28,7 @@ function varargout = freq_response_nfchoa(X,xs,src,conf)
 %           2.5-Dimensional Wave Field Synthesis (AES128)
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: wave_field_mono_nfchoa, wave_field_imp_nfchoa
+%   see also: sound_field_mono_nfchoa, sound_field_imp_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -93,8 +93,8 @@ S = zeros(1,length(f));
 % Get the result for all frequencies
 for ii = 1:length(f)
     D = driving_function_mono_nfchoa(x0,xs,src,f(ii),conf);
-    % calculate wave field at the listener position
-    P = wave_field_mono(X(1),X(2),X(3),x0,'ps',D,f(ii),conf);
+    % calculate sound field at the listener position
+    P = sound_field_mono(X(1),X(2),X(3),x0,'ps',D,f(ii),conf);
     S(ii) = abs(P);
 end
 

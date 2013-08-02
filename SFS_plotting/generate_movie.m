@@ -13,7 +13,7 @@ function generate_movie(outfile,directory,pattern)
 %   given directory are processed. If no pattern is given, all png files are
 %   used. framerate?
 %
-%   see also: plot_wavefield, movie_wave_field_mono_wfs_25d
+%   see also: plot_sound_field, movie_sound_field_mono_wfs_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

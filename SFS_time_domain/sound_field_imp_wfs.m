@@ -1,30 +1,37 @@
-function varargout = wave_field_mono_plane_wave(X,Y,Z,xs,f,conf)
-%WAVE_FIELD_MONO_PLANE_WAVE simulates a wave field of a plane wave
+function varargout = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf)
+%SOUND_FIELD_IMP_WFS returns the sound field in time domain of an impulse
 %
-%   Usage: [P,x,y,z] = wave_field_mono_plane_wave(X,Y,Z,xs,f,[conf])
+%   Usage: [p,x,y,z,x0] = sound_field_imp_wfs(X,Y,Z,xs,src,t,[conf])
 %
-%   Input parameters:
+%   Input options:
 %       X           - x-axis / m; single value or [xmin,xmax]
 %       Y           - y-axis / m; single value or [ymin,ymax]
 %       Z           - z-axis / m; single value or [zmin,zmax]
-%       xs          - direction of the plane wave
-%       f           - monochromatic frequency / Hz
+%       xs          - position of point source / m
+%       src         - source type of the virtual source
+%                         'pw' - plane wave (xs, ys are the direction of the
+%                                plane wave in this case)
+%                         'ps' - point source
+%                         'fs' - focused source
+%       t           - time point t of the sound field / samples
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   Output parameters:
-%       P           - Simulated wave field
+%   Output options:
+%       p           - simulated sound field
 %       x           - corresponding x axis / m
 %       y           - corresponding y axis / m
 %       z           - corresponding z axis / m
+%       x0          - secondary sources / m
 %
-%   WAVE_FIELD_MONO_PLANE_WAVE(X,Y,Z,xs,f,conf) simulates a wave
-%   field of a plane wave going in the direction xs.
-%   To plot the result use plot_wavefield(P,x,y,z).
+%   SOUND_FIELD_IMP_WFS(X,Y,Z,xs,src,t,conf) simulates a sound field of the
+%   given source type (src) using a WFS driving function with a delay line at
+%   the time t.
 %
-%   References:
-%       Williams1999 - Fourier Acoustics (Academic Press)
+%   To plot the result use:
+%   conf.plot.usedb = 1;
+%   plot_sound_field(p,x,y,z,x0,win,conf);
 %
-%   see also: wave_field_mono, plot_wavefield, wave_field_mono_point_source
+%   see also: driving_function_imp_wfs, sound_field_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -60,10 +67,13 @@ function varargout = wave_field_mono_plane_wave(X,Y,Z,xs,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 6;
+nargmin = 6;
+nargmax = 7;
 narginchk(nargmin,nargmax);
+isargvector(X,Y,Z);
 isargxs(xs);
+isargchar(src);
+isargscalar(t);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -71,7 +81,23 @@ else
 end
 
 
-%% ===== Computation ====================================================
-% Disable the plotting of a source, because we have a plane wave
-conf.plot.loudspeakers = 0;
-[varargout{1:nargout}] = wave_field_mono(X,Y,Z,[xs 0 1 0 1],'pw',1,f,conf);
+%% ===== Configuration ==================================================
+if strcmp('2D',conf.dimension)
+    greens_function = 'ls';
+else
+    greens_function = 'ps';
+end
+
+
+%% ===== Computation =====================================================
+% Get secondary sources
+x0 = secondary_source_positions(conf);
+x0 = secondary_source_selection(x0,xs,src);
+x0 = secondary_source_tapering(x0,conf);
+% Get driving signals
+d = driving_function_imp_wfs(x0,xs,src,conf);
+% Calculate sound field
+[varargout{1:min(nargout,4)}] = ...
+    sound_field_imp(X,Y,Z,x0,greens_function,d,t,conf);
+% Return secondary sources if desired
+if nargout==5, varargout{5}=x0; end

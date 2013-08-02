@@ -13,11 +13,11 @@ function [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf)
 %       xx,yy,zz - matrices representing the xy-grid / m
 %       x,y,z    - x-, y-, z-axis / m
 %
-%   XYZ_GRID(X,Y,Z) creates a xyz-grid to avoid a loop in the wave field
+%   XYZ_GRID(X,Y,Z) creates a xyz-grid to avoid a loop in the sound field
 %   calculation for the whole listening area. It returns also the x-, y-, z-axis
 %   for the listening area, defined by the points given with X,Y,Z.
 %
-%   see also: xyz_axes, xyz_axes_selection, wave_field_mono
+%   see also: xyz_axes, xyz_axes_selection, sound_field_mono
 
 %*****************************************************************************
 % Copyright (c) 2010-2012 Quality & Usability Lab                            *

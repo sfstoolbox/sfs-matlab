@@ -1,17 +1,17 @@
-function check_wave_field(P,t)
-%CHECK_WAVE_FIELD checks if we have any activity in the wave field and returns a
+function check_sound_field(P,t)
+%CHECK_SOUND_FIELD checks if we have any activity in the sound field and returns a
 %   warning otherwise.
 %
-%   Usage: check_wave_field(P,t)
+%   Usage: check_sound_field(P,t)
 %
 %   Input parameters:
-%       P       - wave field
+%       P       - sound field
 %       t       - time t / samples
 %
-%   CHECK_WAVE_FIELD(P,t) checks if the wave field is different from zero.
+%   CHECK_SOUND_FIELD(P,t) checks if the sound field is different from zero.
 %   If this is not the case it returns a warning.
 %
-%   see also: wave_field_imp_wfs, norm_wave_field
+%   see also: sound_field_imp_wfs, norm_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -56,7 +56,7 @@ isargscalar(t);
 
 %% ===== Computation =====================================================
 if max(abs(P(:)))==0 || all(isnan(P(:)))
-    warning('SFS:check_wave_field',...
-        ['The activity in the simulated wave field is zero. ',...
+    warning('SFS:check_sound_field',...
+        ['The activity in the simulated sound field is zero. ',...
          'Maybe you should use another time frame t than %i. '],t);
 end

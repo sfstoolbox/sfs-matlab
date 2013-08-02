@@ -137,7 +137,7 @@ d = d(end:-1:1,:);
 % biger use this for padding zeros.
 [~,x1,x2,x3] = xyz_axes_selection(x,y,z); % get active axes
 max_distance_in_samples = ...
-        max(round(norm([x(1) y(1) z(1)]-[x(end) y(end) z(end)])/c*fs),2*L/c*fs);
+        round(max(norm([x(1) y(1) z(1)]-[x(end) y(end) z(end)])/c*fs,2*L/c*fs));
 
 % Append zeros at the beginning of the driving signal
 d = [zeros(max_distance_in_samples,size(d,2)); d];

@@ -1,7 +1,7 @@
-function varargout = wave_field_imp(X,Y,Z,x0,src,d,t,conf)
-%WAVE_FIELD_IMP returns the wave field in time domain
+function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
+%SOUND_FIELD_IMP returns the sound field in time domain
 %
-%   Usage: [p,x,y,z] = wave_field_imp(X,Y,Z,x0,d,t,[conf])
+%   Usage: [p,x,y,z] = sound_field_imp(X,Y,Z,x0,d,t,[conf])
 %
 %   Input options:
 %       X           - x-axis / m; single value or [xmin,xmax]
@@ -17,20 +17,20 @@ function varargout = wave_field_imp(X,Y,Z,x0,src,d,t,conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output options:
-%       p           - simulated wave field
+%       p           - simulated sound field
 %       x           - corresponding x axis / m
 %       y           - corresponding y axis / m
 %       z           - corresponding z axis / m
 %
-%   WAVE_FIELD_IMP(X,Y,Z,x0,d,t,conf) computes the wave field synthesized by 
+%   SOUND_FIELD_IMP(X,Y,Z,x0,d,t,conf) computes the sound field synthesized by 
 %   secondary sources driven by individual driving functions to the time t.
 %   Point sources are applied as source models for the secondary sources.
 %
 %   To plot the result use:
 %   conf.plot.usedb = 1;
-%   plot_wavefield(p,x,y,z,conf);
+%   plot_sound_field(p,x,y,z,conf);
 %  
-%   see also: wave_field_mono, plot_wavefield, greens_function_imp
+%   see also: sound_field_mono, plot_sound_field, greens_function_imp
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -149,7 +149,7 @@ t_inverted = t-size(d,1);
 d = [d; zeros(max_distance_in_samples,size(d,2))];
 
 
-% Initialize empty wave field (dependent on the axes we want)
+% Initialize empty sound field (dependent on the axes we want)
 p = squeeze(zeros(length(x3),length(x2),length(x1)));
 
 % Apply bandbass filter
@@ -190,10 +190,10 @@ for ii = 1:size(x0,1)
 
 end
 
-% === Checking of wave field ===
-check_wave_field(p,t);
+% === Checking of sound field ===
+check_sound_field(p,t);
 % normalize field
-p = norm_wave_field(p,conf);
+p = norm_sound_field(p,conf);
 
 % return parameter
 if nargout>0, varargout{1}=p; end
@@ -204,7 +204,7 @@ if nargout>3, varargout{4}=z; end
 
 % === Plotting ===
 if nargout==0 || useplot
-    plot_wavefield(p,x,y,z,x0,conf);
+    plot_sound_field(p,x,y,z,x0,conf);
 end
 
 % some debug stuff

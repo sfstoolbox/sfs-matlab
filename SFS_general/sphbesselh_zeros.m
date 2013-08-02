@@ -56,20 +56,48 @@ narginchk(nargmin,nargmax);
 isargpositivescalar(order);
 
 
-%% ===== Computation =====================================================
-% compute normalized roots/zeros of spherical Hankel function
-% FIXME: this works only until a order of 85. For higher orders factorial will
-% return Inf. Hence, for higher orders we have to find another way to calculate
-% the zeros of the Hankel funtion.
-B = zeros(1,order+2);
+%% ===== Main ============================================================
+if order<86
+    % --- compute ---
+    B = zeros(1,order+2);
+    A = B;
+    for n=0:order
+        B(n+1) = factorial(2*order-n)/(factorial(order-n)*factorial(n)*2^(order-n));
+    end
+    B = B(end:-1:1);
+    % find zeros/roots
+    z = roots(B);
+    % find roots
+    A(2) = 1;
+    p = roots(A);
+else
+    % --- use pre-computed ---
+    % For orders greater than 85 Matlab/Octave is not able to compute the zeros,
+    % because the factorial function returns Inf. We solved this by using the
+    % Multiprecission Toolbox from http://www.advanpix.com and the code given at
+    % the end of this function. With the Toolbox we were able to compute the
+    % zeros up to an order of ... and stored the resulting zeros at
+    % http://github.com/sfstoolbox/data/tree/master/sphbesselh_zeros
+    filename = sprintf('sphbesselh_zeros_order%04.0f.mat',order);
+    file = sprintf('%s/data/sphbesselh_zeros/%s',get_sfs_path(),filename);
+    url = ['http://github.com/sfstoolbox/data/raw/master/', ...
+        'sphbesselh_zeros/' filename];
+    % download file if not present
+    if ~exist(file,'file')
+        download_file(url,file);
+    end
+    load(file);
+end
+return
+
+
+%% ===== Computation with Multiprecission Toolbox ========================
+B = mp(zeros(1,order+2));
 A = B;
-for n=0:order
+for n=mp(0:order)
     B(n+1) = factorial(2*order-n)/(factorial(order-n)*factorial(n)*2^(order-n));
 end
 B = B(end:-1:1);
-% find zeros/roots
 z = roots(B);
-% find roots (for another kind of hankel function ??? This is needed for a plane
-% wave in NFCHOA)
-A(2) = 1;
+A(2) = mp(1);
 p = roots(A);

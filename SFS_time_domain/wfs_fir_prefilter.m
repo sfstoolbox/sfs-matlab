@@ -13,7 +13,7 @@ function hpre = wfs_fir_prefilter(conf)
 %   Wave Field Synthesis (from conf.wfs.hpreflow to conf.wfs.hprefhigh,
 %   see SFS_config).
 %
-%   see also: wfs_preequalization, wfs_iir_prefilter, wave_field_imp_wfs, ir_wfs
+%   see also: wfs_preequalization, wfs_iir_prefilter, sound_field_imp_wfs, ir_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -115,5 +115,5 @@ hpre = firls(Nfilt,2*f/fs,H);
 
 % Truncate length to power of 2
 % FIXME: why I have to change the sign of the pre-filter in order to preserve
-% the amplitude in wave_field_imp_wfs plots?
+% the amplitude in sound_field_imp_wfs plots?
 hpre = hpre(1:end-1);

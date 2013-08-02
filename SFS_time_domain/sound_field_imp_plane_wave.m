@@ -1,26 +1,30 @@
-function movie_wave_field_imp_wfs(X,Y,Z,xs,src,outfile,conf)
-%MOVIE_WAVE_FIELD_IMP_WFS generates movie a WFS wave field
+function varargout = sound_field_imp_plane_wave(X,Y,Z,xs,t,conf)
+%SOUND_FIELD_IMP_PLANE_WAVE simulates a sound field of a plane wave
 %
-%   Usage: movie_wave_field_imp_wfs_25d(X,Y,Z,xs,src,outfile,[conf])
+%   Usage: [P,x,y,z] = sound_field_imp_plane_wave(X,Y,Z,xs,t,[conf])
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax] 
+%       X           - x-axis / m; single value or [xmin,xmax]
 %       Y           - y-axis / m; single value or [ymin,ymax]
 %       Z           - z-axis / m; single value or [zmin,zmax]
-%       xs          - position of point source / m
-%       src         - sourcetype of the virtual source:
-%                         'pw' - plane wave (xs, ys are the direction of the
-%                                plane wave in this case)
-%                         'ps' - point source
-%                         'fs' - focused source
-%       outfile     - name for the movie file
+%       xs          - direction of the plane wave / m
+%       t           - time / samples
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   MOVIE_WAVE_FIELD_IMP_WFS(X,Y,Z,xs,src,outfile,conf) generates a movie of
-%   simulations of a wave field of the given source positioned at xs
-%   using a WFS driving function in the temporal domain with different phase.
+%   Output parameters:
+%       P           - Simulated sound field
+%       x           - corresponding x axis / m
+%       y           - corresponding y axis / m
+%       z           - corresponding z axis / m
 %
-%   see also: wave_field_imp_wfs, plot_wavefield, generate_movie
+%   SOUND_FIELD_IMP_PLANE_WAVE(X,Y,Z,xs,t,conf) simulates a sound
+%   field of a plane wave going in the direction xs.
+%   To plot the result use plot_sound_field(P,x,y,z).
+%
+%   References:
+%       Williams1999 - Fourier Acoustics (Academic Press)
+%
+%   see also: sound_field_imp, plot_sound_field, sound_field_mono_plane_wave
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -56,12 +60,10 @@ function movie_wave_field_imp_wfs(X,Y,Z,xs,src,outfile,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 7;
+nargmin = 5;
+nargmax = 6;
 narginchk(nargmin,nargmax);
-isargvector(X,Y,Z);
 isargxs(xs);
-isargchar(src,outfile);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -69,52 +71,7 @@ else
 end
 
 
-%% ===== Configuration ==================================================
-% Plotting
-useplot = conf.plot.useplot;
-% Temporary dir
-tmpdir = conf.tmpdir;
-
-
-%% ===== Simulation =====================================================
-t = round(linspace(-20,900,10*25));
-% Generate a random number string for the tmp files
-rn = sprintf('%04.0f',10000*rand);
-% Disable the empty wave field warning
-warning('off','SFS:check_wave_field');
-conf.plot.useplot = 0;
-conf.usenormalisation = 0;
-% Simulate the time by different phase values
-for ii = 1:length(t)-1
-    % Calculate wave field for the given phase
-    [p,x,y,z,x0,win] = wave_field_imp_wfs(X,Y,Z,xs,src,t(ii),conf);
-
-    % === Save temporary data ===
-    if ~exist(tmpdir,'dir')
-        mkdir(tmpdir);
-    end
-    conf.plot.file = sprintf('%s/%s_%04.0f.png',tmpdir,rn,ii);
-    %conf.plot.usedb = 1;
-    plot_wavefield(2*p,x,y,z,x0,win,conf);
-end
-% Enable the empty wave field warning
-warning('on','SFS:check_wave_field');
-
-%% ===== Create movie ====================================================
-conf.plot.useplot = useplot;
-generate_movie(outfile,tmpdir,rn);
-
-% Clean up tmp files
-delete([tmpdir,'/',rn,'*.png']);
-
-
-%% ===== Show movie ======================================================
-if useplot
-    status = system('which mplayer');
-    if status
-        error('%s: mplayer is needed to show this movie.',upper(mfilename));
-    else
-        cmd = sprintf('mplayer %s -loop 0',outfile);
-        system(cmd);
-    end
-end
+%% ===== Computation ====================================================
+% Disable the plotting of a source, because we have a plane wave
+conf.plot.loudspeakers = 0;
+[varargout{1:nargout}] = sound_field_imp(X,Y,Z,[xs 0 1 0 1],'pw',1,t,conf);

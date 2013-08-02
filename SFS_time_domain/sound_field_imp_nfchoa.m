@@ -1,7 +1,7 @@
-function varargout = wave_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
-%WAVE_FIELD_IMP_NFCHOA returns the wave field in time domain for NFC-HOA
+function varargout = sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
+%SOUND_FIELD_IMP_NFCHOA returns the sound field in time domain for NFC-HOA
 %
-%   Usage: [p,x,y,z,x0] = wave_field_imp_nfchoa(X,Y,Z,xs,src,t,[conf])
+%   Usage: [p,x,y,z,x0] = sound_field_imp_nfchoa(X,Y,Z,xs,src,t,[conf])
 %
 %   Input options:
 %       X           - x-axis / m; single value or [xmin,xmax]
@@ -16,20 +16,20 @@ function varargout = wave_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output options:
-%       p           - simulated wave field
+%       p           - simulated sound field
 %       x           - corresponding x axis / m
 %       y           - corresponding y axis / m
 %       z           - corresponding z axis / m
 %       x0          - positions and directions of the secondary sources / m
 %
-%   WAVE_FIELD_IMP_NFCHOA(X,Y,Z,xs,src,t,conf) simulates a wave field of the
+%   SOUND_FIELD_IMP_NFCHOA(X,Y,Z,xs,src,t,conf) simulates a sound field of the
 %   given source type (src) using a NFC-HOA driving function at the time point t.
 %
 %   To plot the result use:
 %   conf.plot.usedb = 1;
-%   plot_wavefield(p,x,y,z,x0,conf);
+%   plot_sound_field(p,x,y,z,x0,conf);
 %
-%   see also: driving_function_imp_nfchoa, wave_field_mono_nfchoa
+%   see also: driving_function_imp_nfchoa, sound_field_mono_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -92,8 +92,8 @@ end
 x0 = secondary_source_positions(conf);
 % Calculate driving function
 d = driving_function_imp_nfchoa(x0,xs,src,conf);
-% Calculate wave field
+% Calculate sound field
 [varargout{1:min(nargout,4)}] = ...
-    wave_field_imp(X,Y,Z,x0,greens_function,d,t,conf);
+    sound_field_imp(X,Y,Z,x0,greens_function,d,t,conf);
 % Return secondary sources if desired
 if nargout==5, varargout{5}=x0; end

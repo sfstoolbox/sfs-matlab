@@ -11,7 +11,7 @@ function boolean = test_driving_functions(modus)
 %       booelan - true or false
 %
 %   TEST_DRIVING_FUNCTIONS(MODUS) checks if the functions, that calculates
-%   the driving functions working correctly. Therefore different wave
+%   the driving functions working correctly. Therefore different sound
 %   fields are simulated.
 
 %*****************************************************************************
@@ -125,7 +125,7 @@ for ii=1:size(scenarios)
     if strcmp('WFS',scenarios{ii,1})
         % mono-frequent
         try
-            [P,x,y,z,x0,win] = wave_field_mono_wfs(X,Y,Z,xs,src,f,L,conf);
+            [P,x,y,z,x0,win] = sound_field_mono_wfs(X,Y,Z,xs,src,f,L,conf);
             title_str = sprintf('WFS %s %s array, %s, mono-frequent', ...
                 conf.dimension,conf.array,src);
             title(title_str);
@@ -136,7 +136,7 @@ for ii=1:size(scenarios)
         end
         % spatio-temporal impulse response
         try
-            [p,x,y,z,x0,win] = wave_field_imp_wfs(X,Y,Z,xs,src,t,L,conf);
+            [p,x,y,z,x0,win] = sound_field_imp_wfs(X,Y,Z,xs,src,t,L,conf);
             title_str = sprintf('WFS %s %s array, %s, impulse response', ...
                 conf.dimension,conf.array,src);
             title(title_str);
@@ -150,7 +150,7 @@ for ii=1:size(scenarios)
     elseif strcmp('HOA',scenarios{ii,1})
         % mono-frequent
         try
-            [P,x,y,z,x0,win] = wave_field_mono_nfchoa(X,Y,Z,xs,src,f,L,conf);
+            [P,x,y,z,x0,win] = sound_field_mono_nfchoa(X,Y,Z,xs,src,f,L,conf);
             title_str = sprintf('WFS %s %s array, %s, mono-frequent', ...
                 conf.dimension,conf.array,src);
             title(title_str);
@@ -161,7 +161,7 @@ for ii=1:size(scenarios)
         end
         % spatio-temporal impulse response
         try
-            [p,x,y,z,x0,win] = wave_field_imp_nfchoa(X,Y,Z,xs,src,t,L,conf);
+            [p,x,y,z,x0,win] = sound_field_imp_nfchoa(X,Y,Z,xs,src,t,L,conf);
             title_str = sprintf('WFS %s %s array, %s, impulse response', ...
                 conf.dimension,conf.array,src);
             title(title_str);

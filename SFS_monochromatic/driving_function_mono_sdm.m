@@ -26,7 +26,7 @@ function D = driving_function_mono_sdm(x0,xs,src,f,conf)
 %       FIXME: add references
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: plot_wavefield, wave_field_mono_sdm, driving_function_imp_sdm
+%   see also: plot_sound_field, sound_field_mono_sdm, driving_function_imp_sdm
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

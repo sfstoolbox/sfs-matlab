@@ -26,7 +26,7 @@ function [fal,dx0] = aliasing_frequency(x0,conf)
 %       E. Start - Direct Sound Enhancement by Wave Field Synthesis. TU Delft,
 %       1997.
 %
-%   see also: wave_field_mono_wfs, secondary_source_positions,
+%   see also: sound_field_mono_wfs, secondary_source_positions,
 %       secondary_source_distance
 
 %*****************************************************************************

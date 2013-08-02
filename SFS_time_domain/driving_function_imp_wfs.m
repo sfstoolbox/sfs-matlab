@@ -23,7 +23,7 @@ function [d,delay,weight] = driving_function_imp_wfs(x0,xs,src,conf)
 %   weighting and delay parameters of the WFS driving function for the given
 %   source type, position and secondary sources.
 %
-%   see also: wave_field_imp, wave_field_imp_wfs, driving_function_mono_wfs
+%   see also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

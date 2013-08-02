@@ -17,7 +17,7 @@ function sos = driving_function_imp_nfchoa_ps(N,R,r,conf)
 %   representation for the NFC-HOA driving function for a virtual point source
 %   as source model.
 %
-%   see also: wave_field_imp, wave_field_imp_nfchoa, driving_function_imp_nfchoa
+%   see also: sound_field_imp, sound_field_imp_nfchoa, driving_function_imp_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

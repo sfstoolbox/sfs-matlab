@@ -29,7 +29,7 @@ function D = driving_function_mono_wfs(x0,xs,src,f,conf)
 %           2.5-Dimensional Wave Field Synthesis (AES128)
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: plot_wavefield, wave_field_mono_wfs_25d,
+%   see also: plot_sound_field, sound_field_mono_wfs_25d,
 %             driving_function_imp_wfs_25d
 
 %*****************************************************************************

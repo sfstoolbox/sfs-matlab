@@ -1,7 +1,7 @@
-function [P,x,y,z] = wave_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,conf)
-%WAVE_FIELD_SDM_WFS_25D_KX simulates the wave field of a given source for 25D SDM
+function [P,x,y,z] = sound_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,conf)
+%SOUND_FIELD_SDM_WFS_25D_KX simulates the sound field of a given source for 25D SDM
 %IN THE SPATIAL FREQUENCY DOMAIN
-%   Usage: [P,x,y,z] = wave_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,[conf])
+%   Usage: [P,x,y,z] = sound_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,[conf])
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax]
@@ -18,22 +18,22 @@ function [P,x,y,z] = wave_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       P           - Simulated wave field
+%       P           - Simulated sound field
 %       x           - corresponding x axis / m
 %       y           - corresponding y axis / m
 %       z           - corresponding z axis / m
 %
-%   WAVE_FIELD_MONO_SDM_25D_KX(X,Y,Z,xs,src,f,L,conf) simulates a wave field of
+%   SOUND_FIELD_MONO_SDM_25D_KX(X,Y,Z,xs,src,f,L,conf) simulates a sound field of
 %   the given source type (src) using a SDM 2.5 dimensional driving function
 %   in the spectro-temporal freqeuncy domain. 
-%   To plot the result use plot_wavefield(P,x,y,z).
+%   To plot the result use plot_sound_field(P,x,y,z).
 %
 %   NOTE: due to numerical problems with the fft and the bessel functions needed
 %   in SDM (which resulted in an imaginary part which is hundreds of orders
 %   greater/smaller than the real part) the FFT is done by hand in this
 %   function. This results in a longer time to run this function. If you haven't
 %   that time and you can try the large argument approximation of the
-%   bessel functions, which will result in a wrong evanescent part of the wave
+%   bessel functions, which will result in a wrong evanescent part of the sound
 %   field.
 %
 %   References:
@@ -42,7 +42,7 @@ function [P,x,y,z] = wave_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,conf)
 %       Spors2010 - Analysis and Improvement of Pre-equalization in
 %       2.5-Dimensional Wave Field Synthesis
 %
-%   see also: plot_wavefield, wave_field_mono_wfs
+%   see also: plot_sound_field, sound_field_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -115,7 +115,7 @@ Nkx=1.5;
 %kx = linspace(-Nkx*kxal,Nkx*kxal,Nkx*2000);
 kx = linspace(-Nkx*kxal,Nkx*kxal,Nkx*resolution*10);
 [~,~,~,x,y,z] = xyz_grid(X,Y,Z,conf);
-% Indexes for evanescent contributions and propagating part of the wave field
+% Indexes for evanescent contributions and propagating part of the sound field
 idxpr = (( abs(kx) <= (omega/c) ));
 idxev = (( abs(kx) > (omega/c) ));
 
@@ -170,9 +170,9 @@ for n=1:length(x)
 end
 
 % === Scale signal (at [xref yref]) ===
-P = norm_wave_field(P,x,y,z,conf);
+P = norm_sound_field(P,x,y,z,conf);
 
 %% ===== Plotting ========================================================
 if nargout==0 || useplot
-    plot_wavefield(P,x,y,z,conf);
+    plot_sound_field(P,x,y,z,conf);
 end

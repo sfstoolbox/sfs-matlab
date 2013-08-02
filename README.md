@@ -4,7 +4,7 @@ Sound Field Synthesis Toolbox
 The Sound Field Synthesis Toolbox (SFS) for Matlab/Octave gives you the
 possibility to play around with sound field synthesis methods like Wave Field
 Synthesis (WFS) or near-field compensated Higher Order Ambisonics (NFC-HOA).
-There are functions to simulate monochromatic wave fields for different secondary
+There are functions to simulate monochromatic sound fields for different secondary
 source (loudspeaker) setups, time snapshots of full band impulses emitted by the
 secondary source distributions, or even generate Binaural Room Scanning (BRS)
 stimuli sets in order to simulate WFS with the SoundScape Renderer (SSR).
@@ -212,7 +212,7 @@ This depends on the specification of <code>X,Y,Z</code>. For example
 the x-axis; <code>3,2,1</code> a single point.
 
 For all 2.5D functions the configuration <code>conf.xref</code> is important as
-it defines the point for which the amplitude is corrected in the wave field.
+it defines the point for which the amplitude is corrected in the sound field.
 The default entry is
 ```Matlab
 conf.xref = [0 0 0];
@@ -229,20 +229,20 @@ conf.dimension = '3D';
 conf.secondary_sources.size = 3;
 conf.secondary_sources.number = 225;
 conf.secondary_sources.geometry = 'sphere';
-% [P,x,y,z,x0,win] = wave_field_mono_wfs(X,Y,Z,xs,src,f,conf);
-wave_field_mono_wfs([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
-print_png('img/wave_field_wfs_3d_xy.png');
-wave_field_mono_wfs([-2 2],0,[-2 2],[0 -1 0],'pw',800,conf);
-print_png('img/wave_field_wfs_3d_xz.png');
-wave_field_mono_wfs(0,[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
-print_png('img/wave_field_wfs_3d_yz.png');
+% [P,x,y,z,x0,win] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
+sound_field_mono_wfs([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
+print_png('img/sound_field_wfs_3d_xy.png');
+sound_field_mono_wfs([-2 2],0,[-2 2],[0 -1 0],'pw',800,conf);
+print_png('img/sound_field_wfs_3d_xz.png');
+sound_field_mono_wfs(0,[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
+print_png('img/sound_field_wfs_3d_yz.png');
 ```
 
-![Image](doc/img/wave_field_wfs_3d_xy.png)
+![Image](doc/img/sound_field_wfs_3d_xy.png)
 
-![Image](doc/img/wave_field_wfs_3d_xz.png)
+![Image](doc/img/sound_field_wfs_3d_xz.png)
 
-![Image](doc/img/wave_field_wfs_3d_yz.png)
+![Image](doc/img/sound_field_wfs_3d_yz.png)
 
 
 You can see that the Toolbox is now projecting all the secondary source positions
@@ -250,7 +250,7 @@ into the plane for plotting them. In addition the axis are automatically chosen
 and labeled.
 
 In the next plot we use a two dimensional array, 2.5D WFS and a virtual point source
-located at (0 2.5 0) m. The 3D example showed you, that the wave fields are
+located at (0 2.5 0) m. The 3D example showed you, that the sound fields are
 automatically plotted if we specify now output arguments. If we specify one, we
 have to explicitly say if we want also plot the results, by
 <code>conf.plot.useplot = true;</code>.
@@ -259,12 +259,12 @@ have to explicitly say if we want also plot the results, by
 conf = SFS_config;
 conf.dimension = '2.5D';
 conf.plot.useplot = 1;
-% [P,x,y,z,x0] = wave_field_mono_wfs(X,Y,Z,xs,src,f,conf);
-[P,x,y,z,x0] = wave_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf);
-print_png('img/wave_field_wfs_25d.png');
+% [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
+[P,x,y,z,x0] = sound_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf);
+print_png('img/sound_field_wfs_25d.png');
 ```
 
-![Image](doc/img/wave_field_wfs_25d.png)
+![Image](doc/img/sound_field_wfs_25d.png)
 
 If you want to plot the whole array and not only the active secondary sources,
 you can do this by adding these commands. First we store all sources in an extra
@@ -278,11 +278,11 @@ x0_all = secondary_source_positions(conf);
 [x0,idx] = secondary_source_selection(x0_all,[0 2.5 0],'ps');
 x0_all(:,7) = zeros(1,size(x0_all,1));
 x0_all(idx,7) = x0(:,7);
-plot_wavefield(P,x,y,z,x0_all,conf);
-print_png('img/wave_field_wfs_25d_with_all_sources.png');
+plot_sound_field(P,x,y,z,x0_all,conf);
+print_png('img/sound_field_wfs_25d_with_all_sources.png');
 ```
 
-![Image](doc/img/wave_field_wfs_25d_with_all_sources.png)
+![Image](doc/img/sound_field_wfs_25d_with_all_sources.png)
 
 
 #### Near-field compensated higher order Ambisonics
@@ -293,28 +293,28 @@ of 800 Hz traveling into the direction (0 -1 0), synthesized with 2.5D NFC-HOA.
 ```Matlab
 conf = SFS_config;
 conf.dimension = '2.5D';
-% wave_field_mono_nfchoa(X,Y,Z,xs,src,f,conf);
-wave_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
-print_png('img/wave_field_nfchoa_25d.png');
+% sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf);
+sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
+print_png('img/sound_field_nfchoa_25d.png');
 ```
 
-![Image](doc/img/wave_field_nfchoa_25d.png)
+![Image](doc/img/sound_field_nfchoa_25d.png)
 
 
 #### Stereo
 
-The Toolbox includes not only WFS and NFC-HOA, but also some generic wave field
+The Toolbox includes not only WFS and NFC-HOA, but also some generic sound field
 functions that are doing only the integration of the driving signals of the
 single secondary sources to the resulting sound field. With these function you
 can for example easily simulate a stereophonic setup.
 
 ```Matlab
 x0 = [-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1];
-% [P,x,y,z] = wave_field_mono(X,Y,Z,x0,src,D,f,conf)
-wave_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800)
-print_png('img/wave_field_stereo.png');
+% [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
+sound_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800)
+print_png('img/sound_field_stereo.png');
 ```
-![Image](doc/img/wave_field_stereo.png)
+![Image](doc/img/sound_field_stereo.png)
 
 
 ### Simulate time snapshots of sound fields
@@ -329,12 +329,12 @@ virtual point source placed at (0 2 0) m for 2.5D NFC-HOA.
 conf = SFS_config;
 conf.dimension = '2.5D';
 conf.plot.useplot = true;
-% wave_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
-[p,x,y,z,x0] = wave_field_imp_nfchoa([-2 2],[-2 2],0,[0 2 0],'ps',200,conf);
-print_png('img/wave_field_imp_nfchoa_25d.png');
+% sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
+[p,x,y,z,x0] = sound_field_imp_nfchoa([-2 2],[-2 2],0,[0 2 0],'ps',200,conf);
+print_png('img/sound_field_imp_nfchoa_25d.png');
 ```
 
-![Image](doc/img/wave_field_imp_nfchoa_25d.png)
+![Image](doc/img/sound_field_imp_nfchoa_25d.png)
 
 The output can also be plotted in dB by setting <code>conf.plot.usedb =
 true;</code>. In this case also a color map is shown. For none dB plots no
@@ -345,11 +345,11 @@ We change also the color map to the Matlab default one.
 ```Matlab
 conf.plot.usedb = true;
 conf.plot.colormap = 'jet';
-plot_wavefield(p,x,y,z,x0,conf);
-print_png('img/wave_field_imp_nfchoa_25d_dB.png');
+plot_sound_field(p,x,y,z,x0,conf);
+print_png('img/sound_field_imp_nfchoa_25d_dB.png');
 ```
 
-![Image](doc/img/wave_field_imp_nfchoa_25d_dB.png)
+![Image](doc/img/sound_field_imp_nfchoa_25d_dB.png)
 
 
 ### Make binaural simulations of your systems
@@ -475,12 +475,12 @@ create noise signal <code>noise()</code>, rotation matrix
 ### Plotting with Matlab or gnuplot
 
 The Toolbox provides you with a variety of functions for plotting your simulated
-sound fields <code>plot_wavefield()</code> and adding loudspeaker symbols to the
+sound fields <code>plot_sound_field()</code> and adding loudspeaker symbols to the
 figure <code>draw_loudspeakers</code>. If you have gnuplot installed, you can
 even use it with the Toolbox by setting <code>conf.plot.usegnuplot =
 true;</code>.
 
-The following code reproduces the monochromatic wave field for NFC-HOA from
+The following code reproduces the monochromatic sound field for NFC-HOA from
 above, but this time using gnuplot for plotting. The only difference is, that
 you cannot do the plotting to png afterwards like in Matlab, but have to specify
 the output file before. Note, that the same will work with Matlab.
@@ -489,11 +489,11 @@ the output file before. Note, that the same will work with Matlab.
 conf = SFS_config;
 conf.plot.colormap = 'gray';
 conf.plot.usegnuplot = 1;
-conf.plot.file = 'img/wave_field_nfchoa_25d_gnuplot.png';
-wave_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',1000,conf);
+conf.plot.file = 'img/sound_field_nfchoa_25d_gnuplot.png';
+sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',1000,conf);
 ```
 
-![Image](doc/img/wave_field_nfchoa_25d_gnuplot.png)
+![Image](doc/img/sound_field_nfchoa_25d_gnuplot.png)
 
 
 Credits and License

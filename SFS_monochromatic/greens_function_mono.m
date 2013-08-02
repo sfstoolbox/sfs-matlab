@@ -24,7 +24,7 @@ function G = greens_function_mono(x,y,z,xs,src,f,conf)
 %   References:
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: wave_field_mono
+%   see also: sound_field_mono
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *

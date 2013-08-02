@@ -1,10 +1,10 @@
-function movie_wave_field_mono_wfs(X,Y,Z,xs,src,f,outfile,conf)
-%MOVIE_WAVE_FIELD_MONO_WFS_25D generates movie a WFS wave field
+function movie_sound_field_imp_wfs(X,Y,Z,xs,src,outfile,conf)
+%MOVIE_SOUND_FIELD_IMP_WFS generates movie a WFS sound field
 %
-%   Usage: movie_wave_field_mono_wfs_25d(X,Y,Z,xs,src,f,outfile,[conf])
+%   Usage: movie_sound_field_imp_wfs_25d(X,Y,Z,xs,src,outfile,[conf])
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax]
+%       X           - x-axis / m; single value or [xmin,xmax] 
 %       Y           - y-axis / m; single value or [ymin,ymax]
 %       Z           - z-axis / m; single value or [zmin,zmax]
 %       xs          - position of point source / m
@@ -13,15 +13,14 @@ function movie_wave_field_mono_wfs(X,Y,Z,xs,src,f,outfile,conf)
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
-%       f           - monochromatic frequency / Hz
 %       outfile     - name for the movie file
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   MOVIE_WAVE_FIELD_MONO_WFS(X,Y,Z,xs,src,f,L,outfile,conf) generates a
-%   movie of simulations of a wave field of the given source positioned at xs
+%   MOVIE_SOUND_FIELD_IMP_WFS(X,Y,Z,xs,src,outfile,conf) generates a movie of
+%   simulations of a sound field of the given source positioned at xs
 %   using a WFS driving function in the temporal domain with different phase.
 %
-%   see also: wave_field_mono_wfs, plot_wavefield
+%   see also: sound_field_imp_wfs, plot_sound_field, generate_movie
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -57,12 +56,11 @@ function movie_wave_field_mono_wfs(X,Y,Z,xs,src,f,outfile,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 7;
-nargmax = 8;
+nargmin = 6;
+nargmax = 7;
 narginchk(nargmin,nargmax);
 isargvector(X,Y,Z);
 isargxs(xs);
-isargpositivescalar(f);
 isargchar(src,outfile);
 if nargin<nargmax
     conf = SFS_config;
@@ -72,7 +70,6 @@ end
 
 
 %% ===== Configuration ==================================================
-
 % Plotting
 useplot = conf.plot.useplot;
 % Temporary dir
@@ -80,26 +77,28 @@ tmpdir = conf.tmpdir;
 
 
 %% ===== Simulation =====================================================
-% FIXME: the direction of the phase could be wrong depending on the direction of
-% the virtual source
-phase = linspace(2*pi,0,25);
+t = round(linspace(-20,900,10*25));
 % Generate a random number string for the tmp files
 rn = sprintf('%04.0f',10000*rand);
+% Disable the empty sound field warning
+warning('off','SFS:check_sound_field');
+conf.plot.useplot = 0;
+conf.usenormalisation = 0;
 % Simulate the time by different phase values
-for ii = 1:length(phase)-1
-    conf.phase = phase(ii);
-    conf.plot.useplot = 0;
-    % Calculate wave field for the given phase
-    [P,x,y,z,x0,win] = wave_field_mono_wfs(X,Y,Z,xs,src,f,conf);
+for ii = 1:length(t)-1
+    % Calculate sound field for the given phase
+    [p,x,y,z,x0,win] = sound_field_imp_wfs(X,Y,Z,xs,src,t(ii),conf);
 
     % === Save temporary data ===
     if ~exist(tmpdir,'dir')
         mkdir(tmpdir);
     end
-    conf.plot.file = sprintf('%s/%s_%i.png',tmpdir,rn,ii+10);
-    plot_wavefield(P,x,y,z,x0,win,conf);
+    conf.plot.file = sprintf('%s/%s_%04.0f.png',tmpdir,rn,ii);
+    %conf.plot.usedb = 1;
+    plot_sound_field(2*p,x,y,z,x0,win,conf);
 end
-
+% Enable the empty sound field warning
+warning('on','SFS:check_sound_field');
 
 %% ===== Create movie ====================================================
 conf.plot.useplot = useplot;

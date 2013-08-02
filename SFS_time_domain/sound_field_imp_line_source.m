@@ -1,30 +1,30 @@
-function varargout = wave_field_imp_point_source(X,Y,Z,xs,varargin)
-%WAVE_FIELD_IMP_POINT_SOURCE simulates a wave field for a point source
+function varargout = sound_field_imp_line_source(X,Y,Z,xs,varargin)
+%SOUND_FIELD_IMP_LINE_SOURCE simulates a sound field for a line source
 %
-%   Usage: [P,x,y,z] = wave_field_imp_point_source(X,Y,Z,xs,t,[conf])
+%   Usage: [P,x,y,z] = sound_field_imp_line_source(X,Y,Z,xs,t,[conf])
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax]
 %       Y           - y-axis / m; single value or [ymin,ymax]
 %       Z           - z-axis / m; single value or [zmin,zmax]
-%       xs          - position of point source / m
+%       xs          - position of line source / m
 %       t           - time / samples
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       P           - Simulated wave field
+%       P           - Simulated sound field
 %       x           - corresponding x axis / m
 %       y           - corresponding y axis / m
 %       z           - corresponding z axis / m
 %
-%   WAVE_FIELD_IMP_POINT_SOURCE(X,Y,Z,xs,t,conf) simulates a wave
-%   field of a point source positioned at xs.
-%   To plot the result use plot_wavefield(P,x,y,z).
+%   SOUND_FIELD_IMP_LINE_SOURCE(X,Y,Z,xs,t,conf) simulates a sound
+%   field of a line source positioned at xs.
+%   To plot the result use plot_sound_field(P,x,y,z).
 %
 %   References:
 %       Williams1999 - Fourier Acoustics (Academic Press)
 %
-%   see also: wave_field_imp, plot_wavefield, wave_field_mono_point_source
+%   see also: sound_field_imp, plot_sound_field, sound_field_mono_line_source
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -67,4 +67,4 @@ isargxs(xs);
 
 
 %% ===== Computation ====================================================
-[varargout{1:nargout}] = wave_field_imp(X,Y,Z,[xs 0 -1 0 1],'ps',1,varargin{:});
+[varargout{1:nargout}] = sound_field_imp(X,Y,Z,[xs 0 -1 0 1],'ls',1,varargin{:});

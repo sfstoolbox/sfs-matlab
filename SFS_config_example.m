@@ -83,7 +83,7 @@ conf.tmpdir = '/tmp/sfs';
 %   0 - normal mode
 %   1 - debug modus, showing interim results and plots
 conf.debug = 0;
-% Show a progress bar in the loops (for example wave_field_mono). This can be
+% Show a progress bar in the loops (for example sound_field_mono). This can be
 % useful if you are using secondary sources with >1000 loudspeakers
 conf.showprogress = 0;
 
@@ -100,7 +100,7 @@ conf.usefracdelay = false; % boolean
 conf.fracdelay_method = 'resample';
 % Bandpass filter for time domain driving functions
 % FIXME: check where the bandpass should be applied exactly. At the moment
-% it is applied in the wave_field_imp.m function
+% it is applied in the sound_field_imp.m function
 conf.usebandpass = true; % boolean
 conf.bandpassflow = 10; % / Hz
 conf.bandpassfhigh = 20000; % / Hz
@@ -133,12 +133,12 @@ conf.N = 2048; % samples
 % === 2.5D ===
 % The amplitude will be correct at the point xref for 2.5D
 % synthesis.
-% This point is also used to scale the wave field to 1 at this point.
+% This point is also used to scale the sound field to 1 at this point.
 conf.xref = [0 0 0]; % / m
 %
 % === Tapering ===
 % The truncation of the loudspeaker array leads to diffraction of the
-% synthesized wave field. It has been shown that the truncation can be discribed
+% synthesized sound field. It has been shown that the truncation can be discribed
 % by cylindrical waves originating from the edges of the array
 % [Young,Sommerfeld,Rubinovitch]. Therefore a good method to reduce artifacts
 % due to the diffraction edge waves is to fade out the amplitude of the driving
@@ -151,15 +151,15 @@ conf.tapwinlen = 0.3; % / percent of array length, 0..1
 
 
 %% ===== Wave Field Simulations ==========================================
-% Simulations of monochromatic or time domain wave field
+% Simulations of monochromatic or time domain sound field
 %
-% xyz-resolution for wavefield simulations, this value is applied along every
+% xyz-resolution for sound field simulations, this value is applied along every
 % desired dimension, expect if only one point is desired
 conf.resolution = 300; % / samples
-% Phase of omega of wave field (change this value to create monochromatic wave
+% Phase of omega of sound field (change this value to create monochromatic sound
 % fields with different phases, for example this can be useful to create a movie)
 conf.phase = 0; % / rad
-% normalize the simulated wave field?
+% normalize the simulated sound field?
 conf.usenormalisation = true; % boolean
 
 
@@ -278,14 +278,14 @@ conf.ir.brsangles = 0:1:359; % / degree
 
 
 %% ===== Plotting ========================================================
-% Plot the results (wave fields etc.) directly
+% Plot the results (sound fields etc.) directly
 conf.plot.useplot = false; % boolean
 % Plot mode (uses the GraphDefaults function). Avaiable modes are:
 %   'monitor'   - displays the plot on the monitor
 %   'paper'     - eps output in conf.plot.outfile
 %   'png'       - png output in conf.plot.outfile
 conf.plot.mode = 'monitor';
-% Plot amplitudes in dB (e.g. wavefield plots)
+% Plot amplitudes in dB (e.g. sound field plots)
 conf.plot.usedb = false; % boolean
 % caxis settings (leave blank, if you would use the default values of the given
 % plot function)
@@ -298,7 +298,7 @@ conf.plot.caxis = '';
 % black. In addition you can add every other map you can specify in
 % Matlab/Octave. For example to get the Matlab default colormap ser 'jet'.
 conf.plot.colormap = 'default';
-% Plot loudspeakers in the wave field plots
+% Plot loudspeakers in the sound field plots
 conf.plot.loudspeakers = true; % boolean
 % Use real loudspeakers symbols (otherwise crosses are used)
 conf.plot.realloudspeakers = false; % boolean

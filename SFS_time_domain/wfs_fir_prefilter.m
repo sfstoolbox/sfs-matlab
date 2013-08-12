@@ -114,6 +114,4 @@ H(1:idxflow) = H(idxflow)*ones(1,idxflow);
 hpre = firls(Nfilt,2*f/fs,H);
 
 % Truncate length to power of 2
-% FIXME: why I have to change the sign of the pre-filter in order to preserve
-% the amplitude in sound_field_imp_wfs plots?
 hpre = hpre(1:end-1);

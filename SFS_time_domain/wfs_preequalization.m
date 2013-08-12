@@ -78,6 +78,9 @@ if strcmp('FIR',hpretype)
     hpre = wfs_fir_prefilter(conf);
     % apply filter
     ir = convolution(hpre,ir);
+    % remove time offset due to the filter (the filter has 128 coefficients,
+    % hence we can remove 64 samples at the beginning)
+    ir = ir(65:end,:);
 elseif strcmp('IIR',hpretype)
     % get IIR filter
     hpre = wfs_iir_prefilter(conf);

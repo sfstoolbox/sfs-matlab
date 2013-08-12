@@ -62,6 +62,6 @@ resolution = conf.resolution;
 
 %% ===== Computation =====================================================
 % creating x-, y-, and z-axis
-x=linspace(X(1),X(2),resolution);
-y=linspace(Y(1),Y(2),resolution);
-z=linspace(Z(1),Z(2),resolution);
+x=linspace(X(1),X(2),resolution)';
+y=linspace(Y(1),Y(2),resolution)';
+z=linspace(Z(1),Z(2),resolution)';

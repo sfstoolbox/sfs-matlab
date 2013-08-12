@@ -1,7 +1,7 @@
 function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 %SOUND_FIELD_IMP returns the sound field in time domain
 %
-%   Usage: [p,x,y,z] = sound_field_imp(X,Y,Z,x0,d,t,[conf])
+%   Usage: [p,x,y,z] = sound_field_imp(X,Y,Z,x0,src,d,t,[conf])
 %
 %   Input options:
 %       X           - x-axis / m; single value or [xmin,xmax]
@@ -22,9 +22,9 @@ function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 %       y           - corresponding y axis / m
 %       z           - corresponding z axis / m
 %
-%   SOUND_FIELD_IMP(X,Y,Z,x0,d,t,conf) computes the sound field synthesized by 
-%   secondary sources driven by individual driving functions to the time t.
-%   Point sources are applied as source models for the secondary sources.
+%   SOUND_FIELD_IMP(X,Y,Z,x0,src,d,t,conf) computes the sound field synthesized by 
+%   secondary sources driven by individual driving functions at time t.
+%   The source model for the secondary sources can be chosen.
 %
 %   To plot the result use:
 %   conf.plot.usedb = 1;

@@ -76,15 +76,15 @@ resolution = conf.resolution;
 
 % Use the half of the x axis and xref
 if dimensions(1)
-    [~,xidx] = find(x>xref(1),1);
+    xidx = find(x>xref(1),1);
     check_idx(xidx,x,xref(1),'X',resolution);
 end
 if dimensions(2)
-    [~,yidx] = find(y>xref(2),1);
+    yidx = find(y>xref(2),1);
     check_idx(yidx,y,xref(2),'Y',resolution);
 end
 if dimensions(3)
-    [~,zidx] = find(z>xref(3),1);
+    zidx = find(z>xref(3),1);
     check_idx(zidx,z,xref(3),'Z',resolution);
 end
 

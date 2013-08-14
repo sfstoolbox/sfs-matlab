@@ -1,5 +1,5 @@
 function P = norm_sound_field(P,conf)
-%NORM_SOUND_FIELD normalizes the sound field to 1 at xref
+%NORM_SOUND_FIELD normalizes the sound field to 1
 %
 %   Usage: P = norm_sound_field(P,[conf])
 %
@@ -10,7 +10,7 @@ function P = norm_sound_field(P,conf)
 %   Output options:
 %       P       - normalized sound field
 %
-%   NORM_SOUND_FIELD(P,x,y,z,conf) normalizes the given sound field P to 1.
+%   NORM_SOUND_FIELD(P,[conf]) normalizes the given sound field P to 1.
 %
 %   see also: norm_sound_field_at_xref, sound_field_imp
 

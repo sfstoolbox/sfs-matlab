@@ -64,25 +64,20 @@ end
 
 %% ===== Configuration ===================================================
 usehcomp = conf.ir.usehcomp;
-hcomplfile = conf.ir.hcomplfile;
-hcomprfile = conf.ir.hcomprfile;
+hcompfile = conf.ir.hcompfile;
 
 
 %% ===== Computation =====================================================
 if(usehcomp)
+    lenir = size(ir,1);
     % Read headphone compensation filter
-    hcompl = wavread(hcomplfile);
-    hcompr = wavread(hcomprfile);
-    hcomp = [hcompl hcompr];
+    hcomp = wavread(hcompfile);
     % Check if the IR has the right length for the filter
-    if length(ir(:,1))<length(hcompl)
+    if lenir<length(hcomp)
         warning(['The length of the used IR is shorter than the headphone ', ...
             'compensation filter.']);
     end
     % Apply filter
-    tmp1 = convolution(hcomp(:,1),ir(:,1));
-    tmp2 = convolution(hcomp(:,2),ir(:,2));
-    len = length(ir(:,1));
-    ir(:,1) = tmp1(1:len);
-    ir(:,2) = tmp2(1:len);
+    ir = convolution(hcomp,ir);
+    ir = fix_length(ir,lenir);
 end

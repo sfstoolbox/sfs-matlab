@@ -252,10 +252,7 @@ conf.ir.useinterpolation = true; % boolean
 % Headphone compensation
 conf.ir.usehcomp = true; % boolean
 % Headphone compensation file for left and right ear.
-conf.ir.hcomplfile = ...
-    '~/data/ir_databases/headphone_compensations/TU_FABIAN_AKGK601_hcompl.wav';
-conf.ir.hcomprfile = ...
-    '~/data/ir_databases/headphone_compensations/TU_FABIAN_AKGK601_hcompr.wav';
+conf.ir.hcompfile = 'data/headphone_compensations/QU_KEMAR_AKGK601_hcomp.wav';
 %
 % === Auralisation ===
 % These files are used for the auralization of impulse responses by the

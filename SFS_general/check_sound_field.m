@@ -55,6 +55,8 @@ isargscalar(t);
 
 
 %% ===== Computation =====================================================
+if length(P)==1, return; end
+%
 if max(abs(P(:)))==0 || all(isnan(P(:)))
     warning('SFS:check_sound_field',...
         ['The activity in the simulated sound field is zero. ',...

@@ -69,11 +69,12 @@ N = 128;
 
 
 %% ===== Computation =====================================================
+% get frequency range
+range = fhigh-flow;
+% calculate scaling factor for frequency range
+scaling = range/20000;
 % design bandpass filter
-% FIXME: this doesn't work fine for all frequencies! Check if it is
-% possible to use a fraction of the desired freqeuncies for all frequency
-% ranges.
-Hf = [0 2*flow/fs 4*flow/fs 1.8*fhigh/fs 2*fhigh/fs 1];
+Hf = [0 2*flow/fs (2+2*scaling)*flow/fs (2-0.2*scaling)*fhigh/fs 2*fhigh/fs 1];
 Hm = [0 0 1 1 0 0];
 b = fir2(N,Hf,Hm);
 % filter signal

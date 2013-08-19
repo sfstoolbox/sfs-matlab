@@ -85,11 +85,11 @@ useplot = conf.plot.useplot;
 % Get the position of the loudspeakers
 x0 = secondary_source_positions(conf);
 % Generate frequencies (10^0-10^5)
-f = logspace(0,5,500);
+f = logspace(0,5,500)';
 % We want only frequencies until f = 20000Hz
 idx = find(f>20000,1);
 f = f(1:idx);
-S = zeros(1,length(f));
+S = zeros(size(f));
 % Get the result for all frequencies
 for ii = 1:length(f)
     D = driving_function_mono_nfchoa(x0,xs,src,f(ii),conf);

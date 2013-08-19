@@ -1,7 +1,7 @@
 function [ Ynm ] = sphharmonics(n,m,theta,phi);
 % SPHHARMONICS spherical harmonics function
 %
-%   Usage: Ynm = sphbesselh(n,m,beta,alpha)
+%   Usage: Ynm = sphharmonics(n,m,theta,phi)
 %
 %   Input parameters:
 %       n     - spherical harmonic degree

@@ -2,6 +2,13 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
 1.0.0-beta
 
+    - bandpass() can now handle arbritrary frequency limits
+    - sphbesselh_zeros() comes now with precomputed zeros for an order up to
+      1000
+    - renamed wave_field_* functions to sound_field_*
+    - the order for NFC-HOA can now be set manually via conf.nfchoa.order
+    - several performance improvements 
+    - added missing driving functions for WFS and NFC-HOA
     - added convolution() which is faster than conv and can handle
       multidimensional signals
     - changed default plotting style of loudspeakers to

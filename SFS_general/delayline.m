@@ -60,6 +60,9 @@ fracdelay_method = conf.fracdelay_method;
 %% ===== Computation =====================================================
 samples = size(sig,1);
 channels = size(sig,2);
+if channels>1 && length(dt)==1, dt=repmat(dt,[1 channels]); end
+if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
+
 
 if usefracdelay
 

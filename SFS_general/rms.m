@@ -65,7 +65,7 @@ function y = rms(insig,options)
 nargmin = 1;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-isargmatrix(insig);
+isargnumeric(insig);
 if (nargin==1) || (~ischar(options))
   options='';
 end

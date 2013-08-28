@@ -173,4 +173,5 @@ for ii=1:nls
 end
 
 %% ===== Pre-equalization ===============================================
-irs_pw.Data.IR = wfs_preequalization(irs_pw.Data.IR,conf);
+irs_pw.Data.IR(:,1,:) = wfs_preequalization(squeeze(irs_pw.Data.IR(:,1,:))',conf)';
+irs_pw.Data.IR(:,2,:) = wfs_preequalization(squeeze(irs_pw.Data.IR(:,2,:))',conf)';

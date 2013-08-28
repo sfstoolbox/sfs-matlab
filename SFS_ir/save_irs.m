@@ -50,13 +50,9 @@ function save_irs(irs,outfile)
 nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-check_irs(irs);
 isargchar(outfile);
 
 
 %% ===== Save IR file ===================================================
-
-% Save as mat file
-% If -v7 doesn't work use -v6, but note this won't use any compression of your
-% data
-save('-v7',outfile,'irs');
+% Save as SOFA file
+SOFAsave(outfile,irs);

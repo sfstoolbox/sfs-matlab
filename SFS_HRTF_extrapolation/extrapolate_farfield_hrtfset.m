@@ -80,7 +80,9 @@ phi = rad(APV(:,1));
 theta = rad(APV(:,2));
 R = APV(:,3);
 conf.secondary_sources.number = nls;
-conf.secondary_sources.x0 = sph2cart(phi,theta,R);
+[conf.secondary_sources.x0(:,1), ...
+ conf.secondary_sources.x0(:,2), ...
+ conf.secondary_sources.x0(:,3)] = sph2cart(phi,theta,R);
 conf.secondary_sources.x0(:,4:6) = ...
     direction_vector(conf.secondary_sources.x0,repmat(conf.xref,nls,1));
 % weights

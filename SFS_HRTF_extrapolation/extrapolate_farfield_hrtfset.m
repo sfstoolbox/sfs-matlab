@@ -170,13 +170,8 @@ for ii=1:nls
     % delay in samples
     delay = delay.*fs;
     % sum up contributions from individual virtual speakers
-    for jj=1:size(x0,1)
-        % delay and weight HRTFs
-        irs_pw.left(:,ii) = irs_pw.left(:,ii) + ...
-            delayline(ir(:,1,jj),delay(jj),weight(jj),conf);
-        irs_pw.right(:,ii) = irs_pw.right(:,ii) + ...
-            delayline(ir(:,2,jj),delay(jj),weight(jj),conf);
-    end
+    irs_pw.left(:,ii) = sum(delayline(squeeze(ir(:,1,:)),delay,weight,conf),2);
+    irs_pw.right(:,ii) = sum(delayline(squeeze(ir(:,2,:)),delay,weight,conf),2);
     irs_pw.left(:,ii) = irs_pw.left(:,ii)/10^(amplitude_correction(ii)/20);
     irs_pw.right(:,ii) = irs_pw.right(:,ii)/10^(-amplitude_correction(ii)/20);
 

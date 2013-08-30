@@ -1,12 +1,12 @@
 function SFS_stop()
-%SFS_START Start the Sound Field Synthesis Toolbox
+%SFS_STOP Stop the Sound Field Synthesis Toolbox
 %
-%   Usage: SFS_start;
+%   Usage: SFS_stop;
 %
-%   SFS_START starts the Sound Field Synthesis Toolbox (SFS). 
-%   This function must be run first in order to add the path's to Matlab.
+%   SFS_STOP stops the Sound Field Synthesis Toolbox (SFS). 
+%   This function removes the path's of the toolbox.
 %
-%   see also: SFS_config, SFS_version
+%   see also: SFS_start, SFS_config, SFS_version
 
 %*****************************************************************************
 % Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
@@ -56,6 +56,10 @@ basepath=basepath(1:end-11);
 
 % Add the base path and the needed sub-directories
 if exist('rmpath')
+    if isoctave
+        rmpath([basepath,'/SFS_octave']);
+    end
+    
     rmpath([basepath,'/SFS_analysis']);
     rmpath([basepath,'/SFS_binaural_synthesis']);
     rmpath([basepath,'/SFS_general']);
@@ -69,9 +73,6 @@ if exist('rmpath')
     rmpath([basepath,'/SFS_time_domain/driving_functions_imp']);
     rmpath([basepath,'/SFS_HRTF_extrapolation']);
     rmpath([basepath,'/validation']);
-    if isoctave
-        rmpath([basepath,'/SFS_octave']);
-    end
     %addpath(basepath);
 end
 

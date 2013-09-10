@@ -57,8 +57,8 @@ function [ir,x0] = ir_nfchoa(X,phi,xs,src,irs,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 7;
+nargmin = 5;
+nargmax = 6;
 narginchk(nargmin,nargmax);
 if nargin==nargmax-1
     conf = SFS_config;

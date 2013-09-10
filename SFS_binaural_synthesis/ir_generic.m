@@ -97,7 +97,7 @@ for ii=1:size(x0,1)
     % === IR interpolation ===
     % Get the desired IR.
     % If needed interpolate the given IR set
-    ir = get_ir(irs,[alpha,theta,r]);
+    ir = get_ir(irs,[alpha,theta,r],conf);
 
     % === Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay ===
     % Also applying the weights of the secondary sources including integration

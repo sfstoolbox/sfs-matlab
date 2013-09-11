@@ -87,6 +87,7 @@ if strcmp('2D',conf.dimension)
 else
     greens_function = 'ps';
 end
+usehpre = conf.wfs.usehpre;
 
 
 %% ===== Computation =====================================================
@@ -96,6 +97,12 @@ x0 = secondary_source_selection(x0,xs,src);
 x0 = secondary_source_tapering(x0,conf);
 % Get driving signals
 d = driving_function_imp_wfs(x0,xs,src,conf);
+% Fix the time to account for sample offset of the pre-equalization filter
+if usehpre
+    % add a time offset due to the filter (the filter has 128 coefficients,
+    % hence the offset is 64 samples)
+    t = t + 64;
+end
 % Calculate sound field
 [varargout{1:min(nargout,4)}] = ...
     sound_field_imp(X,Y,Z,x0,greens_function,d,t,conf);

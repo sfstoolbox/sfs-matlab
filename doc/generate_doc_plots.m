@@ -55,6 +55,7 @@ print_png('img/secondary_sources_sphere.png');
 % first getting a full circle with 56 loudspeakers
 conf.secondary_sources.geometry = 'circle';
 conf.secondary_sources.number = 56;
+conf.secondary_sources.x0 = [];
 x0 = secondary_source_positions(conf);
 % store the first half cricle and move it up
 x01 = x0(2:28,:);

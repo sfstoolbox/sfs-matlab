@@ -148,6 +148,7 @@ the <code>r^2 cos(theta)</code> weights for integration on a sphere.
 % first getting a full circle with 56 loudspeakers
 conf.secondary_sources.geometry = 'circle';
 conf.secondary_sources.number = 56;
+conf.secondary_sources.x0 = [];
 x0 = secondary_source_positions(conf);
 % store the first half cricle and move it up
 x01 = x0(2:28,:);
@@ -166,6 +167,7 @@ x02 = [(R*x0(:,1:3)')' (R*x0(:,4:6)')'];
 x02(:,1) = x02(:,1) - ones(size(x0,1),1)*1.5;
 x02(:,7) = x0(:,7);
 % rotate it the other way around and move it right
+R = rotation_matrix(-pi/2);
 x04 = [(R*x0(:,1:3)')' (R*x0(:,4:6)')'];
 x04(:,1) = x04(:,1) + ones(size(x0,1),1)*1.5;
 x04(:,7) = x0(:,7);

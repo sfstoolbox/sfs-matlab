@@ -430,6 +430,8 @@ semilogx(f,20*log10(a1),'-b',f,20*log10(a2),'-r');
 axis([10 20000 -80 -40]);
 set(gca,'XTick',[10 100 250 1000 5000 20000]);
 legend('w/o pre-filter','w pre-filter');
+xlabel('frequency / Hz');
+ylabel('magnitude / dB');
 print_png('img/impulse_response_wfs_25d.png');
 ```
 

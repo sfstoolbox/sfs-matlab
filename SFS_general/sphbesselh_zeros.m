@@ -80,8 +80,8 @@ else
     % http://github.com/sfstoolbox/data/tree/master/sphbesselh_zeros
     filename = sprintf('sphbesselh_zeros_order%04.0f.mat',order);
     file = sprintf('%s/data/sphbesselh_zeros/%s',get_sfs_path(),filename);
-    url = ['http://github.com/sfstoolbox/data/raw/master/', ...
-        'sphbesselh_zeros/' filename];
+    url = ['https://dev.qu.tu-berlin.de/projects/data/repository/revisions/master/' ...
+        'raw/sphbesselh_zeros/' filename];
     % download file if not present
     if ~exist(file,'file')
         download_file(url,file);

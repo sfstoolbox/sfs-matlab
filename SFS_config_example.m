@@ -232,7 +232,7 @@ conf.nfchoa.order = [];
 % subdirectories will be added to the path. This is not done automatically, but
 % by calling addirspath;
 % If you have more than one path, seperate them by :
-conf.ir.path = 'data/HRTFs:~/svn/ir_databases:~/svn/measurements';
+conf.ir.path = '~/git/sfs/data/HRTFs:~/svn/ir_databases:~/svn/measurements';
 %
 % If we load an HRTF data set we are most likely interested to modify its
 % existing length, to enable a delaying of the impulse responses without

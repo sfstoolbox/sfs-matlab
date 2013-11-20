@@ -140,10 +140,12 @@ d = real(d');
 if size(d,2)>nls
     % check if we have a multiple of the order
     if mod(size(d,2),nls)~=0
+        conf_tmp = conf;
+        conf_tmp.nfchoa.order = [];
         error(['%s: the given number of driving signals (%i) can not ', ...
             'be subsampled to %i secondary sources. Choose a NFC-HOA ', ...
             'order that is a multiple of %i.'], ...
-            upper(mfilename),size(d,2),nls,nfchoa_order(nls));
+            upper(mfilename),size(d,2),nls,nfchoa_order(nls,conf_tmp));
     end
     % subsample d
     ratio = size(d,2)/nls;
@@ -153,6 +155,8 @@ if size(d,2)>nls
 elseif size(d,2)<nls
     % check if we have a multiple of the secondary sources
     if mod(nls,size(d,2))~=0
+        conf_tmp = conf;
+        conf_tmp.nfchoa.order = [];
          error(['%s: the given number of secondary sources (%i) can not ', ...
             'be subsampled to %i driving signals. Choose a NFC-HOA ', ...
             'order that is a multiple of %i.'], ...

@@ -1,6 +1,18 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
-1.0.0-beta
+1.0.0-beta2 (5 December 2013)
+
+    - rms() now works for arbitrary arrays
+    - speedup of delayline() and HRTF extrapolation
+    - delayline() now works with more than one channel
+    - fixed a critical bug in wfs_preequalization()
+    - fixed missing conf values in several functions
+    - fixed README
+    - changed location of sfs-data for automatic download, because github does
+      not allow this
+    - several minor fixes
+
+1.0.0-beta (26 August 2013)
 
     - bandpass() can now handle arbritrary frequency limits
     - sphbesselh_zeros() comes now with precomputed zeros for an order up to
@@ -37,7 +49,7 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
     - changed direction of focused source from the conf.xref vector directly
       into xs. For a focused source xs is now [1x6]
 
-0.2.5
+0.2.5 (12 July 2013)
 
     - fixed a bug causing the wrong loudspeaker position in the output of
       generic_wfs()

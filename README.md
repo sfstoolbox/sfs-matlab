@@ -53,21 +53,22 @@ Before showing the different geometries, we start with some common settings. Fir
 and set the array size/diameter to 3m.
 
 ```Matlab
-conf = SFS_config;
+conf = SFS_config_example;
 conf.secondary_sources.size = 3;
 ```
 
 #### linear array
 
 ```Matlab
+conf = SFS_config_example;
 conf.secondary_sources.geometry = 'line'; % or 'linear'
 conf.secondary_sources.number = 21;
 x0 = secondary_source_positions(conf);
 figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-draw_loudspeakers(x0);
+draw_loudspeakers(x0,[1 1 0],conf);
 axis([-2 2 -2 1]);
-print_png('img/secondary_sources_linear.png');
+%print_png('img/secondary_sources_linear.png');
 ```
 
 ![Image](doc/img/secondary_sources_linear.png)
@@ -75,14 +76,15 @@ print_png('img/secondary_sources_linear.png');
 #### circular array
 
 ```Matlab
+conf = SFS_config_example;
 conf.secondary_sources.geometry = 'circle'; % or 'circular'
 conf.secondary_sources.number = 56;
 x0 = secondary_source_positions(conf);
 figure;
-figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-draw_loudspeakers(x0);
+figsize(540,404,'px');
+draw_loudspeakers(x0,[1 1 0],conf);
 axis([-2 2 -2 2]);
-print_png('img/secondary_sources_circle.png');
+%print_png('img/secondary_sources_circle.png');
 ```
 
 ![Image](doc/img/secondary_sources_circle.png)
@@ -90,14 +92,15 @@ print_png('img/secondary_sources_circle.png');
 #### box shaped array
 
 ```Matlab
+conf = SFS_config_example;
 conf.secondary_sources.geometry = 'box';
 conf.secondary_sources.number = 84;
 x0 = secondary_source_positions(conf);
 figure;
-figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-draw_loudspeakers(x0);
+figsize(540,404,'px');
+draw_loudspeakers(x0,[0 0 1],conf);
 axis([-2 2 -2 2]);
-print_png('img/secondary_sources_box.png');
+%print_png('img/secondary_sources_box.png');
 ```
 
 ![Image](doc/img/secondary_sources_box.png)
@@ -117,14 +120,17 @@ download the whole [data repository](http://github.com/sfstoolbox/data) to the
 <code>data</code> folder.
 
 ```Matlab
+conf = SFS_config_example;
+conf.secondary_sources.size = 3;
 conf.secondary_sources.geometry = 'sphere'; % or 'spherical'
+conf.secondary_sources.grid = 'equally_spaced_points';
 conf.secondary_sources.number = 225;
 x0 = secondary_source_positions(conf);
 figure;
-figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-draw_loudspeakers(x0);
+figsize(540,404,'px');
+draw_loudspeakers(x0,[1 1 0],conf);
 axis([-2 2 -2 2]);
-print_png('img/secondary_sources_sphere.png');
+%print_png('img/secondary_sources_sphere.png');
 ```
 
 ![Image](doc/img/secondary_sources_sphere.png)
@@ -143,6 +149,7 @@ the sound field from the given driving signals and secondary sources. For WFS
 the <code>r^2 cos(theta)</code> weights for integration on a sphere.
 
 ```Matlab
+conf = SFS_config_example;
 % create a stadium like shape by combining two half circles with two linear
 % arrays
 % first getting a full circle with 56 loudspeakers
@@ -177,10 +184,10 @@ conf.secondary_sources.x0 = [x01; x02; x03; x04];
 % simply return the defined x0 matrix
 x0 = secondary_source_positions(conf);
 figure;
-figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-draw_loudspeakers(x0);
+figsize(540,404,'px');
+draw_loudspeakers(x0,[1 1 0],conf);
 axis([-2 2 -2.5 2.5]);
-print_png('img/secondary_sources_arbitrary.png');
+%print_png('img/secondary_sources_arbitrary.png');
 ```
 
 ![Image](doc/img/secondary_sources_arbitrary.png)
@@ -194,10 +201,10 @@ symbols, for example the following will replot the last array.
 ```Matlab
 conf.plot.realloudspeakers = true;
 figure;
-figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
+figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2.5 2.5]);
-print_png('img/secondary_sources_arbitrary_realloudspeakers.png');
+%print_png('img/secondary_sources_arbitrary_realloudspeakers.png');
 ```
 
 ![Image](doc/img/secondary_sources_arbitrary_realloudspeakers.png)
@@ -226,18 +233,18 @@ The following will simulate the field of a virtual plane wave with a frequency
 of 800 Hz going into the direction of (0 -1 0) synthesized with 3D WFS.
 
 ```Matlab
-conf = SFS_config;
+conf = SFS_config_example;
 conf.dimension = '3D';
 conf.secondary_sources.size = 3;
 conf.secondary_sources.number = 225;
 conf.secondary_sources.geometry = 'sphere';
 % [P,x,y,z,x0,win] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
 sound_field_mono_wfs([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
-print_png('img/sound_field_wfs_3d_xy.png');
+%print_png('img/sound_field_wfs_3d_xy.png');
 sound_field_mono_wfs([-2 2],0,[-2 2],[0 -1 0],'pw',800,conf);
-print_png('img/sound_field_wfs_3d_xz.png');
+%print_png('img/sound_field_wfs_3d_xz.png');
 sound_field_mono_wfs(0,[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
-print_png('img/sound_field_wfs_3d_yz.png');
+%print_png('img/sound_field_wfs_3d_yz.png');
 ```
 
 ![Image](doc/img/sound_field_wfs_3d_xy.png)
@@ -258,12 +265,12 @@ have to explicitly say if we want also plot the results, by
 <code>conf.plot.useplot = true;</code>.
 
 ```Matlab
-conf = SFS_config;
+conf = SFS_config_example;
 conf.dimension = '2.5D';
 conf.plot.useplot = 1;
 % [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
 [P,x,y,z,x0] = sound_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf);
-print_png('img/sound_field_wfs_25d.png');
+%print_png('img/sound_field_wfs_25d.png');
 ```
 
 ![Image](doc/img/sound_field_wfs_25d.png)
@@ -281,7 +288,7 @@ x0_all = secondary_source_positions(conf);
 x0_all(:,7) = zeros(1,size(x0_all,1));
 x0_all(idx,7) = x0(:,7);
 plot_sound_field(P,x,y,z,x0_all,conf);
-print_png('img/sound_field_wfs_25d_with_all_sources.png');
+%print_png('img/sound_field_wfs_25d_with_all_sources.png');
 ```
 
 ![Image](doc/img/sound_field_wfs_25d_with_all_sources.png)
@@ -293,11 +300,11 @@ In the following we will simulate the field of a virtual plane wave with a frequ
 of 800 Hz traveling into the direction (0 -1 0), synthesized with 2.5D NFC-HOA.
 
 ```Matlab
-conf = SFS_config;
+conf = SFS_config_example;
 conf.dimension = '2.5D';
 % sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf);
 sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
-print_png('img/sound_field_nfchoa_25d.png');
+%print_png('img/sound_field_nfchoa_25d.png');
 ```
 
 ![Image](doc/img/sound_field_nfchoa_25d.png)
@@ -311,10 +318,11 @@ single secondary sources to the resulting sound field. With these function you
 can for example easily simulate a stereophonic setup.
 
 ```Matlab
+conf = SFS_config_example;
 x0 = [-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1];
 % [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
-sound_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800)
-print_png('img/sound_field_stereo.png');
+sound_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800,conf)
+%print_png('img/sound_field_stereo.png');
 ```
 ![Image](doc/img/sound_field_stereo.png)
 
@@ -328,12 +336,12 @@ In the following we will create a snapshot in time after 200 samples for a broad
 virtual point source placed at (0 2 0) m for 2.5D NFC-HOA.
 
 ```Matlab
-conf = SFS_config;
+conf = SFS_config_example;
 conf.dimension = '2.5D';
 conf.plot.useplot = true;
 % sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
 [p,x,y,z,x0] = sound_field_imp_nfchoa([-2 2],[-2 2],0,[0 2 0],'ps',200,conf);
-print_png('img/sound_field_imp_nfchoa_25d.png');
+%print_png('img/sound_field_imp_nfchoa_25d.png');
 ```
 
 ![Image](doc/img/sound_field_imp_nfchoa_25d.png)
@@ -348,7 +356,7 @@ We change also the color map to the Matlab default one.
 conf.plot.usedb = true;
 conf.plot.colormap = 'jet';
 plot_sound_field(p,x,y,z,x0,conf);
-print_png('img/sound_field_imp_nfchoa_25d_dB.png');
+%print_png('img/sound_field_imp_nfchoa_25d_dB.png');
 ```
 
 ![Image](doc/img/sound_field_imp_nfchoa_25d_dB.png)
@@ -382,11 +390,11 @@ two available angles will be applied. Afterwards a noise signal is created and c
 with the impulse response by the <code>auralize_ir()</code> function.
 
 ```Matlab
-conf = SFS_config;
-irs = read_irs('QU_KEMAR_anechoic_3m.mat');
+conf = SFS_config_example;
+irs = read_irs('QU_KEMAR_anechoic_3m.mat',conf);
 ir = get_ir(irs,[rad(30) 0 3]);
 nsig = randn(44100,1);
-sig = auralize_ir(ir,nsig);
+sig = auralize_ir(ir,nsig,1,conf);
 sound(sig,conf.fs);
 ```
 
@@ -394,16 +402,16 @@ To simulate the same source as a virtual point source synthesized by WFS and a
 circular array with a diameter of 3 m, you have to do the following.
 
 ```Matlab
-conf = SFS_config;
+conf = SFS_config_example;
 conf.secondary_sources.size = 3;
 conf.secondary_sources.number = 56;
 conf.secondary_sources.geometry = 'circle';
 conf.dimension = '2.5D';
-irs = read_irs('QU_KEMAR_anechoic_3m.mat');
+irs = read_irs('QU_KEMAR_anechoic_3m.mat',conf);
 % ir = ir_wfs(X,phi,xs,src,irs,conf);
 ir = ir_wfs([0 0 0],pi/2,[0 3 0],'ps',irs,conf);
 nsig = randn(44100,1);
-sig = auralize_ir(ir,nsig);
+sig = auralize_ir(ir,nsig,1,conf);
 ```
 
 Binaural simulations are also a nice way to investigate the frequency response
@@ -414,25 +422,25 @@ expected aliasing frequency of the system (above these frequency the spectrum
 becomes very noise as you can see in the figure).
 
 ```Matlab
-conf = SFS_config;
+conf = SFS_config_example;
 conf.ir.usehcomp = 0;
 conf.wfs.usehpre = 0;
 irs = dummy_irs;
 [ir1,x0] = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
 conf.wfs.usehpre = 1;
-conf.wfs.hprefhigh = aliasing_frequency(x0);
+conf.wfs.hprefhigh = aliasing_frequency(x0,conf);
 ir2 = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
-[a1,p,f] = easyfft(ir1(:,1)./max(abs(ir1(:,1))));
-a2 = easyfft(ir2(:,1)./max(abs(ir2(:,1))));
+[a1,p,f] = easyfft(ir1(:,1)./max(abs(ir1(:,1))),conf);
+a2 = easyfft(ir2(:,1)./max(abs(ir2(:,1))),conf);
 figure;
-figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
+figsize(540,404,'px');
 semilogx(f,20*log10(a1),'-b',f,20*log10(a2),'-r');
 axis([10 20000 -80 -40]);
 set(gca,'XTick',[10 100 250 1000 5000 20000]);
 legend('w/o pre-filter','w pre-filter');
 xlabel('frequency / Hz');
 ylabel('magnitude / dB');
-print_png('img/impulse_response_wfs_25d.png');
+%print_png('img/impulse_response_wfs_25d.png');
 ```
 
 ![Image](doc/img/impulse_response_wfs_25d.png)
@@ -443,7 +451,8 @@ frequency range will be affected.
 
 ```Matlab
 freq_response_wfs([0 0 0],[0 2.5 0],'ps',conf);
-print_png('img/impulse_response_wfs_25d_mono.png');
+axis([10 20000 -20 20]);
+%print_png('img/impulse_response_wfs_25d_mono.png');
 ```
 
 ![Image](doc/img/impulse_response_wfs_25d_mono.png)
@@ -460,6 +469,7 @@ responses used by the SoundScape Renderer.
 All functions regarding the SSR are stored in <code>SFS_ssr</code>.
 
 ```Matlab
+conf = SFS_config_example;
 brs = ssr_brs_wfs(X,phi,xs,src,irs,conf);
 wavwrite(brs,fs,16,'brs_set_for_SSR.wav');
 ```
@@ -490,7 +500,7 @@ you cannot do the plotting to png afterwards like in Matlab, but have to specify
 the output file before. Note, that the same will work with Matlab.
 
 ```Matlab
-conf = SFS_config;
+conf = SFS_config_example;
 conf.plot.colormap = 'gray';
 conf.plot.usegnuplot = 1;
 conf.plot.file = 'img/sound_field_nfchoa_25d_gnuplot.png';

@@ -79,12 +79,8 @@ isargstruct(conf);
 %% ===== Configuration ==================================================
 % Sampling rate
 fs = conf.fs;
-% Auralisation files
-speechfile = conf.ir.speechfile;
-cellofile = conf.ir.cellofile;
-castanetsfile = conf.ir.castanetsfile;
-noisefile = conf.ir.noisefile;
-pinknoisefile = conf.ir.pinknoisefile;
+% Auralisation files are used directly in the code below in order to made these
+% settings not neccessary
 
 
 %% ===== Get the right content ==========================================
@@ -92,15 +88,15 @@ if isnumeric(content)
     contentfs = conf.fs;
 else
     if strcmp(content,'castanets')
-        contentfile = castanetsfile;
+        contentfile = conf.castanetsfile;
     elseif strcmp(content,'speech')
-        contentfile = speechfile;
+        contentfile = conf.speechfile;
     elseif strcmp(content,'cello')
-        contentfile = cellofile;
+        contentfile = conf.cellofile;
     elseif strcmp(content,'noise')
-        contentfile = noisefile;
+        contentfile = conf.noisefile;
     elseif strcmp(content,'pinknoise')
-        contentfile = pinknoisefile;
+        contentfile = conf.pinknoisefile;
     elseif ~exist(content,'file')
         error('%s: %s file was not found.',upper(mfilename),content);
     else

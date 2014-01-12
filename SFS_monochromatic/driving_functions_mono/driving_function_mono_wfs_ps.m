@@ -180,6 +180,19 @@ elseif strcmp('2.5D',dimension)
         % --- Delft 1988 -------------------------------------------------
         to_be_implemented;
         %
+    elseif strcmp('volk2010',driving_functions)
+        % --- Völk 2010 --------------------------------------------------
+        %
+        % D_2.5D(x0,w) = 
+        %    ___    ___    _____________________
+        %   | 1    |i w   |      |xref-x0|         (x0-xs) nx0
+        % _ |--- _ |--- _ |---------------------  ------------- e^(-i w/c |x0-xs|)
+        %  \|2pi  \| c   \| |x0-xs| + |xref-x0|   |x0-xs|^(3/2)
+        %
+        g0 = vector_norm(xref-x0,2);
+        r = vector_norm(x0-xs,2);
+        D = 1/sqrt(2*pi) * sqrt(1i*omega/c) * sqrt(g0/(r+g0)) * ...
+            vector_product(x0-xs,nx0,2)./r.^(3/2) .* exp(-1i*omega/c.*r); 
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D point source.'],upper(mfilename),driving_functions);

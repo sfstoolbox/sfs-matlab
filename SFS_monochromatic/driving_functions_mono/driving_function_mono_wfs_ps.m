@@ -178,7 +178,20 @@ elseif strcmp('2.5D',dimension)
         %
     elseif strcmp('delft1988',driving_functions)
         % --- Delft 1988 -------------------------------------------------
-        to_be_implemented;
+        % Verheijen, Sound Reproduction by Wave Field Synthesis, PhD Thesis
+        % Equation (2.27)
+        % Note: So far this works only for a linear secondary source distribution
+        %       located on the y-axis
+        %
+        % 2.5D correction factor
+        %        _______________________
+        % g0 = \| -y_ref / (y_s - y_ref)
+        %
+        g0 = sqrt(- xref(1,2) / (xs(1,2) - xref(1,2)));
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        % driving signal
+        D = sqrt(1i*omega/c/(2*pi)) * g0 * vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c .* r);
         %
     elseif strcmp('volk2010',driving_functions)
         % --- Völk 2010 --------------------------------------------------

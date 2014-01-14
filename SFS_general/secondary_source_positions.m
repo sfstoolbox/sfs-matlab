@@ -192,25 +192,25 @@ elseif strcmp('box',geometry)
     x0(1:nbox,2) = X0(2) + ones(nbox,1) * L/2 + dx0;
     x0(1:nbox,3) = X0(3) + zeros(nbox,1);
     x0(1:nbox,4:6) = direction_vector(x0(1:nbox,1:3), ...
-    x0(1:nbox,1:3)+repmat([0 -1 0],nbox,1));
+        x0(1:nbox,1:3)+repmat([0 -1 0],nbox,1));
     % right
     x0(nbox+1:2*nbox,1) = X0(1) + ones(nbox,1) * L/2 + dx0;
     x0(nbox+1:2*nbox,2) = X0(2) + linspace(L/2,-L/2,nbox)';
     x0(nbox+1:2*nbox,3) = X0(3) + zeros(nbox,1);
     x0(nbox+1:2*nbox,4:6) = direction_vector(x0(nbox+1:2*nbox,1:3), ...
-    x0(nbox+1:2*nbox,1:3)+repmat([-1 0 0],nbox,1));
+        x0(nbox+1:2*nbox,1:3)+repmat([-1 0 0],nbox,1));
     % bottom
     x0(2*nbox+1:3*nbox,1) = X0(1) + linspace(L/2,-L/2,nbox)';
     x0(2*nbox+1:3*nbox,2) = X0(2) - ones(nbox,1) * L/2 - dx0;
     x0(2*nbox+1:3*nbox,3) = X0(3) + zeros(nbox,1);
     x0(2*nbox+1:3*nbox,4:6) = direction_vector(x0(2*nbox+1:3*nbox,1:3), ...
-    x0(2*nbox+1:3*nbox,1:3)+repmat([0 1 0],nbox,1));
+        x0(2*nbox+1:3*nbox,1:3)+repmat([0 1 0],nbox,1));
     % left
     x0(3*nbox+1:nls,1) = X0(1) - ones(nbox,1) * L/2 - dx0;
     x0(3*nbox+1:nls,2) = X0(2) + linspace(-L/2,L/2,nbox)';
     x0(3*nbox+1:nls,3) = X0(3) + zeros(nbox,1);
     x0(3*nbox+1:nls,4:6) = direction_vector(x0(3*nbox+1:nls,1:3), ...
-    x0(3*nbox+1:nls,1:3)+repmat([1 0 0],nbox,1));
+        x0(3*nbox+1:nls,1:3)+repmat([1 0 0],nbox,1));
     % equal weights for all sources
     x0(:,7) = ones(nls,1);
 elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)

@@ -105,7 +105,7 @@ elseif strcmp('2.5D',dimension)
         %
         % d_2.5D using a line sink as source model
         %
-        %                        g0 (xs-x0) nx0
+        %                       -g0 (xs-x0) nx0
         % d_2.5D(x0,t) = h(t) * --- ------------- delta(t - 1/c |xs-x0|)
         %                       2pi |xs-x0|^(3/2)
         %
@@ -113,7 +113,7 @@ elseif strcmp('2.5D',dimension)
         r = vector_norm(xs-x0,2);
         % Delay and amplitude weight
         delay =  -1/c .* r;
-        weight = g0/(2*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3/2);
+        weight = -g0/(2*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3/2);
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D focused source.'],upper(mfilename),driving_functions);

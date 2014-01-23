@@ -119,6 +119,16 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         D = -1/(2*pi) .* ( (1i*omega)/c - 1./r ) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(-1i*omega/c.*r);
         %
+    elseif strcmp('line_source',driving_functions)
+        % D using a line source as source model (truly 2D model)
+        % Spors et al, The theory of Wave Field Synthesis Revisited, 2008,
+        % AES. Equation (23)
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        % driving signal
+        D = 1i*omega/c * vector_product(x0-xs,nx0,2) ./ r .* besselh(1,2,omega/c*r);
+        %
+        %
     elseif strcmp('delft1988',driving_functions)
         % --- Delft 1988 -------------------------------------------------
         to_be_implemented;
@@ -193,8 +203,21 @@ elseif strcmp('2.5D',dimension)
         % driving signal
         D = sqrt(1i*omega/c/(2*pi)) * g0 * vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c .* r);
         %
+    elseif strcmp('opperschall',driving_functions)
+        % --- Opperschall -------------------------------------------------
+        % Opperschall, Equation (3.14)
+        % Note: Driving function with only one stationary phase
+        % approximation, reference to one point in field
+        %
+        % 2.5D correction factor
+        g0 = sqrt( vector_norm(x0-xref,2) ./ (vector_norm(xs-x0,2) + vector_norm(x0-xref,2)) );
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        % driving signal
+        D = sqrt(2*pi*1i*omega/c) * g0 .* vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c .* r);
+        %
     elseif strcmp('volk2010',driving_functions)
-        % --- Völk 2010 --------------------------------------------------
+        % --- Voelk 2010 --------------------------------------------------
         %
         % D_2.5D(x0,w) = 
         %    ___    ___    _____________________
@@ -206,6 +229,18 @@ elseif strcmp('2.5D',dimension)
         r = vector_norm(x0-xs,2);
         D = 1/sqrt(2*pi) * sqrt(1i*omega/c) * sqrt(g0/(r+g0)) * ...
             vector_product(x0-xs,nx0,2)./r.^(3/2) .* exp(-1i*omega/c.*r); 
+        %
+    elseif strcmp('SDMapprox',driving_functions)
+        % --- Spors 2010 --------------------------------------------------
+        % Driving function derived by approximation of the SDM, eq(24) in
+        % AES Paper "Analysis and Improvement of Pre-Equalization in 2.5-
+        % Dimensional Wave Field Synthesis
+        g0 = sqrt(- xref(1,2) / (xs(1,2) - xref(1,2)));
+        r = vector_norm(x0-xs,2);
+        D = 1i*omega/c * g0 * xs(1,2)./r .* besselh(1,2,omega/c*r);
+        %
+        %
+    
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D point source.'],upper(mfilename),driving_functions);

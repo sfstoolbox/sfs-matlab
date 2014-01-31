@@ -11,7 +11,7 @@ function gp_save_matrix(file,x,y,M)
 %
 %   GP_SAVE_MATRIX(file,x,y,M) saves the values of x,y and M in a binary matrix
 %   format useable by Gnuplot, see
-%   http://www.gnuplot.info/docs_4.4/gnuplot.html#x1-33700077.1.1 for details.
+%   http://www.gnuplotting.org/manpage-gnuplot-4-6/#x1-372000III for details.
 %
 %   see also: gp_save
 

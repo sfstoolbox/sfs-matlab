@@ -1,7 +1,7 @@
-function [P,x,y,z] = sound_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,conf)
+function [P,x,y,z] = sound_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,conf)
 %SOUND_FIELD_SDM_WFS_25D_KX simulates the sound field of a given source for 25D SDM
 %IN THE SPATIAL FREQUENCY DOMAIN
-%   Usage: [P,x,y,z] = sound_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,[conf])
+%   Usage: [P,x,y,z] = sound_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,[conf])
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax]
@@ -14,7 +14,6 @@ function [P,x,y,z] = sound_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,conf)
 %                         'ps' - point source
 %                         'fs' - focused source
 %       f           - monochromatic frequency / Hz
-%       L           - array length / m
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -23,7 +22,7 @@ function [P,x,y,z] = sound_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,conf)
 %       y           - corresponding y axis / m
 %       z           - corresponding z axis / m
 %
-%   SOUND_FIELD_MONO_SDM_25D_KX(X,Y,Z,xs,src,f,L,conf) simulates a sound field of
+%   SOUND_FIELD_MONO_SDM_25D_KX(X,Y,Z,xs,src,f,conf) simulates a sound field of
 %   the given source type (src) using a SDM 2.5 dimensional driving function
 %   in the spectro-temporal freqeuncy domain. 
 %   To plot the result use plot_sound_field(P,x,y,z).
@@ -37,20 +36,20 @@ function [P,x,y,z] = sound_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,conf)
 %   field.
 %
 %   References:
-%       Spors2010 - Reproduction of Focused Sources by the Spectral Division
-%           Method
-%       Spors2010 - Analysis and Improvement of Pre-equalization in
-%       2.5-Dimensional Wave Field Synthesis
+%       S. Spors (2010) - "Reproduction of Focused Sources by the Spectral Division
+%           Method"
+%       S. Spors (2010) - "Analysis and Improvement of Pre-equalization in
+%       2.5-Dimensional Wave Field Synthesis"
 %
 %   see also: plot_sound_field, sound_field_mono_wfs
 
 %*****************************************************************************
-% Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
-%                         Deutsche Telekom Laboratories, TU Berlin           *
+%                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013      Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -73,19 +72,19 @@ function [P,x,y,z] = sound_field_mono_sdm_25d_kx(X,Y,Z,xs,src,f,L,conf)
 % field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
 % ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
+% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % FIXME: this functions works only with 2D at the moment
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 7;
-nargmax = 8;
+nargmin = 6;
+nargmax = 7;
 narginchk(nargmin,nargmax);
 isargvector(X,Y,Z);
 isargxs(xs);
-isargpositivescalar(L,f);
+isargpositivescalar(f);
 isargchar(src);
 if nargin<nargmax
     conf = SFS_config;

@@ -82,16 +82,15 @@ function x0 = secondary_source_positions(conf)
 %                       x   x   x   x   x   x   x
 %                                   |
 %
-% see also: secondary_source_selection, secondary_source_number,
-% secondary_source_tapering 
+% see also: secondary_source_selection, secondary_source_tapering 
 
 %*****************************************************************************
-% Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
-%                         Deutsche Telekom Laboratories, TU Berlin           *
+%                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013      Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -114,7 +113,7 @@ function x0 = secondary_source_positions(conf)
 % field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
 % ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
+% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
 % NOTE: If you wanted to add a new type of loudspeaker array, do it in a way,
@@ -181,7 +180,6 @@ elseif strcmp('circle',geometry) || strcmp('circular',geometry)
 elseif strcmp('box',geometry)
     % === Boxed loudspeaker array ===
     % Number of secondary sources per linear array
-    % Note, that the call to the secondary_source_number function above
     % ensures that nls/4 is always an integer.
     nbox = round(nls/4);
     % distance between secondary sources

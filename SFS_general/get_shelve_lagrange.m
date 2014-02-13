@@ -8,7 +8,7 @@ function [H] = get_shelve_lagrange(f,H,FlagSub,fSub,FlagAliasing,fAliasing,Bandw
 %   3dB/oct. slope, other driving functions may have other slopes and
 %   different interpolation offsets may be required
 %
-%   [Sch13]:
+%   References:
 %   Frank Schultz, Vera Erbes, Sascha Spors, Stefan Weinzierl (2013):
 %   "Derivation of IIR prefilters for soundfield synthesis using linear
 %   secondary source distributions", In: Proc. of the
@@ -16,12 +16,12 @@ function [H] = get_shelve_lagrange(f,H,FlagSub,fSub,FlagAliasing,fAliasing,Bandw
 %   18 - 21 March 2013, pages 2372-2375
 %
 %*****************************************************************************
-% Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
-%                         Deutsche Telekom Laboratories, TU Berlin           *
+%                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013      Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -44,7 +44,7 @@ function [H] = get_shelve_lagrange(f,H,FlagSub,fSub,FlagAliasing,fAliasing,Bandw
 % field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
 % ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
+% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 % Revision: 07/02/2013 frank.schultz@uni-rostock.de initial development      *
 %*****************************************************************************
     Hphase = unwrap(angle(H));  %save original phase

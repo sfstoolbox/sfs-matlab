@@ -20,22 +20,21 @@ function [fal,dx0] = aliasing_frequency(x0,conf)
 %   a look at Start (1997).
 %   
 %   References:
-%       S. Spors and J. Ahrens - Spatial sampling artifacts of wave field
-%       synthesis for the reproduction of virtual point sources. 126th AES,
-%       May 2009.
-%       E. Start - Direct Sound Enhancement by Wave Field Synthesis. TU Delft,
-%       1997.
+%       S. Spors and J. Ahrens (2009) - Spatial sampling artifacts of wave field
+%       synthesis for the reproduction of virtual point sources. 126th AES.
+%       E. Start (1997)- Direct Sound Enhancement by Wave Field Synthesis. TU
+%       Delft.
 %
 %   see also: sound_field_mono_wfs, secondary_source_positions,
 %       secondary_source_distance
 
 %*****************************************************************************
-% Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
-%                         Deutsche Telekom Laboratories, TU Berlin           *
+%                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013      Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -58,7 +57,7 @@ function [fal,dx0] = aliasing_frequency(x0,conf)
 % field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
 % ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
+% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
 

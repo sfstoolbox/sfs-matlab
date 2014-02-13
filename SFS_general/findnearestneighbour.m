@@ -19,9 +19,14 @@ function [C,idx] = findnearestneighbour(A,b,number_of_neighbours)
 %   See also: find, findrows
 
 %*****************************************************************************
-% Copyright (c) 2010-2012 Quality & Usability Lab                            *
-%                         Deutsche Telekom Laboratories, TU Berlin           *
+% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+%                         Assessment of IP-based Applications                *
+%                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+%                                                                            *
+% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+%                         Universitaet Rostock                               *
+%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
 % This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
 %                                                                            *
@@ -42,7 +47,7 @@ function [C,idx] = findnearestneighbour(A,b,number_of_neighbours)
 % field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
 % ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
+% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
 

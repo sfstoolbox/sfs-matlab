@@ -24,12 +24,12 @@ function movie_sound_field_mono_wfs(X,Y,Z,xs,src,f,outfile,conf)
 %   see also: sound_field_mono_wfs, plot_sound_field
 
 %*****************************************************************************
-% Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
-%                         Deutsche Telekom Laboratories, TU Berlin           *
+%                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013      Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -52,7 +52,7 @@ function movie_sound_field_mono_wfs(X,Y,Z,xs,src,f,outfile,conf)
 % field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
 % ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
+% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
 

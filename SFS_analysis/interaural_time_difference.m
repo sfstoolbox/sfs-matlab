@@ -1,10 +1,11 @@
 function [itd,idxleft,idxright] = interaural_time_difference(insigleft,insigright,fs,mode,fit)
-%INTERAURAL_TIME_DIFFERENCE Extract the ITD between the two given signals
+%INTERAURAL_TIME_DIFFERENCE Extract the ITD between the two given impulse
+%responses
 %
 %   Usage: itd = interaural_time_difference(insigleft,insigright,fs,[mode])
 %
 %   Input parameters:
-%       insigleft   - left ear signal. This can also be a matrix containing
+%       insigleft   - left impuls response. This can also be a matrix containing
 %                     left signals for different frequency bands
 %       insigright  - the same as insigleft, but for the right ear
 %       fs          - sampling rate / Hz
@@ -25,8 +26,9 @@ function [itd,idxleft,idxright] = interaural_time_difference(insigleft,insigrigh
 %                     frequency band / ms
 %
 %   INTERAURAL_TIME_DIFFERENCE(insigleft,insigright,fs) extractes the ITD between
-%   the left and right signal(s) by using an edge detection algorithm to identify
-%   the first non-zero entry in both IRs and then calculating the time difference.
+%   the left and right impulse responses by using an edge detection algorithm to
+%   identify the first non-zero entry in both impulse responses and then
+%   calculating the time difference.
 %
 %   References:
 %   Sandvad J, Hammershøi D (1994). Binaural Auralization. Comparison of
@@ -39,12 +41,12 @@ function [itd,idxleft,idxright] = interaural_time_difference(insigleft,insigrigh
 %   see also: interaural_level_difference
 
 %*****************************************************************************
-% Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
-%                         Deutsche Telekom Laboratories, TU Berlin           *
+%                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013      Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -67,7 +69,7 @@ function [itd,idxleft,idxright] = interaural_time_difference(insigleft,insigrigh
 % field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
 % ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
+% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
 

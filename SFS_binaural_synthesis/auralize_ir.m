@@ -23,17 +23,17 @@ function outsig = auralize_ir(ir,content,usenorm,conf)
 %   given IR with the given content and returns the resulting outsig. If
 %   instead of an explicite content file or vector only a string containig
 %   'speech', 'noise', 'pinknoise', 'cello' or 'castanets' is given, the
-%   corresponding content file is used.
+%   corresponding content file as specified in conf is used.
 %
 %   see also: auralize_ir_file, ir_wfs, ir_generic, ir_point_source
 
 %*****************************************************************************
-% Copyright (c) 2010-2013 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
-%                         Deutsche Telekom Laboratories, TU Berlin           *
+%                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013      Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -56,7 +56,7 @@ function outsig = auralize_ir(ir,content,usenorm,conf)
 % field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
 % ambisonics.                                                                *
 %                                                                            *
-% http://dev.qu.tu-berlin.de/projects/sfs-toolbox       sfstoolbox@gmail.com *
+% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
 

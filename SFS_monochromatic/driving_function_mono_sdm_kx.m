@@ -1,10 +1,11 @@
-function D = driving_function_mono_sdm(x0,xs,src,f,conf)
-%DRIVING_FUNCTION_MONO_SDM returns the driving signal D for SDM
+function D = driving_function_mono_sdm_kx(kx,xs,src,f,conf)
+%DRIVING_FUNCTION_MONO_SDM_KX returns the driving signal D for SDM in the kx
+%domain
 %
-%   Usage: D = driving_function_mono_sdm(x0,xs,src,f,[conf])
+%   Usage: D = driving_function_mono_sdm_kx(kx,xs,src,f,[conf])
 %
 %   Input parameters:
-%       x0          - position and direction of the secondary source / m [nx6]
+%       kx          - kx dimension [nx1]
 %       xs          - position of virtual source or direction of plane
 %                     wave / m [1x3]
 %       src         - source type of the virtual source
@@ -18,15 +19,12 @@ function D = driving_function_mono_sdm(x0,xs,src,f,conf)
 %   Output parameters:
 %       D           - driving function signal [nx1]
 %
-%   DRIVING_FUNCTION_MONO_SDM(x0,xs,f,src,conf) returns the driving signal for
+%   DRIVING_FUNCTION_MONO_SDM_KX(kx,xs,f,src,conf) returns the driving signal for
 %   the given secondary sources, desired source type (src), and frequency.
-%   To derive the driving signals the spectral division method (SDM) is used.
+%   To derive the driving signals the spectral division method (SDM) in the kx
+%   domain is used.
 %
-%   References:
-%       FIXME: add references
-%       Williams1999 - Fourier Acoustics (Academic Press)
-%
-%   see also: plot_sound_field, sound_field_mono_sdm, driving_function_imp_sdm
+%   see also: plot_sound_field, sound_field_mono_sdm_kx
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -65,7 +63,7 @@ function D = driving_function_mono_sdm(x0,xs,src,f,conf)
 nargmin = 4;
 nargmax = 5;
 narginchk(nargmin,nargmax);
-isargsecondarysource(x0);
+isargvector(kx);
 isargxs(xs);
 isargpositivescalar(f);
 isargchar(src);
@@ -80,35 +78,28 @@ end
 
 % Calculate the driving function in time-frequency domain
 
-% Secondary source positions and directions
-nx0 = x0(:,4:6);
-x0 = x0(:,1:3);
-
-% Source position
-xs = repmat(xs(1:3),[size(x0,1) 1]);
-
 % Get driving signals
 if strcmp('pw',src)
     % === Plane wave =====================================================
     % Direction of plane wave
-    nk = bsxfun(@rdivide,xs,vector_norm(xs,2));
+    nk = xs / norm(xs);
     % Driving signal
-    D = driving_function_mono_sdm_pw(x0,nk,f,conf);
+    D = driving_function_mono_sdm_kx_pw(kx,nk,f,conf);
 
 elseif strcmp('ps',src)
     % === Point source ===================================================
     % Driving Signal
-    D = driving_function_mono_sdm_ps(x0,xs,f,conf);
+    D = driving_function_mono_sdm_kx_ps(kx,xs,f,conf);
 
 elseif strcmp('ls',src)
     % === Line source ====================================================
     % Driving signal
-    D = driving_function_mono_sdm_ls(x0,xs,f,conf);
+    D = driving_function_mono_sdm_kx_ls(kx,xs,f,conf);
 
 elseif strcmp('fs',src)
     % === Focused source =================================================
     % Driving Signal
-    D = driving_function_mono_sdm_fs(x0,xs,f,conf);
+    D = driving_function_mono_sdm_kx_fs(kx,xs,f,conf);
 
 else
     error('%s: %s is not a known source type.',upper(mfilename),src);

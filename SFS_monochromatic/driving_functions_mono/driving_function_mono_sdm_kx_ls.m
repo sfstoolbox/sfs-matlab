@@ -1,32 +1,28 @@
-function D = driving_function_mono_sdm(x0,xs,src,f,conf)
-%DRIVING_FUNCTION_MONO_SDM returns the driving signal D for SDM
+function D = driving_function_mono_sdm_kx_ls(kx,xs,f,conf)
+%DRIVING_FUNCTION_MONO_SDM_KX_LS returns the driving signal D for a line source in
+%SDM in the kx domain
 %
-%   Usage: D = driving_function_mono_sdm(x0,xs,src,f,[conf])
+%   Usage: D = driving_function_mono_sdm_kx_ps(kx,xs,f,[conf])
 %
 %   Input parameters:
-%       x0          - position and direction of the secondary source / m [nx6]
-%       xs          - position of virtual source or direction of plane
-%                     wave / m [1x3]
-%       src         - source type of the virtual source
-%                         'pw' - plane wave (xs is the direction of the
-%                                plane wave in this case)
-%                         'ps' - point source
-%                         'fs' - focused source
+%       kx          - kx dimension [nx1]
+%       xs          - position of line source / m [1x3]
 %       f           - frequency of the monochromatic source / Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
 %
-%   DRIVING_FUNCTION_MONO_SDM(x0,xs,f,src,conf) returns the driving signal for
-%   the given secondary sources, desired source type (src), and frequency.
-%   To derive the driving signals the spectral division method (SDM) is used.
+%   DRIVING_FUNCTION_MONO_SDM_KX_LS(kx,xs,f,conf) returns SDM driving signals
+%   for the given secondary sources, the virtual line source position and the
+%   frequency f. The driving signal is calculated in the kx domain.
 %
 %   References:
-%       FIXME: add references
-%       Williams1999 - Fourier Acoustics (Academic Press)
+%       J. Ahrens, S. Spors - "Sound Field Reproduction Using Planar and Linear
+%       Arrays of Loudspeakers", Transactions on Audio, Speech and Language
+%       Processing, Volume 18(8), p. 2038-2050, 2010
 %
-%   see also: plot_sound_field, sound_field_mono_sdm, driving_function_imp_sdm
+%   see also: driving_function_mono_sdm_kx
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -62,13 +58,12 @@ function D = driving_function_mono_sdm(x0,xs,src,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
+nargmin = 3;
+nargmax = 4;
 narginchk(nargmin,nargmax);
-isargsecondarysource(x0);
+isargmatrix(kx);
 isargxs(xs);
 isargpositivescalar(f);
-isargchar(src);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -76,40 +71,67 @@ else
 end
 
 
-%% ===== Computation ====================================================
+%% ===== Configuration ==================================================
+xref = conf.xref;
+c = conf.c;
+dimension = conf.dimension;
+driving_functions = conf.driving_functions;
+x0 = conf.secondary_sources.center;
+withev = conf.sdm.withev;
 
+
+%% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
-% Secondary source positions and directions
-nx0 = x0(:,4:6);
-x0 = x0(:,1:3);
+% frequency
+omega = 2*pi*f;
+% indexes for evanescent contributions and propagating part of the wave field
+idxpr = (( abs(kx) <= (omega/c) ));
+idxev = (( abs(kx) > (omega/c) ));
 
-% Source position
-xs = repmat(xs(1:3),[size(x0,1) 1]);
 
-% Get driving signals
-if strcmp('pw',src)
-    % === Plane wave =====================================================
-    % Direction of plane wave
-    nk = bsxfun(@rdivide,xs,vector_norm(xs,2));
-    % Driving signal
-    D = driving_function_mono_sdm_pw(x0,nk,f,conf);
+if strcmp('2D',dimension)
+    
+    % === 2-Dimensional ==================================================
 
-elseif strcmp('ps',src)
-    % === Point source ===================================================
-    % Driving Signal
-    D = driving_function_mono_sdm_ps(x0,xs,f,conf);
+    % Ensure 2D
+    xs = xs(1:2);
+    if strcmp('default',driving_functions)
+        % --- SFS Toolbox ------------------------------------------------
+        to_be_implemented;
+    else
+        error(['%s: %s, this type of driving function is not implemented ', ...
+            'for a 2D line source.'],upper(mfilename),driving_functions);
+    end
 
-elseif strcmp('ls',src)
-    % === Line source ====================================================
-    % Driving signal
-    D = driving_function_mono_sdm_ls(x0,xs,f,conf);
 
-elseif strcmp('fs',src)
-    % === Focused source =================================================
-    % Driving Signal
-    D = driving_function_mono_sdm_fs(x0,xs,f,conf);
+elseif strcmp('2.5D',dimension)
+    
+    % === 2.5-Dimensional ================================================
+    
+    % Reference point
+    if strcmp('default',driving_functions)
+        % --- SFS Toolbox ------------------------------------------------
+        to_be_implemented;
+
+    else
+        error(['%s: %s, this type of driving function is not implemented ', ...
+            'for a 2.5D line source.'],upper(mfilename),driving_functions);
+    end
+
+
+elseif strcmp('3D',dimension)
+    
+    % === 3-Dimensional ==================================================
+    
+    if strcmp('default',driving_functions)
+        % --- SFS Toolbox ------------------------------------------------
+        to_be_implemented;
+    else
+        error(['%s: %s, this type of driving function is not implemented ', ...
+            'for a 3D line source.'],upper(mfilename),driving_functions);
+    end
 
 else
-    error('%s: %s is not a known source type.',upper(mfilename),src);
+    error('%s: the dimension %s is unknown.',upper(mfilename),dimension);
 end

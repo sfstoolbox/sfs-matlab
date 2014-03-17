@@ -62,10 +62,17 @@ function [fal,dx0] = aliasing_frequency(x0,conf)
 
 
 %% ===== Checking of input parameters ====================================
-nargmin = 1;
+nargmin = 0;
 nargmax = 2;
 narginchk(nargmin,nargmax);
 if nargin==nargmax-1
+    if isstruct(x0)
+        conf = x0;
+        x0 = [];
+    else
+        conf = SFS_config;
+    end
+elseif nargin==nargmax-2
     conf = SFS_config;
 end
 
@@ -75,6 +82,10 @@ c = conf.c;
 
 
 %% ===== Computation =====================================================
+% if no explicit secondary source distribution is given, calculate one
+if isempty(x0)
+    x0 = secondary_source_positions(conf);
+end
 % get average distance between secondary sources
 dx0 = secondary_source_distance(x0);
 % calculate aliasing frequency

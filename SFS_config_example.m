@@ -196,7 +196,7 @@ conf.secondary_sources.grid = 'equally_spaced_points';
 % frequency (which means the frequency response over the aliasing frequency is
 % allready "correct") [Reference]
 % Use WFS preequalization-filter
-conf.wfs.usehpre = false; % boolean
+conf.wfs.usehpre = true; % boolean
 % FIR or IIR pre-equalization filter
 % NOTE: only FIR is working under octave at the moment
 conf.wfs.hpretype = 'FIR'; % 'FIR' or 'IIR'

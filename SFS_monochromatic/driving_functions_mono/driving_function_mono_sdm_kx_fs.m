@@ -87,7 +87,7 @@ omega = 2*pi*f;
 % indexes for evanescent contributions and propagating part of the wave field
 idxpr = (( abs(kx) <= (omega/c) ));
 idxev = (( abs(kx) > (omega/c) ));
-
+D = zeros(1,length(kx));
 
 if strcmp('2D',dimension)
     

@@ -309,7 +309,7 @@ conf.plot.resolution = 150;
 % Additional plot command
 conf.plot.cmd = '';
 % output of plot (file or screen)
-conf.plot.usefile = 0;
+conf.plot.usefile = false;
 % File name, if this is provided with as *.png or *.eps file, the figure is
 % plotted to the regarding file
 conf.plot.file = '';

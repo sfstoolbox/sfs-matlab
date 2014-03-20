@@ -96,11 +96,13 @@ if strcmp('ps',src)
 elseif strcmp('ls',src)
     % Source model for a line source: 2D Green's function.
     %
-    %              
-    % g(x-xs,t) =  
-    %              
+    %                    i
+    % g(x-xs,t) = - ----_-_-_- delta(t - |x-xs|/c)
+    %               4 \||x-xs|
     %
     % see: Williams1999, p. FIXME
+    % Note, that I replaced i with 1 in order to have real value output for
+    % Greens function
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
     g = -1./(4.*sqrt(r));

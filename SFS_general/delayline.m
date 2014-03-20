@@ -54,7 +54,6 @@ function sig = delayline(sig,dt,weight,conf)
 
 %% ===== Configuration ==================================================
 usefracdelay = conf.usefracdelay;
-fracdelay_method = conf.fracdelay_method;
 
 
 %% ===== Computation =====================================================
@@ -65,6 +64,9 @@ if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
 
 
 if usefracdelay
+
+    % additional configuration
+    fracdelay_method = conf.fracdelay_method;
 
     rfactor = 100; % resample factor (1/stepsize of fractional delays)
     Lls = 30;      % length of least-squares factional delay filter

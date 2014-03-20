@@ -62,7 +62,6 @@ end
 
 %% ===== Configuration ==================================================
 usehpre = conf.wfs.usehpre;
-hpretype = conf.wfs.hpretype;
 
 
 %% ===== Computation =====================================================
@@ -73,12 +72,12 @@ end
 % Store original length
 len_ir = size(ir,1);
 % Get the filter
-if strcmp('FIR',hpretype)
+if strcmp('FIR',conf.wfs.hpretype)
     % get FIR filter
     hpre = wfs_fir_prefilter(conf);
     % apply filter
     ir = convolution(hpre,ir);
-elseif strcmp('IIR',hpretype)
+elseif strcmp('IIR',conf.wfs.hpretype)
     % get IIR filter
     hpre = wfs_iir_prefilter(conf);
     % apply filter

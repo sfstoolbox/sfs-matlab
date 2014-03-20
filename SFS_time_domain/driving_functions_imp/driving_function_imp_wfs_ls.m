@@ -1,22 +1,23 @@
-function sos = driving_function_imp_nfchoa_pw(N,R,conf)
-%DRIVING_FUNCTION_IMP_NFCHOA_PW calculates the second-order section
-%representation for a virtual plane wave in NFC-HOA
+function [delay,weight] = driving_function_imp_wfs_ls(x0,nx0,xs,conf)
+%DRIVING_FUNCTION_IMP_WFS_LS calculates the WFS weighting and delaying for a
+%line source as source model
 %
-%   Usage: sos = driving_function_imp_nfchoa_pw(N,R,[conf]);
+%   Usage: [delay,weight] = driving_function_imp_wfs_ls(x0,nx0,xs,[conf]);
 %
 %   Input parameters:
-%       N       - order of spherical hankel function
-%       R       - radius of secondary source array / m
+%       x0      - position  of secondary sources (m) [nx3]
+%       nx0     - direction of secondary sources [nx3]
+%       xs      - position of line source [nx3]
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       sos     - second-order section representation
+%       delay   - delay of the driving function (s)
+%       weight  - weight (amplitude) of the driving function
 %
-%   DRIVING_FUNCTION_IMP_NFCHOA_PW(N,R,r,conf) returns the second-order section
-%   representation for the NFC-HOA driving function for a virtual plane wave
-%   as source model.
+%   DRIVING_FUNCTION_IMP_WFS_LS(x0,nx0,xs,conf) returns delays and weights for
+%   the WFS driving function for a line source as source model.
 %
-%   see also: sound_field_imp, sound_field_imp_nfchoa, driving_function_imp_nfchoa
+%   see also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_ls
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -52,10 +53,10 @@ function sos = driving_function_imp_nfchoa_pw(N,R,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
-nargmax = 3;
+nargmin = 3;
+nargmax = 4;
 narginchk(nargmin,nargmax);
-isargpositivescalar(N,R);
+isargmatrix(x0,nx0,xs);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -64,27 +65,27 @@ end
 
 
 %% ===== Configuration ==================================================
+% Speed of sound
 c = conf.c;
+xref = conf.xref;
+fs = conf.fs;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
 
 
 %% ===== Computation =====================================================
 
-% find spherical hankel function zeros
-[z,p] = sphbesselh_zeros(N);
-
 % Get the delay and weighting factors
-if strcmp('2D',dimension)
+if strcmp('2D',dimension) || strcmp('3D',dimension)
 
-    % === 2-Dimensional ==================================================
+    % === 2- or 3-Dimensional ============================================
     
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
     else
         error(['%s: %s, this type of driving function is not implemented', ...
-            'for a 2D plane wave.'],upper(mfilename),driving_functions);
+            'for a point source.'],upper(mfilename),driving_functions);
     end
 
 
@@ -93,26 +94,13 @@ elseif strcmp('2.5D',dimension)
     % === 2.5-Dimensional ================================================
 
     % Reference point
-    if strcmp('default',driving_functions)
-        % --- SFS Toolbox ------------------------------------------------
-        % FIXME. add documentation
-        sos = zp2sos(p,z*c/R,2,'down','none');
-    else
-        error(['%s: %s, this type of driving function is not implemented', ...
-            'for a 2.5D plane wave.'],upper(mfilename),driving_functions);
-    end
-
-
-elseif strcmp('3D',dimension)
-
-    % === 3-Dimensional ==================================================
-
+    xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
     else
         error(['%s: %s, this type of driving function is not implemented', ...
-            'for a 3D plane wave.'],upper(mfilename),driving_functions);
+            'for a 2.5D point source.'],upper(mfilename),driving_functions);
     end
 
 else

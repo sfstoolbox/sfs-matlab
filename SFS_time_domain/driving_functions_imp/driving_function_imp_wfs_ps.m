@@ -1,6 +1,6 @@
 function [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs,conf)
 %DRIVING_FUNCTION_IMP_WFS_PS calculates the WFS weighting and delaying for a
-%plane wave as source model
+%point source as source model
 %
 %   Usage: [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs,[conf]);
 %

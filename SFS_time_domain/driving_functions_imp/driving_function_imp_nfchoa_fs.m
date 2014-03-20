@@ -1,5 +1,5 @@
 function sos = driving_function_imp_nfchoa_fs(N,R,r,conf)
-%DRIVING_FUNCTION_IMP_NFCHOA_PS calculates the second-order section
+%DRIVING_FUNCTION_IMP_NFCHOA_FS calculates the second-order section
 %representation for a virtual focused source in NFC-HOA
 %
 %   Usage: sos = driving_function_imp_nfchoa_fs(N,R,r,[conf]);

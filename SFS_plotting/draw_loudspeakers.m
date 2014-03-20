@@ -5,6 +5,9 @@ function draw_loudspeakers(x0,dimensions,conf)
 %
 %   Input options:
 %       x0          - positions and directions of the loudspeakers / m
+%       dimensions  - dimension defining the plane in which the loudspeaker
+%                     symbol should be plotted. For example [1 1 0] corresponds
+%                     to the xy-plane
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   DRAW_LOUDSPEAKERS(x0,dimensions) draws loudspeaker symbols or crosses at

@@ -11,6 +11,7 @@ function [d,delay,weight] = driving_function_imp_wfs(x0,xs,src,conf)
 %                     'pw' - plane wave (xs, ys are the direction of the
 %                            plane wave in this case)
 %                     'ps' - point source
+%                     'ls' - line source
 %                     'fs' - focused source
 %       conf    - optional configuration struct (see SFS_config)
 %
@@ -101,6 +102,11 @@ elseif strcmp('ps',src)
     % === Point source ===================================================
     % Delay and amplitude weight
     [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs,conf);
+
+elseif strcmp('ls',src)
+    % === Line source ====================================================
+    % Delay and amplitude weight
+    [delay,weight] = driving_function_imp_wfs_ls(x0,nx0,xs,conf);
 
 elseif strcmp('fs',src)
     % === Focused source =================================================

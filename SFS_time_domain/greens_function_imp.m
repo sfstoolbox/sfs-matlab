@@ -103,7 +103,7 @@ elseif strcmp('ls',src)
     % see: Williams1999, p. FIXME
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
-    g = -1i./(4.*sqrt(r));
+    g = -1./(4.*sqrt(r));
     t = (r/c)*fs-t;
 
 elseif strcmp('pw',src)

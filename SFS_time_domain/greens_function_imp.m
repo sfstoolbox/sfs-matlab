@@ -87,7 +87,7 @@ if strcmp('ps',src)
     % g(x-xs,t) = ---------- delta(t - |x-xs|/c)
     %             4pi |x-xs|
     %
-    % see: Williams1999, p. FIXME: ??
+    % see: Wierstorf2014, p. 22 (2.29)
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
     g = 1./(4*pi.*r);
@@ -95,17 +95,16 @@ if strcmp('ps',src)
 
 elseif strcmp('ls',src)
     % Source model for a line source: 2D Green's function.
+    %                          ___
+    %              -1/ c\     | 1       1
+    % g(x-xs,t) = F |--  |  - |---  --_-_-_- delta(t - |x-xs|/c)
+    %                \iw/    \|8pi  \||x-xs|
     %
-    %                    i
-    % g(x-xs,t) = - ----_-_-_- delta(t - |x-xs|/c)
-    %               4 \||x-xs|
-    %
-    % see: Williams1999, p. FIXME
-    % Note, that I replaced i with 1 in order to have real value output for
-    % Greens function
+    % see: Wierstorf2014 p.22, (2.33) 
+    % Note, that the filter F^-1 is not implemented!!!!
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
-    g = -1./(4.*sqrt(r));
+    g = 1./sqrt(r) * sqrt(1/(8*pi));
     t = (r/c)*fs-t;
 
 elseif strcmp('pw',src)
@@ -113,7 +112,7 @@ elseif strcmp('pw',src)
     %
     % g(x,t) = delta(t - nx/c)
     %
-    % see: Williams1999, p. FIXME
+    % see: Wierstorf2014, p. 21 (2.24)
     %
     % direction of plane wave
     nxs = xs / norm(xs);

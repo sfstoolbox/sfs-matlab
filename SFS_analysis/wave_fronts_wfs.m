@@ -61,8 +61,6 @@ function varargout = wave_fronts_wfs(X,phi,xs,src,conf)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% FIXME: see if this function still works correctly
-
 
 %% ===== Checking of input parameters ====================================
 nargmin = 4;

@@ -17,6 +17,11 @@ function ir = ssr_generic_nfchoa(xs,src,conf)
 %   GENERIC_NFCHOA(xs,src,conf) calculates an impulse response for a virtual
 %   source at xs for the loudspeakers of a NFC-HOA array. Every loudspeaker of
 %   the array is represented by one column in the impulse response.
+%   For the generic renderer it is of importance to know what position the first
+%   loudspeaker of your array will have. For example, the included circular
+%   array has its first loudspeaker at phi=0deg which is on the x-axis. If you
+%   have another setup you have to provide it with conf.secondary_sources.x0.
+%
 %
 % see also: generic_wfs, brs_nfchoa, driving_function_imp_nfchoa
 
@@ -51,11 +56,6 @@ function ir = ssr_generic_nfchoa(xs,src,conf)
 %                                                                            *
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
-
-% FIXME: at the moment the first loudspeaker of your array has to be on the x-axis
-% (which means phi=0). If you have another setup (like we have in Pinta) you
-% have to manually edit the secondary_source_positions.m function in order to
-% get the first loudspeaker at the desired location.
 
 
 %% ===== Checking of input  parameters ==================================

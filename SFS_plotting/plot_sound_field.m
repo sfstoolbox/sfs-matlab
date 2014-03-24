@@ -106,7 +106,7 @@ elseif ~any(dimensions)
     error(['%s: you have only one point in the sound field. ', ...
         'Omitting the plotting.'],upper(mfilename));
 elseif ~dimensions(1)
-    % FIXME: in order to work with gnuplot the label should be prtinted
+    % FIXME: in order to work with gnuplot the label should be printed
     % with the extra function, which can handle if the output should be
     % LaTeX or something else
     %str_xlabel = print_label('y','m',conf);

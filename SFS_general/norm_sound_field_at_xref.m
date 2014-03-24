@@ -90,7 +90,6 @@ end
 
 % Scale signal to 1
 if all(dimensions)
-    % FIXME: this is for a future version, but I don't know if it will work
     scale = abs(P(zidx,yidx,xidx));
 elseif dimensions(1) && dimensions(2)
     scale = abs(P(yidx,xidx));

@@ -98,9 +98,7 @@ conf.c = 343; % / m/s
 % use fractional delays for delay lines
 conf.usefracdelay = false; % boolean
 conf.fracdelay_method = 'resample';
-% Bandpass filter for time domain driving functions
-% FIXME: check where the bandpass should be applied exactly. At the moment
-% it is applied in the sound_field_imp.m function
+% Bandpass filter applied in sound_field_imp()
 conf.usebandpass = true; % boolean
 conf.bandpassflow = 10; % / Hz
 conf.bandpassfhigh = 20000; % / Hz

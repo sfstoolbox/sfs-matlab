@@ -13,6 +13,10 @@ function hpre = wfs_fir_prefilter(conf)
 %   Wave Field Synthesis (from conf.wfs.hpreflow to conf.wfs.hprefhigh,
 %   see SFS_config).
 %
+%   References:
+%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       PhD thesis, Tu Berlin
+%
 %   see also: wfs_preequalization, wfs_iir_prefilter, sound_field_imp_wfs, ir_wfs
 
 %*****************************************************************************
@@ -98,10 +102,14 @@ if strcmp('2.5D',dimension)
     %           _______
     %  H(f) = \|f/fhigh, for flow<=f<=fhigh
     %
+    %  compare Wierstorf (2014), p. 25 (2.46)
+    %
     H(idxflow:idxfhigh) = sqrt(f(idxflow:idxfhigh)./fhigh);
 elseif strcmp('3D',dimension) || strcmp('2D',dimension)
     %         
     %  H(f) = f/fhigh, for flow<=f<=fhigh
+    %
+    %  compare Wierstorf (2014), p. 25 (2.45)
     %
     H(idxflow:idxfhigh) = f(idxflow:idxfhigh)./fhigh;
 else

@@ -17,14 +17,6 @@ function D = driving_function_mono_sdm_ps(x0,nk,f,conf)
 %   for the given secondary sources, the virtual point source position and the
 %   frequency f.
 %
-%   References:
-%       FIXME: Update references
-%       Spors2009 - Physical and Perceptual Properties of Focused Sources in
-%           Wave Field Synthesis (AES127)
-%       Spors2010 - Analysis and Improvement of Pre-equalization in
-%           2.5-Dimensional Wave Field Synthesis (AES128)
-%       Williams1999 - Fourier Acoustics (Academic Press)
-%
 %   see also: driving_function_mono_sdm
 
 %*****************************************************************************

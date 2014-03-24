@@ -21,9 +21,6 @@ function varargout = sound_field_mono_plane_wave(X,Y,Z,xs,f,conf)
 %   field of a plane wave going in the direction xs.
 %   To plot the result use plot_sound_field(P,x,y,z).
 %
-%   References:
-%       Williams (1999) - "Fourier Acoustics", Academic Press
-%
 %   see also: sound_field_mono, plot_sound_field, sound_field_mono_point_source
 
 %*****************************************************************************

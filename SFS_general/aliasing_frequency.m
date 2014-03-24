@@ -20,10 +20,10 @@ function [fal,dx0] = aliasing_frequency(x0,conf)
 %   a look at Start (1997).
 %   
 %   References:
-%       S. Spors and J. Ahrens (2009) - Spatial sampling artifacts of wave field
-%       synthesis for the reproduction of virtual point sources. 126th AES.
-%       E. Start (1997)- Direct Sound Enhancement by Wave Field Synthesis. TU
-%       Delft.
+%       S. Spors and J. Ahrens (2009) - "Spatial sampling artifacts of wave field
+%       synthesis for the reproduction of virtual point sources", 126th AES Conv.
+%       E. Start (1997) - "Direct Sound Enhancement by Wave Field Synthesis",
+%       TU Delft.
 %
 %   see also: sound_field_mono_wfs, secondary_source_positions,
 %       secondary_source_distance

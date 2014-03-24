@@ -21,7 +21,7 @@ function [points,weights] = get_spherical_grid(number,conf)
 %   after Ahrens (2012), p. 121
 %
 %   References:
-%       J. Ahrens (2012) - Analytic Methods of Sound Field Synthesis, Springer.
+%       J. Ahrens (2012) - "Analytic Methods of Sound Field Synthesis", Springer.
 %
 %   see also: secondary_source_positions,
 %       weights_for_points_on_a_sphere_rectangle

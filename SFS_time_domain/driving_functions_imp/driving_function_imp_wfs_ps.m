@@ -17,6 +17,10 @@ function [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs,conf)
 %   DRIVING_FUNCTION_IMP_WFS_PS(x0,nx0,xs,conf) returns delays and weights for
 %   the WFS driving function for a point source as source model.
 %
+%   References:
+%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       PhD thesis, Tu Berlin
+%
 %   see also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_ps
 
 %*****************************************************************************
@@ -88,6 +92,8 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % d(x0,t) = h(t) * --- ------------- delta(t-|x0-xs|/c)
         %                  2pi |x0-xs|^(3/2)
         %
+        % see Wierstorf (2014), p.26 (2.52)
+        %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % Delay and amplitude weight
@@ -118,6 +124,8 @@ elseif strcmp('2.5D',dimension)
         %                       -g0  (x0-xs) nx0
         % d_2.5D(x0,t) = h(t) * --- ------------- delta(t-|x0-xs|/c)
         %                       2pi |x0-xs|^(3/2)
+        %
+        % see Wierstorf (2014), p.26 (2.53)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);

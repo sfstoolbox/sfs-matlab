@@ -16,9 +16,9 @@ function irs_pw = extrapolate_farfield_hrtfset(irs,conf)
 %   WFS.
 %
 %   References:
-%       S. Spors and J. Ahrens. Generation of far-field head-related transfer
-%       functions using sound field synthesis.
-%       In German Annual Conference on Acoustics (DAGA), 2011.
+%       S. Spors and J. Ahrens (2011) - "Generation of far-field head-related
+%       transfer functions using sound field synthesis", In German Annual
+%       Conference on Acoustics (DAGA).
 %
 %   see also: get_ir, driving_function_imp_wfs
 

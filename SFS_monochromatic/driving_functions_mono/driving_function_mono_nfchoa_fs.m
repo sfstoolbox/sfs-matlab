@@ -18,9 +18,6 @@ function D = driving_function_mono_nfchoa_fs(x0,xs,f,N,conf)
 %   signals for the given secondary sources, the focused source position
 %   and the frequency f.
 %
-%   References:
-%       FIXME: Update references
-%
 %   see also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_fs
 
 %*****************************************************************************

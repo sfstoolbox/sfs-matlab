@@ -17,11 +17,6 @@ function D = driving_function_mono_sdm_kx_ls(kx,xs,f,conf)
 %   for the given secondary sources, the virtual line source position and the
 %   frequency f. The driving signal is calculated in the kx domain.
 %
-%   References:
-%       J. Ahrens, S. Spors - "Sound Field Reproduction Using Planar and Linear
-%       Arrays of Loudspeakers", Transactions on Audio, Speech and Language
-%       Processing, Volume 18(8), p. 2038-2050, 2010
-%
 %   see also: driving_function_mono_sdm_kx
 
 %*****************************************************************************

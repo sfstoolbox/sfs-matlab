@@ -19,7 +19,9 @@ function D = driving_function_mono_nfchoa_ps(x0,xs,f,N,conf)
 %   and the frequency f.
 %
 %   References:
-%       Ahrens, J.: Analytic Methods of Sound Field Synthesis, Springer, 2012
+%       J. Ahrens (2012) - "Analytic Methods of Sound Field Synthesis", Springer
+%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       PhD thesis, TU Berlin
 %
 %   see also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_ps
 
@@ -111,7 +113,7 @@ elseif strcmp('2.5D',dimension)
     xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        % 2.5D point source, after Ahrens (2012), p. 186, eq. 5.8
+        % 2.5D point source, after Ahrens (2012), p.186 (5.8)
         %
         %                      __      (2)
         %               1     \       h|m| (w/c r)
@@ -119,6 +121,7 @@ elseif strcmp('2.5D',dimension)
         %             2pi r0 m=-N..N  (2)
         %                             h|m| (w/c r0)
         %
+        % see Wierstorf (2014), p.24 (2.41)
         for m=-N:N
             D = D + 1./(2.*pi.*r0) .* sphbesselh(abs(m),2,omega/c.*r) ./ ...
                 sphbesselh(abs(m),2,omega/c.*r0) .* exp(1i.*m.*(phi0-phi));
@@ -135,7 +138,7 @@ elseif strcmp('3D',dimension)
     
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        % 3D point source, after Ahrens (2012), p. 185, eq. 5.7
+        % 3D point source, after Ahrens (2012), p.185 (5.7)
         %
         %                              N_   n_  (2)
         %                       1     \    \    hn (w/c r)   -m             
@@ -144,6 +147,9 @@ elseif strcmp('3D',dimension)
         %                                       hn (w/c r0)
         %                      m
         %                     Yn(theta0,phi0)
+        %
+        % see Wierstorf (2014), p.24 (2.40)
+        %
         for n=0:N
             for m=-n:n
                 D = D + 1./(2.*pi.*r0.^2) .* sphbesselh(n,2,omega/c.*r) ./ ...

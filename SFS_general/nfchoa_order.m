@@ -26,7 +26,7 @@ function M = nfchoa_order(nls,conf)
 %   for a spherical array.
 %
 %   References:
-%       J. Ahrens (2012) - Analytic Methods of Sound Field Synthesis, Springer.
+%       J. Ahrens (2012) - "Analytic Methods of Sound Field Synthesis", Springer.
 %
 %   see also: driving_function_imp_nfchoa, driving_function_mono_nfchoa
 

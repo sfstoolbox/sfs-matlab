@@ -19,7 +19,8 @@ function D = driving_function_mono_nfchoa_pw(x0,nk,f,N,conf)
 %   and the frequency f.
 %
 %   References:
-%       FIXME: Update references
+%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       PhD thesis, TU Berlin
 %
 %   see also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_pw
 
@@ -101,6 +102,8 @@ if strcmp('2D',dimension)
         %               pi r0 m=-N..N  (2)
         %                             Hm  (w/c r0)
         %
+        % see Wierstorf (2014), p.23 (2.36)
+        %
         for m=-N:N
             D = D - 2.*1i./(pi.*r0) .* 1i^(-m)./besselh(m,2,w/c.*r0) .* ...
                 exp(1i.*m.*(phi0-phi_pw));
@@ -122,7 +125,9 @@ elseif strcmp('2.5D',dimension)
         % D_25D(phi0,w) = --  /__    ------------------ e^(i m (phi0-phi_pw) )
         %                 r0 m=-N..N       (2)
         %                             w/c h|m| (w/c r0)  
-        %                      
+        % 
+        % see wierstorf (2014), p.23 (2.37)
+        %
         for m=-N:N
             D = D + 2.*1i./r0 .* 1i.^(-abs(m)) ./ ...
                 ( w/c .* sphbesselh(abs(m),2,w/c.*r0) ) .* ...
@@ -145,6 +150,9 @@ elseif strcmp('3D',dimension)
         % D(theta0,phi0,w) = ----  /__   /__     --------------------------- Yn (theta0,phi0)
         %                    r0^2 n=0..N m=-n..n           (2)
         %                                             w/c hn  (w/c r0)
+        %
+        % see Wierstorf (2014), p.23 (2.35)
+        %
         for n=0:N
             for m=-n:n
                 D = D + 2.*1i./r0.^2 .* 1i.^(-n).*sphharmonics(n,-m,theta_pw,phi_pw) ./...

@@ -9,12 +9,11 @@ function [H] = get_shelve_lagrange(f,H,FlagSub,fSub,FlagAliasing,fAliasing,Bandw
 %   different interpolation offsets may be required
 %
 %   References:
-%   Frank Schultz, Vera Erbes, Sascha Spors, Stefan Weinzierl (2013):
-%   "Derivation of IIR prefilters for soundfield synthesis using linear
-%   secondary source distributions", In: Proc. of the
-%   International Conference on Acoustics AIA-DAGA 2013, Merano, Italy, 
-%   18 - 21 March 2013, pages 2372-2375
-%
+%       F. Schultz, V. Erbes, S. Spors, S. Weinzierl (2013) - "Derivation
+%       of IIR prefilters for soundfield synthesis using linear secondary
+%       source distributions", In: Proc. of the International Conference
+%       on Acoustics AIA-DAGA, p.2372-2375
+
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *

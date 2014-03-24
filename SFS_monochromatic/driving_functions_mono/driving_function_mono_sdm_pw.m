@@ -18,9 +18,9 @@ function D = driving_function_mono_sdm_pw(x0,nk,f,conf)
 %   frequency f.
 %
 %   References:
-%       J. Ahrens, S. Spors - "Sound Field Reproduction Using Planar and Linear
-%       Arrays of Loudspeakers", Transactions on Audio, Speech and Language
-%       Processing, Volume 18(8), p. 2038-2050, 2010
+%       J. Ahrens and S. Spors (2010) - "Sound Field Reproduction Using Planar
+%       and Linear Arrays of Loudspeakers", Transactions on Audio, Speech and
+%       Language Processing, Volume 18(8), p. 2038-2050
 %
 %   see also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
@@ -108,13 +108,15 @@ elseif strcmp('2.5D',dimension)
     xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        % D_2.5D using a plane wave as source model, after Ahrens (2010) eq. 17
+        % D_2.5D using a plane wave as source model
         %                  
         %                   e^(-i w/c nky*xrefy)
         % D_2.5D(x0,w) = 4i ---------------------- e^(-i w/c nk x0)
         %                     (2) /w          \
         %                    H0  | - nky*xrefy |
         %                         \c          /
+        %
+        % see Ahrens and Spors (2010), (17)
         %
         D = 4*1i.*exp(-1i*omega/c.*nk(:,2).*xref(:,2)) ./ ...
             besselh(0,2,omega/c.*nk(:,2).*xref(:,2)) .* ...

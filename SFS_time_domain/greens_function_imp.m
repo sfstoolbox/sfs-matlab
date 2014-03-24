@@ -28,7 +28,8 @@ function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 %   [p,x,y,z] = sound_field_imp(X,Y,Z,[xs 0 -1 0],src,1,t,conf);
 %   
 %   References:
-%       Williams (1999) - "Fourier Acoustics", Academic Press
+%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       PhD thesis, TU Berlin
 %
 %   see also: greens_function_mono, sound_field_imp
 
@@ -87,7 +88,7 @@ if strcmp('ps',src)
     % g(x-xs,t) = ---------- delta(t - |x-xs|/c)
     %             4pi |x-xs|
     %
-    % see: Wierstorf2014, p. 22 (2.29)
+    % see: Wierstorf (2014), p.22 (2.29)
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
     g = 1./(4*pi.*r);
@@ -100,7 +101,7 @@ elseif strcmp('ls',src)
     % g(x-xs,t) = F |--  |  - |---  --_-_-_- delta(t - |x-xs|/c)
     %                \iw/    \|8pi  \||x-xs|
     %
-    % see: Wierstorf2014 p.22, (2.33) 
+    % see: Wierstorf (2014), p.22 (2.33) 
     % Note, that the filter F^-1 is not implemented!!!!
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
@@ -112,7 +113,7 @@ elseif strcmp('pw',src)
     %
     % g(x,t) = delta(t - nx/c)
     %
-    % see: Wierstorf2014, p. 21 (2.24)
+    % see: Wierstorf (2014), p.21 (2.24)
     %
     % direction of plane wave
     nxs = xs / norm(xs);

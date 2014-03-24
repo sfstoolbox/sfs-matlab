@@ -24,8 +24,8 @@ function [x0,idx] = secondary_source_selection(x0,xs,src)
 %   the chosen secondary sources is returned.
 %
 %   References:
-%       S. Spors, R. Rabenstein, J. Ahrens (2008) - "The Theory of Wave Field
-%       Synthesis Revisited", in 124th AES Convention.
+%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       PhD thesis, TU Berlin
 %
 % see also: secondary_source_positions, secondary_source_tapering
 
@@ -92,11 +92,13 @@ if strcmp('pw',src)
     % === Plane wave ===
     % direction of the plane wave
     nk = bsxfun(@rdivide,xs,vector_norm(xs,2));
-    % secondary source selection (Spors 2008)
+    % secondary source selection
     %
     %      / 1, if nk nx0 > 0
     % a = <
     %      \ 0, else
+    %
+    % see Wierstorf (2014), p.25 (2.47)
     %
     % Direction of plane wave (nxs) is set above
     idx = (( vector_product(nk,nx0,2)>=eps ));
@@ -104,24 +106,27 @@ if strcmp('pw',src)
 
 elseif strcmp('ps',src) || strcmp('ls',src)
     % === Point source ===
-    % secondary source selection (Spors 2008)
+    % secondary source selection
     %
     %      / 1, if (x0-xs) nx0 > 0
     % a = <
     %      \ 0, else
+    %
+    % see Wierstorf (2014), p.26 (2.54) and p.27 (2.59)
     %
     idx = (( vector_product(x0-xs,nx0,2)>=eps ));
     x0 = x0_tmp(idx,:);
 
 elseif strcmp('fs',src)
     % === Focused source ===
-    % secondary source selection (Spors 2008)
+    % secondary source selection
     % NOTE: (xs-x0) nx0 > 0 is always true for a focused source
     %
     %      / 1, nxs (xs-x0) > 0
     % a = <
     %      \ 0, else
     %
+    % see Wierstorf (2014), p.27 (2.67)
     nxs = xs(:,4:6);
     xs = xs(:,1:3);
     idx = (( vector_product(nxs,xs-x0,2)>=eps ));

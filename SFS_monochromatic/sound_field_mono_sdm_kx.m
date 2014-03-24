@@ -40,10 +40,9 @@ function [P,x,y,z] = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
 %   field.
 %
 %   References:
-%       S. Spors (2010) - "Reproduction of Focused Sources by the Spectral Division
-%           Method"
-%       S. Spors (2010) - "Analysis and Improvement of Pre-equalization in
-%       2.5-Dimensional Wave Field Synthesis"
+%       S. Spors, J. Ahrens (2010) - "Analysis and Improvement of
+%       Pre-equalization in 2.5-Dimensional Wave Field Synthesis", 128th AES
+%       Conv.
 %
 %   see also: plot_sound_field, sound_field_mono_sdm
 
@@ -127,8 +126,8 @@ idxev = (( abs(kx) > (omega/c) ));
 %
 % === Secondary source model ===
 Gkx = zeros(length(kx),length(y));
-% Green's function for a point source in the spectro-temporal domain (see
-% Spors2010)
+% Green's function for a point source in the spectro-temporal domain, see
+% Spors (2010)
 %                                  ____________
 %                 / -i/4 H0^(2)( \|(w/c)^2-kx^2 y )
 % G_3D(kx,y,w) = <                ____________

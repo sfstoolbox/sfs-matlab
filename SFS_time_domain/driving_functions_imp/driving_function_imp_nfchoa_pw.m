@@ -12,9 +12,14 @@ function sos = driving_function_imp_nfchoa_pw(N,R,conf)
 %   Output parameters:
 %       sos     - second-order section representation
 %
-%   DRIVING_FUNCTION_IMP_NFCHOA_PW(N,R,r,conf) returns the second-order section
+%   DRIVING_FUNCTION_IMP_NFCHOA_PW(N,R,conf) returns the second-order section
 %   representation for the NFC-HOA driving function for a virtual plane wave
 %   as source model.
+%
+%   References:
+%       S. Spors, V. Kuscher, J. Ahrens (2011) - "Efficient realization of
+%       model-based rendering for 2.5-dimensional near-field compensated higher
+%       order Ambisonics", WASPAA, p. 61-64
 %
 %   see also: sound_field_imp, sound_field_imp_nfchoa, driving_function_imp_nfchoa
 
@@ -95,8 +100,12 @@ elseif strcmp('2.5D',dimension)
     % Reference point
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        % FIXME. add documentation
+        % 2.5D for a plane wave as source model
+        %
         sos = zp2sos(p,z*c/R,2,'down','none');
+        %
+        % compare Spors et al. (2011)
+        %
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D plane wave.'],upper(mfilename),driving_functions);

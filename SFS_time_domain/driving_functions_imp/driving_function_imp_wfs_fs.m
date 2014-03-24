@@ -17,6 +17,10 @@ function [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs,conf)
 %   DRIVING_FUNCTION_IMP_WFS_FS(x0,nx0,xs,conf) returns delays and weights for
 %   the WFS driving function for a focused source as source model.
 %
+%   References:
+%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       PhD thesis, Tu Berlin
+%
 %   see also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_fs
 
 %*****************************************************************************
@@ -83,6 +87,19 @@ if strcmp('2D',dimension)
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
+        % d using a focused line source as source model
+        %                     ___
+        %                    | 1   (x0-xs) nx0
+        % d(x0,t) = h(t) * - |--- ------------- delta(t+|x0-xs|/c)
+        %                   \|2pi |x0-xs|^(3/2)
+        %
+        % this is a time reversered version of Wierstorf2014 p.26, (2.57)
+        %
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        % Delay and amplitude weight
+        delay = -1/c .* r;
+        weight = 1/(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2D focused source.'],upper(mfilename),driving_functions);
@@ -106,8 +123,10 @@ elseif strcmp('2.5D',dimension)
         % d_2.5D using a line sink as source model
         %
         %                       -g0 (xs-x0) nx0
-        % d_2.5D(x0,t) = h(t) * --- ------------- delta(t - 1/c |xs-x0|)
+        % d_2.5D(x0,t) = h(t) * --- ------------- delta(t + |xs-x0|/c)
         %                       2pi |xs-x0|^(3/2)
+        %                       
+        % see Wierstorf (2014), p.27 (2.65)
         %
         % r = |xs-x0|
         r = vector_norm(xs-x0,2);
@@ -127,15 +146,18 @@ elseif strcmp('3D',dimension)
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % d_3D using a point sink as source model
-        % FIXME: check driving function
+        % 
+        %                     -1  (xs-x0) nx0
+        % d_3D(x0,t) = h(t) * --- ------------- delta(t + |xs-x0|/c)
+        %                     2pi |xs-x0|^(3/2)
         %
-        % d_3D(x0,t) = ... delta(t - 1/c |xs-x0|)
+        % see Wierstorf (2014), p.27 (2.64)
         %
         % r = |xs-x0|
         r = vector_norm(xs-x0,2);
         % Delay and amplitude weight
         delay = -1/c .* r;
-        weight = -2 .* (1/c+1./r) .* vector_product(xs-x0,nx0,2) ./ r.^2;
+        weight = -1/(2*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3/2);
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 3D focused source.'],upper(mfilename),driving_functions);

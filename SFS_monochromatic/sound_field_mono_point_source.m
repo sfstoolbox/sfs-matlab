@@ -22,7 +22,7 @@ function varargout = sound_field_mono_point_source(X,Y,Z,xs,varargin)
 %   To plot the result use plot_sound_field(P,x,y,z).
 %
 %   References:
-%       Williams (1999) - "Fourier Acoustics", Academic Press
+%       G. Williams (1999) - "Fourier Acoustics", Academic Press
 %
 %   see also: sound_field_mono, plot_sound_field, sound_field_imp_point_source
 

@@ -21,13 +21,6 @@ function varargout = freq_response_wfs(X,xs,src,conf)
 %   sound field at the given position X. The sound field is simulated for the
 %   given source type (src) using a monochromatic WFS driving function.
 %
-%   References:
-%       Spors2009 - Physical and Perceptual Properties of Focused Sources in
-%           Wave Field Synthesis (AES127)
-%       Spors2010 - Analysis and Improvement of Pre-equalization in
-%           2.5-Dimensional Wave Field Synthesis (AES128)
-%       Williams1999 - Fourier Acoustics (Academic Press)
-%
 %   see also: sound_field_mono_wfs, sound_field_imp_wfs
 
 %*****************************************************************************

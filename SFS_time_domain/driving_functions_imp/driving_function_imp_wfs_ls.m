@@ -17,6 +17,10 @@ function [delay,weight] = driving_function_imp_wfs_ls(x0,nx0,xs,conf)
 %   DRIVING_FUNCTION_IMP_WFS_LS(x0,nx0,xs,conf) returns delays and weights for
 %   the WFS driving function for a line source as source model.
 %
+%   References:
+%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       PhD thesis, Tu Berlin
+%
 %   see also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_ls
 
 %*****************************************************************************

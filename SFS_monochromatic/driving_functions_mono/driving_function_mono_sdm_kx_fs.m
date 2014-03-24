@@ -18,9 +18,8 @@ function D = driving_function_mono_sdm_kx_fs(kx,xs,f,conf)
 %   frequency f. The driving signal is calculated in the kx domain.
 %
 %   References:
-%       J. Ahrens, S. Spors - "Sound Field Reproduction Using Planar and Linear
-%       Arrays of Loudspeakers", Transactions on Audio, Speech and Language
-%       Processing, Volume 18(8), p. 2038-2050, 2010
+%       S. Spors and J. Ahrens (2010) - "Reproduction of Focused Sources by the
+%       Spectral Division Method", ISCCSP
 %
 %   see also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
@@ -121,6 +120,7 @@ elseif strcmp('2.5D',dimension)
         %                     \ ----------_-_-_-_-_-_---------,       |kx|>|w/c|
         %                          K0( \|kx^2-(w/c)^2 yref )
         %
+        % see Spors and Ahrens (2010), (7)
         %
         D(idxpr) =  exp(1i*kx(idxpr)*xs(1)) .* ...
             besselh(0,2,sqrt( (omega/c)^2 - kx(idxpr).^2 )*abs(xref(2)-xs(2))) ./ ...

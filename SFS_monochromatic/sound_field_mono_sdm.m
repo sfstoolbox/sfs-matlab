@@ -28,10 +28,6 @@ function varargout = sound_field_mono_sdm(X,Y,Z,xs,src,f,conf)
 %   This means by calculating the integral for P with a summation.
 %   To plot the result use plot_sound_field(P,x,y,z,x0,win).
 %
-%   References:
-%       S. Spors (2009) - "Physical and Perceptual Properties of Focused Sources in
-%           Wave Field Synthesis", AES127
-%
 %   see also: plot_sound_field, sound_field_imp_wfs, driving_function_mono_wfs
 
 %*****************************************************************************

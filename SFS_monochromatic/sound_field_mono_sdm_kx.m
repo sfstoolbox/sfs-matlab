@@ -134,10 +134,10 @@ Gkx = zeros(length(kx),length(y));
 %                 \ 1/(2pi) K0( \|kx^2-(w/c)^2 y )
 %
 [K,Y] = meshgrid(kx(idxpr),abs(y-X0(2)));
-Gkx(idxpr,:) = -1j/4 .* besselh(0,2,sqrt( (omega/c)^2 - K.^2 ).* Y)';
+Gkx(idxpr,:) = -1j/4 .* besselh(0,2,sqrt( (omega/c)^2 - K.^2 ).* Y).';
 if(withev)
     [K,Y] = meshgrid(kx(idxev),abs(y-X0(2)));
-    Gkx(idxev,:) = 1/(2*pi) .* besselk(0,sqrt( K.^2 - (omega/c)^2).* Y)';
+    Gkx(idxev,:) = 1/(2*pi) .* besselk(0,sqrt( K.^2 - (omega/c)^2).* Y).';
 end
 
 % ========================================================================
@@ -152,7 +152,7 @@ Dkx = driving_function_mono_sdm_kx(kx,xs,src,f,conf);
 %% =======================================================================
 % Reproduced field
 % Pkx = Dkx * Gkx
-Pkx = repmat(Dkx',1,length(y)) .* Gkx;
+Pkx = repmat(Dkx.',1,length(y)) .* Gkx;
 
 
 %% ===== Inverse spatial Fourier transformation =========================

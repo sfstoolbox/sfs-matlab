@@ -78,14 +78,14 @@ narginchk(nargmin,nargmax);
 
 
 %% ===== Misc ============================================================
-conf.tmpdir = '/tmp/sfs';
+conf.tmpdir = '/tmp/sfs'; % string
 % Debugging level. We are supporting 3 levels:
 %   0 - normal mode
 %   1 - debug modus, showing interim results and plots
-conf.debug = 0;
+conf.debug = 0; % 0 or 1
 % Show a progress bar in the loops (for example sound_field_mono). This can be
 % useful if you are using secondary sources with >1000 loudspeakers
-conf.showprogress = 0;
+conf.showprogress = false; % boolean
 
 
 %% ===== Audio ===========================================================
@@ -97,7 +97,7 @@ conf.fs = 44100; % / Hz
 conf.c = 343; % / m/s
 % use fractional delays for delay lines
 conf.usefracdelay = false; % boolean
-conf.fracdelay_method = 'resample';
+conf.fracdelay_method = 'resample'; % string
 % Bandpass filter applied in sound_field_imp()
 conf.usebandpass = true; % boolean
 conf.bandpassflow = 10; % / Hz
@@ -113,14 +113,14 @@ conf.bandpassfhigh = 20000; % / Hz
 % '2D'    - line sources as secondary sources, arranged in a circle, line, ...
 % '2.5D'  - point sources as secondary sources, arranged in a circle, line, ...
 % '3D'    - point sources as secondary sources, arranged in a sphere, plane, ...
-conf.dimension = '2.5D';
+conf.dimension = '2.5D'; % string
 %
 % === Driving functions ===
 % Implementation of driving functions. For the default ones use 'default'. These
 % functions are described in the PDF documentation, in the doc folder of the
 % SFS-Toolbox. For possible other flags have a look into the driving functions.
 % Most users can safely use the 'default' flag here.
-conf.driving_functions = 'default';
+conf.driving_functions = 'default'; % string
 %
 % === Impulse responses ===
 % Length of impulse responses used in the time domain driving functions
@@ -163,14 +163,14 @@ conf.usenormalisation = true; % boolean
 
 % ===== Secondary Sources =======================
 % Number of secondary sources
-conf.secondary_sources.number = 64;
+conf.secondary_sources.number = 64; % integer
 % Diameter/Length of secondary source array
 conf.secondary_sources.size = 3; % / m
 % Center of array, X0
 conf.secondary_sources.center = [0 0 0]; % / m
 % Array geometry
-% Possible values are: 'linear', 'box', 'circle', 'sphere'
-conf.secondary_sources.geometry = 'circle';
+% Possible values are: 'line', 'box', 'circle', 'sphere'
+conf.secondary_sources.geometry = 'circle'; % string
 % Vector containing custom secondary source positions and directions.
 % conf.secondary_sources.x0 = [x0; y0; z0; nx0; ny0; nz0];
 conf.secondary_sources.x0 = []; % / m
@@ -179,7 +179,7 @@ conf.secondary_sources.x0 = []; % / m
 % http://github.com/sfstoolbox/data/tree/master/spherical_grids
 % An exception are Gauss grids, which are available via 'gauss' and will be
 % calculated on the fly allowing very high number of secondary sources.
-conf.secondary_sources.grid = 'equally_spaced_points';
+conf.secondary_sources.grid = 'equally_spaced_points'; % string
 
 
 %% ===== WFS =============================================================
@@ -207,7 +207,7 @@ conf.wfs.hprefhigh = 1200; % / Hz
 % IIR bandwidth for the Lagrange interpolation region
 conf.wfs.hpreBandwidth_in_Oct = 2; % / octaves
 % desired IIR filter order
-conf.wfs.hpreIIRorder = 4;
+conf.wfs.hpreIIRorder = 4; % integer
 
 
 %% ===== SDM =============================================================
@@ -219,7 +219,7 @@ conf.sdm.withev = true; % boolean
 % normally the order of NFC-HOA is set by the nfchoa_order() function which
 % returns the highest order for which no aliasing occurs. If you wish to use
 % another order you can set it manually here, otherwise leave it blank
-conf.nfchoa.order = [];
+conf.nfchoa.order = []; % integer
 
 
 %% ===== Binaural reproduction ===========================================
@@ -230,7 +230,7 @@ conf.nfchoa.order = [];
 % subdirectories will be added to the path. This is not done automatically, but
 % by calling addirspath;
 % If you have more than one path, seperate them by :
-conf.ir.path = '~/git/sfs/data/HRTFs:~/svn/ir_databases:~/svn/measurements';
+conf.ir.path = '~/git/sfs/data/HRTFs:~/svn/ir_databases:~/svn/measurements'; % string
 %
 % If we load an HRTF data set we are most likely interested to modify its
 % existing length, to enable a delaying of the impulse responses without
@@ -238,7 +238,8 @@ conf.ir.path = '~/git/sfs/data/HRTFs:~/svn/ir_databases:~/svn/measurements';
 % beginning of all HRTFs corresponding to the maximum distance of the whole
 % set. In addition the overall length of the impulse responses is set to
 % conf.N. This is applied directly if you load a HRTF set with read_irs().
-conf.ir.useoriglength = false;
+% Only set this to true if you really know what you are doing.
+conf.ir.useoriglength = false; % boolean
 %
 % Use interpolation to get the desired HRTF for binaural simulation. If this is
 % disabled the HRTF returned by a nearest neighbour search is used instead.
@@ -250,17 +251,17 @@ conf.ir.useinterpolation = true; % boolean
 % Headphone compensation
 conf.ir.usehcomp = true; % boolean
 % Headphone compensation file for left and right ear.
-conf.ir.hcompfile = 'data/headphone_compensation/QU_KEMAR_AKGK601_hcomp.wav';
+conf.ir.hcompfile = 'data/headphone_compensation/QU_KEMAR_AKGK601_hcomp.wav'; % string
 %
 % === Auralisation ===
 % These files are used for the auralization of impulse responses by the
 % auralize_ir() function.
 % NOTE: you have to provide them by yourself!
-conf.ir.speechfile = '';
-conf.ir.cellofile = '';
-conf.ir.castanetsfile = '';
-conf.ir.noisefile = '';
-conf.ir.pinknoisefile = '';
+conf.ir.speechfile = ''; % string
+conf.ir.cellofile = ''; % string
+conf.ir.castanetsfile = ''; % string
+conf.ir.noisefile = ''; % string
+conf.ir.pinknoisefile = ''; % string
 %
 % === SoundScape Renderer ===
 % To use a dynamic binaural simulation together with the SoundScape Renderer
@@ -279,12 +280,12 @@ conf.plot.useplot = false; % boolean
 %   'monitor'   - displays the plot on the monitor
 %   'paper'     - eps output in conf.plot.outfile
 %   'png'       - png output in conf.plot.outfile
-conf.plot.mode = 'monitor';
+conf.plot.mode = 'monitor'; % string
 % Plot amplitudes in dB (e.g. sound field plots)
 conf.plot.usedb = false; % boolean
 % caxis settings (leave blank, if you would use the default values of the given
 % plot function)
-conf.plot.caxis = '';
+conf.plot.caxis = []; % [min max]
 % Default colormap to use
 % The Toolbox comes with two own color maps, if you set 'default' or 'moreland'
 % you will get a blue/red-colormap after
@@ -292,7 +293,7 @@ conf.plot.caxis = '';
 % If you set 'gray' or 'grey' you will get a colormap ranging from white to
 % black. In addition you can add every other map you can specify in
 % Matlab/Octave. For example to get the Matlab default colormap ser 'jet'.
-conf.plot.colormap = 'default';
+conf.plot.colormap = 'default'; % string
 % Plot loudspeakers in the sound field plots
 conf.plot.loudspeakers = true; % boolean
 % Use real loudspeakers symbols (otherwise crosses are used)
@@ -301,16 +302,16 @@ conf.plot.realloudspeakers = false; % boolean
 conf.plot.lssize = 0.16; % m
 % Size of the plot
 conf.plot.size_unit = 'px'; % 'px','cm','inches'
-conf.plot.size = [540 404];
+conf.plot.size = [540 404]; % [xsize ysize]
 % Resolution of plot in dpi
-conf.plot.resolution = 150;
+conf.plot.resolution = 150; % integer
 % Additional plot command
-conf.plot.cmd = '';
+conf.plot.cmd = ''; % string
 % output of plot (file or screen)
-conf.plot.usefile = false;
+conf.plot.usefile = false; % boolean
 % File name, if this is provided with as *.png or *.eps file, the figure is
 % plotted to the regarding file
-conf.plot.file = '';
+conf.plot.file = ''; % string
 %
 % === Gnuplot ===
 % Use gnuplot

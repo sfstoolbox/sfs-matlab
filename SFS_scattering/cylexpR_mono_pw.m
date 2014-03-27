@@ -1,12 +1,27 @@
-function SFS_start()
-%SFS_START Start the Sound Field Synthesis Toolbox
+function Al = cylexpR_mono_pw(nk,f,x0,conf)
+%Regular Cylindrical Expansion of Plane Wave
 %
-%   Usage: SFS_start;
+%   Usage: Al = cylexpR_mono_pw(nk,f,x0,conf)
 %
-%   SFS_START starts the Sound Field Synthesis Toolbox (SFS). 
-%   This function must be run first in order to add the path's to Matlab.
+%   Input parameters:
+%       nk          - propagation direction of plane wave 
+%       f           - frequency
+%       x0          - optional expansion center
+%       conf        - optional configuration struct (see SFS_config)
 %
-%   see also: SFS_config, SFS_version
+%   Output parameters:
+%       Al          - regular cylindrical Expansion Coefficients
+%
+%   CYLEXPR_MONO_PW(nk,x0,f,conf) computes the regular cylindrical
+%   expansion coefficients for a plane wave. The expansion will be done 
+%   around the expansion center x0.  
+%
+%   References:
+%       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
+%                                    Helmholtz Equation in three 
+%                                    Dimensions", ELSEVIER
+%
+%   see also:
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -40,63 +55,40 @@ function SFS_start()
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
-
-%% ===== Configuration ===================================================
-printbanner = false;
-
-
-%% ===== Adding Path's ===================================================
-
-% Get the basepath as the directory this function resides in.
-% The 'which' solution below is more portable than 'mfilename'
-% becase old versions of Matlab does not have "mfilename('fullpath')"
-basepath=which('SFS_start');
-% Kill the function name from the path.
-basepath=basepath(1:end-12);
-
-% Add the base path and the needed sub-directories
-if exist('addpath')
-    addpath(basepath);
-    addpath([basepath,'/SFS_analysis']);
-    addpath([basepath,'/SFS_binaural_synthesis']);
-    addpath([basepath,'/SFS_general']);
-    addpath([basepath,'/SFS_helper']);
-    addpath([basepath,'/SFS_ir']);
-    addpath([basepath,'/SFS_monochromatic']);
-    addpath([basepath,'/SFS_monochromatic/driving_functions_mono']);
-    addpath([basepath,'/SFS_plotting']);
-    addpath([basepath,'/SFS_scattering']);
-    addpath([basepath,'/SFS_ssr']);
-    addpath([basepath,'/SFS_time_domain']);
-    addpath([basepath,'/SFS_time_domain/driving_functions_imp']);
-    addpath([basepath,'/SFS_HRTF_extrapolation']);
-    addpath([basepath,'/validation']);
-    if isoctave
-        addpath([basepath,'/SFS_octave']);
-    end
+%% ===== Checking of input  parameters ==================================
+nargmin = 1;
+nargmax = 4;
+narginchk(nargmin,nargmax);
+isargvector(nk);
+if nargin<nargmax
+    conf = SFS_config;
 else
-    path(path,basepath);
-    path(path,[basepath,'/SFS_analysis']);
-    path(path,[basepath,'/SFS_binaural_synthesis']);
-    path(path,[basepath,'/SFS_general']);
-    path(path,[basepath,'/SFS_helper']);
-    path(path,[basepath,'/SFS_ir']);
-    path(path,[basepath,'/SFS_monochromatic']);
-    path(path,[basepath,'/SFS_monochromatic/driving_functions_mono']);
-    path(path,[basepath,'/SFS_plotting']);
-    path(path,[basepath,'/SFS_ssr']);
-    path(path,[basepath,'/SFS_time_domain']);
-    path(path,[basepath,'/SFS_time_domain/driving_functions_imp']);
-    path([basepath,'/SFS_HRTF_extrapolation']);
-    path(path,[basepath,'/validation']);
-    if isoctave
-        path(path,[basepath,'/SFS_octave']);
-    end
+    isargstruct(conf);
 end
 
+%% ===== Configuration ==================================================
+showprogress = conf.showprogress;
+Nce = conf.scattering.Nce;
+timereverse = conf.scattering.timereverse;
 
-%% ===== Banner ==========================================================
-if(printbanner)
-    printf('SFS %1.1f successfully initialized.\n',SFS_version);
+%% ===== Computation ====================================================
+if (timereverse)
+  n_sign = 1;
+else
+  n_sign = -1;
+end
+
+% convert nk into cylindrical coordinates
+phi = atan2(nk(2),nk(1));
+
+L = 2*Nce+1;
+Al = zeros(L,1);
+l = 0;
+for n=-Nce:Nce
+  l = l+1;
+  Al(l) = (1j)^(n_sign*n).*exp(-1j*n*phi);
+  if showprogress, progress_bar(l,L); end % progress bar
+end
+
 end
 

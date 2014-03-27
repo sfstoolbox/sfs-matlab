@@ -1,12 +1,27 @@
-function SFS_start()
-%SFS_START Start the Sound Field Synthesis Toolbox
+function Al = sphexpR_mono_ps(xs,f,xq,conf)
+%Regular Spherical Expansion of Plane Wave
 %
-%   Usage: SFS_start;
+%   Usage: Al = sphexpR_mono_ps(nk,f,x0,conf)
 %
-%   SFS_START starts the Sound Field Synthesis Toolbox (SFS). 
-%   This function must be run first in order to add the path's to Matlab.
+%   Input parameters:
+%       xs          - position of 
+%       f           - frequency
+%       xq          - optional expansion coordinate 
+%       conf        - optional configuration struct (see SFS_config)
 %
-%   see also: SFS_config, SFS_version
+%   Output parameters:
+%       Al          - regular Spherical Expansion Coefficients
+%
+%   SPHEXPR_MONO_PS(xs,f,xq,conf) computes the regular Spherical Expansion
+%   Coefficients for a plane wave. The expansion will be done around the
+%   expansion coordinate x0.  
+%
+%   References:
+%       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
+%                                    Helmholtz Equation in three 
+%                                    Dimensions", ELSEVIER
+%
+%   see also:
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -40,63 +55,57 @@ function SFS_start()
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
-
-%% ===== Configuration ===================================================
-printbanner = false;
-
-
-%% ===== Adding Path's ===================================================
-
-% Get the basepath as the directory this function resides in.
-% The 'which' solution below is more portable than 'mfilename'
-% becase old versions of Matlab does not have "mfilename('fullpath')"
-basepath=which('SFS_start');
-% Kill the function name from the path.
-basepath=basepath(1:end-12);
-
-% Add the base path and the needed sub-directories
-if exist('addpath')
-    addpath(basepath);
-    addpath([basepath,'/SFS_analysis']);
-    addpath([basepath,'/SFS_binaural_synthesis']);
-    addpath([basepath,'/SFS_general']);
-    addpath([basepath,'/SFS_helper']);
-    addpath([basepath,'/SFS_ir']);
-    addpath([basepath,'/SFS_monochromatic']);
-    addpath([basepath,'/SFS_monochromatic/driving_functions_mono']);
-    addpath([basepath,'/SFS_plotting']);
-    addpath([basepath,'/SFS_scattering']);
-    addpath([basepath,'/SFS_ssr']);
-    addpath([basepath,'/SFS_time_domain']);
-    addpath([basepath,'/SFS_time_domain/driving_functions_imp']);
-    addpath([basepath,'/SFS_HRTF_extrapolation']);
-    addpath([basepath,'/validation']);
-    if isoctave
-        addpath([basepath,'/SFS_octave']);
-    end
+%% ===== Checking of input  parameters ==================================
+nargmin = 2;
+nargmax = 4;
+narginchk(nargmin,nargmax);
+isargposition(xs);
+isargpositivescalar(f);
+if nargin<nargmax
+    conf = SFS_config;
 else
-    path(path,basepath);
-    path(path,[basepath,'/SFS_analysis']);
-    path(path,[basepath,'/SFS_binaural_synthesis']);
-    path(path,[basepath,'/SFS_general']);
-    path(path,[basepath,'/SFS_helper']);
-    path(path,[basepath,'/SFS_ir']);
-    path(path,[basepath,'/SFS_monochromatic']);
-    path(path,[basepath,'/SFS_monochromatic/driving_functions_mono']);
-    path(path,[basepath,'/SFS_plotting']);
-    path(path,[basepath,'/SFS_ssr']);
-    path(path,[basepath,'/SFS_time_domain']);
-    path(path,[basepath,'/SFS_time_domain/driving_functions_imp']);
-    path([basepath,'/SFS_HRTF_extrapolation']);
-    path(path,[basepath,'/validation']);
-    if isoctave
-        path(path,[basepath,'/SFS_octave']);
-    end
+    isargstruct(conf);
+end
+if nargin == nargmin
+    xq = [0,0,0];
+end
+isargposition(xq);
+
+%% ===== Configuration ==================================================
+showprogress = conf.showprogress;
+Nse = conf.scattering.Nse;
+timereverse = conf.scattering.timereverse;
+
+%% ===== Computation ====================================================
+% convert (xs-xq) into spherical coordinates
+r = sqrt((xs(1)-xq(1)).^2 + (xs(2)-xq(2)).^2 + (xs(3)-xq(3)).^2);
+phi = atan2(xs(2)-xq(2),xs(1)-xq(1));
+theta = asin((xs(3)-xq(3))/r);
+
+% frequency
+k = 2.*pi.*f./conf.c;
+kr = k.*r;
+
+if (timereverse)
+  H = @(x) conj(1j*k*sphbesselh(x,2,kr));
+else
+  H = @(x) 1j*k*sphbesselh(x,2,kr);
 end
 
+L = (Nse + 1).^2;
+Al = zeros(L,1);
+for n=0:Nse
+  Hn = H(n);
+  for m=0:n    
+    l_plus = (n + 1).^2 - (n - m);
+    l_minus = (n + 1).^2 - (n + m);    
+    % caution: symmetry relation depends on definition of spherical harmonics
+    Ynm = sphharmonics(n,-m, theta, phi);  % spherical harmonics
+    Al(l_plus) = Hn.*Ynm;
+    Al(l_minus) = Hn.*conj(Ynm);
+  end
+  if showprogress, progress_bar(l_plus,L); end % progress bar
+end
 
-%% ===== Banner ==========================================================
-if(printbanner)
-    printf('SFS %1.1f successfully initialized.\n',SFS_version);
 end
 

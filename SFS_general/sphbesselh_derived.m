@@ -1,12 +1,23 @@
-function SFS_start()
-%SFS_START Start the Sound Field Synthesis Toolbox
+function out = sphbesselh_derived(nu,k,z)
+% SPHBESSELH_DERIVED derivative of spherical hankel function of k kind of order nu, and argument z
 %
-%   Usage: SFS_start;
+%   Usage: out = sphbesselh_derived(nu,k,z)
 %
-%   SFS_START starts the Sound Field Synthesis Toolbox (SFS). 
-%   This function must be run first in order to add the path's to Matlab.
+%   Input parameters:
+%       nu  - order of bessel function
+%       z   - argument of bessel function
 %
-%   see also: SFS_config, SFS_version
+%   Output parameters:
+%       out - value of bessel function at point z
+%
+%   SPHBESSELH_DERIVED(nu,z) derivation of spherical hankel function of 
+%   order nu, k kind, and argument z
+%
+%   References:
+%       (4.1-51) in Ziomek (1995) - "Fundamentals of acoustic field theory 
+%                                   and space-time signal processing"
+%
+%   see also: sphbesselh
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -41,62 +52,14 @@ function SFS_start()
 %*****************************************************************************
 
 
-%% ===== Configuration ===================================================
-printbanner = false;
+%% ===== Checking input parameters =======================================
+nargmin = 3;
+nargmax = 3;
+narginchk(nargmin,nargmax);
+isargscalar(nu)
+isargscalar(k)
+isargnumeric(z)
 
 
-%% ===== Adding Path's ===================================================
-
-% Get the basepath as the directory this function resides in.
-% The 'which' solution below is more portable than 'mfilename'
-% becase old versions of Matlab does not have "mfilename('fullpath')"
-basepath=which('SFS_start');
-% Kill the function name from the path.
-basepath=basepath(1:end-12);
-
-% Add the base path and the needed sub-directories
-if exist('addpath')
-    addpath(basepath);
-    addpath([basepath,'/SFS_analysis']);
-    addpath([basepath,'/SFS_binaural_synthesis']);
-    addpath([basepath,'/SFS_general']);
-    addpath([basepath,'/SFS_helper']);
-    addpath([basepath,'/SFS_ir']);
-    addpath([basepath,'/SFS_monochromatic']);
-    addpath([basepath,'/SFS_monochromatic/driving_functions_mono']);
-    addpath([basepath,'/SFS_plotting']);
-    addpath([basepath,'/SFS_scattering']);
-    addpath([basepath,'/SFS_ssr']);
-    addpath([basepath,'/SFS_time_domain']);
-    addpath([basepath,'/SFS_time_domain/driving_functions_imp']);
-    addpath([basepath,'/SFS_HRTF_extrapolation']);
-    addpath([basepath,'/validation']);
-    if isoctave
-        addpath([basepath,'/SFS_octave']);
-    end
-else
-    path(path,basepath);
-    path(path,[basepath,'/SFS_analysis']);
-    path(path,[basepath,'/SFS_binaural_synthesis']);
-    path(path,[basepath,'/SFS_general']);
-    path(path,[basepath,'/SFS_helper']);
-    path(path,[basepath,'/SFS_ir']);
-    path(path,[basepath,'/SFS_monochromatic']);
-    path(path,[basepath,'/SFS_monochromatic/driving_functions_mono']);
-    path(path,[basepath,'/SFS_plotting']);
-    path(path,[basepath,'/SFS_ssr']);
-    path(path,[basepath,'/SFS_time_domain']);
-    path(path,[basepath,'/SFS_time_domain/driving_functions_imp']);
-    path([basepath,'/SFS_HRTF_extrapolation']);
-    path(path,[basepath,'/validation']);
-    if isoctave
-        path(path,[basepath,'/SFS_octave']);
-    end
-end
-
-
-%% ===== Banner ==========================================================
-if(printbanner)
-    printf('SFS %1.1f successfully initialized.\n',SFS_version);
-end
-
+%% ===== Computation =====================================================
+out = 1/(2*nu+1) * (nu*sphbesselh(nu-1,k,z) - (nu+1)*sphbesselh(nu+1,k,z)); 

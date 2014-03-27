@@ -1,5 +1,20 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
+1.0.0 (27 March 2014)
+
+    - added references for all driving functions
+    - streamlined nested conf settings; e.g. now it is no longer neccessary to set
+      conf.ir.hcompfile if conf.usehcomp == false
+    - added WFS driving functions from Völk et al. and Verheijen et al.
+    - removed secondary_source_number() and xy_grid, because they are no longer
+      needed
+    - enabled pre-equalization filter of WFS as default in SFS_config_example()
+    - fixed sound_field_mono_sdm_kx()
+    - Green's function for line sources returns now real values
+    - correct y-direction of plane waves for 3D NFC-HOA
+    - updated the test functions in the validation folder
+    - several small fixes
+
 1.0.0-beta2 (5 December 2013)
 
     - rms() now works for arbitrary arrays

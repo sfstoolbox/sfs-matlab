@@ -1,4 +1,4 @@
-function D = driving_function_mono_wfs_sphscatter(x0,n0,Bl,f,xq,conf)
+function D = driving_function_mono_wfs_sphexpS(x0,n0,Bl,f,xq,conf)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 4;

@@ -57,12 +57,12 @@ conf.driving_functions = 'point_source';
 x0 = secondary_source_positions(conf);
 x0 = secondary_source_selection(x0,ns,'pw');
 x0 = secondary_source_tapering(x0,conf);
-D1sph = driving_function_mono_wfs_sphscatter(x0(:,1:3),x0(:,4:6),B1sph,f,xq,conf);
+D1sph = driving_function_mono_wfs_sphexpS(x0(:,1:3),x0(:,4:6),B1sph,f,xq,conf);
 
 x0 = secondary_source_positions(conf);
 x0 = secondary_source_selection(x0,xs,'ps');
 x0 = secondary_source_tapering(x0,conf);
-D2sph = driving_function_mono_wfs_sphscatter(x0(:,1:3),x0(:,4:6),B2sph,f,xq,conf);
+D2sph = driving_function_mono_wfs_sphexpS(x0(:,1:3),x0(:,4:6),B2sph,f,xq,conf);
 
 % driving for scattering with single cylinder
 conf.dimension = '3D';
@@ -70,7 +70,7 @@ conf.driving_functions = 'line_source';
 x0 = secondary_source_positions(conf);
 x0 = secondary_source_selection(x0,ns,'pw');
 x0 = secondary_source_tapering(x0,conf);
-D1cyl = driving_function_mono_wfs_cylscatter(x0(:,1:3),x0(:,4:6),B1cyl,f,xq,conf);
+D1cyl = driving_function_mono_wfs_cylexpS(x0(:,1:3),x0(:,4:6),B1cyl,f,xq,conf);
 
 %% WFS Sound Fields + Plotting
 % scattering with single sphere

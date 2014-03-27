@@ -25,6 +25,9 @@ function D = driving_function_mono_wfs_ps(x0,nx0,xs,f,conf)
 %       Synthesis Revisited", AES124
 %       E. Verheijen (1997) - "Sound Reproduction by Wave Field Synthesis", PhD
 %       thesis, TU Delft
+%       D. Opperschall (2002) - "Realisierung eines Demonstrators für
+%       Punktquellen und ebene Wellen für ein Wellenfeldsynthese-System",
+%       Master thesis, Universität Erlangen-Nürnberg
 %       F. Völk (2010) - "Psychoakustische Experimente zur Distanz mittels
 %       Wellenfeldsynthese erzeugter Hörereignisse", DAGA, p.1065-66
 %       S. Spors, J. Ahrens (2010) - "Analysis and Improvement of
@@ -226,8 +229,7 @@ elseif strcmp('2.5D',dimension)
         %
     elseif strcmp('opperschall',driving_functions)
         % --- Opperschall -------------------------------------------------
-        % Opperschall, Equation (3.14)
-        % Note: Driving function with only one stationary phase
+        % Driving function with only one stationary phase
         % approximation, reference to one point in field
         %
         % 2.5D correction factor
@@ -238,14 +240,16 @@ elseif strcmp('2.5D',dimension)
         %
         g0 = sqrt( vector_norm(x0-xref,2) ./ (vector_norm(xs-x0,2) + vector_norm(x0-xref,2)) );
         %                      ______
-        %                     |2pi iw  (x0-xs) nx0
+        %                     | i w    (x0-xs) nx0
         % D_2.5D(x0,w) = g0 _ |------ ------------- e^(-i w/c |x0-xs|)
-        %                    \|   c   |x0-xs|^(3/2)
+        %                    \|2pi c  |x0-xs|^(3/2)
+        %
+        % see Opperschall (2002), p.14 (3.1), (3.14), (3.15)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % driving signal
-        D = sqrt(2*pi*1i*omega/c) * g0 .* vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c .* r);
+        D = sqrt(1i*omega/(2*pi*c)) * g0 .* vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c .* r);
         %
     elseif strcmp('volk2010',driving_functions)
         % --- Voelk 2010 --------------------------------------------------

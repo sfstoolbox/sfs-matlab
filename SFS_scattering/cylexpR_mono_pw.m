@@ -1,27 +1,37 @@
-function Al = cylexpR_mono_pw(nk,f,x0,conf)
+function Al = cylexpR_mono_pw(nk,f,xq,conf)
 %Regular Cylindrical Expansion of Plane Wave
 %
-%   Usage: Al = cylexpR_mono_pw(nk,f,x0,conf)
+%   Usage: Al = cylexpR_mono_pw(nk,f,xq,conf)
 %
 %   Input parameters:
 %       nk          - propagation direction of plane wave 
 %       f           - frequency
-%       x0          - optional expansion center
+%       xq          - optional expansion center
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       Al          - regular cylindrical Expansion Coefficients
 %
-%   CYLEXPR_MONO_PW(nk,x0,f,conf) computes the regular cylindrical
-%   expansion coefficients for a plane wave. The expansion will be done 
-%   around the expansion center x0.  
+%   CYLEXPR_MONO_PW(nk,xq,f,conf) computes the regular cylindrical
+%   expansion coefficients for a plane wave. The expansion will be done a
+%   round the expansion coordinate xq:
+%
+%              \~~  oo       
+%   p  (x,f) =  >        A  R  (x-x ) 
+%    pw        /__ n=-oo  n  n     q
+%
+%   with the cylyndrical expansion coefficients:
+%
+%             n
+%   A  = 4pi i  exp  (-i*n*phi  )
+%    n                        pw
 %
 %   References:
 %       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
 %                                    Helmholtz Equation in three 
 %                                    Dimensions", ELSEVIER
 %
-%   see also:
+%   see also: eval_cylbasis_mono
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -56,20 +66,27 @@ function Al = cylexpR_mono_pw(nk,f,x0,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
+nargmin = 2;
 nargmax = 4;
 narginchk(nargmin,nargmax);
-isargvector(nk);
+isargposition(nk);
+isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
 else
     isargstruct(conf);
 end
+if nargin == nargmin
+  xq = [0, 0, 0];
+end
+isargposition(xq);
 
 %% ===== Configuration ==================================================
 showprogress = conf.showprogress;
 Nce = conf.scattering.Nce;
 timereverse = conf.scattering.timereverse;
+xref = conf.xref;
+c = conf.c;
 
 %% ===== Computation ====================================================
 if (timereverse)
@@ -81,13 +98,17 @@ end
 % convert nk into cylindrical coordinates
 phi = atan2(nk(2),nk(1));
 
+% delay of plane wave to reference point
+nk = nk./vector_norm(nk,2);
+delay = 2*pi*f/c*(nk*(xq-xref)');
+
 L = 2*Nce+1;
 Al = zeros(L,1);
 l = 0;
 for n=-Nce:Nce
   l = l+1;
-  Al(l) = (1j)^(n_sign*n).*exp(-1j*n*phi);
-  if showprogress, progress_bar(l,L); end % progress bar
+  Al(l) = (1j)^(n_sign*n).*exp(-1j*n*phi).*exp(-1j*delay);
+  if showprogress, progress_bar(l,L); end  % progress bar
 end
 
 end

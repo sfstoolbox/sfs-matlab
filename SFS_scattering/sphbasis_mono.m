@@ -1,44 +1,32 @@
-function Al = sphexpR_mono_pw(nk,f,xq,conf)
-%Regular Spherical Expansion of Plane Wave
+function [Jn, H2n, Ynm]  = sphbasis_mono(r,theta,phi,k,conf)
+%Evaluate spherical basis functions for given input arguments
 %
-%   Usage: Al = sphexpR_mono_pw(nk,f,x0,conf)
+%   Usage: [Jn, H2n, Ynm]  = sphbasis_mono(r,theta,phi,k,conf)
 %
 %   Input parameters:
-%       nk          - propagation direction of plane wave 
-%       f           - frequency
-%       xq          - optional expansion coordinate 
+%       r           - distance from origin
+%       theta       - elevation angle in rad
+%       phi         - azimuth angle in rad
+%       k           - wave number
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       Al          - regular Spherical Expansion Coefficients
+%       Jn          - cell array of spherical bessel functions
+%       H2n         - cell array of spherical hankel functions of 2nd kind
+%       Ynm         - cell array of spherical harmonics
 %
-%   SPHEXPR_MONO_PW(nk,x0,f,conf) computes the regular Spherical Expansion
-%   Coefficients for a plane wave. The expansion will be done around the
-%   expansion coordinate xq:
-%
-%              \~~ oo  \~~   n   m  m
-%   p  (x,f) =  >       >       A  R  (x-x ) 
-%    pw        /__ n=0 /__ m=-n  n  n     q
-%
-%   with the expansion coefficients (Gumerov, p. 74, eq. 2.3.6):
-%
-%    m        n  -m
-%   A  = 4pi i  Y   (theta  , phi  )
-%    n            n       pw     pw
-%
-%   The coefficients are stored in linear arrays with index l resulting from 
-%   m and n:
-% 
+%   SPHBASIS_MONO(r,theta,phi,k,conf) computes spherical basis functions for
+%   the given arguments r, theta and phi. r, theta and phi can be of arbitrary
+%   (but same) size. Output will be stored in cell arrays (one cell entry for 
+%   each order) of length conf.scattering.Nse+1 for Jn and H2n. For Ynm the
+%   lenght is (conf.scattering.Nse+1).^2. The coefficients of Ynm are stored 
+%   with the linear index l resulting from the order m and the degree n of 
+%   the spherical harmonics: 
 %         m                 2
-%   A  = A  ; with l = (n+1)  - (n - m)
-%    l    n   
+%   Y  = Y  ; with l = (n+1)  - (n - m)
+%    l    n
 %
-%   References:
-%       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
-%                                    Helmholtz Equation in three 
-%                                    Dimensions", ELSEVIER
-%
-%   see also: sphexpR_mono_ps eval_sphbasis_mono
+%   see also: sphbasis_mono_XYZgrid sphharmonics sphbesselj sphbesselh
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -73,10 +61,11 @@ function Al = sphexpR_mono_pw(nk,f,xq,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
-nargmax = 4;
+nargmin = 4;
+nargmax = 5;
 narginchk(nargmin,nargmax);
-isargvector(nk);
+isargequalsize(r,phi);
+isargscalar(k);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -84,35 +73,31 @@ else
 end
 
 %% ===== Configuration ==================================================
-showprogress = conf.showprogress;
+% Plotting result
 Nse = conf.scattering.Nse;
-timereverse = conf.scattering.timereverse;
+showprogress = conf.showprogress;
 
 %% ===== Computation ====================================================
-if (timereverse)
-  n_sign = 1;
-else
-  n_sign = -1;
-end
+kr = k.*r;  % argument of bessel functions
 
-% convert nk into spherical coordinates
-phi = atan2(nk(2),nk(1));
-theta = asin(nk(3));
+NJ = Nse + 1;
+L = (NJ).^2;
 
-L = (Nse + 1).^2;
-Al = zeros(L,1);
+Jn = cell(NJ,1);
+H2n = cell(NJ,1);
+Ynm = cell(L,1);
+
 for n=0:Nse
-  b = 4*pi*(1j)^(n_sign.*n);
-  for m=0:n    
+  Jn{n+1} = sphbesselj(n,kr);
+  H2n{n+1} = Jn{n+1} - 1j*sphbessely(n,kr);  
+  for m=0:n
     l_plus = (n + 1).^2 - (n - m);
     l_minus = (n + 1).^2 - (n + m);
-    
-    % caution: symmetry relation depends on definition of spherical harmonics
-    Ynm = sphharmonics(n,-m, theta, phi);  % spherical harmonics
-    Al(l_plus) = b.*Ynm;
-    Al(l_minus) = b.*conj(Ynm);
+    if showprogress, progress_bar(l_plus,L); end  % progress bar
+    % spherical harmonics (caution: symmetry relation depends on definition)
+    Ynm{l_plus} = sphharmonics(n,m,theta,phi);
+    Ynm{l_minus} = conj(Ynm{l_plus});
   end
-  if showprogress, progress_bar(l_plus,L); end % progress bar
 end
 
 end

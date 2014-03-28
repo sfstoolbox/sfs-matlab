@@ -18,7 +18,7 @@ end
 isargposition(x0);
 
 %% ===== Computation ====================================================
-[~, Hn, Ynm, x, y, z] = sphbasisXYZ(X,Y,Z,f,x0,conf);
+[~, Hn, Ynm, x, y, z] = sphbasis_mono_XYZgrid(X,Y,Z,f,x0,conf);
 
 P = sound_field_mono_sphbasis(Bl,Hn,Ynm,conf);
 end

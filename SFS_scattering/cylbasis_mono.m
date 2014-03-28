@@ -1,44 +1,29 @@
-function Al = sphexpR_mono_pw(nk,f,xq,conf)
-%Regular Spherical Expansion of Plane Wave
+function [Jn, H2n, Yn]  = cylbasis_mono(r,phi,k,conf)
+%Evaluate cylindrical basis functions for given input arguments
 %
-%   Usage: Al = sphexpR_mono_pw(nk,f,x0,conf)
+%   Usage: [Jn, H2n, Yn]  = cylbasis_mono(r,phi,k,conf)
 %
 %   Input parameters:
-%       nk          - propagation direction of plane wave 
-%       f           - frequency
-%       xq          - optional expansion coordinate 
+%       r           - distance from z-axis in cylindrical coordinates 
+%       phi         - azimuth angle in cylindrical coordinates
+%       k           - wave number
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       Al          - regular Spherical Expansion Coefficients
+%       Jn          - cell array of cylindrical bessel functions
+%       H2n         - cell array of cylindrical hankel functions of 2nd kind
+%       Yn          - cell array of cylindrical harmonics
 %
-%   SPHEXPR_MONO_PW(nk,x0,f,conf) computes the regular Spherical Expansion
-%   Coefficients for a plane wave. The expansion will be done around the
-%   expansion coordinate xq:
-%
-%              \~~ oo  \~~   n   m  m
-%   p  (x,f) =  >       >       A  R  (x-x ) 
-%    pw        /__ n=0 /__ m=-n  n  n     q
-%
-%   with the expansion coefficients (Gumerov, p. 74, eq. 2.3.6):
-%
-%    m        n  -m
-%   A  = 4pi i  Y   (theta  , phi  )
-%    n            n       pw     pw
-%
-%   The coefficients are stored in linear arrays with index l resulting from 
-%   m and n:
-% 
-%         m                 2
-%   A  = A  ; with l = (n+1)  - (n - m)
-%    l    n   
+%   CYLBASIS_MONO(r,phi,k,conf) computes cylindrical basis functions for
+%   the given arguments r and phi. r and phi can be of arbitrary (but same)
+%   size. Output will be stored in cell arrays (one cell entry for each order)
+%   of length 2*conf.scattering.Nce+1 . Each cell array entry contains a 
+%   matrix of the same size as r and phi.
 %
 %   References:
-%       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
-%                                    Helmholtz Equation in three 
-%                                    Dimensions", ELSEVIER
+%       Williams (1999) - "Fourier Acoustics", ACADEMIC PRESS
 %
-%   see also: sphexpR_mono_ps eval_sphbasis_mono
+%   see also: cylbasis_mono_XYZgrid besselj besselh
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -73,10 +58,11 @@ function Al = sphexpR_mono_pw(nk,f,xq,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
+nargmin = 3;
 nargmax = 4;
 narginchk(nargmin,nargmax);
-isargvector(nk);
+isargequalsize(r,phi);
+isargscalar(k);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -84,35 +70,30 @@ else
 end
 
 %% ===== Configuration ==================================================
+% Plotting result
+Nce = conf.scattering.Nce;
 showprogress = conf.showprogress;
-Nse = conf.scattering.Nse;
-timereverse = conf.scattering.timereverse;
 
 %% ===== Computation ====================================================
-if (timereverse)
-  n_sign = 1;
-else
-  n_sign = -1;
-end
+kr = k.*r;  % argument of bessel functions
 
-% convert nk into spherical coordinates
-phi = atan2(nk(2),nk(1));
-theta = asin(nk(3));
+L = 2*Nce + 1;
+Jn = cell(L,1);
+H2n = cell(L,1);
+Yn = cell(L,1);
 
-L = (Nse + 1).^2;
-Al = zeros(L,1);
-for n=0:Nse
-  b = 4*pi*(1j)^(n_sign.*n);
-  for m=0:n    
-    l_plus = (n + 1).^2 - (n - m);
-    l_minus = (n + 1).^2 - (n + m);
-    
-    % caution: symmetry relation depends on definition of spherical harmonics
-    Ynm = sphharmonics(n,-m, theta, phi);  % spherical harmonics
-    Al(l_plus) = b.*Ynm;
-    Al(l_minus) = b.*conj(Ynm);
-  end
-  if showprogress, progress_bar(l_plus,L); end % progress bar
+l = 0;
+for n=-Nce:0
+  % negative n
+  l = l + 1;
+  Jn{l} = besselj(n,kr);
+  H2n{l} = Jn{l} - 1j*bessely(n,kr);
+  Yn{l} = exp(1j*n*phi);
+  % positive n
+  Jn{L-l+1} = (-1)^n*Jn{l};
+  H2n{L-l+1} = (-1)^n*H2n{l};
+  Yn{L-l+1} = conj(Yn{l});  
+  if showprogress, progress_bar(n+Nce,Nce); end  % progress bar
 end
 
 end

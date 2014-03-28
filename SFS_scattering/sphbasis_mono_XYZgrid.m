@@ -1,44 +1,30 @@
-function Al = sphexpR_mono_pw(nk,f,xq,conf)
-%Regular Spherical Expansion of Plane Wave
+function [Jsph, H2sph, Ysph, x, y, z] = sphbasis_mono_XYZgrid(X,Y,Z,f,xq,conf)
+%Evaluate  basis functions for given grid in cartesian coordinates
 %
-%   Usage: Al = sphexpR_mono_pw(nk,f,x0,conf)
+%
+%   Usage: [Jsph, H2sph, Ysph, x, y, z] = sphbasis_mono_XYZgrid(X,Y,Z,f,xq,conf)
 %
 %   Input parameters:
-%       nk          - propagation direction of plane wave 
-%       f           - frequency
-%       xq          - optional expansion coordinate 
+%       X           - x-axis / m; single value or [xmin,xmax]
+%       Y           - y-axis / m; single value or [ymin,ymax]
+%       Z           - z-axis / m; single value or [zmin,zmax]
+%       f           - frequency in Hz
+%       xq          - optional center of coordinate system
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       Al          - regular Spherical Expansion Coefficients
+%       Jsph        - cell array of spherical bessel functions
+%       H2sph       - cell array of spherical hankel functions of 2nd kind
+%       Ysph        - cell array of spherical harmonics
+%       x           - corresponding x axis / m
+%       y           - corresponding y axis / m
+%       z           - corresponding z axis / m
 %
-%   SPHEXPR_MONO_PW(nk,x0,f,conf) computes the regular Spherical Expansion
-%   Coefficients for a plane wave. The expansion will be done around the
-%   expansion coordinate xq:
+%   SPHBASIS_MONO_XYZGRID(X,Y,Z,f,xq,conf) computes spherical basis functions 
+%   for given grid in cartesian coordinates. This is a wrapper function for
+%   sphbasis_mono.
 %
-%              \~~ oo  \~~   n   m  m
-%   p  (x,f) =  >       >       A  R  (x-x ) 
-%    pw        /__ n=0 /__ m=-n  n  n     q
-%
-%   with the expansion coefficients (Gumerov, p. 74, eq. 2.3.6):
-%
-%    m        n  -m
-%   A  = 4pi i  Y   (theta  , phi  )
-%    n            n       pw     pw
-%
-%   The coefficients are stored in linear arrays with index l resulting from 
-%   m and n:
-% 
-%         m                 2
-%   A  = A  ; with l = (n+1)  - (n - m)
-%    l    n   
-%
-%   References:
-%       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
-%                                    Helmholtz Equation in three 
-%                                    Dimensions", ELSEVIER
-%
-%   see also: sphexpR_mono_ps eval_sphbasis_mono
+%   see also: sphbasis_mono
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -73,47 +59,42 @@ function Al = sphexpR_mono_pw(nk,f,xq,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
-nargmax = 4;
+nargmin = 4;
+nargmax = 6;
 narginchk(nargmin,nargmax);
-isargvector(nk);
+isargvector(X,Y,Z);
+isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
 else
     isargstruct(conf);
 end
-
-%% ===== Configuration ==================================================
-showprogress = conf.showprogress;
-Nse = conf.scattering.Nse;
-timereverse = conf.scattering.timereverse;
+if nargin == nargmin
+  xq = [0, 0, 0];
+end  
+isargposition(xq);
 
 %% ===== Computation ====================================================
-if (timereverse)
-  n_sign = 1;
-else
-  n_sign = -1;
-end
 
-% convert nk into spherical coordinates
-phi = atan2(nk(2),nk(1));
-theta = asin(nk(3));
+% Create a x-y-grid
+[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
 
-L = (Nse + 1).^2;
-Al = zeros(L,1);
-for n=0:Nse
-  b = 4*pi*(1j)^(n_sign.*n);
-  for m=0:n    
-    l_plus = (n + 1).^2 - (n - m);
-    l_minus = (n + 1).^2 - (n + m);
-    
-    % caution: symmetry relation depends on definition of spherical harmonics
-    Ynm = sphharmonics(n,-m, theta, phi);  % spherical harmonics
-    Al(l_plus) = b.*Ynm;
-    Al(l_minus) = b.*conj(Ynm);
-  end
-  if showprogress, progress_bar(l_plus,L); end % progress bar
-end
+k = 2*pi*f/conf.c;  % wavenumber
+
+% shift coordinates to expansion coordinate
+xx = xx-xq(1);
+yy = yy-xq(2);
+zz = zz-xq(3);
+
+% coordinate transformation
+r = vector_norm(cat(3,xx,yy,zz),3);
+phi = atan2(yy,xx);
+theta = asin(zz./r);
+
+[Jsph, H2sph, Ysph] = sphbasis_mono(r, theta, phi, k, conf);
 
 end
+
+
+
 

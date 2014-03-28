@@ -17,7 +17,7 @@ conf.secondary_sources.center = [0, 2, 0];
 conf.plot.useplot = false;
 
 conf.scattering.Nse = 23;
-conf.scattering.Nce = 100;
+conf.scattering.Nce = 23;
 conf.scattering.timereverse = true;  % time reverse wavefield of sph-/cylexpR_
 
 conf.showprogress = true;
@@ -50,8 +50,8 @@ B2sph = sphexpS_mono_scatter(A2sph, R, sigma, f, conf);
 % scattering with single cylinder
 B1cyl = cylexpS_mono_scatter(A1cyl, R, sigma, f, conf);
 
-%% WFS Driving Signals
-% driving for scattering with single sphere
+%% WFS Driving Functions
+% driving functions for scattering with single sphere
 conf.dimension = '2.5D';
 conf.driving_functions = 'point_source';
 x0 = secondary_source_positions(conf);
@@ -64,7 +64,7 @@ x0 = secondary_source_selection(x0,xs,'ps');
 x0 = secondary_source_tapering(x0,conf);
 D2sph = driving_function_mono_wfs_sphexpS(x0(:,1:3),x0(:,4:6),B2sph,f,xq,conf);
 
-% driving for scattering with single cylinder
+% driving functions for scattering with single cylinder
 conf.dimension = '3D';
 conf.driving_functions = 'line_source';
 x0 = secondary_source_positions(conf);
@@ -95,10 +95,10 @@ title('scattering with single cylinder (pw)');
 
 %% Evaluate spherical and cylindrical basis functions 
 [Jsphn, Hsphn, Ysphnm] = ...
-  eval_sphbasis_mono_XYZgrid(xrange,yrange,zrange,f,xq,conf);
+  sphbasis_mono_XYZgrid(xrange,yrange,zrange,f,xq,conf);
 
 [Jcyln, Hcyln, Ycyln] = ...
-  eval_cylbasis_mono_XYZgrid(xrange,yrange,zrange,f,xq,conf);
+  cylbasis_mono_XYZgrid(xrange,yrange,zrange,f,xq,conf);
 %% Spherical Expansion Sound Fields + Plotting
 % incident fields 
 P1sph = sound_field_mono_sphbasis(A1sph, Jsphn, Ysphnm, conf);
@@ -145,6 +145,3 @@ title('scattered field');
 plot_sound_field(P1cyl + P1cylscat ,x1,y1,z1, [], conf);
 plot_scatterer(xq,R);
 title('incident field + scattered field');
-
-
-%% Plotting

@@ -1,27 +1,44 @@
 function Al = sphexpR_mono_ps(xs,f,xq,conf)
-%Regular Spherical Expansion of Plane Wave
+%Regular Spherical Expansion of Point Source
 %
-%   Usage: Al = sphexpR_mono_ps(nk,f,x0,conf)
+%   Usage: Al = sphexpR_mono_ps(xs,f,xq,conf)
 %
 %   Input parameters:
-%       xs          - position of 
+%       xs          - propagation direction of plane wave 
 %       f           - frequency
-%       xq          - optional expansion coordinate 
+%       xq          - optional expansion center coordinate 
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       Al          - regular Spherical Expansion Coefficients
 %
-%   SPHEXPR_MONO_PS(xs,f,xq,conf) computes the regular Spherical Expansion
-%   Coefficients for a plane wave. The expansion will be done around the
-%   expansion coordinate x0.  
+%   SPHEXPR_MONO_PS(nk,x0,f,conf) computes the regular Spherical Expansion
+%   Coefficients for a point source at xs. The expansion will be done around the
+%   expansion coordinate xq:
+%
+%              \~~ oo  \~~   n   m  m
+%   p  (x,f) =  >       >       A  R  (x-x ) 
+%    pw        /__ n=0 /__ m=-n  n  n     q
+%
+%   with the expansion coefficients (Gumerov, p. 145, eq. 4.2.5):
+%
+%    m              -m
+%   A  = i  . k  . S  (x  - x )
+%    n              n   s    q
+%
+%   The coefficients are stored in linear arrays with index l resulting from 
+%   m and n:
+% 
+%         m                 2
+%   A  = A  ; with l = (n+1)  - (n - m)
+%    l    n
 %
 %   References:
 %       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
 %                                    Helmholtz Equation in three 
 %                                    Dimensions", ELSEVIER
 %
-%   see also:
+%   see also: sphexpR_mono_ps eval_sphbasis_mono
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *

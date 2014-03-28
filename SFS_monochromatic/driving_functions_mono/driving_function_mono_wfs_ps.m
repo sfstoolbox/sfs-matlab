@@ -142,7 +142,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % driving signal
-        D = -1/(2c) .* 1i*omega/c * vector_product(x0-xs,nx0,2) ./ r .* besselh(1,2,omega/c*r);
+        D = -1/(2*c) .* 1i*omega/c * vector_product(x0-xs,nx0,2) ./ r .* besselh(1,2,omega/c*r);
         %
         %
     elseif strcmp('delft1988',driving_functions)

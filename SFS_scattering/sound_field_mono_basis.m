@@ -1,24 +1,21 @@
-function [P, x, y, z] = sound_field_mono_sphexpS(X,Y,Z,Bl,f,x0,conf)
-%SOUND_FIELD_MONO_SPHEXPR simulates a sound field with singular spherical
-%expansion coefficients
+function P = sound_field_mono_basis(AB, JH2n, Y,conf)
+%SOUND_FIELD_MONO_BASIS simulates a sound field with cylindrical/spherical
+%basic functions
 %
-%   Usage: [P, x, y, z] = sound_field_mono_sphexpS(X,Y,Z,Bl,f,x0,conf)
+%   Usage: P = sound_field_mono_basis(AB, JH2n, Y,conf)
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax]
-%       Y           - y-axis / m; single value or [ymin,ymax]
-%       Z           - z-axis / m; single value or [zmin,zmax]
-%       Bl          - singular spherical expansion coefficients
-%       f           - frequency in Hz
-%       x0          - optional expansion center coordinates, default: [0, 0, 0]
+%       AB          - regular/singular cylindrical/spherical expansion coefficients
+%       JH2n        - cell array of cylindrical/spherical bessel/hankel(2nd kind) functions
+%       Y           - cell array of cylindrical/spherical harmonics
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - resulting soundfield
 %
-%   SOUND_FIELD_MONO_SPHEXPS(X,Y,Z,Bl,f,x0,conf)
+%   SOUND_FIELD_MONO_BASIS(AB, JH2n, Y,conf)
 %
-%   see also: sphbasis_mono_XYZgrid, sound_field_mono_basis
+%   see also: cylbasis_mono_XYZgrid, sphbasis_mono_XYZgrid
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -53,24 +50,48 @@ function [P, x, y, z] = sound_field_mono_sphexpS(X,Y,Z,Bl,f,x0,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 7;
+nargmin = 3;
+nargmax = 4;
 narginchk(nargmin,nargmax);
-isargvector(X,Y,Z,Bl);
-isargpositivescalar(f);
+isargvector(AB);
 if nargin<nargmax
-    conf = SFS_config;
+  conf = SFS_config;
 else
-    isargstruct(conf);
+  isargstruct(conf);
 end
-if nargin == nargmin
-  x0 = [0, 0, 0];
-end  
-isargposition(x0);
+if length(AB) ~= length(Y)
+  error('%s: length missmatch.',upper(mfilename));
+end
+
+%% ===== Configuration ==================================================
+% Plotting result
+showprogress = conf.showprogress;
 
 %% ===== Computation ====================================================
-[~, Hn, Ynm, x, y, z] = sphbasis_mono_XYZgrid(X,Y,Z,f,x0,conf);
+L = length(Y);
+N = length(JH2n);
+P = zeros(size(JH2n{1}));
 
-P = sound_field_mono_basis(Bl,Hn,Ynm,conf);
+if L == N
+  % cylindrical basic functions
+  for l=1:L    
+    P = P + AB(l)*(JH2n{l}.*Y{l});
+    if showprogress, progress_bar(l,L); end  % progress bar
+  end  
+elseif L == N^2
+  % spherical basic functions
+  l = 0;
+  for n=0:N-1
+    for m=-n:n
+      l=l+1;
+      if showprogress, progress_bar(l,L); end  % progress bar
+      P = P + AB(l)*(JH2n{n+1}.*Y{l});
+    end
+  end  
+else
+  error(['%s: lengths of arrays are not suited for cylindrical or .' ...
+    , 'spherical basic funcions'],upper(mfilename));
+end
+
 end
 

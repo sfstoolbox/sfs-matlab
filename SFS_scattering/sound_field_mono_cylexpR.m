@@ -1,14 +1,14 @@
-function [P, x, y, z] = sound_field_mono_sphexpS(X,Y,Z,Bl,f,x0,conf)
-%SOUND_FIELD_MONO_SPHEXPR simulates a sound field with singular spherical
+function [P, x, y, z] = sound_field_mono_cylexpR(X,Y,Z,Al,f,x0,conf)
+%SOUND_FIELD_MONO_CYLEXPR simulates a sound field with regular cylindrical
 %expansion coefficients
 %
-%   Usage: [P, x, y, z] = sound_field_mono_sphexpS(X,Y,Z,Bl,f,x0,conf)
+%   Usage: [P, x, y, z] = sound_field_mono_cylexpR(X,Y,Z,Al,f,x0,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax]
 %       Y           - y-axis / m; single value or [ymin,ymax]
 %       Z           - z-axis / m; single value or [zmin,zmax]
-%       Bl          - singular spherical expansion coefficients
+%       Al          - regular cylindrical expansion coefficients
 %       f           - frequency in Hz
 %       x0          - optional expansion center coordinates, default: [0, 0, 0]
 %       conf        - optional configuration struct (see SFS_config)
@@ -16,9 +16,9 @@ function [P, x, y, z] = sound_field_mono_sphexpS(X,Y,Z,Bl,f,x0,conf)
 %   Output parameters:
 %       P           - resulting soundfield
 %
-%   SOUND_FIELD_MONO_SPHEXPS(X,Y,Z,Bl,f,x0,conf)
+%   SOUND_FIELD_MONO_CYLEXPR(X,Y,Z,Al,f,x0,conf)
 %
-%   see also: sphbasis_mono_XYZgrid, sound_field_mono_basis
+%   see also: cylbasis_mono_XYZgrid, sound_field_mono_basis
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -56,7 +56,7 @@ function [P, x, y, z] = sound_field_mono_sphexpS(X,Y,Z,Bl,f,x0,conf)
 nargmin = 5;
 nargmax = 7;
 narginchk(nargmin,nargmax);
-isargvector(X,Y,Z,Bl);
+isargvector(X,Y,Z,Al);
 isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
@@ -69,8 +69,8 @@ end
 isargposition(x0);
 
 %% ===== Computation ====================================================
-[~, Hn, Ynm, x, y, z] = sphbasis_mono_XYZgrid(X,Y,Z,f,x0,conf);
+[Jn, ~, Yn, x, y, z] = cylbasis_mono_XYZgrid(X,Y,Z,f,x0,conf);
 
-P = sound_field_mono_basis(Bl,Hn,Ynm,conf);
+P = sound_field_mono_basis(Al,Jn,Yn,conf);
 end
 

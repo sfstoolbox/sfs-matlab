@@ -101,15 +101,15 @@ title('scattering with single cylinder (pw)');
   cylbasis_mono_XYZgrid(xrange,yrange,zrange,f,xq,conf);
 %% Spherical Expansion Sound Fields + Plotting
 % incident fields 
-P1sph = sound_field_mono_sphbasis(A1sph, Jsphn, Ysphnm, conf);
-P2sph = sound_field_mono_sphbasis(A2sph, Jsphn, Ysphnm, conf);
-P1cyl = sound_field_mono_cylbasis(A1cyl, Jcyln, Ycyln, conf);
+P1sph = sound_field_mono_basis(A1sph, Jsphn, Ysphnm, conf);
+P2sph = sound_field_mono_basis(A2sph, Jsphn, Ysphnm, conf);
+P1cyl = sound_field_mono_basis(A1cyl, Jcyln, Ycyln, conf);
 
 % scattering with single sphere
-P1sphscat = sound_field_mono_sphbasis(B1sph, Hsphn, Ysphnm, conf);
-P2sphscat = sound_field_mono_sphbasis(B2sph, Hsphn, Ysphnm, conf);
+P1sphscat = sound_field_mono_basis(B1sph, Hsphn, Ysphnm, conf);
+P2sphscat = sound_field_mono_basis(B2sph, Hsphn, Ysphnm, conf);
 % scattering with single cylinder
-P1cylscat = sound_field_mono_cylbasis(B1cyl, Hcyln, Ycyln, conf);
+P1cylscat = sound_field_mono_basis(B1cyl, Hcyln, Ycyln, conf);
 
 [~,~,~,x1,y1,z1] = xyz_grid(xrange,yrange,zrange,conf);
 

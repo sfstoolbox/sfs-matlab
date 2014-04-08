@@ -2,7 +2,7 @@ function [fal,dx0] = aliasing_frequency(x0,conf)
 %ALIASING_FREQUENCY returns the aliasing frequency for the given secondary
 %sources
 %
-%   Usage: [fal,dx0] = aliasing_frequency(x0,[conf])
+%   Usage: [fal,dx0] = aliasing_frequency([x0],[conf])
 %
 %   Input options:
 %       x0      - secondary sources / m
@@ -15,7 +15,8 @@ function [fal,dx0] = aliasing_frequency(x0,conf)
 %   ALIASING_FREQUENCY(x0,conf) returns the aliasing frequency for the given
 %   secondary sources. First the mean distance dx0 between the secondary sources
 %   is calculated, afterwards the aliasing frequency is calculated after Spors
-%   (2009) as fal = c/(2*dx0).
+%   (2009) as fal = c/(2*dx0). If no secondary sources x0 are provided, they are
+%   first calculated by calling secondary_source_positions().
 %   For a calculation that includes the dependency on the listener position have
 %   a look at Start (1997).
 %   

@@ -7,8 +7,7 @@ addpath('~/projects/sfstoolbox'); SFS_start;
 %% Parameters
 conf = SFS_config_example;
 
-conf.dimension = '2.5D';
-conf.driving_functions = 'point_source';
+conf.dimension = '3D';
 conf.secondary_sources.geometry = 'linear';
 conf.secondary_sources.number = 40;
 conf.secondary_sources.size = 6;
@@ -52,8 +51,6 @@ B1cyl = cylexpS_mono_scatter(A1cyl, R, sigma, f, conf);
 
 %% WFS Driving Functions
 % driving functions for scattering with single sphere
-conf.dimension = '2.5D';
-conf.driving_functions = 'point_source';
 x0 = secondary_source_positions(conf);
 x0 = secondary_source_selection(x0,ns,'pw');
 x0 = secondary_source_tapering(x0,conf);
@@ -65,8 +62,6 @@ x0 = secondary_source_tapering(x0,conf);
 D2sph = driving_function_mono_wfs_sphexpS(x0(:,1:3),x0(:,4:6),B2sph,f,xq,conf);
 
 % driving functions for scattering with single cylinder
-conf.dimension = '3D';
-conf.driving_functions = 'line_source';
 x0 = secondary_source_positions(conf);
 x0 = secondary_source_selection(x0,ns,'pw');
 x0 = secondary_source_tapering(x0,conf);

@@ -8,7 +8,7 @@ function [P, x, y, z] = sound_field_mono_cylexpS(X,Y,Z,Bl,f,x0,conf)
 %       X           - x-axis / m; single value or [xmin,xmax]
 %       Y           - y-axis / m; single value or [ymin,ymax]
 %       Z           - z-axis / m; single value or [zmin,zmax]
-%       Bl          - regular cylindrical expansion coefficients
+%       Bl          - singular cylindrical expansion coefficients
 %       f           - frequency in Hz
 %       x0          - optional expansion center coordinates, default: [0, 0, 0]
 %       conf        - optional configuration struct (see SFS_config)

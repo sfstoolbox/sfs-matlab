@@ -59,37 +59,46 @@ nls = virtualconf.secondary_sources.number;
 
 %% ===== Main ============================================================
 
-if strcmp('circle',geometry) || strcmp('circular',geometry)  
+if strcmp('circle',geometry) || strcmp('circular',geometry)
   Rlocal = virtualconf.secondary_sources.size/2;  % radius of local area
-  Xlocal = virtualconf.secondary_sources.center;  % center of local area  
-  
+  Xlocal = virtualconf.secondary_sources.center;  % center of local area
+
   % determine vector poiting towards source
   if strcmp('pw',src)
     ns = bsxfun(@rdivide,-xs,vector_norm(xs,2));
   else
     ns = bsxfun(@rdivide,xs-Xlocal,vector_norm(xs-Xlocal,2));
-  end  
+  end
   phis = atan2(ns(2),ns(1));  % azimuth angle of ns
-  
-  % === valid circular arc for virtual secondary sources ===
+
+  % == valid arc for virtual secondary sources (based on sec source position) ==
   delta_max = 0;
   delta_min = 0;
   % for each secondary source
-  for idx=1:size(x0,1)    
+  for idx=1:size(x0,1)
     xc0 = x0(idx,1:3) - Xlocal;  % vector from secondary source to local area
     Rc0 = vector_norm(xc0,2);  % distance from secondary source to local area
     nc0 = xc0./Rc0;  % normal vector from secondary source to local area
-    % 1/2 opening angle of cone spanned by local area and secondary
-    phic0 = acos(Rlocal./Rc0);   
-    
+    % 1/2 opening angle of cone spanned by local area and secondary source
+    phid = acos(Rlocal./Rc0);
+
     phiso = asin(ns(1)*nc0(2) - ns(2)*nc0(1));  % angle between ns and nc0
-    delta_max = max(delta_max, phiso + phic0);
-    delta_min = min(delta_min, phiso - phic0);
-  end  
-  delta_max = min(delta_max, pi/2);
-  delta_min = max(delta_min, -pi/2);
+    delta_max = max(delta_max, phiso + phid);
+    delta_min = min(delta_min, phiso - phid);
+  end
+
+  % == further constrain arc by position of virtual source ==
+  if strcmp('pw',src)
+    phid = pi/2;
+  else
+    % 1/2 opening angle of cone spanned by local area and virtual source
+    phid = acos(Rlocal./vector_norm(xs-Xlocal,2));
+  end
+
+  delta_max = min(delta_max, phid);
+  delta_min = max(delta_min, -phid);
   delta_offset = (delta_max - delta_min)/(2*nls);
-  
+
   % === equi-distant sampling on valid arc ===
   % Azimuth angles
   phi = phis + linspace(delta_min + delta_offset,delta_max -delta_offset, nls)';
@@ -99,9 +108,9 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
   [cx,cy,cz] = sph2cart(phi,theta,Rlocal);
   xv(:,1:3) = [cx,cy,cz] + repmat(Xlocal,nls,1);
   % Direction of the secondary sources
-  xv(:,4:6) = direction_vector(xv(:,1:3),repmat(Xlocal,nls,1).*ones(nls,3));  
+  xv(:,4:6) = direction_vector(xv(:,1:3),repmat(Xlocal,nls,1).*ones(nls,3));
   % equal weights for all sources
-  xv(:,7) = ones(nls,1);  
+  xv(:,7) = ones(nls,1);
 else
   xv = secondary_source_positions(virtualconf);
   xv = secondary_source_selection(xv,xs,src);

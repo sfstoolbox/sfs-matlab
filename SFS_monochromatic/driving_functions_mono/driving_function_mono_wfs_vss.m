@@ -70,9 +70,11 @@ Dmatrix = zeros(N0,Ns);
 
 for idx=1:Ns
   [xtmp, xdx] = secondary_source_selection(x0,xs(idx,1:6),'fs');
-  xtmp = secondary_source_tapering(xtmp,conf);
-  Dmatrix(xdx,idx) = driving_function_mono_wfs(xtmp,xs(idx,1:3),'fs',f,conf);
-  Dmatrix(xdx,idx) = Dmatrix(xdx,idx).*xtmp(:,7);  
+  if (~isempty(xtmp))
+    xtmp = secondary_source_tapering(xtmp,conf);  
+    Dmatrix(xdx,idx) = driving_function_mono_wfs(xtmp,xs(idx,1:3),'fs',f,conf);
+    Dmatrix(xdx,idx) = Dmatrix(xdx,idx).*xtmp(:,7);
+  end
 end
 
 D = Dmatrix*(Ds.*xs(:,7));

@@ -1,5 +1,5 @@
 function [D, xv, x0] = driving_function_mono_localwfs(x0,xs,src,f,conf)
-%DRIVING_FUNCTION_MONO_WFS returns the driving signal D for WFS
+%DRIVING_FUNCTION_MONO_LOCALWFS returns the driving signal D for local WFS
 %
 %   Usage: [D, xv, x0] = driving_function_mono_localwfs(x0,xs,src,f,conf)
 %
@@ -17,8 +17,14 @@ function [D, xv, x0] = driving_function_mono_localwfs(x0,xs,src,f,conf)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
-%       xv          - position and direction of the virtual secondary source / m [mx7]
-%       x0          - position and direction of the secondary source / m [nx7]
+%       xv          - position, direction, and weights of the virtual secondary
+%                     sources / m [mx7]
+%       x0          - position, direction, and weights of the real secondary
+%                     sources / m [nx7]
+%
+%   References:
+%       S. Spors (2010) - "Local Sound Field Synthesis by Virtual Secondary
+%                          Sources", 40th AES
 %
 %   see also: plot_sound_field, sound_field_mono_wfs
 
@@ -70,16 +76,37 @@ end
 
 %% ===== Configuration ==================================================
 virtualconf = conf;
-virtualconf.secondary_sources.size = conf.virtual_secondary_sources.size;
-virtualconf.secondary_sources.center = conf.virtual_secondary_sources.center;
-virtualconf.secondary_sources.geometry = conf.virtual_secondary_sources.geometry;
-virtualconf.secondary_sources.number = conf.virtual_secondary_sources.number;
+virtualconf.secondary_sources.size = conf.localsfs.size;
+virtualconf.secondary_sources.center = conf.localsfs.center;
+virtualconf.secondary_sources.geometry = conf.localsfs.geometry;
+virtualconf.secondary_sources.number = conf.localsfs.number;
+
+method = conf.localsfs.method;
 %% ===== Computation ====================================================
 
-% create virtual source array
-xv = virtual_source_positions(x0,xs,src,conf);
-% driving functions for virtual source array
-Dv = driving_function_mono_wfs(xv,xs,src,f,virtualconf);
+if strcmp('fs',src)
+  error(['%s: %s is not a supported method source type! Try to use a point', ...
+    ' source, if the source is inside the secondary source array but not', ...
+    ' inside the virtual secondary source array'], upper(mfilename),src);
+end
+
+% Determine driving functions of virtual array with different sfs methods
+switch method
+  case 'wfs'
+    % === Wave Field Synthesis ===
+    % create virtual source array
+    xv = virtual_secondary_source_positions(x0,xs,src,conf);
+    % driving functions for virtual source array
+    Dv = driving_function_mono_wfs(xv,xs,src,f,virtualconf);
+  case 'nfchoa'
+    % === Near-Field-Compensated Higher Order Ambisonics ===
+    % create virtual source array
+    xv = secondary_source_positions(virtualconf);
+    % driving functions for virtual source array
+    Dv = driving_function_mono_nfchoa(xv,xs,src,f,virtualconf);
+  otherwise
+    error('%s: %s is not a supported method for localsfs!',upper(mfilename),method);
+end
 
 % select secondary sources for virtual secondary source array
 selector = false(size(x0,1),1);

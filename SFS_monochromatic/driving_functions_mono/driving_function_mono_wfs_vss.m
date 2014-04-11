@@ -1,18 +1,24 @@
-function D = driving_function_mono_wfs_vss(x0,xs,Ds,f,conf)
+function D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf)
 %DRIVING_FUNCTION_MONO_WFS_VSS returns the driving signal D for a virtual
 %secondary source distribution
 %
-%   Usage: D = driving_function_mono_wfs_vss(x0,xs,Ds,f,conf)
+%   Usage: D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf)
 %
 %   Input parameters:
-%       x0          - position of the real secondary sources / m [nx7]
-%       xs          - position of virtual secondary sources / m [mx7]
-%       Ds          - driving functions of virtual secondary sources [mx1]
+%       x0          - position, direction, and weights of the real secondary 
+%                     sources / m [nx7]
+%       xv          - position, direction, and weights of the virtual secondary
+%                     sources / m [mx7]
+%       Dv          - driving functions of virtual secondary sources [mx1]
 %       f           - frequency of the monochromatic source / Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
+%
+%   References:
+%       S. Spors (2010) - "Local Sound Field Synthesis by Virtual Secondary
+%                          Sources", 40th AES
 %
 %   see also: driving_function_mono_wfs, driving_function_mono_wfs_fs
 
@@ -48,14 +54,13 @@ function D = driving_function_mono_wfs_vss(x0,xs,Ds,f,conf)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
-
 %% ===== Checking of input  parameters ==================================
 nargmin = 4;
 nargmax = 5;
 narginchk(nargmin,nargmax);
-isargvector(Ds);
+isargvector(Dv);
 isargpositivescalar(f);
-isargsecondarysource(x0,xs);
+isargsecondarysource(x0,xv);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -63,18 +68,18 @@ else
 end
 
 %% ===== Computation ====================================================
-Ns = size(xs,1);
+Ns = size(xv,1);
 N0 = size(x0,1);
 
 Dmatrix = zeros(N0,Ns);
 
 for idx=1:Ns
-  [xtmp, xdx] = secondary_source_selection(x0,xs(idx,1:6),'fs');
+  [xtmp, xdx] = secondary_source_selection(x0,xv(idx,1:6),'fs');
   if (~isempty(xtmp))
     xtmp = secondary_source_tapering(xtmp,conf);  
-    Dmatrix(xdx,idx) = driving_function_mono_wfs(xtmp,xs(idx,1:3),'fs',f,conf);
+    Dmatrix(xdx,idx) = driving_function_mono_wfs(xtmp,xv(idx,1:3),'fs',f,conf);
     Dmatrix(xdx,idx) = Dmatrix(xdx,idx).*xtmp(:,7);
   end
 end
 
-D = Dmatrix*(Ds.*xs(:,7));
+D = Dmatrix*(Dv.*xv(:,7));

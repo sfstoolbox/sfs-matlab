@@ -1,6 +1,32 @@
-function xv = virtual_source_positions(x0,xs,src,conf)
-%SECONDARY_SOURCE_POSITIONS Generates the positions and directions of the
+function xv = virtual_secondary_source_positions(x0,xs,src,conf)
+%VIRTUAL_SECONDARY_SOURCE_POSITIONS Generates the positions and directions of the
 %   virtual sources
+%
+%   Usage: xv = virtual_secondary_source_positions(x0,xs,src,conf)
+%
+%   Input options:
+%       x0          - positions, directions and weights of real secondary
+%                     sources [nx7]
+%       xs          - position and for focused sources also direction of the
+%                     desired source model / m [1x3] or [1x6]
+%       src         - source type of the virtual source
+%                       'pw' - plane wave (xs is the direction of the
+%                              plane wave in this case)
+%                       'ps' - point source
+%                       'fs' - focused source
+%       conf        - optional configuration struct (see SFS_config)
+%
+%   Output options:
+%       xv          - virtual secondary source positions, directions and 
+%                     weights / m
+%
+%   VIRTUAL_SECONDARY_SOURCE_POSITIONS(x0,xs,src,conf) generates the positions 
+%   and directions xv of virtual secondary sources for a given geometry
+%   (conf.localsfs.geometry) and array size (conf.localsfs.size). 
+%   The direction of the virtual sources is given as their unit vectors 
+%   pointing in the given direction. The algorithm determines the (optimal)
+%   positioning of the virtual secondary sources by taking the positions of
+%   the virtual source and the real sources into account.
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -49,25 +75,32 @@ end
 
 %% ===== Configuration ===================================================
 virtualconf = conf;
-virtualconf.secondary_sources.size = conf.virtual_secondary_sources.size;
-virtualconf.secondary_sources.center = conf.virtual_secondary_sources.center;
-virtualconf.secondary_sources.geometry = conf.virtual_secondary_sources.geometry;
-virtualconf.secondary_sources.number = conf.virtual_secondary_sources.number;
+virtualconf.secondary_sources.size = conf.localsfs.size;
+virtualconf.secondary_sources.center = conf.localsfs.center;
+virtualconf.secondary_sources.geometry = conf.localsfs.geometry;
+virtualconf.secondary_sources.number = conf.localsfs.number;
 
-geometry = conf.virtual_secondary_sources.geometry;
+geometry = conf.localsfs.geometry;
 nls = virtualconf.secondary_sources.number;
 
 %% ===== Main ============================================================
 
-if strcmp('circle',geometry) || strcmp('circular',geometry)
-  Rlocal = virtualconf.secondary_sources.size/2;  % radius of local area
-  Xlocal = virtualconf.secondary_sources.center;  % center of local area
+if strcmp('circle',geometry) || strcmp('circular',geometry)  
+  % ===== virtual circular Array =====
+  
+  Rl = virtualconf.secondary_sources.size/2;  % radius of local area
+  xl = virtualconf.secondary_sources.center;  % center of local area
 
   % determine vector poiting towards source
   if strcmp('pw',src)
+    % === Plane wave ===
     ns = bsxfun(@rdivide,-xs,vector_norm(xs,2));
-  else
-    ns = bsxfun(@rdivide,xs-Xlocal,vector_norm(xs-Xlocal,2));
+  elseif strcmp('ps',src) || strcmp('ls',src)
+    % === Point source ===
+    ns = bsxfun(@rdivide,xs-xl,vector_norm(xs-xl,2));
+  elseif strcmp('fs',src)
+    % === Focused source ===
+    to_be_implemented('focussed sources for virtual_secondary_source_positions');
   end
   phis = atan2(ns(2),ns(1));  % azimuth angle of ns
 
@@ -76,11 +109,11 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
   delta_min = 0;
   % for each secondary source
   for idx=1:size(x0,1)
-    xc0 = x0(idx,1:3) - Xlocal;  % vector from secondary source to local area
+    xc0 = x0(idx,1:3) - xl;  % vector from secondary source to local area
     Rc0 = vector_norm(xc0,2);  % distance from secondary source to local area
     nc0 = xc0./Rc0;  % normal vector from secondary source to local area
     % 1/2 opening angle of cone spanned by local area and secondary source
-    phid = acos(Rlocal./Rc0);
+    phid = acos(Rl./Rc0);
 
     phiso = asin(ns(1)*nc0(2) - ns(2)*nc0(1));  % angle between ns and nc0
     delta_max = max(delta_max, phiso + phid);
@@ -92,7 +125,7 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
     phid = pi/2;
   else
     % 1/2 opening angle of cone spanned by local area and virtual source
-    phid = acos(Rlocal./vector_norm(xs-Xlocal,2));
+    phid = acos(Rl./vector_norm(xs-xl,2));
   end
 
   delta_max = min(delta_max, phid);
@@ -105,13 +138,17 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
   % Elevation angles
   theta = zeros(nls,1);
   % Positions of the secondary sources
-  [cx,cy,cz] = sph2cart(phi,theta,Rlocal);
-  xv(:,1:3) = [cx,cy,cz] + repmat(Xlocal,nls,1);
+  [cx,cy,cz] = sph2cart(phi,theta,Rl);
+  xv(:,1:3) = [cx,cy,cz] + repmat(xl,nls,1);
   % Direction of the secondary sources
-  xv(:,4:6) = direction_vector(xv(:,1:3),repmat(Xlocal,nls,1).*ones(nls,3));
+  xv(:,4:6) = direction_vector(xv(:,1:3),repmat(xl,nls,1).*ones(nls,3));
   % equal weights for all sources
   xv(:,7) = ones(nls,1);
 else
+  % ===== traditional way ===== 
+  
+  % just select the virtual secondary sources based on the position and type 
+  % of the virtual source
   xv = secondary_source_positions(virtualconf);
   xv = secondary_source_selection(xv,xs,src);
 end

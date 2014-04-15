@@ -86,7 +86,8 @@ X0 = conf.secondary_sources.center;
 x00 = bsxfun(@minus,x0,X0);
 [phi0,theta0,r0] = cart2sph(x00(:,1),x00(:,2),x00(:,3));
 % point source
-[phi,theta,r] = cart2sph(xs(:,1),xs(:,2),xs(:,3));
+xs0 = bsxfun(@minus,xs,X0);
+[phi,theta,r] = cart2sph(xs0(:,1),xs0(:,2),xs0(:,3));
 % wavenumber
 omega = 2*pi*f;
 % initialize empty driving signal

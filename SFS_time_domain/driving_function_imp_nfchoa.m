@@ -83,6 +83,8 @@ R = norm(x0(1,1:3)-X0);
 % get maximum order of spherical harmonics
 order = nfchoa_order(nls,conf);
 
+% correct position of source for off-center arrays
+xs(1:3) = xs(1:3)-X0;
 % if-request as a workaround for the right direction of the sound field
 if strcmpi(src,'pw')
     [theta_src, r_src] = cart2pol(-xs(1),xs(2));

@@ -172,7 +172,7 @@ conf.secondary_sources.center = [0 0 0]; % / m
 % Possible values are: 'line', 'box', 'circle', 'sphere'
 conf.secondary_sources.geometry = 'circle'; % string
 % Vector containing custom secondary source positions and directions.
-% conf.secondary_sources.x0 = [x0; y0; z0; nx0; ny0; nz0];
+% conf.secondary_sources.x0 = [x0; y0; z0; nx0; ny0; nz0; weight];
 conf.secondary_sources.x0 = []; % / m
 % Grid for the spherical array. Note, that you have to download and install the
 % spherical grids from an additiona source. For available grids see:

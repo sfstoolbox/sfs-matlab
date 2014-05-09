@@ -78,10 +78,11 @@ virtualconf = conf;
 virtualconf.secondary_sources.size = conf.localsfs.size;
 virtualconf.secondary_sources.center = conf.localsfs.center;
 virtualconf.secondary_sources.geometry = conf.localsfs.geometry;
-virtualconf.secondary_sources.number = conf.localsfs.number;
+virtualconf.secondary_sources.number = conf.localsfs.vss.number;
 
 geometry = conf.localsfs.geometry;
-nls = virtualconf.secondary_sources.number;
+sampling = conf.localsfs.vss.sampling;
+nls = conf.localsfs.vss.number;
 
 %% ===== Main ============================================================
 
@@ -104,6 +105,7 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
   end
   phis = atan2(ns(2),ns(1));  % azimuth angle of ns
 
+  % CONSTRAINT 1 ========================================================
   % == valid arc for virtual secondary sources (based on sec source position) ==
   delta_max = 0;
   delta_min = 0;
@@ -120,7 +122,8 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
     delta_min = min(delta_min, phiso - phid);
   end
 
-  % == further constrain arc by position of virtual source ==
+  % CONSTRAINT 2 ========================================================
+  % == arc by position of virtual source ==
   if strcmp('pw',src)
     phid = pi/2;
   else
@@ -132,9 +135,47 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
   delta_min = max(delta_min, -phid);
   delta_offset = (delta_max - delta_min)/(2*nls);
 
-  % === equi-distant sampling on valid arc ===
-  % Azimuth angles
-  phi = phis + linspace(delta_min + delta_offset,delta_max -delta_offset, nls)';
+  switch (sampling)
+    case 'linear'
+      % === equi-angular sampling on valid arc ===    
+      phi = phis + linspace(delta_min + delta_offset,delta_max-delta_offset, nls).';  
+    case 'log'
+      logratio = conf.localsfs.vss.logratio;
+      
+      % === logarithmic-angular sampling on valid arc ===
+      if mod(nls,2) == 0
+        N = nls/2;
+        a0 = -0.5;
+      else
+        N = (nls-1)./2;
+        a0 = 0.0;
+      end
+      
+      phimax = max(abs(delta_min + delta_offset),abs(delta_max-delta_offset));
+      phimin = min(abs(delta_min + delta_offset),abs(delta_max-delta_offset));      
+      
+      k = 0;
+      while k<=N
+        q = logratio.^(-1/(N+k-1));
+        d = phimax/(geometric_series(1,q,N+k) - a0);        
+        if d*(a0 + geometric_series(1,q,N+k)) <= phimin + eps
+          break;
+        end
+        k = k+1;
+      end
+      
+      phi = d*(a0 + geometric_series(1,q,1:N+k));
+      if mod(nls,2) == 0
+        phi = [-phi(N-k:-1:1), phi];
+      else
+        phi = [-phi(N-k:-1:1), 0, phi];
+      end      
+      if (abs(delta_min + delta_offset) > abs(delta_max-delta_offset))
+        phi = fliplr(-phi);
+      end      
+      phi = phis + phi';     
+  end
+  
   % Elevation angles
   theta = zeros(nls,1);
   % Positions of the secondary sources
@@ -143,7 +184,7 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
   % Direction of the secondary sources
   xv(:,4:6) = direction_vector(xv(:,1:3),repmat(xl,nls,1).*ones(nls,3));
   % equal weights for all sources
-  xv(:,7) = ones(nls,1);
+  xv(:,7) = ones(nls,1); 
 else
   % ===== traditional way ===== 
   
@@ -153,4 +194,17 @@ else
   xv = secondary_source_selection(xv,xs,src);
 end
 
-xv = secondary_source_tapering(xv,virtualconf);
+% xv = secondary_source_tapering(xv,virtualconf);
+
+end
+
+function s = geometric_series(a0,q,N)
+  isargscalar(a0);
+  isargpositivescalar(q);
+  if (q == 1)
+    s = a0.*N;
+  else
+    s = (1-q.^N)./(1-q);
+  end
+end
+

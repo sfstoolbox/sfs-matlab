@@ -67,7 +67,23 @@ else
     isargstruct(conf);
 end
 
+%% ===== Configuration ==================================================
+vsstype = conf.localsfs.vss.type;
+
 %% ===== Computation ====================================================
+% Get driving signals
+if strcmp('ps',vsstype)
+    % === Focussed Point Sink ===========================================
+    conf.driving_functions = 'default';
+elseif strcmp('ls',vsstype)
+    % === Focussed Line Sink ============================================
+    % Driving signal
+    conf.driving_functions = 'line_sink';
+else
+    error('%s: %s is not a known source type.',upper(mfilename), vsstype);
+end
+
+% Get Drivings Signal real secondary sources
 Ns = size(xv,1);
 N0 = size(x0,1);
 

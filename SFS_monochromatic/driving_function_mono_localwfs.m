@@ -1,4 +1,4 @@
-function [D, xv, x0] = driving_function_mono_localwfs(x0,xs,src,f,conf)
+function [D, x0, xv] = driving_function_mono_localwfs(x0,xs,src,f,conf)
 %DRIVING_FUNCTION_MONO_LOCALWFS returns the driving signal D for local WFS
 %
 %   Usage: [D, xv, x0] = driving_function_mono_localwfs(x0,xs,src,f,conf)
@@ -11,16 +11,18 @@ function [D, xv, x0] = driving_function_mono_localwfs(x0,xs,src,f,conf)
 %                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
+%                         'ls' - line source
 %                         'fs' - focused source
+%
 %       f           - frequency of the monochromatic source / Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
-%       xv          - position, direction, and weights of the virtual secondary
-%                     sources / m [mx7]
 %       x0          - position, direction, and weights of the real secondary
 %                     sources / m [nx7]
+%       xv          - position, direction, and weights of the virtual secondary
+%                     sources / m [mx7]
 %
 %   References:
 %       S. Spors (2010) - "Local Sound Field Synthesis by Virtual Secondary
@@ -79,9 +81,9 @@ virtualconf = conf;
 virtualconf.secondary_sources.size = conf.localsfs.size;
 virtualconf.secondary_sources.center = conf.localsfs.center;
 virtualconf.secondary_sources.geometry = conf.localsfs.geometry;
-virtualconf.secondary_sources.number = conf.localsfs.number;
+virtualconf.secondary_sources.number = conf.localsfs.vss.number;
 
-method = conf.localsfs.method;
+method = conf.localsfs.vss.method;
 %% ===== Computation ====================================================
 
 if strcmp('fs',src)

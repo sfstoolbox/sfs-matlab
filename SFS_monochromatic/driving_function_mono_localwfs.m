@@ -98,6 +98,7 @@ switch method
     % === Wave Field Synthesis ===
     % create virtual source array
     xv = virtual_secondary_source_positions(x0,xs,src,conf);
+    xv = secondary_source_amplitudecorrection(xv);
     % driving functions for virtual source array
     Dv = driving_function_mono_wfs(xv,xs,src,f,virtualconf);
   case 'nfchoa'

@@ -25,13 +25,14 @@ conf.localsfs.vss.number = 53;
 conf.localsfs.vss.sampling = 'log';
 conf.localsfs.vss.method = 'wfs';
 conf.localsfs.vss.type = 'ls';
+conf.localsfs.vss.ignoress = false;
 
 % config for real array
 conf.dimension = '2D';
-conf.secondary_sources.geometry = 'circular';
+conf.secondary_sources.geometry = 'linear';
 conf.secondary_sources.number = 56;
-conf.secondary_sources.size = 3;
-conf.secondary_sources.center = [0, 0, 0];
+conf.secondary_sources.size = 6;
+conf.secondary_sources.center = [0, 2, 0];
 conf.driving_functions = 'default';
 conf.xref = conf.localsfs.center;
 

@@ -65,7 +65,9 @@ nargmin = 3;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargxs(xs);
-isargsecondarysource(x0);
+if ~isempty(x0)
+  isargsecondarysource(x0);
+end
 isargchar(src);
 if nargin<nargmax
   conf = SFS_config;
@@ -83,6 +85,7 @@ virtualconf.secondary_sources.number = conf.localsfs.vss.number;
 geometry = conf.localsfs.geometry;
 sampling = conf.localsfs.vss.sampling;
 nls = conf.localsfs.vss.number;
+ignore_secondary_sources = conf.localsfs.vss.ignoress;
 
 %% ===== Main ============================================================
 
@@ -106,24 +109,7 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
   phis = atan2(ns(2),ns(1));  % azimuth angle of ns
 
   % CONSTRAINT 1 ========================================================
-  % == valid arc for virtual secondary sources (based on sec source position) ==
-  delta_max = 0;
-  delta_min = 0;
-  % for each secondary source
-  for idx=1:size(x0,1)
-    xc0 = x0(idx,1:3) - xl;  % vector from secondary source to local area
-    Rc0 = vector_norm(xc0,2);  % distance from secondary source to local area
-    nc0 = xc0./Rc0;  % normal vector from secondary source to local area
-    % 1/2 opening angle of cone spanned by local area and secondary source
-    phid = acos(Rl./Rc0);
-
-    phiso = asin(ns(1)*nc0(2) - ns(2)*nc0(1));  % angle between ns and nc0
-    delta_max = max(delta_max, phiso + phid);
-    delta_min = min(delta_min, phiso - phid);
-  end
-
-  % CONSTRAINT 2 ========================================================
-  % == arc by position of virtual source ==
+  % valid arc by position of virtual source
   if strcmp('pw',src)
     phid = pi/2;
   else
@@ -131,10 +117,35 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
     phid = acos(Rl./vector_norm(xs-xl,2));
   end
 
-  delta_max = min(delta_max, phid);
-  delta_min = max(delta_min, -phid);
-  delta_offset = (delta_max - delta_min)/(2*nls);
+  % the positions of the 'real' secondary source can be taken into account 
+  % virtual secondary source position 
+  if (ignore_secondary_sources || isempty(x0))
+    delta_max = phid;
+    delta_min = -phid;
+  else
+    % CONSTRAINT 2 ========================================================
+    % valid arc for virtual secondary sources (based on sec source positions)
+    delta_max = 0;
+    delta_min = 0;
+    % for each secondary source
+    for idx=1:size(x0,1)
+      xc0 = x0(idx,1:3) - xl;  % vector from secondary source to local area
+      Rc0 = vector_norm(xc0,2);  % distance from secondary source to local area
+      nc0 = xc0./Rc0;  % normal vector from secondary source to local area
+      % 1/2 opening angle of cone spanned by local area and secondary source
+      phix0 = acos(Rl./Rc0);
 
+      phiso = asin(ns(1)*nc0(2) - ns(2)*nc0(1));  % angle between ns and nc0
+      delta_max = max(delta_max, phiso + phix0);
+      delta_min = min(delta_min, phiso - phix0);
+    end
+    delta_max = min(delta_max, phid);
+    delta_min = max(delta_min, -phid);
+  end
+
+  delta_offset = eps;
+
+  % SOURCE POSITIONING ==================================================
   switch (sampling)
     case 'linear'
       % === equi-angular sampling on valid arc ===    
@@ -151,8 +162,8 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
         a0 = 0.0;
       end
       
-      phimax = max(abs(delta_min + delta_offset),abs(delta_max-delta_offset));
-      phimin = min(abs(delta_min + delta_offset),abs(delta_max-delta_offset));      
+      phimax = max(abs(delta_min + delta_offset),abs(delta_max-delta_offset))
+      phimin = min(abs(delta_min + delta_offset),abs(delta_max-delta_offset))     
       
       k = 0;
       while k<=N
@@ -164,7 +175,7 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
         k = k+1;
       end
       
-      phi = d*(a0 + geometric_series(1,q,1:N+k));
+      phi = d*(a0 + geometric_series(1,q,1:N+k))
       if mod(nls,2) == 0
         phi = [-phi(N-k:-1:1), phi];
       else
@@ -173,7 +184,13 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
       if (abs(delta_min + delta_offset) > abs(delta_max-delta_offset))
         phi = fliplr(-phi);
       end      
-      phi = phis + phi';     
+      phi = phis + phi';
+    case 'scalar'
+      x = linspace(sin(delta_min + delta_offset),sin(delta_max - delta_offset),nls).';
+      phi = phis + asin(x);
+    case 'projective'
+      x = linspace(-3,3,nls).';
+      phi = phis + atan(x);
   end
   
   % Elevation angles

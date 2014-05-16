@@ -56,11 +56,13 @@ if size(x0,1) < 3
   return;
 end
 
-xd = vector_norm(x0(2:end,1:3) - x0(1:end-1,1:3),2) ./ 2;
+xd = vector_norm(x0(2:end,1:3) - x0(1:end-1,1:3),2);
 xd = xd./sum(xd,1);
 
 x0(1,7) = xd(1);
 x0(2:end-1,7) = xd(1:end-1) + xd(2:end);
 x0(end,7) = xd(end);
+
+x0(:,7) = x0(:,7)./2;
 
 end

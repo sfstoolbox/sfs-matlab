@@ -17,13 +17,13 @@ function xv = virtual_secondary_source_positions(x0,xs,src,conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output options:
-%       xv          - virtual secondary source positions, directions and 
+%       xv          - virtual secondary source positions, directions and
 %                     weights / m
 %
-%   VIRTUAL_SECONDARY_SOURCE_POSITIONS(x0,xs,src,conf) generates the positions 
+%   VIRTUAL_SECONDARY_SOURCE_POSITIONS(x0,xs,src,conf) generates the positions
 %   and directions xv of virtual secondary sources for a given geometry
-%   (conf.localsfs.geometry) and array size (conf.localsfs.size). 
-%   The direction of the virtual sources is given as their unit vectors 
+%   (conf.localsfs.geometry) and array size (conf.localsfs.size).
+%   The direction of the virtual sources is given as their unit vectors
 %   pointing in the given direction. The algorithm determines the (optimal)
 %   positioning of the virtual secondary sources by taking the positions of
 %   the virtual source and the real sources into account.
@@ -89,9 +89,11 @@ ignore_secondary_sources = conf.localsfs.vss.ignoress;
 
 %% ===== Main ============================================================
 
-if strcmp('circle',geometry) || strcmp('circular',geometry)  
-  % ===== virtual circular Array =====
-  
+if strcmp('circle',geometry) || strcmp('circular',geometry)
+  % =====================================================================
+  % virtual circular Array
+  % =====================================================================
+
   Rl = virtualconf.secondary_sources.size/2;  % radius of local area
   xl = virtualconf.secondary_sources.center;  % center of local area
 
@@ -117,8 +119,8 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
     phid = acos(Rl./vector_norm(xs-xl,2));
   end
 
-  % the positions of the 'real' secondary source can be taken into account 
-  % virtual secondary source position 
+  % the positions of the 'real' secondary source can be taken into account
+  % virtual secondary source position
   if (ignore_secondary_sources || isempty(x0))
     delta_max = phid;
     delta_min = -phid;
@@ -148,42 +150,42 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
   % SOURCE POSITIONING ==================================================
   switch (sampling)
     case 'linear'
-      % === equi-angular sampling on valid arc ===    
-      phi = phis + linspace(delta_min + delta_offset,delta_max-delta_offset, nls).';  
+      % === equi-angular sampling on valid arc ===
+      phi = phis + linspace(delta_min + delta_offset,delta_max-delta_offset, nls).';
     case 'log'
       logratio = conf.localsfs.vss.logratio;
-      
+
       % === logarithmic-angular sampling on valid arc ===
       if mod(nls,2) == 0
-        N = nls/2;
+        N = nls./2;
         a0 = -0.5;
       else
         N = (nls-1)./2;
         a0 = 0.0;
       end
-      
+
       phimax = max(abs(delta_min + delta_offset),abs(delta_max-delta_offset))
-      phimin = min(abs(delta_min + delta_offset),abs(delta_max-delta_offset))     
-      
+      phimin = min(abs(delta_min + delta_offset),abs(delta_max-delta_offset));
+
       k = 0;
       while k<=N
         q = logratio.^(-1/(N+k-1));
-        d = phimax/(geometric_series(1,q,N+k) - a0);        
-        if d*(a0 + geometric_series(1,q,N+k)) <= phimin + eps
+        d = phimax/(geometric_series(1,q,N+k-1) + a0);
+        if d*(a0 + geometric_series(1,q,N+k-1)) <= phimin + eps
           break;
         end
         k = k+1;
       end
-      
-      phi = d*(a0 + geometric_series(1,q,1:N+k))
+
+      phi = d*(a0 + geometric_series(1,q,0:N+k-1))
       if mod(nls,2) == 0
         phi = [-phi(N-k:-1:1), phi];
       else
         phi = [-phi(N-k:-1:1), 0, phi];
-      end      
+      end
       if (abs(delta_min + delta_offset) > abs(delta_max-delta_offset))
         phi = fliplr(-phi);
-      end      
+      end
       phi = phis + phi';
     case 'scalar'
       x = linspace(sin(delta_min + delta_offset),sin(delta_max - delta_offset),nls).';
@@ -192,7 +194,7 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
       x = linspace(-3,3,nls).';
       phi = phis + atan(x);
   end
-  
+
   % Elevation angles
   theta = zeros(nls,1);
   % Positions of the secondary sources
@@ -201,27 +203,25 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
   % Direction of the secondary sources
   xv(:,4:6) = direction_vector(xv(:,1:3),repmat(xl,nls,1).*ones(nls,3));
   % equal weights for all sources
-  xv(:,7) = ones(nls,1); 
+  xv(:,7) = ones(nls,1);
 else
-  % ===== traditional way ===== 
-  
-  % just select the virtual secondary sources based on the position and type 
+  % ===== traditional way =====
+
+  % just select the virtual secondary sources based on the position and type
   % of the virtual source
   xv = secondary_source_positions(virtualconf);
   xv = secondary_source_selection(xv,xs,src);
 end
 
 % xv = secondary_source_tapering(xv,virtualconf);
-
 end
 
 function s = geometric_series(a0,q,N)
   isargscalar(a0);
   isargpositivescalar(q);
   if (q == 1)
-    s = a0.*N;
+    s = a0.*(N+1);
   else
-    s = (1-q.^N)./(1-q);
+    s = (1-q.^(N+1))./(1-q);
   end
 end
-

@@ -77,38 +77,41 @@ end
 
 %% ===== Configuration ===================================================
 virtualconf = conf;
-virtualconf.secondary_sources.size = conf.localsfs.size;
-virtualconf.secondary_sources.center = conf.localsfs.center;
+virtualconf.secondary_sources.size     = conf.localsfs.size;
+virtualconf.secondary_sources.center   = conf.localsfs.center;
 virtualconf.secondary_sources.geometry = conf.localsfs.geometry;
-virtualconf.secondary_sources.number = conf.localsfs.vss.number;
+virtualconf.secondary_sources.number   = conf.localsfs.vss.number;
 
-geometry = conf.localsfs.geometry;
-sampling = conf.localsfs.vss.sampling;
-nls = conf.localsfs.vss.number;
+geometry                 = conf.localsfs.geometry;
+sampling                 = conf.localsfs.vss.sampling;
+logratio                 = conf.localsfs.vss.logratio;
+nls                      = conf.localsfs.vss.number;
 ignore_secondary_sources = conf.localsfs.vss.ignoress;
 
 %% ===== Main ============================================================
+
+Rl = virtualconf.secondary_sources.size/2;  % radius of local area
+xl = virtualconf.secondary_sources.center;  % center of local area
+
+% determine vector poiting towards source
+if strcmp('pw',src)
+  % === Plane wave ===
+  ns = bsxfun(@rdivide,-xs,vector_norm(xs,2));
+elseif strcmp('ps',src) || strcmp('ls',src)
+  % === Point source ===
+  ns = bsxfun(@rdivide,xs-xl,vector_norm(xs-xl,2));
+elseif strcmp('fs',src)
+  % === Focused source ===
+  to_be_implemented('focussed sources for virtual_secondary_source_positions');
+end
+phis = atan2(ns(2),ns(1));  % azimuth angle of ns
+
+
 
 if strcmp('circle',geometry) || strcmp('circular',geometry)
   % =====================================================================
   % virtual circular Array
   % =====================================================================
-
-  Rl = virtualconf.secondary_sources.size/2;  % radius of local area
-  xl = virtualconf.secondary_sources.center;  % center of local area
-
-  % determine vector poiting towards source
-  if strcmp('pw',src)
-    % === Plane wave ===
-    ns = bsxfun(@rdivide,-xs,vector_norm(xs,2));
-  elseif strcmp('ps',src) || strcmp('ls',src)
-    % === Point source ===
-    ns = bsxfun(@rdivide,xs-xl,vector_norm(xs-xl,2));
-  elseif strcmp('fs',src)
-    % === Focused source ===
-    to_be_implemented('focussed sources for virtual_secondary_source_positions');
-  end
-  phis = atan2(ns(2),ns(1));  % azimuth angle of ns
 
   % CONSTRAINT 1 ========================================================
   % valid arc by position of virtual source
@@ -119,13 +122,12 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
     phid = acos(Rl./vector_norm(xs-xl,2));
   end
 
-  % the positions of the 'real' secondary source can be taken into account
-  % virtual secondary source position
+  % the positions of the 'real' secondary sources can be taken into account
   if (ignore_secondary_sources || isempty(x0))
     delta_max = phid;
     delta_min = -phid;
   else
-    % CONSTRAINT 2 ========================================================
+    % CONSTRAINT 2 ======================================================
     % valid arc for virtual secondary sources (based on sec source positions)
     delta_max = 0;
     delta_min = 0;
@@ -149,50 +151,20 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
 
   % SOURCE POSITIONING ==================================================
   switch (sampling)
-    case 'linear'
+    case 'equi'
       % === equi-angular sampling on valid arc ===
       phi = phis + linspace(delta_min + delta_offset,delta_max-delta_offset, nls).';
     case 'log'
-      logratio = conf.localsfs.vss.logratio;
-
-      % === logarithmic-angular sampling on valid arc ===
-      if mod(nls,2) == 0
-        N = nls./2;
-        a0 = -0.5;
-      else
-        N = (nls-1)./2;
-        a0 = 0.0;
-      end
-
-      phimax = max(abs(delta_min + delta_offset),abs(delta_max-delta_offset))
-      phimin = min(abs(delta_min + delta_offset),abs(delta_max-delta_offset));
-
-      k = 0;
-      while k<=N
-        q = logratio.^(-1/(N+k-1));
-        d = phimax/(geometric_series(1,q,N+k-1) + a0);
-        if d*(a0 + geometric_series(1,q,N+k-1)) <= phimin + eps
-          break;
-        end
-        k = k+1;
-      end
-
-      phi = d*(a0 + geometric_series(1,q,0:N+k-1))
-      if mod(nls,2) == 0
-        phi = [-phi(N-k:-1:1), phi];
-      else
-        phi = [-phi(N-k:-1:1), 0, phi];
-      end
-      if (abs(delta_min + delta_offset) > abs(delta_max-delta_offset))
-        phi = fliplr(-phi);
-      end
-      phi = phis + phi';
+      phi = log_spacing(delta_min, delta_max, 0, nls, logratio);
+      phi = phis + phi;
     case 'scalar'
       x = linspace(sin(delta_min + delta_offset),sin(delta_max - delta_offset),nls).';
       phi = phis + asin(x);
     case 'projective'
       x = linspace(-3,3,nls).';
       phi = phis + atan(x);
+    otherwise
+      error('%s: %s is not a supported sampling method for circular position!',upper(mfilename),method);
   end
 
   % Elevation angles
@@ -204,7 +176,53 @@ if strcmp('circle',geometry) || strcmp('circular',geometry)
   xv(:,4:6) = direction_vector(xv(:,1:3),repmat(xl,nls,1).*ones(nls,3));
   % equal weights for all sources
   xv(:,7) = ones(nls,1);
-else
+
+elseif strcmp('linear',geometry)
+  % =====================================================================
+  % virtual linear Array
+  % =====================================================================
+  
+  % CONSTRAINT 1 ========================================================
+  % valid arc by position of virtual source
+  if strcmp('pw',src)
+    Rd = Rl;
+    xd = Rl;
+  else
+    Rd = Rl;
+    % 1/2 opening angle of cone spanned by local area and virtual source
+    phid = acos(Rl./vector_norm(xs-xl,2));    
+    xd = (vector_norm(xs-xl,2)-Rd)./tan(phid);     
+  end
+  
+  nsorth = ns*[0 1 0; -1 0 0; 0 0 1];
+  
+  % the positions of the 'real' secondary sources can be taken into account
+  if (ignore_secondary_sources || isempty(x0))
+    xmax = xd;
+    xmin = -xd;
+  else
+    % CONSTRAINT 2 ======================================================
+    to_be_implemented('CONSTRAINT 2 for virtual line array');
+  end
+  
+  % SOURCE POSITIONING ==================================================
+  switch (sampling)
+    case 'equi'
+      % === equi-angular sampling on valid arc ===
+      x = linspace(xmin, xmax, nls);
+    case 'log'
+      x = log_spacing(xmin, xmax, 0, nls, logratio);
+    otherwise
+      error('%s: %s is not a supported sampling method for linear sampling!',upper(mfilename),method);
+  end
+  
+  % Positions of the secondary sources
+  xv(:,1:3) = repmat(Rd.*ns,nls,1) + x*nsorth;
+  % Direction of the secondary sources
+  xv(:,4:6) = repmat(-ns, nls, 1);
+  % equal weights for all sources
+  xv(:,7) = ones(nls,1);    
+else  
   % ===== traditional way =====
 
   % just select the virtual secondary sources based on the position and type
@@ -216,6 +234,55 @@ end
 % xv = secondary_source_tapering(xv,virtualconf);
 end
 
+%% ===== Additional Helper Functions ====================================
+
+function x = log_spacing(xmin, xmax, xcenter, N, ratio)
+  
+  % variable indicating if number of samples is even/odd
+  even = mod(N,2) == 0;
+
+  if even
+    N = N./2;
+    s0 = -0.5;
+  else
+    N = (N-1)./2;
+    s0 = 0.0;
+  end
+  
+  % variable indicating
+  xmax = abs(xmax-xcenter);
+  xmin = abs(xmin-xcenter);  
+  minmax = xmin < xmax;
+  
+  if (minmax)
+    tmp = xmax;
+    xmax = xmin;
+    xmin = tmp;
+  end
+
+  % search for best logarithmic spacing  
+  k = 0;
+  while k<=N
+    q = ratio.^(-1/(N+k-1));
+    d = xmax/(geometric_series(1,q,N+k-1) + s0);
+    if d*(s0 + geometric_series(1,q,N+k-1)) <= xmin + eps
+      break;
+    end
+    k = k+1;
+  end  
+  
+  x = d*(s0 + geometric_series(1,q,0:N+k-1));
+  if even
+    x = [-x(N-k:-1:1), x];
+  else
+    x = [-x(N-k:-1:1), 0, x];
+  end
+  if (minmax)
+    x = fliplr(-x);
+  end
+  x = xcenter + x.';  
+end
+
 function s = geometric_series(a0,q,N)
   isargscalar(a0);
   isargpositivescalar(q);
@@ -225,3 +292,8 @@ function s = geometric_series(a0,q,N)
     s = (1-q.^(N+1))./(1-q);
   end
 end
+
+
+
+
+

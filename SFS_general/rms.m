@@ -70,6 +70,10 @@ if (nargin==1) || (~ischar(options))
   options='';
 end
 
+% if the input signal is a row vector change it to a column vector
+if isvector(insig) && size(insig,2)>2
+    insig = insig';
+end
 
 %% ===== Computation =====================================================
 % It is better to use 'norm' instead of explicitly summing the squares, as

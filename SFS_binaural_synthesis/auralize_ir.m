@@ -88,15 +88,15 @@ if isnumeric(content)
     contentfs = conf.fs;
 else
     if strcmp(content,'castanets')
-        contentfile = conf.castanetsfile;
+        contentfile = conf.ir.castanetsfile;
     elseif strcmp(content,'speech')
-        contentfile = conf.speechfile;
+        contentfile = conf.ir.speechfile;
     elseif strcmp(content,'cello')
-        contentfile = conf.cellofile;
+        contentfile = conf.ir.cellofile;
     elseif strcmp(content,'noise')
-        contentfile = conf.noisefile;
+        contentfile = conf.ir.noisefile;
     elseif strcmp(content,'pinknoise')
-        contentfile = conf.pinknoisefile;
+        contentfile = conf.ir.pinknoisefile;
     elseif ~exist(content,'file')
         error('%s: %s file was not found.',upper(mfilename),content);
     else

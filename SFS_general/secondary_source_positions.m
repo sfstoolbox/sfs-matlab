@@ -181,7 +181,12 @@ elseif strcmp('box',geometry)
     % === Boxed loudspeaker array ===
     % Number of secondary sources per linear array
     % ensures that nls/4 is always an integer.
-    nbox = round(nls/4);
+    if rem(nls,4)~=0
+        error(['%s: conf.secondary_sources.number has to be a multiple of' ...
+            ' 4.'],upper(mfilename));
+    else
+        nbox = nls/4;
+    end
     % distance between secondary sources
     dx0 = L/(nbox-1);
     % Position and direction of the loudspeakers

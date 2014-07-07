@@ -1,5 +1,11 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
+1.0.1 ()
+
+    - fixed handling of number of secondary sources for a box shaped array
+    - fixed a bug in ir_auralize() regarding the contentfile configuration
+    - corrected NFC-HOA driving functions for off-center arrays
+
 1.0.0 (27 March 2014)
 
     - added references for all driving functions

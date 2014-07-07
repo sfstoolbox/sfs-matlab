@@ -36,6 +36,8 @@ xq = [ 2*R, -R, 0];
 xt = [ -3*R, 0, 0];
 conf.xref = xq;
      
+display(conf.scattering)
+
 %% Expansion
 % spherical expansion
 A1sph = sphexpR_mono_pw(ns,f,xq,conf);  % regular expansion plane wave

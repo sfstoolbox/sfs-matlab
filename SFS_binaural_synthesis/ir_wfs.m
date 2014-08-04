@@ -1,7 +1,7 @@
 function [ir,x0] = ir_wfs(X,phi,xs,src,irs,conf)
 %IR_WFS generate a impulse response simulating WFS
 %
-%   Usage: ir = ir_wfs(X,phi,xs,src,irs,[conf])
+%   Usage: [ir,x0] = ir_wfs(X,phi,xs,src,irs,[conf])
 %
 %   Input parameters:
 %       X       - listener position / m

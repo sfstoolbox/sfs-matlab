@@ -122,17 +122,17 @@ elseif strcmp('2.5D',dimension)
         %
         % d_2.5D using a line sink as source model
         %
-        %                       -g0 (xs-x0) nx0
+        %                        g0 (xs-x0) nx0
         % d_2.5D(x0,t) = h(t) * --- ------------- delta(t + |xs-x0|/c)
         %                       2pi |xs-x0|^(3/2)
-        %                       
+        %
         % see Wierstorf (2014), p.27 (2.65)
         %
         % r = |xs-x0|
         r = vector_norm(xs-x0,2);
         % Delay and amplitude weight
         delay =  -1/c .* r;
-        weight = -g0/(2*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3/2);
+        weight = g0/(2*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3/2);
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D focused source.'],upper(mfilename),driving_functions);
@@ -147,7 +147,7 @@ elseif strcmp('3D',dimension)
         % --- SFS Toolbox ------------------------------------------------
         % d_3D using a point sink as source model
         % 
-        %                     -1  (xs-x0) nx0
+        %                      1  (xs-x0) nx0
         % d_3D(x0,t) = h(t) * --- ------------- delta(t + |xs-x0|/c)
         %                     2pi |xs-x0|^(3/2)
         %
@@ -157,7 +157,7 @@ elseif strcmp('3D',dimension)
         r = vector_norm(xs-x0,2);
         % Delay and amplitude weight
         delay = -1/c .* r;
-        weight = -1/(2*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3/2);
+        weight = 1/(2*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3/2);
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 3D focused source.'],upper(mfilename),driving_functions);

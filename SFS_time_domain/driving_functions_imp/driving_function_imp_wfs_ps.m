@@ -88,7 +88,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % --- SFS Toolbox ------------------------------------------------
         % d using a point source as source model
         %
-        %                  -1   (x0-xs) nx0
+        %                   1   (x0-xs) nx0
         % d(x0,t) = h(t) * --- ------------- delta(t-|x0-xs|/c)
         %                  2pi |x0-xs|^(3/2)
         %
@@ -98,7 +98,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         r = vector_norm(x0-xs,2);
         % Delay and amplitude weight
         delay = 1/c .* r;
-        weight = -1/(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
+        weight = 1/(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a point source.'],upper(mfilename),driving_functions);
@@ -121,7 +121,7 @@ elseif strcmp('2.5D',dimension)
         %
         % d_2.5D using a point source as source model
         %
-        %                       -g0  (x0-xs) nx0
+        %                        g0  (x0-xs) nx0
         % d_2.5D(x0,t) = h(t) * --- ------------- delta(t-|x0-xs|/c)
         %                       2pi |x0-xs|^(3/2)
         %
@@ -131,7 +131,7 @@ elseif strcmp('2.5D',dimension)
         r = vector_norm(x0-xs,2);
         % Delay and amplitude weight
         delay = 1/c .* r;
-        weight = -g0/(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
+        weight = g0/(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D point source.'],upper(mfilename),driving_functions);

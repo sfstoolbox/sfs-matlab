@@ -103,31 +103,31 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % --- SFS Toolbox ------------------------------------------------
         % D using a point sink and large distance approximation
         %
-        %              1  i w  (x0-xs) nx0
-        % D(x0,w) = - --- --- ------------- e^(-i w/c |x0-xs|)
-        %             2pi  c  |x0-xs|^(3/2)
+        %            1  i w  (x0-xs) nx0
+        % D(x0,w) = --- --- ------------- e^(-i w/c |x0-xs|)
+        %           2pi  c  |x0-xs|^(3/2)
         %
         % see Wierstorf (2014), p.26 (2.50)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % driving signal
-        D = -1/(2*pi) .* (1i*omega)/c .* ...
+        D = 1/(2*pi) .* (1i*omega)/c .* ...
             vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c.*r);
         %
     elseif strcmp('point_source',driving_functions)
         % D using a point source as source model
         %
-        %              1  / i w      1    \  (x0-xs) nx0
-        % D(x0,w) = - --- | --- - ------- |  ----------- e^(-i w/c |x0-xs|)
-        %             2pi \  c    |x0-xs| /   |x0-xs|^2
+        %            1  / i w      1    \  (x0-xs) nx0
+        % D(x0,w) = --- | --- - ------- |  ----------- e^(-i w/c |x0-xs|)
+        %           2pi \  c    |x0-xs| /   |x0-xs|^2
         %
         % see Wierstorf (2014), p.25 (2.48)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % driving signal
-        D = -1/(2*pi) .* ( (1i*omega)/c - 1./r ) .* ...
+        D = 1/(2*pi) .* ( (1i*omega)/c - 1./r ) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(-1i*omega/c.*r);
         %
     elseif strcmp('line_source',driving_functions)
@@ -171,16 +171,16 @@ elseif strcmp('2.5D',dimension)
         %
         % D_2.5D using a point source and large distance approximation
         %                         ___
-        %                  g0    |i w  (x0-xs) nx0
-        % D_2.5D(x0,w) = - --- _ |--- ------------- e^(-i w/c |x0-xs|)
-        %                  2pi  \| c  |x0-xs|^(3/2)
+        %                g0    |i w  (x0-xs) nx0
+        % D_2.5D(x0,w) = --- _ |--- ------------- e^(-i w/c |x0-xs|)
+        %                2pi  \| c  |x0-xs|^(3/2)
         %
         % see Wierstorf (2014), p.26 (2.51)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % driving signal
-        D = -g0/(2*pi) .* sqrt(1i*omega/c) .* ...
+        D = g0/(2*pi) .* sqrt(1i*omega/c) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c.*r);
         %
     elseif strcmp('point_source',driving_functions)
@@ -194,16 +194,16 @@ elseif strcmp('2.5D',dimension)
         %
         % D_2.5D(x0,w) =
         %             ___       ___
-        %    g0  /   |i w      | c      1    \  (x0-xs) nx0
-        % - ---  | _ |---  - _ |---  ------- |  ----------- e^(-i w/c |x0-xs|)
-        %   2pi  \  \| c      \|i w  |x0-xs| /   |x0-xs|^2
+        %  g0  /   |i w      | c      1    \  (x0-xs) nx0
+        % ---  | _ |---  - _ |---  ------- |  ----------- e^(-i w/c |x0-xs|)
+        % 2pi  \  \| c      \|i w  |x0-xs| /   |x0-xs|^2
         %
         % see Wierstorf (2014), p.25 (2.49)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % driving signal
-        D = -g0/(2*pi) .* ( sqrt(1i*omega/c) - sqrt(c/(1i*omega) ./ r ) ) .* ...
+        D = g0/(2*pi) .* ( sqrt(1i*omega/c) - sqrt(c/(1i*omega) ./ r ) ) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(-1i*omega/c .* r);
         %
     elseif strcmp('delft1988',driving_functions)

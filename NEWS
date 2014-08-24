@@ -1,7 +1,9 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
-1.0.1 ()
+1.0.1 (4 August 2014)
 
+    - rms() works now also with row vectors in order to be compatible with the
+      Auditory Modeling Toolbox
     - fixed handling of number of secondary sources for a box shaped array
     - fixed a bug in ir_auralize() regarding the contentfile configuration
     - corrected NFC-HOA driving functions for off-center arrays

@@ -1,7 +1,7 @@
 function [ir,x0] = ir_nfchoa(X,phi,xs,src,irs,conf)
 %IR_NFCHOA Generate a IR for NFCHOA
 %
-%   Usage: ir = ir_nfchoa(X,phi,xs,src,irs,[conf])
+%   Usage: [ir,x0] = ir_nfchoa(X,phi,xs,src,irs,[conf])
 %
 %   Input parameters:
 %       X       - listener position / m

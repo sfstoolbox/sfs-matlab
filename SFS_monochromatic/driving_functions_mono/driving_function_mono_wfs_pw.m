@@ -93,7 +93,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % D using a plane wave as source model
         %
         %              i w
-        % D(x0,w) = -2 --- nk nx0  e^(-i w/c nk x0)
+        % D(x0,w) =  2 --- nk nx0  e^(-i w/c nk x0)
         %               c
         %
         % see Wierstorf (2014), p.25 (2.43)
@@ -127,9 +127,9 @@ elseif strcmp('2.5D',dimension)
         %
         % D_2.5D using a plane wave as source model
         %                                ___
-        %                               | w |
-        % D_2.5D(x0,w) = -2 g0 nk nx0 _ |---  e^(-i w/c nk x0)
-        %                              \|i c
+        %                              | w |
+        % D_2.5D(x0,w) = 2 g0 nk nx0 _ |---  e^(-i w/c nk x0)
+        %                             \|i c
         %
         % see Wierstorf (2014), p.25 (2.44)
         %

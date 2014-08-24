@@ -24,9 +24,10 @@ function xv = virtual_secondary_source_positions(x0,xs,src,conf)
 %   and directions xv of virtual secondary sources for a given geometry
 %   (conf.localsfs.geometry) and array size (conf.localsfs.size).
 %   The direction of the virtual sources is given as their unit vectors
-%   pointing in the given direction. The algorithm determines the (optimal)
-%   positioning of the virtual secondary sources by taking the positions of
-%   the virtual source and the real sources into account.
+%   pointing in the given direction. 
+%   Optionally (conf.localsfs.vss.positioning = 'non-adaptive'), the algorithm
+%   determines the (optimal) positioning of the virtual secondary sources by 
+%   taking the positions of the virtual source and the real sources into account.
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -86,7 +87,9 @@ geometry                 = conf.localsfs.geometry;
 sampling                 = conf.localsfs.vss.sampling;
 logratio                 = conf.localsfs.vss.logratio;
 nls                      = conf.localsfs.vss.number;
-ignore_secondary_sources = conf.localsfs.vss.ignoress;
+ignore_secondary_sources = conf.localsfs.vss.ignore_secondary_sources;
+positioning              = conf.localsfs.vss.positioning;
+tapering                 = conf.localsfs.vss.tapering;
 
 %% ===== Main ============================================================
 
@@ -106,194 +109,208 @@ elseif strcmp('fs',src)
 end
 phis = atan2(ns(2),ns(1));  % azimuth angle of ns
 
-
-
-if strcmp('circle',geometry) || strcmp('circular',geometry)
+if strcmp('non-adaptive',positioning )
   % =====================================================================
-  % virtual circular Array
+  % non-adaptive positioning of  virtual secondary sources
   % =====================================================================
-
-  % CONSTRAINT 1 ========================================================
-  % valid arc by position of virtual source
-  if strcmp('pw',src)
-    phid = pi/2;
-  else
-    % 1/2 opening angle of cone spanned by local area and virtual source
-    phid = acos(Rl./vector_norm(xs-xl,2));
-  end
-
-  % the positions of the 'real' secondary sources can be taken into account
-  if (ignore_secondary_sources || isempty(x0))
-    delta_max = phid;
-    delta_min = -phid;
-  else
-    % CONSTRAINT 2 ======================================================
-    % valid arc for virtual secondary sources (based on sec source positions)
-    delta_max = 0;
-    delta_min = 0;
-    % for each secondary source
-    for idx=1:size(x0,1)
-      xc0 = x0(idx,1:3) - xl;  % vector from secondary source to local area
-      Rc0 = vector_norm(xc0,2);  % distance from secondary source to local area
-      nc0 = xc0./Rc0;  % normal vector from secondary source to local area
-      % 1/2 opening angle of cone spanned by local area and secondary source
-      phix0 = acos(Rl./Rc0);
-
-      phiso = asin(ns(1)*nc0(2) - ns(2)*nc0(1));  % angle between ns and nc0
-      delta_max = max(delta_max, phiso + phix0);
-      delta_min = min(delta_min, phiso - phix0);
-    end
-    delta_max = min(delta_max, phid);
-    delta_min = max(delta_min, -phid);
-  end
-
-  delta_offset = eps;
-
-  % SOURCE POSITIONING ==================================================
-  switch (sampling)
-    case 'equi'
-      % === equi-angular sampling on valid arc ===
-      phi = phis + linspace(delta_min + delta_offset,delta_max-delta_offset, nls).';
-    case 'log'
-      phi = log_spacing(delta_min, delta_max, 0, nls, logratio);
-      phi = phis + phi;
-    case 'scalar'
-      x = linspace(sin(delta_min + delta_offset),sin(delta_max - delta_offset),nls).';
-      phi = phis + asin(x);
-    case 'projective'
-      x = linspace(-3,3,nls).';
-      phi = phis + atan(x);
-    otherwise
-      error('%s: %s is not a supported sampling method for circular position!',upper(mfilename),method);
-  end
-
-  % Elevation angles
-  theta = zeros(nls,1);
-  % Positions of the secondary sources
-  [cx,cy,cz] = sph2cart(phi,theta,Rl);
-  xv(:,1:3) = [cx,cy,cz] + repmat(xl,nls,1);
-  % Direction of the secondary sources
-  xv(:,4:6) = direction_vector(xv(:,1:3),repmat(xl,nls,1).*ones(nls,3));
-  % equal weights for all sources
-  xv(:,7) = ones(nls,1);
-
-elseif strcmp('linear',geometry)
-  % =====================================================================
-  % virtual linear Array
-  % =====================================================================
-  
-  % CONSTRAINT 1 ========================================================
-  % valid arc by position of virtual source
-  if strcmp('pw',src)
-    Rd = Rl;
-    xd = Rl;
-  else
-    Rd = Rl;
-    % 1/2 opening angle of cone spanned by local area and virtual source
-    phid = acos(Rl./vector_norm(xs-xl,2));    
-    xd = (vector_norm(xs-xl,2)-Rd)./tan(phid);     
-  end
-  
-  nsorth = ns*[0 1 0; -1 0 0; 0 0 1];
-  
-  % the positions of the 'real' secondary sources can be taken into account
-  if (ignore_secondary_sources || isempty(x0))
-    xmax = xd;
-    xmin = -xd;
-  else
-    % CONSTRAINT 2 ======================================================
-    to_be_implemented('CONSTRAINT 2 for virtual line array');
-  end
-  
-  % SOURCE POSITIONING ==================================================
-  switch (sampling)
-    case 'equi'
-      % === equi-angular sampling on valid arc ===
-      x = linspace(xmin, xmax, nls);
-    case 'log'
-      x = log_spacing(xmin, xmax, 0, nls, logratio);
-    otherwise
-      error('%s: %s is not a supported sampling method for linear sampling!',upper(mfilename),method);
-  end
-  
-  % Positions of the secondary sources
-  xv(:,1:3) = repmat(Rd.*ns,nls,1) + x*nsorth;
-  % Direction of the secondary sources
-  xv(:,4:6) = repmat(-ns, nls, 1);
-  % equal weights for all sources
-  xv(:,7) = ones(nls,1);    
-else  
-  % ===== traditional way =====
-
-  % just select the virtual secondary sources based on the position and type
-  % of the virtual source
+  % just position the virtual secondary sources as you would do it with the
+  % loudspeakers. This ignores the virtual source position, the size of
+  % the local listening area and the position of the real loudspeakers
   xv = secondary_source_positions(virtualconf);
-  xv = secondary_source_selection(xv,xs,src);
+  
+elseif strcmp('adaptive',positioning )
+  % =====================================================================
+  % adaptive positioning of virtual secondary sources
+  % =====================================================================
+  xv = secondary_source_positions(virtualconf);
+  if strcmp('circle',geometry) || strcmp('circular',geometry)
+    % =====================================================================
+    % virtual circular Array
+    % =====================================================================
+    
+    % CONSTRAINT 1 ========================================================
+    % valid arc by position of virtual source
+    if strcmp('pw',src)
+      phid = pi/2;
+    else
+      % 1/2 opening angle of cone spanned by local area and virtual source
+      phid = acos(Rl./vector_norm(xs-xl,2));
+    end
+    
+    % the positions of the 'real' secondary sources can be taken into account
+    if (ignore_secondary_sources || isempty(x0))
+      delta_max = phid;
+      delta_min = -phid;
+    else
+      % CONSTRAINT 2 ======================================================
+      % valid arc for virtual secondary sources (based on sec source positions)
+      delta_max = 0;
+      delta_min = 0;
+      % for each secondary source
+      for idx=1:size(x0,1)
+        xc0 = x0(idx,1:3) - xl;  % vector from secondary source to local area
+        Rc0 = vector_norm(xc0,2);  % distance from secondary source to local area
+        nc0 = xc0./Rc0;  % normal vector from secondary source to local area
+        % 1/2 opening angle of cone spanned by local area and secondary source
+        phix0 = acos(Rl./Rc0);
+        
+        phiso = asin(ns(1)*nc0(2) - ns(2)*nc0(1));  % angle between ns and nc0
+        delta_max = max(delta_max, phiso + phix0);
+        delta_min = min(delta_min, phiso - phix0);
+      end
+      delta_max = min(delta_max, phid);
+      delta_min = max(delta_min, -phid);
+    end
+    
+    delta_offset = eps;
+    
+    % SOURCE POSITIONING ==================================================
+    switch (sampling)
+      case 'equi'
+        % === equi-angular sampling on valid arc ===
+        phi = phis + linspace(delta_min + delta_offset,delta_max-delta_offset, nls).';
+      case 'log'
+        phi = log_spacing(delta_min, delta_max, 0, nls, logratio);
+        phi = phis + phi;
+      case 'scalar'
+        x = linspace(sin(delta_min + delta_offset),sin(delta_max - delta_offset),nls).';
+        phi = phis + asin(x);
+      case 'projective'
+        x = linspace(-3,3,nls).';
+        phi = phis + atan(x);
+      otherwise
+        error('%s: %s is not a supported sampling method for circular position!',upper(mfilename),method);
+    end
+    
+    % Elevation angles
+    theta = zeros(nls,1);
+    % Positions of the secondary sources
+    [cx,cy,cz] = sph2cart(phi,theta,Rl);
+    xv(:,1:3) = [cx,cy,cz] + repmat(xl,nls,1);
+    % Direction of the secondary sources
+    xv(:,4:6) = direction_vector(xv(:,1:3),repmat(xl,nls,1).*ones(nls,3));
+    % equal weights for all sources
+    xv(:,7) = ones(nls,1);
+    
+  elseif strcmp('linear',geometry)
+    % =====================================================================
+    % virtual linear Array
+    % =====================================================================
+    
+    % CONSTRAINT 1 ========================================================
+    % valid arc by position of virtual source
+    if strcmp('pw',src)
+      Rd = Rl;
+      xd = Rl;
+    else
+      Rd = Rl;
+      % 1/2 opening angle of cone spanned by local area and virtual source
+      phid = acos(Rl./vector_norm(xs-xl,2));
+      xd = (vector_norm(xs-xl,2)-Rd)./tan(phid);
+    end
+    
+    nsorth = ns*[0 1 0; -1 0 0; 0 0 1];
+    
+    % the positions of the 'real' secondary sources can be taken into account
+    if (ignore_secondary_sources || isempty(x0))
+      xmax = xd;
+      xmin = -xd;
+    else
+      % CONSTRAINT 2 ======================================================
+      to_be_implemented('CONSTRAINT 2 for virtual line array');
+    end
+    
+    % SOURCE POSITIONING ==================================================
+    switch (sampling)
+      case 'equi'
+        % === equi-angular sampling on valid arc ===
+        x = linspace(xmin, xmax, nls);
+      case 'log'
+        x = log_spacing(xmin, xmax, 0, nls, logratio);
+      otherwise
+        error('%s: %s is not a supported sampling method for linear sampling!',upper(mfilename),method);
+    end
+    
+    % Positions of the secondary sources
+    xv(:,1:3) = repmat(Rd.*ns,nls,1) + x*nsorth;
+    % Direction of the secondary sources
+    xv(:,4:6) = repmat(-ns, nls, 1);
+    % equal weights for all sources
+    xv(:,7) = ones(nls,1);
+  else
+    % ===== traditional way =====
+    
+    % just select the virtual secondary sources based on the position and type
+    % of the virtual source
+    xv = secondary_source_positions(virtualconf);
+    xv = secondary_source_selection(xv,xs,src);
+  end
+  
+else
+  error('%s: %s is not a supported positioning method!',upper(mfilename),method);
 end
 
-% xv = secondary_source_tapering(xv,virtualconf);
+if tapering
+  xv = secondary_source_tapering(xv,virtualconf);
+end
+
 end
 
 %% ===== Additional Helper Functions ====================================
 
 function x = log_spacing(xmin, xmax, xcenter, N, ratio)
-  
-  % variable indicating if number of samples is even/odd
-  even = mod(N,2) == 0;
 
-  if even
-    N = N./2;
-    s0 = -0.5;
-  else
-    N = (N-1)./2;
-    s0 = 0.0;
-  end
-  
-  % variable indicating
-  xmax = abs(xmax-xcenter);
-  xmin = abs(xmin-xcenter);  
-  minmax = xmin < xmax;
-  
-  if (minmax)
-    tmp = xmax;
-    xmax = xmin;
-    xmin = tmp;
-  end
+% variable indicating if number of samples is even/odd
+even = mod(N,2) == 0;
 
-  % search for best logarithmic spacing  
-  k = 0;
-  while k<=N
-    q = ratio.^(-1/(N+k-1));
-    d = xmax/(geometric_series(1,q,N+k-1) + s0);
-    if d*(s0 + geometric_series(1,q,N+k-1)) <= xmin + eps
-      break;
-    end
-    k = k+1;
-  end  
-  
-  x = d*(s0 + geometric_series(1,q,0:N+k-1));
-  if even
-    x = [-x(N-k:-1:1), x];
-  else
-    x = [-x(N-k:-1:1), 0, x];
+if even
+  N = N./2;
+  s0 = -0.5;
+else
+  N = (N-1)./2;
+  s0 = 0.0;
+end
+
+% variable indicating
+xmax = abs(xmax-xcenter);
+xmin = abs(xmin-xcenter);
+minmax = xmin < xmax;
+
+if (minmax)
+  tmp = xmax;
+  xmax = xmin;
+  xmin = tmp;
+end
+
+% search for best logarithmic spacing
+k = 0;
+while k<=N
+  q = ratio.^(-1/(N+k-1));
+  d = xmax/(geometric_series(1,q,N+k-1) + s0);
+  if d*(s0 + geometric_series(1,q,N+k-1)) <= xmin + eps
+    break;
   end
-  if (minmax)
-    x = fliplr(-x);
-  end
-  x = xcenter + x.';  
+  k = k+1;
+end
+
+x = d*(s0 + geometric_series(1,q,0:N+k-1));
+if even
+  x = [-x(N-k:-1:1), x];
+else
+  x = [-x(N-k:-1:1), 0, x];
+end
+if (minmax)
+  x = fliplr(-x);
+end
+x = xcenter + x.';
 end
 
 function s = geometric_series(a0,q,N)
-  isargscalar(a0);
-  isargpositivescalar(q);
-  if (q == 1)
-    s = a0.*(N+1);
-  else
-    s = (1-q.^(N+1))./(1-q);
-  end
+isargscalar(a0);
+isargpositivescalar(q);
+if (q == 1)
+  s = a0.*(N+1);
+else
+  s = (1-q.^(N+1))./(1-q);
 end
-
-
-
-
-
+end

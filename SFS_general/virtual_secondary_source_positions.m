@@ -1,6 +1,6 @@
 function xv = virtual_secondary_source_positions(x0,xs,src,conf)
-%VIRTUAL_SECONDARY_SOURCE_POSITIONS Generates the positions and directions of the
-%   virtual sources
+%VIRTUAL_SECONDARY_SOURCE_POSITIONS Generates the positions and directions of a
+%   virtual secondary source distribution
 %
 %   Usage: xv = virtual_secondary_source_positions(x0,xs,src,conf)
 %
@@ -9,11 +9,11 @@ function xv = virtual_secondary_source_positions(x0,xs,src,conf)
 %                     sources [nx7]
 %       xs          - position and for focused sources also direction of the
 %                     desired source model / m [1x3] or [1x6]
-%       src         - source type of the virtual source
+%       src         - source type of the target field
 %                       'pw' - plane wave (xs is the direction of the
 %                              plane wave in this case)
 %                       'ps' - point source
-%                       'fs' - focused source
+%                       'fs' - focused source (not supported, yet)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output options:
@@ -21,13 +21,15 @@ function xv = virtual_secondary_source_positions(x0,xs,src,conf)
 %                     weights / m
 %
 %   VIRTUAL_SECONDARY_SOURCE_POSITIONS(x0,xs,src,conf) generates the positions
-%   and directions xv of virtual secondary sources for a given geometry
-%   (conf.localsfs.geometry) and array size (conf.localsfs.size).
+%   and directions xv of virtual secondary sources for a local area geometry
+%   (conf.localsfs.geometry) and local area size(conf.localsfs.size).
 %   The direction of the virtual sources is given as their unit vectors
 %   pointing in the given direction.
-%   Optionally (conf.localsfs.vss.positioning = 'non-adaptive'), the algorithm
-%   determines the (optimal) positioning of the virtual secondary sources by
-%   taking the positions of the virtual source and the real sources into account.
+%   Optionally (conf.localsfs.vss.consider_target_field == true), the algorithm
+%   takes the sound field, which is to be reproduced, into account for the
+%   positioning.
+%   Optionally (conf.localsfs.vss.consider_secondary_sources == true), the
+%   algorithm takes the positions of the real loudspeakers into account. 
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -206,17 +208,38 @@ if consider_target_field || consider_secondary_sources
         phid = acos(Rl./vector_norm(xs-xl,2));
         xd = (vector_norm(xs-xl,2)-Rd)./tan(phid);
       end
-      nsorth = ns*[0 1 0; -1 0 0; 0 0 1];
+      nd = ns;
+      ndorth = ns*[0 1 0; -1 0 0; 0 0 1];
     else
       Rd = 0;
       xd = Rl;
+      nd = [0, 1, 0];
+      ndorth = [-1, 0, 0];
     end
 
-    % CONSTRAINT 2 ======================================================
+    % CONSTRAINT 2 ========================================================
     % consider the position of the real loudspeaker array
     if (consider_secondary_sources && ~isempty(x0))
-      to_be_implemented(...
-        'consideration of secondary sources for linear virtual secondary source distributions');
+      xmax = inf;
+      xmin = -inf;
+      % for each secondary source
+      for idx=1:size(x0,1)
+        % this calculates the parameter t for the intersection between the linear
+        % virtual array and the plane spanned by one loudspeaker (position +
+        % orientation)
+        n0 = x0(idx, 4:6);
+        ntmp = (ndorth*n0');
+        if ntmp ~= 0
+          t = (x0(idx,1:3) - (xl + Rd*nd))*n0'./ntmp;
+          if t > 0
+            xmax = min(xmax, t);
+          else
+            xmin = max(xmin, t);
+          end
+        end
+      end
+      xmax = min(xmax, xd);
+      xmin = max(xmin, -xd);
     else
       xmax = xd;
       xmin = -xd;
@@ -225,18 +248,18 @@ if consider_target_field || consider_secondary_sources
     % SOURCE POSITIONING ==================================================
     switch (sampling)
       case 'equi'
-        % === equi-angular sampling on valid arc ===
+        % === equi-distant sampling on valid line ===
         x = linspace(xmin, xmax, nls);
       case 'log'
-        x = log_spacing(xmin, xmax, 0, nls, logratio);
+        x = log_spacing(xmin, xmax, 0, nls, logratio)
       otherwise
         error('%s: %s is not a supported sampling method for linear sampling!',upper(mfilename),method);
     end
 
     % Positions of the secondary sources
-    xv(:,1:3) = repmat(Rd.*ns,nls,1) + x*nsorth;
+    xv(:,1:3) = repmat(xl, nls, 1) + repmat(Rd*nd, nls, 1) + x'*ndorth;
     % Direction of the secondary sources
-    xv(:,4:6) = repmat(-ns, nls, 1);
+    xv(:,4:6) = repmat(-nd, nls, 1);
     % equal weights for all sources
     xv(:,7) = ones(nls,1);
   else
@@ -260,7 +283,6 @@ end
 end
 
 %% ===== Additional Helper Functions ====================================
-
 function x = log_spacing(xmin, xmax, xcenter, N, ratio)
 
 % variable indicating if number of samples is even/odd

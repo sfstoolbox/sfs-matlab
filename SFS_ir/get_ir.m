@@ -107,48 +107,11 @@ if ~any(strcmp(header.GLOBAL_SOFAConventions,SOFA_conventions))
 end
 
 % === Internal variables ===
-% Calculate the apparent distance for every source and listener position
-if strcmp(header.ListenerPosition_Type,'spherical')
-    % TODO: check if this can be done in one line in Matlab and Octave
-    [listener_position(:,1), ...
-     listener_position(:,2), ...
-     listener_position(:,3)] = sph2cart(rad(header.ListenerPosition(:,1)), ...
-                                        rad(header.ListenerPosition(:,2)), ...
-                                        header.ListenerPosition(:,3));
-else
-    listener_position = header.ListenerPosition;
-end
-if strcmp(header.SourcePosition_Type,'spherical')
-    [source_position(:,1), ...
-     source_position(:,2), ...
-     source_position(:,3)] = sph2cart(rad(header.SourcePosition(:,1)), ...
-                                      rad(header.SourcePosition(:,2)), ...
-                                      header.SourcePosition(:,3));
-else
-    source_position = header.SourcePosition;
-end
-source_minus_listener = bsxfun(@minus,source_position,listener_position);
-apparent_distance = vector_norm(source_minus_listener,2);
-% Calculate apparent azimuth and elevation for every source positon and listener view
-if strcmp(header.ListenerView_Type,'cartesian')
-    [listener_view(:,1), ...
-     listener_view(:,2), ...
-     listener_view(:,3)] = cart2sph(header.ListenerView(:,1), ...
-                                    header.ListenerView(:,2), ...
-                                    header.ListenerView(:,3));
-else
-    listener_view(:,1) = rad(header.ListenerView(:,1));
-    listener_view(:,2) = rad(header.ListenerView(:,2));
-    listener_view(:,3) = header.ListenerView(:,3);
-end
-[source_minus_listener_angle(:,1), ...
- source_minus_listener_angle(:,2)] = cart2sph(source_minus_listener(:,1), ...
-                                              source_minus_listener(:,2), ...
-                                              source_minus_listener(:,3));
-apparent_azimuth = bsxfun(@minus,source_minus_listener_angle(:,1), ...
-                                 listener_view(:,1));
-apparent_elevation = bsxfun(@minus,source_minus_listener_angle(:,2), ...
-                                   listener_view(:,2));
+% Calculate the apparent azimuth, elevation and distance
+x0 = SOFAcalculateAPV(header); % / [deg deg m]
+% convert angles to radian
+x0(:,1:2) = rad(x0(:,1:2));
+
 
 % === Coordinate system conversion ===
 if strcmp('spherical',coordinate_system)
@@ -163,15 +126,6 @@ else
     error('%s: unknown coordinate system type.',upper(mfilename));
 end
 
-% ensure apparent_distance is a vector
-if length(apparent_distance)==1
-    apparent_distance = repmat(apparent_distance,1,length(apparent_azimuth));
-end
-
-% === Get the direction ===
-% get all the impulse response positions
-x0 = [apparent_azimuth apparent_elevation]; % / rad
-
 % find the three nearest positions to the desired one (incorporating only angle
 % values and disregarding the radius)
 [neighbours,idx] = findnearestneighbour(x0(:,1:2)',xs,3);
@@ -181,7 +135,7 @@ x0 = [apparent_azimuth apparent_elevation]; % / rad
 if norm(neighbours(:,1)-xs)<prec || ~useinterpolation
     % return the first nearest neighbour
     ir = get_sofa_data(sofa,idx(1));
-    ir = correct_radius(ir,apparent_distance(idx(1)),r,conf);
+    ir = correct_radius(ir,x0(idx(1),3),r,conf);
 else
     % === IR interpolation ===
     % check if we have to interpolate in one or two dimensions
@@ -191,32 +145,28 @@ else
         warning('SFS:irs_intpol',...
             ['doing 1D IR interpolation between (%.1f,%.1f) deg ', ...
              'and (%.1f,%.1f) deg.'], ...
-            deg(apparent_azimuth(idx(1))), ...
-            deg(apparent_elevation(idx(1))), ...
-            deg(apparent_azimuth(idx(2))), ...
-            deg(apparent_elevation(idx(2))));
+            deg(x0(idx(1),1)), deg(x0(idx(1),2)), ...
+            deg(x0(idx(2),1)), deg(x0(idx(2),2)));
         ir1 = get_sofa_data(sofa,idx(1));
-        ir1 = correct_radius(ir1,apparent_distance(idx(1)),r,conf);
         ir2 = get_sofa_data(sofa,idx(2));
-        ir2 = correct_radius(ir2,apparent_distance(idx(2)),r,conf);
+        ir3 = get_sofa_data(sofa,idx(3));
+        ir1 = correct_radius(ir1,x0(idx(1),3),r,conf);
+        ir2 = correct_radius(ir2,x0(idx(2),3),r,conf);
         ir = intpol_ir(ir1,ir2,neighbours(:,1:2),xs);
     else
         % --- 2D interpolation ---
         warning('SFS:irs_intpol3D',...
             ['doing 2D IR interpolation between (%.1f,%.1f) deg, ', ...
              '(%.1f,%.1f) deg and (%.1f,%.1f) deg.'], ...
-            deg(apparent_azimuth(idx(1))), ...
-            deg(apparent_elevation(idx(1))), ...
-            deg(apparent_azimuth(idx(2))), ...
-            deg(apparent_elevation(idx(2))), ...
-            deg(apparent_azimuth(idx(3))), ...
-            deg(apparent_elevation(idx(3))));
+            deg(x0(idx(1),1)), deg(x0(idx(1),2)), ...
+            deg(x0(idx(2),1)), deg(x0(idx(2),2)), ...
+            deg(x0(idx(3),1)), deg(x0(idx(3),2)));
         ir1 = get_sofa_data(sofa,idx(1));
         ir2 = get_sofa_data(sofa,idx(2));
         ir3 = get_sofa_data(sofa,idx(3));
-        ir1 = correct_radius(ir,apparent_distance(idx(1)),r,conf);
-        ir2 = correct_radius(ir,apparent_distance(idx(2)),r,conf);
-        ir3 = correct_radius(ir,apparent_distance(idx(3)),r,conf);
+        ir1 = correct_radius(ir1,x0(idx(1),3),r,conf);
+        ir2 = correct_radius(ir2,x0(idx(2),3),r,conf);
+        ir3 = correct_radius(ir3,x0(idx(3),3),r,conf);
         ir = intpot_ir(ir1,ir2,ir3,[neighbours; 1 1 1],[xs;1]);
     end
 end

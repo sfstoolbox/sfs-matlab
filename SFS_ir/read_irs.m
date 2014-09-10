@@ -66,10 +66,8 @@ useoriglength = conf.ir.useoriglength;
 
 
 %% ===== Read IR files ================================================
-% Load the mat file
-load(irsfile);
-% Check irs format
-check_irs(irs);
+% Load SOFA file
+irs = SOFAload(irsfile);
 if ~useoriglength
     % Correct beginning zeros and length of impulse response
     irs = fix_irs_length(irs,conf);

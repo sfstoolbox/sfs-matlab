@@ -69,8 +69,10 @@ N = conf.N;
 
 
 %% ===== Main ============================================================
-% get distance of HRTF data set
-dist = max(irs.distance);
+% get apparent positions of HRTF set
+apv = SOFAcalculateAPV(irs);
+% get maximum distance
+dist = max(apv(:,3));
 if dist>10
     warning(['%s: Your maximum distance of the HRTF set is more than 10m. ', ...
         'We will only pad zeros for 10m, this can lead to problems with ', ...
@@ -85,6 +87,9 @@ if N-samples<128
         'will have only %i samples of your original impulse response.'], ...
         upper(mfilename),N-samples);
 end
-channels = size(irs.left,2);
-irs.left  = [zeros(samples,channels); fix_length(irs.left,N-samples)];
-irs.right = [zeros(samples,channels); fix_length(irs.right,N-samples)];
+% get number of measurements and channels (normally 2 for HRTFs)
+[measurements,channels,~] = size(irs.Data.IR);
+for ii=1:channels
+    irs.Data.IR(:,ii,:) = [zeros(measurements,samples) ...
+        fix_length(squeeze(irs.Data.IR(:,ii,:))',N-samples)'];
+end

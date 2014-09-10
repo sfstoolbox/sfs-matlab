@@ -1,10 +1,10 @@
-function ir = get_ir(irs,xs,coordinate_system,conf)
+function ir = get_ir(sofa,xs,coordinate_system,conf)
 %GET_IR returns a IR for the given apparent angle
 %
-%   Usage: ir = get_ir(irs,xs,[coordinate_system],[conf])
+%   Usage: ir = get_ir(sofa,xs,[coordinate_system],[conf])
 %
 %   Input parameters:
-%       irs     - IR data set
+%       sofa    - IR data set (sofa struct)
 %       xs      - position of the desired source / m
 %                 this is always assumed to be from the position of the listener
 %                 which is et to [0 0 0] implicitly
@@ -18,7 +18,7 @@ function ir = get_ir(irs,xs,coordinate_system,conf)
 %   Output parameters:
 %       ir      - IR for the given position (length of IR x 2)
 %
-%   GET_IR(irs,phi,delta,r,X0) returns a single IR set for the given angles 
+%   GET_IR(sofa,phi,delta,r,X0) returns a single IR set for the given angles 
 %   phi and delta. If the desired angles are not present in the IR data set 
 %   an interpolation is applied to create the desired angles.
 %   The desired radius is achieved by delaying and weighting the impulse
@@ -85,6 +85,71 @@ prec = 0.001; % ~ 0.05 deg
 
 %% ===== Computation ====================================================
 
+% === SOFA loading ===
+if ~isstruct(sofa) && exist(sofa,'file')
+    % get metadata
+    header = SOFAload(sofa,'nodata');
+elseif isfield(sofa.Data,'IR')
+    header = sofa;
+    header.Data = rmfield(sofa.Data,'IR');
+else
+    error('%s: sofa has to be a file or a SOFA struct.',upper(mfilename));
+end
+
+% === SOFA checking ===
+% Conventions handled so far
+SOFA_conventions = { ...
+    'SimpleFreeFieldHRIR', ...
+    'SingleRoomDRIR', ...
+    };
+if ~any(strcmp(header.GLOBAL_SOFAConventions,SOFA_conventions))
+    error('%s: wrong SOFA Convention.');
+end
+
+% === Internal variables ===
+% Calculate the apparent distance for every source and listener position
+if strcmp(header.ListenerPosition_Type,'spherical')
+    % TODO: check if this can be done in one line in Matlab and Octave
+    [listener_position(:,1), ...
+     listener_position(:,2), ...
+     listener_position(:,3)] = sph2cart(rad(header.ListenerPosition(:,1)), ...
+                                        rad(header.ListenerPosition(:,2)), ...
+                                        header.ListenerPosition(:,3));
+else
+    listener_position = header.ListenerPosition;
+end
+if strcmp(header.SourcePosition_Type,'spherical')
+    [source_position(:,1), ...
+     source_position(:,2), ...
+     source_position(:,3)] = sph2cart(rad(header.SourcePosition(:,1)), ...
+                                      rad(header.SourcePosition(:,2)), ...
+                                      header.SourcePosition(:,3));
+else
+    source_position = header.SourcePosition;
+end
+source_minus_listener = bsxfun(@minus,source_position,listener_position);
+apparent_distance = vector_norm(source_minus_listener,2);
+% Calculate apparent azimuth and elevation for every source positon and listener view
+if strcmp(header.ListenerView_Type,'cartesian')
+    [listener_view(:,1), ...
+     listener_view(:,2), ...
+     listener_view(:,3)] = cart2sph(header.ListenerView(:,1), ...
+                                    header.ListenerView(:,2), ...
+                                    header.ListenerView(:,3));
+else
+    listener_view(:,1) = rad(header.ListenerView(:,1));
+    listener_view(:,2) = rad(header.ListenerView(:,2));
+    listener_view(:,3) = header.ListenerView(:,3);
+end
+[source_minus_listener_angle(:,1), ...
+ source_minus_listener_angle(:,2)] = cart2sph(source_minus_listener(:,1), ...
+                                              source_minus_listener(:,2), ...
+                                              source_minus_listener(:,3));
+apparent_azimuth = bsxfun(@minus,source_minus_listener_angle(:,1), ...
+                                 listener_view(:,1));
+apparent_elevation = bsxfun(@minus,source_minus_listener_angle(:,2), ...
+                                   listener_view(:,2));
+
 % === Coordinate system conversion ===
 if strcmp('spherical',coordinate_system)
     % store desired radius
@@ -98,14 +163,14 @@ else
     error('%s: unknown coordinate system type.',upper(mfilename));
 end
 
-% ensure irs.distance is a vector
-if length(irs.distance)==1
-    irs.distance = repmat(irs.distance,1,length(irs.apparent_azimuth));
+% ensure apparent_distance is a vector
+if length(apparent_distance)==1
+    apparent_distance = repmat(apparent_distance,1,length(apparent_azimuth));
 end
 
 % === Get the direction ===
 % get all the impulse response positions
-x0 = [irs.apparent_azimuth' irs.apparent_elevation']; % / rad
+x0 = [apparent_azimuth apparent_elevation]; % / rad
 
 % find the three nearest positions to the desired one (incorporating only angle
 % values and disregarding the radius)
@@ -115,8 +180,8 @@ x0 = [irs.apparent_azimuth' irs.apparent_elevation']; % / rad
 % bewteen different impulse responses
 if norm(neighbours(:,1)-xs)<prec || ~useinterpolation
     % return the first nearest neighbour
-    ir = correct_radius([irs.left(:,idx(1)) irs.right(:,idx(1))], ...
-        irs.distance(idx(1)),r,conf);
+    ir = get_sofa_data(sofa,idx(1));
+    ir = correct_radius(ir,apparent_distance(idx(1)),r,conf);
 else
     % === IR interpolation ===
     % check if we have to interpolate in one or two dimensions
@@ -126,32 +191,32 @@ else
         warning('SFS:irs_intpol',...
             ['doing 1D IR interpolation between (%.1f,%.1f) deg ', ...
              'and (%.1f,%.1f) deg.'], ...
-            deg(irs.apparent_azimuth(idx(1))), ...
-            deg(irs.apparent_elevation(idx(1))), ...
-            deg(irs.apparent_azimuth(idx(2))), ...
-            deg(irs.apparent_elevation(idx(2))));
-        ir1 = correct_radius([irs.left(:,idx(1)) irs.right(:,idx(1))], ...
-            irs.distance(idx(1)),r,conf);
-        ir2 = correct_radius([irs.left(:,idx(2)) irs.right(:,idx(2))], ...
-            irs.distance(idx(2)),r,conf);
+            deg(apparent_azimuth(idx(1))), ...
+            deg(apparent_elevation(idx(1))), ...
+            deg(apparent_azimuth(idx(2))), ...
+            deg(apparent_elevation(idx(2))));
+        ir1 = get_sofa_data(sofa,idx(1));
+        ir1 = correct_radius(ir1,apparent_distance(idx(1)),r,conf);
+        ir2 = get_sofa_data(sofa,idx(2));
+        ir2 = correct_radius(ir2,apparent_distance(idx(2)),r,conf);
         ir = intpol_ir(ir1,ir2,neighbours(:,1:2),xs);
     else
         % --- 2D interpolation ---
         warning('SFS:irs_intpol3D',...
             ['doing 2D IR interpolation between (%.1f,%.1f) deg, ', ...
              '(%.1f,%.1f) deg and (%.1f,%.1f) deg.'], ...
-            deg(irs.apparent_azimuth(idx(1))), ...
-            deg(irs.apparent_elevation(idx(1))), ...
-            deg(irs.apparent_azimuth(idx(2))), ...
-            deg(irs.apparent_elevation(idx(2))), ...
-            deg(irs.apparent_azimuth(idx(3))), ...
-            deg(irs.apparent_elevation(idx(3))));
-        ir1 = correct_radius([irs.left(:,idx(1)) irs.right(:,idx(1))], ...
-            irs.distance(idx(1)),r,conf);
-        ir2 = correct_radius([irs.left(:,idx(2)) irs.right(:,idx(2))], ...
-            irs.distance(idx(2)),r,conf);
-        ir3 = correct_radius([irs.left(:,idx(3)) irs.right(:,idx(3))], ...
-            irs.distance(idx(3)),r,conf);
+            deg(apparent_azimuth(idx(1))), ...
+            deg(apparent_elevation(idx(1))), ...
+            deg(apparent_azimuth(idx(2))), ...
+            deg(apparent_elevation(idx(2))), ...
+            deg(apparent_azimuth(idx(3))), ...
+            deg(apparent_elevation(idx(3))));
+        ir1 = get_sofa_data(sofa,idx(1));
+        ir2 = get_sofa_data(sofa,idx(2));
+        ir3 = get_sofa_data(sofa,idx(3));
+        ir1 = correct_radius(ir,apparent_distance(idx(1)),r,conf);
+        ir2 = correct_radius(ir,apparent_distance(idx(2)),r,conf);
+        ir3 = correct_radius(ir,apparent_distance(idx(3)),r,conf);
         ir = intpot_ir(ir1,ir2,ir3,[neighbours; 1 1 1],[xs;1]);
     end
 end
@@ -173,5 +238,19 @@ function ir = correct_radius(ir,ir_distance,r,conf)
         end
         % Apply delay and weighting
         ir = delayline(ir,[delay; delay],[weight; weight],conf);
+    end
+end
+
+function ir = get_sofa_data(sofa,idx)
+    % Check if we have a file or struct
+    if isstruct(sofa)
+        ir = sofa.Data.IR(idx,:,:);
+        ir = squeeze(ir)';
+    else
+        file = sofa;
+        % FIXME: this is currently not working under Octave, because it will
+        % always return [1 idx] data
+        sofa = SOFAload(file,[idx idx]);
+        ir = squeeze(sofa.Data.IR)';
     end
 end

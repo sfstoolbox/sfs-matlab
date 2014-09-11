@@ -113,7 +113,7 @@ end
 
 % select secondary sources for virtual secondary source array
 selector = false(size(x0,1),1);
-for xi=xv
+for xi=xv'
   [~, xdx] = secondary_source_selection(x0, xi(1:6)', 'fs');
   selector(xdx) = true;
 end

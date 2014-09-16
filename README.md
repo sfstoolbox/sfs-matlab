@@ -477,13 +477,15 @@ wavwrite(brs,fs,16,'brs_set_for_SSR.wav');
 
 ### Small helper functions
 
-The Toolbox provides you also with a set of useful small functions that may want
-to use. Here the highlights are angle conversion with <code>rad()</code> and
-<code>degree()</code>, FFT calculation and plotting <code>easyfft()</code>,
+The Toolbox provides you also with a set of useful small functions.
+Here the highlights are angle conversion with <code>rad()</code> and
+<code>deg()</code>, FFT calculation and plotting <code>easyfft()</code>,
 create noise signal <code>noise()</code>, rotation matrix
-<code>rotation_matrix()</code>, even or odd checking <code>iseven()</code>
+<code>rotation_matrix()</code>, multi-channel convolution
+<code>convolution()</code>, nearest neighbour search
+<code>findnearestneighbour()</code>, even or odd checking <code>iseven()</code>
 <code>isodd()</code>, spherical bessel functions <code>sphbesselh()</code>
-<code>sphbesselj</code> <code>sphbessely</code>.
+<code>sphbesselj()</code> <code>sphbessely()</code>.
 
 
 ### Plotting with Matlab or gnuplot

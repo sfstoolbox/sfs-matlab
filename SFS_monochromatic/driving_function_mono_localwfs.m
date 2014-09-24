@@ -80,7 +80,7 @@ end
 virtualconf = conf;
 virtualconf.secondary_sources.size = conf.localsfs.size;
 virtualconf.secondary_sources.center = conf.localsfs.center;
-virtualconf.secondary_sources.geometry = conf.localsfs.geometry;
+virtualconf.secondary_sources.geometry = conf.localsfs.vss.geometry;
 virtualconf.secondary_sources.number = conf.localsfs.vss.number;
 
 method = conf.localsfs.vss.method;

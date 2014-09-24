@@ -82,20 +82,21 @@ end
 virtualconf = conf;
 virtualconf.secondary_sources.size     = conf.localsfs.size;
 virtualconf.secondary_sources.center   = conf.localsfs.center;
-virtualconf.secondary_sources.geometry = conf.localsfs.geometry;
+virtualconf.secondary_sources.geometry = conf.localsfs.vss.geometry;
 virtualconf.secondary_sources.number   = conf.localsfs.vss.number;
 
-geometry                    = conf.localsfs.geometry;
+geometry                    = conf.localsfs.vss.geometry;
 sampling                    = conf.localsfs.vss.sampling;
 logratio                    = conf.localsfs.vss.logratio;
 nls                         = conf.localsfs.vss.number;
+consider_local_area         = conf.localsfs.vss.consider_local_area;
 consider_secondary_sources  = conf.localsfs.vss.consider_secondary_sources;
 consider_target_field       = conf.localsfs.vss.consider_target_field;
 tapering                    = conf.localsfs.vss.tapering;
 
 %% ===== Main ============================================================
 
-if consider_target_field || consider_secondary_sources
+if consider_target_field || consider_secondary_sources || consider_local_area
   % =====================================================================
   % adaptive positioning of virtual secondary sources
   % =====================================================================
@@ -124,6 +125,7 @@ if consider_target_field || consider_secondary_sources
 
     % CONSTRAINT 1 ========================================================
     % consider the target field which shall reproduced
+    phid = pi;
     if consider_target_field
       if strcmp('pw',src)
         phid = pi/2;
@@ -131,14 +133,13 @@ if consider_target_field || consider_secondary_sources
         % 1/2 opening angle of cone spanned by local area and virtual source
         phid = acos(Rl./vector_norm(xs-xl,2));
       end
-    else
-      phid = pi;
     end
 
     % CONSTRAINT 2 ======================================================
     % consider the position of the real loudspeaker array
+    delta_max = phid;
+    delta_min = -phid;
     if (consider_secondary_sources && ~isempty(x0))
-
       delta_max = 0;
       delta_min = 0;
       % for each secondary source
@@ -155,9 +156,6 @@ if consider_target_field || consider_secondary_sources
       end
       delta_max = min(delta_max, phid);
       delta_min = max(delta_min, -phid);
-    else
-      delta_max = phid;
-      delta_min = -phid;
     end
 
     delta_offset = eps;
@@ -199,24 +197,29 @@ if consider_target_field || consider_secondary_sources
     % CONSTRAINT 1 ========================================================
     % consider the target field which shall reproduced
     if consider_target_field
-      if strcmp('pw',src)
-        Rd = Rl;
-        xd = Rl;
-      else
-        Rd = Rl;
-        % 1/2 opening angle of cone spanned by local area and virtual source
-        phid = acos(Rl./vector_norm(xs-xl,2));
-        xd = (vector_norm(xs-xl,2)-Rd)./tan(phid);
-      end
       nd = ns;
       ndorth = ns*[0 1 0; -1 0 0; 0 0 1];
+      if consider_local_area
+        if strcmp('pw',src)
+          xd = Rl;
+        else
+          xd = (vector_norm(xs-xl,2)-Rd)./tan(phid);
+        end
+      else
+        xd = Rl;
+      end
     else
-      Rd = 0;
       xd = Rl;
       nd = [0, 1, 0];
-      ndorth = [-1, 0, 0];
+      ndorth = [-1, 0, 0]; 
     end
 
+    if consider_local_area
+      Rd = Rl;
+    else
+      Rd = 0;
+    end
+    
     % CONSTRAINT 2 ========================================================
     % consider the position of the real loudspeaker array
     if (consider_secondary_sources && ~isempty(x0))

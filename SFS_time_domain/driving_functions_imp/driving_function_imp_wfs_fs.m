@@ -86,7 +86,6 @@ if strcmp('2D',dimension)
 
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        to_be_implemented;
         % d using a focused line source as source model
         %                     ___
         %                    | 1   (x0-xs) nx0
@@ -99,7 +98,7 @@ if strcmp('2D',dimension)
         r = vector_norm(x0-xs,2);
         % Delay and amplitude weight
         delay = -1/c .* r;
-        weight = 1/(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
+        weight = 1/(2*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3/2);
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2D focused source.'],upper(mfilename),driving_functions);

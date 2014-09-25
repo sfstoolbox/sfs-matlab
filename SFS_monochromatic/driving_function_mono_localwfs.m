@@ -98,7 +98,10 @@ switch method
     % === Wave Field Synthesis ===
     % create virtual source array
     xv = virtual_secondary_source_positions(x0,xs,src,conf);
-    xv = secondary_source_amplitudecorrection(xv);
+    % optional tapering
+    xv = secondary_source_tapering(xv,virtualconf);
+    % optional amplitude correction
+    % xv = secondary_source_amplitudecorrection(xv);
     % driving functions for virtual source array
     Dv = driving_function_mono_wfs(xv,xs,src,f,virtualconf);
   case 'nfchoa'
@@ -111,13 +114,8 @@ switch method
     error('%s: %s is not a supported method for localsfs!',upper(mfilename),method);
 end
 
-% select secondary sources for virtual secondary source array
-selector = false(size(x0,1),1);
-for xi=xv'
-  [~, xdx] = secondary_source_selection(x0, xi(1:6)', 'fs');
-  selector(xdx) = true;
-end
-x0(~selector,7) = 0;
+% select secondary sources
+x0 = secondary_source_selection(x0, xv(:,1:6), 'vss');
 % driving functions for real source array
 D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf);
 

@@ -81,6 +81,8 @@ virtualconf.secondary_sources.size = conf.localsfs.size;
 virtualconf.secondary_sources.center = conf.localsfs.center;
 virtualconf.secondary_sources.geometry = conf.localsfs.vss.geometry;
 virtualconf.secondary_sources.number = conf.localsfs.vss.number;
+virtualconf.usetapwin = conf.localsfs.vss.usetapwin;
+virtualconf.tapwinlen = conf.localsfs.vss.tapwinlen;
 
 method = conf.localsfs.vss.method;
 %% ===== Computation ====================================================
@@ -97,6 +99,9 @@ switch method
     % === Wave Field Synthesis ===
     % create virtual source array
     xv = virtual_secondary_source_positions(x0,xs,src,conf);
+    % optional tapering
+    xv = secondary_source_tapering(xv,virtualconf);
+    % optional amplitude correction
     % xv = secondary_source_amplitudecorrection(xv);
     % driving functions for virtual source array
     dv = driving_function_imp_wfs(xv,xs,src,virtualconf);
@@ -105,14 +110,8 @@ switch method
       upper(mfilename),method);
 end
 
-% select secondary sources for virtual secondary source array
-selector = false(size(x0,1),1);
-for xi=xv
-  [~, xdx] = secondary_source_selection(x0, xi(1:6)', 'fs');
-  selector(xdx) = true;
-end
-x0(~selector,7) = 0;
-
+% select secondary sources
+x0 = secondary_source_selection(x0, xv(:,1:6), 'vss');
 % driving functions for real source array
 d = driving_function_imp_wfs_vss(x0,xv,dv,conf);
 

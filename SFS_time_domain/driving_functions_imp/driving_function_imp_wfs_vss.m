@@ -1,26 +1,25 @@
-function d = driving_function_imp_wfs_vss(x0,xv,dv, conf)
-%DRIVING_FUNCTION_MONO_WFS_VSS returns the driving signal D for a virtual
+function d = driving_function_imp_wfs_vss(x0,xv,dv,conf)
+%DRIVING_FUNCTION_IMP_WFS_VSS returns the driving signal d for a virtual
 %secondary source distribution
 %
-%   Usage: D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf)
+%   Usage: d = driving_function_imp_wfs_vss(x0,xv,dv,conf)
 %
 %   Input parameters:
 %       x0          - position, direction, and weights of the real secondary
 %                     sources / m [nx7]
 %       xv          - position, direction, and weights of the virtual secondary
 %                     sources / m [mx7]
-%       Dv          - driving functions of virtual secondary sources [mx1]
-%       f           - frequency of the monochromatic source / Hz
+%       dv           - driving signals of virtual secondary sources [sxm]
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       D           - driving function signal [nx1]
+%       d           - driving function signal [Sxn]
 %
 %   References:
 %       S. Spors (2010) - "Local Sound Field Synthesis by Virtual Secondary
 %                          Sources", 40th AES
 %
-%   see also: driving_function_mono_wfs, driving_function_mono_wfs_fs
+%   see also: driving_function_imp_localwfs, driving_function_mono_wfs_vss
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -72,7 +71,7 @@ fs = conf.fs;
 N = conf.N;
 
 %% ===== Computation ====================================================
-% Get driving signals
+% Distiguish between types of virtual secondary sources
 if strcmp('ps',vsstype)
     % === Focussed Point Sink ===========================================
     conf.driving_functions = 'default';
@@ -84,30 +83,35 @@ else
     error('%s: %s is not a known source type.',upper(mfilename), vsstype);
 end
 
-% Get Drivings Signal real secondary sources
-N0 = size(x0,1);
+% Apply wfs preequalization filter on each driving signal of the vss'
+dv = wfs_preequalization(dv, conf);
 
+% initialize 
+Nv = size(xv,1);
+N0 = size(x0,1);
 d = zeros(N, N0);
 
-idx = 0;
+idx = 1;
 for xvi = xv'
-  idx = idx + 1;
+  % select active source for one focused source
   [x0s, xdx] = secondary_source_selection(x0,xvi(1:6)','fs');
   if ~isempty(x0s) && xvi(7) > 0
-    % wfs pre equalization of virtual secondary sources driving signal
-    pulse = repmat(wfs_preequalization(dv(:,idx), conf), 1, size(x0s,1));
-    % pulse = repmat(dv(:,idx), 1, size(x0s,1));
-    
-    [~, delay, weight] = ...
-      driving_function_imp_wfs(x0s,xvi(1:6)','fs',conf);
-
+    % focused source position
+    xs = repmat(xvi(1:3)',[size(x0s,1) 1]);    
+    % delay and weights for single focused source
+    [delay,weight] = driving_function_imp_wfs_fs(x0s(:,1:3),x0s(:,4:6),xs,conf);
+    % optional tapering
     x0s = secondary_source_tapering(x0s,conf);
 
     weight = weight.*x0s(:,7).*xvi(7);
-    
+
+    % 
+    pulse = repmat(dv(:,idx), 1, size(x0s,1));
     % Shift and weight prototype driving function
     d(:, xdx) = d(:, xdx) + delayline(pulse, delay*fs, weight, conf);
+
   end
+  idx = idx + 1;  
 end
 
 

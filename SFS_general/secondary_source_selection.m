@@ -6,12 +6,13 @@ function [x0,idx] = secondary_source_selection(x0,xs,src)
 %   Input options:
 %       x0          - secondary source positions, directions and weights / m [nx7]
 %       xs          - position and for focused sources also direction of the
-%                     desired source model / m [1x3] or [1x6]
+%                     desired source model / m [1x3] or [1x6] or [mx6]
 %       src         - source type of the virtual source
-%                       'pw' - plane wave (xs is the direction of the
-%                              plane wave in this case)
-%                       'ps' - point source
-%                       'fs' - focused source
+%                       'pw'  - plane wave (xs is the direction of the
+%                               plane wave in this case)
+%                       'ps'  - point source
+%                       'fs'  - focused source
+%                       'vss' - distribution of focused sources
 %
 %   Output options:
 %       x0          - secondary sources / m, containing only the active
@@ -67,14 +68,23 @@ nargmin = 3;
 nargmax = 3;
 narginchk(nargmin,nargmax);
 isargsecondarysource(x0);
-isargxs(xs);
 isargchar(src);
+
+if strcmp('vss', src) && size(xs,2)~=6
+  error(['%s: you have chosen "vss" as source type, then xs has ', ...
+      'to be [nx6] including the direction of each virtual secondary', ...
+      'source.'], upper(mfilename));
+  isargmatrix(xs);
+elseif ~strcmp('vss', src)
+  isargxs(xs);
+end
+
 if strcmp('fs',src) && size(xs,2)~=6
     error(['%s: you have chosen "fs" as source type, then xs has ', ...
         'to be [1x6] including the direction of the focused source.'], ...
         upper(mfilename));
-elseif ~strcmp('fs',src) && size(xs,2)~=3
-    error(['%s: for all source types beside "fs", the size of xs ', ...
+elseif ~strcmp('fs',src) &&  ~strcmp('vss',src) && size(xs,2)~=3
+    error(['%s: for all source types beside "fs" and "vss", the size of xs ', ...
         'has to be [1x3].'],upper(mfilename));
 end
 
@@ -131,6 +141,15 @@ elseif strcmp('fs',src)
     xs = xs(:,1:3);
     idx = (( vector_product(nxs,xs-x0,2)>=eps ));
     x0 = x0_tmp(idx,:);
+elseif strcmp('vss', src)
+    % === virtual secondary sources ===
+    % multiple focussed source selection
+    selector = false(size(x0_tmp,1),1);
+    for xi=xs'
+      [~, xdx] = secondary_source_selection(x0_tmp, xi(1:6)', 'fs');
+      selector(xdx) = true;
+    end
+    x0 = x0_tmp(selector,:);
 else
     error('%s: %s is not a supported source type!',upper(mfilename),src);
 end

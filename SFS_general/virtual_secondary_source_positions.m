@@ -202,7 +202,9 @@ if consider_target_field || consider_secondary_sources || consider_local_area
         if strcmp('pw',src)
           xd = Rl;
         else
-          xd = (vector_norm(xs-xl,2)-Rd)./tan(phid);
+          % 1/2 opening angle of cone spanned by local area and virtual source
+          phid = acos(Rl./vector_norm(xs-xl,2));
+          xd = (vector_norm(xs-xl,2)-Rl)./tan(phid);
         end
       else
         xd = Rl;

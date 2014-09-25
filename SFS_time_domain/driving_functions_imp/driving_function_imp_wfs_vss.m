@@ -91,6 +91,9 @@ Nv = size(xv,1);
 N0 = size(x0,1);
 d = zeros(N, N0);
 
+delay = inf(N0,Nv);
+weight = zeros(N0,Nv);
+
 idx = 1;
 for xvi = xv'
   % select active source for one focused source
@@ -99,19 +102,32 @@ for xvi = xv'
     % focused source position
     xs = repmat(xvi(1:3)',[size(x0s,1) 1]);    
     % delay and weights for single focused source
-    [delay,weight] = driving_function_imp_wfs_fs(x0s(:,1:3),x0s(:,4:6),xs,conf);
+    [delay(xdx,idx),weight(xdx,idx)] = driving_function_imp_wfs_fs(x0s(:,1:3),x0s(:,4:6),xs,conf);
+    
     % optional tapering
     x0s = secondary_source_tapering(x0s,conf);
-
-    weight = weight.*x0s(:,7).*xvi(7);
-
-    % 
-    pulse = repmat(dv(:,idx), 1, size(x0s,1));
-    % Shift and weight prototype driving function
-    d(:, xdx) = d(:, xdx) + delayline(pulse, delay*fs, weight, conf);
-
+    
+    weight(xdx,idx) = weight(xdx,idx).*x0s(:,7).*xvi(7);
   end
   idx = idx + 1;  
 end
+
+% normalize delay
+delay = delay - min(delay(:));
+
+idx = 1;
+for xvi = xv'
+  % select active source for one focused source
+  [x0s, xdx] = secondary_source_selection(x0,xvi(1:6)','fs');
+  if ~isempty(x0s) && xvi(7) > 0
+    % 
+    pulse = repmat(dv(:,idx), 1, size(x0s,1));
+    % Shift and weight prototype driving function
+    d(:, xdx) = d(:, xdx) + delayline(pulse, delay(xdx,idx)*fs, weight(xdx,idx), conf);
+  end
+  idx = idx + 1;  
+end
+
+
 
 

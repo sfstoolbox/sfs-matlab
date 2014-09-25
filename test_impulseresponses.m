@@ -44,7 +44,7 @@ conf.xref = conf.localsfs.center;
 xs = [0.0, -1.0, 0];  % propagation direction of plane wave
 src = 'pw';
 xrange = [-1.5, 1.5];
-yrange = [-1, 1];
+yrange = [-1, 1.2];
 zrange = 0;
 
 x0 = secondary_source_positions(conf);
@@ -53,8 +53,8 @@ x0 = secondary_source_positions(conf);
 
 %%
 % plot localwfs sound field
-[p,x,y,z] = sound_field_imp(xrange,yrange,zrange,xactive, 'ls',d1, ...
-  64+64-1+conf.localsfs.size/2/conf.c*conf.fs,conf);
+[p,x,y,z] = sound_field_imp(xrange,yrange,zrange,xactive, 'ls', d1, ...
+  64+64-1+(1.1314+0.5)/conf.c*conf.fs, conf);
 plot_sound_field(p,x,y,z,xactive,conf);
 hold on
   draw_loudspeakers(xv, [1 1 0], conf);

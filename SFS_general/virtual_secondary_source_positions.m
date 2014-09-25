@@ -92,7 +92,6 @@ nls                         = conf.localsfs.vss.number;
 consider_local_area         = conf.localsfs.vss.consider_local_area;
 consider_secondary_sources  = conf.localsfs.vss.consider_secondary_sources;
 consider_target_field       = conf.localsfs.vss.consider_target_field;
-tapering                    = conf.localsfs.vss.tapering;
 
 %% ===== Main ============================================================
 
@@ -254,7 +253,7 @@ if consider_target_field || consider_secondary_sources || consider_local_area
         % === equi-distant sampling on valid line ===
         x = linspace(xmin, xmax, nls);
       case 'log'
-        x = log_spacing(xmin, xmax, 0, nls, logratio)
+        x = log_spacing(xmin, xmax, 0, nls, logratio);
       otherwise
         error('%s: %s is not a supported sampling method for linear sampling!',upper(mfilename),method);
     end
@@ -277,10 +276,6 @@ else
   % the local listening area and the position of the real loudspeakers
 
   xv = secondary_source_positions(virtualconf);
-end
-
-if tapering
-  xv = secondary_source_tapering(xv,virtualconf);
 end
 
 end

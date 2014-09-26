@@ -68,7 +68,6 @@ if nargin<nargmax
 end
 isargstruct(conf);
 
-
 %% ===== Configuration ==================================================
 % Plotting result
 useplot = conf.plot.useplot;
@@ -78,8 +77,16 @@ showprogress = conf.showprogress;
 conf.showprogress = 0;
 % disable normalization, otherwise the amplitude will always the same for all
 % time steps
-conf.usenormalization = 0;
+conf.usenormalisation = 0;
+% disable plotting, otherwise the sound_field_imp fails
+conf.plot.useplot = 0;
 
+% select secondary source type
+if strcmp('2D',conf.dimension)
+    greens_function = 'ls';
+else
+    greens_function = 'ps';
+end
 
 %% ===== Computation ====================================================
 % Get the position of the loudspeakers
@@ -88,15 +95,15 @@ x0 = secondary_source_selection(x0,xs,src);
 x0 = secondary_source_tapering(x0,conf);
 % Generate time axis (0-500 samples)
 t = (0:500)';
-S = zeros(1,length(t));
+s = zeros(1,length(t));
 d = driving_function_imp_wfs(x0,xs,src,conf);
 % If desired a cosine shaped pulse instead of the default dirac pulse could be
 % used
-%d = convolution(d,hann_window(5,5,10));
+% d = convolution(d,hann_window(5,5,10));
 for ii = 1:length(t)
     if showprogress, progress_bar(ii,length(t)); end
     % calculate sound field at the listener position
-    p = sound_field_imp(X(1),X(2),X(3),x0,'ps',d,t(ii),conf);
+    p = sound_field_imp(X(1),X(2),X(3),x0,greens_function,d,t(ii),conf);
     s(ii) = real(p);
 end
 

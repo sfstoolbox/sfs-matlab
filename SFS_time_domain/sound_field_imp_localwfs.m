@@ -1,34 +1,36 @@
-function [d, x0, xv] = driving_function_imp_localwfs(x0,xs,src,conf)
-%DRIVING_FUNCTION_IMP_LOCALWFS returns the driving signal d for local WFS
+function varargout = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
+%SOUND_FIELD_IMP_LOCALWFS returns the sound field in time domain of an impulse
 %
-%   Usage: [D, xv, x0] = driving_function_mono_localwfs(x0,xs,src,conf)
+%   Usage: [p,x,y,z,x0] = sound_field_imp_localwfs(X,Y,Z,xs,src,t,[conf])
 %
-%   Input parameters:
-%       x0          - position and direction of the secondary source / m [nx6]
-%       xs          - position of virtual source or direction of plane
-%                     wave / m [1x3]
+%   Input options:
+%       X           - x-axis / m; single value or [xmin,xmax]
+%       Y           - y-axis / m; single value or [ymin,ymax]
+%       Z           - z-axis / m; single value or [zmin,zmax]
+%       xs          - position of point source / m
 %       src         - source type of the virtual source
-%                         'pw' - plane wave (xs is the direction of the
+%                         'pw' - plane wave (xs, ys are the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
-%                         'ls' - line source
-%                         'fs' - focused source
-%
-%       f           - frequency of the monochromatic source / Hz
+%       t           - time point t of the sound field / samples
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   Output parameters:
-%       D           - driving function signal [nx1]
-%       x0          - position, direction, and weights of the real secondary
-%                     sources / m [nx7]
-%       xv          - position, direction, and weights of the virtual secondary
-%                     sources / m [mx7]
+%   Output options:
+%       p           - simulated sound field
+%       x           - corresponding x axis / m
+%       y           - corresponding y axis / m
+%       z           - corresponding z axis / m
+%       x0          - secondary sources / m
 %
-%   References:
-%       S. Spors (2010) - "Local Sound Field Synthesis by Virtual Secondary
-%                          Sources", 40th AES
+%   SOUND_FIELD_IMP_LOCALWFS(X,Y,Z,xs,src,t,conf) simulates a sound field of the
+%   given source type (src) using a LOCALWFS driving function with a delay line at
+%   the time t.
 %
-%   see also: plot_sound_field, sound_field_mono_wfs
+%   To plot the result use:
+%   conf.plot.usedb = 1;
+%   plot_sound_field(p,x,y,z,x0,win,conf);
+%
+%   see also: driving_function_imp_localwfs, sound_field_mono_localwfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -62,57 +64,54 @@ function [d, x0, xv] = driving_function_imp_localwfs(x0,xs,src,conf)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
-nargmax = 4;
+nargmin = 6;
+nargmax = 7;
 narginchk(nargmin,nargmax);
-isargsecondarysource(x0);
+isargvector(X,Y,Z);
 isargxs(xs);
 isargchar(src);
+isargscalar(t);
 if nargin<nargmax
     conf = SFS_config;
 else
     isargstruct(conf);
 end
 
+
 %% ===== Configuration ==================================================
-virtualconf = conf;
-virtualconf.secondary_sources.size = conf.localsfs.size;
-virtualconf.secondary_sources.center = conf.localsfs.center;
-virtualconf.secondary_sources.geometry = conf.localsfs.vss.geometry;
-virtualconf.secondary_sources.number = conf.localsfs.vss.number;
-virtualconf.usetapwin = conf.localsfs.vss.usetapwin;
-virtualconf.tapwinlen = conf.localsfs.vss.tapwinlen;
-virtualconf.wfs = conf.localsfs.vss.wfs;
-
-method = conf.localsfs.vss.method;
-%% ===== Computation ====================================================
-
-if strcmp('fs',src)
-  error(['%s: %s is not a supported method source type! Try to use a point', ...
-    ' source, if the source is inside the secondary source array but not', ...
-    ' inside the virtual secondary source array'], upper(mfilename),src);
+if strcmp('2D',conf.dimension)
+    greens_function = 'ls';
+else
+    greens_function = 'ps';
 end
+usehpre = conf.wfs.usehpre + conf.localsfs.vss.wfs.usehpre;
 
-% Determine driving functions of virtual array with different sfs methods
-switch method
-  case 'wfs'
-    % === Wave Field Synthesis ===
-    % create virtual source array
-    xv = virtual_secondary_source_positions(x0,xs,src,conf);
-    % optional tapering
-    xv = secondary_source_tapering(xv,virtualconf);
-    % optional amplitude correction
-    % xv = secondary_source_amplitudecorrection(xv);
-    % driving functions for virtual source array
-    dv = driving_function_imp_wfs(xv,xs,src,virtualconf);
-  otherwise
-    error('%s: %s is not a supported method for time domain localsfs!', ...
-      upper(mfilename),method);
+
+%% ===== Computation =====================================================
+% Get secondary sources
+x0 = secondary_source_positions(conf);
+x0 = secondary_source_selection(x0,xs,src);
+x0 = secondary_source_tapering(x0,conf);
+% Get driving signals
+[d, ~, xv] = driving_function_imp_localwfs(x0,xs,src,conf);
+% Fix the time to account for sample offset of the pre-equalization filter
+switch (usehpre)
+  case 1
+    t = t + 64;
+  case 2
+    t = t + 127;
 end
-
-% select secondary sources
-x0 = secondary_source_selection(x0, xv(:,1:6), 'vss');
-% driving functions for real source array
-d = driving_function_imp_wfs_vss(x0,xv,dv,conf);
+% Calculate sound field
+[varargout{1:min(nargout,4)}] = ...
+    sound_field_imp(X,Y,Z,x0,greens_function,d,t,conf);
+% Return secondary sources if desired
+if nargout==5, varargout{5}=x0; end  
+  
+% === Plotting ===
+if nargout==0 || useplot
+  hold on
+    draw_loudspeakers(xv, [1 1 0], conf);
+  hold off
 end

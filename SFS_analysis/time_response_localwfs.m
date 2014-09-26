@@ -1,34 +1,27 @@
-function [d, x0, xv] = driving_function_imp_localwfs(x0,xs,src,conf)
-%DRIVING_FUNCTION_IMP_LOCALWFS returns the driving signal d for local WFS
+function varargout = time_response_localwfs(X,xs,src,conf)
+%TIME_RESPONSE_LOCALWFS simulates the time response for LOCAL WFS at the given
+%listener position
 %
-%   Usage: [D, xv, x0] = driving_function_mono_localwfs(x0,xs,src,conf)
+%   Usage: [s,t] = time_response_localwfs(X,xs,src,[conf])
 %
 %   Input parameters:
-%       x0          - position and direction of the secondary source / m [nx6]
-%       xs          - position of virtual source or direction of plane
-%                     wave / m [1x3]
+%       X           - listener position / m
+%       xs          - position of virtual source / m
 %       src         - source type of the virtual source
-%                         'pw' - plane wave (xs is the direction of the
-%                                plane wave in this case)
+%                         'pw' -plane wave
 %                         'ps' - point source
-%                         'ls' - line source
 %                         'fs' - focused source
-%
-%       f           - frequency of the monochromatic source / Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       D           - driving function signal [nx1]
-%       x0          - position, direction, and weights of the real secondary
-%                     sources / m [nx7]
-%       xv          - position, direction, and weights of the virtual secondary
-%                     sources / m [mx7]
+%       s           - simulated time response
+%       t           - corresponding time axis / s
 %
-%   References:
-%       S. Spors (2010) - "Local Sound Field Synthesis by Virtual Secondary
-%                          Sources", 40th AES
+%   TIME_RESPONSE_LOCALWFS(X,xs,src,conf) simulates the time response of the
+%   sound field at the given position X. The sound field is simulated for the
+%   given source type (src) using the sound_field_imp_localwfs function.
 %
-%   see also: plot_sound_field, sound_field_mono_wfs
+%   see also: sound_field_imp_localwfs, freq_response_localwfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -62,57 +55,68 @@ function [d, x0, xv] = driving_function_imp_localwfs(x0,xs,src,conf)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;
 nargmax = 4;
 narginchk(nargmin,nargmax);
-isargsecondarysource(x0);
+isargposition(X);
 isargxs(xs);
 isargchar(src);
 if nargin<nargmax
     conf = SFS_config;
-else
-    isargstruct(conf);
 end
+isargstruct(conf);
+
 
 %% ===== Configuration ==================================================
-virtualconf = conf;
-virtualconf.secondary_sources.size = conf.localsfs.size;
-virtualconf.secondary_sources.center = conf.localsfs.center;
-virtualconf.secondary_sources.geometry = conf.localsfs.vss.geometry;
-virtualconf.secondary_sources.number = conf.localsfs.vss.number;
-virtualconf.usetapwin = conf.localsfs.vss.usetapwin;
-virtualconf.tapwinlen = conf.localsfs.vss.tapwinlen;
-virtualconf.wfs = conf.localsfs.vss.wfs;
+% Plotting result
+useplot = conf.plot.useplot;
+fs = conf.fs;
+showprogress = conf.showprogress;
+% disable progress bar for the sound field function
+conf.showprogress = 0;
+% disable normalisation, otherwise the amplitude will always the same for all
+% time steps
+conf.usenormalisation = 0;
+% disable plotting, otherwise the sound_field_imp fails
+conf.plot.useplot = 0;
 
-method = conf.localsfs.vss.method;
+% select secondary source type
+if strcmp('2D',conf.dimension)
+    greens_function = 'ls';
+else
+    greens_function = 'ps';
+end
+
 %% ===== Computation ====================================================
-
-if strcmp('fs',src)
-  error(['%s: %s is not a supported method source type! Try to use a point', ...
-    ' source, if the source is inside the secondary source array but not', ...
-    ' inside the virtual secondary source array'], upper(mfilename),src);
+% Get the position of the loudspeakers
+x0 = secondary_source_positions(conf);
+x0 = secondary_source_selection(x0,xs,src);
+x0 = secondary_source_tapering(x0,conf);
+% Generate time axis (0-1000 samples)
+t = (0:2000)';
+s = zeros(1,length(t));
+d = driving_function_imp_localwfs(x0,xs,src,conf);
+% If desired a cosine shaped pulse instead of the default dirac pulse could be
+% used
+%d = convolution(d,hann_window(5,5,10));
+for ii = 1:length(t)
+    if showprogress, progress_bar(ii,length(t)); end
+    % calculate sound field at the listener position
+    p = sound_field_imp(X(1),X(2),X(3),x0,greens_function,d,t(ii),conf);
+    s(ii) = real(p);
 end
 
-% Determine driving functions of virtual array with different sfs methods
-switch method
-  case 'wfs'
-    % === Wave Field Synthesis ===
-    % create virtual source array
-    xv = virtual_secondary_source_positions(x0,xs,src,conf);
-    % optional tapering
-    xv = secondary_source_tapering(xv,virtualconf);
-    % optional amplitude correction
-    % xv = secondary_source_amplitudecorrection(xv);
-    % driving functions for virtual source array
-    dv = driving_function_imp_wfs(xv,xs,src,virtualconf);
-  otherwise
-    error('%s: %s is not a supported method for time domain localsfs!', ...
-      upper(mfilename),method);
-end
+% return parameter
+if nargout>0, varargout{1}=s; end
+if nargout>1, varargout{2}=t; end
 
-% select secondary sources
-x0 = secondary_source_selection(x0, xv(:,1:6), 'vss');
-% driving functions for real source array
-d = driving_function_imp_wfs_vss(x0,xv,dv,conf);
+% ===== Plotting =========================================================
+if nargout==0 || useplot
+    figure;
+    figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
+    plot(t/fs*1000,db(abs(s)));
+    ylabel('amplitude / dB');
+    xlabel('time / ms');
 end

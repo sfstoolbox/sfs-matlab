@@ -9,7 +9,7 @@ function d = driving_function_imp_wfs_vss(x0,xv,dv,conf)
 %                     sources / m [nx7]
 %       xv          - position, direction, and weights of the virtual secondary
 %                     sources / m [mx7]
-%       dv           - driving signals of virtual secondary sources [sxm]
+%       dv          - driving signals of virtual secondary sources [sxm]
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -89,8 +89,8 @@ dv = wfs_preequalization(dv, conf);
 % initialize 
 Nv = size(xv,1);
 N0 = size(x0,1);
-d = zeros(N, N0);
 
+d = zeros(N, N0);
 delay = inf(N0,Nv);
 weight = zeros(N0,Nv);
 
@@ -106,28 +106,23 @@ for xvi = xv'
     
     % optional tapering
     x0s = secondary_source_tapering(x0s,conf);
-    
+    % apply secondary sources' tapering and possibly virtual secondary
+    % sources' tapering to weighting matrix
     weight(xdx,idx) = weight(xdx,idx).*x0s(:,7).*xvi(7);
   end
   idx = idx + 1;  
 end
 
-% normalize delay
+% Remove delay offset, in order to begin always at t=0 with the first wave front
+% at any secondary source
 delay = delay - min(delay(:));
 
-idx = 1;
-for xvi = xv'
-  % select active source for one focused source
-  [x0s, xdx] = secondary_source_selection(x0,xvi(1:6)','fs');
-  if ~isempty(x0s) && xvi(7) > 0
-    % 
-    pulse = repmat(dv(:,idx), 1, size(x0s,1));
+% compose impulse responses
+for idx=1:Nv
+  xdx = weight(:,idx) ~= 0;
+  if sum(xdx) > 0    
     % Shift and weight prototype driving function
+    pulse = repmat(dv(:,idx), 1, sum(xdx));
     d(:, xdx) = d(:, xdx) + delayline(pulse, delay(xdx,idx)*fs, weight(xdx,idx), conf);
   end
-  idx = idx + 1;  
 end
-
-
-
-

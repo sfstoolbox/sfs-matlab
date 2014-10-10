@@ -54,9 +54,8 @@ isargmatrix(number);
 
 
 %% ===== Computation =====================================================
-% Check if two is a factor of the given number
-divided_by_two = mod( number,2 );
 % Create answer
 bool = false( size(number) );
-% Look for even numbers
-bool(divided_by_two==0) = true;
+% Look for even numbers, use bitget to overcome a mod() bug, see
+% http://bit.ly/1wcNYBI
+bool(bitget(number,1)==0) = true;

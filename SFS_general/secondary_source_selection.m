@@ -12,7 +12,7 @@ function [x0,idx] = secondary_source_selection(x0,xs,src)
 %                               plane wave in this case)
 %                       'ps'  - point source
 %                       'fs'  - focused source
-%                       'vss' - distribution of focused sources
+%                       'vss' - distribution of focused sources for local WFS
 %
 %   Output options:
 %       x0          - secondary sources / m, containing only the active

@@ -17,12 +17,11 @@ conf.tapwinlen = 1.0;
 conf.localsfs.method = 'wfs';
 conf.localsfs.usetapwin = true;
 conf.localsfs.vss.size = 1.0;
-conf.localsfs.vss.center = [0, 0, 0];
+conf.localsfs.vss.center = [0, 0.5, 0];
 conf.localsfs.vss.geometry = 'linear';
 conf.localsfs.vss.number = 56;
 conf.localsfs.vss.sampling = 'equi';
 conf.localsfs.vss.logratio = 1.0;
-conf.localsfs.vss.consider_local_area = true;
 conf.localsfs.vss.consider_target_field = true;
 conf.localsfs.vss.consider_secondary_sources = true;
 %conf.localsfs.vss.tapwinlen = 0.3;
@@ -55,5 +54,5 @@ s_wfs = ir_wfs(conf.xref,pi/2,xs,src,irs,conf);
 [S_wfs, ~, f_wfs] = easyfft(s_wfs(:,1)./max(abs(s_wfs(:,1))), conf);
 
 %% spatio-temporal sound field
-sound_field_imp_localwfs(X,Y,Z, xs, src, 350, conf);
+sound_field_imp_localwfs(X,Y,Z, xs, src, 400, conf);
 sound_field_imp_wfs(X,Y,Z, xs, src, 190, conf);

@@ -1,6 +1,6 @@
 function D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf)
-%DRIVING_FUNCTION_MONO_WFS_VSS returns the driving signal D for a virtual
-%secondary source distribution
+%DRIVING_FUNCTION_MONO_WFS_VSS returns the driving signal D for a given set of
+%virtual secondary sources and their driving signals
 %
 %   Usage: D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf)
 %
@@ -67,8 +67,10 @@ else
     isargstruct(conf);
 end
 
+
 %% ===== Configuration ==================================================
 dimension = conf.dimension;
+
 
 %% ===== Computation ====================================================
 % Get driving signals
@@ -87,7 +89,8 @@ else
     error('%s: %s is not a known source type.',upper(mfilename),dimension);
 end
 
-% Get Drivings Signal real secondary sources
+% Get driving signals for real secondary sources
+% TODO: add reference for equation
 Ns = size(xv,1);
 N0 = size(x0,1);
 
@@ -97,8 +100,8 @@ for idx=1:Ns
   [xtmp, xdx] = secondary_source_selection(x0,xv(idx,1:6),'fs');
   if (~isempty(xtmp))
     xtmp = secondary_source_tapering(xtmp,conf);  
-    Dmatrix(xdx,idx) = driving_function_mono_wfs(xtmp,xv(idx,1:3),'fs',f,conf);
-    Dmatrix(xdx,idx) = Dmatrix(xdx,idx).*xtmp(:,7);
+    Dmatrix(xdx,idx) = ...
+        driving_function_mono_wfs(xtmp,xv(idx,1:3),'fs',f,conf) .* xtmp(:,7);
   end
 end
 

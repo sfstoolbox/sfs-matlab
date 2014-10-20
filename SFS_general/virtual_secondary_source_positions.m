@@ -63,6 +63,7 @@ function xv = virtual_secondary_source_positions(x0,xs,src,conf)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 %% ===== Checking of input  parameters ===================================
 nargmin = 3;
 nargmax = 4;
@@ -78,10 +79,11 @@ else
   isargstruct(conf);
 end
 
+
 %% ===== Configuration ===================================================
 virtualconf = conf;
-virtualconf.secondary_sources.size     = conf.localsfs.size;
-virtualconf.secondary_sources.center   = conf.localsfs.center;
+virtualconf.secondary_sources.size     = conf.localsfs.vss.size;
+virtualconf.secondary_sources.center   = conf.localsfs.vss.center;
 virtualconf.secondary_sources.geometry = conf.localsfs.vss.geometry;
 virtualconf.secondary_sources.number   = conf.localsfs.vss.number;
 
@@ -92,6 +94,7 @@ nls                         = conf.localsfs.vss.number;
 consider_local_area         = conf.localsfs.vss.consider_local_area;
 consider_secondary_sources  = conf.localsfs.vss.consider_secondary_sources;
 consider_target_field       = conf.localsfs.vss.consider_target_field;
+
 
 %% ===== Main ============================================================
 
@@ -281,6 +284,7 @@ else
 end
 
 end
+
 
 %% ===== Additional Helper Functions ====================================
 function x = log_spacing(xmin, xmax, xcenter, N, ratio)

@@ -76,14 +76,17 @@ else
     isargstruct(conf);
 end
 
+
 %% ===== Configuration ==================================================
 virtualconf = conf;
-virtualconf.secondary_sources.size = conf.localsfs.size;
-virtualconf.secondary_sources.center = conf.localsfs.center;
+virtualconf.usetapwin = conf.localsfs.usetapwin;
+virtualconf.secondary_sources.size = conf.localsfs.vss.size;
+virtualconf.secondary_sources.center = conf.localsfs.vss.center;
 virtualconf.secondary_sources.geometry = conf.localsfs.vss.geometry;
 virtualconf.secondary_sources.number = conf.localsfs.vss.number;
+method = conf.localsfs.method;
 
-method = conf.localsfs.vss.method;
+
 %% ===== Computation ====================================================
 
 if strcmp('fs',src)
@@ -118,5 +121,3 @@ end
 x0 = secondary_source_selection(x0, xv(:,1:6), 'vss');
 % driving functions for real source array
 D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf);
-
-end

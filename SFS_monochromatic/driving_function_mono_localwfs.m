@@ -89,12 +89,6 @@ method = conf.localsfs.method;
 
 %% ===== Computation ====================================================
 
-if strcmp('fs',src)
-  error(['%s: %s is not a supported method source type! Try to use a point', ...
-    ' source, if the source is inside the secondary source array but not', ...
-    ' inside the virtual secondary source array'], upper(mfilename),src);
-end
-
 % Determine driving functions of virtual array with different sfs methods
 switch method
   case 'wfs'

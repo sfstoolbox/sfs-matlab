@@ -29,7 +29,7 @@ function xv = virtual_secondary_source_positions(x0,xs,src,conf)
 %   takes the sound field, which is to be reproduced, into account for the
 %   positioning.
 %   Optionally (conf.localsfs.vss.consider_secondary_sources == true), the
-%   algorithm takes the positions of the real loudspeakers into account. 
+%   algorithm takes the positions of the real loudspeakers into account.
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -112,7 +112,8 @@ if consider_target_field || consider_secondary_sources
     ns = bsxfun(@rdivide,xs-xl,vector_norm(xs-xl,2));
   elseif strcmp('fs',src)
     % === Focused source ===
-    to_be_implemented('focussed sources for virtual_secondary_source_positions');
+    ns = bsxfun(@rdivide,xl-xs,vector_norm(xs-xl,2));
+    % to_be_implemented('focussed sources for virtual_secondary_source_positions');
   end
   phis = atan2(ns(2),ns(1));  % azimuth angle of ns
 
@@ -128,6 +129,8 @@ if consider_target_field || consider_secondary_sources
     if consider_target_field
       if strcmp('pw',src)
         phid = pi/2;
+      elseif strcmp('fs', src)
+        phid = acos(vector_norm(xs-xl,2)./Rl);
       else
         % 1/2 opening angle of cone spanned by local area and virtual source
         phid = acos(Rl./vector_norm(xs-xl,2));
@@ -186,7 +189,7 @@ if consider_target_field || consider_secondary_sources
       ndorth = ns*[0 1 0; -1 0 0; 0 0 1];
     else
       nd = [0, 1, 0];
-      ndorth = [-1, 0, 0]; 
+      ndorth = [-1, 0, 0];
     end
 
     % CONSTRAINT 2 ========================================================

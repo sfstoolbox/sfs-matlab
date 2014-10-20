@@ -2,10 +2,6 @@
 close all;
 clear variables;
 
-% startup;
-
-% SFS Toolbox
-addpath('~/projects/sfstoolbox'); SFS_start;
 
 %% Parameters
 conf = SFS_config_example;
@@ -17,19 +13,17 @@ conf.plot.realloudspeakers = false;
 conf.usetapwin = true;
 
 % config for virtual array
-conf.localsfs.size = 0.4;
-conf.localsfs.center = [0, 0, 0];
-
+conf.localsfs.method = 'wfs';
+conf.localsfs.usetapwin = false;
+conf.localsfs.vss.size = 0.4;
+conf.localsfs.vss.center = [0, 0, 0];
 conf.localsfs.vss.geometry = 'circular';
 conf.localsfs.vss.number = 56;
 conf.localsfs.vss.sampling = 'equi';
 conf.localsfs.vss.logratio = 1.0;
-conf.localsfs.vss.method = 'wfs';
-conf.localsfs.vss.type = 'ls';
 conf.localsfs.vss.consider_local_area = true;
 conf.localsfs.vss.consider_target_field = true;
 conf.localsfs.vss.consider_secondary_sources = true;
-conf.localsfs.vss.tapering = false;
 
 % config for real array
 conf.dimension = '2D';
@@ -40,7 +34,7 @@ conf.secondary_sources.center = [0, 0, 0];
 conf.driving_functions = 'default';
 conf.xref = conf.secondary_sources.center;
 
-X = conf.localsfs.center;
+X = conf.localsfs.vss.center;
 xs = [0.0, -1.0, 0];  % propagation direction of plane wave
 src = 'pw';
 xrange = [-1, 1];

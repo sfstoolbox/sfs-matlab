@@ -86,7 +86,7 @@ if strcmp('2D',conf.dimension)
 else
     greens_function = 'ps';
 end
-usehpre = conf.wfs.usehpre + conf.localsfs.vss.wfs.usehpre;
+usehpre = conf.wfs.usehpre;
 
 
 %% ===== Computation =====================================================

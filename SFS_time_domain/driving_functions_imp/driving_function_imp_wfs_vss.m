@@ -1,6 +1,6 @@
 function d = driving_function_imp_wfs_vss(x0,xv,dv,conf)
-%DRIVING_FUNCTION_IMP_WFS_VSS returns the driving signal d for a virtual
-%secondary source distribution
+%DRIVING_FUNCTION_IMP_WFS_VSS returns the driving signal d for a given set of
+%virtual secondary sources and the corresponding dricing signals
 %
 %   Usage: d = driving_function_imp_wfs_vss(x0,xv,dv,conf)
 %
@@ -66,21 +66,23 @@ else
 end
 
 %% ===== Configuration ==================================================
-vsstype = conf.localsfs.vss.type;
+dimension = conf.dimension;
 fs = conf.fs;
 N = conf.N;
 
 %% ===== Computation ====================================================
 % Distiguish between types of virtual secondary sources
-if strcmp('ps',vsstype)
+% TODO: at the moment the same setting is used for 2D and 3D, maybe this can be
+% removed for imp?
+if strcmp('2.5D',dimension) | strcmp('3D',dimension)
     % === Focussed Point Sink ===========================================
     conf.driving_functions = 'default';
-elseif strcmp('ls',vsstype)
+elseif strcmp('2D',dimension)
     % === Focussed Line Sink ============================================
     % Driving signal
     conf.driving_functions = 'default';
 else
-    error('%s: %s is not a known source type.',upper(mfilename), vsstype);
+    error('%s: %s is not a known source type.',upper(mfilename),dimension);
 end
 
 % Apply wfs preequalization filter on each driving signal of the vss'

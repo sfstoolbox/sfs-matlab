@@ -239,12 +239,6 @@ conf.localsfs.vss.size = 0.4;
 conf.localsfs.vss.center = [0, 0, 0];
 conf.localsfs.vss.geometry = 'circular';
 conf.localsfs.vss.number = 56;
-% Spacing of virtual secondary sources
-% TODO: is this really needed? I ask, because we don't have this option for the
-% actual secondary sources neither
-conf.localsfs.vss.sampling = 'equi';
-% TODO: please explain
-conf.localsfs.vss.logratio = 1.0;
 %
 % linear vss distribution: rotate the distribution orthogonal to the progation 
 % direction of the desired sound source

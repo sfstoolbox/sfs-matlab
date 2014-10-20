@@ -88,8 +88,6 @@ virtualconf.secondary_sources.geometry = conf.localsfs.vss.geometry;
 virtualconf.secondary_sources.number   = conf.localsfs.vss.number;
 
 geometry                    = conf.localsfs.vss.geometry;
-sampling                    = conf.localsfs.vss.sampling;
-logratio                    = conf.localsfs.vss.logratio;
 nls                         = conf.localsfs.vss.number;
 consider_secondary_sources  = conf.localsfs.vss.consider_secondary_sources;
 consider_target_field       = conf.localsfs.vss.consider_target_field;
@@ -162,22 +160,8 @@ if consider_target_field || consider_secondary_sources
     delta_offset = eps;
 
     % SOURCE POSITIONING ==================================================
-    switch (sampling)
-      case 'equi'
-        % === equi-angular sampling on valid arc ===
-        phi = phis + linspace(delta_min + delta_offset,delta_max-delta_offset, nls).';
-      case 'log'
-        phi = log_spacing(delta_min + delta_offset, delta_max - delta_offset, 0, nls, logratio);
-        phi = phis + phi;
-      case 'scalar'
-        x = linspace(sin(delta_min + delta_offset),sin(delta_max - delta_offset),nls).';
-        phi = phis + asin(x);
-      %case 'projective'
-      %x = linspace(-3,3,nls).';
-      %phi = phis + atan(x);
-      otherwise
-        error('%s: %s is not a supported sampling method for circular position!',upper(mfilename),method);
-    end
+    % === equi-angular sampling on valid arc ===
+    phi = phis + linspace(delta_min + delta_offset,delta_max-delta_offset, nls).';
 
     % Elevation angles
     theta = zeros(nls,1);
@@ -234,15 +218,8 @@ if consider_target_field || consider_secondary_sources
     end
 
     % SOURCE POSITIONING ==================================================
-    switch (sampling)
-      case 'equi'
-        % === equi-distant sampling on valid line ===
-        x = linspace(xmin, xmax, nls);
-      case 'log'
-        x = log_spacing(xmin, xmax, 0, nls, logratio);
-      otherwise
-        error('%s: %s is not a supported sampling method for linear sampling!',upper(mfilename),method);
-    end
+    % === equi-distant sampling on valid line ===
+    x = linspace(xmin, xmax, nls);
 
     % Positions of the secondary sources
     xv(:,1:3) = repmat(xl, nls, 1) + x'*ndorth;

@@ -19,9 +19,6 @@ conf.localsfs.vss.size = 0.4;
 conf.localsfs.vss.center = [0, 0, 0];
 conf.localsfs.vss.geometry = 'circular';
 conf.localsfs.vss.number = 56;
-conf.localsfs.vss.sampling = 'equi';
-conf.localsfs.vss.logratio = 1.0;
-conf.localsfs.vss.consider_local_area = true;
 conf.localsfs.vss.consider_target_field = true;
 conf.localsfs.vss.consider_secondary_sources = true;
 

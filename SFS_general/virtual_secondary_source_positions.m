@@ -91,14 +91,13 @@ geometry                    = conf.localsfs.vss.geometry;
 sampling                    = conf.localsfs.vss.sampling;
 logratio                    = conf.localsfs.vss.logratio;
 nls                         = conf.localsfs.vss.number;
-consider_local_area         = conf.localsfs.vss.consider_local_area;
 consider_secondary_sources  = conf.localsfs.vss.consider_secondary_sources;
 consider_target_field       = conf.localsfs.vss.consider_target_field;
 
 
 %% ===== Main ============================================================
 
-if consider_target_field || consider_secondary_sources || consider_local_area
+if consider_target_field || consider_secondary_sources
   % =====================================================================
   % adaptive positioning of virtual secondary sources
   % =====================================================================
@@ -201,29 +200,11 @@ if consider_target_field || consider_secondary_sources || consider_local_area
     if consider_target_field
       nd = ns;
       ndorth = ns*[0 1 0; -1 0 0; 0 0 1];
-      if consider_local_area
-        if strcmp('pw',src)
-          xd = Rl;
-        else
-          % 1/2 opening angle of cone spanned by local area and virtual source
-          phid = acos(Rl./vector_norm(xs-xl,2));
-          xd = (vector_norm(xs-xl,2)-Rl)./tan(phid);
-        end
-      else
-        xd = Rl;
-      end
     else
-      xd = Rl;
       nd = [0, 1, 0];
       ndorth = [-1, 0, 0]; 
     end
 
-    if consider_local_area
-      Rd = Rl;
-    else
-      Rd = 0;
-    end
-    
     % CONSTRAINT 2 ========================================================
     % consider the position of the real loudspeaker array
     if (consider_secondary_sources && ~isempty(x0))
@@ -237,7 +218,7 @@ if consider_target_field || consider_secondary_sources || consider_local_area
         n0 = x0(idx, 4:6);
         ntmp = (ndorth*n0');
         if ntmp ~= 0
-          t = (x0(idx,1:3) - (xl + Rd*nd))*n0'./ntmp;
+          t = (x0(idx,1:3) - xl)*n0'./ntmp;
           if t > 0
             xmax = min(xmax, t);
           else
@@ -245,11 +226,11 @@ if consider_target_field || consider_secondary_sources || consider_local_area
           end
         end
       end
-      xmax = min(xmax, xd);
-      xmin = max(xmin, -xd);
+      xmax = min(xmax, Rl);
+      xmin = max(xmin, -Rl);
     else
-      xmax = xd;
-      xmin = -xd;
+      xmax = Rl;
+      xmin = -Rl;
     end
 
     % SOURCE POSITIONING ==================================================
@@ -264,7 +245,7 @@ if consider_target_field || consider_secondary_sources || consider_local_area
     end
 
     % Positions of the secondary sources
-    xv(:,1:3) = repmat(xl, nls, 1) + repmat(Rd*nd, nls, 1) + x'*ndorth;
+    xv(:,1:3) = repmat(xl, nls, 1) + x'*ndorth;
     % Direction of the secondary sources
     xv(:,4:6) = repmat(-nd, nls, 1);
     % equal weights for all sources

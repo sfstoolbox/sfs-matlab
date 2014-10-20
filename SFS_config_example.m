@@ -245,10 +245,17 @@ conf.localsfs.vss.number = 56;
 conf.localsfs.vss.sampling = 'equi';
 % TODO: please explain
 conf.localsfs.vss.logratio = 1.0;
-% TODO: please explain the following entries. Are they completely independet of
-% each other?
-conf.localsfs.vss.consider_local_area = true;
+%
+% linear vss distribution: rotate the distribution orthogonal to the progation 
+% direction of the desired sound source
+% circular vss distribution: truncate the distribution to a circular arc
+% which satisfies the secondary source selection criterions ( source normal
+% aligns with propagation directions of desired sound source )
 conf.localsfs.vss.consider_target_field = true;
+% 
+% vss distribution is further truncated if parts of it cannot be correctly
+% reproduced, because they lie outside the area which is surrounded by the real
+% loudspeakers (secondary sources)
 conf.localsfs.vss.consider_secondary_sources = true;
 
 

@@ -80,6 +80,7 @@ end
 %% ===== Configuration ==================================================
 virtualconf = conf;
 virtualconf.usetapwin = conf.localsfs.usetapwin;
+virtualconf.tapwinlen = conf.localsfs.tapwinlen;
 virtualconf.secondary_sources.size = conf.localsfs.vss.size;
 virtualconf.secondary_sources.center = conf.localsfs.vss.center;
 virtualconf.secondary_sources.geometry = conf.localsfs.vss.geometry;

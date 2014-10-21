@@ -234,6 +234,7 @@ conf.nfchoa.order = []; % integer
 % Method the virtual secondary sources should be driven
 conf.localsfs.method = 'wfs'; % 'wfs' or 'nfchoa'
 conf.localsfs.usetapwin = false; % boolean
+conf.localsfs.tapwinlen = 0.5; % 0..1
 % Virtual secondary sources (vss)
 conf.localsfs.vss.size = 0.4;
 conf.localsfs.vss.center = [0, 0, 0];

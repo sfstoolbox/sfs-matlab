@@ -83,6 +83,7 @@ virtualconf.secondary_sources.center = conf.localsfs.vss.center;
 virtualconf.secondary_sources.geometry = conf.localsfs.vss.geometry;
 virtualconf.secondary_sources.number = conf.localsfs.vss.number;
 virtualconf.usetapwin = conf.localsfs.usetapwin;
+virtualconf.tapwinlen = conf.localsfs.tapwinlen;
 method = conf.localsfs.method;
 
 

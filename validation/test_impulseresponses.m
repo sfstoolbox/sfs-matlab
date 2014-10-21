@@ -16,6 +16,7 @@ conf.tapwinlen = 1.0;
 % config for virtual array
 conf.localsfs.method = 'wfs';
 conf.localsfs.usetapwin = true;
+conf.localsfs.vss.tapwinlen = 0.3;
 conf.localsfs.vss.size = 1.0;
 conf.localsfs.vss.center = [0, 0.5, 0];
 conf.localsfs.vss.geometry = 'linear';
@@ -24,8 +25,6 @@ conf.localsfs.vss.sampling = 'equi';
 conf.localsfs.vss.logratio = 1.0;
 conf.localsfs.vss.consider_target_field = true;
 conf.localsfs.vss.consider_secondary_sources = true;
-%conf.localsfs.vss.tapwinlen = 0.3;
-%conf.localsfs.vss.wfs = conf.wfs;
 
 % config for real array
 conf.dimension = '2.5D';

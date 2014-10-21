@@ -5,7 +5,7 @@ function D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf)
 %   Usage: D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf)
 %
 %   Input parameters:
-%       x0          - position, direction, and weights of the real secondary 
+%       x0          - position, direction, and weights of the real secondary
 %                     sources / m [nx7]
 %       xv          - position, direction, and weights of the virtual secondary
 %                     sources / m [mx7]
@@ -17,8 +17,8 @@ function D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf)
 %       D           - driving function signal [nx1]
 %
 %   References:
-%       S. Spors (2010) - "Local Sound Field Synthesis by Virtual Secondary
-%                          Sources", 40th AES
+%       S. Spors, J.Ahrens (2010) - "Local Sound Field Synthesis by Virtual
+%                                    Secondary Sources", 40th AES
 %
 %   see also: driving_function_mono_wfs, driving_function_mono_wfs_fs
 
@@ -90,7 +90,8 @@ else
 end
 
 % Get driving signals for real secondary sources
-% TODO: add reference for equation
+%
+% see Spors (2010), fig. 2 & eq. (12)
 Ns = size(xv,1);
 N0 = size(x0,1);
 
@@ -99,7 +100,7 @@ Dmatrix = zeros(N0,Ns);
 for idx=1:Ns
   [xtmp, xdx] = secondary_source_selection(x0,xv(idx,1:6),'fs');
   if (~isempty(xtmp))
-    xtmp = secondary_source_tapering(xtmp,conf);  
+    xtmp = secondary_source_tapering(xtmp,conf);
     Dmatrix(xdx,idx) = ...
         driving_function_mono_wfs(xtmp,xv(idx,1:3),'fs',f,conf) .* xtmp(:,7);
   end

@@ -71,20 +71,6 @@ fs = conf.fs;
 N = conf.N;
 
 %% ===== Computation ====================================================
-% Distiguish between types of virtual secondary sources
-% TODO: at the moment the same setting is used for 2D and 3D, maybe this can be
-% removed for imp?
-if strcmp('2.5D',dimension) | strcmp('3D',dimension)
-    % === Focussed Point Sink ===========================================
-    conf.driving_functions = 'default';
-elseif strcmp('2D',dimension)
-    % === Focussed Line Sink ============================================
-    % Driving signal
-    conf.driving_functions = 'default';
-else
-    error('%s: %s is not a known source type.',upper(mfilename),dimension);
-end
-
 % Apply wfs preequalization filter on each driving signal of the vss'
 dv = wfs_preequalization(dv, conf);
 

@@ -1,13 +1,17 @@
-function irs = dummy_irs()
+function irs = dummy_irs(nsamples)
 % DUMMY_IRS creates a dummy dirac pulse IR set
 %
-%   Usage: irs = dummy_irs()
+%   Usage: irs = dummy_irs([nsamples])
+%
+%   Input parameters:
+%       nsamples  - length of impulse response in samples, default: 1024
 %
 %   Output parameters:
-%       irs   - irs struct
+%       irs       - irs struct
 %
-%   DUMMY_IRS() creates a dummy IR data set (Dirac impulse) to check
-%   processing without IRs. It has a resolution of 1 deg for phi and theta.
+%   DUMMY_IRS(nsamples) creates a dummy IR data set (Dirac impulse) to check
+%   processing without IRs. It has a resolution of 1 deg for phi and theta, its
+%   length is given by nsamples.
 %
 %   See also: new_irs, IR_format.txt
 
@@ -44,9 +48,19 @@ function irs = dummy_irs()
 %*****************************************************************************
 
 
+%% ===== Checking input parameters =======================================
+nargmin = 0;
+nargmax = 1;
+narginchk(nargmin,nargmax);
+if nargin>0
+    isargpositivescalar(nsamples);
+else
+    nsamples = 1024;
+end
+
+
 %% ===== Computation =====================================================
 % create dirac pulse
-nsamples = 1024;
 ir = zeros(nsamples,1);
 ir(300) = 1;
 % angles of dummy irs

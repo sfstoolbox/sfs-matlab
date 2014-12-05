@@ -108,6 +108,8 @@ if nargout==5, varargout{5}=x0; end
 % === Plotting ===
 if nargout==0 || useplot
   hold on
-    draw_loudspeakers(xv, [1 1 0], conf);
+    [~,~,~,x,y,z] = xyz_grid(X,Y,Z,conf);
+    dimensions = xyz_axes_selection(x,y,z);
+    draw_loudspeakers(xv, dimensions, conf);
   hold off
 end

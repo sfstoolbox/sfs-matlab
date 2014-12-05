@@ -235,11 +235,14 @@ conf.nfchoa.order = []; % integer
 conf.localsfs.method = 'wfs'; % 'wfs' or 'nfchoa'
 conf.localsfs.usetapwin = false; % boolean
 conf.localsfs.tapwinlen = 0.5; % 0..1
+% WFS settings
+conf.localsfs.wfs = conf.wfs;
 % Virtual secondary sources (vss)
 conf.localsfs.vss.size = 0.4;
 conf.localsfs.vss.center = [0, 0, 0];
 conf.localsfs.vss.geometry = 'circular';
 conf.localsfs.vss.number = 56;
+conf.localsfs.vss.grid = 'equally_spaced_points';
 %
 % linear vss distribution: rotate the distribution orthogonal to the progation 
 % direction of the desired sound source

@@ -86,6 +86,7 @@ virtualconf.secondary_sources.size     = conf.localsfs.vss.size;
 virtualconf.secondary_sources.center   = conf.localsfs.vss.center;
 virtualconf.secondary_sources.geometry = conf.localsfs.vss.geometry;
 virtualconf.secondary_sources.number   = conf.localsfs.vss.number;
+virtualconf.secondary_sources.grid     = conf.localsfs.vss.grid;
 
 geometry                    = conf.localsfs.vss.geometry;
 nls                         = conf.localsfs.vss.number;
@@ -231,7 +232,10 @@ if consider_target_field || consider_secondary_sources
     % equal weights for all sources
     xv(:,7) = ones(nls,1);
   else
-    error('%s: %s is not a supported positioning method!',upper(mfilename),method);
+    xv = secondary_source_positions(virtualconf);
+    if consider_target_field
+      xv = secondary_source_selection(xv, xs, src);
+    end
   end
 else
   % =====================================================================

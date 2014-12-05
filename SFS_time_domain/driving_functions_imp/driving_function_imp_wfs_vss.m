@@ -66,7 +66,6 @@ else
 end
 
 %% ===== Configuration ==================================================
-dimension = conf.dimension;
 fs = conf.fs;
 N = conf.N;
 
@@ -79,8 +78,8 @@ Nv = size(xv,1);
 N0 = size(x0,1);
 
 d = zeros(N, N0);
-delay = inf(N0,Nv);
-weight = zeros(N0,Nv);
+delay = inf(N0, Nv);
+weight = zeros(N0, Nv);
 
 idx = 1;
 for xvi = xv'

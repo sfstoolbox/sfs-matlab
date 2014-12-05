@@ -64,7 +64,6 @@ function varargout = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
-
 %% ===== Checking of input  parameters ==================================
 nargmin = 6;
 nargmax = 7;
@@ -79,15 +78,12 @@ else
     isargstruct(conf);
 end
 
-
 %% ===== Configuration ==================================================
 if strcmp('2D',conf.dimension)
     greens_function = 'ls';
 else
     greens_function = 'ps';
 end
-usehpre = conf.wfs.usehpre;
-
 
 %% ===== Computation =====================================================
 % Get secondary sources
@@ -97,7 +93,7 @@ x0 = secondary_source_tapering(x0,conf);
 % Get driving signals
 [d, ~, xv] = driving_function_imp_localwfs(x0,xs,src,conf);
 % Fix the time to account for sample offset of the pre-equalization filter
-switch (usehpre)
+switch (conf.wfs.usehpre + conf.localsfs.wfs.usehpre)
   case 1
     t = t + 64;
   case 2

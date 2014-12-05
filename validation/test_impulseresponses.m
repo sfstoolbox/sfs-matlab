@@ -16,7 +16,7 @@ conf.tapwinlen = 1.0;
 % config for virtual array
 conf.localsfs.method = 'wfs';
 conf.localsfs.usetapwin = true;
-conf.localsfs.vss.tapwinlen = 0.3;
+conf.localsfs.tapwinlen = 0.3;
 conf.localsfs.vss.size = 1.0;
 conf.localsfs.vss.center = [0, 0.5, 0];
 conf.localsfs.vss.geometry = 'linear';

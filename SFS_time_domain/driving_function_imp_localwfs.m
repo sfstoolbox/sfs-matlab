@@ -75,7 +75,6 @@ else
     isargstruct(conf);
 end
 
-
 %% ===== Configuration ==================================================
 virtualconf = conf;
 virtualconf.secondary_sources.size = conf.localsfs.vss.size;
@@ -84,8 +83,8 @@ virtualconf.secondary_sources.geometry = conf.localsfs.vss.geometry;
 virtualconf.secondary_sources.number = conf.localsfs.vss.number;
 virtualconf.usetapwin = conf.localsfs.usetapwin;
 virtualconf.tapwinlen = conf.localsfs.tapwinlen;
+virtualconf.wfs = conf.localsfs.wfs;
 method = conf.localsfs.method;
-
 
 %% ===== Computation ====================================================
 

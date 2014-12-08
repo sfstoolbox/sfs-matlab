@@ -152,7 +152,7 @@ else
             irs.distance(idx(2)),r,conf);
         ir3 = correct_radius([irs.left(:,idx(3)) irs.right(:,idx(3))], ...
             irs.distance(idx(3)),r,conf);
-        ir = intpot_ir(ir1,ir2,ir3,[neighbours; 1 1 1],[xs;1]);
+        ir = intpol_ir(ir1,ir2,ir3,[neighbours; 1 1 1],[xs;1]);
     end
 end
 end

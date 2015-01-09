@@ -78,4 +78,4 @@ x0 = secondary_source_positions(conf);
 % calculate driving function
 d = driving_function_imp_wfs(x0,xs,src,conf);
 % calculate brs set
-brs = brs_ssr(X,phi,x0,d,irs,conf);
+brs = ssr_brs(X,phi,x0,d,irs,conf);

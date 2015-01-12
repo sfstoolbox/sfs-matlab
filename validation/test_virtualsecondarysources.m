@@ -1,5 +1,4 @@
 %% initialize
-close all;
 clear variables;
 
 
@@ -12,7 +11,25 @@ conf.plot.loudspeakers = true;
 conf.plot.realloudspeakers = false;
 conf.usetapwin = true;
 
-% config for virtual array
+
+%% === Circular secondary sources ===
+% config for real loudspeaker array
+conf.dimension = '2D';
+conf.secondary_sources.geometry = 'circular';
+conf.secondary_sources.number = 56;
+conf.secondary_sources.size = 2;
+conf.secondary_sources.center = [0, 0, 0];
+conf.driving_functions = 'default';
+conf.xref = conf.secondary_sources.center;
+% listening area
+X = [0 0 0];
+xs = [1.0, -1.0, 0];  % propagation direction of plane wave
+src = 'pw';
+xrange = [-1, 1];
+yrange = [-1, 1];
+zrange = 0;
+f = 7000;
+% --- Circular virtual secondary sources ---
 conf.localsfs.method = 'wfs';
 conf.localsfs.usetapwin = false;
 conf.localsfs.vss.size = 0.4;
@@ -21,31 +38,122 @@ conf.localsfs.vss.geometry = 'circular';
 conf.localsfs.vss.number = 56;
 conf.localsfs.vss.consider_target_field = true;
 conf.localsfs.vss.consider_secondary_sources = true;
+sound_field_mono_localwfs(xrange, yrange, zrange,xs,src,f,conf)
+% --- Linear virtual secondary sources ---
+conf.localsfs.method = 'wfs';
+conf.localsfs.usetapwin = false;
+conf.localsfs.vss.size = 0.4;
+conf.localsfs.vss.center = [0, 0.2, 0];
+conf.localsfs.vss.geometry = 'linear';
+conf.localsfs.vss.number = 56;
+conf.localsfs.vss.consider_target_field = true;
+conf.localsfs.vss.consider_secondary_sources = true;
+sound_field_mono_localwfs(xrange, yrange, zrange,xs,src,f,conf)
+% --- Box shaped virtual secondary sources ---
+conf.localsfs.method = 'wfs';
+conf.localsfs.usetapwin = false;
+conf.localsfs.vss.size = 0.4;
+conf.localsfs.vss.center = [0, 0, 0];
+conf.localsfs.vss.geometry = 'box';
+conf.localsfs.vss.number = 4*56;
+conf.localsfs.vss.consider_target_field = true;
+conf.localsfs.vss.consider_secondary_sources = true;
+sound_field_mono_localwfs(xrange, yrange, zrange,xs,src,f,conf)
 
-% config for real array
+
+%% ===  Linear secondary sources ===
+% config for real loudspeaker array
 conf.dimension = '2D';
-conf.secondary_sources.geometry = 'circular';
+conf.secondary_sources.geometry = 'linear';
 conf.secondary_sources.number = 56;
 conf.secondary_sources.size = 2;
-conf.secondary_sources.center = [0, 0, 0];
+conf.secondary_sources.center = [0, 1, 0];
 conf.driving_functions = 'default';
-conf.xref = conf.secondary_sources.center;
-
-X = conf.localsfs.vss.center;
-xs = [0.0, -1.0, 0];  % propagation direction of plane wave
+% listening area
+X = [0 0 0];
+conf.xref = X;
+xs = [1.0, -1.0, 0];  % propagation direction of plane wave
 src = 'pw';
 xrange = [-1, 1];
 yrange = [-1, 1];
 zrange = 0;
 f = 7000;
+% --- Circular virtual secondary sources ---
+conf.localsfs.method = 'wfs';
+conf.localsfs.usetapwin = false;
+conf.localsfs.vss.size = 0.4;
+conf.localsfs.vss.center = [0, 0, 0];
+conf.localsfs.vss.geometry = 'circular';
+conf.localsfs.vss.number = 56;
+conf.localsfs.vss.consider_target_field = true;
+conf.localsfs.vss.consider_secondary_sources = true;
+sound_field_mono_localwfs(xrange, yrange, zrange,xs,src,f,conf)
+% --- Linear virtual secondary sources ---
+conf.localsfs.method = 'wfs';
+conf.localsfs.usetapwin = false;
+conf.localsfs.vss.size = 0.4;
+conf.localsfs.vss.center = [0, 0.2, 0];
+conf.localsfs.vss.geometry = 'linear';
+conf.localsfs.vss.number = 56;
+conf.localsfs.vss.consider_target_field = true;
+conf.localsfs.vss.consider_secondary_sources = true;
+sound_field_mono_localwfs(xrange, yrange, zrange,xs,src,f,conf)
+% --- Box shaped virtual secondary sources ---
+conf.localsfs.method = 'wfs';
+conf.localsfs.usetapwin = false;
+conf.localsfs.vss.size = 0.4;
+conf.localsfs.vss.center = [0, 0, 0];
+conf.localsfs.vss.geometry = 'box';
+conf.localsfs.vss.number = 4*56;
+conf.localsfs.vss.consider_target_field = true;
+conf.localsfs.vss.consider_secondary_sources = true;
+sound_field_mono_localwfs(xrange, yrange, zrange,xs,src,f,conf)
 
-x0 = secondary_source_positions(conf);
 
-[D, xactive, xv] = driving_function_mono_localwfs(x0,xs,src,f,conf);
-
-%%
-[P, x, y, z] = sound_field_mono(xrange,yrange,zrange,xactive,'ls',D,f,conf);
-plot_sound_field(P,x,y,z,xactive,conf);
-hold on
-draw_loudspeakers(xv,[1 1 0],conf);
-hold off
+%% ===  Box shaped secondary sources ===
+% config for real loudspeaker array
+conf.dimension = '2D';
+conf.secondary_sources.geometry = 'box';
+conf.secondary_sources.number = 4*56;
+conf.secondary_sources.size = 2;
+conf.secondary_sources.center = [0, 0, 0];
+conf.driving_functions = 'default';
+% listening area
+X = [0 0 0];
+conf.xref = X;
+xs = [1.0, -1.0, 0];  % propagation direction of plane wave
+src = 'pw';
+xrange = [-1, 1];
+yrange = [-1, 1];
+zrange = 0;
+f = 7000;
+% --- Circular virtual secondary sources ---
+conf.localsfs.method = 'wfs';
+conf.localsfs.usetapwin = false;
+conf.localsfs.vss.size = 0.4;
+conf.localsfs.vss.center = [0, 0, 0];
+conf.localsfs.vss.geometry = 'circular';
+conf.localsfs.vss.number = 56;
+conf.localsfs.vss.consider_target_field = true;
+conf.localsfs.vss.consider_secondary_sources = true;
+sound_field_mono_localwfs(xrange, yrange, zrange,xs,src,f,conf)
+% --- Linear virtual secondary sources ---
+conf.localsfs.method = 'wfs';
+conf.localsfs.usetapwin = false;
+conf.localsfs.vss.size = 0.4;
+conf.localsfs.vss.center = [0, 0.2, 0];
+conf.localsfs.vss.geometry = 'linear';
+conf.localsfs.vss.number = 56;
+conf.localsfs.vss.consider_target_field = true;
+conf.localsfs.vss.consider_secondary_sources = true;
+sound_field_mono_localwfs(xrange, yrange, zrange,xs,src,f,conf)
+% --- Box shaped virtual secondary sources ---
+conf.localsfs.method = 'wfs';
+conf.localsfs.usetapwin = false;
+conf.localsfs.vss.size = 0.4;
+conf.localsfs.vss.center = [0, 0, 0];
+conf.localsfs.vss.geometry = 'box';
+conf.localsfs.vss.number = 4*56;
+conf.localsfs.vss.consider_target_field = true;
+conf.localsfs.vss.consider_secondary_sources = true;
+sound_field_mono_localwfs(xrange, yrange, zrange,xs,src,f,conf)

@@ -6,7 +6,7 @@ clear variables;
 conf = SFS_config_example;
 conf.plot.useplot = false;
 conf.showprogress = true;
-conf.resolution = 400;
+conf.resolution = 1000;
 conf.plot.loudspeakers = true;
 conf.plot.realloudspeakers = false;
 conf.usetapwin = true;

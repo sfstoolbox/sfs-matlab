@@ -1,4 +1,4 @@
-function varargout = freq_response_wfs(X,xs,src,conf)
+function varargout = freq_response_localwfs(X,xs,src,conf)
 %FREQ_RESPONSE_WFS simulates the frequency response for WFS at the given
 %listener position
 %
@@ -76,12 +76,9 @@ showprogress = conf.showprogress;
 % disable progress bar for sound field function
 conf.showprogress = false;
 
-
 %% ===== Computation ====================================================
 % Get the position of the loudspeakers
 x0 = secondary_source_positions(conf);
-x0 = secondary_source_selection(x0,xs,src);
-x0 = secondary_source_tapering(x0,conf);
 % Generate frequencies (10^0-10^5)
 f = logspace(0,5,500)';
 % We want only frequencies until f = 20000Hz
@@ -91,7 +88,7 @@ S = zeros(size(f));
 % Get the result for all frequencies
 for ii = 1:length(f)
     if showprogress, progress_bar(ii,length(f)); end
-    D = driving_function_mono_wfs(x0,xs,src,f(ii),conf);
+    D = driving_function_mono_localwfs(x0,xs,src,f(ii),conf);
     % calculate sound field at the listener position
     P = sound_field_mono(X(1),X(2),X(3),x0,'ls',D,f(ii),conf);
     S(ii) = abs(P);

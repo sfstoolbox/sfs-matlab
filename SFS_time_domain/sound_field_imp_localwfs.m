@@ -1,27 +1,36 @@
-function varargout = freq_response_wfs(X,xs,src,conf)
-%FREQ_RESPONSE_WFS simulates the frequency response for WFS at the given
-%listener position
+function varargout = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
+%SOUND_FIELD_IMP_LOCALWFS returns the sound field in time domain of an impulse
 %
-%   Usage: [S,f] = freq_response_wfs(X,xs,src,[conf])
+%   Usage: [p,x,y,z,x0] = sound_field_imp_localwfs(X,Y,Z,xs,src,t,[conf])
 %
-%   Input parameters:
-%       X           - listener position / m
-%       xs          - position of virtual source / m
+%   Input options:
+%       X           - x-axis / m; single value or [xmin,xmax]
+%       Y           - y-axis / m; single value or [ymin,ymax]
+%       Z           - z-axis / m; single value or [zmin,zmax]
+%       xs          - position of point source / m
 %       src         - source type of the virtual source
-%                         'pw' -plane wave
+%                         'pw' - plane wave (xs, ys are the direction of the
+%                                plane wave in this case)
 %                         'ps' - point source
-%                         'fs' - focused source
+%       t           - time point t of the sound field / samples
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   Output parameters:
-%       S           - simulated frequency response
-%       f           - corresponding frequency axis / Hz
+%   Output options:
+%       p           - simulated sound field
+%       x           - corresponding x axis / m
+%       y           - corresponding y axis / m
+%       z           - corresponding z axis / m
+%       x0          - secondary sources / m
 %
-%   FREQ_RESPONSE_WFS(X,xs,src,conf) simulates the frequency response of the
-%   sound field at the given position X. The sound field is simulated for the
-%   given source type (src) using a monochromatic WFS driving function.
+%   SOUND_FIELD_IMP_LOCALWFS(X,Y,Z,xs,src,t,conf) simulates a sound field of the
+%   given source type (src) using a LOCALWFS driving function with a delay line at
+%   the time t.
 %
-%   see also: sound_field_mono_wfs, sound_field_imp_wfs
+%   To plot the result use:
+%   conf.plot.usedb = 1;
+%   plot_sound_field(p,x,y,z,x0,win,conf);
+%
+%   see also: driving_function_imp_localwfs, sound_field_mono_localwfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -55,58 +64,52 @@ function varargout = freq_response_wfs(X,xs,src,conf)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
-
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
-nargmax = 4;
+nargmin = 6;
+nargmax = 7;
 narginchk(nargmin,nargmax);
-isargposition(X);
+isargvector(X,Y,Z);
 isargxs(xs);
 isargchar(src);
+isargscalar(t);
 if nargin<nargmax
     conf = SFS_config;
+else
+    isargstruct(conf);
 end
-isargstruct(conf);
-
 
 %% ===== Configuration ==================================================
-% Plotting result
-useplot = conf.plot.useplot;
-showprogress = conf.showprogress;
-% disable progress bar for sound field function
-conf.showprogress = false;
+if strcmp('2D',conf.dimension)
+    greens_function = 'ls';
+else
+    greens_function = 'ps';
+end
 
-
-%% ===== Computation ====================================================
-% Get the position of the loudspeakers
+%% ===== Computation =====================================================
+% Get secondary sources
 x0 = secondary_source_positions(conf);
 x0 = secondary_source_selection(x0,xs,src);
 x0 = secondary_source_tapering(x0,conf);
-% Generate frequencies (10^0-10^5)
-f = logspace(0,5,500)';
-% We want only frequencies until f = 20000Hz
-idx = find(f>20000,1);
-f = f(1:idx);
-S = zeros(size(f));
-% Get the result for all frequencies
-for ii = 1:length(f)
-    if showprogress, progress_bar(ii,length(f)); end
-    D = driving_function_mono_wfs(x0,xs,src,f(ii),conf);
-    % calculate sound field at the listener position
-    P = sound_field_mono(X(1),X(2),X(3),x0,'ls',D,f(ii),conf);
-    S(ii) = abs(P);
+% Get driving signals
+[d, ~, xv] = driving_function_imp_localwfs(x0,xs,src,conf);
+% Fix the time to account for sample offset of the pre-equalization filter
+switch (conf.wfs.usehpre + conf.localsfs.wfs.usehpre)
+  case 1
+    t = t + 64;
+  case 2
+    t = t + 127;
 end
-
-% return parameter
-if nargout>0, varargout{1}=S; end
-if nargout>1, varargout{2}=f; end
-
-% ===== Plotting =========================================================
+% Calculate sound field
+[varargout{1:min(nargout,4)}] = ...
+    sound_field_imp(X,Y,Z,x0,greens_function,d,t,conf);
+% Return secondary sources if desired
+if nargout==5, varargout{5}=x0; end  
+  
+% === Plotting ===
 if nargout==0 || useplot
-    figure;
-    figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-    semilogx(f,db(S));
-    set(gca,'XTick',[10 100 250 1000 5000 20000]);
-    ylabel('Amplitude (dB)');
-    xlabel('Frequency (Hz)');
+  hold on
+    [~,~,~,x,y,z] = xyz_grid(X,Y,Z,conf);
+    dimensions = xyz_axes_selection(x,y,z);
+    draw_loudspeakers(xv, dimensions, conf);
+  hold off
 end

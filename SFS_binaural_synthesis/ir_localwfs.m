@@ -1,27 +1,27 @@
-function varargout = freq_response_wfs(X,xs,src,conf)
-%FREQ_RESPONSE_WFS simulates the frequency response for WFS at the given
-%listener position
+function [ir,x0] = ir_localwfs(X,phi,xs,src,irs,conf)
+%IR_LOCALWFS generate a impulse response simulating WFS
 %
-%   Usage: [S,f] = freq_response_wfs(X,xs,src,[conf])
+%   Usage: [ir,x0] = ir_localwfs(X,phi,xs,src,irs,[conf])
 %
 %   Input parameters:
-%       X           - listener position / m
-%       xs          - position of virtual source / m
-%       src         - source type of the virtual source
-%                         'pw' -plane wave
-%                         'ps' - point source
-%                         'fs' - focused source
-%       conf        - optional configuration struct (see SFS_config)
+%       X       - listener position / m
+%       phi     - listener direction [head orientation] / rad
+%                 0 means the head is oriented towards the x-axis.
+%       xs      - virtual source position / m
+%       src     - source type: 'pw' -plane wave
+%                              'ps' - point source
+%       irs     - IR data set for the secondary sources
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       S           - simulated frequency response
-%       f           - corresponding frequency axis / Hz
+%       ir      - impulse response for the desired WFS array (nx2 matrix)
+%       x0      - secondary sources / m
 %
-%   FREQ_RESPONSE_WFS(X,xs,src,conf) simulates the frequency response of the
-%   sound field at the given position X. The sound field is simulated for the
-%   given source type (src) using a monochromatic WFS driving function.
+%   IR_LOCALWFS(X,phi,xs,src,irs,conf) calculates a binaural room impulse
+%   response for a virtual source at xs for a virtual LOCAL WFS array and a
+%   listener located at X.
 %
-%   see also: sound_field_mono_wfs, sound_field_imp_wfs
+% see also: ssr_brs_wfs, ir_point_source, auralize_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -57,56 +57,27 @@ function varargout = freq_response_wfs(X,xs,src,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
-nargmax = 4;
+nargmin = 5;
+nargmax = 6;
 narginchk(nargmin,nargmax);
-isargposition(X);
-isargxs(xs);
-isargchar(src);
 if nargin<nargmax
     conf = SFS_config;
 end
-isargstruct(conf);
+if conf.debug
+    isargposition(X);
+    isargxs(xs);
+    isargscalar(phi);
+    isargchar(src);
+    check_irs(irs);
+end
 
 
-%% ===== Configuration ==================================================
-% Plotting result
-useplot = conf.plot.useplot;
-showprogress = conf.showprogress;
-% disable progress bar for sound field function
-conf.showprogress = false;
-
-
-%% ===== Computation ====================================================
-% Get the position of the loudspeakers
+%% ===== Computation =====================================================
+% Get secondary sources
 x0 = secondary_source_positions(conf);
 x0 = secondary_source_selection(x0,xs,src);
 x0 = secondary_source_tapering(x0,conf);
-% Generate frequencies (10^0-10^5)
-f = logspace(0,5,500)';
-% We want only frequencies until f = 20000Hz
-idx = find(f>20000,1);
-f = f(1:idx);
-S = zeros(size(f));
-% Get the result for all frequencies
-for ii = 1:length(f)
-    if showprogress, progress_bar(ii,length(f)); end
-    D = driving_function_mono_wfs(x0,xs,src,f(ii),conf);
-    % calculate sound field at the listener position
-    P = sound_field_mono(X(1),X(2),X(3),x0,'ls',D,f(ii),conf);
-    S(ii) = abs(P);
-end
-
-% return parameter
-if nargout>0, varargout{1}=S; end
-if nargout>1, varargout{2}=f; end
-
-% ===== Plotting =========================================================
-if nargout==0 || useplot
-    figure;
-    figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-    semilogx(f,db(S));
-    set(gca,'XTick',[10 100 250 1000 5000 20000]);
-    ylabel('Amplitude (dB)');
-    xlabel('Frequency (Hz)');
-end
+% Get driving signals
+d = driving_function_imp_localwfs(x0,xs,src,conf);
+% generate the impulse response for WFS
+ir = ir_generic(X,phi,x0,d,irs,conf);

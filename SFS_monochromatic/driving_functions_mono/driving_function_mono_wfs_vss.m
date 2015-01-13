@@ -1,27 +1,26 @@
-function varargout = freq_response_wfs(X,xs,src,conf)
-%FREQ_RESPONSE_WFS simulates the frequency response for WFS at the given
-%listener position
+function D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf)
+%DRIVING_FUNCTION_MONO_WFS_VSS returns the driving signal D for a given set of
+%virtual secondary sources and their driving signals
 %
-%   Usage: [S,f] = freq_response_wfs(X,xs,src,[conf])
+%   Usage: D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf)
 %
 %   Input parameters:
-%       X           - listener position / m
-%       xs          - position of virtual source / m
-%       src         - source type of the virtual source
-%                         'pw' -plane wave
-%                         'ps' - point source
-%                         'fs' - focused source
+%       x0          - position, direction, and weights of the real secondary
+%                     sources / m [nx7]
+%       xv          - position, direction, and weights of the virtual secondary
+%                     sources / m [mx7]
+%       Dv          - driving functions of virtual secondary sources [mx1]
+%       f           - frequency of the monochromatic source / Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       S           - simulated frequency response
-%       f           - corresponding frequency axis / Hz
+%       D           - driving function signal [nx1]
 %
-%   FREQ_RESPONSE_WFS(X,xs,src,conf) simulates the frequency response of the
-%   sound field at the given position X. The sound field is simulated for the
-%   given source type (src) using a monochromatic WFS driving function.
+%   References:
+%       S. Spors, J.Ahrens (2010) - "Local Sound Field Synthesis by Virtual
+%                                    Secondary Sources", 40th AES
 %
-%   see also: sound_field_mono_wfs, sound_field_imp_wfs
+%   see also: driving_function_mono_wfs, driving_function_mono_wfs_fs
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -55,58 +54,56 @@ function varargout = freq_response_wfs(X,xs,src,conf)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
-
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
-nargmax = 4;
+nargmin = 4;
+nargmax = 5;
 narginchk(nargmin,nargmax);
-isargposition(X);
-isargxs(xs);
-isargchar(src);
+isargvector(Dv);
+isargpositivescalar(f);
+isargsecondarysource(x0,xv);
 if nargin<nargmax
     conf = SFS_config;
+else
+    isargstruct(conf);
 end
-isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
-% Plotting result
-useplot = conf.plot.useplot;
-showprogress = conf.showprogress;
-% disable progress bar for sound field function
-conf.showprogress = false;
+dimension = conf.dimension;
 
 
 %% ===== Computation ====================================================
-% Get the position of the loudspeakers
-x0 = secondary_source_positions(conf);
-x0 = secondary_source_selection(x0,xs,src);
-x0 = secondary_source_tapering(x0,conf);
-% Generate frequencies (10^0-10^5)
-f = logspace(0,5,500)';
-% We want only frequencies until f = 20000Hz
-idx = find(f>20000,1);
-f = f(1:idx);
-S = zeros(size(f));
-% Get the result for all frequencies
-for ii = 1:length(f)
-    if showprogress, progress_bar(ii,length(f)); end
-    D = driving_function_mono_wfs(x0,xs,src,f(ii),conf);
-    % calculate sound field at the listener position
-    P = sound_field_mono(X(1),X(2),X(3),x0,'ls',D,f(ii),conf);
-    S(ii) = abs(P);
+% Get driving signals
+if strcmp('2.5D',dimension) | strcmp('3D',dimension)
+    % === Focussed Point Sink ===
+    conf.driving_functions = 'default';
+elseif strcmp('2D',dimension)
+    % === Focussed Line Sink ===
+    % We have to use the driving function setting directly, because in opposite
+    % to the case of a non-focused source where 'ps' and 'ls' are available as
+    % source types, for a focused source only 'fs' is available.
+    % Have a look at driving_function_mono_wfs_fs() for details on the
+    % implemented focused source types.
+    conf.driving_functions = 'line_sink';
+else
+    error('%s: %s is not a known source type.',upper(mfilename),dimension);
 end
 
-% return parameter
-if nargout>0, varargout{1}=S; end
-if nargout>1, varargout{2}=f; end
+% Get driving signals for real secondary sources
+%
+% see Spors (2010), fig. 2 & eq. (12)
+Ns = size(xv,1);
+N0 = size(x0,1);
 
-% ===== Plotting =========================================================
-if nargout==0 || useplot
-    figure;
-    figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-    semilogx(f,db(S));
-    set(gca,'XTick',[10 100 250 1000 5000 20000]);
-    ylabel('Amplitude (dB)');
-    xlabel('Frequency (Hz)');
+Dmatrix = zeros(N0,Ns);
+
+for idx=1:Ns
+  [xtmp, xdx] = secondary_source_selection(x0,xv(idx,1:6),'fs');
+  if (~isempty(xtmp))
+    xtmp = secondary_source_tapering(xtmp,conf);
+    Dmatrix(xdx,idx) = ...
+        driving_function_mono_wfs(xtmp,xv(idx,1:3),'fs',f,conf) .* xtmp(:,7);
+  end
 end
+
+D = Dmatrix*(Dv.*xv(:,7));

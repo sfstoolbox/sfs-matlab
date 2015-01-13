@@ -1,27 +1,34 @@
-function varargout = freq_response_wfs(X,xs,src,conf)
-%FREQ_RESPONSE_WFS simulates the frequency response for WFS at the given
-%listener position
+function [d, x0, xv] = driving_function_imp_localwfs(x0,xs,src,conf)
+%DRIVING_FUNCTION_IMP_LOCALWFS returns the driving signal d for local WFS
 %
-%   Usage: [S,f] = freq_response_wfs(X,xs,src,[conf])
+%   Usage: [D, xv, x0] = driving_function_mono_localwfs(x0,xs,src,conf)
 %
 %   Input parameters:
-%       X           - listener position / m
-%       xs          - position of virtual source / m
+%       x0          - position and direction of the secondary source / m [nx6]
+%       xs          - position of virtual source or direction of plane
+%                     wave / m [1x3]
 %       src         - source type of the virtual source
-%                         'pw' -plane wave
+%                         'pw' - plane wave (xs is the direction of the
+%                                plane wave in this case)
 %                         'ps' - point source
+%                         'ls' - line source
 %                         'fs' - focused source
+%
+%       f           - frequency of the monochromatic source / Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       S           - simulated frequency response
-%       f           - corresponding frequency axis / Hz
+%       D           - driving function signal [nx1]
+%       x0          - position, direction, and weights of the real secondary
+%                     sources / m [nx7]
+%       xv          - position, direction, and weights of the virtual secondary
+%                     sources / m [mx7]
 %
-%   FREQ_RESPONSE_WFS(X,xs,src,conf) simulates the frequency response of the
-%   sound field at the given position X. The sound field is simulated for the
-%   given source type (src) using a monochromatic WFS driving function.
+%   References:
+%       S. Spors (2010) - "Local Sound Field Synthesis by Virtual Secondary
+%                          Sources", 40th AES
 %
-%   see also: sound_field_mono_wfs, sound_field_imp_wfs
+%   see also: plot_sound_field, sound_field_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -55,58 +62,57 @@ function varargout = freq_response_wfs(X,xs,src,conf)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
-
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;
 nargmax = 4;
 narginchk(nargmin,nargmax);
-isargposition(X);
+isargsecondarysource(x0);
 isargxs(xs);
 isargchar(src);
 if nargin<nargmax
     conf = SFS_config;
+else
+    isargstruct(conf);
 end
-isargstruct(conf);
-
 
 %% ===== Configuration ==================================================
-% Plotting result
-useplot = conf.plot.useplot;
-showprogress = conf.showprogress;
-% disable progress bar for sound field function
-conf.showprogress = false;
-
+virtualconf = conf;
+virtualconf.secondary_sources.size = conf.localsfs.vss.size;
+virtualconf.secondary_sources.center = conf.localsfs.vss.center;
+virtualconf.secondary_sources.geometry = conf.localsfs.vss.geometry;
+virtualconf.secondary_sources.number = conf.localsfs.vss.number;
+virtualconf.usetapwin = conf.localsfs.usetapwin;
+virtualconf.tapwinlen = conf.localsfs.tapwinlen;
+virtualconf.wfs = conf.localsfs.wfs;
+method = conf.localsfs.method;
 
 %% ===== Computation ====================================================
-% Get the position of the loudspeakers
-x0 = secondary_source_positions(conf);
-x0 = secondary_source_selection(x0,xs,src);
-x0 = secondary_source_tapering(x0,conf);
-% Generate frequencies (10^0-10^5)
-f = logspace(0,5,500)';
-% We want only frequencies until f = 20000Hz
-idx = find(f>20000,1);
-f = f(1:idx);
-S = zeros(size(f));
-% Get the result for all frequencies
-for ii = 1:length(f)
-    if showprogress, progress_bar(ii,length(f)); end
-    D = driving_function_mono_wfs(x0,xs,src,f(ii),conf);
-    % calculate sound field at the listener position
-    P = sound_field_mono(X(1),X(2),X(3),x0,'ls',D,f(ii),conf);
-    S(ii) = abs(P);
+
+if strcmp('fs',src)
+  error(['%s: %s is not a supported method source type! Try to use a point', ...
+    ' source, if the source is inside the secondary source array but not', ...
+    ' inside the virtual secondary source array'], upper(mfilename),src);
 end
 
-% return parameter
-if nargout>0, varargout{1}=S; end
-if nargout>1, varargout{2}=f; end
+% Determine driving functions of virtual array with different sfs methods
+switch method
+  case 'wfs'
+    % === Wave Field Synthesis ===
+    % create virtual source array
+    xv = virtual_secondary_source_positions(x0,xs,src,conf);
+    % optional tapering
+    xv = secondary_source_tapering(xv,virtualconf);
+    % optional amplitude correction
+    % xv = secondary_source_amplitudecorrection(xv);
+    % driving functions for virtual source array
+    dv = driving_function_imp_wfs(xv,xs,src,virtualconf);
+  otherwise
+    error('%s: %s is not a supported method for time domain localsfs!', ...
+      upper(mfilename),method);
+end
 
-% ===== Plotting =========================================================
-if nargout==0 || useplot
-    figure;
-    figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-    semilogx(f,db(S));
-    set(gca,'XTick',[10 100 250 1000 5000 20000]);
-    ylabel('Amplitude (dB)');
-    xlabel('Frequency (Hz)');
+% select secondary sources
+x0 = secondary_source_selection(x0, xv(:,1:6), 'vss');
+% driving functions for real source array
+d = driving_function_imp_wfs_vss(x0,xv,dv,conf);
 end

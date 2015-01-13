@@ -1,27 +1,25 @@
-function varargout = freq_response_wfs(X,xs,src,conf)
-%FREQ_RESPONSE_WFS simulates the frequency response for WFS at the given
-%listener position
+function d = driving_function_imp_wfs_vss(x0,xv,dv,conf)
+%DRIVING_FUNCTION_IMP_WFS_VSS returns the driving signal d for a given set of
+%virtual secondary sources and the corresponding dricing signals
 %
-%   Usage: [S,f] = freq_response_wfs(X,xs,src,[conf])
+%   Usage: d = driving_function_imp_wfs_vss(x0,xv,dv,conf)
 %
 %   Input parameters:
-%       X           - listener position / m
-%       xs          - position of virtual source / m
-%       src         - source type of the virtual source
-%                         'pw' -plane wave
-%                         'ps' - point source
-%                         'fs' - focused source
+%       x0          - position, direction, and weights of the real secondary
+%                     sources / m [nx7]
+%       xv          - position, direction, and weights of the virtual secondary
+%                     sources / m [mx7]
+%       dv          - driving signals of virtual secondary sources [sxm]
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       S           - simulated frequency response
-%       f           - corresponding frequency axis / Hz
+%       d           - driving function signal [Sxn]
 %
-%   FREQ_RESPONSE_WFS(X,xs,src,conf) simulates the frequency response of the
-%   sound field at the given position X. The sound field is simulated for the
-%   given source type (src) using a monochromatic WFS driving function.
+%   References:
+%       S. Spors (2010) - "Local Sound Field Synthesis by Virtual Secondary
+%                          Sources", 40th AES
 %
-%   see also: sound_field_mono_wfs, sound_field_imp_wfs
+%   see also: driving_function_imp_localwfs, driving_function_mono_wfs_vss
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -55,58 +53,63 @@ function varargout = freq_response_wfs(X,xs,src,conf)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
-
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;
 nargmax = 4;
 narginchk(nargmin,nargmax);
-isargposition(X);
-isargxs(xs);
-isargchar(src);
+isargmatrix(dv);
+isargsecondarysource(x0,xv);
 if nargin<nargmax
     conf = SFS_config;
+else
+    isargstruct(conf);
 end
-isargstruct(conf);
-
 
 %% ===== Configuration ==================================================
-% Plotting result
-useplot = conf.plot.useplot;
-showprogress = conf.showprogress;
-% disable progress bar for sound field function
-conf.showprogress = false;
-
+fs = conf.fs;
+N = conf.N;
 
 %% ===== Computation ====================================================
-% Get the position of the loudspeakers
-x0 = secondary_source_positions(conf);
-x0 = secondary_source_selection(x0,xs,src);
-x0 = secondary_source_tapering(x0,conf);
-% Generate frequencies (10^0-10^5)
-f = logspace(0,5,500)';
-% We want only frequencies until f = 20000Hz
-idx = find(f>20000,1);
-f = f(1:idx);
-S = zeros(size(f));
-% Get the result for all frequencies
-for ii = 1:length(f)
-    if showprogress, progress_bar(ii,length(f)); end
-    D = driving_function_mono_wfs(x0,xs,src,f(ii),conf);
-    % calculate sound field at the listener position
-    P = sound_field_mono(X(1),X(2),X(3),x0,'ls',D,f(ii),conf);
-    S(ii) = abs(P);
+% Apply wfs preequalization filter on each driving signal of the vss'
+dv = wfs_preequalization(dv, conf);
+
+% initialize 
+Nv = size(xv,1);
+N0 = size(x0,1);
+
+d = zeros(N, N0);
+delay = inf(N0, Nv);
+weight = zeros(N0, Nv);
+
+idx = 1;
+for xvi = xv'
+  % select active source for one focused source
+  [x0s, xdx] = secondary_source_selection(x0,xvi(1:6)','fs');
+  if ~isempty(x0s) && xvi(7) > 0
+    % focused source position
+    xs = repmat(xvi(1:3)',[size(x0s,1) 1]);    
+    % delay and weights for single focused source
+    [delay(xdx,idx),weight(xdx,idx)] = driving_function_imp_wfs_fs(x0s(:,1:3),x0s(:,4:6),xs,conf);
+    
+    % optional tapering
+    x0s = secondary_source_tapering(x0s,conf);
+    % apply secondary sources' tapering and possibly virtual secondary
+    % sources' tapering to weighting matrix
+    weight(xdx,idx) = weight(xdx,idx).*x0s(:,7).*xvi(7);
+  end
+  idx = idx + 1;  
 end
 
-% return parameter
-if nargout>0, varargout{1}=S; end
-if nargout>1, varargout{2}=f; end
+% Remove delay offset, in order to begin always at t=0 with the first wave front
+% at any secondary source
+delay = delay - min(delay(:));
 
-% ===== Plotting =========================================================
-if nargout==0 || useplot
-    figure;
-    figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-    semilogx(f,db(S));
-    set(gca,'XTick',[10 100 250 1000 5000 20000]);
-    ylabel('Amplitude (dB)');
-    xlabel('Frequency (Hz)');
+% compose impulse responses
+for idx=1:Nv
+  xdx = weight(:,idx) ~= 0;
+  if sum(xdx) > 0    
+    % Shift and weight prototype driving function
+    pulse = repmat(dv(:,idx), 1, sum(xdx));
+    d(:, xdx) = d(:, xdx) + delayline(pulse, delay(xdx,idx)*fs, weight(xdx,idx), conf);
+  end
 end

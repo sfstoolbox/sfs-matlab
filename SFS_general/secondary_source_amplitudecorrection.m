@@ -1,32 +1,16 @@
-function y = rms(insig,options)
-%RMS returns the root mean square of the signal
+function x0 = secondary_source_amplitudecorrection(x0)
+%SECONDARY_SOURCE_AMPLITUDECORRECTION the secondary sources
 %
-%   Usage: y = rms(insig,[options]);
+%   Usage: x0 = secondary_source_amplitudecorrection(x0)
 %
 %   Input parameters:
-%       insig       - signal for which to calculate the RMS value
-%       options     - if 'ac' is given, only the AC component of the signal
-%                     is used for RMS calculation
+%       x0          - secondary sources / m
 %
-%   Output parameters:
-%       y           - RMS value of insig
+%   Output options:
+%       x0          - secondary sources / m, containing the applied amplitude 
+%                     correction in its weights in x0(:,7)
 %
-%   RMS(insig) computes the RMS (Root Mean Square) value of a finite
-%   sampled signal sampled at a uniform sampling rate.
-%
-%   RMS(x,'ac') does the same, but considers only the AC component of the
-%   signal (i.e. the mean is removed).
-%
-%   If the input is a matrix or ND-array, the RMS is computed along the first
-%   dimension, and a vector of values is returned.
-%
-%   The RMS value of a signal x of length N is computed by
-%
-%                        1  N
-%     rms(insig) = sqrt( - sum insig(n)^2 )
-%                        N n=1
-%
-%   see also: db
+%   SECONDARY_SOURCE_AMPLITUDECORRECTION(x0)
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -60,32 +44,25 @@ function y = rms(insig,options)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
-
-%% ===== Checking of input parameters ====================================
+%% ===== Checking of input  parameters ==================================
 nargmin = 1;
-nargmax = 2;
-narginchk(nargmin,nargmax);
-isargnumeric(insig);
-if (nargin==1) || (~ischar(options))
-  options='';
+nargmax = 1;
+narginchk(nargmin,nargmax),
+isargsecondarysource(x0);
+
+%% ===== Calculation ====================================================
+if size(x0,1) < 3
+  % nothing to normalize for this
+  return;
 end
 
-% if the input signal is a row vector change it to a column vector
-if isvector(insig) && size(insig,2)>2
-    insig = insig';
-end
+xd = vector_norm(x0(2:end,1:3) - x0(1:end-1,1:3),2);
+xd = xd./sum(xd,1);
 
-%% ===== Computation =====================================================
-% It is better to use 'norm' instead of explicitly summing the squares, as
-% norm (hopefully) attempts to avoid numerical overflow.
-y = zeros(1,size(insig,2));
-switch(lower(options))
-    case 'ac'
-        for ii=1:size(insig,2)
-            y(1,ii) = norm(insig(:,ii)-mean(insig(:,ii)))/sqrt(length(insig(:,ii)));
-        end
-    otherwise
-        for ii=1:size(insig,2)
-            y(1,ii) = norm(insig(:,ii))/sqrt(length(insig(:,ii)));
-        end
+x0(1,7) = xd(1);
+x0(2:end-1,7) = xd(1:end-1) + xd(2:end);
+x0(end,7) = xd(end);
+
+x0(:,7) = x0(:,7)./2;
+
 end

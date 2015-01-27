@@ -102,7 +102,7 @@ elseif strcmp('2.5D',dimension)
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D for a plane wave as source model
         %
-        sos = zp2sos(p,z*c/R,2,'down','none');
+        [sos,~] = zp2sos(p,z*c/R,2,'down','none');
         %
         % compare Spors et al. (2011)
         %

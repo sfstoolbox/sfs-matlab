@@ -103,7 +103,7 @@ elseif strcmp('2.5D',dimension)
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D using a point source as source model
         %
-        sos = zp2sos(z*c/r,z*c/R,1,'up','none');
+        [sos,~] = zp2sos(z*c/r,z*c/R,1,'up','none');
         %
         % compare Spors et al. (2011)
         %

@@ -7,15 +7,15 @@ function hpre = wfs_iir_prefilter(conf)
 %       conf    - optional configuration struct (see SFS_config)
 %
 %       must at least include:
-%           conf.fs = 44100;        % sampling frequency / Hz
-%           conf.hpreflow = 200;    % lower shelving frequency for coupling
-%                                     subwoofers and adapt the low frequency
-%                                     to different array lengths / Hz
-%           conf.hprefhigh = 1500;  % higher shelving frequency to adapt to
-%                                     actual aliasing frequeny / Hz
-%           conf.hpreBandwidth_in_Oct = 2; % bandwidth for the Lagrange
-%                                     interpolation region / octaves
-%           conf.hpreIIRorder = 4;  % desired IIR filter order
+%           conf.fs = 44100;           - sampling frequency / Hz
+%           conf.wfs.hpreflow = 200;   - lower shelving frequency for coupling
+%                                        subwoofers and adapt the low frequency
+%                                        to different array lengths / Hz
+%           conf.wfs.hprefhigh = 1500; - higher shelving frequency to adapt to
+%                                        actual aliasing frequeny / Hz
+%           conf.wfs.hpreBandwidth_in_Oct = 2;  - bandwidth for the Lagrange
+%                                                 interpolation region / octaves
+%           conf.wfs.hpreIIRorder = 4; - desired IIR filter order
 %
 %   Output parameters:
 %        hpre   - iir pre-equalization filter as a struct with the following
@@ -90,10 +90,10 @@ narginchk(nargmin,nargmax);
 if nargin<nargmax
     %apply a default, this refers to eq. (3) in [Sch13]
     conf.fs = 44100;
-    conf.hpreflow = 125;
-    conf.hprefhigh = 2000;
-    conf.hpreBandwidth_in_Oct = 2;
-    conf.hpreIIRorder = 1;
+    conf.wfs.hpreflow = 125;
+    conf.wfs.hprefhigh = 2000;
+    conf.wfs.hpreBandwidth_in_Oct = 2;
+    conf.wfs.hpreIIRorder = 1;
 else
     isargstruct(conf);
 end
@@ -106,15 +106,15 @@ end
 
 %% ===== Configuration ==================================================
 fs = conf.fs;               % Sampling rate
-fsub = conf.hpreflow;       % Lower frequency limit of preequalization
+fsub = conf.wfs.hpreflow;       % Lower frequency limit of preequalization
                             % filter (= frequency when subwoofer is active)
-falias = conf.hprefhigh;    % Upper frequency limit of preequalization
+falias = conf.wfs.hprefhigh;    % Upper frequency limit of preequalization
                             % filter (= aliasing frequency of system)
 
 % bandwidth in octaves for lagrange interpolation region
 %at the moment only 0.5, 1,2,3 or 4
-Bandwidth_in_Oct = conf.hpreBandwidth_in_Oct;
-IIRorder = conf.hpreIIRorder;
+Bandwidth_in_Oct = conf.wfs.hpreBandwidth_in_Oct;
+IIRorder = conf.wfs.hpreIIRorder;
 debug = conf.debug;
 
 

@@ -74,7 +74,7 @@ dimension = conf.dimension;
 
 %% ===== Computation ====================================================
 % Get driving signals
-if strcmp('2.5D',dimension) | strcmp('3D',dimension)
+if strcmp('2.5D',dimension) || strcmp('3D',dimension)
     % === Focussed Point Sink ===
     conf.driving_functions = 'default';
 elseif strcmp('2D',dimension)

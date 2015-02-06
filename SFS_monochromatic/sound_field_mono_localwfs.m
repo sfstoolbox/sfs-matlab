@@ -79,13 +79,13 @@ end
 
 %% ===== Configuration ==================================================
 useplot = conf.plot.useplot;
+loudspeakers = conf.plot.loudspeakers;
 dimension = conf.dimension;
 if strcmp('2D',dimension)
     greens_function = 'ls';
 else
     greens_function = 'ps';
 end
-
 
 %% ===== Computation ====================================================
 % Get the position of the loudspeakers and its activity
@@ -102,8 +102,11 @@ if nargout==6, varargout{6}=xv; end
 
 % ===== Plotting ========================================================
 % Add the virtual loudspeaker positions
-if nargout==0 || useplot
+if (nargout==0 || useplot) && loudspeakers
     hold on;
+    tmp = conf.plot.realloudspeakers;  % cache option for loudspeaker plotting
+    conf.plot.realloudspeakers = false;
     draw_loudspeakers(xv,[1 1 0],conf);
+    conf.plot.realloudspeakers = tmp;
     hold off;
 end

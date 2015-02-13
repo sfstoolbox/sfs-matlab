@@ -25,8 +25,8 @@ function [x0,idx] = secondary_source_selection(x0,xs,src)
 %   the chosen secondary sources is returned.
 %
 %   References:
-%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
-%       PhD thesis, TU Berlin
+%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
+%       "Theory of Sound Field Synthesis"
 %
 % see also: secondary_source_positions, secondary_source_tapering
 
@@ -108,7 +108,7 @@ if strcmp('pw',src)
     % a = <
     %      \ 0, else
     %
-    % see Wierstorf (2014), p.25 (2.47)
+    % see Wierstorf et al. (2015), eq.(#3vy)
     %
     % Direction of plane wave (nxs) is set above
     idx = (( vector_product(nk,nx0,2)>=eps ));
@@ -122,7 +122,7 @@ elseif strcmp('ps',src) || strcmp('ls',src)
     % a = <
     %      \ 0, else
     %
-    % see Wierstorf (2014), p.26 (2.54) and p.27 (2.59)
+    % see Wierstorf et al. (2015), eq.(#ykn) and eq.(#f51)
     %
     idx = (( vector_product(x0-xs,nx0,2)>=eps ));
     x0 = x0_tmp(idx,:);
@@ -136,7 +136,7 @@ elseif strcmp('fs',src)
     % a = <
     %      \ 0, else
     %
-    % see Wierstorf (2014), p.27 (2.67)
+    % see Wierstorf et al. (2015), eq.(#rpa)
     nxs = xs(:,4:6);
     xs = xs(:,1:3);
     idx = (( vector_product(nxs,xs-x0,2)>=eps ));

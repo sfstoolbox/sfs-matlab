@@ -18,6 +18,8 @@ function D = driving_function_mono_sdm_kx_ps(kx,xs,f,conf)
 %   frequency f. The driving signal is calculated in the kx domain.
 %
 %   References:
+%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
+%       "Theory of Sound Field Synthesis"
 %       S. Spors and J. Ahrens (2010) - "Reproduction of Focused Sources by the
 %       Spectral Division Method", ISCCSP
 %
@@ -105,9 +107,9 @@ if strcmp('2D',dimension)
 
 
 elseif strcmp('2.5D',dimension)
-    
+
     % === 2.5-Dimensional ================================================
-    
+
     % Reference point
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
@@ -122,7 +124,8 @@ elseif strcmp('2.5D',dimension)
         %                          K1( \|kx^2-(w/c)^2 yref )
         %
         % a time reversed version of this driving function for focused sources
-        % is given in Spors and Ahrens (2010), (7)
+        % is given in Spors and Ahrens (2010), eq.(7)
+        % see Wierstorf et al. (2015), eq.(#gk2)
         %
         D(idxpr) =  exp(1i*kx(idxpr)*xs(1)) .* ...
             besselh(1,2,sqrt( (omega/c)^2 - kx(idxpr).^2 )*abs(xref(2)-xs(2))) ./ ...
@@ -131,7 +134,7 @@ elseif strcmp('2.5D',dimension)
             D(idxev) =  exp(1i*kx(idxev)*xs(1)) .* ...
                 besselk(1,sqrt(kx(idxev).^2 - (omega/c).^2)*abs(xref(2)-xs(2))) ./ ...
                 besselk(1,sqrt(kx(idxev).^2 - (omega/c).^2)*abs(xref(2)-x0(2)));
-        end 
+        end
 
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
@@ -140,7 +143,7 @@ elseif strcmp('2.5D',dimension)
 
 
 elseif strcmp('3D',dimension)
-    
+
     % === 3-Dimensional ==================================================
     
     if strcmp('default',driving_functions)

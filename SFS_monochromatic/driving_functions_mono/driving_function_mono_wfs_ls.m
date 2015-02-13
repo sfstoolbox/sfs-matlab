@@ -19,8 +19,8 @@ function D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf)
 %   frequency f.
 %
 %   References:
-%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
-%       PhD thesis, TU Berlin
+%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
+%       "Theory of Sound Field Synthesis"
 %
 %   see also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
@@ -85,9 +85,9 @@ omega = 2*pi*f;
 
 
 if strcmp('2D',dimension) || strcmp('3D',dimension)
-    
+
     % === 2- or 3-Dimensional ============================================
-    
+
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % D using a line source
@@ -96,7 +96,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % D(x0,w) =  - -- -----------  H1  | - |x0-xs| |
         %              2c   |x0-xs|        \ c         /
         %
-        % see Wierstorf (2014), p.26 (2.55)
+        % see Wierstorf et al. (2015), eq.(#e4b)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -115,9 +115,9 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
 
 
 elseif strcmp('2.5D',dimension)
-    
+
     % === 2.5-Dimensional ================================================
-    
+
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
@@ -134,7 +134,7 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D(x0,w) =  - -- _ |---  -----------  H1  | - |x0-xs| |
         %                   2   \| c    |x0-xs|         \ c         /
         %
-        % see Wierstorf (2014), p.26 (2.56)
+        % see Wierstorf et al. (2015), eq.(#z5x)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);

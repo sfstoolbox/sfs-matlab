@@ -19,8 +19,8 @@ function D = driving_function_mono_wfs_ps(x0,nx0,xs,f,conf)
 %   frequency f.
 %
 %   References:
-%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
-%       PhD thesis, TU Berlin
+%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
+%       "Theory of Sound Field Synthesis"
 %       S. Spors, R. Rabenstein, J. Ahrens (2008) - "The Theory of Wave Field
 %       Synthesis Revisited", AES124
 %       E. Verheijen (1997) - "Sound Reproduction by Wave Field Synthesis", PhD
@@ -96,9 +96,9 @@ omega = 2*pi*f;
 
 
 if strcmp('2D',dimension) || strcmp('3D',dimension)
-    
+
     % === 2- or 3-Dimensional ============================================
-    
+
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % D using a point sink and large distance approximation
@@ -107,7 +107,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % D(x0,w) = --- --- ------------- e^(-i w/c |x0-xs|)
         %           2pi  c  |x0-xs|^(3/2)
         %
-        % see Wierstorf (2014), p.26 (2.50)
+        % see Wierstorf et al. (2015), eq.(#byv)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -122,7 +122,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % D(x0,w) = --- | --- - ------- |  ----------- e^(-i w/c |x0-xs|)
         %           2pi \  c    |x0-xs| /   |x0-xs|^2
         %
-        % see Wierstorf (2014), p.25 (2.48)
+        % see Wierstorf et al. (2015), eq.(#y49)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -137,7 +137,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % D(x0,x) = - -- --- ----------- H1  | - |x0-xs| |
         %             2c  c    |x0-xs|       \ c         /
         %
-        % see Spors et al. (2008), (23)
+        % see Spors et al. (2008), eq.(23)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -156,9 +156,9 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
 
 
 elseif strcmp('2.5D',dimension)
-    
+
     % === 2.5-Dimensional ================================================
-    
+
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
@@ -170,12 +170,12 @@ elseif strcmp('2.5D',dimension)
         g0 = sqrt(2*pi*vector_norm(xref-x0,2));
         %
         % D_2.5D using a point source and large distance approximation
-        %                         ___
+        %                       ___
         %                g0    |i w  (x0-xs) nx0
         % D_2.5D(x0,w) = --- _ |--- ------------- e^(-i w/c |x0-xs|)
         %                2pi  \| c  |x0-xs|^(3/2)
         %
-        % see Wierstorf (2014), p.26 (2.51)
+        % see Wierstorf et al. (2015), eq.(#emr)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -193,12 +193,12 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D using a point source as source model
         %
         % D_2.5D(x0,w) =
-        %             ___       ___
+        %           ___       ___
         %  g0  /   |i w      | c      1    \  (x0-xs) nx0
         % ---  | _ |---  - _ |---  ------- |  ----------- e^(-i w/c |x0-xs|)
         % 2pi  \  \| c      \|i w  |x0-xs| /   |x0-xs|^2
         %
-        % see Wierstorf (2014), p.25 (2.49)
+        % see Wierstorf et al. (2015), eq.(a11)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -220,7 +220,7 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D(x0,w) = g0 _ |----- ------------  e^(-i w/c |x0-xs|)
         %                    \|2pi c |x0-xs|^(3/2)
         %
-        % see Verheijen (1997), p.41 (2.27)
+        % see Verheijen (1997), p.41 eq.(2.27)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -244,7 +244,7 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D(x0,w) = g0 _ |------ ------------- e^(-i w/c |x0-xs|)
         %                    \|2pi c  |x0-xs|^(3/2)
         %
-        % see Opperschall (2002), p.14 (3.1), (3.14), (3.15)
+        % see Opperschall (2002), p.14 eq.(3.1), eq.(3.14), eq.(3.15)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -266,7 +266,7 @@ elseif strcmp('2.5D',dimension)
         % g0 _ |--- _ |--- ------------- e^(-i w/c |x0-xs|)
         %     \|2pi  \| c  |x0-xs|^(3/2)
         %
-        % see Völk (2010), (3)
+        % see Völk (2010), eq.(3)
         %
         r = vector_norm(x0-xs,2);
         D = g0/sqrt(2*pi) * sqrt(1i*omega/c) * ...
@@ -286,7 +286,7 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D(x0,w) = - --- g0 ------- H1 | -|x0-xs| |
         %                2  c     |x0-xs|     \c       /
         %
-        % see Spors and Ahrens (2010), (24)
+        % see Spors and Ahrens (2010), eq.(24)
         %
         r = vector_norm(x0-xs,2);
         D = 1/2 * 1i*omega/c * g0 * xs(1,2)./r .* besselh(1,2,omega/c*r);

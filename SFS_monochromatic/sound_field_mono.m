@@ -31,10 +31,12 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %   function for the secondary sources. The simulation is done for one
 %   frequency in the frequency domain, by calculating the integral for P with a
 %   summation.
-%   
+%
 %   To plot the result use plot_sound_field(P,x,y,z).
 %
 %   References:
+%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
+%       "Theory of Sound Field Synthesis"
 %       G. Williams (1999) - "Fourier Acoustics", Academic Press
 %
 %   see also: plot_sound_field, sound_field_mono_wfs_25d
@@ -125,7 +127,7 @@ for ii = 1:size(x0,1)
     % P(x,omega) = | D(x0,omega) G(x-x0,omega) dx0
     %              /
     %
-    % see: Williams1993 p. 36
+    % see: Wierstorf et al. (2015), eq.(#46k) or Williams (1993) p. 36
     % x0(ii,7) is a weight for the single secondary sources which includes for
     % example a tapering window for WFS or a weighting of the sources for
     % integration on a sphere.

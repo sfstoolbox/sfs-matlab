@@ -21,9 +21,6 @@ function varargout = sound_field_mono_line_source(X,Y,Z,xs,varargin)
 %   field of a line source positioned at xs.
 %   To plot the result use plot_sound_field(P,x,y,z).
 %
-%   References:
-%       Williams1999 - Fourier Acoustics (Academic Press)
-%
 %   see also: sound_field_mono, plot_sound_field, sound_field_imp_point_source
 
 %*****************************************************************************

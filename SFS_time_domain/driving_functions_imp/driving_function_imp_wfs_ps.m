@@ -18,8 +18,8 @@ function [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs,conf)
 %   the WFS driving function for a point source as source model.
 %
 %   References:
-%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
-%       PhD thesis, Tu Berlin
+%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
+%       "Theory of Sound Field Synthesis"
 %
 %   see also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_ps
 
@@ -83,7 +83,7 @@ driving_functions = conf.driving_functions;
 if strcmp('2D',dimension) || strcmp('3D',dimension)
 
     % === 2- or 3-Dimensional ============================================
-    
+
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % d using a point source as source model
@@ -92,7 +92,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % d(x0,t) = h(t) * --- ------------- delta(t-|x0-xs|/c)
         %                  2pi |x0-xs|^(3/2)
         %
-        % see Wierstorf (2014), p.26 (2.52)
+        % see Wierstorf et al. (2015), eq.(#6l1)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -125,7 +125,7 @@ elseif strcmp('2.5D',dimension)
         % d_2.5D(x0,t) = h(t) * --- ------------- delta(t-|x0-xs|/c)
         %                       2pi |x0-xs|^(3/2)
         %
-        % see Wierstorf (2014), p.26 (2.53)
+        % see Wierstorf et al. (2015), eq.(#xdu)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);

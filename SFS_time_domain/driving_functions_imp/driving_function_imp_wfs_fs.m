@@ -18,8 +18,8 @@ function [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs,conf)
 %   the WFS driving function for a focused source as source model.
 %
 %   References:
-%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
-%       PhD thesis, Tu Berlin
+%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
+%       "Theory of Sound Field Synthesis"
 %
 %   see also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_fs
 
@@ -80,19 +80,19 @@ driving_functions = conf.driving_functions;
 %% ===== Computation =====================================================
 
 % Get the delay and weighting factors
-if strcmp('2D',dimension)
+if strcmp('2D',dimension) || strcmp('3D',dimension)
 
-    % === 2-Dimensional ==================================================
+    % === 2- or 3-Dimensional ============================================
 
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        % d using a focused line source as source model
-        %                     ___
-        %                    | 1   (x0-xs) nx0
-        % d(x0,t) = h(t) * - |--- ------------- delta(t+|x0-xs|/c)
-        %                   \|2pi |x0-xs|^(3/2)
+        % d using a focused point source as source model
         %
-        % this is a time reversered version of Wierstorf2014 p.26, (2.57)
+        %                   1   (x0-xs) nx0
+        % d(x0,t) = h(t) * --- ------------- delta(t+|x0-xs|/c)
+        %                  2pi |x0-xs|^(3/2)
+        %
+        % see Wierstorf et al. (2015) eq.(#u8m)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -101,7 +101,7 @@ if strcmp('2D',dimension)
         weight = 1/(2*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3/2);
     else
         error(['%s: %s, this type of driving function is not implemented', ...
-            'for a 2D focused source.'],upper(mfilename),driving_functions);
+            'for a focused source.'],upper(mfilename),driving_functions);
     end
 
 
@@ -125,7 +125,7 @@ elseif strcmp('2.5D',dimension)
         % d_2.5D(x0,t) = h(t) * --- ------------- delta(t + |xs-x0|/c)
         %                       2pi |xs-x0|^(3/2)
         %
-        % see Wierstorf (2014), p.27 (2.65)
+        % see Wierstorf et al. (2015), eq.(#jlk)
         %
         % r = |xs-x0|
         r = vector_norm(xs-x0,2);
@@ -137,30 +137,6 @@ elseif strcmp('2.5D',dimension)
             'for a 2.5D focused source.'],upper(mfilename),driving_functions);
     end
 
-
-elseif strcmp('3D',dimension)
-
-    % === 3-Dimensional ==================================================
-
-    if strcmp('default',driving_functions)
-        % --- SFS Toolbox ------------------------------------------------
-        % d_3D using a point sink as source model
-        % 
-        %                      1  (xs-x0) nx0
-        % d_3D(x0,t) = h(t) * --- ------------- delta(t + |xs-x0|/c)
-        %                     2pi |xs-x0|^(3/2)
-        %
-        % see Wierstorf (2014), p.27 (2.64)
-        %
-        % r = |xs-x0|
-        r = vector_norm(xs-x0,2);
-        % Delay and amplitude weight
-        delay = -1/c .* r;
-        weight = 1/(2*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3/2);
-    else
-        error(['%s: %s, this type of driving function is not implemented', ...
-            'for a 3D focused source.'],upper(mfilename),driving_functions);
-    end
 
 else
     error('%s: the dimension %s is unknown.',upper(mfilename),dimension);

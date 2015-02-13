@@ -14,8 +14,8 @@ function hpre = wfs_fir_prefilter(conf)
 %   see SFS_config).
 %
 %   References:
-%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
-%       PhD thesis, Tu Berlin
+%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
+%       "Theory of Sound Field Synthesis"
 %
 %   see also: wfs_preequalization, wfs_iir_prefilter, sound_field_imp_wfs, ir_wfs
 
@@ -102,14 +102,14 @@ if strcmp('2.5D',dimension)
     %           _______
     %  H(f) = \|f/fhigh, for flow<=f<=fhigh
     %
-    %  compare Wierstorf (2014), p. 25 (2.46)
+    %  see Wierstorf et al. (2015), eq.(#0wo)
     %
     H(idxflow:idxfhigh) = sqrt(f(idxflow:idxfhigh)./fhigh);
 elseif strcmp('3D',dimension) || strcmp('2D',dimension)
-    %         
+    %
     %  H(f) = f/fhigh, for flow<=f<=fhigh
     %
-    %  compare Wierstorf (2014), p. 25 (2.45)
+    %  see Wierstorf et al. (2015), eq.(#wmg)
     %
     H(idxflow:idxfhigh) = f(idxflow:idxfhigh)./fhigh;
 else

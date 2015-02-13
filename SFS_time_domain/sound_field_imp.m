@@ -29,7 +29,12 @@ function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 %   To plot the result use:
 %   conf.plot.usedb = 1;
 %   plot_sound_field(p,x,y,z,conf);
-%  
+%
+%   References:
+%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       PhD thesis, TU Berlin
+%       G. Williams (1999) - "Fourier Acoustics", Academic Press
+%
 %   see also: sound_field_mono, plot_sound_field, greens_function_imp
 
 %*****************************************************************************
@@ -114,7 +119,7 @@ L = conf.secondary_sources.size;
 % later parts of the driving function are emitted later by secondary
 % sources
 %
-% ^      _     
+% ^      _
 % |     / \    driving function
 % |    /   --
 % | ---      --------
@@ -182,7 +187,7 @@ for ii = 1:size(x0,1)
     % p(x,t) = | d(x0,t) g(x-x0,t) dx0
     %          /
     %
-    % see: Spors2009, Williams1993 p. 36
+    % see: Wierstorf et al. (2015), eq.(#46k) or Williams (1993), p. 36
     % x0(ii,7) is a weight for the single secondary sources which includes for
     % example a tapering window for WFS or a weighting of the sources for
     % integration on a sphere.

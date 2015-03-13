@@ -96,6 +96,8 @@ switch method
     % === Wave Field Synthesis ===
     % create virtual source array
     xv = virtual_secondary_source_positions(x0,xs,src,conf);
+    % secondary_source_selection
+    xv = secondary_source_selection(xv, xs, src);
     % optional tapering
     xv = secondary_source_tapering(xv,virtualconf);
     % optional amplitude correction

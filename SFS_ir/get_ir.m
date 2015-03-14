@@ -91,7 +91,7 @@ prec = 0.001; % ~ 0.05 deg
 % === SOFA loading ===
 % Get only the metadata of the SOFA data set
 if ~isstruct(sofa) && exist(sofa,'file')
-    % get metadata
+    % Get metadata
     header = SOFAload(sofa,'nodata');
 elseif isfield(sofa.Data,'IR')
     header = sofa;
@@ -183,13 +183,40 @@ function ir = correct_radius(ir,ir_distance,r,conf)
     % time delay of the impulse response. As a starting value the actual
     % distance specified in the impulse response is used an adjusted regarding
     % the desired radius.
-    % WARNING: this means if you use an impulse response with a distance of 3m
-    % and want to extrapolate this impulse response to 1m, the original impulse
-    % response has to have enough leading zeros in order to handle a time shift
-    % that corresponds to he 2m difference.
+    % WARNING: in order to ensure correct extrapolation zeros corresponding to
+    % the radius of the measured impulse response are padded at its beginning.
+    % If you don't want this behavior you have to specify
+    % conf.ir.useoriglength = true;
+    % and ensure yourself that we have enough zeros at the beginning of each
+    % impulse response and that possible different radii are represented with
+    % the existing zeros.
+    %
+    % FIXME: check the performance of this function. The zeropadding at the
+    % beginning of the ipulse response was done before only once for the whole
+    % ir data set. Now, this is only possible if the complete sofa struct is
+    % provided and not only the file. One could enhance the performance by doing
+    % the zeropadding again for the whole database if the sofa struct is
+    % provided. On the downside this would lead to a more complicated code base.
     %
     % Stop extrapolation for distances larger than 10m
-    if ir_distance>10, ir_distance = 10; end
+    if ir_distance>10
+        ir_distance = 10;
+        warning(['%s: Your desired radius is larger than 10m, but we will ', ...
+            'only extrapolate up to 10m. All larger radii will be set to ', ...
+            '10m.'],upper(mfilename));
+    end
+    % Append zeros at the beginning of the impulse responses corresponding to
+    % its maximum radius
+    if ~conf.ir.useoriglength
+        zero_padding = ceil(ir_distance/conf.c * conf.fs);
+        if conf.N-zero_padding<128
+            error(['%s: choose a larger conf.N value, because otherwise you ', ...
+                'will have only %i samples of your original impulse response.'], ...
+                upper(mfilename),conf.N-zero_padding);
+        end
+    else
+        zero_padding = 0;
+    end
     % Delay only if we have an delay other than 0
     if abs(r-ir_distance)>0.0001 % ~0.01 samples
         % Time delay of the source (at the listener position)
@@ -201,9 +228,13 @@ function ir = correct_radius(ir,ir_distance,r,conf)
             error(['%s: your impulse response is to short for a desired ', ...
                 'delay of %i samples.'],upper(mfilename),delay);
         end
-        % Apply delay and weighting
-        ir = delayline(ir,[delay; delay],[weight; weight],conf);
+    else
+        delay = 0;
+        weight = 1;
     end
+    % Apply delay and weighting
+    ir = delayline(ir,[delay+zero_padding; delay+zero_padding], ...
+        [weight; weight],conf);
 end
 
 function ir = get_sofa_data(sofa,idx)

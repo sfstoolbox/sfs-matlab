@@ -1,13 +1,16 @@
-function ir = get_ir(sofa,xs,coordinate_system,conf)
+function ir = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %GET_IR returns an impulse response for the given apparent angle
 %
-%   Usage: ir = get_ir(sofa,xs,[coordinate_system],[conf])
+%   Usage: ir = get_ir(sofa,X,head_orientation,xs,[coordinate_system],[conf])
 %
 %   Input parameters:
 %       sofa    - impulse response data set (sofa struct/file)
-%       xs      - position of the desired source / m
-%                 this is always assumed to be from the position of the listener
-%                 which is et to [0 0 0] implicitly
+%       X       - position of the listener, specified in the defined
+%                 coordinate_system, see below
+%       xs      - position of the desired source, specified in the defined
+%                 coordinate_system, see below
+%       head_orientation  - orientation of the listener with phi / rad,
+%                           delta / rad
 %       coordinate_system - coordinate system xs is specified in, avialable
 %                           systems are:
 %                             'spherical' - spherical system with phi / rad,
@@ -63,8 +66,8 @@ function ir = get_ir(sofa,xs,coordinate_system,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
-nargmax = 4;
+nargmin = 4;
+nargmax = 6;
 narginchk(nargmin,nargmax)
 if nargin==nargmax-1
     if isstruct(coordinate_system)
@@ -118,61 +121,94 @@ x0(:,1:2) = rad(x0(:,1:2));
 
 
 % === Coordinate system conversion ===
-if strcmp('spherical',coordinate_system)
-    % Store desired radius
-    r = xs(3);
-    xs = [correct_azimuth(xs(1)) correct_elevation(xs(2))]';
-elseif strcmp('cartesian',coordinate_system)
-    % Store desired radius
-    [phi,delta,r] = cart2sph(xs(1),xs(2),xs(3));
-    xs = [phi delta]';
-else
+if strcmp('cartesian',coordinate_system)
+    [xs(1),xs(2),xs(3)] = cart2sph(xs(1),xs(2),xs(3));
+    [X(1),X(2),X(3)] = cart2sph(X(1),X(2),X(3));
+elseif ~strcmp('spherical',coordinate_system)
     error('%s: unknown coordinate system type.',upper(mfilename));
 end
+% Store desired relative position of source
+r = abs(X(3)-xs(3));
+xs = [correct_azimuth(xs(1)-X(1)-head_orientation(1)) ...
+      correct_elevation(xs(2)-X(2)-head_orientation(2))]';
 
-% Find the three nearest positions to the desired one (incorporating only angle
-% values and disregarding the radius)
-[neighbours,idx] = findnearestneighbour(x0(:,1:2)',xs,3);
+if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
+    disp('SimpleFreeFieldHRIR')
+    % If we have free field HRTFs there is no difference between changing head
+    % orientation or source poition. That means all we need is given by the
+    % apparent source position stored in x0.
+    
 
-% Check if we have found directly the desired point or have to interpolate
-% bewteen different impulse responses
-if norm(neighbours(:,1)-xs)<prec || ~useinterpolation
-    % Return the first nearest neighbour
-    ir = get_sofa_data(sofa,idx(1));
-    ir = correct_radius(ir,x0(idx(1),3),r,conf);
-else
-    % === IR interpolation ===
-    % Check if we have to interpolate in one or two dimensions
-    if norm(neighbours(1,1)-neighbours(1,2))<prec || ...
-        norm(neighbours(2,1)-neighbours(2,2))<prec
-        % --- 1D interpolation ---
-        warning('SFS:irs_intpol',...
-            ['doing 1D IR interpolation between (%.1f,%.1f) deg ', ...
-             'and (%.1f,%.1f) deg.'], ...
-            deg(x0(idx(1),1)), deg(x0(idx(1),2)), ...
-            deg(x0(idx(2),1)), deg(x0(idx(2),2)));
-        ir1 = get_sofa_data(sofa,idx(1));
-        ir2 = get_sofa_data(sofa,idx(2));
-        ir3 = get_sofa_data(sofa,idx(3));
-        ir1 = correct_radius(ir1,x0(idx(1),3),r,conf);
-        ir2 = correct_radius(ir2,x0(idx(2),3),r,conf);
-        ir = intpol_ir(ir1,ir2,neighbours(:,1:2),xs);
+    % Find the three nearest positions to the desired one (incorporating only angle
+    % values and disregarding the radius)
+    % FIXME: try to include radius here
+    [neighbours,idx] = findnearestneighbour(x0(:,1:2)',xs,3);
+
+    % Check if we have found directly the desired point or have to interpolate
+    % bewteen different impulse responses
+    if norm(neighbours(:,1)-xs)<prec || ~useinterpolation
+        % Return the first nearest neighbour
+        ir = get_sofa_data(sofa,idx(1));
+        ir = correct_radius(ir,x0(idx(1),3),r,conf);
     else
-        % --- 2D interpolation ---
-        warning('SFS:irs_intpol3D',...
-            ['doing 2D IR interpolation between (%.1f,%.1f) deg, ', ...
-             '(%.1f,%.1f) deg and (%.1f,%.1f) deg.'], ...
-            deg(x0(idx(1),1)), deg(x0(idx(1),2)), ...
-            deg(x0(idx(2),1)), deg(x0(idx(2),2)), ...
-            deg(x0(idx(3),1)), deg(x0(idx(3),2)));
-        ir1 = get_sofa_data(sofa,idx(1));
-        ir2 = get_sofa_data(sofa,idx(2));
-        ir3 = get_sofa_data(sofa,idx(3));
-        ir1 = correct_radius(ir1,x0(idx(1),3),r,conf);
-        ir2 = correct_radius(ir2,x0(idx(2),3),r,conf);
-        ir3 = correct_radius(ir3,x0(idx(3),3),r,conf);
-        ir = intpot_ir(ir1,ir2,ir3,[neighbours; 1 1 1],[xs;1]);
+        % === IR interpolation ===
+        % Check if we have to interpolate in one or two dimensions
+        if norm(neighbours(1,1)-neighbours(1,2))<prec || ...
+            norm(neighbours(2,1)-neighbours(2,2))<prec
+            % --- 1D interpolation ---
+            warning('SFS:irs_intpol',...
+                ['doing 1D IR interpolation between (%.1f,%.1f) deg ', ...
+                 'and (%.1f,%.1f) deg.'], ...
+                deg(x0(idx(1),1)), deg(x0(idx(1),2)), ...
+                deg(x0(idx(2),1)), deg(x0(idx(2),2)));
+            ir1 = get_sofa_data(sofa,idx(1));
+            ir2 = get_sofa_data(sofa,idx(2));
+            ir3 = get_sofa_data(sofa,idx(3));
+            ir1 = correct_radius(ir1,x0(idx(1),3),r,conf);
+            ir2 = correct_radius(ir2,x0(idx(2),3),r,conf);
+            ir = intpol_ir(ir1,ir2,neighbours(:,1:2),xs);
+        else
+            % --- 2D interpolation ---
+            warning('SFS:irs_intpol3D',...
+                ['doing 2D IR interpolation between (%.1f,%.1f) deg, ', ...
+                 '(%.1f,%.1f) deg and (%.1f,%.1f) deg.'], ...
+                deg(x0(idx(1),1)), deg(x0(idx(1),2)), ...
+                deg(x0(idx(2),1)), deg(x0(idx(2),2)), ...
+                deg(x0(idx(3),1)), deg(x0(idx(3),2)));
+            ir1 = get_sofa_data(sofa,idx(1));
+            ir2 = get_sofa_data(sofa,idx(2));
+            ir3 = get_sofa_data(sofa,idx(3));
+            ir1 = correct_radius(ir1,x0(idx(1),3),r,conf);
+            ir2 = correct_radius(ir2,x0(idx(2),3),r,conf);
+            ir3 = correct_radius(ir3,x0(idx(3),3),r,conf);
+            ir = intpot_ir(ir1,ir2,ir3,[neighbours; 1 1 1],[xs;1]);
+        end
     end
+
+elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)
+    disp('SingleRoomDRIR')
+    % For a given BRIR recording we are searching first for the correct head
+    % orientation and look then for the source position
+
+    % Find indices for the given head orientation
+    sofa_head_orientation = SOFAconvertCoordinates( ...
+        header.ListenerView,header.ListenerView_Type,'spherical');
+    tmp = vector_norm( ...
+        bsxfun(@minus,rad(sofa_head_orientation(:,1:2)),head_orientation),2);
+    if min(tmp)>rad(2)
+        error('%s: no BRIR for head orientation (%i, %i) available', ...
+            upper(mfilename), ...
+            deg(head_orientation(1)), ...
+            deg(head_orientation(2)));
+    else
+        idx = ( tmp==min(tmp) );
+        x0 = x0(idx,:);
+    end
+
+    % Now, search for the correct source position
+    [~,idx] = findnearestneighbour(x0(:,1:2)',xs,1);
+    ir = get_sofa_data(sofa,idx(1));
+
 end
 end
 

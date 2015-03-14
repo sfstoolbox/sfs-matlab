@@ -1,7 +1,7 @@
-function ir = ir_generic(X,phi,x0,d,irs,conf)
+function ir = ir_generic(X,phi,x0,d,sofa,conf)
 %IR_GENERIC Generate a IR
 %
-%   Usage: ir = ir_generic(X,phi,x0,d,irs,[conf])
+%   Usage: ir = ir_generic(X,phi,x0,d,sofa,[conf])
 %
 %   Input parameters:
 %       X       - listener position / m
@@ -9,13 +9,13 @@ function ir = ir_generic(X,phi,x0,d,irs,conf)
 %                 0 means the head is oriented towards the x-axis.
 %       x0      - secondary sources [n x 6] / m
 %       d       - driving signals [m x n]
-%       irs     - IR data set for the secondary sources
+%       sofa    - impulse response data set for the secondary sources
 %       conf    - optional configuration struct (see SFS_config) 
 %
 %   Output parameters:
 %       ir      - Impulse response for the desired driving functions (nx2 matrix)
 %
-%   IR_GENERIC(X,phi,x0,d,irs,conf) calculates a binaural room impulse
+%   IR_GENERIC(X,phi,x0,d,sofa,conf) calculates a binaural room impulse
 %   response for the given secondary sources and driving signals.
 %
 %   see also: ir_wfs, ir_nfchoa, ir_point_source, auralize_ir
@@ -61,7 +61,8 @@ isargposition(X);
 isargscalar(phi);
 isargsecondarysource(x0);
 isargmatrix(d);
-check_irs(irs);
+% FIXME: include checking of sofa file
+%check_irs(irs);
 if nargin==nargmax-1
     conf = SFS_config;
 end
@@ -84,20 +85,20 @@ warning('off','SFS:irs_intpol');
 for ii=1:size(x0,1)
 
     % direction of the source from the listener
-    x_direction = x0(ii,1:3)-X;
+    %x_direction = x0(ii,1:3)-X;
     % change to spherical coordinates
-    [alpha,theta,r] = cart2sph(x_direction(1),x_direction(2),x_direction(3));
+    %[alpha,theta,r] = cart2sph(x_direction(1),x_direction(2),x_direction(3));
 
     % === Secondary source model: Greens function ===
     g = 1./(4*pi*r);
 
     % Incoporate head orientation and ensure -pi <= alpha < pi
-    alpha = correct_azimuth(alpha-phi);
+    %alpha = correct_azimuth(alpha-phi);
 
     % === IR interpolation ===
-    % Get the desired IR.
-    % If needed interpolate the given IR set
-    ir = get_ir(irs,[alpha,theta,r],conf);
+    % Get the desired impulse response.
+    % If needed interpolate the given impusle response set
+    ir = get_ir(sofa,X,[phi 0],x0(:,1:3),'cartesian',conf);
 
     % === Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay ===
     % Also applying the weights of the secondary sources including integration

@@ -1,10 +1,10 @@
 function ir = get_ir(sofa,xs,coordinate_system,conf)
-%GET_IR returns a IR for the given apparent angle
+%GET_IR returns an impulse response for the given apparent angle
 %
 %   Usage: ir = get_ir(sofa,xs,[coordinate_system],[conf])
 %
 %   Input parameters:
-%       sofa    - IR data set (sofa struct)
+%       sofa    - impulse response data set (sofa struct/file)
 %       xs      - position of the desired source / m
 %                 this is always assumed to be from the position of the listener
 %                 which is et to [0 0 0] implicitly
@@ -16,13 +16,16 @@ function ir = get_ir(sofa,xs,coordinate_system,conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       ir      - IR for the given position (length of IR x 2)
+%       ir      - impulse response for the given position (length of IR x 2)
 %
 %   GET_IR(sofa,phi,delta,r,X0) returns a single IR set for the given angles 
 %   phi and delta. If the desired angles are not present in the IR data set 
 %   an interpolation is applied to create the desired angles.
 %   The desired radius is achieved by delaying and weighting the impulse
 %   response.
+%   For a description of the SOFA file format see: http://sofaconventions.org
+%   FIXME: ask Piotr if we should now reference the AES standard together with
+%   the web site?
 %
 %   see also: read_irs, slice_irs, intpol_ir 
 
@@ -78,14 +81,15 @@ end
 
 %% ===== Configuration ==================================================
 useinterpolation = conf.ir.useinterpolation;
-% Precission of the wanted angle. If a IR within the given precission could be
-% found no interpolation is applied.
+% Precission of the wanted angle. If an impulse response within the given
+% precission could be found no interpolation is applied.
 prec = 0.001; % ~ 0.05 deg
 
 
 %% ===== Computation ====================================================
 
 % === SOFA loading ===
+% Get only the metadata of the SOFA data set
 if ~isstruct(sofa) && exist(sofa,'file')
     % get metadata
     header = SOFAload(sofa,'nodata');
@@ -97,7 +101,7 @@ else
 end
 
 % === SOFA checking ===
-% Conventions handled so far
+% Conventions handled so far (see: http://...FIXME)
 SOFA_conventions = { ...
     'SimpleFreeFieldHRIR', ...
     'SingleRoomDRIR', ...
@@ -109,36 +113,36 @@ end
 % === Internal variables ===
 % Calculate the apparent azimuth, elevation and distance
 x0 = SOFAcalculateAPV(header); % / [deg deg m]
-% convert angles to radian
+% Convert angles to radian
 x0(:,1:2) = rad(x0(:,1:2));
 
 
 % === Coordinate system conversion ===
 if strcmp('spherical',coordinate_system)
-    % store desired radius
+    % Store desired radius
     r = xs(3);
     xs = [correct_azimuth(xs(1)) correct_elevation(xs(2))]';
 elseif strcmp('cartesian',coordinate_system)
-    % store desired radius
+    % Store desired radius
     [phi,delta,r] = cart2sph(xs(1),xs(2),xs(3));
     xs = [phi delta]';
 else
     error('%s: unknown coordinate system type.',upper(mfilename));
 end
 
-% find the three nearest positions to the desired one (incorporating only angle
+% Find the three nearest positions to the desired one (incorporating only angle
 % values and disregarding the radius)
 [neighbours,idx] = findnearestneighbour(x0(:,1:2)',xs,3);
 
-% check if we have found directly the desired point or have to interpolate
+% Check if we have found directly the desired point or have to interpolate
 % bewteen different impulse responses
 if norm(neighbours(:,1)-xs)<prec || ~useinterpolation
-    % return the first nearest neighbour
+    % Return the first nearest neighbour
     ir = get_sofa_data(sofa,idx(1));
     ir = correct_radius(ir,x0(idx(1),3),r,conf);
 else
     % === IR interpolation ===
-    % check if we have to interpolate in one or two dimensions
+    % Check if we have to interpolate in one or two dimensions
     if norm(neighbours(1,1)-neighbours(1,2))<prec || ...
         norm(neighbours(2,1)-neighbours(2,2))<prec
         % --- 1D interpolation ---
@@ -173,9 +177,20 @@ end
 end
 
 function ir = correct_radius(ir,ir_distance,r,conf)
-    % Fix large distances
+    % The basic idea is to handle the radius different then the directional
+    % position. Between the directional positions an interpolation is applied if
+    % desired. Different distances r are realized by weighting and adjusting the
+    % time delay of the impulse response. As a starting value the actual
+    % distance specified in the impulse response is used an adjusted regarding
+    % the desired radius.
+    % WARNING: this means if you use an impulse response with a distance of 3m
+    % and want to extrapolate this impulse response to 1m, the original impulse
+    % response has to have enough leading zeros in order to handle a time shift
+    % that corresponds to he 2m difference.
+    %
+    % Stop extrapolation for distances larger than 10m
     if ir_distance>10, ir_distance = 10; end
-    % delay only if we have an delay other than 0
+    % Delay only if we have an delay other than 0
     if abs(r-ir_distance)>0.0001 % ~0.01 samples
         % Time delay of the source (at the listener position)
         delay = (r-ir_distance)/conf.c*conf.fs; % / samples

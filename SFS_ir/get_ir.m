@@ -129,8 +129,8 @@ elseif ~strcmp('spherical',coordinate_system)
 end
 % Store desired relative position of source
 r = abs(X(3)-xs(3));
-xs = [correct_azimuth(xs(1)-X(1)-head_orientation(1)) ...
-      correct_elevation(xs(2)-X(2)-head_orientation(2))]';
+xs = [correct_azimuth(xs(1)-X(1)) ...
+      correct_elevation(xs(2)-X(2))]';
 
 if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     disp('SimpleFreeFieldHRIR')
@@ -142,7 +142,7 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     % Find the three nearest positions to the desired one (incorporating only angle
     % values and disregarding the radius)
     % FIXME: try to include radius here
-    [neighbours,idx] = findnearestneighbour(x0(:,1:2)',xs,3);
+    [neighbours,idx] = findnearestneighbour(x0(:,1:2)',xs-head_orientation,3);
 
     % Check if we have found directly the desired point or have to interpolate
     % bewteen different impulse responses
@@ -201,13 +201,17 @@ elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)
             deg(head_orientation(1)), ...
             deg(head_orientation(2)));
     else
-        idx = ( tmp==min(tmp) );
-        x0 = x0(idx,:);
+        idx = find(tmp==min(tmp));
+        %idx = ( tmp==min(tmp) );
+        sofa_head_orientation(idx,1:2)
+        %x0(idx,:)
+        [deg(x0(idx,1:2)) x0(idx,3)]
+        [deg(xs); r]'
     end
 
     % Now, search for the correct source position
-    [~,idx] = findnearestneighbour(x0(:,1:2)',xs,1);
-    ir = get_sofa_data(sofa,idx(1));
+    [~,nidx] = findnearestneighbour(x0(idx,1:2)',xs,1)
+    ir = get_sofa_data(sofa,idx(nidx));
 
 end
 end

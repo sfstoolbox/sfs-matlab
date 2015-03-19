@@ -1,5 +1,5 @@
 function draw_loudspeakers(x0,dimensions,conf)
-%DRAW_LOUDSPEAKERS draws loudspeaker symbols or "x" at the given positions
+%DRAW_LOUDSPEAKERS draws loudspeaker symbols or "o" at the given positions
 %
 %   Usage: draw_loudspeakers(x0,[dimensions],[conf])
 %
@@ -10,8 +10,8 @@ function draw_loudspeakers(x0,dimensions,conf)
 %                     to the xy-plane
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   DRAW_LOUDSPEAKERS(x0,dimensions) draws loudspeaker symbols or crosses at
-%   the given secondary source positions. This can be controlled by the
+%   DRAW_LOUDSPEAKERS(x0,dimensions) draws loudspeaker symbols or filled points
+%   at the given secondary source positions. This can be controlled by the
 %   conf.plot.realloudspeakers setting. The loudspeaker symbols are pointing in
 %   their given direction.
 %

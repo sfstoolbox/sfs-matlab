@@ -15,7 +15,7 @@ function draw_loudspeakers(x0,dimensions,conf)
 %   conf.plot.realloudspeakers setting. The loudspeaker symbols are pointing in
 %   their given direction.
 %
-%   see also: plot_wavefield
+%   see also: plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

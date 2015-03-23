@@ -84,6 +84,7 @@ if strcmp('2D',conf.dimension)
 else
     greens_function = 'ps';
 end
+useplot = conf.plot.useplot;
 
 %% ===== Computation =====================================================
 % Get secondary sources

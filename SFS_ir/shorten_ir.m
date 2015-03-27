@@ -13,7 +13,7 @@ function ir = shorten_ir(ir,nsamples)
 %   SHORTEN_HRIR(ir,nsamples) shortens a given IR to the given number of samples
 %   nsamples and applying a 5% long hanning window.
 %
-%   see also: SFS_config, read_irs, intpol_ir, reduce_ir
+%   see also: SFS_config, get_ir, intpol_ir, reduce_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *

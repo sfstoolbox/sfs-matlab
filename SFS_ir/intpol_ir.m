@@ -21,7 +21,7 @@ function ir = intpol_ir(varargin)
 %   dimensions in order to save computational time, because this function could
 %   be called quiet often.
 %
-%   see also: get_ir, shorten_ir, read_irs
+%   see also: get_ir, shorten_ir, SOFAload
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *

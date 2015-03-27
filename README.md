@@ -370,13 +370,11 @@ area for a specified WFS or NFC-HOA system.
 You can even download a set of HRTFs, which will just work with the Toolbox at 
 http://dev.qu.tu-berlin.de/projects/measurements/wiki/2010-11-kemar-anechoic
 
-In order to easily use different HRIR sets the toolbox incorporates its own
-[struct based file
-format](http://dev.qu.tu-berlin.de/projects/measurements/wiki/IRs_file_format)
-for HRIRs and BRIRs. The toolbox provides conversion functions for three other
-free available data sets (CIPIC,MIT,Oldenburg). In the future it will
-incorporate the newly advancing [SOFA HRTF file
-format](http://sourceforge.net/projects/sofacoustics).
+In order to easily use different HRIR sets the toolbox incorporates the
+[SOFA file format](http://sofaconventions.org)
+for HRIRs and BRIRs. A large set of different impulse responses is now available
+in these format, see for example:
+FIXME: add link to HRTF data sets.
 
 The files dealing with the binaural simulations are in the folder
 <code>SFS_binaural_synthesis</code>. Files dealing with HRTFs are in the folder
@@ -391,8 +389,8 @@ with the impulse response by the <code>auralize_ir()</code> function.
 
 ```Matlab
 conf = SFS_config_example;
-irs = read_irs('QU_KEMAR_anechoic_3m.mat',conf);
-ir = get_ir(irs,[rad(30) 0 3]);
+sofa = SOFAload('QU_KEMAR_anechoic_3m.sofa');
+ir = get_ir(sofa,[0 0 0],[0 0],[rad(30) 0 3],conf);
 nsig = randn(44100,1);
 sig = auralize_ir(ir,nsig,1,conf);
 sound(sig,conf.fs);

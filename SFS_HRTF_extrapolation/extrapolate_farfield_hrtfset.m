@@ -1,16 +1,16 @@
-function irs_pw = extrapolate_farfield_hrtfset(irs,conf)
+function sofa_pw = extrapolate_farfield_hrtfset(sofa,conf)
 %EXTRAPOLATE_FARFIELD_HRTFSET far-field extrapolation of a given HRTF dataset
 %
-%   Usage: irs = extrapolate_farfield_hrtfset(irs,[conf])
+%   Usage: sofa = extrapolate_farfield_hrtfset(sofa,[conf])
 %
 %   Input parameters:
-%       irs     - IR data set for the virtual secondary sources
+%       sofa    - IR data set for the virtual secondary sources
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       irs     - IR data set extra polated to conation plane wave IRs
+%       sofa    - IR data set extra polated to conation plane wave IRs
 %
-%   EXTRAPOLATE_FARFIELD_HRTFSET(IRS) generates a far-field extrapolated set of
+%   EXTRAPOLATE_FARFIELD_HRTFSET(SOFA) generates a far-field extrapolated set of
 %   impulse responses, using the given irs set. Far-field means that the
 %   resulting impulse responses are plane waves. The extrapolation is done via
 %   WFS.
@@ -23,12 +23,12 @@ function irs_pw = extrapolate_farfield_hrtfset(irs,conf)
 %   see also: get_ir, driving_function_imp_wfs
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -64,6 +64,7 @@ if nargin<nargmax
 else
     isargstruct(conf);
 end
+isargstruct(sofa);
 
 
 %% ===== Configuration ===================================================
@@ -74,8 +75,8 @@ conf.ir.usehcomp = false;
 
 
 %% ===== Variables ======================================================
-[nls,~,N] = size(irs.Data.IR);
-APV = SOFAcalculateAPV(irs);
+[nls,~,N] = size(sofa.Data.IR);
+APV = SOFAcalculateAPV(sofa);
 phi = rad(APV(:,1));
 theta = rad(APV(:,2));
 R = APV(:,3);
@@ -125,19 +126,26 @@ conf.wfs.hpreflow = 50;
 conf.wfs.hprefhigh = aliasing_frequency(x0_all,conf);
 
 % Initialize new irs set
-irs_pw = irs;
-irs_pw.GLOBAL_Comment = 'Extrapolated HRTF set containing plane waves';
-irs_pw.Data.IR = zeros(nls,2,N);
-irs_pw.SourcePosition = [Inf 0 0];
-
+sofa_pw = sofa;
+sofa_pw.GLOBAL_Comment = 'Extrapolated HRTF set containing plane waves';
+sofa_pw.Data.IR = zeros(nls,2,N);
+sofa_pw.SourcePosition = [Inf 0 0];
 
 % Get all HRTFs for the secondary source positions
 ir_all = zeros(nls,2,N);
+X = SOFAconvertCoordinates(sofa.ListenerPosition, ...
+                           sofa.ListenerPosition_Type, ...
+                           'cartesian');
+head_orientation = SOFAconvertCoordinates(sofa.ListenerView, ...
+                                          sofa.ListenerView_Type, ...
+                                          'spherical');
+head_orientation = rad(head_orientation(1,1:2));
 for ii=1:nls
-    ir_all(ii,:,:) = get_ir(irs,x0_all(ii,1:3),'cartesian',conf)';
+    ir_all(ii,:,:) = get_ir(sofa,X,head_orientation, ...
+                            x0_all(ii,1:3),'cartesian',conf)';
 end
 
-% Generate a irs set for all given angles
+% Generate a impulse response set for all given angles
 for ii=1:nls
 
     % show progress
@@ -164,14 +172,14 @@ for ii=1:nls
     % sum up contributions from individual virtual speakers
     for jj=1:size(x0,1)
         % delay and weight HRTFs
-        irs_pw.Data.IR(ii,:,:) = squeeze(irs_pw.Data.IR(ii,:,:)) + ...
+        sofa_pw.Data.IR(ii,:,:) = squeeze(sofa_pw.Data.IR(ii,:,:)) + ...
             delayline(squeeze(ir(jj,:,:))',delay(jj),weight(jj),conf)';
     end
-    irs_pw.Data.IR(ii,1,:) = irs_pw.Data.IR(ii,1,:)/10^(amplitude_correction(ii)/20);
-    irs_pw.Data.IR(ii,2,:) = irs_pw.Data.IR(ii,2,:)/10^(-amplitude_correction(ii)/20);
+    sofa_pw.Data.IR(ii,1,:) = sofa_pw.Data.IR(ii,1,:)/10^(amplitude_correction(ii)/20);
+    sofa_pw.Data.IR(ii,2,:) = sofa_pw.Data.IR(ii,2,:)/10^(-amplitude_correction(ii)/20);
 
 end
 
 %% ===== Pre-equalization ===============================================
-irs_pw.Data.IR(:,1,:) = wfs_preequalization(squeeze(irs_pw.Data.IR(:,1,:))',conf)';
-irs_pw.Data.IR(:,2,:) = wfs_preequalization(squeeze(irs_pw.Data.IR(:,2,:))',conf)';
+sofa_pw.Data.IR(:,1,:) = wfs_preequalization(squeeze(sofa_pw.Data.IR(:,1,:))',conf)';
+sofa_pw.Data.IR(:,2,:) = wfs_preequalization(squeeze(sofa_pw.Data.IR(:,2,:))',conf)';

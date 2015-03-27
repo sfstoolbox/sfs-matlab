@@ -78,19 +78,21 @@ if strcmp('QU_KEMAR',hrtf_set)
     conf.showprogress = true;
     % check if HRTF data set is available, download otherwise
     basepath = get_sfs_path();
-    hrtf_file = [basepath '/data/HRTFs/QU_KEMAR_anechoic_3m.mat'];
+    hrtf_file = [basepath '/data/HRTFs/QU_KEMAR_anechoic_3m.sofa'];
     if ~exist(hrtf_file,'file')
         url = ['https://dev.qu.tu-berlin.de/projects/measurements/repository/', ...
-            'raw/2010-11-kemar-anechoic/mat/QU_KEMAR_anechoic_3m.mat'];
+            'raw/2010-11-kemar-anechoic/mat/QU_KEMAR_anechoic_3m.sofa'];
         download_file(url,hrtf_file);
     end
     % load HRTF data set
-    irs = read_irs(hrtf_file,conf);
+    sofa = SOFAload(hrtf_file,conf);
+    x0 = SOFAcalculateAPV(sofa);
     % do the extrapolation
-    irs_pw = extrapolate_farfield_hrtfset(irs,conf);
+    sofa_pw = extrapolate_farfield_hrtfset(sofa,conf);
+    x0_pw = SOFAcalculateAPV(sofa_pw);
     % plot the original HRTF data set
     figure;
-    imagesc(deg(irs.apparent_azimuth),1:size(irs.left,1),irs.left);
+    imagesc(x0(:,1),1:size(irs.left,1),irs.left);
     title('QU KEMAR anechoic 3m');
     xlabel('phi / deg');
     % plot the interplated HRTF data set

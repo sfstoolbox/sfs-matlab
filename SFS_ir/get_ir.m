@@ -7,10 +7,10 @@ function ir = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %       sofa    - impulse response data set (sofa struct/file)
 %       X       - position of the listener, specified in the defined
 %                 coordinate_system, see below
-%       xs      - position of the desired source, specified in the defined
-%                 coordinate_system, see below
 %       head_orientation  - orientation of the listener with phi / rad,
 %                           delta / rad
+%       xs      - position of the desired source, specified in the defined
+%                 coordinate_system, see below
 %       coordinate_system - coordinate system xs is specified in, avialable
 %                           systems are:
 %                             'spherical' - spherical system with phi / rad,
@@ -30,15 +30,15 @@ function ir = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %   FIXME: ask Piotr if we should now reference the AES standard together with
 %   the web site?
 %
-%   see also: read_irs, slice_irs, intpol_ir 
+%   see also: SOFAload, intpol_ir 
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -83,9 +83,12 @@ end
 
 
 %% ===== Configuration ==================================================
+% The configuration struct is only used in the subfunction get_single_ir(), see
+% below for more details.
+ 
 
 %% ===== Computation ====================================================
-
+%
 % === SOFA loading ===
 % Get only the metadata of the SOFA data set
 if ~isstruct(sofa) && exist(sofa,'file')
@@ -128,17 +131,15 @@ xs = [correct_azimuth(xs(1)-X(1)-head_orientation(1)) ...
       correct_elevation(xs(2)-X(2)-head_orientation(2))]';
 
 if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
-    disp('SimpleFreeFieldHRIR')
     % If we have free field HRTFs there is no difference between changing head
     % orientation or source poition. That means all we need is given by the
     % apparent source position stored in x0.
     ir = get_single_ir(sofa,x0,xs,r,conf);
 
 elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)
-    disp('SingleRoomDRIR')
     % For a given BRIR recording we are searching first for the correct head
     % orientation and look then for the source position
-
+    %
     % Find indices for the given head orientation
     sofa_head_orientation = SOFAconvertCoordinates( ...
         header.ListenerView,header.ListenerView_Type,'spherical');
@@ -151,11 +152,10 @@ elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)
             deg(head_orientation(2)));
     else
         idx = find(abs(tmp-min(tmp)<=eps));
-        sofa_head_orientation(idx,1:2)
-        [deg(x0(idx,1:2)) x0(idx,3)]
-        [deg(xs); r]'
+        %sofa_head_orientation(idx,1:2)
+        %[deg(x0(idx,1:2)) x0(idx,3)]
+        %[deg(xs); r]'
     end
-
     % Now, search for the correct source position
     ir = get_single_ir(sofa,x0,xs,r,conf);
     
@@ -203,20 +203,14 @@ function ir = correct_radius(ir,ir_distance,r,conf)
     else
         zero_padding = 0;
     end
-    % Delay only if we have an delay other than 0
-    if abs(r-ir_distance)>0.0001 % ~0.01 samples
-        % Time delay of the source (at the listener position)
-        delay = (r-ir_distance)/conf.c*conf.fs; % / samples
-        % Amplitude weighting (point source model)
-        % This gives weight=1 for r==ir_distance
-        weight = 1/(r-ir_distance+20) * 20;
-        if abs(delay)>size(ir,1)
-            error(['%s: your impulse response is to short for a desired ', ...
-                'delay of %i samples.'],upper(mfilename),delay);
-        end
-    else
-        delay = 0;
-        weight = 1;
+    % Time delay of the source (at the listener position)
+    delay = (r-ir_distance)/conf.c*conf.fs; % / samples
+    % Amplitude weighting (point source model)
+    % This gives weight=1 for r==ir_distance
+    weight = 1/(r-ir_distance+20) * 20;
+    if abs(delay)>size(ir,1)
+        error(['%s: your impulse response is to short for a desired ', ...
+            'delay of %i samples.'],upper(mfilename),delay);
     end
     % Apply delay and weighting
     ir = delayline(ir,[delay+zero_padding; delay+zero_padding], ...
@@ -237,6 +231,13 @@ function ir = get_sofa_data(sofa,idx)
     end
 end
 
+function ir = get_ir_from_sofa(sofa,idx,x0,r,conf)
+    % Get the desired impulse response from the SOFA file/struct and returns it
+    % with applied radius correction
+    ir = get_sofa_data(sofa,idx);
+    ir = correct_radius(ir,x0(idx,3),r,conf);
+end
+
 function ir = get_single_ir(sofa,x0,xs,r,conf)
 
     % === Configuration ===
@@ -255,8 +256,7 @@ function ir = get_single_ir(sofa,x0,xs,r,conf)
     if norm(neighbours(:,1)-xs)<prec || ~useinterpolation
         disp('No interpolaton.');
         % Return the first nearest neighbour
-        ir = get_sofa_data(sofa,idx(1));
-        ir = correct_radius(ir,x0(idx(1),3),r,conf);
+        ir = get_ir_from_sofa(sofa,idx(1),x0,r,conf);
     else
         % === IR interpolation ===
         % Check if we have to interpolate in one or two dimensions
@@ -268,11 +268,8 @@ function ir = get_single_ir(sofa,x0,xs,r,conf)
                  'and (%.1f,%.1f) deg.'], ...
                 deg(x0(idx(1),1)), deg(x0(idx(1),2)), ...
                 deg(x0(idx(2),1)), deg(x0(idx(2),2)));
-            ir1 = get_sofa_data(sofa,idx(1));
-            ir2 = get_sofa_data(sofa,idx(2));
-            ir3 = get_sofa_data(sofa,idx(3));
-            ir1 = correct_radius(ir1,x0(idx(1),3),r,conf);
-            ir2 = correct_radius(ir2,x0(idx(2),3),r,conf);
+            ir1 = get_ir_from_sofa(sofa,idx(1),x0,r,conf);
+            ir2 = get_ir_from_sofa(sofa,idx(2),x0,r,conf);
             ir = intpol_ir(ir1,ir2,neighbours(:,1:2),xs);
         else
             % --- 2D interpolation ---
@@ -282,12 +279,9 @@ function ir = get_single_ir(sofa,x0,xs,r,conf)
                 deg(x0(idx(1),1)), deg(x0(idx(1),2)), ...
                 deg(x0(idx(2),1)), deg(x0(idx(2),2)), ...
                 deg(x0(idx(3),1)), deg(x0(idx(3),2)));
-            ir1 = get_sofa_data(sofa,idx(1));
-            ir2 = get_sofa_data(sofa,idx(2));
-            ir3 = get_sofa_data(sofa,idx(3));
-            ir1 = correct_radius(ir1,x0(idx(1),3),r,conf);
-            ir2 = correct_radius(ir2,x0(idx(2),3),r,conf);
-            ir3 = correct_radius(ir3,x0(idx(3),3),r,conf);
+            ir1 = get_ir_from_sofa(sofa,idx(1),x0,r,conf);
+            ir2 = get_ir_from_sofa(sofa,idx(2),x0,r,conf);
+            ir3 = get_ir_from_sofa(sofa,idx(3),x0,r,conf);
             ir = intpot_ir(ir1,ir2,ir3,[neighbours; 1 1 1],[xs;1]);
         end
     end

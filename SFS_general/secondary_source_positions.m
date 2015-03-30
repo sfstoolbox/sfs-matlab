@@ -133,14 +133,8 @@ end
 
 
 %% ===== Configuration ===================================================
-% Given secondary sources
-x0 = conf.secondary_sources.x0;
-% Check if we have already predefined secondary sources
-if ~isempty(x0)
-    isargsecondarysource(x0);
-    % If we have predefined secondary sources return at this point
-    return
-end
+% Given secondary sources are used in the 'custom' section
+%conf.secondary_sources.x0;
 % Array type
 geometry = conf.secondary_sources.geometry;
 % Center of the array
@@ -229,7 +223,12 @@ elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)
     % weights
     [~,theta] = cart2sph(x0(:,1),x0(:,2),x0(:,3)); % get elevation
     x0(:,7) = x0(:,7) .* cos(theta);
-    
+elseif strcmp('custom',geometry)
+    % Custom geometry definedy by conf.secondary_sources.x0.
+    % This could be in the form of a n x 7 matrix, where n is the number of
+    % secondary sources.
+    x0 = conf.secondary_sources.x0;
+    isargsecondarysource(x0);
 else
     error('%s: %s is not a valid array geometry.',upper(mfilename),geometry);
 end

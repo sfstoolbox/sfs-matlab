@@ -169,9 +169,10 @@ conf.secondary_sources.size = 3; % / m
 % Center of array, X0
 conf.secondary_sources.center = [0 0 0]; % / m
 % Array geometry
-% Possible values are: 'line', 'box', 'circle', 'sphere'
+% Possible values are: 'line', 'box', 'circle', 'sphere', 'custom'
 conf.secondary_sources.geometry = 'circle'; % string
 % Vector containing custom secondary source positions and directions.
+% This is used if geometry = 'custom' is specified.
 % conf.secondary_sources.x0 = [x0; y0; z0; nx0; ny0; nz0; weight];
 conf.secondary_sources.x0 = []; % / m
 % Grid for the spherical array. Note, that you have to download and install the

@@ -137,10 +137,10 @@ axis([-2 2 -2 2]);
 
 #### arbitrary shaped arrays
 
-You can create arbitrarily shaped arrays by settings the values of the single
-loudspeaker directly in the <code>conf.secondary_sources.x0</code> matrix, which
-has to be empty if you want to use one of the above predefined shapes. The rows
-of the matrix contain the single loudspeakers and the six columns are
+You can create arbitrarily shaped arrays by setting
+<code>conf.secondary_sources.geometry</code> to 'custom' and define the values
+of the single loudspeaker directly in the <code>conf.secondary_sources.x0</code>
+matrix. The rows of the matrix contain the single loudspeakers and the six columns are
 <code>[x y z nx ny nz w]</code>, the position and direction and weight of the
 single loudspeakers. The weight <code>w</code> is a factor the driving function
 of this particular loudspeaker is multiplied with in a function that calculates
@@ -179,6 +179,7 @@ x04 = [(R*x0(:,1:3)')' (R*x0(:,4:6)')'];
 x04(:,1) = x04(:,1) + ones(size(x0,1),1)*1.5;
 x04(:,7) = x0(:,7);
 % combine everything
+conf.secondary_sources.geometry = 'custom';
 conf.secondary_sources.x0 = [x01; x02; x03; x04];
 % if we gave the conf.x0 to the secondary_source_positions function it will
 % simply return the defined x0 matrix

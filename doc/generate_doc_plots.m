@@ -14,7 +14,7 @@ conf.secondary_sources.number = 21;
 x0 = secondary_source_positions(conf);
 figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-draw_loudspeakers(x0);
+draw_loudspeakers(x0,[1 1 0],conf);
 axis([-2 2 -2 1]);
 pause(1)
 print_png('img/secondary_sources_linear.png');
@@ -24,8 +24,8 @@ conf.secondary_sources.geometry = 'circle';
 conf.secondary_sources.number = 56;
 x0 = secondary_source_positions(conf);
 figure;
-figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-draw_loudspeakers(x0);
+figsize(540,404,'px');
+draw_loudspeakers(x0,[1 1 0],conf);
 axis([-2 2 -2 2]);
 print_png('img/secondary_sources_circle.png');
 
@@ -34,8 +34,8 @@ conf.secondary_sources.geometry = 'box';
 conf.secondary_sources.number = 84;
 x0 = secondary_source_positions(conf);
 figure;
-figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-draw_loudspeakers(x0);
+figsize(540,404,'px');
+draw_loudspeakers(x0,[0 0 1],conf);
 axis([-2 2 -2 2]);
 print_png('img/secondary_sources_box.png');
 
@@ -44,8 +44,8 @@ conf.secondary_sources.geometry = 'sphere'; % or 'spherical'
 conf.secondary_sources.number = 225;
 x0 = secondary_source_positions(conf);
 figure;
-figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-draw_loudspeakers(x0);
+figsize(540,404,'px');
+draw_loudspeakers(x0,[1 1 0],conf);
 axis([-2 2 -2 2]);
 print_png('img/secondary_sources_sphere.png');
 
@@ -79,18 +79,19 @@ x04 = [(R*x0(:,1:3)')' (R*x0(:,4:6)')'];
 x04(:,1) = x04(:,1) + ones(size(x0,1),1)*1.5;
 x04(:,7) = x0(:,7);
 % combine everything
+conf.secondary_sources.geometry = 'custom';
 conf.secondary_sources.x0 = [x01; x02; x03; x04];
 % if we gave the conf.secondary_sources.x0 to the secondary_source_positions
 % function it will simply return the defined x0 matrix
 x0 = secondary_source_positions(conf);
 figure;
-figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-draw_loudspeakers(x0);
+figsize(540,404,'px');
+draw_loudspeakers(x0,[1 1 0],conf);
 axis([-2 2 -2.5 2.5]);
 print_png('img/secondary_sources_arbitrary.png');
 conf.plot.realloudspeakers = true;
 figure;
-figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
+figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2.5 2.5]);
 print_png('img/secondary_sources_arbitrary_realloudspeakers.png');

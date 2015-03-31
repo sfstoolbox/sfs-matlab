@@ -1,10 +1,22 @@
+function boolean = test_wfs_iir_prefilter()
+%TEST_WFS_IIR_PREFILTER tests the IIR WFS pre-equalization filter
+%
+%   Usage: boolean = test_wfs_iir_prefilter()
+%
+%   Output parameters:
+%       booelan - true or false
+%
+%   TEST_WFS_IIR_PREFILTER() test the WFS pre-euqalization IIR filter
+%   design. This works only in Matlab as the Signal Processing Toolbox is used.
+%   See wfs_iir_prefilter.m for details
+
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -31,15 +43,19 @@
 %*****************************************************************************
 
 
-clear all; close all; clc;
-%see wfs_iir_prefilter.m for details
-SFS_start;
-SFS_version
+
+%% ===== Configuration ===================================================
+boolean = false;
+conf = SFS_config_example;
+
+
+%% ===== Calculation =====================================================
+% call with default values
+hpre1 = wfs_iir_prefilter(conf)
 conf.fs = 44100;
 conf.hpreflow = 200;
 conf.hprefhigh = 1500;
-conf.hpreBandwidth_in_Oct = 2;  
-conf.hpreIIRorder = 4; 
-hpre1 = wfs_iir_prefilter()      %call with no conf to test default values
-hpre2 = wfs_iir_prefilter(conf)  %call with parameters in conf
-SFS_stop;
+conf.hpreBandwidth_in_Oct = 2;
+conf.hpreIIRorder = 4;
+hpre2 = wfs_iir_prefilter(conf)
+boolean = true;

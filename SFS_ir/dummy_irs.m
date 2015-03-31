@@ -1,23 +1,27 @@
-function irs = dummy_irs()
+function irs = dummy_irs(nsamples)
 % DUMMY_IRS creates a dummy dirac pulse IR set
 %
-%   Usage: irs = dummy_irs()
+%   Usage: irs = dummy_irs([nsamples])
+%
+%   Input parameters:
+%       nsamples  - length of impulse response in samples, default: 1024
 %
 %   Output parameters:
-%       irs   - irs struct
+%       irs       - irs struct
 %
-%   DUMMY_IRS() creates a dummy IR data set (Dirac impulse) to check
-%   processing without IRs. It has a resolution of 1 deg for phi and theta.
+%   DUMMY_IRS(nsamples) creates a dummy IR data set (Dirac impulse) to check
+%   processing without IRs. It has a resolution of 1 deg for phi and theta, its
+%   length is given by nsamples.
 %
 %   See also: new_irs, IR_format.txt
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -44,9 +48,19 @@ function irs = dummy_irs()
 %*****************************************************************************
 
 
+%% ===== Checking input parameters =======================================
+nargmin = 0;
+nargmax = 1;
+narginchk(nargmin,nargmax);
+if nargin>0
+    isargpositivescalar(nsamples);
+else
+    nsamples = 1024;
+end
+
+
 %% ===== Computation =====================================================
 % create dirac pulse
-nsamples = 1024;
 ir = zeros(nsamples,1);
 ir(300) = 1;
 % angles of dummy irs

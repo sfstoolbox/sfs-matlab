@@ -14,12 +14,12 @@ function bool = isodd(number)
 %   see also: iseven
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -54,9 +54,8 @@ isargmatrix(number)
 
 
 %% ===== Computation =====================================================
-% Check if two is a factor of the given number
-divided_by_two = mod( number,2 );
 % Create answer
 bool = false( size(number) );
-% Look for odd numbers
-bool(divided_by_two==1) = true;
+% Look for odd numbers, use bitget() to overcome a mod() bug, see
+% http://bit.ly/1wcNYBI
+bool(bitget(number,1)==1) = true;

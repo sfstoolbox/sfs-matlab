@@ -90,16 +90,7 @@ end
 %% ===== Computation ====================================================
 %
 % === SOFA loading ===
-% Get only the metadata of the SOFA data set
-if ~isstruct(sofa) && exist(sofa,'file')
-    % Get metadata
-    header = SOFAload(sofa,'nodata');
-elseif isfield(sofa.Data,'IR')
-    header = sofa;
-    header.Data = rmfield(sofa.Data,'IR');
-else
-    error('%s: sofa has to be a file or a SOFA struct.',upper(mfilename));
-end
+header = sofa_get_header(sofa);
 
 % === SOFA checking ===
 % Conventions handled so far (see: http://...FIXME)
@@ -117,7 +108,6 @@ x0 = SOFAcalculateAPV(header); % / [deg deg m]
 % Convert angles to radian
 x0(:,1:2) = rad(x0(:,1:2));
 
-
 % === Coordinate system conversion ===
 if strcmp('cartesian',coordinate_system)
     [xs(1),xs(2),xs(3)] = cart2sph(xs(1),xs(2),xs(3));
@@ -126,15 +116,16 @@ elseif ~strcmp('spherical',coordinate_system)
     error('%s: unknown coordinate system type.',upper(mfilename));
 end
 % Store desired position of source
-r = abs(X(3)-xs(3));
 xs = [correct_azimuth(xs(1)-X(1)-head_orientation(1)) ...
-      correct_elevation(xs(2)-X(2)-head_orientation(2))]';
+      correct_elevation(xs(2)-X(2)-head_orientation(2)) ...
+      abs(X(3)-xs(3))]';
 
+% === Get Impulse Response ===
 if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     % If we have free field HRTFs there is no difference between changing head
     % orientation or source poition. That means all we need is given by the
     % apparent source position stored in x0.
-    ir = get_single_ir(sofa,x0,xs,r,conf);
+    ir = get_single_ir(sofa,x0,xs,conf);
 
 elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)
     % For a given BRIR recording we are searching first for the correct head
@@ -154,10 +145,10 @@ elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)
         idx = find(abs(tmp-min(tmp)<=eps));
         %sofa_head_orientation(idx,1:2)
         %[deg(x0(idx,1:2)) x0(idx,3)]
-        %[deg(xs); r]'
+        %[deg(xs(1:2)); xs(3)]'
     end
     % Now, search for the correct source position
-    ir = get_single_ir(sofa,x0,xs,r,conf);
+    ir = get_single_ir(sofa,x0,xs,conf);
     
 end
 end
@@ -217,29 +208,30 @@ function ir = correct_radius(ir,ir_distance,r,conf)
         [weight; weight],conf);
 end
 
-function ir = get_sofa_data(sofa,idx)
-    % Check if we have a file or struct
-    if isstruct(sofa)
-        ir = sofa.Data.IR(idx,:,:);
-        ir = squeeze(ir)';
-    else
-        file = sofa;
-        % FIXME: this is currently not working under Octave, because it will
-        % always return [1 idx] data
-        sofa = SOFAload(file,[idx idx]);
-        ir = squeeze(sofa.Data.IR)';
-    end
-end
-
-function ir = get_ir_from_sofa(sofa,idx,x0,r,conf)
+function ir = get_ir_from_sofa(sofa,idx,x0,xs,conf)
     % Get the desired impulse response from the SOFA file/struct and returns it
     % with applied radius correction
-    ir = get_sofa_data(sofa,idx);
-    ir = correct_radius(ir,x0(idx,3),r,conf);
+    ir = sofa_get_data(sofa,idx);
+    ir = correct_radius(ir,x0(idx,3),xs(3),conf);
 end
 
-function ir = get_single_ir(sofa,x0,xs,r,conf)
-
+function ir = get_single_ir(sofa,x0,xs,conf)
+    % GET_SINGLE_IR returns the desired impulse response from the given ones
+    %
+    % Input parameters:
+    %   sofa    - SOFA file or struct
+    %   x0      - positions of the impulse responses stored in sofa. x0 is the
+    %             relative position to [0 0 0] and given in spherical
+    %             coordinates / [rad rad m].
+    %   xs      - position of the desired impulse response. xs is relative to
+    %             [0 0 0] and given in spherical coordinates / [rad rad m].
+    %   conf    - SFS configuration struct, specifying if interpolation between
+    %             the given impulse responses shpuld be applied if the desired
+    %             position is not given in the SOFA data set.
+    %
+    % Output parameters
+    %   ir      - single impulse response
+    
     % === Configuration ===
     useinterpolation = conf.ir.useinterpolation;
     % Precission of the wanted angle. If an impulse response within the given
@@ -249,14 +241,14 @@ function ir = get_single_ir(sofa,x0,xs,r,conf)
     % Find the three nearest positions to the desired one (incorporating only angle
     % values and disregarding the radius)
     % FIXME: try to include radius here
-    [neighbours,idx] = findnearestneighbour(x0(:,1:2)',xs,3);
+    [neighbours,idx] = findnearestneighbour(x0(:,1:2)',xs(1:2),3);
 
     % Check if we have found directly the desired point or have to interpolate
     % bewteen different impulse responses
     if norm(neighbours(:,1)-xs)<prec || ~useinterpolation
         disp('No interpolaton.');
         % Return the first nearest neighbour
-        ir = get_ir_from_sofa(sofa,idx(1),x0,r,conf);
+        ir = get_ir_from_sofa(sofa,idx(1),x0,xs,conf);
     else
         % === IR interpolation ===
         % Check if we have to interpolate in one or two dimensions
@@ -268,9 +260,9 @@ function ir = get_single_ir(sofa,x0,xs,r,conf)
                  'and (%.1f,%.1f) deg.'], ...
                 deg(x0(idx(1),1)), deg(x0(idx(1),2)), ...
                 deg(x0(idx(2),1)), deg(x0(idx(2),2)));
-            ir1 = get_ir_from_sofa(sofa,idx(1),x0,r,conf);
-            ir2 = get_ir_from_sofa(sofa,idx(2),x0,r,conf);
-            ir = intpol_ir(ir1,ir2,neighbours(:,1:2),xs);
+            ir1 = get_ir_from_sofa(sofa,idx(1),x0,xs,conf);
+            ir2 = get_ir_from_sofa(sofa,idx(2),x0,xs,conf);
+            ir = intpol_ir(ir1,ir2,neighbours(:,1:2),xs(1:2));
         else
             % --- 2D interpolation ---
             warning('SFS:irs_intpol3D',...
@@ -282,7 +274,7 @@ function ir = get_single_ir(sofa,x0,xs,r,conf)
             ir1 = get_ir_from_sofa(sofa,idx(1),x0,r,conf);
             ir2 = get_ir_from_sofa(sofa,idx(2),x0,r,conf);
             ir3 = get_ir_from_sofa(sofa,idx(3),x0,r,conf);
-            ir = intpot_ir(ir1,ir2,ir3,[neighbours; 1 1 1],[xs;1]);
+            ir = intpot_ir(ir1,ir2,ir3,[neighbours; 1 1 1],[xs(1:2);1]);
         end
     end
 end

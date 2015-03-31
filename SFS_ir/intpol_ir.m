@@ -7,16 +7,17 @@ function ir = intpol_ir(varargin)
 %       ir1     - IR 1
 %       ir2     - IR 2
 %       ir3     - IR 3 (optional)
-%       x0      - matrix containing positions of single IRs / rad
-%       xs      - desired position after interpolation / rad
+%       x0      - matrix containing positions of single impulse
+%                 responses / [rad rad]
+%       xs      - desired position after interpolation / [rad rad]
 %
 %   Output parameters:
 %       ir      - IR for the given position
 %
-%   INTPOL_IR(ir1,phi1,theta1,ir2,phi2,theta2,ir3,phi3,theta3,alpha,beta)
+%   INTPOL_IR(ir1,ir2,ir3,x0,xs)
 %   interpolates the three given IRs ir1,ir2 and ir3 with their corresponding 
-%   angles (phi1,theta1),(phi2,theta2) and (phi3,theta3) for the given
-%   angles (alpha,beta) and returns an interpolated IR.
+%   angles x0 for the given angles xs and returns an interpolated impulse
+%   response.
 %   Note that the given parameter are not checked if they have all the right
 %   dimensions in order to save computational time, because this function could
 %   be called quiet often.

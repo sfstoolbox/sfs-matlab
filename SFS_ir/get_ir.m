@@ -21,16 +21,29 @@ function ir = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %   Output parameters:
 %       ir      - impulse response for the given position (length of IR x 2)
 %
-%   GET_IR(sofa,phi,delta,r,X0) returns a single IR set for the given angles 
-%   phi and delta. If the desired angles are not present in the IR data set 
-%   an interpolation is applied to create the desired angles.
-%   The desired radius is achieved by delaying and weighting the impulse
-%   response.
+%   GET_IR(sofa,X,head_orientation,xs) returns a single impulse response from
+%   the given SOFA file or struct. The impulse response is determined by the
+%   position X and head orientation head_orientation of the listener, and the
+%   position xs of the desired point source.
+%   The desired distance between point source and listener is achieved by
+%   delaying and weighting the impulse response. Distances larger than 10m are
+%   ignored and set constantly to 10m. If the desired angles are not
+%   present in the SOFA data set and conf.ir.useinterpolation is set to true
+%   an interpolation is applied to create the impulse response.
+%   A further configuration setting that is considered is conf.ir.useoriglength,
+%   which indicates if additional zeros corresponding to the actual radius of
+%   the measured impulse responses should be added at the beginning of every
+%   impulse response (if set to false). If you know that the measured impulse
+%   responses include already the zeros from the measurement it can be safely
+%   set to true. This is important because the delaying of the impulse responses
+%   in order to achieve the correct distance require enough zeros at the
+%   beginning of every impulse response.
+%
 %   For a description of the SOFA file format see: http://sofaconventions.org
 %   FIXME: ask Piotr if we should now reference the AES standard together with
 %   the web site?
 %
-%   see also: SOFAload, intpol_ir 
+%   see also: SOFAload, sofa_get_header, sofa_get_data, intpol_ir 
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -83,8 +96,9 @@ end
 
 
 %% ===== Configuration ==================================================
-% The configuration struct is only used in the subfunction get_single_ir(), see
-% below for more details.
+% In subfunctions the following configurations are used, see below
+% conf.ir.useinterpolation
+% conf.ir.useoriglength
  
 
 %% ===== Computation ====================================================
@@ -93,13 +107,14 @@ end
 header = sofa_get_header(sofa);
 
 % === SOFA checking ===
-% Conventions handled so far (see: http://...FIXME)
+% Conventions handled so far. For a list of SOFA conventions, see:
+% http://www.sofaconventions.org/mediawiki/index.php/SOFA_conventions
 SOFA_conventions = { ...
     'SimpleFreeFieldHRIR', ...
     'SingleRoomDRIR', ...
     };
 if ~any(strcmp(header.GLOBAL_SOFAConventions,SOFA_conventions))
-    error('%s: wrong SOFA Convention.');
+    error('%s: this SOFA Convention is currently not supported.');
 end
 
 % === Internal variables ===
@@ -115,7 +130,7 @@ if strcmp('cartesian',coordinate_system)
 elseif ~strcmp('spherical',coordinate_system)
     error('%s: unknown coordinate system type.',upper(mfilename));
 end
-% Store desired position of source
+% Store desired apparent position of source
 xs = [correct_azimuth(xs(1)-X(1)-head_orientation(1)) ...
       correct_elevation(xs(2)-X(2)-head_orientation(2)) ...
       abs(X(3)-xs(3))]';

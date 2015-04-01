@@ -198,7 +198,7 @@ function ir = correct_radius(ir,ir_distance,r,conf)
     delay = (r-ir_distance)/conf.c*conf.fs; % / samples
     % Amplitude weighting (point source model)
     % This gives weight=1 for r==ir_distance
-    weight = 1/(r-ir_distance+20) * 20;
+    weight = ir_distance/r;
     if abs(delay)>size(ir,1)
         error(['%s: your impulse response is to short for a desired ', ...
             'delay of %i samples.'],upper(mfilename),delay);

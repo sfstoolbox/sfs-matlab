@@ -1,5 +1,12 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
+1.1.0 ()
+
+    - add support for local Wave Field Synthesis
+    - the length of the dirac impulse response is now an option for dummy_irs()
+    - fix iseven(), isodd() for very large numbers
+    - correct the sign for Wave Field Synthesis driving functions
+
 1.0.1 (4 August 2014)
 
     - rms() works now also with row vectors in order to be compatible with the

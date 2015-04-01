@@ -16,12 +16,12 @@ function conf = SFS_config()
 %   see also: SFS_start
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -104,7 +104,7 @@ conf.bandpassflow = 10; % / Hz
 conf.bandpassfhigh = 20000; % / Hz
 
 
-%% ===== SFS =============================================================
+%% ===== Sound Field Synthesis (SFS) =====================================
 % Common sound field synthesis settings
 %
 % === Dimensionality ===
@@ -148,7 +148,7 @@ conf.usetapwin = true; % boolean
 conf.tapwinlen = 0.3; % / percent of array length, 0..1
 
 
-%% ===== Wave Field Simulations ==========================================
+%% ===== Sound Field Simulations =========================================
 % Simulations of monochromatic or time domain sound field
 %
 % xyz-resolution for sound field simulations, this value is applied along every
@@ -161,7 +161,9 @@ conf.phase = 0; % / rad
 conf.usenormalisation = true; % boolean
 
 
-% ===== Secondary Sources =======================
+% ===== Secondary Sources ================================================
+% Settings of the used loudspeaker array
+%
 % Number of secondary sources
 conf.secondary_sources.number = 64; % integer
 % Diameter/Length of secondary source array
@@ -183,8 +185,8 @@ conf.secondary_sources.x0 = []; % / m
 conf.secondary_sources.grid = 'equally_spaced_points'; % string
 
 
-%% ===== WFS =============================================================
-% Settings for wave field synthesis
+%% ===== Wave Field Synthesis (WFS) ======================================
+% Settings for WFS, see Spors et al. (2008) for an introduction
 %
 % === Pre-Equalization ===
 % WFS can be implemented very efficiently using a delay-line with different
@@ -211,16 +213,49 @@ conf.wfs.hpreBandwidth_in_Oct = 2; % / octaves
 conf.wfs.hpreIIRorder = 4; % integer
 
 
-%% ===== SDM =============================================================
+%% ===== Spectral Division Method (SDM) ==================================
+% Settings for SDM, see Ahrens, Spors (2010) for an introduction
+%
 % Use the evanescent part of the driving function for SDM
 conf.sdm.withev = true; % boolean
 
 
-%% ===== HOA =============================================================
+%% ===== Near-Field Compensated Higher Order Ambisonics (NFC-HOA) ========
+% Settings for NFCF-HOA, see Ahrens (2012) fro an introduction
+%
 % normally the order of NFC-HOA is set by the nfchoa_order() function which
 % returns the highest order for which no aliasing occurs. If you wish to use
 % another order you can set it manually here, otherwise leave it blank
 conf.nfchoa.order = []; % integer
+
+
+%% ===== Local Sound Field Synthesis =====================================
+% Settings for Local SFS, see Spors, Ahrens (2010) for an introduction
+%
+% Method the virtual secondary sources should be driven
+conf.localsfs.method = 'wfs'; % 'wfs' or 'nfchoa'
+conf.localsfs.usetapwin = false; % boolean
+conf.localsfs.tapwinlen = 0.5; % 0..1
+% WFS settings
+conf.localsfs.wfs = conf.wfs;
+% Virtual secondary sources (vss)
+conf.localsfs.vss.size = 0.4;
+conf.localsfs.vss.center = [0, 0, 0];
+conf.localsfs.vss.geometry = 'circular';
+conf.localsfs.vss.number = 56;
+conf.localsfs.vss.grid = 'equally_spaced_points';
+%
+% linear vss distribution: rotate the distribution orthogonal to the progation 
+% direction of the desired sound source
+% circular vss distribution: truncate the distribution to a circular arc
+% which satisfies the secondary source selection criterions ( source normal
+% aligns with propagation directions of desired sound source )
+conf.localsfs.vss.consider_target_field = true;
+% 
+% vss distribution is further truncated if parts of it cannot be correctly
+% reproduced, because they lie outside the area which is surrounded by the real
+% loudspeakers (secondary sources)
+conf.localsfs.vss.consider_secondary_sources = true;
 
 
 %% ===== Binaural reproduction ===========================================
@@ -317,3 +352,18 @@ conf.plot.file = ''; % string
 % === Gnuplot ===
 % Use gnuplot
 conf.plot.usegnuplot = false; % boolean
+
+
+%% ===== References ======================================================
+%
+% Spors, Rabenstein, Ahrens - The Theory of Wave Field Synthesis Revisited, 124
+% AES Convention, Paper 7358, 2008. http://bit.ly/ZCvyQ6
+%
+% Ahrens, Spors - Sound Field Reproduction Using Planar and Linear Arrays of
+% Loudspeakers, Transactions on Audio, Speech, and Language Processing, p.
+% 2038-50, 2010. http://bit.ly/10dpA9r
+%
+% Spors, Ahrens - Local Sound Field Synthesis by Virtual Secondary Sources, 40
+% AES Conference, Paper 6-3, 2010. http://bit.ly/1t3842v
+%
+% Ahrens - Analytic Methods of Sound Field Synthesis. Springer, 2012.

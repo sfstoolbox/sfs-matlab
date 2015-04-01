@@ -5,8 +5,9 @@ function boolean = test_secondary_sources(modus)
 %   Usage: boolean = test_secondary_sources(modus)
 %
 %   Input parameters:
-%       modus   - 0: numerical
-%                 1: visual
+%       modus   - 0: numerical (quiet)
+%                 1: numerical (verbose)
+%                 2: visual
 %
 %   Output parameters:
 %       booelan - true or false
@@ -15,12 +16,12 @@ function boolean = test_secondary_sources(modus)
 %   the secondary source positions and directions are working correctly.
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *

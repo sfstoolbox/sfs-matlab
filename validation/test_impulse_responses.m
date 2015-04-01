@@ -1,40 +1,22 @@
-function y = rms(insig,options)
-%RMS returns the root mean square of the signal
+function boolean = test_impulse_responses()
+%TEST_IMPULSE_RESPONSES tests time behavior of WFS and local WFS
 %
-%   Usage: y = rms(insig,[options]);
-%
-%   Input parameters:
-%       insig       - signal for which to calculate the RMS value
-%       options     - if 'ac' is given, only the AC component of the signal
-%                     is used for RMS calculation
+%   Usage: boolean = test_impulse_responses()
 %
 %   Output parameters:
-%       y           - RMS value of insig
+%       booelan - true or false
 %
-%   RMS(insig) computes the RMS (Root Mean Square) value of a finite
-%   sampled signal sampled at a uniform sampling rate.
-%
-%   RMS(x,'ac') does the same, but considers only the AC component of the
-%   signal (i.e. the mean is removed).
-%
-%   If the input is a matrix or ND-array, the RMS is computed along the first
-%   dimension, and a vector of values is returned.
-%
-%   The RMS value of a signal x of length N is computed by
-%
-%                        1  N
-%     rms(insig) = sqrt( - sum insig(n)^2 )
-%                        N n=1
-%
-%   see also: db
+%   TEST_IMPULSE_RESPONSES() compares the time-frequency response of
+%   WFS and local WFS by calculating impulse responses, their frequency
+%   spectrum, and spatial-temporal sound field.
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -61,31 +43,57 @@ function y = rms(insig,options)
 %*****************************************************************************
 
 
-%% ===== Checking of input parameters ====================================
-nargmin = 1;
-nargmax = 2;
-narginchk(nargmin,nargmax);
-isargnumeric(insig);
-if (nargin==1) || (~ischar(options))
-  options='';
-end
+%% ===== Configuration ===================================================
+boolean = false;
+%% Parameters
+conf = SFS_config_example;
+conf.showprogress = true;
+conf.resolution = 400;
+conf.plot.useplot = true;
+conf.plot.loudspeakers = true;
+conf.plot.realloudspeakers = false;
+conf.plot.usedb = true;
+conf.tapwinlen = 1.0;
+% config for virtual array
+conf.localsfs.method = 'wfs';
+conf.localsfs.wfs = conf.wfs;
+conf.localsfs.usetapwin = true;
+conf.localsfs.tapwinlen = 0.3;
+conf.localsfs.vss.size = 1.0;
+conf.localsfs.vss.center = [0, 0.5, 0];
+conf.localsfs.vss.geometry = 'linear';
+conf.localsfs.vss.number = 56;
+conf.localsfs.vss.consider_target_field = true;
+conf.localsfs.vss.consider_secondary_sources = true;
+% config for real array
+conf.dimension = '2.5D';
+conf.secondary_sources.geometry = 'linear';
+conf.secondary_sources.number = 56;
+conf.secondary_sources.size = 3;
+conf.secondary_sources.center = [0, 1.5, 0];
+conf.driving_functions = 'default';
+conf.xref = conf.localsfs.vss.center;
+% impulse response
+conf.ir.usehcomp = false;
+% listening area, virtual source
+xs = [0.0, -1.0, 0];  % propagation direction of plane wave
+src = 'pw';
+X = [-1.5 1.5];
+Y = [-1, 1.55];
+Z = 0;
 
-% if the input signal is a row vector change it to a column vector
-if isvector(insig) && size(insig,2)>2
-    insig = insig';
-end
 
 %% ===== Computation =====================================================
-% It is better to use 'norm' instead of explicitly summing the squares, as
-% norm (hopefully) attempts to avoid numerical overflow.
-y = zeros(1,size(insig,2));
-switch(lower(options))
-    case 'ac'
-        for ii=1:size(insig,2)
-            y(1,ii) = norm(insig(:,ii)-mean(insig(:,ii)))/sqrt(length(insig(:,ii)));
-        end
-    otherwise
-        for ii=1:size(insig,2)
-            y(1,ii) = norm(insig(:,ii))/sqrt(length(insig(:,ii)));
-        end
-end
+%% temporal impulse responses
+irs = dummy_irs;
+% calculate impulse response for WFS and local WFS
+s_lwfs = ir_localwfs(conf.xref,pi/2,xs,src,irs,conf);
+s_wfs = ir_wfs(conf.xref,pi/2,xs,src,irs,conf);
+% plot frequency response
+[S_lwfs, ~, f_lwfs] = easyfft(s_lwfs(:,1)./max(abs(s_lwfs(:,1))), conf);
+[S_wfs, ~, f_wfs] = easyfft(s_wfs(:,1)./max(abs(s_wfs(:,1))), conf);
+% plot spatio-temporal sound field
+sound_field_imp_localwfs(X,Y,Z, xs, src, 400, conf);
+sound_field_imp_wfs(X,Y,Z, xs, src, 190, conf);
+
+boolean = true;

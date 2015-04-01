@@ -24,12 +24,12 @@ function [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs,conf)
 %   see also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_fs
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -86,7 +86,6 @@ if strcmp('2D',dimension)
 
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        to_be_implemented;
         % d using a focused line source as source model
         %                     ___
         %                    | 1   (x0-xs) nx0
@@ -99,7 +98,7 @@ if strcmp('2D',dimension)
         r = vector_norm(x0-xs,2);
         % Delay and amplitude weight
         delay = -1/c .* r;
-        weight = 1/(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
+        weight = 1/(2*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3/2);
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2D focused source.'],upper(mfilename),driving_functions);

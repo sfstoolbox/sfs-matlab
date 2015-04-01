@@ -89,13 +89,10 @@ for ii=1:size(x0,1)
     % change to spherical coordinates
     %[alpha,theta,r] = cart2sph(x_direction(1),x_direction(2),x_direction(3));
 
-    % Incoporate head orientation and ensure -pi <= alpha < pi
-    %alpha = correct_azimuth(alpha-phi);
-
     % === IR interpolation ===
     % Get the desired impulse response.
     % If needed interpolate the given impusle response set
-    ir = get_ir(sofa,X,[phi 0],x0(:,1:3),'cartesian',conf);
+    ir = get_ir(sofa,X,[phi 0],x0(ii,1:3),'cartesian',conf);
 
     % === Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay ===
     % Also applying the weights of the secondary sources including integration

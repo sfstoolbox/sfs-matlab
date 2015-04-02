@@ -79,7 +79,6 @@ isargstruct(conf);
 tmpdir = conf.tmpdir;
 usenormalisation = conf.usenormalisation;
 % Plotting
-p.usegnuplot = conf.plot.usegnuplot;
 p.cmd = conf.plot.cmd;
 p.usedb = conf.plot.usedb;
 p.mode = conf.plot.mode;
@@ -155,159 +154,64 @@ end
 
 %% ===== Plotting ========================================================
 
-if ~(p.usegnuplot)
-    % ===== Plot the sound field with Matlab/Octave =======================
-    %
-    % Create a new figure
-    figure;
-    % set size
-    figsize(p.size(1),p.size(2),p.size_unit);
+% Create a new figure
+figure;
+% set size
+figsize(p.size(1),p.size(2),p.size_unit);
 
-    % Scale dB value if needed
+% Scale dB value if needed
+if p.usedb
+    P_dB = 20*log10(abs(P));
+    if usenormalisation
+        P_dB = P_dB - max(P_dB(:));
+    end
+end
+
+% Plotting
+if sum(dimensions)==1 % singleton dimension
     if p.usedb
-        P_dB = 20*log10(abs(P));
-        if usenormalisation
-            P_dB = P_dB - max(P_dB(:));
-        end
-    end
-
-    % Plotting
-    if sum(dimensions)==1 % singleton dimension
-        if p.usedb
-            plot(x1,P_dB);
-            xlabel(p.xlabel);
-            ylabel('Amplitude / dB');
-        else
-            plot(x1,real(P));
-            xlabel(p.xlabel);
-            ylabel('Amplitude');
-        end
-    else
-
-        if p.usedb
-            % Plot the amplitude of the sound field in dB
-            imagesc(x1,x2,P_dB,p.caxis);
-        else
-            % Plot the sound field
-            imagesc(x1,x2,real(P),p.caxis);
-        end
-
-        % Add color bar
-        set_colorbar(conf);
-
-        % Set the y direction in normal mode (imagesc uses the reverse mode by
-        % default)
-        turn_imagesc;
-
-        % Set the axis to use the same amount of space for the same length (m)
-        axis image;
-        % Labels etc. for the plot
+        plot(x1,P_dB);
         xlabel(p.xlabel);
-        ylabel(p.ylabel);
-        % Add loudspeaker to the plot
-        %x0(:,1:2) = x0(:,2:3);
-        if p.loudspeakers % && dimensions(1) && dimensions(2)
-            hold on;
-            draw_loudspeakers(x0,dimensions,conf);
-            hold off;
-        end
+        ylabel('Amplitude / dB');
+    else
+        plot(x1,real(P));
+        xlabel(p.xlabel);
+        ylabel('Amplitude');
     end
-
-    % Save as file
-    if ~isempty(p.file) && strcmp('png',p.file(end-2:end))
-        print_png(p.file);
-    elseif ~isempty(p.file) && strcmp('eps',p.file(end-2:end))
-        print_eps(p.file);
-    end
-
 else
 
-
-%% ===== Plot the sound field using Gnuplot ==============================
-
-    % ----- Store all the files needed for plotting ----------------------
-    % tmp dir for storing temporary files
-    if ~exist(tmpdir,'dir')
-        mkdir(tmpdir);
-    end
-    % Create output file name
-    if p.usefile
-        p.datafile = sprintf('%s.dat',p.file(1:end-4));
-        p.lsfile = sprintf('%s_ls.txt',p.file(1:end-4));
-        p.gnuplotfile = sprintf('%s.gnu',p.file(1:end-4));
-    else
-        % Generate a random number string for the tmp files
-        rn = sprintf('%04.0f',10000*rand);
-        p.datafile = sprintf('%s/sound_field%s.dat',tmpdir,rn);
-        p.lsfile = sprintf('%s/loudspeakers%s.txt',tmpdir,rn);
-        p.gnuplotfile = sprintf('%s/gnuplot%s.gnu',tmpdir,rn);
-    end
-    % Storing loudspeaker positions and activity
-    if p.loudspeakers
-        gp_save_loudspeakers(p.lsfile,x0);
-    end
-
-    % Check if we should handle the sound field in dB
     if p.usedb
-        % Save the data for plotting with Gnuplot
-        gp_save_matrix(p.datafile,x1,x2,db(abs(P)));
-        p.cbtics = 5;
-        p.dim = 'p';
-        p.unit = 'dB';
+        % Plot the amplitude of the sound field in dB
+        imagesc(x1,x2,P_dB,p.caxis);
     else
-        % Save the data for plotting with Gnuplot
-        gp_save_matrix(p.datafile,x1,x2,real(P));
-        p.cbtics = 1;
-        p.dim = 'P';
-        p.unit = '';
+        % Plot the sound field
+        imagesc(x1,x2,real(P),p.caxis);
     end
 
-    % stor the x- and y-range
-    p.xmin = x1(1);
-    p.xmax = x1(end);
-    p.ymin = x2(1);
-    p.ymax = x2(end);
-    % plot the files
-    if ~isempty(p.file) && strcmp('png',p.file(end-2:end))
-        % png file
-        fprintf(1,'Plotted to file %s\n',p.file);
-        cmd = gp_print_png(p);
-    elseif ~isempty(p.file) && strcmp('eps',p.file(end-2:end))
-        % eps file
-        fprintf(1,'Plotted to file %s\n',p.file);
-        cmd = gp_print_eps(p);
-    elseif ~isempty(p.file) && strcmp('tex',p.file(end-2:end))
-        % epslatex file
-        fprintf(1,'Plotted to file %s\n',p.file);
-        cmd = gp_print_epslatex(p);
-    else
-        % on ths screen
-        cmd = gp_print_screen(p);
+    % Add color bar
+    set_colorbar(conf);
+
+    % Set the y direction in normal mode (imagesc uses the reverse mode by
+    % default)
+    turn_imagesc;
+
+    % Set the axis to use the same amount of space for the same length (m)
+    axis image;
+    % Labels etc. for the plot
+    xlabel(p.xlabel);
+    ylabel(p.ylabel);
+    % Add loudspeaker to the plot
+    %x0(:,1:2) = x0(:,2:3);
+    if p.loudspeakers % && dimensions(1) && dimensions(2)
+        hold on;
+        draw_loudspeakers(x0,dimensions,conf);
+        hold off;
     end
+end
 
-
-    if p.usefile
-        fid = fopen(p.gnuplotfile,'w');
-        fprintf(fid,'%s',cmd);
-        fclose(fid);
-        run_cmd = sprintf('gnuplot %s\n',p.gnuplotfile);
-    else
-        run_cmd = sprintf('gnuplot<<EOC\n%s\nEOC\n',cmd);
-    end
-    % Start Gnuplot for plotting the data
-    system(run_cmd);
-
-    if ~p.usefile
-        % Remove tmp files
-        if exist(p.datafile,'file')
-            delete(p.datafile);
-        end
-        if exist(p.lsfile,'file')
-            delete(p.lsfile);
-        end
-        if exist(p.gnuplotfile,'file')
-            delete(p.gnuplotfile);
-        end
-    end
-
+% Save as file
+if ~isempty(p.file) && strcmp('png',p.file(end-2:end))
+    print_png(p.file);
+elseif ~isempty(p.file) && strcmp('eps',p.file(end-2:end))
+    print_eps(p.file);
 end

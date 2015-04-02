@@ -8,7 +8,7 @@ function print_eps(outfile)
 %
 %   PRINT_EPS(outfile) prints the figure as eps file.
 %
-%   see also: plot_wavefield, print_png
+%   see also: plot_sound_field, print_png
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

@@ -85,7 +85,7 @@ end
 
 %% ===== Computation ====================================================
 % Get the position of the loudspeakers
-x0 = secondary_source_positions(conf);
+x0_real = secondary_source_positions(conf);
 % Generate frequencies (10^0-10^5)
 f = logspace(0,5,500)';
 % We want only frequencies until f = 20000Hz
@@ -95,7 +95,7 @@ S = zeros(size(f));
 % Get the result for all frequencies
 for ii = 1:length(f)
     if showprogress, progress_bar(ii,length(f)); end
-    D = driving_function_mono_localwfs(x0,xs,src,f(ii),conf);
+    [D, x0] = driving_function_mono_localwfs(x0_real,xs,src,f(ii),conf);
     % calculate sound field at the listener position
     P = sound_field_mono(X(1),X(2),X(3),x0,greens_function,D,f(ii),conf);
     S(ii) = abs(P);

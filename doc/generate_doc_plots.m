@@ -184,11 +184,3 @@ legend('w pre-filter');
 xlabel('frequency / Hz');
 ylabel('magnitude / dB');
 print_png('img/impulse_response_wfs_25d_mono.png');
-
-% --- gnuplot ---
-if ~system('gnuplot -V')
-    conf = SFS_config_example;
-    conf.plot.usegnuplot = 1;
-    conf.plot.file = 'img/sound_field_nfchoa_25d_gnuplot.png';
-    sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',1000,conf);
-end

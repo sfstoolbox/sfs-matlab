@@ -14,22 +14,22 @@ stimuli sets in order to simulate WFS with the SoundScape Renderer (SSR).
 **[Installation](#installation)**  
 **[Requirements](#requirements)**  
 **[Usage](#usage)**  
-  **[Secondary Sources](#secondary-sources)**  
-    [Linear Array](#linear-array)  
-    [Circular Array](#circular-array)  
-    [Box Shaped Array](#box-shaped-array)  
-    [Spherical Array](#spherical-array)  
-    [Arbritrary Shaped Array](#arbritrary-shaped-array)  
-    [Plot Loudspeaker Symbols](#plot-loudspeaker-symbols)  
-  **[Simulate Monochromatic Sound Fields](#simulate-monochromatic-sound-fields)**  
-    [Wave Field Synthesis](#wave-field-synthesis)  
-    [Near-Field Compensated Higher Order Ambisonics](#near-field-compensated-higher-order-ambisonics)  
-    [Stereo](#stereo)  
-  **[Simulate Time Snapshots of Sound Fields](#simulate-time-snapshots-of-sound-fields)**  
-  **[Make Binaural Simulations of Your Systems](#make-binaural-simulations-of-your-systems)**  
-    [Using the SoundScape Renderer with the SFS Toolbox](#using-the-soundScape-renderer-with-the-sfs-toolbox)  
-  **[Small helper functions](#small-helper-functions)**  
-  **[Plotting with Matlab or gnuplot](#plotting-with-matlab-or-gnuplot)**  
+-  **[Secondary Sources](#secondary-sources)**  
+     [Linear Array](#linear-array)  
+     [Circular Array](#circular-array)  
+     [Box Shaped Array](#box-shaped-array)  
+     [Spherical Array](#spherical-array)  
+     [Arbitrary Shaped Array](#arbitrary-shaped-array)  
+     [Plot Loudspeaker Symbols](#plot-loudspeaker-symbols)  
+-  **[Simulate Monochromatic Sound Fields](#simulate-monochromatic-sound-fields)**  
+     [Wave Field Synthesis](#wave-field-synthesis)  
+     [Near-Field Compensated Higher Order Ambisonics](#near-field-compensated-higher-order-ambisonics)  
+     [Stereo](#stereo)  
+-  **[Simulate Time Snapshots of Sound Fields](#simulate-time-snapshots-of-sound-fields)**  
+-  **[Make Binaural Simulations of Your Systems](#make-binaural-simulations-of-your-systems)**  
+     [Using the SoundScape Renderer with the SFS Toolbox](#using-the-soundscape-renderer-with-the-sfs-toolbox)  
+-  **[Small helper functions](#small-helper-functions)**  
+-  **[Plotting with Matlab or gnuplot](#plotting-with-matlab-or-gnuplot)**  
 **[Credits and License](#credits-and-license)**
 
 

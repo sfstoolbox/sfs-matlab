@@ -139,6 +139,20 @@ conf.dimension = '2.5D';
 sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
 print_png('img/sound_field_nfchoa_25d.png');
 
+% 2D local WFS with box shaped array and circular virtual array
+conf = SFS_config_example;
+conf.resolution = 1000;
+conf.dimension = '2D';
+conf.secondary_sources.geometry = 'box';
+conf.secondary_sources.number = 4*56;
+conf.secondary_sources.size = 2;
+conf.localsfs.vss.size = 0.4;
+conf.localsfs.vss.center = [0 0 0];
+conf.localsfs.vss.geometry = 'circular';
+conf.localsfs.vss.number = 56;
+sound_field_mono_localwfs([-1 1],[-1 1],0,[1.0 -1.0 0],'pw',7000,conf);
+print_png('img/sound_field_localwfs_2d.png');
+
 % --- spatio-temporal snapshots of the sound field ---
 conf = SFS_config_example;
 conf.dimension = '2.5D';

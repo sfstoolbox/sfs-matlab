@@ -323,6 +323,40 @@ sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
 ![Image](doc/img/sound_field_nfchoa_25d.png)
 
 
+#### Local Wave Field Synthesis
+
+In Near-Field Compensated Higher Order Ambisonics aliasing frequency in a small
+array inside the listening area can be increased by limiting the used order. A
+similar outcome can be achoieved in Wave Field Synthesis by applying so called
+local Wave Field Synthesis. In this case the original loudspeaker array is
+driven by Wave Field Synthesis to create a virtual loudspeaker array consisting
+of focused sources which can then be used to create the desired sound field in a
+small area.
+The settings are the same as for Wave Field Synthesis, but a new struct
+<code>conf.localsfs</code> has to be filled out, which for example provides the
+settings for the desired position and form of the local area with higher
+aliasing frequency.
+
+```Matlab
+conf = SFS_config_example;
+conf.resolution = 1000;
+conf.dimension = '2D';
+conf.secondary_sources.geometry = 'box';
+conf.secondary_sources.number = 4*56;
+conf.secondary_sources.size = 2;
+conf.localsfs.vss.size = 0.4;
+conf.localsfs.vss.center = [0 0 0];
+conf.localsfs.vss.geometry = 'circular';
+conf.localsfs.vss.number = 56;
+% sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf);
+sound_field_mono_localwfs([-1 1],[-1 1],0,[1.0 -1.0 0],'pw',7000,conf);
+axis([-1.1 1.1 -1.1 1.1]);
+%print_png('img/sound_field_localwfs_2d.png');
+```
+
+![Image](doc/img/sound_field_localwfs_2d.png)
+
+
 #### Stereo
 
 The Toolbox includes not only WFS and NFC-HOA, but also some generic sound field

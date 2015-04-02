@@ -151,6 +151,7 @@ conf.localsfs.vss.center = [0 0 0];
 conf.localsfs.vss.geometry = 'circular';
 conf.localsfs.vss.number = 56;
 sound_field_mono_localwfs([-1 1],[-1 1],0,[1.0 -1.0 0],'pw',7000,conf);
+axis([-1.1 1.1 -1.1 1.1]);
 print_png('img/sound_field_localwfs_2d.png');
 
 % --- spatio-temporal snapshots of the sound field ---

@@ -1,19 +1,19 @@
-function irs = dummy_irs(nsamples)
-% DUMMY_IRS creates a dummy dirac pulse IR set
+function sofa = dummy_irs(nsamples,conf)
+% DUMMY_IRS creates a dummy dirac pulse impulse response set
 %
-%   Usage: irs = dummy_irs([nsamples])
+%   Usage: irs = dummy_irs([nsamples],[conf])
 %
 %   Input parameters:
 %       nsamples  - length of impulse response in samples, default: 1024
 %
 %   Output parameters:
-%       irs       - irs struct
+%       sofa      - sofa struct
 %
-%   DUMMY_IRS(nsamples) creates a dummy IR data set (Dirac impulse) to check
-%   processing without IRs. It has a resolution of 1 deg for phi and theta, its
-%   length is given by nsamples.
+%   DUMMY_IRS(nsamples) creates a dummy impulse response data set (Dirac
+%   impulse) to check processing without real impulse responses. It has a
+%   resolution of 1 deg for phi and theta, its length is given by nsamples.
 %
-%   See also: new_irs, IR_format.txt
+%   See also: SOFAgetConventions
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -50,33 +50,56 @@ function irs = dummy_irs(nsamples)
 
 %% ===== Checking input parameters =======================================
 nargmin = 0;
-nargmax = 1;
+nargmax = 2;
 narginchk(nargmin,nargmax);
-if nargin>0
+if nargin==2
     isargpositivescalar(nsamples);
+    isargstruct(conf);
+elseif nargin==1
+    if isstruct(nsamples)
+        conf = nsamples;
+        nsamples = 1024;
+    else
+        conf = SFS_config;
+        isargpositivescalar(nsamples);
+    end
 else
     nsamples = 1024;
+    conf = SFS_config;
 end
 
 
+%% ===== Configuration ===================================================
+fs = conf.fs;
+c = conf.c;
+dirac_position = 300;
+
+
 %% ===== Computation =====================================================
-% create dirac pulse
-ir = zeros(nsamples,1);
-ir(300) = 1;
-% angles of dummy irs
-theta = rad(-90:89);
-phi = rad(-180:179);
-% replicate ir for all directions
-ir = repmat(ir,1,length(phi)*length(theta));
-% store data
-irs = new_irs();
-irs.left = ir;
-irs.right = ir;
-tmp = repmat(phi,length(theta),1);
-irs.apparent_azimuth = tmp(:)';
-irs.apparent_elevation = repmat(theta,1,length(phi));
-irs.source_position = [0 2.333 0]';
-irs.head_position = [0 0 0]';
-irs.distance = 2.333;
-irs.description = ['HRIR dummy set (Dirac pulse) for testing your',...
-                   'frequency response, etc.'];
+% Angles of dummy irs (in 1deg)
+theta = -90:89;
+phi = -180:179;
+M = length(phi)*length(theta);
+ir = zeros(M,2,nsamples);
+% Create dirac pulse
+ir(:,:,dirac_position) = 1;
+% Store data
+sofa = SOFAgetConventions('SimpleFreeFieldHRIR');
+sofa.Data.IR = ir;
+sofa.Data.SamplingRate = fs;
+% Add metadata
+sofa.GLOBAL_ListenerShortName = 'dummy';
+sofa.GLOBAL_History='Created by Sound Field Synthesis Toolbox';
+sofa.GLOBAL_Comment = ['HRIR dummy set (Dirac pulse) for testing your',...
+                      'frequency response, etc.'];
+sofa.ListenerPosition = [0 0 0];
+sofa.ListenerView = [1 0 0];
+sofa.ListenerUp = [0 0 1];
+distance = dirac_position/fs*c;
+% Get angles and distance in to the correct format
+azimuth = repmat(phi,length(theta),1);
+azimuth = azimuth(:);
+elevation = repmat(theta,1,length(phi))';
+distance = distance.*ones(M,1);
+sofa.SourcePosition = [nav2sph(azimuth) elevation distance];
+sofa = SOFAupdateDimensions(sofa);

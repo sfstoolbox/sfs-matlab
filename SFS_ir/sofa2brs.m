@@ -1,19 +1,21 @@
-function brs = irs2brs(irs)
-%IRS2BRS converts a irs data set to an brs set suitable for the SSR
+function brs = sofa2brs(sofa)
+%SOFA2BRS converts a sofa file/struct to a brs set suitable for the SSR
 %
-%   Usage: brs = irs2brs(irs)
+%   Usage: brs = sofa2brs(sofa)
 %
 %   Input parameters:
-%       irs     - irs data set
+%       sofa    - sofa struct or file name
 %
 %   Output parameters:
 %       brs     - brs data set
 %
-%   IRS2BRS(irs) converts a irs data set into a brs set suitable for the
-%   SoundScape Renderer. The brs data set is a matrix containing the
-%   channels for all directions.
+%   SOFA2BRS(sofa) converts a the given sofa file or struct into a brs set
+%   suitable for th SoundScape Renderer. The brs data set is a matrix
+%   containing the channels for all directions. As the SoundScape Renderer is
+%   currently only working in the horizontal plane, only impulse responses from
+%   the sofa data set are used with an elevation of 0.
 %
-%   see also: set_wfs_25d
+%   See also: sofa_get_header, sofa_get_data, SOFAcalculateAPV
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -50,30 +52,30 @@ function brs = irs2brs(irs)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
-nargmax = 2;
+nargmax = 1;
 narginchk(nargmin,nargmax)
-if nargin==nargmax-1
-    conf = SFS_config;
-end
-check_irs(irs);
-isargstruct(conf);
 
 
 %% ===== Main ===========================================================
-
-% Check if only one elevation angle is given
-if length(unique(irs.apparent_elevation))~=1
-    error(['%s: Your irs set has different elevation angles, which is',...
-        ' not supported by the SoundScape Renderer.'],upper(mfilename));
+header = sofa_get_header(sofa);
+if ~strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
+    error('%s: this SOFA Convention is currently not supported.');
 end
-
-% TODO: check the order of angles
-%       I think the user have to check this by itself. Because the user
-%       could also be interested in a particular angle order
-
-for ii = 1:length(irs.apparent_azimuth)
-    brs(:,(ii-1)*2+1:ii*2) = [irs.left(:,ii) irs.right(:,ii)];
+% Get available source positions relative to listener view
+x0 = SOFAcalculateAPV(header); % / [deg deg m]
+% Find elevation = 0
+idx = find(abs(x0(:,2))<=eps);
+if length(idx)==0
+    error(['%s: Your sofa file has no data for an elevation angle of 0deg.' ...
+        ' Other angles are not supported by the SoundScape Renderer.'], ...
+        upper(mfilename));
 end
-
-
-
+% Sort azimuth angle in ascending order
+[~,sort_idx] = sort(correct_azimuth(rad(x0(idx,1))));
+% Get corresponding impulse responses
+ir = sofa_get_data(sofa,idx(sort_idx));
+% Generate brs set
+brs = zeros(sofa.API.N,2*size(ir,1));
+for ii = 1:size(ir,1)
+    brs(:,ii*2-1:ii*2) = squeeze(ir(ii,:,:))';
+end

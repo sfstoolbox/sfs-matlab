@@ -4,10 +4,20 @@ function sig = delayline(sig,dt,weight,conf)
 %   Usage: sig = delayline(sig,dt,weight,[conf])
 %
 %   Input parameter:
-%       sig     - input signal (vector)
+%       sig     - input signal (vector), can be in the form of [N C], or
+%                 [M C N], where
+%                     N ... samples
+%                     C ... channels (most probably 2)
+%                     M ... number of measurements
+%                 If the input is [M C N], the length of dt and weight has to be
+%                 1 or M*C. In the last case the first M entries in dt are
+%                 applied to the first channel and so on.
 %       dt      - delay / samples
 %       weight  - amplitude weighting factor
-%       conf    - mandatory configuration struct (see SFS_config)
+%       conf    - mandatory configuration struct (see SFS_config).
+%                 Used settings are:
+%                     conf.usefracdelay;
+%                     conf.fracdelay_method; (only if conf.usefracdelay==true)
 %
 %   Output parameter:
 %       sig     - delayed signal
@@ -17,7 +27,7 @@ function sig = delayline(sig,dt,weight,conf)
 %   The delay is implemented as integer delays or a fractional delay
 %   filter, see SFS_config.
 %
-%   see also: get_ir, driving_function_imp_wfs
+%   See also: get_ir, driving_function_imp_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -57,20 +67,33 @@ usefracdelay = conf.usefracdelay;
 
 
 %% ===== Computation =====================================================
-samples = size(sig,1);
-channels = size(sig,2);
+% Check if the impulse response is given in SOFA conventions [M C N], or in
+% usual [N C] convention, where
+% M ... number of measurements
+% C ... number of channels
+% N ... number of samples
+if ndims(sig)==3
+    [M C samples] = size(sig);
+    channels = M * C;
+    % Reshape [M C N] => [N C*M], this will be redone at the end of the file
+    sig = reshape(sig,[channels,samples])';
+    reshaped = true;
+else
+    % Assume standard format [N C]
+    [samples channels] = size(sig);
+end
+% If only single valued time delay and weight is given, create vectors
 if channels>1 && length(dt)==1, dt=repmat(dt,[1 channels]); end
 if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
 
-
 if usefracdelay
 
-    % additional configuration
+    % Additional configuration
     fracdelay_method = conf.fracdelay_method;
 
     rfactor = 100; % resample factor (1/stepsize of fractional delays)
     Lls = 30;      % length of least-squares factional delay filter
-    
+
     % Defining a temporary conf struct for recursive calling of delayline
     conf2.usefracdelay = false;
     conf2.fracdelay_method = '';
@@ -110,13 +133,13 @@ if usefracdelay
     end
 
 else
-    % from here on integer delays are considered
+    % From here on integer delays are considered
     idt = round(dt);
-    
-    % handling of too long delay values (returns vector of zeros)
+
+    % Handling of too long delay values (returns vector of zeros)
     idt(abs(idt)>samples) = samples;
-    
-    % handle positive or negative delays
+
+    % Handle positive or negative delays
     for ii=1:channels
         if idt(ii)>=0
             sig(:,ii) = [zeros(idt(ii),1); weight(ii)*sig(1:end-idt(ii),ii)];
@@ -124,4 +147,9 @@ else
             sig(:,ii) = [weight(ii)*sig(-idt(ii)+1:end,ii); zeros(-idt(ii),1)];
         end
     end
+end
+
+% Undo reshaping [N M*C] => [M C N]
+if reshaped
+    sig = reshape(sig',[M C samples]);
 end

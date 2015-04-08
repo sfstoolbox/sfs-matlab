@@ -14,7 +14,7 @@ conf.secondary_sources.number = 21;
 x0 = secondary_source_positions(conf);
 figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-draw_loudspeakers(x0,[1 1 0],conf);
+draw_loudspeakers(x0,conf);
 axis([-2 2 -2 1]);
 pause(1)
 print_png('img/secondary_sources_linear.png');
@@ -25,7 +25,7 @@ conf.secondary_sources.number = 56;
 x0 = secondary_source_positions(conf);
 figure;
 figsize(540,404,'px');
-draw_loudspeakers(x0,[1 1 0],conf);
+draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
 print_png('img/secondary_sources_circle.png');
 
@@ -35,7 +35,7 @@ conf.secondary_sources.number = 84;
 x0 = secondary_source_positions(conf);
 figure;
 figsize(540,404,'px');
-draw_loudspeakers(x0,[0 0 1],conf);
+draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
 print_png('img/secondary_sources_box.png');
 
@@ -45,7 +45,7 @@ conf.secondary_sources.number = 225;
 x0 = secondary_source_positions(conf);
 figure;
 figsize(540,404,'px');
-draw_loudspeakers(x0,[1 1 0],conf);
+draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
 print_png('img/secondary_sources_sphere.png');
 
@@ -86,7 +86,7 @@ conf.secondary_sources.x0 = [x01; x02; x03; x04];
 x0 = secondary_source_positions(conf);
 figure;
 figsize(540,404,'px');
-draw_loudspeakers(x0,[1 1 0],conf);
+draw_loudspeakers(x0,conf);
 axis([-2 2 -2.5 2.5]);
 print_png('img/secondary_sources_arbitrary.png');
 conf.plot.realloudspeakers = true;
@@ -140,6 +140,21 @@ conf.dimension = '2.5D';
 sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
 print_png('img/sound_field_nfchoa_25d.png');
 
+% 2D local WFS with box shaped array and circular virtual array
+conf = SFS_config_example;
+conf.resolution = 1000;
+conf.dimension = '2D';
+conf.secondary_sources.geometry = 'box';
+conf.secondary_sources.number = 4*56;
+conf.secondary_sources.size = 2;
+conf.localsfs.vss.size = 0.4;
+conf.localsfs.vss.center = [0 0 0];
+conf.localsfs.vss.geometry = 'circular';
+conf.localsfs.vss.number = 56;
+sound_field_mono_localwfs([-1 1],[-1 1],0,[1.0 -1.0 0],'pw',7000,conf);
+axis([-1.1 1.1 -1.1 1.1]);
+print_png('img/sound_field_localwfs_2d.png');
+
 % --- spatio-temporal snapshots of the sound field ---
 conf = SFS_config_example;
 conf.dimension = '2.5D';
@@ -185,11 +200,3 @@ legend('w pre-filter');
 xlabel('frequency / Hz');
 ylabel('magnitude / dB');
 print_png('img/impulse_response_wfs_25d_mono.png');
-
-% --- gnuplot ---
-if ~system('gnuplot -V')
-    conf = SFS_config_example;
-    conf.plot.usegnuplot = 1;
-    conf.plot.file = 'img/sound_field_nfchoa_25d_gnuplot.png';
-    sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',1000,conf);
-end

@@ -75,6 +75,12 @@ useplot = conf.plot.useplot;
 showprogress = conf.showprogress;
 % disable progress bar for sound field function
 conf.showprogress = false;
+% Check type of secondary sources to use
+if strcmp('2D',conf.dimension)
+    greens_function = 'ls';
+else
+    greens_function = 'ps';
+end
 
 
 %% ===== Computation ====================================================
@@ -93,7 +99,7 @@ for ii = 1:length(f)
     if showprogress, progress_bar(ii,length(f)); end
     D = driving_function_mono_wfs(x0,xs,src,f(ii),conf);
     % calculate sound field at the listener position
-    P = sound_field_mono(X(1),X(2),X(3),x0,'ls',D,f(ii),conf);
+    P = sound_field_mono(X(1),X(2),X(3),x0,greens_function,D,f(ii),conf);
     S(ii) = abs(P);
 end
 

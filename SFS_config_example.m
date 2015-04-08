@@ -348,10 +348,6 @@ conf.plot.usefile = false; % boolean
 % File name, if this is provided with as *.png or *.eps file, the figure is
 % plotted to the regarding file
 conf.plot.file = ''; % string
-%
-% === Gnuplot ===
-% Use gnuplot
-conf.plot.usegnuplot = false; % boolean
 
 
 %% ===== References ======================================================

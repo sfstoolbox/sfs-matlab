@@ -9,6 +9,19 @@ source (loudspeaker) setups, time snapshots of full band impulses emitted by the
 secondary source distributions, or even generate Binaural Room Scanning (BRS)
 stimuli sets in order to simulate WFS with the SoundScape Renderer (SSR).
 
+### Table of Contents
+
+**[Installation](#installation)**  
+**[Requirements](#requirements)**  
+**[Usage](#usage)**  
+  [Secondary Sources](#secondary-sources)  
+  [Simulate Monochromatic Sound Fields](#simulate-monochromatic-sound-fields)  
+  [Simulate Time Snapshots of Sound Fields](#simulate-time-snapshots-of-sound-fields)  
+  [Make Binaural Simulations of Your Systems](#make-binaural-simulations-of-your-systems)  
+  [Small helper functions](#small-helper-functions)  
+  [Plotting with Matlab or gnuplot](#plotting-with-matlab-or-gnuplot)  
+**[Credits and License](#credits-and-license)**
+
 
 Installation
 ------------
@@ -57,7 +70,7 @@ conf = SFS_config_example;
 conf.secondary_sources.size = 3;
 ```
 
-#### linear array
+#### Linear Array
 
 ```Matlab
 conf = SFS_config_example;
@@ -66,14 +79,14 @@ conf.secondary_sources.number = 21;
 x0 = secondary_source_positions(conf);
 figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-draw_loudspeakers(x0,[1 1 0],conf);
+draw_loudspeakers(x0,conf);
 axis([-2 2 -2 1]);
 %print_png('img/secondary_sources_linear.png');
 ```
 
 ![Image](doc/img/secondary_sources_linear.png)
 
-#### circular array
+#### Circular Array
 
 ```Matlab
 conf = SFS_config_example;
@@ -82,14 +95,14 @@ conf.secondary_sources.number = 56;
 x0 = secondary_source_positions(conf);
 figure;
 figsize(540,404,'px');
-draw_loudspeakers(x0,[1 1 0],conf);
+draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
 %print_png('img/secondary_sources_circle.png');
 ```
 
 ![Image](doc/img/secondary_sources_circle.png)
 
-#### box shaped array
+#### Box Shaped Array
 
 ```Matlab
 conf = SFS_config_example;
@@ -98,14 +111,14 @@ conf.secondary_sources.number = 84;
 x0 = secondary_source_positions(conf);
 figure;
 figsize(540,404,'px');
-draw_loudspeakers(x0,[0 0 1],conf);
+draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
 %print_png('img/secondary_sources_box.png');
 ```
 
 ![Image](doc/img/secondary_sources_box.png)
 
-#### spherical array
+#### Spherical Array
 
 For a spherical array you need a grid to place the secondary sources on the
 sphere. At the moment we provide grids with the Toolbox, that can be find here:
@@ -128,14 +141,14 @@ conf.secondary_sources.number = 225;
 x0 = secondary_source_positions(conf);
 figure;
 figsize(540,404,'px');
-draw_loudspeakers(x0,[1 1 0],conf);
+draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
 %print_png('img/secondary_sources_sphere.png');
 ```
 
 ![Image](doc/img/secondary_sources_sphere.png)
 
-#### arbitrary shaped arrays
+#### Arbitrary Shaped Arrays
 
 You can create arbitrarily shaped arrays by setting
 <code>conf.secondary_sources.geometry</code> to 'custom' and define the values
@@ -186,7 +199,7 @@ conf.secondary_sources.x0 = [x01; x02; x03; x04];
 x0 = secondary_source_positions(conf);
 figure;
 figsize(540,404,'px');
-draw_loudspeakers(x0,[1 1 0],conf);
+draw_loudspeakers(x0,conf);
 axis([-2 2 -2.5 2.5]);
 %print_png('img/secondary_sources_arbitrary.png');
 ```
@@ -194,7 +207,7 @@ axis([-2 2 -2.5 2.5]);
 ![Image](doc/img/secondary_sources_arbitrary.png)
 
 
-#### plot loudspeaker symbols
+#### Plot Loudspeaker Symbols
 
 For two dimensional setups you can plot the secondary sources with loudspeaker
 symbols, for example the following will replot the last array.
@@ -211,7 +224,7 @@ axis([-2 2 -2.5 2.5]);
 ![Image](doc/img/secondary_sources_arbitrary_realloudspeakers.png)
 
 
-### Simulate monochromatic sound fields
+### Simulate Monochromatic Sound Fields
 
 With the files in <code>SFS_monochromatic</code> you can simulate a
 monochromatic sound field in a specified area for different techniques like WFS
@@ -295,7 +308,7 @@ plot_sound_field(P,x,y,z,x0_all,conf);
 ![Image](doc/img/sound_field_wfs_25d_with_all_sources.png)
 
 
-#### Near-field compensated higher order Ambisonics
+#### Near-Field Compensated Higher Order Ambisonics
 
 In the following we will simulate the field of a virtual plane wave with a frequency
 of 800 Hz traveling into the direction (0 -1 0), synthesized with 2.5D NFC-HOA.
@@ -309,6 +322,40 @@ sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
 ```
 
 ![Image](doc/img/sound_field_nfchoa_25d.png)
+
+
+#### Local Wave Field Synthesis
+
+In Near-Field Compensated Higher Order Ambisonics aliasing frequency in a small
+array inside the listening area can be increased by limiting the used order. A
+similar outcome can be achoieved in Wave Field Synthesis by applying so called
+local Wave Field Synthesis. In this case the original loudspeaker array is
+driven by Wave Field Synthesis to create a virtual loudspeaker array consisting
+of focused sources which can then be used to create the desired sound field in a
+small area.
+The settings are the same as for Wave Field Synthesis, but a new struct
+<code>conf.localsfs</code> has to be filled out, which for example provides the
+settings for the desired position and form of the local area with higher
+aliasing frequency.
+
+```Matlab
+conf = SFS_config_example;
+conf.resolution = 1000;
+conf.dimension = '2D';
+conf.secondary_sources.geometry = 'box';
+conf.secondary_sources.number = 4*56;
+conf.secondary_sources.size = 2;
+conf.localsfs.vss.size = 0.4;
+conf.localsfs.vss.center = [0 0 0];
+conf.localsfs.vss.geometry = 'circular';
+conf.localsfs.vss.number = 56;
+% sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf);
+sound_field_mono_localwfs([-1 1],[-1 1],0,[1.0 -1.0 0],'pw',7000,conf);
+axis([-1.1 1.1 -1.1 1.1]);
+%print_png('img/sound_field_localwfs_2d.png');
+```
+
+![Image](doc/img/sound_field_localwfs_2d.png)
 
 
 #### Stereo
@@ -328,7 +375,7 @@ sound_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800,conf)
 ![Image](doc/img/sound_field_stereo.png)
 
 
-### Simulate time snapshots of sound fields
+### Simulate Time Snapshots of Sound Fields
 
 With the files in <code>SFS_time_domain</code> you can simulate snapshots in
 time of an impulse originating from your WFS or NFC-HOA system.
@@ -363,7 +410,7 @@ plot_sound_field(p,x,y,z,x0,conf);
 ![Image](doc/img/sound_field_imp_nfchoa_25d_dB.png)
 
 
-### Make binaural simulations of your systems
+### Make Binaural Simulations of Your Systems
 
 If you have a set of head-related transfer functions (HRTFs) you can simulate
 the ear signals reaching a listener sitting at a given point in the listening
@@ -390,8 +437,13 @@ with the impulse response by the <code>auralize_ir()</code> function.
 
 ```Matlab
 conf = SFS_config_example;
+<<<<<<< HEAD
 hrtf = SOFAload('QU_KEMAR_anechoic_3m.sofa');
 ir = get_ir(hrtf,[0 0 0],[0 0],[rad(30) 0 3],conf);
+=======
+irs = read_irs('QU_KEMAR_anechoic_3m.mat',conf);
+ir = get_ir(irs,[rad(30) 0 3],'spherical',conf);
+>>>>>>> master
 nsig = randn(44100,1);
 sig = auralize_ir(ir,nsig,1,conf);
 sound(sig,conf.fs);
@@ -491,24 +543,13 @@ create noise signal <code>noise()</code>, rotation matrix
 
 The Toolbox provides you with a variety of functions for plotting your simulated
 sound fields <code>plot_sound_field()</code> and adding loudspeaker symbols to the
-figure <code>draw_loudspeakers</code>. If you have gnuplot installed, you can
-even use it with the Toolbox by setting <code>conf.plot.usegnuplot =
-true;</code>.
-
-The following code reproduces the monochromatic sound field for NFC-HOA from
-above, but this time using gnuplot for plotting. The only difference is, that
-you cannot do the plotting to png afterwards like in Matlab, but have to specify
-the output file before. Note, that the same will work with Matlab.
-
-```Matlab
-conf = SFS_config_example;
-conf.plot.colormap = 'gray';
-conf.plot.usegnuplot = 1;
-conf.plot.file = 'img/sound_field_nfchoa_25d_gnuplot.png';
-sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',1000,conf);
-```
-
-![Image](doc/img/sound_field_nfchoa_25d_gnuplot.png)
+figure <code>draw_loudspeakers</code>.
+If you have gnuplot installed, you can use the functions <code>gp_save_matrix.m</code>
+and <code>gp_save_loudspeakers.m</code> to save your data in a way that it can
+be used with gnuplot. An example use case can be found [at this plot of a plane
+wave](https://github.com/hagenw/phd-thesis/tree/master/02_theory_of_sound_field_synthesis/fig2_04)
+which includes the Matlab/Octave code to generate the data and the gnuplot
+script for plotting it.
 
 
 Credits and License

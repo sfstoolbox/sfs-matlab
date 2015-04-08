@@ -1,7 +1,9 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
-1.1.0 ()
+1.1.0 (2. April 2015)
 
+    - fix amplitude bug in get_ir() and ir_generic()
+    - remove direct gnuplot plotting
     - add support for local Wave Field Synthesis
     - the length of the dirac impulse response is now an option for dummy_irs()
     - fix iseven(), isodd() for very large numbers

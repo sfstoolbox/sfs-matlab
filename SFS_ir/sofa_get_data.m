@@ -10,12 +10,12 @@ function ir = sofa_get_data(sofa,idx)
 %   Output parameters:
 %       ir      - impulse response (nx2)
 %
-%   SOFA_GET_DATA(sofa,idx) returns the single impulse respomse of the given
-%   #SOFA file or struct, specified by idx.
+%   SOFA_GET_DATA(sofa,idx) returns the single impulse response of the given
+%   SOFA file or struct, specified by idx.
 %   For the struct the SOFA file has to loaded before with SOFAload().
 %   For a description of the SOFA file format see: http://sofaconventions.org
 %
-%   see also: sofa_get_header, get_ir, SOFAload 
+%   see also: sofa_get_header, get_ir, SOFAload
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -62,7 +62,7 @@ if ~isstruct(sofa) && exist(sofa,'file')
     file = sofa;
     % FIXME: this is currently not working under Octave, because it will
     % always return [1 idx] data
-    sofa = SOFAload(file,[idx idx]);
+    sofa = SOFAload(file,[idx 1]);
     ir = squeeze(sofa.Data.IR)';
 elseif isstruct(sofa) && isfield(sofa.Data,'IR')
     ir = sofa.Data.IR(idx,:,:);

@@ -13,7 +13,7 @@ function header = sofa_get_header(sofa)
 %   For the struct the SOFA file has to loaded before with SOFAload().
 %   For a description of the SOFA file format see: http://sofaconventions.org
 %
-%   see also: sofa_get_data, get_ir, SOFAload 
+%   see also: sofa_get_data, sofa_is_file, get_ir, SOFAload 
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -56,12 +56,9 @@ narginchk(nargmin,nargmax)
 
 %% ===== Computation ====================================================
 % Get only the metadata of the SOFA data set
-if ~isstruct(sofa) && exist(sofa,'file')
-    % Get metadata
+if sofa_is_file(sofa)
     header = SOFAload(sofa,'nodata');
-elseif isstruct(sofa) && isfield(sofa.Data,'IR')
+else
     header = sofa;
     header.Data = rmfield(sofa.Data,'IR');
-else
-    error('%s: sofa has to be a file or a SOFA struct.',upper(mfilename));
 end

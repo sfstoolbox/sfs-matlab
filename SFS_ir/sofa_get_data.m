@@ -1,21 +1,29 @@
 function ir = sofa_get_data(sofa,idx)
-%SOFA_GET_DATA returns a single impulse response from a SOFA file or struct
+%SOFA_GET_DATA returns impulse responses from a SOFA file or struct
 %
-%   Usage: ir = sofa_get_data(sofa,idx)
+%   Usage: ir = sofa_get_data(sofa,[idx])
 %
 %   Input parameters:
 %       sofa    - impulse response data set (SOFA struct/file)
-%       idx     - index of the single impulse response that should be returned
+%       idx     - index of the single impulse responses that should be returned
+%                 idx could be a single value, then only one impulse response
+%                 will be returned, or it can be a vector then all impulse
+%                 responses for the corresponding index positions will be
+%                 returned.
+%                 If no index is specified all data will be returned.
 %
 %   Output parameters:
-%       ir      - impulse response (nx2)
+%       ir      - impulse response (M,2,N), where
+%                   M ... number of impulse responses
+%                   N ... samples
 %
-%   SOFA_GET_DATA(sofa,idx) returns the single impulse response of the given
-%   SOFA file or struct, specified by idx.
+%   SOFA_GET_DATA(sofa,idx) returns impulse response of the given
+%   SOFA file or struct, specified by idx. If no idx is specified all data
+%   contained in sofa is returned.
 %   For the struct the SOFA file has to loaded before with SOFAload().
 %   For a description of the SOFA file format see: http://sofaconventions.org
 %
-%   see also: sofa_get_header, get_ir, SOFAload
+%   see also: sofa_get_header, sofa_is_file, get_ir, SOFAload
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -51,22 +59,31 @@ function ir = sofa_get_data(sofa,idx)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
+nargmin = 1;
 nargmax = 2;
 narginchk(nargmin,nargmax)
+if nargin==nargmax-1
+    idx = [];
+else
+    isargvector(idx);
+end
 
 
 %% ===== Computation ====================================================
-% Check if we have a file or struct
-if ~isstruct(sofa) && exist(sofa,'file')
-    file = sofa;
-    % FIXME: this is currently not working under Octave, because it will
-    % always return [1 idx] data
-    sofa = SOFAload(file,[idx 1]);
-    ir = squeeze(sofa.Data.IR)';
-elseif isstruct(sofa) && isfield(sofa.Data,'IR')
-    ir = sofa.Data.IR(idx,:,:);
-    ir = squeeze(ir)';
+if length(idx)==0
+    if sofa_is_file(sofa)
+        sofa = SOFAload(sofa);
+    end
+    ir = sofa.Data.IR;
 else
-    error('%s: sofa has to be a file or a SOFA struct.',upper(mfilename));
+    header = sofa_get_header(sofa);
+    if sofa_is_file(sofa)
+        ir = zeros(length(idx),2,header.API.N);
+        for ii=1:length(idx)
+            tmp = SOFAload(sofa,[idx(ii) 1]);
+            ir(ii,:,:) = tmp.Data.IR;
+        end
+    else
+        ir = sofa.Data.IR(idx,:,:);
+    end
 end

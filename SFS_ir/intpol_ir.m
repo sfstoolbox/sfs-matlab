@@ -1,28 +1,29 @@
-function ir = intpol_ir(varargin)
+function ir_new = intpol_ir(ir,x0,xs)
 %INTPOL_IR interpolates three given IRs for the given angle
 %
-%   Usage: ir = intpol_ir(ir1,ir2,[ir3],x0,xs)
+%   Usage: ir = intpol_ir(ir,x0,xs)
 %
 %   Input parameters:
-%       ir1     - IR 1
-%       ir2     - IR 2
-%       ir3     - IR 3 (optional)
+%       ir      - matrix containing impulse responses in the form [M C N], where
+%                     M ... Number of measurements (2<=M<=3)
+%                     C ... Number of channels
+%                     N ... Number of samples
 %       x0      - matrix containing positions of single impulse
-%                 responses / [rad rad]
-%       xs      - desired position after interpolation / [rad rad]
+%                 responses [2 M] / (rad, rad)
+%       xs      - desired position after interpolation [2 1] / (rad, rad)
 %
 %   Output parameters:
-%       ir      - IR for the given position
+%       ir      - impulse response for the given position [1 C N]
 %
-%   INTPOL_IR(ir1,ir2,ir3,x0,xs)
-%   interpolates the three given IRs ir1,ir2 and ir3 with their corresponding 
-%   angles x0 for the given angles xs and returns an interpolated impulse
-%   response.
-%   Note that the given parameter are not checked if they have all the right
+%   INTPOL_IR(ir,x0,xs)
+%   interpolates the two to three given impulse responses from ir with their
+%   corresponding angles x0 for the given angles xs and returns an interpolated
+%   impulse response.
+%   Note that the given parameter are not checked if they have all the correct
 %   dimensions in order to save computational time, because this function could
 %   be called quiet often.
 %
-%   see also: get_ir, shorten_ir, SOFAload
+%   See also: get_ir, shorten_ir, SOFAload
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -57,27 +58,21 @@ function ir = intpol_ir(varargin)
 %*****************************************************************************
 
 
-%% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
+%% ===== Checking of input parameters ===================================
+nargmin = 3;
+nargmax = 3;
 narginchk(nargmin,nargmax);
+
 
 %% ===== Computation ====================================================
 % --- 1D interpolation ---
-if nargin==4
-    ir1 = varargin{1};
-    ir2 = varargin{2};
-    x0 = varargin{3};
-    xs = varargin{4};
-    % linear interpolation
-    ir = ir1 + (ir2-ir1) * norm(xs-x0(:,1))/norm(x0(:,2)-x0(:,1));
-else
-    ir1 = varargin{1};
-    ir2 = varargin{2};
-    ir3 = varargin{3};
-    x0 = varargin{4};
-    xs = varargin{5};
-    % linear interpolation
+if size(ir,1)==2
+    % Linear interpolation
+    ir_new = ir(1,:,:) + (ir(2,:,:)-ir(1,:,:)) * ...
+         norm(xs-x0(:,1)) / norm(x0(:,2)-x0(:,1));
+% --- 2D interpolation ---
+elseif size(ir,1)==3
+    % Linear interpolation (compare Vector Based Amplitude Panning)
     %
     %           x0(:,ii) xs
     % w(ii) = --------------
@@ -91,5 +86,7 @@ else
         error('%s: one of your interpolation weights is <0.',upper(mfilename));
     end
     % calculate desired ir with linear combination of ir1,ir2 and ir3
-    ir = w(1)*ir1 + w(2)*ir2 + w(3)*ir3;
+    ir_new = w(1)*ir(1,:,:) + w(2)*ir(2,:,:) + w(3)*ir(3,:,:);
+else
+    error('%s: size(ir,1) has to be 2 or 3.',upper(mfilename));
 end

@@ -117,12 +117,6 @@ if ~any(strcmp(header.GLOBAL_SOFAConventions,SOFA_conventions))
     error('%s: this SOFA Convention is currently not supported.');
 end
 
-% === Internal variables ===
-% Calculate the apparent azimuth, elevation and distance
-x0 = SOFAcalculateAPV(header); % / [deg deg m]
-% Convert angles to radian
-x0(:,1:2) = rad(x0(:,1:2));
-
 % === Coordinate system conversion ===
 if strcmp('cartesian',coordinate_system)
     [xs(1),xs(2),xs(3)] = cart2sph(xs(1),xs(2),xs(3));
@@ -133,14 +127,14 @@ end
 % Store desired apparent position of source
 xs = [correct_azimuth(xs(1)-X(1)-head_orientation(1)) ...
       correct_elevation(xs(2)-X(2)-head_orientation(2)) ...
-      abs(X(3)-xs(3))]';
+      abs(X(3)-xs(3))];
 
 % === Get Impulse Response ===
 if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     % If we have free field HRTFs there is no difference between changing head
     % orientation or source poition. That means all we need is given by the
     % apparent source position stored in x0.
-    ir = get_single_ir(sofa,x0,xs,conf);
+    ir = get_single_ir(sofa,xs,conf);
 
 elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)
     % For a given BRIR recording we are searching first for the correct head
@@ -164,7 +158,7 @@ elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)
     end
     % Now, search for the correct source position
     ir = get_single_ir(sofa,x0,xs,conf);
-    
+
 end
 end
 
@@ -191,8 +185,8 @@ function ir = correct_radius(ir,ir_distance,r,conf)
     % provided. On the downside this would lead to a more complicated code base.
     %
     % Stop extrapolation for distances larger than 10m
-    if ir_distance>10
-        ir_distance = 10;
+    if any(ir_distance>10)
+        ir_distance = min(ir_distance,10);
         warning(['%s: Your desired radius is larger than 10m, but we will ', ...
             'only extrapolate up to 10m. All larger radii will be set to ', ...
             '10m.'],upper(mfilename));
@@ -213,10 +207,10 @@ function ir = correct_radius(ir,ir_distance,r,conf)
     delay = (r-ir_distance)/conf.c*conf.fs; % / samples
     % Amplitude weighting (point source model)
     % This gives weight=1 for r==ir_distance
-    weight = ir_distance/r;
-    if abs(delay)>size(ir,1)
+    weight = ir_distance./r;
+    if abs(delay)>size(ir,3)
         error(['%s: your impulse response is to short for a desired ', ...
-            'delay of %i samples.'],upper(mfilename),delay);
+            'delay of %.1f samples.'],upper(mfilename),delay);
     end
     % Apply delay and weighting
     ir = delayline(ir,[delay+zero_padding; delay+zero_padding], ...
@@ -230,14 +224,11 @@ function ir = get_ir_from_sofa(sofa,idx,x0,xs,conf)
     ir = correct_radius(ir,x0(idx,3),xs(3),conf);
 end
 
-function ir = get_single_ir(sofa,x0,xs,conf)
+function ir = get_single_ir(sofa,xs,conf)
     % GET_SINGLE_IR returns the desired impulse response from the given ones
     %
     % Input parameters:
     %   sofa    - SOFA file or struct
-    %   x0      - positions of the impulse responses stored in sofa. x0 is the
-    %             relative position to [0 0 0] and given in spherical
-    %             coordinates / [rad rad m].
     %   xs      - position of the desired impulse response. xs is relative to
     %             [0 0 0] and given in spherical coordinates / [rad rad m].
     %   conf    - SFS configuration struct, specifying if interpolation between
@@ -246,21 +237,25 @@ function ir = get_single_ir(sofa,x0,xs,conf)
     %
     % Output parameters
     %   ir      - single impulse response
-    
+
     % === Configuration ===
     useinterpolation = conf.ir.useinterpolation;
     % Precission of the wanted angle. If an impulse response within the given
     % precission could be found no interpolation is applied.
     prec = 0.001; % ~ 0.05 deg
 
+    % === Computation ===
+    % Calculate the apparent azimuth, elevation and distance
+    x0 = SOFAcalculateAPV(sofa_get_header(sofa)); % / [deg deg m]
+    % Convert angles to radian
+    x0(:,1:2) = rad(x0(:,1:2));
     % Find the three nearest positions to the desired one (incorporating only angle
     % values and disregarding the radius)
     % FIXME: try to include radius here
     [neighbours,idx] = findnearestneighbour(x0(:,1:2)',xs(1:2),3);
-
     % Check if we have found directly the desired point or have to interpolate
     % bewteen different impulse responses
-    if norm(neighbours(:,1)-xs)<prec || ~useinterpolation
+    if norm(neighbours(:,1)-xs(1:2)')<prec || ~useinterpolation
         disp('No interpolaton.');
         % Return the first nearest neighbour
         ir = get_ir_from_sofa(sofa,idx(1),x0,xs,conf);
@@ -275,9 +270,8 @@ function ir = get_single_ir(sofa,x0,xs,conf)
                  'and (%.1f,%.1f) deg.'], ...
                 deg(x0(idx(1),1)), deg(x0(idx(1),2)), ...
                 deg(x0(idx(2),1)), deg(x0(idx(2),2)));
-            ir1 = get_ir_from_sofa(sofa,idx(1),x0,xs,conf);
-            ir2 = get_ir_from_sofa(sofa,idx(2),x0,xs,conf);
-            ir = intpol_ir(ir1,ir2,neighbours(:,1:2),xs(1:2));
+            ir = get_ir_from_sofa(sofa,idx(1:2),x0,xs,conf);
+            ir = intpol_ir(ir,neighbours(:,1:2),xs(1:2)');
         else
             % --- 2D interpolation ---
             warning('SFS:irs_intpol3D',...
@@ -286,10 +280,8 @@ function ir = get_single_ir(sofa,x0,xs,conf)
                 deg(x0(idx(1),1)), deg(x0(idx(1),2)), ...
                 deg(x0(idx(2),1)), deg(x0(idx(2),2)), ...
                 deg(x0(idx(3),1)), deg(x0(idx(3),2)));
-            ir1 = get_ir_from_sofa(sofa,idx(1),x0,r,conf);
-            ir2 = get_ir_from_sofa(sofa,idx(2),x0,r,conf);
-            ir3 = get_ir_from_sofa(sofa,idx(3),x0,r,conf);
-            ir = intpot_ir(ir1,ir2,ir3,[neighbours; 1 1 1],[xs(1:2);1]);
+            ir = get_ir_from_sofa(sofa,idx(1:3),x0,r,conf);
+            ir = intpot_ir(ir,neighbours(:,1:3),xs');
         end
     end
 end

@@ -89,12 +89,11 @@ if usefracdelay
         idt = floor(dt);
         sig = delayline(sig,idt,weight,conf2);
         if abs(dt-idt)>0
-            h = zeros(channels,1);
             for ii=1:channels
-                h(ii) = hgls2(Lls,dt(ii)-idt(ii),0.90);
+                h = hgls2(Lls,dt(ii)-idt(ii),0.90);
+                tmp = convolution(sig(:,ii),h);
+                sig(:,ii) = tmp(Lls/2:end-Lls/2);
             end
-            sig = convolution(sig,h);
-            sig = sig(Lls/2:end-Lls/2,:);
         end
 
     case 'interp1'

@@ -90,7 +90,6 @@ if usefracdelay
 
     % Additional configuration
     fracdelay_method = conf.fracdelay_method;
-
     rfactor = 100; % resample factor (1/stepsize of fractional delays)
     Lls = 30;      % length of least-squares factional delay filter
 
@@ -105,19 +104,14 @@ if usefracdelay
        sig = resample(sig2,1,rfactor);
 
     case 'least_squares'
-        if ~exist('hgls2','file')
-            error(['%s: the least_squares methods needs the hgls2 function ',...
-                'which you have to look for in the web ;)']);
-        end
         idt = floor(dt);
         sig = delayline(sig,idt,weight,conf2);
         if abs(dt-idt)>0
-            h = zeros(channels,1);
             for ii=1:channels
-                h(ii) = hgls2(Lls,dt(ii)-idt(ii),0.90);
+                h = general_least_squares(Lls,dt(ii)-idt(ii),0.90);
+                tmp = convolution(sig(:,ii),h);
+                sig(:,ii) = tmp(Lls/2:end-Lls/2);
             end
-            sig = convolution(sig,h);
-            sig = sig(Lls/2:end-Lls/2,:);
         end
 
     case 'interp1'

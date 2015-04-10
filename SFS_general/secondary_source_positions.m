@@ -226,8 +226,12 @@ elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)
 elseif strcmp('custom',geometry)
     % Custom geometry definedy by conf.secondary_sources.x0.
     % This could be in the form of a n x 7 matrix, where n is the number of
-    % secondary sources.
-    x0 = conf.secondary_sources.x0;
+    % secondary sources or as a SOFA file/struct.
+    if ischar(conf.secondary_sources.x0) || isstruct(conf.secondary_sources.x0)
+        x0 = sofa_get_secondary_sources(conf.secondary_sources.x0);
+    else
+        x0 = conf.secondary_sources.x0;
+    end
     isargsecondarysource(x0);
 else
     error('%s: %s is not a valid array geometry.',upper(mfilename),geometry);

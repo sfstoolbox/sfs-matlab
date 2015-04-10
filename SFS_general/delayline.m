@@ -67,10 +67,9 @@ if usefracdelay
 
     % additional configuration
     fracdelay_method = conf.fracdelay_method;
-
     rfactor = 100; % resample factor (1/stepsize of fractional delays)
     Lls = 30;      % length of least-squares factional delay filter
-    
+
     % Defining a temporary conf struct for recursive calling of delayline
     conf2.usefracdelay = false;
     conf2.fracdelay_method = '';
@@ -82,15 +81,11 @@ if usefracdelay
        sig = resample(sig2,1,rfactor);
 
     case 'least_squares'
-        if ~exist('hgls2','file')
-            error(['%s: the least_squares methods needs the hgls2 function ',...
-                'which you have to look for in the web ;)']);
-        end
         idt = floor(dt);
         sig = delayline(sig,idt,weight,conf2);
         if abs(dt-idt)>0
             for ii=1:channels
-                h = hgls2(Lls,dt(ii)-idt(ii),0.90);
+                h = general_least_squares(Lls,dt(ii)-idt(ii),0.90);
                 tmp = convolution(sig(:,ii),h);
                 sig(:,ii) = tmp(Lls/2:end-Lls/2);
             end

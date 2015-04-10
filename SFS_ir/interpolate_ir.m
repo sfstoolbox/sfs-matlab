@@ -1,7 +1,7 @@
-function ir_new = intpol_ir(ir,x0,xs)
-%INTPOL_IR interpolates three given IRs for the given angle
+function ir_new = interpolate_ir(ir,x0,xs,conf)
+%INTERPOLATE_IR interpolates three given IRs for the given angle
 %
-%   Usage: ir = intpol_ir(ir,x0,xs)
+%   Usage: ir = interpolate_ir(ir,x0,xs)
 %
 %   Input parameters:
 %       ir      - matrix containing impulse responses in the form [M C N], where
@@ -15,7 +15,7 @@ function ir_new = intpol_ir(ir,x0,xs)
 %   Output parameters:
 %       ir      - impulse response for the given position [1 C N]
 %
-%   INTPOL_IR(ir,x0,xs)
+%   INTERPOLATE_IR(ir,x0,xs)
 %   interpolates the two to three given impulse responses from ir with their
 %   corresponding angles x0 for the given angles xs and returns an interpolated
 %   impulse response.
@@ -23,7 +23,7 @@ function ir_new = intpol_ir(ir,x0,xs)
 %   dimensions in order to save computational time, because this function could
 %   be called quiet often.
 %
-%   See also: get_ir, shorten_ir, SOFAload
+%   See also: get_ir, interpolation
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -59,34 +59,44 @@ function ir_new = intpol_ir(ir,x0,xs)
 
 
 %% ===== Checking of input parameters ===================================
-nargmin = 3;
-nargmax = 3;
+nargmin = 4;
+nargmax = 4;
 narginchk(nargmin,nargmax);
 
 
+%% ===== Configuration ==================================================
+useinterpolation = conf.ir.useinterpolation;
+% Precission of the wanted angle. If an impulse response within the given
+% precission could be found no interpolation is applied.
+prec = 0.001; % ~ 0.05 deg
+
+
 %% ===== Computation ====================================================
-% --- 1D interpolation ---
-if size(ir,1)==2
-    % Linear interpolation
-    ir_new = ir(1,:,:) + (ir(2,:,:)-ir(1,:,:)) * ...
-         norm(xs-x0(:,1)) / norm(x0(:,2)-x0(:,1));
-% --- 2D interpolation ---
-elseif size(ir,1)==3
-    % Linear interpolation (compare Vector Based Amplitude Panning)
-    %
-    %           x0(:,ii) xs
-    % w(ii) = --------------
-    %         |x0(:,ii)||xs|
-    %
-    w = vector_product(x0,repmat(xs',[1 3]),1) / ...
-        ( vector_norm(x0,1)./norm(xs));
-    % The interpolation with 3 points hasn't been checked yet, hence we are
-    % including a checking of the w parameters
-    if any(w<0)
-        error('%s: one of your interpolation weights is <0.',upper(mfilename));
-    end
-    % calculate desired ir with linear combination of ir1,ir2 and ir3
-    ir_new = w(1)*ir(1,:,:) + w(2)*ir(2,:,:) + w(3)*ir(3,:,:);
+% Check if we have found directly the desired point or have to interpolate
+% bewteen different impulse responses
+if norm(x0(:,1)-xs(1:2)')<prec || ~useinterpolation
+    disp('No interpolaton.');
+    % Return the first nearest neighbour
+    ir_new = ir(1,:,:);
 else
-    error('%s: size(ir,1) has to be 2 or 3.',upper(mfilename));
+    % === IR interpolation ===
+    % Check if we have to interpolate in one or two dimensions
+    if norm(x0(1,1)-x0(1,2))<prec || norm(x0(2,1)-x0(2,2))<prec
+        % --- 1D interpolation ---
+        warning('SFS:irs_intpol',...
+            ['doing 1D IR interpolation between (%.1f,%.1f) deg ', ...
+             'and (%.1f,%.1f) deg.'], ...
+            deg(x0(1,1)), deg(x0(1,2)), ...
+            deg(x0(2,1)), deg(x0(2,2)));
+        ir = interpolation(ir(1:2,:,:),x0(1:2,:),xs(1:2));
+    else
+        % --- 2D interpolation ---
+        warning('SFS:irs_intpol3D',...
+            ['doing 2D IR interpolation between (%.1f,%.1f) deg, ', ...
+             '(%.1f,%.1f) deg and (%.1f,%.1f) deg.'], ...
+            deg(x0(1,1)), deg(x0(1,2)), ...
+            deg(x0(2,1)), deg(x0(2,2)), ...
+            deg(x0(3,1)), deg(x0(3,2)));
+        ir_new = interpolation(ir,x0,xs);
+    end
 end

@@ -109,13 +109,14 @@ header = sofa_get_header(sofa);
 % === SOFA checking ===
 % Conventions handled so far. For a list of SOFA conventions, see:
 % http://www.sofaconventions.org/mediawiki/index.php/SOFA_conventions
-SOFA_conventions = { ...
-    'SimpleFreeFieldHRIR', ...
-    'SingleRoomDRIR', ...
-    };
-if ~any(strcmp(header.GLOBAL_SOFAConventions,SOFA_conventions))
-    error('%s: this SOFA Convention is currently not supported.');
-end
+%SOFA_conventions = { ...
+%    'SimpleFreeFieldHRIR', ...
+%    'SingleRoomDRIR', ...
+%    'MultiSpeakerBRIR', ...
+%    };
+%if ~any(strcmp(header.GLOBAL_SOFAConventions,SOFA_conventions))
+%    error('%s: this SOFA Convention is currently not supported.');
+%end
 
 % === Coordinate system conversion ===
 if strcmp('cartesian',coordinate_system)
@@ -131,10 +132,13 @@ xs = [correct_azimuth(xs(1)-X(1)-head_orientation(1)) ...
 
 % === Get Impulse Response ===
 if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
-    % If we have free field HRTFs there is no difference between changing head
-    % orientation or source poition. That means all we need is given by the
-    % apparent source position stored in x0.
-    ir = get_single_ir(sofa,xs,conf);
+    % In 'SimpleFreeFieldHRIR' the head is always held fix and only the source
+    % is moved, so we are getting only the source positions.
+    x0 = sofa_get_secondary_sources(header);
+    % Find nearest neighbours
+    [neighbours,idx] = findnearestneighbour(x0(:,1:2)',xs(1:2),3);
+    ir = sofa_get_data(sofa,idx);
+    ir = interpolate_ir(ir,neighbours,xs(1:2),conf);
 
 elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)
     % For a given BRIR recording we are searching first for the correct head
@@ -160,6 +164,27 @@ elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)
     % Now, search for the correct source position
     ir = get_single_ir(sofa,x0,xs,conf);
 
+elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
+    % TODO: if we want to include interpolation, we have to do for both head
+    % orientation and secondary source positions.
+    % For an easy start I will only
+    % include it for the head orientation and use nearest neighbours search for
+    % the secondary source position.
+    %
+    % Find the nearest secondary source
+    x0 = sofa_get_secondary_sources(header);
+    [~,idx_emitter] = findnearestneighbour(x0(:,1:3)',xs,1);
+    % Find nearest head orientation in the horizontal plane
+    [phi,theta] = sofa_get_head_orientations(header);
+    [~,idx_head] = findnearestneighbour([phi theta]',head_orientation,1);
+    % Get the impulse response and reshape to [M R N] as we have only one
+    % emitter
+    ir = sofa_get_data_fire(sofa,idx_head,idx_emitter);
+    ir = reshape(ir,[size(ir,1) size(ir,2) size(ir,4)]);
+
+else
+    error('%s: %s convention is currently not supported.', ...
+        upper(mfilename),header.GLOBAL_SOFAConventions);
 end
 end
 
@@ -272,7 +297,7 @@ function ir = get_single_ir(sofa,xs,conf)
                 deg(x0(idx(1),1)), deg(x0(idx(1),2)), ...
                 deg(x0(idx(2),1)), deg(x0(idx(2),2)));
             ir = get_ir_from_sofa(sofa,idx(1:2),x0,xs,conf);
-            ir = intpol_ir(ir,neighbours(:,1:2),xs(1:2)');
+            ir = interpolate_ir(ir,neighbours(:,1:2),xs(1:2)');
         else
             % --- 2D interpolation ---
             warning('SFS:irs_intpol3D',...
@@ -282,7 +307,7 @@ function ir = get_single_ir(sofa,xs,conf)
                 deg(x0(idx(2),1)), deg(x0(idx(2),2)), ...
                 deg(x0(idx(3),1)), deg(x0(idx(3),2)));
             ir = get_ir_from_sofa(sofa,idx(1:3),x0,r,conf);
-            ir = intpot_ir(ir,neighbours(:,1:3),xs');
+            ir = interpolate_ir(ir,neighbours(:,1:3),xs');
         end
     end
 end

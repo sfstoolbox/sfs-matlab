@@ -58,7 +58,8 @@ narginchk(nargmin,nargmax)
 %% ===== Main ===========================================================
 if ~isstruct(sofa) && exist(sofa,'file')
     boolean = true;
-elseif isstruct(sofa) && isfield(sofa.Data,'IR')
+elseif isstruct(sofa) && isfield(sofa,'GLOBAL_Conventions') && ...
+       strcmp('SOFA',sofa.GLOBAL_Conventions)
     boolean = false;
 else
     error('%s: sofa has to be a file or a SOFA struct.',upper(mfilename));

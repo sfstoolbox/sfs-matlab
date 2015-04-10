@@ -60,5 +60,7 @@ if sofa_is_file(sofa)
     header = SOFAload(sofa,'nodata');
 else
     header = sofa;
-    header.Data = rmfield(sofa.Data,'IR');
+    if isfield(sofa.Data,'IR')
+        header.Data = rmfield(sofa.Data,'IR');
+    end
 end

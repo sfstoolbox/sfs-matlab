@@ -5,7 +5,7 @@ function [C,idx] = findnearestneighbour(A,b,number_of_neighbours)
 %
 %   Input parameters:
 %       A                     - matrix
-%       b                     - colum to search for in A
+%       b                     - column to search for in A
 %       number_of_neighbours  - number of nearest neighbours to find
 %
 %   output parameters:
@@ -58,7 +58,7 @@ narginchk(nargmin,nargmax);
 if nargin==nargmax-1
     number_of_neighbours = 1;
 end
-% ensure column vector
+% Ensure column vector
 if size(b,2)>1
     b=b';
 end
@@ -69,9 +69,9 @@ end
 
 
 %% ===== Computation =====================================================
-% calculate distance between points
+% Calculate distance between points
 distance = vector_norm(bsxfun(@minus,A,b),1);
-% sort the distances in order to find the n lowest once
+% Sort the distances in order to find the n lowest once
 [~,idx] = sort(distance);
 idx = idx(1:number_of_neighbours);
 C = A(:,idx);

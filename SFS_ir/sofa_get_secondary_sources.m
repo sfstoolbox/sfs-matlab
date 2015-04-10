@@ -65,11 +65,12 @@ end
 header = sofa_get_header(sofa);
 
 if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
-    source_positions = SOFAconvertCoordinates( ...
-        header.SourcePosition,header.SourcePosition_Type,'cartesian');
+    % For free field HRTFs the source positions are equaivalent to the apparent
+    % positons of the sources
+    apparent_positions = SOFAcalculateAPV(header);
     source_directions = SOFAconvertCoordinates( ...
         header.SourceView,header.SourceView_Type,'cartesian');
-    x0 = [source_positions(idx,:) source_directions(idx,:) ...
+    x0 = [apparent_positions(idx,:) source_directions(idx,:) ...
           ones(size(source_positions(idx,1)))];
 
 elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)

@@ -5,84 +5,28 @@ function x0 = secondary_source_positions(conf)
 %   Usage: x0 = secondary_source_positions([conf])
 %
 %   Input options:
-%       conf        - optional configuration struct (see SFS_config)
+%       conf   - optional configuration struct (see SFS_config)
 %
 %   Output options:
-%       x0          - secondary source positions, directions and weights / m
+%       x0     - secondary source positions, directions and weights
+%                [x0 y0 z0 nx0 ny0 nz0 w] / m
 %
 %   SECONDARY_SOURCES_POSITIONS(conf) generates the positions and directions
 %   x0 of secondary sources for a given geometry
 %   (conf.secondary_sources.geometry) and array size
-%   (conf.secondary_sources.size). Alternatively, if conf.secondary_sources.x0
-%   is set, it returns the positions and directions specified there.
+%   (conf.secondary_sources.size). Alternatively, if
+%   conf.secondary_sources.geomrtry is set to 'custom' the field
+%   conf.secondary_sources.x0 is used to supply x0. It can be a [n 7] matrix
+%   consiting of n sources or it can be a SOFA file/struct from the source
+%   positions are extracted.
+%
 %   The direction of the sources is given as their unit vectors pointing in the
 %   given direction. For a linear array the secondary sources are pointing
 %   towards the negative y-direction. If you create a linear array with default
 %   position conf.secondary_sources.center = [0 0 0], your listening area is in
 %   the area y<0, which means the y value of conf.xref should also be <0!
 %
-%   Default geometry for a linear array:
-%
-%                                y-axis
-%                                   ^
-%                                   |
-%                                   |  secondary sources
-%                                   |        |
-%                                   |        v
-%       -------------x--x--x--x--x--x--x--x--x--x--x------------> x-axis
-%                    |  |  |  |  |  |  |  |  |  |  | <- secondary source direction
-%                                   |              
-%                                   |
-%                                   |
-%
-%   Default geometry for a circular/spherical array:
-%
-%                                y-axis
-%                                   ^
-%                                   |
-%                                   x
-%                              x    |     x
-%                              \    |     /
-%                         x_        |         _x
-%                           -       |        -
-%                      x-_          |          _-x
-%                                   |         
-%       --------------x---------------------------x------------------> x-axis
-%                        _          |          _
-%                      x-           |           -x
-%                         _-        |        -_
-%                        x          |          x
-%                             /     |     \
-%                             x     |     x
-%                                   x
-%                                   |
-%
-%
-%   Default geometry for a box-shape array:
-%
-%                                y-axis
-%                                   ^
-%                                   |
-%                       x   x   x   x   x   x   x  
-%                       |   |   |   |   |   |   |            
-%                    x--            |            --x
-%                                   |         
-%                    x--            |            --x
-%                                   |
-%                    x--            |            --x
-%                                   |
-%       -------------x-----------------------------x-----------------> x-axis
-%                                   |
-%                    x--            |            --x
-%                                   |
-%                    x--            |            --x
-%                                   |
-%                    x--            |            --x
-%                       |   |   |   |   |   |   |
-%                       x   x   x   x   x   x   x
-%                                   |
-%
-% see also: secondary_source_selection, secondary_source_tapering 
+% See also: secondary_source_selection, secondary_source_tapering
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -149,16 +93,49 @@ L = conf.secondary_sources.size;
 x0 = zeros(nls,7);
 if strcmp('line',geometry) || strcmp('linear',geometry)
     % === Linear array ===
-    % Positions of the secondary sources
+    %
+    %                     y-axis
+    %                       ^
+    %                       |
+    %                       |  secondary sources
+    %                       |        |
+    %                       |        v
+    %  ------x--x--x--x--x--x--x--x--x--x--x-------> x-axis
+    %        |  |  |  |  |  |  |  |  |  |  | <- secondary source direction
+    %                       |
+    %                       |
+    %
+    %% Positions of the secondary sources
     x0(:,1) = X0(1) + linspace(-L/2,L/2,nls)';
     x0(:,2) = X0(2) * ones(nls,1);
     x0(:,3) = X0(3) * ones(nls,1);
     % Direction of the secondary sources pointing to the -y direction
     x0(:,4:6) = direction_vector(x0(:,1:3),x0(:,1:3)+repmat([0 -1 0],nls,1));
-    % equal weights for all sources
+    % Equal weights for all sources
     x0(:,7) = ones(nls,1);
 elseif strcmp('circle',geometry) || strcmp('circular',geometry)
     % === Circular array ===
+    %
+    %                  y-axis
+    %                    ^
+    %                    |
+    %                    x
+    %               x    |     x
+    %               \    |     /
+    %          x_        |         _x
+    %            -       |        -
+    %       x-_          |          _-x
+    %                    |
+    %  ----x---------------------------x------> x-axis
+    %         _          |          _
+    %       x-           |           -x
+    %          _-        |        -_
+    %         x          |          x
+    %              /     |     \
+    %              x     |     x
+    %                    x
+    %                    |
+    %
     % Azimuth angles
     phi = linspace(0,(2-2/nls)*pi,nls)'; % 0..2pi
     %phi = linspace(pi/2,(5/2-2/nls)*pi,nls)'; % pi/2..5/2pi, Room Pinta
@@ -169,10 +146,33 @@ elseif strcmp('circle',geometry) || strcmp('circular',geometry)
     x0(:,1:3) = [cx,cy,cz] + repmat(X0,nls,1);
     % Direction of the secondary sources
     x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1).*ones(nls,3));  
-    % equal weights for all sources
+    % Equal weights for all sources
     x0(:,7) = ones(nls,1);
 elseif strcmp('box',geometry)
     % === Boxed loudspeaker array ===
+    %
+    %                  y-axis
+    %                    ^
+    %                    |
+    %        x   x   x   x   x   x   x
+    %        |   |   |   |   |   |   |
+    %     x--            |            --x
+    %                    |
+    %     x--            |            --x
+    %                    |
+    %     x--            |            --x
+    %                    |
+    %  ---x-----------------------------x-----> x-axis
+    %                    |
+    %     x--            |            --x
+    %                    |
+    %     x--            |            --x
+    %                    |
+    %     x--            |            --x
+    %        |   |   |   |   |   |   |
+    %        x   x   x   x   x   x   x
+    %                    |
+    %
     % Number of secondary sources per linear array
     % ensures that nls/4 is always an integer.
     if rem(nls,4)~=0
@@ -181,45 +181,45 @@ elseif strcmp('box',geometry)
     else
         nbox = nls/4;
     end
-    % distance between secondary sources
+    % Distance between secondary sources
     dx0 = L/(nbox-1);
     % Position and direction of the loudspeakers
-    % top
+    % Top
     x0(1:nbox,1) = X0(1) + linspace(-L/2,L/2,nbox)';
     x0(1:nbox,2) = X0(2) + ones(nbox,1) * L/2 + dx0;
     x0(1:nbox,3) = X0(3) + zeros(nbox,1);
     x0(1:nbox,4:6) = direction_vector(x0(1:nbox,1:3), ...
         x0(1:nbox,1:3)+repmat([0 -1 0],nbox,1));
-    % right
+    % Right
     x0(nbox+1:2*nbox,1) = X0(1) + ones(nbox,1) * L/2 + dx0;
     x0(nbox+1:2*nbox,2) = X0(2) + linspace(L/2,-L/2,nbox)';
     x0(nbox+1:2*nbox,3) = X0(3) + zeros(nbox,1);
     x0(nbox+1:2*nbox,4:6) = direction_vector(x0(nbox+1:2*nbox,1:3), ...
         x0(nbox+1:2*nbox,1:3)+repmat([-1 0 0],nbox,1));
-    % bottom
+    % Bottom
     x0(2*nbox+1:3*nbox,1) = X0(1) + linspace(L/2,-L/2,nbox)';
     x0(2*nbox+1:3*nbox,2) = X0(2) - ones(nbox,1) * L/2 - dx0;
     x0(2*nbox+1:3*nbox,3) = X0(3) + zeros(nbox,1);
     x0(2*nbox+1:3*nbox,4:6) = direction_vector(x0(2*nbox+1:3*nbox,1:3), ...
         x0(2*nbox+1:3*nbox,1:3)+repmat([0 1 0],nbox,1));
-    % left
+    % Left
     x0(3*nbox+1:nls,1) = X0(1) - ones(nbox,1) * L/2 - dx0;
     x0(3*nbox+1:nls,2) = X0(2) + linspace(-L/2,L/2,nbox)';
     x0(3*nbox+1:nls,3) = X0(3) + zeros(nbox,1);
     x0(3*nbox+1:nls,4:6) = direction_vector(x0(3*nbox+1:nls,1:3), ...
         x0(3*nbox+1:nls,1:3)+repmat([1 0 0],nbox,1));
-    % equal weights for all sources
+    % Equal weights for all sources
     x0(:,7) = ones(nls,1);
 elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)
-    % get spherical grid + weights
+    % Get spherical grid + weights
     [points,weights] = get_spherical_grid(nls,conf);
-    % secondary source positions
+    % Secondary source positions
     x0(:,1:3) = L/2 * points + repmat(X0,nls,1);
-    % secondary source directions
+    % Secondary source directions
     x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1));
-    % secondary source weights
+    % Secondary source weights
     x0(:,7) = weights;
-    % add integration weights (because we integrate over a sphere) to the grid
+    % Add integration weights (because we integrate over a sphere) to the grid
     % weights
     [~,theta] = cart2sph(x0(:,1),x0(:,2),x0(:,3)); % get elevation
     x0(:,7) = x0(:,7) .* cos(theta);

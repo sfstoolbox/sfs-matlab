@@ -186,3 +186,6 @@ else
     error('%s: %s convention is currently not supported.', ...
         upper(mfilename),header.GLOBAL_SOFAConventions);
 end
+
+% Reshape [1 2 N] to [N 2]
+ir = squeeze(ir)';

@@ -7,10 +7,10 @@ function ir = ir_generic(X,phi,x0,d,sofa,conf)
 %       X       - listener position / m
 %       phi     - listener direction [head orientation] / rad
 %                 0 means the head is oriented towards the x-axis.
-%       x0      - secondary sources [n x 6] / m
+%       x0      - secondary sources [n x 7] / m
 %       d       - driving signals [m x n]
 %       sofa    - impulse response data set for the secondary sources
-%       conf    - optional configuration struct (see SFS_config) 
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ir      - Impulse response for the desired driving functions (nx2 matrix)
@@ -18,7 +18,7 @@ function ir = ir_generic(X,phi,x0,d,sofa,conf)
 %   IR_GENERIC(X,phi,x0,d,sofa,conf) calculates a binaural room impulse
 %   response for the given secondary sources and driving signals.
 %
-%   see also: ir_wfs, ir_nfchoa, ir_point_source, auralize_ir
+%   See also: ir_wfs, ir_nfchoa, ir_point_source, auralize_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -61,15 +61,13 @@ isargposition(X);
 isargscalar(phi);
 isargsecondarysource(x0);
 isargmatrix(d);
-% FIXME: include checking of sofa file
-%check_irs(irs);
 if nargin==nargmax-1
     conf = SFS_config;
 end
 
 
 %% ===== Configuration ==================================================
-N = conf.N;                   % target length of BRS impulse responses
+N = conf.N; % target length of BRS impulse responses
 
 
 %% ===== Variables ======================================================
@@ -84,14 +82,9 @@ ir_generic = zeros(N,2);
 warning('off','SFS:irs_intpol');
 for ii=1:size(x0,1)
 
-    % direction of the source from the listener
-    %x_direction = x0(ii,1:3)-X;
-    % change to spherical coordinates
-    %[alpha,theta,r] = cart2sph(x_direction(1),x_direction(2),x_direction(3));
-
-    % === IR interpolation ===
-    % Get the desired impulse response.
-    % If needed interpolate the given impusle response set
+    % === Get the desired impulse response.
+    % If needed interpolate the given impusle response set and weight, delay the
+    % impulse for the correct distance
     ir = get_ir(sofa,X,[phi 0],x0(ii,1:3),'cartesian',conf);
 
     % === Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay ===

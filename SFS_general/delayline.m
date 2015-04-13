@@ -81,6 +81,7 @@ if ndims(sig)==3
 else
     % Assume standard format [N C]
     [samples channels] = size(sig);
+    reshaped = false;
 end
 % If only single valued time delay and weight is given, create vectors
 if channels>1 && length(dt)==1, dt=repmat(dt,[1 channels]); end
@@ -95,7 +96,6 @@ if usefracdelay
 
     % Defining a temporary conf struct for recursive calling of delayline
     conf2.usefracdelay = false;
-    conf2.fracdelay_method = '';
 
     switch fracdelay_method
     case 'resample'

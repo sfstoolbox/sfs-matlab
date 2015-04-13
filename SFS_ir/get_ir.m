@@ -122,23 +122,24 @@ header = sofa_get_header(sofa);
 %end
 
 % === Coordinate system conversion ===
+% Convert everything to spherical coordinates
 if strcmp('cartesian',coordinate_system)
     [xs(1),xs(2),xs(3)] = cart2sph(xs(1),xs(2),xs(3));
     [X(1),X(2),X(3)] = cart2sph(X(1),X(2),X(3));
 elseif ~strcmp('spherical',coordinate_system)
     error('%s: unknown coordinate system type.',upper(mfilename));
 end
-% Store desired apparent position of source
+% Store desired apparent position of source (in spherical coordinates)
 xs = [correct_azimuth(xs(1)-X(1)-head_orientation(1)) ...
       correct_elevation(xs(2)-X(2)-head_orientation(2)) ...
       abs(X(3)-xs(3))];
 
 % === Get Impulse Response ===
 if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
-    % In 'SimpleFreeFieldHRIR' the head is always held fix and only the source
+    % In 'SimpleFreeFieldHRIR' the head is always hold fixed and only the source
     % is moved, so we are getting only the source positions.
-    x0 = sofa_get_secondary_sources(header);
-    % Find nearest neighbours
+    x0 = sofa_get_secondary_sources(header,'spherical');
+    % Find nearest neighbours and interpolate if desired and needed
     [neighbours,idx] = findnearestneighbour(x0(:,1:2)',xs(1:2),3);
     ir = sofa_get_data(sofa,idx);
     ir = interpolate_ir(ir,neighbours,xs(1:2)',conf);
@@ -168,22 +169,39 @@ elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)
     ir = get_single_ir(sofa,x0,xs,conf);
 
 elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
-    % TODO: if we want to include interpolation, we have to do for both head
-    % orientation and secondary source positions.
-    % For an easy start I will only
-    % include it for the head orientation and use nearest neighbours search for
-    % the secondary source position.
+    % This looks for the nearest loudspeaker corresponding to the specified
+    % source and listener position. For that loudspeaker the impulse reponse for
+    % the specified head orientation is returned. If the head orientation could
+    % not perfectly matched, an interpolation is applied as in the
+    % SimpleFreeFieldHRIR case. If the specified head orientation is out of
+    % bounds, the nearest head orientation is returned.
     %
     % Find the nearest secondary source
-    x0 = sofa_get_secondary_sources(header);
+    x0 = sofa_get_secondary_sources(header,'spherical');
     [~,idx_emitter] = findnearestneighbour(x0(:,1:3)',xs,1);
     % Find nearest head orientation in the horizontal plane
     [phi,theta] = sofa_get_head_orientations(header);
-    [~,idx_head] = findnearestneighbour([phi theta]',head_orientation,1);
-    % Get the impulse response and reshape to [M R N] as we have only one
-    % emitter
+    [neighbours_head,idx_head] = ...
+        findnearestneighbour([phi theta]',head_orientation,3);
+    % Check if head orientation is out of bounds
+    if all(abs(head_orientation(1))>abs(neighbours_head(1,:)))
+        warning('SFS:get_ir',['Head azimuth %.1f deg out of bound, ', ...
+            'using %.1f deg instead.'], ...
+            deg(head_orientation(1)), ...
+            deg(neighbours_head(1,1)));
+        head_orientation(1) = neighbours_head(1,1);
+    end
+    if all(abs(head_orientation(2))>abs(neighbours_head(2,:)))
+        warning('SFS:get_ir',['Head elevation %.1f deg out of bound, ', ...
+            'using %.1f deg instead.'], ...
+            deg(head_orientation(2)), ...
+            deg(neighbours_head(2,1)));
+        head_orientation(2) = neighbours_head(2,1);
+    end
+    % Get the impulse responses, reshape and interpolate
     ir = sofa_get_data_fire(sofa,idx_head,idx_emitter);
-    ir = reshape(ir,[size(ir,1) size(ir,2) size(ir,4)]);
+    ir = reshape(ir,[size(ir,1) size(ir,2) size(ir,4)]); % [M R E N] => [M R N]
+    ir = interpolate_ir(ir,neighbours_head,head_orientation',conf);
 
 else
     error('%s: %s convention is currently not supported.', ...

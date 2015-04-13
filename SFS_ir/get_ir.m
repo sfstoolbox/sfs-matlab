@@ -93,6 +93,9 @@ elseif nargin==nargmax-2
     coordinate_system = 'spherical';
     conf = SFS_config;
 end
+if length(head_orientation)==1
+    head_orientation = [head_orientation 0];
+end
 
 
 %% ===== Configuration ==================================================
@@ -138,7 +141,7 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     % Find nearest neighbours
     [neighbours,idx] = findnearestneighbour(x0(:,1:2)',xs(1:2),3);
     ir = sofa_get_data(sofa,idx);
-    ir = interpolate_ir(ir,neighbours,xs(1:2),conf);
+    ir = interpolate_ir(ir,neighbours,xs(1:2)',conf);
 
 elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)
     % For a given BRIR recording we are searching first for the correct head

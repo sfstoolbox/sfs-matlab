@@ -1,19 +1,27 @@
-function x0 = sofa_get_secondary_sources(sofa,idx)
+function x0 = sofa_get_secondary_sources(sofa,idx,coordinate_system)
 %SOFA_GET_SECONDARY_SOURCES returns x0 from the given SOFA data set
 %
-%   Usage: x0 = sofa_get_secondary_sources(sofa,[idx])
+%   Usage: x0 = sofa_get_secondary_sources(sofa,[idx],[coordinate_system])
 %
 %   Input parameters:
-%       sofa    - impulse response data set (SOFA struct/file)
-%       idx     - index of secondary sources that should be returned.
-%                 If no index is specified all sources will be returned.
+%       sofa              - impulse response data set (SOFA struct/file)
+%       idx               - index of secondary sources that should be returned.
+%                           If no index is specified all sources will be
+%                           returned.
+%       coordinate_system - coordinate system the position and direction of the
+%                           secondary sources should be specified in:
+%                             'cartesian' (default)
+%                             'spherical'
 %
 %   Output parameters:
 %       x0      - secondary source matrix [n 7]
 %
-%   SOFA_GET_SECONDARY_SOURCES(sofa,idx) returns secondary sources as defined
-%   in the given SOFA file or struct, specified by idx. If no idx is specified
-%   all secondary sources are returned.
+%   SOFA_GET_SECONDARY_SOURCES(sofa,idx,coordinate_system) returns secondary
+%   sources as defined in the given SOFA file or struct, specified by idx.
+%   If no idx is specified all secondary sources are returned. The coordinate
+%   system the position and direction of the secondary sources are specified in
+%   can be given by the string 'coordinate_system', 'cartesian' is assumed as
+%   default.
 %
 %   see also: sofa_get_header, secondary_source_positions
 
@@ -52,12 +60,21 @@ function x0 = sofa_get_secondary_sources(sofa,idx)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
-nargmax = 2;
+nargmax = 3;
 narginchk(nargmin,nargmax)
-if nargin==nargmax-1
-   idx = ':';
+if nargin==nargmax-2
+    idx = ':';
+    coordinate_system = 'cartesian';
+elseif nargin==nargmax-1
+    if ischar(idx)
+        coordinate_system = idx;
+        idx = ':';
+    else
+        coordinate_system = 'cartesian';
+    end
 else
     isargvector(idx);
+    isargchar(coordinate_system);
 end
 
 
@@ -94,4 +111,13 @@ elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
 else
     error('%s: %s convention currently not supported.', ...
         upper(mfilename),header.GLOBAL_SOFAConventions);
+end
+
+if strcmp('cartesian',coordinate_system)
+    return;
+elseif strcmp('spherical',coordinate_system)
+    [x0(:,1) x0(:,2) x0(:,3)] = cart2sph(x0(:,1),x0(:,2),x0(:,3));
+else
+    error('%s: %s is not a supported coordinate system.', ...
+        upper(mfilename),coordinate_system);
 end

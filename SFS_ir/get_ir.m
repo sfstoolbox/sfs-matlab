@@ -109,18 +109,6 @@ end
 % === SOFA loading ===
 header = sofa_get_header(sofa);
 
-% === SOFA checking ===
-% Conventions handled so far. For a list of SOFA conventions, see:
-% http://www.sofaconventions.org/mediawiki/index.php/SOFA_conventions
-%SOFA_conventions = { ...
-%    'SimpleFreeFieldHRIR', ...
-%    'SingleRoomDRIR', ...
-%    'MultiSpeakerBRIR', ...
-%    };
-%if ~any(strcmp(header.GLOBAL_SOFAConventions,SOFA_conventions))
-%    error('%s: this SOFA Convention is currently not supported.');
-%end
-
 % === Coordinate system conversion ===
 % Convert everything to spherical coordinates
 if strcmp('cartesian',coordinate_system)
@@ -136,12 +124,15 @@ xs = [correct_azimuth(xs(1)-X(1)-head_orientation(1)) ...
 
 % === Get Impulse Response ===
 if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
-    % In 'SimpleFreeFieldHRIR' the head is always hold fixed and only the source
-    % is moved, so we are getting only the source positions.
+    % Returns a single impulse response for the specified position. The impulse
+    % response is shifted in time and its amplitude is weighted according to the
+    % desired distance. The desired direction is done by returning the nearest
+    % neighbour or applying a linear interpolation.
     x0 = sofa_get_secondary_sources(header,'spherical');
     % Find nearest neighbours and interpolate if desired and needed
     [neighbours,idx] = findnearestneighbour(x0(:,1:2)',xs(1:2),3);
-    ir = sofa_get_data(sofa,idx);
+    ir = sofa_get_data_fir(sofa,idx);
+    ir = ir_correct_distance(ir,x0(idx,3),xs(3),conf);
     ir = interpolate_ir(ir,neighbours,xs(1:2)',conf);
 
 elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)
@@ -176,7 +167,7 @@ elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
     % SimpleFreeFieldHRIR case. If the specified head orientation is out of
     % bounds, the nearest head orientation is returned.
     %
-    % Find the nearest secondary source
+    % Find nearest secondary source
     x0 = sofa_get_secondary_sources(header,'spherical');
     [~,idx_emitter] = findnearestneighbour(x0(:,1:3)',xs,1);
     % Find nearest head orientation in the horizontal plane
@@ -207,129 +198,3 @@ else
     error('%s: %s convention is currently not supported.', ...
         upper(mfilename),header.GLOBAL_SOFAConventions);
 end
-end
-
-function ir = correct_radius(ir,ir_distance,r,conf)
-    % The basic idea is to handle the radius different then the directional
-    % position. Between the directional positions an interpolation is applied if
-    % desired. Different distances r are realized by weighting and adjusting the
-    % time delay of the impulse response. As a starting value the actual
-    % distance specified in the impulse response is used an adjusted regarding
-    % the desired radius.
-    % WARNING: in order to ensure correct extrapolation zeros corresponding to
-    % the radius of the measured impulse response are padded at its beginning.
-    % If you don't want this behavior you have to specify
-    % conf.ir.useoriglength = true;
-    % and ensure yourself that we have enough zeros at the beginning of each
-    % impulse response and that possible different radii are represented with
-    % the existing zeros.
-    %
-    % FIXME: check the performance of this function. The zeropadding at the
-    % beginning of the ipulse response was done before only once for the whole
-    % ir data set. Now, this is only possible if the complete sofa struct is
-    % provided and not only the file. One could enhance the performance by doing
-    % the zeropadding again for the whole database if the sofa struct is
-    % provided. On the downside this would lead to a more complicated code base.
-    %
-    % Stop extrapolation for distances larger than 10m
-    if any(ir_distance>10)
-        ir_distance = min(ir_distance,10);
-        warning(['%s: Your desired radius is larger than 10m, but we will ', ...
-            'only extrapolate up to 10m. All larger radii will be set to ', ...
-            '10m.'],upper(mfilename));
-    end
-    % Append zeros at the beginning of the impulse responses corresponding to
-    % its maximum radius
-    if ~conf.ir.useoriglength
-        zero_padding = ceil(ir_distance/conf.c * conf.fs);
-        if conf.N-zero_padding<128
-            error(['%s: choose a larger conf.N value, because otherwise you ', ...
-                'will have only %i samples of your original impulse response.'], ...
-                upper(mfilename),conf.N-zero_padding);
-        end
-    else
-        zero_padding = 0;
-    end
-    % Time delay of the source (at the listener position)
-    delay = (r-ir_distance)/conf.c*conf.fs; % / samples
-    % Amplitude weighting (point source model)
-    % This gives weight=1 for r==ir_distance
-    weight = ir_distance./r;
-    if abs(delay)>size(ir,3)
-        error(['%s: your impulse response is to short for a desired ', ...
-            'delay of %.1f samples.'],upper(mfilename),delay);
-    end
-    % Apply delay and weighting
-    ir = delayline(ir,[delay+zero_padding; delay+zero_padding], ...
-        [weight; weight],conf);
-end
-
-function ir = get_ir_from_sofa(sofa,idx,x0,xs,conf)
-    % Get the desired impulse response from the SOFA file/struct and returns it
-    % with applied radius correction
-    ir = sofa_get_data(sofa,idx);
-    ir = correct_radius(ir,x0(idx,3),xs(3),conf);
-end
-
-function ir = get_single_ir(sofa,xs,conf)
-    % GET_SINGLE_IR returns the desired impulse response from the given ones
-    %
-    % Input parameters:
-    %   sofa    - SOFA file or struct
-    %   xs      - position of the desired impulse response. xs is relative to
-    %             [0 0 0] and given in spherical coordinates / [rad rad m].
-    %   conf    - SFS configuration struct, specifying if interpolation between
-    %             the given impulse responses shpuld be applied if the desired
-    %             position is not given in the SOFA data set.
-    %
-    % Output parameters
-    %   ir      - single impulse response
-
-    % === Configuration ===
-    useinterpolation = conf.ir.useinterpolation;
-    % Precission of the wanted angle. If an impulse response within the given
-    % precission could be found no interpolation is applied.
-    prec = 0.001; % ~ 0.05 deg
-
-    % === Computation ===
-    % Calculate the apparent azimuth, elevation and distance
-    x0 = SOFAcalculateAPV(sofa_get_header(sofa)); % / [deg deg m]
-    % Convert angles to radian
-    x0(:,1:2) = rad(x0(:,1:2));
-    % Find the three nearest positions to the desired one (incorporating only angle
-    % values and disregarding the radius)
-    % FIXME: try to include radius here
-    [neighbours,idx] = findnearestneighbour(x0(:,1:2)',xs(1:2),3);
-    % Check if we have found directly the desired point or have to interpolate
-    % bewteen different impulse responses
-    if norm(neighbours(:,1)-xs(1:2)')<prec || ~useinterpolation
-        disp('No interpolaton.');
-        % Return the first nearest neighbour
-        ir = get_ir_from_sofa(sofa,idx(1),x0,xs,conf);
-    else
-        % === IR interpolation ===
-        % Check if we have to interpolate in one or two dimensions
-        if norm(neighbours(1,1)-neighbours(1,2))<prec || ...
-            norm(neighbours(2,1)-neighbours(2,2))<prec
-            % --- 1D interpolation ---
-            warning('SFS:irs_intpol',...
-                ['doing 1D IR interpolation between (%.1f,%.1f) deg ', ...
-                 'and (%.1f,%.1f) deg.'], ...
-                deg(x0(idx(1),1)), deg(x0(idx(1),2)), ...
-                deg(x0(idx(2),1)), deg(x0(idx(2),2)));
-            ir = get_ir_from_sofa(sofa,idx(1:2),x0,xs,conf);
-            ir = interpolate_ir(ir,neighbours(:,1:2),xs(1:2)');
-        else
-            % --- 2D interpolation ---
-            warning('SFS:irs_intpol3D',...
-                ['doing 2D IR interpolation between (%.1f,%.1f) deg, ', ...
-                 '(%.1f,%.1f) deg and (%.1f,%.1f) deg.'], ...
-                deg(x0(idx(1),1)), deg(x0(idx(1),2)), ...
-                deg(x0(idx(2),1)), deg(x0(idx(2),2)), ...
-                deg(x0(idx(3),1)), deg(x0(idx(3),2)));
-            ir = get_ir_from_sofa(sofa,idx(1:3),x0,r,conf);
-            ir = interpolate_ir(ir,neighbours(:,1:3),xs');
-        end
-    end
-end
-

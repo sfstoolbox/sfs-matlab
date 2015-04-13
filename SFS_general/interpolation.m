@@ -22,7 +22,7 @@ function B = interpolation(A,X,x)
 %   dimensions in order to save computational time, because this function could
 %   be called quiet often.
 %
-%   See also: get_ir, shorten_ir, SOFAload
+%   See also: interpolate_ir, get_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

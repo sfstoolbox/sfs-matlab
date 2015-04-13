@@ -1,21 +1,21 @@
-function ir = reduce_ir(ir,fs,nsamples,conf)
+function short_ir = reduce_ir(ir,fs,nsamples,conf)
 %REDUCE_IR resamples and shortens a IR
 %
 %   Usage: ir = reduce_ir(ir,fs,nsamples,[conf])
 %
 %   Input parameters:
-%       ir          - two channel IR signal
-%       fs          - sampling rate of the target IR / Hz
-%       nsamples    - length of the target IR
+%       ir          - two channel impulse response signal
+%       fs          - sampling rate of the target impulse response / Hz
+%       nsamples    - length of the target impulse response
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output paramteres:
-%       ir          - two channel IR signal
+%       ir          - two channel impulse response signal
 %
-%   REDUCE_IR(ir,fs,nsamples,conf) shortens and resamples a given IR.
-%   This can be useful for mobile phones.
+%   REDUCE_IR(ir,fs,nsamples,conf) shortens and resamples a given impulse
+%   response. This can be useful for mobile phones.
 %
-%   see also: SFS_config, get_ir, intpol_ir, shorten_ir
+%   See also: get_ir, shorten_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -56,7 +56,8 @@ nargmax = 4;
 narginchk(nargmin,nargmax);
 isargpositivescalar(fs,nsamples);
 if ~isnumeric(ir) || size(ir,2)~=2
-    error('%s: ir has to be an IR with samples x 2 size.',upper(mfilename));
+    error('%s: ir has to be an impulse response with samples x 2 size.', ...
+        upper(mfilename));
 end
 if nargin<nargmax
     conf = SFS_config;
@@ -78,16 +79,13 @@ if ofs~=fs
 else
     resamp_ir = ir;
 end
-
 % Window HRIR
 win = hann_window(ceil(0.15*nsamples),ceil(0.10*nsamples),nsamples).^2;
-
 % Find maximum of resampled HRIR
 % Find maximum in each channel and calculate the mean of the index
 [~,idx1] = max(abs(resamp_ir(:,1)));
 [~,idx2] = max(abs(resamp_ir(:,2)));
 idx = round((idx1+idx2)/2);
-
 % Cut the HRIR around the maximum
 % Leading zeros before idx
 offset = 24;
@@ -98,7 +96,6 @@ short_ir(1:nsamples,2) = ...
 
 
 %% ===== Plotting =======================================================
-
 if(useplot)
     figure
     plot(resamp_ir(:,1),'-b'); hold on;
@@ -107,4 +104,3 @@ if(useplot)
     plot(short_ir(:,1),'-b'); hold on;
     plot(short_ir(:,2),'r-');
 end
-

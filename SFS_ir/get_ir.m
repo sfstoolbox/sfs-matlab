@@ -118,13 +118,13 @@ elseif ~strcmp('spherical',coordinate_system)
     error('%s: unknown coordinate system type.',upper(mfilename));
 end
 % Store desired apparent position of source (in spherical coordinates)
-xs = [correct_azimuth(xs(1)-X(1)-head_orientation(1)) ...
-      correct_elevation(xs(2)-X(2)-head_orientation(2)) ...
+xs = [correct_azimuth(xs(1)-X(1)) ...
+      correct_elevation(xs(2)-X(2)) ...
       abs(X(3)-xs(3))];
 
 % === Get Impulse Response ===
 if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
-
+    %
     % http://www.sofaconventions.org/mediawiki/index.php/SimpleFreeFieldHRIR
     %
     % Returns a single impulse response for the specified position. The impulse
@@ -133,7 +133,8 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     % neighbour or applying a linear interpolation.
     x0 = sofa_get_secondary_sources(header,'spherical');
     % Find nearest neighbours and interpolate if desired and needed
-    [neighbours,idx] = findnearestneighbour(x0(:,1:2)',xs(1:2),3);
+    [neighbours,idx] = findnearestneighbour( ...
+        x0(:,1:2)',correct_azimuth(xs(1:2)-head_orientation),3);
     ir = sofa_get_data_fir(sofa,idx);
     ir = ir_correct_distance(ir,x0(idx,3),xs(3),conf);
     ir = interpolate_ir(ir,neighbours,xs(1:2)',conf);

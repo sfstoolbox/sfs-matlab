@@ -1,7 +1,7 @@
-function ir = sofa_get_data(sofa,idx)
-%SOFA_GET_DATA returns impulse responses from a SOFA file or struct
+function ir = sofa_get_data_fir(sofa,idx)
+%SOFA_GET_DATA_FIR returns impulse responses from a SOFA file or struct
 %
-%   Usage: ir = sofa_get_data(sofa,[idx])
+%   Usage: ir = sofa_get_data_fir(sofa,[idx])
 %
 %   Input parameters:
 %       sofa    - impulse response data set (SOFA struct/file)
@@ -17,13 +17,13 @@ function ir = sofa_get_data(sofa,idx)
 %                   M ... number of impulse responses
 %                   N ... samples
 %
-%   SOFA_GET_DATA(sofa,idx) returns impulse response of the given
+%   SOFA_GET_DATA_FIR(sofa,idx) returns impulse response of the given
 %   SOFA file or struct, specified by idx. If no idx is specified all data
 %   contained in sofa is returned.
 %   For the struct the SOFA file has to loaded before with SOFAload().
 %   For a description of the SOFA file format see: http://sofaconventions.org
 %
-%   see also: sofa_get_header, sofa_is_file, get_ir, SOFAload
+%   See also: sofa_get_data_fire, sofa_get_header, get_ir, SOFAload
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

@@ -1,16 +1,19 @@
 function ir = sofa_get_data_fire(sofa,idxM,idxE)
-%SOFA_GET_DATA returns impulse responses from a SOFA file or struct
+%SOFA_GET_DATA_FIRE returns impulse responses from a SOFA file or struct
 %
-%   Usage: ir = sofa_get_data(sofa,[idx])
+%   Usage: ir = sofa_get_data_fire(sofa,[idxM],[idxE])
 %
 %   Input parameters:
 %       sofa    - impulse response data set (SOFA struct/file)
-%       idx     - index of the single impulse responses that should be returned
-%                 idx could be a single value, then only one impulse response
+%       idxM    - index of the measurements for which the single impulse
+%                 responses should be returned.
+%                 idxM could be a single value, then only one impulse response
 %                 will be returned, or it can be a vector then all impulse
 %                 responses for the corresponding index positions will be
 %                 returned.
-%                 If no index is specified all data will be returned.
+%                 If no index is specified all measurements will be returned.
+%       idxE    - index of the emitter for which the single impulse
+%                 responses should be returned. The rest is identical to idxM.
 %
 %   Output parameters:
 %       ir      - impulse response (M,2,E,N), where
@@ -19,12 +22,13 @@ function ir = sofa_get_data_fire(sofa,idxM,idxE)
 %                   N ... samples
 %
 %   SOFA_GET_DATA_FIRE(sofa,idxM,idxE) returns impulse response of the given
-%   SOFA file or struct, specified by idx. If no idx is specified all data
-%   contained in sofa is returned.
+%   SOFA file or struct, specified by idxM and idxE, where idxM defines the
+%   measurements and idxE the emitters for which impulse responses should be
+%   returned. If no index is specified all data contained in sofa is returned.
 %   For the struct the SOFA file has to loaded before with SOFAload().
 %   For a description of the SOFA file format see: http://sofaconventions.org
 %
-%   see also: sofa_get_header, sofa_is_file, get_ir, SOFAload
+%   see also: sofa_get_data_fir, sofa_get_header, get_ir, SOFAload
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

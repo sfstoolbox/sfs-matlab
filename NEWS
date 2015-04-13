@@ -1,5 +1,35 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
+1.1.0 ()
+
+    - add support for local Wave Field Synthesis
+    - the length of the dirac impulse response is now an option for dummy_irs()
+    - fix iseven(), isodd() for very large numbers
+    - correct the sign for Wave Field Synthesis driving functions
+
+1.0.1 (4 August 2014)
+
+    - rms() works now also with row vectors in order to be compatible with the
+      Auditory Modeling Toolbox
+    - fixed handling of number of secondary sources for a box shaped array
+    - fixed a bug in ir_auralize() regarding the contentfile configuration
+    - corrected NFC-HOA driving functions for off-center arrays
+
+1.0.0 (27 March 2014)
+
+    - added references for all driving functions
+    - streamlined nested conf settings; e.g. now it is no longer neccessary to set
+      conf.ir.hcompfile if conf.usehcomp == false
+    - added WFS driving functions from Völk et al. and Verheijen et al.
+    - removed secondary_source_number() and xy_grid, because they are no longer
+      needed
+    - enabled pre-equalization filter of WFS as default in SFS_config_example()
+    - fixed sound_field_mono_sdm_kx()
+    - Green's function for line sources returns now real values
+    - correct y-direction of plane waves for 3D NFC-HOA
+    - updated the test functions in the validation folder
+    - several small fixes
+
 1.0.0-beta2 (5 December 2013)
 
     - rms() now works for arbitrary arrays

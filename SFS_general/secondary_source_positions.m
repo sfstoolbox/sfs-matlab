@@ -85,12 +85,12 @@ function x0 = secondary_source_positions(conf)
 % see also: secondary_source_selection, secondary_source_tapering 
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -181,7 +181,12 @@ elseif strcmp('box',geometry)
     % === Boxed loudspeaker array ===
     % Number of secondary sources per linear array
     % ensures that nls/4 is always an integer.
-    nbox = round(nls/4);
+    if rem(nls,4)~=0
+        error(['%s: conf.secondary_sources.number has to be a multiple of' ...
+            ' 4.'],upper(mfilename));
+    else
+        nbox = nls/4;
+    end
     % distance between secondary sources
     dx0 = L/(nbox-1);
     % Position and direction of the loudspeakers

@@ -1,6 +1,6 @@
 function [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs,conf)
 %DRIVING_FUNCTION_IMP_WFS_PS calculates the WFS weighting and delaying for a
-%plane wave as source model
+%point source as source model
 %
 %   Usage: [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs,[conf]);
 %
@@ -17,15 +17,19 @@ function [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs,conf)
 %   DRIVING_FUNCTION_IMP_WFS_PS(x0,nx0,xs,conf) returns delays and weights for
 %   the WFS driving function for a point source as source model.
 %
+%   References:
+%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       PhD thesis, Tu Berlin
+%
 %   see also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_ps
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -84,15 +88,17 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % --- SFS Toolbox ------------------------------------------------
         % d using a point source as source model
         %
-        %                  -1   (x0-xs) nx0
+        %                   1   (x0-xs) nx0
         % d(x0,t) = h(t) * --- ------------- delta(t-|x0-xs|/c)
         %                  2pi |x0-xs|^(3/2)
+        %
+        % see Wierstorf (2014), p.26 (2.52)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % Delay and amplitude weight
         delay = 1/c .* r;
-        weight = -1/(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
+        weight = 1/(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a point source.'],upper(mfilename),driving_functions);
@@ -115,15 +121,17 @@ elseif strcmp('2.5D',dimension)
         %
         % d_2.5D using a point source as source model
         %
-        %                       -g0  (x0-xs) nx0
+        %                        g0  (x0-xs) nx0
         % d_2.5D(x0,t) = h(t) * --- ------------- delta(t-|x0-xs|/c)
         %                       2pi |x0-xs|^(3/2)
+        %
+        % see Wierstorf (2014), p.26 (2.53)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % Delay and amplitude weight
         delay = 1/c .* r;
-        weight = -g0/(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
+        weight = g0/(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D point source.'],upper(mfilename),driving_functions);

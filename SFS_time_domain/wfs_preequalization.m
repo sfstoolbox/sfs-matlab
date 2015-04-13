@@ -16,12 +16,12 @@ function ir = wfs_preequalization(ir,conf)
 %   see also: wfs_fir_prefilter, wfs_iir_prefilter, ir_wfs
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -62,7 +62,6 @@ end
 
 %% ===== Configuration ==================================================
 usehpre = conf.wfs.usehpre;
-hpretype = conf.wfs.hpretype;
 
 
 %% ===== Computation =====================================================
@@ -73,12 +72,12 @@ end
 % Store original length
 len_ir = size(ir,1);
 % Get the filter
-if strcmp('FIR',hpretype)
+if strcmp('FIR',conf.wfs.hpretype)
     % get FIR filter
     hpre = wfs_fir_prefilter(conf);
     % apply filter
     ir = convolution(hpre,ir);
-elseif strcmp('IIR',hpretype)
+elseif strcmp('IIR',conf.wfs.hpretype)
     % get IIR filter
     hpre = wfs_iir_prefilter(conf);
     % apply filter

@@ -11,6 +11,7 @@ function [d,delay,weight] = driving_function_imp_wfs(x0,xs,src,conf)
 %                     'pw' - plane wave (xs, ys are the direction of the
 %                            plane wave in this case)
 %                     'ps' - point source
+%                     'ls' - line source
 %                     'fs' - focused source
 %       conf    - optional configuration struct (see SFS_config)
 %
@@ -26,12 +27,12 @@ function [d,delay,weight] = driving_function_imp_wfs(x0,xs,src,conf)
 %   see also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -101,6 +102,11 @@ elseif strcmp('ps',src)
     % === Point source ===================================================
     % Delay and amplitude weight
     [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs,conf);
+
+elseif strcmp('ls',src)
+    % === Line source ====================================================
+    % Delay and amplitude weight
+    [delay,weight] = driving_function_imp_wfs_ls(x0,nx0,xs,conf);
 
 elseif strcmp('fs',src)
     % === Focused source =================================================

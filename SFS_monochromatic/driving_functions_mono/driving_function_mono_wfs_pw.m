@@ -19,22 +19,18 @@ function D = driving_function_mono_wfs_pw(x0,nx0,nk,f,conf)
 %   frequency f.
 %
 %   References:
-%       FIXME: Update references
-%       Spors2009 - Physical and Perceptual Properties of Focused Sources in
-%           Wave Field Synthesis (AES127)
-%       Spors2010 - Analysis and Improvement of Pre-equalization in
-%           2.5-Dimensional Wave Field Synthesis (AES128)
-%       Williams1999 - Fourier Acoustics (Academic Press)
+%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       PhD thesis, TU Berlin
 %
 %   see also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -97,8 +93,10 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % D using a plane wave as source model
         %
         %              i w
-        % D(x0,w) = -2 --- nk nx0  e^(-i w/c nk x0)
+        % D(x0,w) =  2 --- nk nx0  e^(-i w/c nk x0)
         %               c
+        %
+        % see Wierstorf (2014), p.25 (2.43)
         %
         D = -2*1i*omega/c .* vector_product(nk,nx0,2) .*  ...
             exp(-1i*omega/c.*vector_product(nk,x0,2));
@@ -129,9 +127,11 @@ elseif strcmp('2.5D',dimension)
         %
         % D_2.5D using a plane wave as source model
         %                                ___
-        %                               | w |
-        % D_2.5D(x0,w) = -2 g0 nk nx0 _ |---  e^(-i w/c nk x0)
-        %                              \|i c
+        %                              | w |
+        % D_2.5D(x0,w) = 2 g0 nk nx0 _ |---  e^(-i w/c nk x0)
+        %                             \|i c
+        %
+        % see Wierstorf (2014), p.25 (2.44)
         %
         D = -2*g0 .* vector_product(nk,nx0,2) .* sqrt(omega/(1i*c)) .* ...
             exp(-1i*omega/c.*vector_product(nk,x0,2));

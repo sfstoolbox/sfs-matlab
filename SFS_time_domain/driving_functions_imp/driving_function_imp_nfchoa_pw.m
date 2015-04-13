@@ -1,8 +1,8 @@
 function sos = driving_function_imp_nfchoa_pw(N,R,conf)
-%DRIVING_FUNCTION_IMP_NFCHOA_PS calculates the second-order section
+%DRIVING_FUNCTION_IMP_NFCHOA_PW calculates the second-order section
 %representation for a virtual plane wave in NFC-HOA
 %
-%   Usage: sos = driving_function_imp_nfchoa_ps(N,R,[conf]);
+%   Usage: sos = driving_function_imp_nfchoa_pw(N,R,[conf]);
 %
 %   Input parameters:
 %       N       - order of spherical hankel function
@@ -12,19 +12,24 @@ function sos = driving_function_imp_nfchoa_pw(N,R,conf)
 %   Output parameters:
 %       sos     - second-order section representation
 %
-%   DRIVING_FUNCTION_IMP_NFCHOA_PS(N,R,r,conf) returns the second-order section
+%   DRIVING_FUNCTION_IMP_NFCHOA_PW(N,R,conf) returns the second-order section
 %   representation for the NFC-HOA driving function for a virtual plane wave
 %   as source model.
+%
+%   References:
+%       S. Spors, V. Kuscher, J. Ahrens (2011) - "Efficient realization of
+%       model-based rendering for 2.5-dimensional near-field compensated higher
+%       order Ambisonics", WASPAA, p. 61-64
 %
 %   see also: sound_field_imp, sound_field_imp_nfchoa, driving_function_imp_nfchoa
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -95,8 +100,12 @@ elseif strcmp('2.5D',dimension)
     % Reference point
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        % FIXME. add documentation
-        sos = zp2sos(p,z*c/R,2,'down','none');
+        % 2.5D for a plane wave as source model
+        %
+        [sos,~] = zp2sos(p,z*c/R,2,'down','none');
+        %
+        % compare Spors et al. (2011)
+        %
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D plane wave.'],upper(mfilename),driving_functions);

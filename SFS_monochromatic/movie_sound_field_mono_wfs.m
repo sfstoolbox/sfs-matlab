@@ -24,12 +24,12 @@ function movie_sound_field_mono_wfs(X,Y,Z,xs,src,f,outfile,conf)
 %   see also: sound_field_mono_wfs, plot_sound_field
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -80,8 +80,6 @@ tmpdir = conf.tmpdir;
 
 
 %% ===== Simulation =====================================================
-% FIXME: the direction of the phase could be wrong depending on the direction of
-% the virtual source
 phase = linspace(2*pi,0,25);
 % Generate a random number string for the tmp files
 rn = sprintf('%04.0f',10000*rand);
@@ -90,14 +88,14 @@ for ii = 1:length(phase)-1
     conf.phase = phase(ii);
     conf.plot.useplot = 0;
     % Calculate sound field for the given phase
-    [P,x,y,z,x0,win] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
+    [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
 
     % === Save temporary data ===
     if ~exist(tmpdir,'dir')
         mkdir(tmpdir);
     end
     conf.plot.file = sprintf('%s/%s_%i.png',tmpdir,rn,ii+10);
-    plot_sound_field(P,x,y,z,x0,win,conf);
+    plot_sound_field(P,x,y,z,x0,conf);
 end
 
 

@@ -2,7 +2,7 @@ function [fal,dx0] = aliasing_frequency(x0,conf)
 %ALIASING_FREQUENCY returns the aliasing frequency for the given secondary
 %sources
 %
-%   Usage: [fal,dx0] = aliasing_frequency(x0,[conf])
+%   Usage: [fal,dx0] = aliasing_frequency([x0],[conf])
 %
 %   Input options:
 %       x0      - secondary sources / m
@@ -15,26 +15,27 @@ function [fal,dx0] = aliasing_frequency(x0,conf)
 %   ALIASING_FREQUENCY(x0,conf) returns the aliasing frequency for the given
 %   secondary sources. First the mean distance dx0 between the secondary sources
 %   is calculated, afterwards the aliasing frequency is calculated after Spors
-%   (2009) as fal = c/(2*dx0).
+%   (2009) as fal = c/(2*dx0). If no secondary sources x0 are provided, they are
+%   first calculated by calling secondary_source_positions().
 %   For a calculation that includes the dependency on the listener position have
 %   a look at Start (1997).
 %   
 %   References:
-%       S. Spors and J. Ahrens (2009) - Spatial sampling artifacts of wave field
-%       synthesis for the reproduction of virtual point sources. 126th AES.
-%       E. Start (1997)- Direct Sound Enhancement by Wave Field Synthesis. TU
-%       Delft.
+%       S. Spors and J. Ahrens (2009) - "Spatial sampling artifacts of wave field
+%       synthesis for the reproduction of virtual point sources", 126th AES Conv.
+%       E. Start (1997) - "Direct Sound Enhancement by Wave Field Synthesis",
+%       TU Delft.
 %
 %   see also: sound_field_mono_wfs, secondary_source_positions,
 %       secondary_source_distance
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *

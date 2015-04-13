@@ -430,8 +430,8 @@ irs = dummy_irs;
 conf.wfs.usehpre = 1;
 conf.wfs.hprefhigh = aliasing_frequency(x0,conf);
 ir2 = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
-[a1,p,f] = easyfft(ir1(:,1)./max(abs(ir1(:,1))),conf);
-a2 = easyfft(ir2(:,1)./max(abs(ir2(:,1))),conf);
+[a1,p,f] = easyfft(norm_signal(ir1(:,1)),conf);
+a2 = easyfft(norm_signal(ir2(:,1)),conf);
 figure;
 figsize(540,404,'px');
 semilogx(f,20*log10(a1),'-b',f,20*log10(a2),'-r');
@@ -477,13 +477,15 @@ wavwrite(brs,fs,16,'brs_set_for_SSR.wav');
 
 ### Small helper functions
 
-The Toolbox provides you also with a set of useful small functions that may want
-to use. Here the highlights are angle conversion with <code>rad()</code> and
-<code>degree()</code>, FFT calculation and plotting <code>easyfft()</code>,
+The Toolbox provides you also with a set of useful small functions.
+Here the highlights are angle conversion with <code>rad()</code> and
+<code>deg()</code>, FFT calculation and plotting <code>easyfft()</code>,
 create noise signal <code>noise()</code>, rotation matrix
-<code>rotation_matrix()</code>, even or odd checking <code>iseven()</code>
+<code>rotation_matrix()</code>, multi-channel convolution
+<code>convolution()</code>, nearest neighbour search
+<code>findnearestneighbour()</code>, even or odd checking <code>iseven()</code>
 <code>isodd()</code>, spherical bessel functions <code>sphbesselh()</code>
-<code>sphbesselj</code> <code>sphbessely</code>.
+<code>sphbesselj()</code> <code>sphbessely()</code>.
 
 
 ### Plotting with Matlab or gnuplot
@@ -528,14 +530,14 @@ Audio Engineering Society*, 2012
 [ [pdf](http://audio.qu.tu-berlin.de/wp-content/uploads/publications/2012/wierstorf2012_SFS_toolbox_AES.pdf) ]
 [ [bibtex](doc/aes132_paper.bib) ]
 
-Copyright (c) 2010-2014  
+Copyright (c) 2010-2015  
 Quality & Usability Lab, together with  
 Assessment of IP-based Applications  
 Telekom Innovation Laboratories, TU Berlin  
 Ernst-Reuter-Platz 7, 10587 Berlin, Germany 
 
 
-Copyright (c) 2013-2014  
+Copyright (c) 2013-2015  
 Institut fuer Nachrichtentechnik  
 Universitaet Rostock  
 Richard-Wagner-Strasse 31, 18119 Rostock

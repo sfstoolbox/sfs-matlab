@@ -22,17 +22,18 @@ function G = greens_function_mono(x,y,z,xs,src,f,conf)
 %   f.
 %
 %   References:
-%       Williams1999 - Fourier Acoustics (Academic Press)
+%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       PhD thesis, TU Berlin
 %
 %   see also: sound_field_mono
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -83,7 +84,7 @@ if strcmp('ps',src)
     % G(x-xs,w) = --- -----------------
     %             4pi      |x-xs|
     %
-    % see: Williams1999, p. 198
+    % see: Wierstorf (2014), p.21 (2.28)
     %
     G = 1/(4*pi) * exp(-1i*omega/c .* sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2)) ./ ...
             sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
@@ -91,13 +92,13 @@ if strcmp('ps',src)
 elseif strcmp('ls',src)
     % Source model for a line source: 2D Green's function.
     %
-    %                i   (2) / w        \
-    % G(x-xs,w) =  - -  H0  |  - |x-xs|  |
-    %                4       \ c        /
+    %              i   (2) / w        \
+    % G(x-xs,w) =  -  H0  |  - |x-xs|  |
+    %              4       \ c        /
     %
-    % see: Williams1999, p. 266
+    % see: Wierstorf (2014), p.22 (2.32)
     %
-    G = -1i/4 * besselh(0,2,omega/c* ...
+    G = 1i/4 * besselh(0,2,omega/c* ...
         sqrt( (x-xs(1)).^2 + (y-xs(2)).^2 + (z-xs(3)).^2 ));
 
 elseif strcmp('pw',src)
@@ -105,7 +106,7 @@ elseif strcmp('pw',src)
     %
     % G(x,w) = e^(-i w/c n x)
     %
-    % see: Williams1999, p. 21
+    % see: Wierstorf (2014), p.21 (2.23)
     %
     % direction of plane wave
     nxs = xs / norm(xs);

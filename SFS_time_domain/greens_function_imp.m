@@ -28,17 +28,18 @@ function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 %   [p,x,y,z] = sound_field_imp(X,Y,Z,[xs 0 -1 0],src,1,t,conf);
 %   
 %   References:
-%       Williams (1999) - "Fourier Acoustics", Academic Press
+%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       PhD thesis, TU Berlin
 %
 %   see also: greens_function_mono, sound_field_imp
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -87,7 +88,7 @@ if strcmp('ps',src)
     % g(x-xs,t) = ---------- delta(t - |x-xs|/c)
     %             4pi |x-xs|
     %
-    % see: Williams1999, p. FIXME: ??
+    % see: Wierstorf (2014), p.22 (2.29)
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
     g = 1./(4*pi.*r);
@@ -95,15 +96,16 @@ if strcmp('ps',src)
 
 elseif strcmp('ls',src)
     % Source model for a line source: 2D Green's function.
+    %                          ___
+    %              -1/ c\     | 1       1
+    % g(x-xs,t) = F |--  |  - |---  --_-_-_- delta(t - |x-xs|/c)
+    %                \iw/    \|8pi  \||x-xs|
     %
-    %              
-    % g(x-xs,t) =  
-    %              
-    %
-    % see: Williams1999, p. FIXME
+    % see: Wierstorf (2014), p.22 (2.33) 
+    % Note, that the filter F^-1 is not implemented!!!!
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
-    g = -1i./(4.*sqrt(r));
+    g = 1./sqrt(r) * sqrt(1/(8*pi));
     t = (r/c)*fs-t;
 
 elseif strcmp('pw',src)
@@ -111,7 +113,7 @@ elseif strcmp('pw',src)
     %
     % g(x,t) = delta(t - nx/c)
     %
-    % see: Williams1999, p. FIXME
+    % see: Wierstorf (2014), p.21 (2.24)
     %
     % direction of plane wave
     nxs = xs / norm(xs);

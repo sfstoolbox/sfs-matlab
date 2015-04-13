@@ -22,12 +22,12 @@ function [d] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %   see also: driving_function_imp_nfchoa_ps, sound_field_imp_nfchoa
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -83,6 +83,8 @@ R = norm(x0(1,1:3)-X0);
 % get maximum order of spherical harmonics
 order = nfchoa_order(nls,conf);
 
+% correct position of source for off-center arrays
+xs(1:3) = xs(1:3)-X0;
 % if-request as a workaround for the right direction of the sound field
 if strcmpi(src,'pw')
     [theta_src, r_src] = cart2pol(-xs(1),xs(2));

@@ -1,5 +1,5 @@
 function [z,p] = sphbesselh_zeros(order)
-%SPHBESSELH_ZEROS finds zeros of spherical hankel function
+%SPHBESSELH_ZEROS finds zeros/roots of spherical hankel function
 %
 %   Usage: [z,p] = sphbesselh_zeros(order)
 %
@@ -7,22 +7,21 @@ function [z,p] = sphbesselh_zeros(order)
 %       order       - order of hankel function
 %
 %   Output parameters:
-%       FIXME: correct the following documentation
-%       z       - zeros ...
-%       p       - zeros ...
+%       z       - zeros/roots fo the Bessel function
+%       p       - roots of the Bessel function
 %
-%   SPHBESSELH_ZEROS(order) finds zeros for a spherical hankel functino of
-%   the specified order.
+%   SPHBESSELH_ZEROS(order) finds zeros and roots for a spherical hankel functin
+%   of the specified order.
 %
 %   see also: sphbesselh, driving_function_imp_nfchoa
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *

@@ -21,12 +21,12 @@ function ir = ir_generic(X,phi,x0,d,irs,conf)
 %   see also: ir_wfs, ir_nfchoa, ir_point_source, auralize_ir
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -88,9 +88,6 @@ for ii=1:size(x0,1)
     % change to spherical coordinates
     [alpha,theta,r] = cart2sph(x_direction(1),x_direction(2),x_direction(3));
 
-    % === Secondary source model: Greens function ===
-    g = 1./(4*pi*r);
-
     % Incoporate head orientation and ensure -pi <= alpha < pi
     alpha = correct_azimuth(alpha-phi);
 
@@ -102,7 +99,7 @@ for ii=1:size(x0,1)
     % === Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay ===
     % Also applying the weights of the secondary sources including integration
     % weights or tapering windows etc.
-    ir_generic = ir_generic + fix_length(convolution(ir,d(:,ii)),N).*g.*x0(ii,7);
+    ir_generic = ir_generic + fix_length(convolution(ir,d(:,ii)),N).*x0(ii,7);
 
 end
 warning('on','SFS:irs_intpol');

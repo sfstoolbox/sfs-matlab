@@ -31,22 +31,21 @@ function [itd,idxleft,idxright] = interaural_time_difference(insigleft,insigrigh
 %   calculating the time difference.
 %
 %   References:
-%   Sandvad J, Hammershøi D (1994). Binaural Auralization. Comparison of
-%       FIR and IIR Filter Representation of HIRs.
-%       96th AES Conv.
-%   Lindau A, Estrella J, Weinzierl S (2010). Individualization of
-%   dynamic binaural synthesis by real time manipulation of the ITD.
+%       J. Sandvad, D. Hammershøi (1994) - "Binaural Auralization. Comparison of
+%       FIR and IIR Filter Representation of HIRs", 96th AES Conv.
+%       A. Lindau, J. Estrella, S. Weinzierl (2010) - "Individualization of
+%       dynamic binaural synthesis by real time manipulation of the ITD",
 %       128th AES Conv.
 %
 %   see also: interaural_level_difference
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *

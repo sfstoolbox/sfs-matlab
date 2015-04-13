@@ -1,26 +1,29 @@
 function draw_loudspeakers(x0,dimensions,conf)
-%DRAW_LOUDSPEAKERS draws loudspeaker symbols or "x" at the given positions
+%DRAW_LOUDSPEAKERS draws loudspeaker symbols or "o" at the given positions
 %
 %   Usage: draw_loudspeakers(x0,[dimensions],[conf])
 %
 %   Input options:
 %       x0          - positions and directions of the loudspeakers / m
+%       dimensions  - dimension defining the plane in which the loudspeaker
+%                     symbol should be plotted. For example [1 1 0] corresponds
+%                     to the xy-plane
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   DRAW_LOUDSPEAKERS(x0,dimensions) draws loudspeaker symbols or crosses at
-%   the given secondary source positions. This can be controlled by the
+%   DRAW_LOUDSPEAKERS(x0,dimensions) draws loudspeaker symbols or filled points
+%   at the given secondary source positions. This can be controlled by the
 %   conf.plot.realloudspeakers setting. The loudspeaker symbols are pointing in
 %   their given direction.
 %
-%   see also: plot_wavefield
+%   see also: plot_sound_field
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *

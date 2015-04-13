@@ -1,25 +1,21 @@
 function hpre = wfs_iir_prefilter(conf)
 %WFS_IIR_PREFILTER creates a minimum-phase IIR pre-equalization filter for WFS
 %
-%note: this function may be only work within Matlab due to usage of
-%fdesign-functionality
-%tests and implementation for octave TBD!
-%
 %   Usage: hpre = wfs_iir_prefilter([conf])
 %
 %   Input parameters:
 %       conf    - optional configuration struct (see SFS_config)
 %
 %       must at least include:
-%           conf.fs = 44100;        % sampling frequency / Hz
-%           conf.hpreflow = 200;    % lower shelving frequency for coupling
-%                                     subwoofers and adapt the low frequency
-%                                     to different array lengths / Hz
-%           conf.hprefhigh = 1500;  % higher shelving frequency to adapt to
-%                                     actual aliasing frequeny / Hz
-%           conf.hpreBandwidth_in_Oct = 2; % bandwidth for the Lagrange
-%                                     interpolation region / octaves
-%           conf.hpreIIRorder = 4;  % desired IIR filter order
+%           conf.fs = 44100;           - sampling frequency / Hz
+%           conf.wfs.hpreflow = 200;   - lower shelving frequency for coupling
+%                                        subwoofers and adapt the low frequency
+%                                        to different array lengths / Hz
+%           conf.wfs.hprefhigh = 1500; - higher shelving frequency to adapt to
+%                                        actual aliasing frequeny / Hz
+%           conf.wfs.hpreBandwidth_in_Oct = 2;  - bandwidth for the Lagrange
+%                                                 interpolation region / octaves
+%           conf.wfs.hpreIIRorder = 4; - desired IIR filter order
 %
 %   Output parameters:
 %        hpre   - iir pre-equalization filter as a struct with the following
@@ -34,11 +30,13 @@ function hpre = wfs_iir_prefilter(conf)
 %
 %   Required Functions:
 %   get_shelve_lagrange.m (included in SFS-toolbox)
-%   fdesign (included in the Matlab DSP System/Filter Design/Signal Processing Toolbox)
+%   fdesign (included in the Matlab Signal Processing Toolbox, requiring DSP System Design Toolbox)
 %
 %
 %   WFS_IIR_PREFILTER(conf) calculates a sqrt(j k) pre-equalization filter
 %   with high shelving characterstics for Wave Field Synthesis.
+%   Note, this function does not work in Octave, use conf.wfs.hpretype='FIR'
+%   instead.
 %
 %   for details see [Sch13]:
 %   Frank Schultz, Vera Erbes, Sascha Spors, Stefan Weinzierl (2013):
@@ -52,12 +50,12 @@ function hpre = wfs_iir_prefilter(conf)
 
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -84,35 +82,40 @@ function hpre = wfs_iir_prefilter(conf)
 % Revision: 07/02/2013 frank.schultz@uni-rostock.de initial development      *
 %*****************************************************************************
 
-debug = 1;
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 0;
 nargmax = 1;
 narginchk(nargmin,nargmax);
 if nargin<nargmax
-    %conf = SFS_config;
     %apply a default, this refers to eq. (3) in [Sch13]
     conf.fs = 44100;
-    conf.hpreflow = 125;
-    conf.hprefhigh = 2000;
-    conf.hpreBandwidth_in_Oct = 2;
-    conf.hpreIIRorder = 1;
+    conf.wfs.hpreflow = 125;
+    conf.wfs.hprefhigh = 2000;
+    conf.wfs.hpreBandwidth_in_Oct = 2;
+    conf.wfs.hpreIIRorder = 1;
 else
     isargstruct(conf);
 end
+% This function is not working in Octave at the moment.
+if isoctave
+    error(['%s: Not available under Octave, please use ', ...
+        'conf.wfs.hpretype="FIR"'],upper(mfilename));
+end
+
 
 %% ===== Configuration ==================================================
 fs = conf.fs;               % Sampling rate
-fsub = conf.hpreflow;       % Lower frequency limit of preequalization
+fsub = conf.wfs.hpreflow;       % Lower frequency limit of preequalization
                             % filter (= frequency when subwoofer is active)
-falias = conf.hprefhigh;    % Upper frequency limit of preequalization
+falias = conf.wfs.hprefhigh;    % Upper frequency limit of preequalization
                             % filter (= aliasing frequency of system)
 
 % bandwidth in octaves for lagrange interpolation region
 %at the moment only 0.5, 1,2,3 or 4
-Bandwidth_in_Oct = conf.hpreBandwidth_in_Oct;
-IIRorder = conf.hpreIIRorder;
+Bandwidth_in_Oct = conf.wfs.hpreBandwidth_in_Oct;
+IIRorder = conf.wfs.hpreIIRorder;
+debug = conf.debug;
 
 
 %% ===== Variables ======================================================

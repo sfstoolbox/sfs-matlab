@@ -18,18 +18,15 @@ function D = driving_function_mono_nfchoa_ls(x0,xs,f,N,conf)
 %   signals for the given secondary sources, the virtual line source position
 %   and the frequency f.
 %
-%   References:
-%       FIXME: Update references
-%
 %   see also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_ls
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *

@@ -40,20 +40,19 @@ function [P,x,y,z] = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
 %   field.
 %
 %   References:
-%       S. Spors (2010) - "Reproduction of Focused Sources by the Spectral Division
-%           Method"
-%       S. Spors (2010) - "Analysis and Improvement of Pre-equalization in
-%       2.5-Dimensional Wave Field Synthesis"
+%       S. Spors, J. Ahrens (2010) - "Analysis and Improvement of
+%       Pre-equalization in 2.5-Dimensional Wave Field Synthesis", 128th AES
+%       Conv.
 %
 %   see also: plot_sound_field, sound_field_mono_sdm
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -127,18 +126,18 @@ idxev = (( abs(kx) > (omega/c) ));
 %
 % === Secondary source model ===
 Gkx = zeros(length(kx),length(y));
-% Green's function for a point source in the spectro-temporal domain (see
-% Spors2010)
+% Green's function for a point source in the spectro-temporal domain, see
+% Spors (2010)
 %                                  ____________
 %                 / -i/4 H0^(2)( \|(w/c)^2-kx^2 y )
 % G_3D(kx,y,w) = <                ____________
 %                 \ 1/(2pi) K0( \|kx^2-(w/c)^2 y )
 %
 [K,Y] = meshgrid(kx(idxpr),abs(y-X0(2)));
-Gkx(idxpr,:) = -1j/4 .* besselh(0,2,sqrt( (omega/c)^2 - K.^2 ).* Y)';
+Gkx(idxpr,:) = -1j/4 .* besselh(0,2,sqrt( (omega/c)^2 - K.^2 ).* Y).';
 if(withev)
     [K,Y] = meshgrid(kx(idxev),abs(y-X0(2)));
-    Gkx(idxev,:) = 1/(2*pi) .* besselk(0,sqrt( K.^2 - (omega/c)^2).* Y)';
+    Gkx(idxev,:) = 1/(2*pi) .* besselk(0,sqrt( K.^2 - (omega/c)^2).* Y).';
 end
 
 % ========================================================================
@@ -153,7 +152,7 @@ Dkx = driving_function_mono_sdm_kx(kx,xs,src,f,conf);
 %% =======================================================================
 % Reproduced field
 % Pkx = Dkx * Gkx
-Pkx = repmat(Dkx',1,length(y)) .* Gkx;
+Pkx = repmat(Dkx.',1,length(y)) .* Gkx;
 
 
 %% ===== Inverse spatial Fourier transformation =========================

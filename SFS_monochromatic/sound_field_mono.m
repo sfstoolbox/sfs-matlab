@@ -35,17 +35,17 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %   To plot the result use plot_sound_field(P,x,y,z).
 %
 %   References:
-%       Williams (1999) - "Fourier Acoustics", Academic Press
+%       G. Williams (1999) - "Fourier Acoustics", Academic Press
 %
 %   see also: plot_sound_field, sound_field_mono_wfs_25d
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -125,7 +125,7 @@ for ii = 1:size(x0,1)
     % P(x,omega) = | D(x0,omega) G(x-x0,omega) dx0
     %              /
     %
-    % see: Spors2009, Williams1993 p. 36
+    % see: Williams1993 p. 36
     % x0(ii,7) is a weight for the single secondary sources which includes for
     % example a tapering window for WFS or a weighting of the sources for
     % integration on a sphere.

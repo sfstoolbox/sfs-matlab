@@ -15,12 +15,12 @@ function boolean = test_hrtf_extrapolation(hrtf_set)
 %   correctly.
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -75,6 +75,7 @@ if strcmp('QU_KEMAR',hrtf_set)
     conf.fracdelay_method = 'resample';
     conf.ir.useinterpolation = true;
     conf.ir.useoriglength = false;
+    conf.showprogress = true;
     % check if HRTF data set is available, download otherwise
     basepath = get_sfs_path();
     hrtf_file = [basepath '/data/HRTFs/QU_KEMAR_anechoic_3m.mat'];
@@ -106,6 +107,8 @@ if strcmp('QU_KEMAR',hrtf_set)
     legend('original','extrapolated');
     title('Interaural Level Differences');
 elseif strcmp('FABIAN_3D',hrtf_set)
+    error(['%s: the FABIAN 3D data set is not publicly available at the ' ...
+    'moment.'],upper(mfilename));
     % SEACEN FABIAN 3D HRTFs
     disp('Extrapolate SEACEN FABIAN anechoic ...');
     % extrapolation settings
@@ -123,31 +126,31 @@ elseif strcmp('FABIAN_3D',hrtf_set)
     conf.usefracdelay = false;
     conf.fracdelay_method = 'resample';
     conf.ir.useinterpolation = true;
-    conf.ir.path = 'D:\svn\ir_databases\';
     conf.ir.useoriglength = false;
+    conf.showprogress = true;
     addirspath(conf);
     hrtf_file = 'FABIAN_3d_anechoic.mat';
     % load HRTF data set
     irs = read_irs(hrtf_file,conf);
     % do the extrapolation
     irs_pw = extrapolate_farfield_hrtfset(irs,conf);
-    save FABIAN_3D_extrapolated.mat irs_pw
+    %save FABIAN_3D_extrapolated.mat irs_pw
     % plot the original HRTF data set
-%     figure;
-%     imagesc(deg(irs.apparent_azimuth),1:size(irs.left,1),irs.left);
-%     title('SEACEN FABIAN anechoic 1.7m');
-%     xlabel('phi / deg');
-%     % plot the interplated HRTF data set
-%     figure;
-%     imagesc(deg(irs_pw.apparent_azimuth),1:size(irs_pw.left,1),irs_pw.left);
-%     title('SEACEN FABIAN anechoic extrapolated');
-%     xlabel('phi / deg');
-%     % ILD of both HRTF sets
-%     ild1 = interaural_level_difference(irs.left,irs.right);
-%     ild2 = interaural_level_difference(irs_pw.left,irs_pw.right);
-%     figure;
-%     plot(deg(irs.apparent_azimuth),ild1,'-b', ...
-%          deg(irs.apparent_azimuth),ild2,'-r');
-%     legend('original','extrapolated');
-%     title('Interaural Level Differences');
+    figure;
+    imagesc(deg(irs.apparent_azimuth),1:size(irs.left,1),irs.left);
+    title('SEACEN FABIAN anechoic 1.7m');
+    xlabel('phi / deg');
+    % plot the interplated HRTF data set
+    figure;
+    imagesc(deg(irs_pw.apparent_azimuth),1:size(irs_pw.left,1),irs_pw.left);
+    title('SEACEN FABIAN anechoic extrapolated');
+    xlabel('phi / deg');
+    % ILD of both HRTF sets
+    ild1 = interaural_level_difference(irs.left,irs.right);
+    ild2 = interaural_level_difference(irs_pw.left,irs_pw.right);
+    figure;
+    plot(deg(irs.apparent_azimuth),ild1,'-b', ...
+         deg(irs.apparent_azimuth),ild2,'-r');
+    legend('original','extrapolated');
+    title('Interaural Level Differences');
 end

@@ -27,12 +27,12 @@ function ir = get_ir(irs,xs,coordinate_system,conf)
 %   see also: read_irs, slice_irs, intpol_ir 
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -152,7 +152,7 @@ else
             irs.distance(idx(2)),r,conf);
         ir3 = correct_radius([irs.left(:,idx(3)) irs.right(:,idx(3))], ...
             irs.distance(idx(3)),r,conf);
-        ir = intpot_ir(ir1,ir2,ir3,[neighbours; 1 1 1],[xs;1]);
+        ir = intpol_ir(ir1,ir2,ir3,[neighbours; 1 1 1],[xs;1]);
     end
 end
 end
@@ -166,7 +166,7 @@ function ir = correct_radius(ir,ir_distance,r,conf)
         delay = (r-ir_distance)/conf.c*conf.fs; % / samples
         % Amplitude weighting (point source model)
         % This gives weight=1 for r==ir_distance
-        weight = 1/(r-ir_distance+20) * 20;
+        weight = ir_distance/r;
         if abs(delay)>size(ir,1)
             error(['%s: your impulse response is to short for a desired ', ...
                 'delay of %i samples.'],upper(mfilename),delay);

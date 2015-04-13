@@ -18,19 +18,19 @@ function D = driving_function_mono_sdm_kx_pw(kx,nk,f,conf)
 %   frequency f. The driving signal is calculated in the kx domain.
 %
 %   References:
-%       J. Ahrens, S. Spors - "Sound Field Reproduction Using Planar and Linear
-%       Arrays of Loudspeakers", Transactions on Audio, Speech and Language
-%       Processing, Volume 18(8), p. 2038-2050, 2010
+%       J. Ahrens and S. Spors (2010) - "Sound Field Reproduction Using Planar
+%       and Linear Arrays of Loudspeakers", Transactions on Audio, Speech and
+%       Language Processing, Volume 18(8), p. 2038-2050
 %
 %   see also: driving_function_mono_sdm_kx, sound_field_mono_sdm_kx
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -106,13 +106,15 @@ elseif strcmp('2.5D',dimension)
     % Reference point
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        % D_2.5D using a plane wave as source model, after Ahrens (2010) eq. 17
+        % D_2.5D using a plane wave as source model
         %                  
         %                   e^(-i w/c nky*xrefy)
         % D_2.5D(x0,w) = 4i ----------------------
         %                     (2) /w          \
         %                    H0  | - nky*xrefy |
         %                         \c          /
+        %
+        % see Ahrens and Spors (2010), (17)
         %
         idx = find(kx>=omega/c*nk(:,1),1,'first');
         D(idx) = 4*1i*exp(-1i*omega/c*nk(2).*xref(2)) / ...

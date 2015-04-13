@@ -19,20 +19,18 @@ function D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf)
 %   frequency f.
 %
 %   References:
-%       FIXME: Update references
-%       Spors2010 - Analysis and Improvement of Pre-equalization in
-%           2.5-Dimensional Wave Field Synthesis (AES128)
-%       Williams1999 - Fourier Acoustics (Academic Press)
+%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       PhD thesis, TU Berlin
 %
 %   see also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -98,6 +96,8 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % D(x0,w) =  - -- -----------  H1  | - |x0-xs| |
         %              2c   |x0-xs|        \ c         /
         %
+        % see Wierstorf (2014), p.26 (2.55)
+        %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % driving signal
@@ -129,15 +129,17 @@ elseif strcmp('2.5D',dimension)
         g0 = sqrt(2*pi*vector_norm(xref-x0,2));
         %
         % D_2.5D using a line source
-        %                        ___
-        %                   1   |i w  (x0-xs) nx0   (2)/ w         \
-        % D_2.5D(x0,w) =  - - _ |---  -----------  H1  | - |x0-xs| |
-        %                   2  \| c    |x0-xs|         \ c         /
+        %                         ___
+        %                   g0   |i w  (x0-xs) nx0   (2)/ w         \
+        % D_2.5D(x0,w) =  - -- _ |---  -----------  H1  | - |x0-xs| |
+        %                   2   \| c    |x0-xs|         \ c         /
+        %
+        % see Wierstorf (2014), p.26 (2.56)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % driving signal
-        D = -1/2.*g0 .* sqrt(i*omega/c) .* vector_product(x0-xs,nx0,2) ./ r .* ...
+        D = -g0/2 .* sqrt(i*omega/c) .* vector_product(x0-xs,nx0,2) ./ r .* ...
             besselh(1,2,omega/c.*r);
         %
     elseif strcmp('delft1988',driving_functions)

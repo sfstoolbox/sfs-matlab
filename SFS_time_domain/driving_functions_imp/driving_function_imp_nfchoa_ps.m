@@ -17,15 +17,20 @@ function sos = driving_function_imp_nfchoa_ps(N,R,r,conf)
 %   representation for the NFC-HOA driving function for a virtual point source
 %   as source model.
 %
+%   References:
+%       S. Spors, V. Kuscher, J. Ahrens (2011) - "Efficient realization of
+%       model-based rendering for 2.5-dimensional near-field compensated higher
+%       order Ambisonics", WASPAA, p. 61-64
+%
 %   see also: sound_field_imp, sound_field_imp_nfchoa, driving_function_imp_nfchoa
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -96,8 +101,12 @@ elseif strcmp('2.5D',dimension)
     % Reference point
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        % FIXME. add documentation
-        sos = zp2sos(z*c/r,z*c/R,1,'up','none');
+        % 2.5D using a point source as source model
+        %
+        [sos,~] = zp2sos(z*c/r,z*c/R,1,'up','none');
+        %
+        % compare Spors et al. (2011)
+        %
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D point source.'],upper(mfilename),driving_functions);

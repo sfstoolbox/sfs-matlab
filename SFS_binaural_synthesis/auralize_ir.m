@@ -28,12 +28,12 @@ function outsig = auralize_ir(ir,content,usenorm,conf)
 %   see also: auralize_ir_file, ir_wfs, ir_generic, ir_point_source
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -88,15 +88,15 @@ if isnumeric(content)
     contentfs = conf.fs;
 else
     if strcmp(content,'castanets')
-        contentfile = conf.castanetsfile;
+        contentfile = conf.ir.castanetsfile;
     elseif strcmp(content,'speech')
-        contentfile = conf.speechfile;
+        contentfile = conf.ir.speechfile;
     elseif strcmp(content,'cello')
-        contentfile = conf.cellofile;
+        contentfile = conf.ir.cellofile;
     elseif strcmp(content,'noise')
-        contentfile = conf.noisefile;
+        contentfile = conf.ir.noisefile;
     elseif strcmp(content,'pinknoise')
-        contentfile = conf.pinknoisefile;
+        contentfile = conf.ir.pinknoisefile;
     elseif ~exist(content,'file')
         error('%s: %s file was not found.',upper(mfilename),content);
     else

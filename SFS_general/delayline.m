@@ -20,12 +20,12 @@ function sig = delayline(sig,dt,weight,conf)
 %   see also: get_ir, driving_function_imp_wfs
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -54,7 +54,6 @@ function sig = delayline(sig,dt,weight,conf)
 
 %% ===== Configuration ==================================================
 usefracdelay = conf.usefracdelay;
-fracdelay_method = conf.fracdelay_method;
 
 
 %% ===== Computation =====================================================
@@ -65,6 +64,9 @@ if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
 
 
 if usefracdelay
+
+    % additional configuration
+    fracdelay_method = conf.fracdelay_method;
 
     rfactor = 100; % resample factor (1/stepsize of fractional delays)
     Lls = 30;      % length of least-squares factional delay filter

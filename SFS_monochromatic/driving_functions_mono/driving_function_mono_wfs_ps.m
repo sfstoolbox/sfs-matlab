@@ -19,22 +19,29 @@ function D = driving_function_mono_wfs_ps(x0,nx0,xs,f,conf)
 %   frequency f.
 %
 %   References:
-%       FIXME: Update references
-%       Spors2009 - Physical and Perceptual Properties of Focused Sources in
-%           Wave Field Synthesis (AES127)
-%       Spors2010 - Analysis and Improvement of Pre-equalization in
-%           2.5-Dimensional Wave Field Synthesis (AES128)
-%       Williams1999 - Fourier Acoustics (Academic Press)
+%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       PhD thesis, TU Berlin
+%       S. Spors, R. Rabenstein, J. Ahrens (2008) - "The Theory of Wave Field
+%       Synthesis Revisited", AES124
+%       E. Verheijen (1997) - "Sound Reproduction by Wave Field Synthesis", PhD
+%       thesis, TU Delft
+%       D. Opperschall (2002) - "Realisierung eines Demonstrators für
+%       Punktquellen und ebene Wellen für ein Wellenfeldsynthese-System",
+%       Master thesis, Universität Erlangen-Nürnberg
+%       F. Völk (2010) - "Psychoakustische Experimente zur Distanz mittels
+%       Wellenfeldsynthese erzeugter Hörereignisse", DAGA, p.1065-66
+%       S. Spors, J. Ahrens (2010) - "Analysis and Improvement of
+%       Pre-equalization in 2.5-Dimensional Wave Field Synthesis", AES128
 %
 %   see also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -96,37 +103,46 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % --- SFS Toolbox ------------------------------------------------
         % D using a point sink and large distance approximation
         %
-        %              1  i w  (x0-xs) nx0
-        % D(x0,w) = - --- --- ------------- e^(-i w/c |x0-xs|)
-        %             2pi  c  |x0-xs|^(3/2)
+        %            1  i w  (x0-xs) nx0
+        % D(x0,w) = --- --- ------------- e^(-i w/c |x0-xs|)
+        %           2pi  c  |x0-xs|^(3/2)
+        %
+        % see Wierstorf (2014), p.26 (2.50)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % driving signal
-        D = -1/(2*pi) .* (1i*omega)/c .* ...
+        D = 1/(2*pi) .* (1i*omega)/c .* ...
             vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c.*r);
         %
     elseif strcmp('point_source',driving_functions)
         % D using a point source as source model
         %
-        %              1  / i w      1    \  (x0-xs) nx0
-        % D(x0,w) = - --- | --- - ------- |  ----------- e^(-i w/c |x0-xs|)
-        %             2pi \  c    |x0-xs| /   |x0-xs|^2
+        %            1  / i w      1    \  (x0-xs) nx0
+        % D(x0,w) = --- | --- - ------- |  ----------- e^(-i w/c |x0-xs|)
+        %           2pi \  c    |x0-xs| /   |x0-xs|^2
+        %
+        % see Wierstorf (2014), p.25 (2.48)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % driving signal
-        D = -1/(2*pi) .* ( (1i*omega)/c - 1./r ) .* ...
+        D = 1/(2*pi) .* ( (1i*omega)/c - 1./r ) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(-1i*omega/c.*r);
         %
     elseif strcmp('line_source',driving_functions)
         % D using a line source as source model (truly 2D model)
-        % Spors et al, The theory of Wave Field Synthesis Revisited, 2008,
-        % AES. Equation (23)
+        %
+        %             1  i w (x0-xs) nx0  (2)/ w         \
+        % D(x0,x) = - -- --- ----------- H1  | - |x0-xs| |
+        %             2c  c    |x0-xs|       \ c         /
+        %
+        % see Spors et al. (2008), (23)
+        %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % driving signal
-        D = 1i*omega/c * vector_product(x0-xs,nx0,2) ./ r .* besselh(1,2,omega/c*r);
+        D = -1/(2*c) .* 1i*omega/c * vector_product(x0-xs,nx0,2) ./ r .* besselh(1,2,omega/c*r);
         %
         %
     elseif strcmp('delft1988',driving_functions)
@@ -155,14 +171,16 @@ elseif strcmp('2.5D',dimension)
         %
         % D_2.5D using a point source and large distance approximation
         %                         ___
-        %                  g0    |i w  (x0-xs) nx0
-        % D_2.5D(x0,w) = - --- _ |--- ------------- e^(-i w/c |x0-xs|)
-        %                  2pi  \| c  |x0-xs|^(3/2)
+        %                g0    |i w  (x0-xs) nx0
+        % D_2.5D(x0,w) = --- _ |--- ------------- e^(-i w/c |x0-xs|)
+        %                2pi  \| c  |x0-xs|^(3/2)
+        %
+        % see Wierstorf (2014), p.26 (2.51)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % driving signal
-        D = -g0/(2*pi) .* sqrt(1i*omega/c) .* ...
+        D = g0/(2*pi) .* sqrt(1i*omega/c) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c.*r);
         %
     elseif strcmp('point_source',driving_functions)
@@ -176,9 +194,11 @@ elseif strcmp('2.5D',dimension)
         %
         % D_2.5D(x0,w) =
         %             ___       ___
-        %    g0  /   |i w      | c      1    \  (x0-xs) nx0
-        %   ---  | _ |---  - _ |---  ------- |  ----------- e^(-i w/c |x0-xs|)
-        %   2pi  \  \| c      \|i w  |x0-xs| /   |x0-xs|^2
+        %  g0  /   |i w      | c      1    \  (x0-xs) nx0
+        % ---  | _ |---  - _ |---  ------- |  ----------- e^(-i w/c |x0-xs|)
+        % 2pi  \  \| c      \|i w  |x0-xs| /   |x0-xs|^2
+        %
+        % see Wierstorf (2014), p.25 (2.49)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -188,59 +208,89 @@ elseif strcmp('2.5D',dimension)
         %
     elseif strcmp('delft1988',driving_functions)
         % --- Delft 1988 -------------------------------------------------
-        % Verheijen, Sound Reproduction by Wave Field Synthesis, PhD Thesis
-        % Equation (2.27)
-        % Note: So far this works only for a linear secondary source distribution
-        %       located on the y-axis
+        % D_2.5 using a point source as source model (after Delft)
         %
         % 2.5D correction factor
         %        _______________________
         % g0 = \| -y_ref / (y_s - y_ref)
         %
         g0 = sqrt(- xref(1,2) / (xs(1,2) - xref(1,2)));
+        %                      _____
+        %                     |i w   (x0-xs) nx0
+        % D_2.5D(x0,w) = g0 _ |----- ------------  e^(-i w/c |x0-xs|)
+        %                    \|2pi c |x0-xs|^(3/2)
+        %
+        % see Verheijen (1997), p.41 (2.27)
+        %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % driving signal
-        D = sqrt(1i*omega/c/(2*pi)) * g0 * vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c .* r);
+        D = sqrt(1i*omega/(2*pi*c)) * g0 * vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c .* r);
         %
     elseif strcmp('opperschall',driving_functions)
         % --- Opperschall -------------------------------------------------
-        % Opperschall, Equation (3.14)
-        % Note: Driving function with only one stationary phase
+        % Driving function with only one stationary phase
         % approximation, reference to one point in field
         %
         % 2.5D correction factor
+        %         _____________________
+        %        |      |xref-x0|      
+        % g0 = _ |---------------------
+        %       \| |x0-xs| + |xref-x0|
+        %
         g0 = sqrt( vector_norm(x0-xref,2) ./ (vector_norm(xs-x0,2) + vector_norm(x0-xref,2)) );
+        %                      ______
+        %                     | i w    (x0-xs) nx0
+        % D_2.5D(x0,w) = g0 _ |------ ------------- e^(-i w/c |x0-xs|)
+        %                    \|2pi c  |x0-xs|^(3/2)
+        %
+        % see Opperschall (2002), p.14 (3.1), (3.14), (3.15)
+        %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % driving signal
-        D = sqrt(2*pi*1i*omega/c) * g0 .* vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c .* r);
+        D = sqrt(1i*omega/(2*pi*c)) * g0 .* vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c .* r);
         %
     elseif strcmp('volk2010',driving_functions)
         % --- Voelk 2010 --------------------------------------------------
+        %         _____________________
+        %        |      |xref-x0|      
+        % g0 = _ |---------------------
+        %       \| |x0-xs| + |xref-x0|
+        %
+        g0 = sqrt( vector_norm(xref-x0,2) ./ (vector_norm(xs-x0,2) + vector_norm(x0-xref,2)) );
         %
         % D_2.5D(x0,w) = 
-        %    ___    ___    _____________________
-        %   | 1    |i w   |      |xref-x0|         (x0-xs) nx0
-        % _ |--- _ |--- _ |---------------------  ------------- e^(-i w/c |x0-xs|)
-        %  \|2pi  \| c   \| |x0-xs| + |xref-x0|   |x0-xs|^(3/2)
+        %       ___    ___
+        %      | 1    |i w (x0-xs) nx0
+        % g0 _ |--- _ |--- ------------- e^(-i w/c |x0-xs|)
+        %     \|2pi  \| c  |x0-xs|^(3/2)
         %
-        g0 = vector_norm(xref-x0,2);
+        % see Völk (2010), (3)
+        %
         r = vector_norm(x0-xs,2);
-        D = 1/sqrt(2*pi) * sqrt(1i*omega/c) * sqrt(g0/(r+g0)) * ...
+        D = g0/sqrt(2*pi) * sqrt(1i*omega/c) * ...
             vector_product(x0-xs,nx0,2)./r.^(3/2) .* exp(-1i*omega/c.*r); 
         %
     elseif strcmp('SDMapprox',driving_functions)
         % --- Spors 2010 --------------------------------------------------
-        % Driving function derived by approximation of the SDM, eq(24) in
-        % AES Paper "Analysis and Improvement of Pre-Equalization in 2.5-
-        % Dimensional Wave Field Synthesis
+        % Driving function derived by approximation of the SDM
+        %
+        % 2.5D correction factor
+        %        _______________________
+        % g0 = \| -y_ref / (y_s - y_ref)
+        %
         g0 = sqrt(- xref(1,2) / (xs(1,2) - xref(1,2)));
+        %
+        %                1 i w       ys    (2)/w       \
+        % D_2.5D(x0,w) = - --- g0 ------- H1 | -|x0-xs| |
+        %                2  c     |x0-xs|     \c       /
+        %
+        % see Spors and Ahrens (2010), (24)
+        %
         r = vector_norm(x0-xs,2);
-        D = 1i*omega/c * g0 * xs(1,2)./r .* besselh(1,2,omega/c*r);
+        D = 1/2 * 1i*omega/c * g0 * xs(1,2)./r .* besselh(1,2,omega/c*r);
         %
-        %
-    
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D point source.'],upper(mfilename),driving_functions);

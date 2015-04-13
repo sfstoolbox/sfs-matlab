@@ -1,4 +1,4 @@
-function ir = interpolate_ir(ir,x0,xs,conf)
+function ir_new = interpolate_ir(ir,x0,xs,conf)
 %INTERPOLATE_IR interpolates three given IRs for the given angle
 %
 %   Usage: ir = interpolate_ir(ir,x0,xs)
@@ -72,12 +72,12 @@ prec = 0.001; % ~ 0.05 deg
 
 
 %% ===== Computation ====================================================
+ir_new = ir(1,:,:);
 % Check if we have found directly the desired point or have to interpolate
 % bewteen different impulse responses
 if norm(x0(:,1)-xs)<prec || ~useinterpolation
-    disp('No interpolaton.');
     % Return the first nearest neighbour
-    ir = ir(1,:,:);
+    return;
 else
     % === IR interpolation ===
     % Check if we have to interpolate in one or two dimensions
@@ -88,7 +88,8 @@ else
              'and (%.1f,%.1f) deg.'], ...
             deg(x0(1,1)), deg(x0(2,1)), ...
             deg(x0(1,2)), deg(x0(2,2)));
-        ir = interpolation(ir(1:2,:,:),x0(1:2,:),xs);
+        ir_new(1,1,:) = interpolation(squeeze(ir(1:2,1,:))',x0(1:2,:),xs);
+        ir_new(1,2,:) = interpolation(squeeze(ir(1:2,2,:))',x0(1:2,:),xs);
     else
         % --- 2D interpolation ---
         warning('SFS:irs_intpol3D',...
@@ -97,6 +98,7 @@ else
             deg(x0(1,1)), deg(x0(2,1)), ...
             deg(x0(1,2)), deg(x0(2,2)), ...
             deg(x0(1,3)), deg(x0(2,3)));
-        ir = interpolation(ir,x0,xs);
+        ir_new(1,1,:) = interpolation(squeeze(ir(1:3,1,:))',x0(1:3,:),xs);
+        ir_new(1,2,:) = interpolation(squeeze(ir(1:3,2,:))',x0(1:3,:),xs);
     end
 end

@@ -4,19 +4,22 @@ function ir = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %   Usage: ir = get_ir(sofa,X,head_orientation,xs,[coordinate_system],[conf])
 %
 %   Input parameters:
-%       sofa    - impulse response data set (sofa struct/file)
-%       X       - position of the listener, specified in the defined
-%                 coordinate_system, see below
-%       head_orientation  - orientation of the listener with phi / rad,
-%                           delta / rad
-%       xs      - position of the desired source, specified in the defined
-%                 coordinate_system, see below
+%       sofa              - impulse response data set (sofa struct/file)
+%       X                 - position of the listener, specified in the defined
+%                           coordinate_system, see below
+%       head_orientation  - orientation of the listener with [phi theta] /
+%                           (rad, rad)
+%       xs                - position of the desired source, specified in the
+%                           defined coordinate_system, see below
 %       coordinate_system - coordinate system xs is specified in, avialable
 %                           systems are:
-%                             'spherical' - spherical system with phi / rad,
-%                                           delta / rad, r / m  (default)
-%                             'cartesian' - cartesian system with x,y,z / m
-%       conf        - optional configuration struct (see SFS_config)
+%                             'spherical' - spherical system (default) with
+%                                           [phi theta r] / (rad, rad, m)
+%                             'cartesian' - cartesian system with [x y z] / m
+%       conf              - optional configuration struct (see SFS_config),
+%                           which will be passed to:
+%                             interpolate_ir
+%                             ir_correct_distance (only for SimpleFreeFieldHRIR)
 %
 %   Output parameters:
 %       ir      - impulse response for the given position (length of IR x 2)
@@ -25,11 +28,15 @@ function ir = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %   the given SOFA file or struct. The impulse response is determined by the
 %   position X and head orientation head_orientation of the listener, and the
 %   position xs of the desired point source.
-%   The desired distance between point source and listener is achieved by
-%   delaying and weighting the impulse response. Distances larger than 10m are
-%   ignored and set constantly to 10m. If the desired angles are not
-%   present in the SOFA data set and conf.ir.useinterpolation is set to true
-%   an interpolation is applied to create the impulse response.
+%   For the SOFA convention SimpleFreeFieldHRIR the desired distance between
+%   the point source and listener is achieved by delaying and weighting the
+%   impulse response. Distances larger than 10m are ignored and set constantly
+%   to 10m.
+%   If the desired angles are not present in the SOFA data set and
+%   conf.ir.useinterpolation is set to true an interpolation is applied to
+%   create the impulse response. For the SOFA convention MultiSpeakerBRIR the
+%   interpolation is only performed for the head orientations not the different
+%   loudspeaker positions.
 %   A further configuration setting that is considered is conf.ir.useoriglength,
 %   which indicates if additional zeros corresponding to the actual radius of
 %   the measured impulse responses should be added at the beginning of every
@@ -40,10 +47,9 @@ function ir = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %   beginning of every impulse response.
 %
 %   For a description of the SOFA file format see: http://sofaconventions.org
-%   FIXME: ask Piotr if we should now reference the AES standard together with
-%   the web site?
 %
-%   see also: SOFAload, sofa_get_header, sofa_get_data, intpol_ir 
+%   See also: SOFAload, sofa_get_header, sofa_get_data_fir, sofa_get_data_fire,
+%             intpolate_ir, ir_correct_distance
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -98,12 +104,6 @@ if length(head_orientation)==1
 end
 
 
-%% ===== Configuration ==================================================
-% In subfunctions the following configurations are used, see below
-% conf.ir.useinterpolation
-% conf.ir.useoriglength
- 
-
 %% ===== Computation ====================================================
 %
 % === SOFA loading ===
@@ -124,6 +124,9 @@ xs = [correct_azimuth(xs(1)-X(1)-head_orientation(1)) ...
 
 % === Get Impulse Response ===
 if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
+
+    % http://www.sofaconventions.org/mediawiki/index.php/SimpleFreeFieldHRIR
+    %
     % Returns a single impulse response for the specified position. The impulse
     % response is shifted in time and its amplitude is weighted according to the
     % desired distance. The desired direction is done by returning the nearest
@@ -136,30 +139,15 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     ir = interpolate_ir(ir,neighbours,xs(1:2)',conf);
 
 elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)
-    % For a given BRIR recording we are searching first for the correct head
-    % orientation and look then for the source position
-    %
-    % Find indices for the given head orientation
-    sofa_head_orientation = SOFAconvertCoordinates( ...
-        header.ListenerView,header.ListenerView_Type,'spherical');
-    tmp = vector_norm( ...
-        bsxfun(@minus,rad(sofa_head_orientation(:,1:2)),head_orientation),2 ...
-        );
-    if min(tmp)>rad(1)  % Assuming resolution of 1 deg for head orientatons
-        error('%s: no BRIR for head orientation (%i, %i) available', ...
-            upper(mfilename), ...
-            deg(head_orientation(1)), ...
-            deg(head_orientation(2)));
-    else
-        idx = find(abs(tmp-min(tmp)<=eps));
-        %sofa_head_orientation(idx,1:2)
-        %[deg(x0(idx,1:2)) x0(idx,3)]
-        %[deg(xs(1:2)); xs(3)]'
-    end
-    % Now, search for the correct source position
-    ir = get_single_ir(sofa,x0,xs,conf);
+    % FIXME: we should remove this altogether, as SingleRoomDRIR is original
+    % considered to have only one source and use a microphone array:
+    % http://www.sofaconventions.org/mediawiki/index.php/SingleRoomDRIR
+    to_be_implemented;
 
 elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
+    %
+    % http://www.sofaconventions.org/mediawiki/index.php/MultiSpeakerBRIR
+    %
     % This looks for the nearest loudspeaker corresponding to the specified
     % source and listener position. For that loudspeaker the impulse reponse for
     % the specified head orientation is returned. If the head orientation could

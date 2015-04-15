@@ -67,8 +67,8 @@ function ir = ir_correct_distance(ir,ir_distance,r,conf)
 %% ===== Configuration ==================================================
 c = conf.c;
 fs = conf.fs;
-N = conf.N;
 useoriglength = conf.ir.useoriglength;
+%N = conf.N; is used if useoriglength==false
 
 
 %% ===== Computation ====================================================
@@ -83,10 +83,10 @@ end
 % its maximum radius
 if ~useoriglength
     zero_padding = ceil(ir_distance/c * fs);
-    if N-zero_padding<128
+    if conf.N-zero_padding<128
         error(['%s: choose a larger conf.N value, because otherwise you ', ...
             'will have only %i samples of your original impulse response.'], ...
-            upper(mfilename),N-zero_padding);
+            upper(mfilename),conf.N-zero_padding);
     end
 else
     zero_padding = 0;

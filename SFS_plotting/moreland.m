@@ -17,10 +17,9 @@ function m = moreland(n)
 %   http://www.sandia.gov/~kmorel/documents/ColorMaps/
 %
 %   For example, to reset the colormap of the current figure:
-%
 %             colormap(moreland)
 %
-%   Original coded by Lewis Marshall
+%   Original written by Lewis Marshall
 %
 %   See also: generate_colormap, chromjs, plot_sound_field
 

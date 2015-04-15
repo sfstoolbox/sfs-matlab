@@ -1,5 +1,11 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
+1.1.1 ()
+
+    - change default dB color map to chromajs
+    - add missing hgls2 functionality (fractional delays)
+    - add cubehelix and chromajs color maps
+
 1.1.0 (2. April 2015)
 
     - fix amplitude bug in get_ir() and ir_generic()

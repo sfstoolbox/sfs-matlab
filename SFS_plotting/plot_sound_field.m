@@ -134,6 +134,8 @@ if(p.usedb)
         % problems with log(0).
         P(:) = eps;
     end
+    % Change default colormap to chromajs
+    conf.plot.colormap = 'chromajs';
 end
 
 % Check if we should plot loudspeakers symbols

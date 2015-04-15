@@ -27,7 +27,7 @@ function varargout = wave_fronts_wfs(X,phi,xs,src,conf)
 %   H. Wierstorf, A. Raake, M. Geier, S. Spors (2013) - Perception of Focused
 %   Sources in Wave Field Synthesis, J. Audio Eng. Soc. 61.1, p. 5-16
 %
-%   see also: ir_wfs, driving_function_imp_wfs
+%   See also: ir_wfs, driving_function_imp_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -111,27 +111,29 @@ nls = size(x0,1);
 % Time, in which pre-echos occur:
 % time_from_secondary_source_to_listener + delay
 t = vector_norm(bsxfun(@minus,X,x0(:,1:3)),2)./c + delay -norm(X-xs(:,1:3))/c;
-% set start to t=0
+% Set start to t=0
 t = t-min(t);
 % Direction of the wave fronts / rad 
 % angle between listener and secondary source (-pi < alpha <= pi,
 % without phi)
-% Note: phi is the orientation of the listener (see first graph)
+% NOTE: phi is the orientation of the listener (see first graph)
 [alpha_tmp,~,~] = cart2sph(x0(:,1)-X(1),x0(:,2)-X(2),x0(:,3)-X(3));
 alpha = alpha_tmp - phi;
 
-% return values
+% Return values
 if nargout>0, varargout{1}=alpha; end
 if nargout>1, varargout{2}=a; end
 if nargout>2, varargout{3}=t; end
 
 
 %% ===== Plotting =======================================================
-if (nargout==0 || useplot) && ~usegnuplot
+if (nargout==0 || useplot)
     % Plot the amplitude (dB) over time
     figure; plot(t,20*log10(a)+100,'xb');
     xlabel('t / s');
     ylabel('Amplitude / dB');
+end
+
 
 %% ===== Generate data structures for plotting with gnuplot =============
 elseif (nargout==0 || useplot) && usegnuplot

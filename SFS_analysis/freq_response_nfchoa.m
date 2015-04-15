@@ -21,7 +21,7 @@ function varargout = freq_response_nfchoa(X,xs,src,conf)
 %   sound field at the given position X. The sound field is simulated for the
 %   given source type (src) using a monochromatic NFC-HOA driving function.
 %
-%   see also: sound_field_mono_nfchoa, sound_field_imp_nfchoa
+%   See also: sound_field_mono_nfchoa, sound_field_imp_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -72,9 +72,9 @@ isargstruct(conf);
 %% ===== Configuration ==================================================
 % Plotting result
 useplot = conf.plot.useplot;
-% progress bar
+% Progress bar
 showprogress = conf.showprogress;
-% disable for sound field function
+% Disable for sound field function
 conf.showprogress = false;
 % Check type of secondary sources to use
 if strcmp('2D',conf.dimension)
@@ -97,16 +97,17 @@ S = zeros(size(f));
 for ii = 1:length(f)
     if showprogress, progress_bar(ii,length(f)); end
     D = driving_function_mono_nfchoa(x0,xs,src,f(ii),conf);
-    % calculate sound field at the listener position
+    % Calculate sound field at the listener position
     P = sound_field_mono(X(1),X(2),X(3),x0,greens_function,D,f(ii),conf);
     S(ii) = abs(P);
 end
 
-% return parameter
+% Return parameter
 if nargout>0, varargout{1}=S; end
 if nargout>1, varargout{2}=f; end
 
-% ===== Plotting =========================================================
+
+%% ===== Plotting ========================================================
 if nargout==0 || useplot
     figure;
     figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);

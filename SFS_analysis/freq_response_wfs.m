@@ -21,7 +21,7 @@ function varargout = freq_response_wfs(X,xs,src,conf)
 %   sound field at the given position X. The sound field is simulated for the
 %   given source type (src) using a monochromatic WFS driving function.
 %
-%   see also: sound_field_mono_wfs, sound_field_imp_wfs
+%   See also: sound_field_mono_wfs, sound_field_imp_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -73,7 +73,7 @@ isargstruct(conf);
 % Plotting result
 useplot = conf.plot.useplot;
 showprogress = conf.showprogress;
-% disable progress bar for sound field function
+% Disable progress bar for sound field function
 conf.showprogress = false;
 % Check type of secondary sources to use
 if strcmp('2D',conf.dimension)
@@ -103,11 +103,12 @@ for ii = 1:length(f)
     S(ii) = abs(P);
 end
 
-% return parameter
+% Return parameter
 if nargout>0, varargout{1}=S; end
 if nargout>1, varargout{2}=f; end
 
-% ===== Plotting =========================================================
+
+%% ===== Plotting ========================================================
 if nargout==0 || useplot
     figure;
     figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);

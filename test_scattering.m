@@ -2,15 +2,15 @@
 close all;
 clear variables;
 % SFS Toolbox
-addpath('~/projects/sfstoolbox'); SFS_start;
+SFS_start;
 
 %% Parameters
 conf = SFS_config_example;
 
 conf.dimension = '3D';
 conf.secondary_sources.geometry = 'linear';
-conf.secondary_sources.number = 40;
-conf.secondary_sources.size = 6;
+conf.secondary_sources.number = 60;
+conf.secondary_sources.size = 2;
 conf.secondary_sources.center = [0, 2, 0];
 
 conf.plot.useplot = false;
@@ -85,6 +85,25 @@ plot_sound_field(P2spht ,x1,y1,z1, [], conf);
 plot_scatterer(xq,R);
 title('point source (shifted reexpansion)');
 
+%% WFS Reproduction of Spherical Expansion
+% loudspeakers
+x0 = secondary_source_positions(conf);
+
+% compute driving functions
+D1sph = driving_function_mono_wfs_sphexp(x0(:,1:3),x0(:,4:6),A1sph,'R',f,xq,conf);
+D2sph = driving_function_mono_wfs_sphexp(x0(:,1:3),x0(:,4:6),A2sph,'R',f,xq,conf);
+
+% compute fields
+P1sphwfs = sound_field_mono(xrange,yrange,zrange,x0,'ps',D1sph,f,conf);
+P2sphwfs = sound_field_mono(xrange,yrange,zrange,x0,'ps',D2sph,f,conf);
+
+% plot
+[~,~,~,x1,y1,z1] = xyz_grid(xrange,yrange,zrange,conf);
+
+plot_sound_field(P1sphwfs ,x1,y1,z1, x0, conf);
+title('plane wave');
+plot_sound_field(P2sphwfs ,x1,y1,z1, x0, conf);
+title('point source');
 
 %% Cylindrical expansion
 % A1cyl = cylexpR_mono_pw(ns,f,xq,conf);  % regular expansion plane wave

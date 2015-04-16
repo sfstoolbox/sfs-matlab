@@ -118,11 +118,11 @@ Sn0theta =  sin(theta0).*cos(phi0).*n0(:,1)...
        
 % select suitable basis function
 if strcmp('R', mode)
-  sphbasis = @(nu,z) sphbesselh(nu,2,z);
-  sphbasis_derived = @(nu,z) sphbesselh_derived(nu,2,z);
-elseif strcmp('S', mode)
   sphbasis = @sphbesselj;
   sphbasis_derived = @sphbesselj_derived;
+elseif strcmp('S', mode)
+  sphbasis = @(nu,z) sphbesselh(nu,2,z);
+  sphbasis_derived = @(nu,z) sphbesselh_derived(nu,2,z);
 else
   error('unknown mode:');
 end

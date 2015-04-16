@@ -1,10 +1,40 @@
 function [EF, EFm] = sphexp_mono_translation(t, mode, f, conf)
+% Spherical translation coefficients (multipole re-expansion)
 %
+%   Usage: [EF, EFm] = sphexp_mono_translation(t, mode, f, conf)
+%
+%   Input parameters:
+%       t           - translatory shift [1x3] / m                    
+%       mode        - 'RS' for regular-to-singular reexpansion
+%                     'RR' for regular-to-regular reexpansion
+%                     'SR' for singular-to-regular reexpansion
+%                     'SS' for singular-to-singular reexpansion
+%       f           - frequency / Hz
+%       conf        - optional configuration struct (see SFS_config)
+%
+%   Output parameters:
+%       EF          - singular spherical expansion coefficients of
+%                     scattered field
+%  
+%  SPHEXP_MONO_TRANSLATION(t, mode, f, conf) computes the spherical re-expansion
+%  coefficients to perform as translatory shift of spherical basis function.
+%  Multipole Re-expansion computes the spherical basis function for a shifted
+%  coordinate system (x+t) based on the original basis functions for (x). 
+%
+%   m          \~~ inf \~~ l         s,m     s
+%  E (x + t) =  >       >       (E|F)   (t) F (x)
+%   n          /__ l=0 /__ s=-l      l,n     l
+%
+%  where {E,F} = {R,S}. R denotes the regular spherical basis function, while
+%  S symbolizes the singular spherical basis function. Note that (S|S) and 
+%  (S|R) are respectively equivalent to (R|R) and (R|S). 
 %
 %   References:
 %       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
 %                                    Helmholtz Equation in three 
 %                                    Dimensions", ELSEVIER
+%
+%   see also: sphexp_mono_ps, sphexp_mono_pw
 %
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -44,6 +74,7 @@ nargmax = 4;
 narginchk(nargmin,nargmax);
 isargposition(t);
 isargchar(mode);
+isargpositivescalar(f);
 if nargin<nargmax
   conf = SFS_config;
 else

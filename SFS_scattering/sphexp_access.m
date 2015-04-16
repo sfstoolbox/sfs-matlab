@@ -1,5 +1,5 @@
 function a = sphexp_access(A, m1, n1, m2, n2)
-%Calculate index(indices) for array of spherical expansion coefficients
+%Access array elements of spherical expansion coefficients
 %
 %   Usage: a = sphexp_access(A, m1, n1, m2, n2)
 %
@@ -53,28 +53,33 @@ function a = sphexp_access(A, m1, n1, m2, n2)
 nargmin = 2;
 nargmax = 5;
 narginchk(nargmin,nargmax);
-isargscalar(m1);
+isargvector(m1);
 if nargin == nargmin
   n1 = abs(m1);
+else
+  isargvector(n1);
 end
-isargscalar(n1);
 if nargin < 4
   m2 = 0;
+else
+  isargvector(m2);
 end
-isargscalar(m2);
 if nargin<nargmax
   n2 = abs(m2);
+else
+  isargvector(n2);
 end
-isargscalar(n2);
-
 
 %% ===== Computation ====================================================
-if abs(m1) > n1 || abs(m2) > n2
-  a = 0;
-else
-  [l1, l2] = sphexp_index(m1, n1, m2, n2);
-  a = A(l1,l2);
-end
+
+a = zeros(max(length(m1), length(n1)),max(length(m2), length(n2)));
+
+s1 = abs(m1) <= n1;
+s2 = abs(m2) <= n2;
+
+if any(s1) && any(s2)
+  [l1, l2] = sphexp_index(m1(s1), n1(s1), m2(s2), n2(s2));
+  a(s1,s2) = A(l1,l2);
 end
 
-
+end

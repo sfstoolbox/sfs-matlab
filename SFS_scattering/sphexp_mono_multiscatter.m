@@ -1,44 +1,4 @@
-function Al = sphexpR_mono_pw(nk,f,xq,conf)
-%Regular Spherical Expansion of Plane Wave
-%
-%   Usage: Al = sphexpR_mono_pw(nk,f,x0,conf)
-%
-%   Input parameters:
-%       nk          - propagation direction of plane wave 
-%       f           - frequency
-%       xq          - optional expansion coordinate 
-%       conf        - optional configuration struct (see SFS_config)
-%
-%   Output parameters:
-%       Al          - regular Spherical Expansion Coefficients
-%
-%   SPHEXPR_MONO_PW(nk,x0,f,conf) computes the regular Spherical Expansion
-%   Coefficients for a plane wave. The expansion will be done around the
-%   expansion coordinate xq:
-%
-%              \~~ oo  \~~   n   m  m
-%   p  (x,f) =  >       >       A  R  (x-x ) 
-%    pw        /__ n=0 /__ m=-n  n  n     q
-%
-%   with the expansion coefficients (Gumerov, p. 74, eq. 2.3.6):
-%
-%    m        n  -m
-%   A  = 4pi i  Y   (theta  , phi  )
-%    n            n       pw     pw
-%
-%   The coefficients are stored in linear arrays with index l resulting from 
-%   m and n:
-% 
-%         m                 2
-%   A  = A  ; with l = (n+1)  - (n - m)
-%    l    n   
-%
-%   References:
-%       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
-%                                    Helmholtz Equation in three 
-%                                    Dimensions", ELSEVIER
-%
-%   see also: sphexpR_mono_ps eval_sphbasis_mono
+function B = sphexp_mono_multiscatter(A, xq, R, sigma, f, conf)
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -73,47 +33,57 @@ function Al = sphexpR_mono_pw(nk,f,xq,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
-nargmax = 4;
+nargmin = 5;
+nargmax = 6;
 narginchk(nargmin,nargmax);
-isargvector(nk);
+isargmatrix(A,xq);
+isargpositivescalar(f);
+isargvector(R, sigma);
 if nargin<nargmax
-    conf = SFS_config;
+  conf = SFS_config;
 else
-    isargstruct(conf);
+  isargstruct(conf);
+end
+if length(R) == 1
+  R = repmat(R,[1, size(A,2)]);
+elseif length(R) ~= size(A,2)
+  error('%s: Length of R does not match size of A',upper(mfilename));
+end
+if length(sigma) == 1
+  sigma = repmat(sigma,[1, size(A,2)]);
+elseif length(sigma) ~= size(A,2)
+  error('%s: Length of R does not match size of A',upper(mfilename));
 end
 
 %% ===== Configuration ==================================================
-showprogress = conf.showprogress;
 Nse = conf.scattering.Nse;
-timereverse = conf.scattering.timereverse;
 
 %% ===== Computation ====================================================
-if (timereverse)
-  n_sign = 1;
-else
-  n_sign = -1;
+if size(A,1) ~= (Nse + 1)^2
+  error('%s: size of A does not match Nse',upper(mfilename));
 end
 
-% convert nk into spherical coordinates
-phi = atan2(nk(2),nk(1));
-theta = asin(nk(3));
+Nnm = size(A,1);
+Nq = size(A,2);
+L = zeros(Nq*Nnm);
 
-L = (Nse + 1).^2;
-Al = zeros(L,1);
-for n=0:Nse
-  b = 4*pi*(1j)^(n_sign.*n);
-  for m=0:n    
-    l_plus = (n + 1).^2 - (n - m);
-    l_minus = (n + 1).^2 - (n + m);
-    
-    % caution: symmetry relation depends on definition of spherical harmonics
-    Ynm = sphharmonics(n,-m, theta, phi);  % spherical harmonics
-    Al(l_plus) = b.*Ynm;
-    Al(l_minus) = b.*conj(Ynm);
+E = ones(Nnm,1);
+for qdx=1:Nq
+  selectq = ((qdx-1)*Nnm+1):(qdx*Nnm);
+  L(selectq,selectq) = diag(1./sphexp_mono_scatter(E, R(qdx), sigma(qdx), f, conf));  
+end
+
+for qdx=1:Nq
+  selectq = ((qdx-1)*Nnm+1):(qdx*Nnm);
+  for pdx=(qdx+1):Nq
+    selectp = ((pdx-1)*Nnm+1):(pdx*Nnm);    
+    [SRpq, SRqp] = sphexp_mono_translation(xq(qdx,:)-xq(pdx,:), 'SR', f, conf);
+    L(selectp,selectq) = -SRpq;
+    L(selectq,selectp) = -SRqp;
   end
-  if showprogress, progress_bar(l_plus,L); end % progress bar
 end
 
-end
+A = reshape(A,[],1);
 
+B = L\A;
+B = reshape(B,Nnm,Nq);

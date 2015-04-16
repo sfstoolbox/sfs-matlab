@@ -1,12 +1,12 @@
-function Bl = sphexpS_mono_scatter(Al, R, sigma, f, conf)
+function Bnm = sphexp_mono_scatter(Anm, R, sigma, f, conf)
 %Singular Spherical Expansion of sphere-scattered field
 %
 %   Usage: Bl = sphexpS_mono_scatter(Al, R, sigma, f, conf)
 %
 %   Input parameters:
-%       Al          - regular spherical expansion of incident field (sphexpR_*)                     
+%       Al          - regular spherical expansion of incident field                     
 %       R           - radius of sphere
-%       sigma       - complex admittance of scatterer
+%       sigma       - admittance of sphere (from 0(sound soft) to inf(sound hard))
 %       f           - frequency in Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
@@ -24,7 +24,7 @@ function Bl = sphexpS_mono_scatter(Al, R, sigma, f, conf)
 %    ind        /__ n=0 /__ m=-n  n  n     q
 %
 %   The scattered field is descriped by singular expansion coefficients,
-%   expanded around the center of the sphere x0. 
+%   expanded around the center of the sphere xq. 
 %
 %               \~~ oo  \~~   n   m  m
 %   p   (x,f) =  >       >       B  S  (x-x ) 
@@ -51,7 +51,7 @@ function Bl = sphexpS_mono_scatter(Al, R, sigma, f, conf)
 %                                    Helmholtz Equation in three 
 %                                    Dimensions", ELSEVIER
 %
-%   see also: sphexpR_mono_ps, sphexpR_mono_pw
+%   see also: sphexp_mono_ps, sphexp_mono_pw
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -89,7 +89,7 @@ function Bl = sphexpS_mono_scatter(Al, R, sigma, f, conf)
 nargmin = 4;
 nargmax = 5;
 narginchk(nargmin,nargmax);
-isargvector(Al);
+isargvector(Anm);
 isargscalar(sigma);
 isargpositivescalar(f,R);
 if nargin<nargmax
@@ -107,7 +107,7 @@ k = 2*pi*f/conf.c;
 kR = k.*R;
 
 L = (Nse + 1).^2;
-Bl = zeros(L,1);
+Bnm = zeros(L,1);
 
 if isinf(sigma)
   T = @(x) -sphbesselj(x,kR)./sphbesselh(x,2,kR);
@@ -124,7 +124,7 @@ for n=0:Nse
   for m=-n:n
     l = l+1;
     % coefficients
-    Bl(l) = fac.*Al(l);
+    Bnm(l) = fac.*Anm(l);
   end
   if showprogress, progress_bar(l,L); end % progress bar
 end

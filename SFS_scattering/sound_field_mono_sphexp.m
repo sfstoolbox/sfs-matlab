@@ -1,14 +1,15 @@
-function [P, x, y, z] = sound_field_mono_sphexpR(X,Y,Z,Al,f,x0,conf)
+function [P, x, y, z] = sound_field_mono_sphexp(X,Y,Z,ABnm,mode,f,xq,conf)
 %SOUND_FIELD_MONO_SPHEXPR simulates a sound field with regular spherical
 %expansion coefficients
 %
-%   Usage: [P, x, y, z] = sound_field_mono_sphexpR(X,Y,Z,Al,f,x0,conf)
+%   Usage: [P, x, y, z] = sound_field_mono_sphexp(X,Y,Z,Al,f,x0,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax]
 %       Y           - y-axis / m; single value or [ymin,ymax]
 %       Z           - z-axis / m; single value or [zmin,zmax]
-%       Al          - regular spherical expansion coefficients
+%       ABnm        - regular/singular spherical expansion coefficients
+%       mode        - 'R' for regular, 'S' for singular
 %       f           - frequency in Hz
 %       x0          - optional expansion center coordinates, default: [0, 0, 0]
 %       conf        - optional configuration struct (see SFS_config)
@@ -16,7 +17,7 @@ function [P, x, y, z] = sound_field_mono_sphexpR(X,Y,Z,Al,f,x0,conf)
 %   Output parameters:
 %       P           - resulting soundfield
 %
-%   SOUND_FIELD_MONO_SPHEXPR(X,Y,Z,Al,f,x0,conf)
+%   SOUND_FIELD_MONO_SPHEXPR(X,Y,Z,ABnm,mode,f,xq,conf)
 %
 %   see also: sphbasis_mono_XYZgrid, sound_field_mono_basis
 
@@ -53,10 +54,10 @@ function [P, x, y, z] = sound_field_mono_sphexpR(X,Y,Z,Al,f,x0,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 7;
+nargmin = 6;
+nargmax = 8;
 narginchk(nargmin,nargmax);
-isargvector(X,Y,Z,Al);
+isargvector(X,Y,Z,ABnm);
 isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
@@ -69,8 +70,15 @@ end
 isargposition(x0);
 
 %% ===== Computation ====================================================
-[Jn, ~, Ynm, x, y, z] = sphbasis_mono_XYZgrid(X,Y,Z,f,x0,conf);
+[jn, hn, Ynm, x, y, z] = sphbasis_mono_XYZgrid(X,Y,Z,f,xq,conf);
 
-P = sound_field_mono_basis(Al,Jn,Ynm,conf);
+if strcmp('R', mode)
+  P = sound_field_mono_basis(ABnm,jn,Ynm,conf);
+elseif strcmp('S', mode)
+  P = sound_field_mono_basis(ABnm,hn,Ynm,conf);
+else
+  error('unknown mode:');
+end
+  
 end
 

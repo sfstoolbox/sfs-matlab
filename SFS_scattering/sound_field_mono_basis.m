@@ -66,6 +66,7 @@ end
 %% ===== Configuration ==================================================
 % Plotting result
 showprogress = conf.showprogress;
+usenormalisation = conf.usenormalisation;
 
 %% ===== Computation ====================================================
 L = length(Y);
@@ -91,6 +92,10 @@ elseif L == N^2
 else
   error(['%s: lengths of arrays are not suited for cylindrical or .' ...
     , 'spherical basic funcions'],upper(mfilename));
+end
+
+if usenormalisation
+  P = P./max(abs(P(:)));
 end
 
 end

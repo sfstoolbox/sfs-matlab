@@ -1,10 +1,11 @@
-function Al = sphexpR_mono_ps(xs,f,xq,conf)
-%Regular Spherical Expansion of Point Source
+function Anm = sphexp_mono_ps(xs, mode, f, xq, conf)
+%Regular/Singular Spherical Expansion of Point Source
 %
 %   Usage: Al = sphexpR_mono_ps(xs,f,xq,conf)
 %
 %   Input parameters:
 %       xs          - position of point source
+%       mode        - 'R' for regular, 'S' for singular
 %       f           - frequency
 %       xq          - optional expansion center coordinate 
 %       conf        - optional configuration struct (see SFS_config)
@@ -12,33 +13,43 @@ function Al = sphexpR_mono_ps(xs,f,xq,conf)
 %   Output parameters:
 %       Al          - regular Spherical Expansion Coefficients
 %
-%   SPHEXPR_MONO_PS(nk,x0,f,conf) computes the regular Spherical Expansion
-%   Coefficients for a point source at xs. The expansion will be done around the
-%   expansion coordinate xq:
+%   SPHEXP_MONO_PS(xs, mode, f, xq, conf) computes the regular/singular 
+%   Spherical Expansion Coefficients for a point source at xs. The expansion 
+%   will be done around the expansion coordinate xq:
 %
-%              \~~ oo  \~~   n   m  m
-%   p  (x,f) =  >       >       A  R  (x-x ) 
-%    pw        /__ n=0 /__ m=-n  n  n     q
+%   Regular Expansion:
+%                \~~ oo  \~~   n   m  m
+%   p    (x,f) =  >       >       A  R  (x-x ) 
+%    ps,R        /__ n=0 /__ m=-n  n  n     q
 %
-%   with the expansion coefficients (Gumerov, p. 145, eq. 4.2.5):
+%   with the expansion coefficients (Gumerov2004, eq. 3.2.2):
+%    m               -m
+%   A  = -i  . k  . S  (x  - x )
+%    n               n   s    q
 %
-%    m              -m
-%   A  = i  . k  . S  (x  - x )
-%    n              n   s    q
+%   Singular Expansion:
+%                \~~ oo  \~~   n   m  m
+%   p    (x,f) =  >       >       B  S  (x-x ) 
+%    ps,S        /__ n=0 /__ m=-n  n  n     q
+%   
+%   with the expansion coefficients (Gumerov2004, eq. 3.2.2):
+%    m               -m
+%   B  = -i  . k  . R  (x  - x )
+%    n               n   s    q
 %
 %   The coefficients are stored in linear arrays with index l resulting from 
 %   m and n:
 % 
-%         m                 2
-%   A  = A  ; with l = (n+1)  - (n - m)
-%    l    n
+%         m         m               2
+%   A  = A  ; B  = B  with l = (n+1)  - (n - m)
+%    l    n    l    n
 %
 %   References:
 %       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
 %                                    Helmholtz Equation in three 
 %                                    Dimensions", ELSEVIER
 %
-%   see also: sphexpR_mono_ps eval_sphbasis_mono
+%   see also: sphexp_access sphexp_index sphbasis_mono
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -73,8 +84,8 @@ function Al = sphexpR_mono_ps(xs,f,xq,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
-nargmax = 4;
+nargmin = 3;
+nargmax = 5;
 narginchk(nargmin,nargmax);
 isargposition(xs);
 isargpositivescalar(f);
@@ -91,37 +102,43 @@ isargposition(xq);
 %% ===== Configuration ==================================================
 showprogress = conf.showprogress;
 Nse = conf.scattering.Nse;
-timereverse = conf.scattering.timereverse;
+c = conf.c;
 
-%% ===== Computation ====================================================
+%% ===== Variables ======================================================
 % convert (xs-xq) into spherical coordinates
 r = sqrt(sum((xs-xq).^2));
 phi = atan2(xs(2)-xq(2),xs(1)-xq(1));
 theta = asin((xs(3)-xq(3))/r);
 
 % frequency
-k = 2.*pi.*f./conf.c;
+k = 2.*pi.*f./c;
 kr = k.*r;
 
-if (timereverse)
-  H = @(x) conj(1j*k*sphbesselh(x,2,kr));
+% select suitable basis function
+if strcmp('R', mode)
+  sphbasis = @(nu,z) sphbesselh(nu,2,z);
+elseif strcmp('S', mode)
+  sphbasis = @sphbesselj;
 else
-  H = @(x) 1j*k*sphbesselh(x,2,kr);
+  error('unknown mode:');
 end
 
+%% ===== Computation ====================================================
 L = (Nse + 1).^2;
-Al = zeros(L,1);
+Anm = zeros(L,1);
 for n=0:Nse
-  Hn = H(n);
+  cn = -1j*k*sphbasis(n,kr);
   for m=0:n    
-    l_plus = (n + 1).^2 - (n - m);
-    l_minus = (n + 1).^2 - (n + m);    
-    % caution: symmetry relation depends on definition of spherical harmonics
-    Ynm = sphharmonics(n,-m, theta, phi);  % spherical harmonics
-    Al(l_plus) = Hn.*Ynm;
-    Al(l_minus) = Hn.*conj(Ynm);
+    % spherical harmonics: conj(Y_n^m) = Y_n^-m (Gumerov2004, eq. 2.1.59)
+    Ynm = sphharmonics(n,m, theta, phi);
+    % -m
+    v = sphexp_index(-m,n);  
+    Anm(v) = cn.*Ynm;
+    % +m
+    v = sphexp_index(m,n); 
+    Anm(v) = cn.*conj(Ynm);
   end
-  if showprogress, progress_bar(l_plus,L); end % progress bar
+  if showprogress, progress_bar(v,L); end % progress bar
 end
 
 end

@@ -1,4 +1,4 @@
-function [a, b] = sphexpSR_ab(Nse,conf)
+function [a, b] = sphexp_translation_auxiliary(Nse,conf)
 %
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -53,16 +53,13 @@ L = (Nse + 1).^2;
 a = zeros(L,1);
 b = zeros(L,1);
 for n=0:Nse
-  a_denum = sqrt((2*n+1)*(2*n+3));
-  b_denum = sqrt((2*n-1)*(2*n+1));
-  for m=0:n   
-    l_plus = (n + 1).^2 - (n - m);
-    l_minus = (n + 1).^2 - (n + m);    
-
-    a(l_plus) = sqrt((n+1+m)*(n+1-m))./a_denum;
-    a(l_minus)= a(l_plus);
-    b(l_plus) = sqrt((n-m-1)*(n-m))./b_denum;
-    b(l_minus) = -sqrt((n+m-1)*(n+m))./b_denum;
+  a_denum = (2*n+1)*(2*n+3);
+  b_denum = (2*n-1)*(2*n+1);
+  for m=-n:n
+    v = sphexp_index(m,n);
+        
+    a(v) = sqrt( (n+1+abs(m))*(n+1-abs(m))/a_denum );
+    b(v) = ( 1-(m<0)*2 ) * sqrt( (n-m-1)*(n-m)./b_denum );
   end
-  if showprogress, progress_bar(l_plus,L); end % progress bar
+  if showprogress, progress_bar(v,L); end % progress bar
 end

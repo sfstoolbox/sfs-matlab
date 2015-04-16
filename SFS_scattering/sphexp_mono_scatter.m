@@ -102,12 +102,14 @@ end
 showprogress = conf.showprogress;
 Nse = conf.scattering.Nse;
 
-%% ===== Computation ====================================================
+%% ===== Variables ======================================================
 k = 2*pi*f/conf.c;
 kR = k.*R;
 
 L = (Nse + 1).^2;
 Bnm = zeros(L,1);
+
+%% ===== Computation ====================================================
 
 if isinf(sigma)
   T = @(x) -sphbesselj(x,kR)./sphbesselh(x,2,kR);
@@ -118,15 +120,13 @@ else
     ./(k.*sphbesselh_derived(x,2,kR)+sigma.*sphbesselh(x,2,kR));
 end
 
-l = 0;
 for n=0:Nse  
   fac = T(n);
-  for m=-n:n
-    l = l+1;
-    % coefficients
-    Bnm(l) = fac.*Anm(l);
-  end
-  if showprogress, progress_bar(l,L); end % progress bar
+  
+  v = sphexp_index(-n:n,n);
+  Bnm(v) = fac.*Anm(v);
+
+  if showprogress, progress_bar(v(end),L); end % progress bar
 end
 
 end

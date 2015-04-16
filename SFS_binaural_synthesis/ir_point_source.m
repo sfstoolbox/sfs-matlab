@@ -1,5 +1,5 @@
 function ir = ir_point_source(X,phi,xs,irs,conf)
-%IR_POINT_SOURCE Generate a IR for a point source
+%IR_POINT_SOURCE generates a binaural simulation of a point source
 %
 %   Usage: ir = ir_point_source(X,phi,xs,irs,[conf])
 %
@@ -18,7 +18,7 @@ function ir = ir_point_source(X,phi,xs,irs,conf)
 %   into direction phi. Whereby at phi = 0 the listener is looking in the
 %   direction of the x-axis.
 %
-% see also: ssr_brs_point_source, get_ir, ir_wfs, auralize_ir
+%   See also: ssr_brs_point_source, get_ir, ir_wfs, auralize_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

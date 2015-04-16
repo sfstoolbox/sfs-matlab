@@ -13,7 +13,7 @@ function gp_save_matrix(file,x,y,M)
 %   format useable by Gnuplot, see
 %   http://www.gnuplotting.org/manpage-gnuplot-4-6/#x1-372000III for details.
 %
-%   see also: gp_save
+%   See also: gp_save
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

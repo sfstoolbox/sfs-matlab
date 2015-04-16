@@ -19,7 +19,7 @@ function [d] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %   driving function of NFC-HOA for the given source type and position,
 %   and loudspeaker positions.
 %
-%   see also: driving_function_imp_nfchoa_ps, sound_field_imp_nfchoa
+%   See also: driving_function_imp_nfchoa_ps, sound_field_imp_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -75,17 +75,16 @@ X0 = conf.secondary_sources.center;
 
 
 %% ===== Computation =====================================================
-
-% generate stimulus pusle
+% Generate stimulus pusle
 pulse = dirac_imp();
-% radius of array
+% Radius of array
 R = norm(x0(1,1:3)-X0);
-% get maximum order of spherical harmonics
+% Get maximum order of spherical harmonics
 order = nfchoa_order(nls,conf);
 
-% correct position of source for off-center arrays
+% Correct position of source for off-center arrays
 xs(1:3) = xs(1:3)-X0;
-% if-request as a workaround for the right direction of the sound field
+% If-request as a workaround for the right direction of the sound field
 if strcmpi(src,'pw')
     [theta_src, r_src] = cart2pol(-xs(1),xs(2));
 elseif strcmpi(src,'ps')
@@ -94,12 +93,12 @@ else
     [theta_src, r_src] = cart2pol(xs(1),xs(2));
 end
 
-% compute impulse responses of modal filters
+% Compute impulse responses of modal filters
 dm = zeros(order+1,N);
 for n=1:order+1
     dm(n,:) = [pulse zeros(1,N-length(pulse))];
-    
-    % get the second-order sections for the different virtual sources
+
+    % Get the second-order sections for the different virtual sources
     if strcmp('pw',src)
         % === Plane wave =================================================
         sos = driving_function_imp_nfchoa_pw(n-1,R,conf);
@@ -116,14 +115,14 @@ for n=1:order+1
         error('%s: %s is not a known source type.',upper(mfilename),src);
     end
 
-    % apply them by a bilinear transform and filtering
+    % Apply them by a bilinear transform and filtering
     [b,a] = bilinear_transform(sos,conf);
     for ii=1:length(b)
         dm(n,:) = filter(b{ii},a{ii},dm(n,:));
     end
 end
 
-% compute input signal for IFFT
+% Compute input signal for IFFT
 d = zeros(2*order+1,N);
 for n=-order:order
     d(n+order+1,:) = dm(abs(n)+1,:) .* exp(1i*n*theta_src);
@@ -133,14 +132,14 @@ if(iseven(nls))
    d = d(2:end,:);
 end
 
-% spatial IFFT
+% Spatial IFFT
 d = circshift(d,[order+1 0]);
 d = (2*order+1)*ifft(d,[],1);
 d = real(d');
 
-% subsample d if we have fewer secondary sources than the applied order
+% Subsample d if we have fewer secondary sources than the applied order
 if size(d,2)>nls
-    % check if we have a multiple of the order
+    % Check if we have a multiple of the order
     if mod(size(d,2),nls)~=0
         conf_tmp = conf;
         conf_tmp.nfchoa.order = [];
@@ -149,13 +148,13 @@ if size(d,2)>nls
             'order that is a multiple of %i.'], ...
             upper(mfilename),size(d,2),nls,nfchoa_order(nls,conf_tmp));
     end
-    % subsample d
+    % Subsample d
     ratio = size(d,2)/nls;
     d = d(:,1:ratio:end);
-% subsample the secondary sources if we have fewer driving signals than
+% Subsample the secondary sources if we have fewer driving signals than
 % secondary sources
 elseif size(d,2)<nls
-    % check if we have a multiple of the secondary sources
+    % Check if we have a multiple of the secondary sources
     if mod(nls,size(d,2))~=0
         conf_tmp = conf;
         conf_tmp.nfchoa.order = [];
@@ -164,7 +163,7 @@ elseif size(d,2)<nls
             'order that is a multiple of %i.'], ...
             upper(mfilename),nls,size(d,2),nfchoa_order(size(d,2)));
     end
-    % subsample x0
+    % Subsample x0
     ratio = nls/size(d,2);
     d_new = zeros(N,nls);
     d_new(:,1:ratio:end) = d;

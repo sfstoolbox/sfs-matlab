@@ -55,14 +55,14 @@ narginchk(nargmin,nargmax);
 
 
 %% ===== Fix IR ==========================================================
-% length of IR
+% Length of IR
 samples = size(sig,1);
 channels = size(sig,2);
 
 if samples<N
-    % append zeros if to short
+    % Append zeros if to short
     sig = [sig; zeros(N-samples,channels)];
 else
-    % remove the end of the IR, if to long
+    % Remove the end of the IR, if to long
     sig = sig(1:N,:);
 end

@@ -29,7 +29,7 @@ function varargout = sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
 %   conf.plot.usedb = 1;
 %   plot_sound_field(p,x,y,z,x0,conf);
 %
-%   see also: driving_function_imp_nfchoa, sound_field_mono_nfchoa
+%   See also: driving_function_imp_nfchoa, sound_field_mono_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

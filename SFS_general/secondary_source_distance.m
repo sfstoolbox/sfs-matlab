@@ -21,7 +21,7 @@ function [dx0,dx0_single] = secondary_source_distance(x0,approx)
 %   source is calculated for every single secondary source, afterwads the mean
 %   about these values is returned.
 %
-%   see also: aliasing_frequency, secondary_source_positions
+%   See also: aliasing_frequency, secondary_source_positions
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -67,27 +67,27 @@ end
 
 
 %% ===== Calculation ====================================================
-% calculate the distance to the nearest secondary source for all secondary
+% Calculate the distance to the nearest secondary source for all secondary
 % sources
 if size(x0,1)==1
-    % if we have only one speaker
+    % If we have only one speaker
     dx0 = Inf;
 else
     if approx
-        % approximate by using only the first <=100 sources
+        % Approximate by using only the first <=100 sources
         x0 = x0(1:min(100,size(x0,1)),:);
     end
     dx0_single = zeros(size(x0,1),1);
     for ii=1:size(x0,1)
-        % first secondary source position
+        % First secondary source position
         x01 = x0(ii,1:3);
-        % all other positions
+        % All other positions
         x02 = [x0(1:ii-1,1:3); x0(ii+1:end,1:3)];
-        % get distance between x01 and all secondary sources within x02
+        % Get distance between x01 and all secondary sources within x02
         dist = vector_norm(bsxfun(@minus,x02,x01),2);
-        % get the smallest distance (which is the one to the next source)
+        % Get the smallest distance (which is the one to the next source)
         dx0_single(ii) = min(dist);
     end
-    % get the mean distance between all secondary sources
+    % Get the mean distance between all secondary sources
     dx0 = mean(dx0_single);
 end

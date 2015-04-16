@@ -26,12 +26,12 @@ function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 %   the value of the Green's function only to this specific time you should have
 %   a look at sound_field_imp() and apply the folowing command:
 %   [p,x,y,z] = sound_field_imp(X,Y,Z,[xs 0 -1 0],src,1,t,conf);
-%   
+%
 %   References:
 %       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
 %       PhD thesis, TU Berlin
 %
-%   see also: greens_function_mono, sound_field_imp
+%   See also: greens_function_mono, sound_field_imp
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -88,7 +88,7 @@ if strcmp('ps',src)
     % g(x-xs,t) = ---------- delta(t - |x-xs|/c)
     %             4pi |x-xs|
     %
-    % see: Wierstorf (2014), p.22 (2.29)
+    % See: Wierstorf (2014), p.22 (2.29)
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
     g = 1./(4*pi.*r);
@@ -101,7 +101,7 @@ elseif strcmp('ls',src)
     % g(x-xs,t) = F |--  |  - |---  --_-_-_- delta(t - |x-xs|/c)
     %                \iw/    \|8pi  \||x-xs|
     %
-    % see: Wierstorf (2014), p.22 (2.33) 
+    % See: Wierstorf (2014), p.22 (2.33) 
     % Note, that the filter F^-1 is not implemented!!!!
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
@@ -113,7 +113,7 @@ elseif strcmp('pw',src)
     %
     % g(x,t) = delta(t - nx/c)
     %
-    % see: Wierstorf (2014), p.21 (2.24)
+    % See: Wierstorf (2014), p.21 (2.24)
     %
     % direction of plane wave
     nxs = xs / norm(xs);

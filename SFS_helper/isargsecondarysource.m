@@ -11,7 +11,7 @@ function isargsecondarysource(varargin)
 %   containing secondary source positions and directions and returns
 %   an error otherwise.
 %
-%   see also: isargmatrix
+%   See also: isargmatrix
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

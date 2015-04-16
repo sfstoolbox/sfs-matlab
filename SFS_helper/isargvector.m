@@ -9,7 +9,7 @@ function isargvector(varargin)
 %   ISARGVECTOR(args) tests if all given args are a vector and returns
 %   an error otherwise.
 %
-%   see also: isargscalar, isargmatrix
+%   See also: isargscalar, isargmatrix
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

@@ -17,7 +17,7 @@ function sig = delayline(sig,dt,weight,conf)
 %   The delay is implemented as integer delays or a fractional delay
 %   filter, see SFS_config.
 %
-%   see also: get_ir, driving_function_imp_wfs
+%   See also: get_ir, driving_function_imp_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -65,7 +65,7 @@ if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
 
 if usefracdelay
 
-    % additional configuration
+    % Additional configuration
     fracdelay_method = conf.fracdelay_method;
     rfactor = 100; % resample factor (1/stepsize of fractional delays)
     Lls = 30;      % length of least-squares factional delay filter
@@ -104,13 +104,13 @@ if usefracdelay
     end
 
 else
-    % from here on integer delays are considered
+    % From here on integer delays are considered
     idt = round(dt);
-    
-    % handling of too long delay values (returns vector of zeros)
+
+    % Handling of too long delay values (returns vector of zeros)
     idt(abs(idt)>samples) = samples;
-    
-    % handle positive or negative delays
+
+    % Handle positive or negative delays
     for ii=1:channels
         if idt(ii)>=0
             sig(:,ii) = [zeros(idt(ii),1); weight(ii)*sig(1:end-idt(ii),ii)];

@@ -1,16 +1,19 @@
 function x0 = secondary_source_amplitudecorrection(x0)
-%SECONDARY_SOURCE_AMPLITUDECORRECTION the secondary sources
+%SECONDARY_SOURCE_AMPLITUDECORRECTION corrects amplitude of secondary sources
 %
 %   Usage: x0 = secondary_source_amplitudecorrection(x0)
 %
 %   Input parameters:
-%       x0          - secondary sources / m
+%       x0          - secondary sources [n 7] / m
 %
 %   Output options:
-%       x0          - secondary sources / m, containing the applied amplitude 
+%       x0          - secondary sources / m, containing the applied amplitude
 %                     correction in its weights in x0(:,7)
 %
 %   SECONDARY_SOURCE_AMPLITUDECORRECTION(x0)
+%   FIXME: add comment
+%
+%   See also: driving_function_mono_localwfs, driving_function_imp_localwfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -44,15 +47,17 @@ function x0 = secondary_source_amplitudecorrection(x0)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
 nargmax = 1;
 narginchk(nargmin,nargmax),
 isargsecondarysource(x0);
 
+
 %% ===== Calculation ====================================================
 if size(x0,1) < 3
-  % nothing to normalize for this
+  % Nothing to normalize, if array is to small
   return;
 end
 
@@ -64,5 +69,3 @@ x0(2:end-1,7) = xd(1:end-1) + xd(2:end);
 x0(end,7) = xd(end);
 
 x0(:,7) = x0(:,7)./2;
-
-end

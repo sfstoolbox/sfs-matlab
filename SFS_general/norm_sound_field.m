@@ -13,7 +13,7 @@ function P = norm_sound_field(P,conf)
 %   NORM_SOUND_FIELD(P,[conf]) normalizes the given sound field P to
 %   max(abs(P(:))) = 1.
 %
-%   see also: norm_sound_field_at_xref, sound_field_imp
+%   See also: norm_sound_field_at_xref, sound_field_imp
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -65,7 +65,7 @@ usenormalisation = conf.usenormalisation;
 
 
 %% ===== Computation =====================================================
-% set maximum to 1
+% Set maximum to 1
 if usenormalisation
     P = P/max(abs(P(:)));
 end

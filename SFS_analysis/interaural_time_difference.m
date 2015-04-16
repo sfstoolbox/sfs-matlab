@@ -37,7 +37,7 @@ function [itd,idxleft,idxright] = interaural_time_difference(insigleft,insigrigh
 %       dynamic binaural synthesis by real time manipulation of the ITD",
 %       128th AES Conv.
 %
-%   see also: interaural_level_difference
+%   See also: interaural_level_difference
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -111,10 +111,8 @@ if strcmp( mode,'hilbert') || strcmp( mode,'simple')
     tresholdleft = 0.10 * max(abs(insigleft(:,ii)));
     tresholdright = 0.10 * max(abs(insigright(:,ii)));
     % Ten fold upsampling (after lindau2010) to have a smoother output
-
     resampleft = resample(insigleft(:,ii),10*fs,fs);
     resampright = resample(insigright(:,ii),10*fs,fs);
-
 
     idxleft(ii) = find(abs(resampleft) > tresholdleft,1,'first');
     idxright(ii) = find(abs(resampright) > tresholdright,1,'first');
@@ -135,39 +133,25 @@ elseif strcmp ( mode,'max')
     itd(ii) = (idxleft(ii)-idxright(ii))/(10*fs);
 
 elseif strncmp ( mode,'int',3)
-    %here we try an other approach / integration of the difference and minimize
+    %Here we try an other approach / integration of the difference and minimize
     difmin=0;
 
     a=sum(abs(insigleft(:,ii)))/sum(abs(insigright(:,ii)));         %here we normalize the both signals
     insigright(:,ii)=a*insigright(:,ii);
                                                                     %the right one should be louder
-    %put zeros in the end and beginning
+    %Put zeros in the end and beginning
     l=(length(insigleft(:,ii)));
-    %stretch= round(0.1*l);
     stretch = round(fs*0.001);
-
     newleft = zeros(1,l+2*stretch);
     newleft(stretch+1:l+stretch) = insigleft(:,ii);
-
-
     [maxright idxright] = max(abs(insigright(:,ii)));
-
-
     weight=(idxright*2-1:-1:idxright)-idxright;
 
     if strcmp(mode,'int2')
         weight=log(weight+1);
     end
 
-    %weight=(1-10*(abs((1:l+2*stretch)-jminold)/l));
-    %for k = 1:l+2*stretch
-    %if weight(k)<0
-    %   weight(k)= 0;
-    %end
-    %end
-    %weight=weight.^2;
-
-    %add zeros also to the end and beginning of the right signal, and let the data turn from beginning to end
+    % Add zeros also to the end and beginning of the right signal, and let the data turn from beginning to end
 
     for j = 1:2*stretch
         newright = zeros(1,l+2*stretch);                        %create an empty signal of the new lenght

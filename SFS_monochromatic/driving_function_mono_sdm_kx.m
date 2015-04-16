@@ -24,7 +24,7 @@ function D = driving_function_mono_sdm_kx(kx,xs,src,f,conf)
 %   To derive the driving signals the spectral division method (SDM) in the kx
 %   domain is used.
 %
-%   see also: plot_sound_field, sound_field_mono_sdm_kx
+%   See also: plot_sound_field, sound_field_mono_sdm_kx
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

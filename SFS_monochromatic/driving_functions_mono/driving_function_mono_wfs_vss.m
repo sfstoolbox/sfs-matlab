@@ -20,7 +20,7 @@ function D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf)
 %       S. Spors, J.Ahrens (2010) - "Local Sound Field Synthesis by Virtual
 %                                    Secondary Sources", 40th AES
 %
-%   see also: driving_function_mono_wfs, driving_function_mono_wfs_fs
+%   See also: driving_function_mono_wfs, driving_function_mono_wfs_fs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -91,7 +91,7 @@ end
 
 % Get driving signals for real secondary sources
 %
-% see Spors (2010), fig. 2 & eq. (12)
+% See Spors (2010), fig. 2 & eq. (12)
 Ns = size(xv,1);
 N0 = size(x0,1);
 

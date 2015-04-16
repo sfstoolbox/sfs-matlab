@@ -11,7 +11,7 @@ function check_sound_field(P,t)
 %   CHECK_SOUND_FIELD(P,t) checks if the sound field is different from zero.
 %   If this is not the case it returns a warning.
 %
-%   see also: sound_field_imp_wfs, norm_sound_field
+%   See also: sound_field_imp_wfs, norm_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

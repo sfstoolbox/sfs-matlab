@@ -54,11 +54,11 @@ isargpositivescalar(fontsize)
 %% ===== Apply settings ==================================================
 % Get handle for active figure
 h=gca;
-% set the font size for the axis tics
+% Set the font size for the axis tics
 set(h,'FontSize',fontsize);
 % set the font size for all text strings
 set(findall(h,'type','text'),'FontSize',fontsize);
 % FIXME: the following produces an segmentation fault under Octave
-% set the font size for colorbar tics
+% Set the font size for colorbar tics
 %h=colorbar;
 %set(h,'FontSize',fontsize);

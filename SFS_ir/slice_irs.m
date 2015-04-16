@@ -15,7 +15,7 @@ function irspart = slice_irs(irs,idx)
 %   SLICE_IRS(irs,idx) returns a part of the IR set irs given by idx. The new
 %   part is a full IR set containing all the necessary struct elements.
 %
-%   see also: get_ir, read_irs
+%   See also: get_ir, read_irs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

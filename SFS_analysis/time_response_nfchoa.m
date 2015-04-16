@@ -21,7 +21,7 @@ function varargout = time_response_nfchoa(X,xs,src,conf)
 %   sound field at the given position X. The sound field is simulated for the
 %   given source type (src) using the sound_field_imp function.
 %
-%   see also: sound_field_imp_nfchoa, freq_response_nfchoa, time_response_wfs
+%   See also: sound_field_imp_nfchoa, freq_response_nfchoa, time_response_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -74,9 +74,9 @@ isargstruct(conf);
 useplot = conf.plot.useplot;
 fs = conf.fs;
 showprogress = conf.showprogress;
-% disable progress bar for the sound field function
+% Disable progress bar for the sound field function
 conf.showprogress = 0;
-% disable normalization, otherwise the amplitude will always the same for all
+% Disable normalization, otherwise the amplitude will always the same for all
 % time steps
 conf.usenormalization = 0;
 
@@ -93,16 +93,17 @@ d = driving_function_imp_nfchoa(x0,xs,src,conf);
 %d = convolution(d,hann_window(5,5,10));
 for ii = 1:length(t)
     if showprogress, progress_bar(ii,length(t)); end
-    % calculate sound field at the listener position
+    % Calculate sound field at the listener position
     p = sound_field_imp(X(1),X(2),X(3),x0,'ps',d,t(ii),conf);
     s(ii) = real(p);
 end
 
-% return parameter
+% Return parameter
 if nargout>0, varargout{1}=s; end
 if nargout>1, varargout{2}=t; end
 
-% ===== Plotting =========================================================
+
+%% ===== Plotting ========================================================
 if nargout==0 || useplot
     figure;
     figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);

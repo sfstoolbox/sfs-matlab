@@ -8,7 +8,7 @@ function pulse = dirac_imp()
 %
 %   DIRAC_IMP() returns a 1 sample long dirac pulse.
 %
-%   see also: hann_window, driving_function_imp_wfs, driving_function_imp_nfchoa
+%   See also: hann_window, driving_function_imp_wfs, driving_function_imp_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -54,5 +54,5 @@ narginchk(nargmin,nargmax);
 % for simulation of a sound field the usage of a hann shaped pulse could be a
 % better choice
 %pulse = row_vector(hann_window(5,5,10));
-% for binaural simulations we should stick to a dirac pulse
+% For binaural simulations we should stick to a dirac pulse
 pulse = 1;

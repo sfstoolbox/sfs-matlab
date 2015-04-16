@@ -13,7 +13,7 @@ function [b,a] = bilinear_transform(sos,conf)
 %   BILINEAR_TRANSFORM(sos) transforms the second-order section representation
 %   of a system to time discrete filter coefficients.
 %
-%   see also: driving_function_imp_nfchoa, zp2sos
+%   See also: driving_function_imp_nfchoa, zp2sos
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

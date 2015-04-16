@@ -16,7 +16,7 @@ function irs = irs_with_particular_azimuth(irs,phi)
 %   phi, or by default the medial plane. Input should be an IRS-set with
 %   diffrent values for the azimuth
 %
-%   see also: slice_irs, new_irs
+%   See also: slice_irs, new_irs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

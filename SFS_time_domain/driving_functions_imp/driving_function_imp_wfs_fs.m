@@ -21,7 +21,7 @@ function [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs,conf)
 %       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
 %       PhD thesis, Tu Berlin
 %
-%   see also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_fs
+%   See also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_fs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -125,7 +125,7 @@ elseif strcmp('2.5D',dimension)
         % d_2.5D(x0,t) = h(t) * --- ------------- delta(t + |xs-x0|/c)
         %                       2pi |xs-x0|^(3/2)
         %
-        % see Wierstorf (2014), p.27 (2.65)
+        % See Wierstorf (2014), p.27 (2.65)
         %
         % r = |xs-x0|
         r = vector_norm(xs-x0,2);
@@ -150,7 +150,7 @@ elseif strcmp('3D',dimension)
         % d_3D(x0,t) = h(t) * --- ------------- delta(t + |xs-x0|/c)
         %                     2pi |xs-x0|^(3/2)
         %
-        % see Wierstorf (2014), p.27 (2.64)
+        % See Wierstorf (2014), p.27 (2.64)
         %
         % r = |xs-x0|
         r = vector_norm(xs-x0,2);

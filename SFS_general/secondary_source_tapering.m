@@ -15,7 +15,7 @@ function x0 = secondary_source_tapering(x0,varargin)
 %   the conf.usetapwin and conf.tapwinlen settings) to the secondary sources.
 %   It is applied to the weights stored in x0(:,7).
 %
-% see also: secondary_source_positions, tapering_window
+%   See also: secondary_source_positions, tapering_window
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

@@ -14,7 +14,7 @@ function out = sphbessely(nu,z)
 %   SPHBESSELY(nu,z) spherical bessel function of order nu, frist type, and
 %   argument z
 %
-%   see also: sphbesselh, sphbesselj
+%   See also: sphbesselh, sphbesselj
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

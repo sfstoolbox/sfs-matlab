@@ -13,7 +13,7 @@ function y = ifft_real(x,N)
 %   IFFT_REAL(x,samples) computes the ifft of the real signals in x. The signals
 %   have to be the columns of x.
 %
-%   see also: fft_real, convolution
+%   See also: fft_real, convolution
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

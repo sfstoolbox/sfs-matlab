@@ -15,7 +15,7 @@ function draw_loudspeakers(x0,dimensions,conf)
 %   conf.plot.realloudspeakers setting. The loudspeaker symbols are pointing in
 %   their given direction.
 %
-%   see also: plot_sound_field
+%   See also: plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -117,7 +117,7 @@ else
     %v2 = [0 h/2 h/2 0 ; -w/6 -w/2 w/2 w/6];
     v1 = [-h -h -h/2 -h/2 -h ; -w/2 w/2 w/2 -w/2 -w/2 ; 0 0 0 0 0];
     v2 = [-h/2 0 0 -h/2 ; -w/6 -w/2 w/2 w/6 ; 0 0 0 0 ];
-    
+
     hold on;
 
     % draw loudspeakers
@@ -152,8 +152,8 @@ else
     end
 
     hold off;
-    
+
 end
 
-% set equal axis ratio
+% Set equal axis ratio
 axis image

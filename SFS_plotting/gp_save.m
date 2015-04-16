@@ -11,7 +11,7 @@ function gp_save(file,data,header)
 %   GP_SAVE(file,data,header) saves the values data in a text file in a
 %   format useable by Gnuplot
 %
-%   see also: gp_save_matrix
+%   See also: gp_save_matrix
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

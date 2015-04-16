@@ -9,7 +9,7 @@ function isargfile(varargin)
 %   ISARGFILE(args) tests if all given args are a file and returns
 %   an error otherwise.
 %
-%   see also: isargdir
+%   See also: isargdir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

@@ -13,7 +13,7 @@ function varargout = axis_vector(varargin)
 %   2x1 vectors. If the input is only one dimensional, its value will be
 %   replicated.
 %
-% see also: xyz_axes, xyz_grid
+%   See also: xyz_axes, xyz_grid
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

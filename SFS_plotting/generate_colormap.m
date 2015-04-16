@@ -1,15 +1,21 @@
-function isargpositivescalar(varargin)
-%ISARGPOSITIVESCALAR tests if the given arg is a positive scalar
+function m = generate_colormap(table,n)
+%GENERATE_COLORMAP creates a Matlab colormap from the given table
 %
-%   Usage: isargpositivescalar(arg1,arg2,...)
+%   usage: m = generate_colormap(table,n)
 %
-%   Input options:
-%       args        - list of args
+%   Input parameters:
+%       table - matrix containing the color values as columns [r g b]. The
+%               single colors go from 0 to 255
+%       n     - size of the colormap
 %
-%   ISARGPOSITIVESCALAR(args) tests if all given args are a positive
-%   scalar and returns an error otherwise.
+%   Output parameters:
+%       m     - colormap
 %
-%   See also: isargscalar, isargnegativescalar
+%   GENERATE_COLORMAP(table,n) returns an n-by-3 matrix containing a colormap.
+%   The color values are specified in table, which will be interpolated to the
+%   desired number of entries n.
+%
+% See also: moreland, chromajs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -44,9 +50,17 @@ function isargpositivescalar(varargin)
 %*****************************************************************************
 
 
-%% ===== Checking for scalar =============================================
-for ii = 1:nargin
-    if ~isnumeric(varargin{ii}) || ~isscalar(varargin{ii}) || varargin{ii}<0
-        error('%s need to be a positive scalar.',inputname(ii));
+%% ===== Checking input parameters =======================================
+nargmin = 2;
+nargmax = 2;
+narginchk(nargmin,nargmax);
+
+
+%% ===== Computation =====================================================
+m = zeros(n,3);
+for ii=1:n
+    for jj=1:3
+        m(ii,jj)=interp1(linspace(1,n,size(table,1)),table(:,jj),ii);
     end
 end
+m=m/256;

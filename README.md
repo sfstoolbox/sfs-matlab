@@ -395,20 +395,26 @@ conf.plot.useplot = true;
 ![Image](doc/img/sound_field_imp_nfchoa_25d.png)
 
 The output can also be plotted in dB by setting <code>conf.plot.usedb =
-true;</code>. In this case also a color map is shown. For none dB plots no
-color bar is shown in the plots. In these cases the color coding goes always from
--1 to 1, with clipping of larger values.
-We change also the color map to the Matlab default one.
+true;</code>. In this case the default color map is changed and a color bar
+is plotted in the figure. For none dB plots no color bar is shown in the plots.
+In these cases the color coding goes always from -1 to 1, with clipping of
+larger values.
+You could change the color 
 
 ```Matlab
 conf.plot.usedb = true;
-conf.plot.colormap = 'jet';
 plot_sound_field(p,x,y,z,x0,conf);
 %print_png('img/sound_field_imp_nfchoa_25d_dB.png');
 ```
 
 ![Image](doc/img/sound_field_imp_nfchoa_25d_dB.png)
 
+You could change the color map yourself doing the following before the plot
+command.
+
+```Matlab
+conf.plot.colormap = 'jet'; % Matlab rainbow color map
+```
 
 ### Make Binaural Simulations of Your Systems
 
@@ -558,10 +564,11 @@ Credits and License
 This is the source distribution of Sound Field Synthesis Toolbox (SFS) licensed
 under the GPLv3+. Please consult the file COPYING for more information about
 this license.
- 
-For questions, bug reports and feature requests:  
-Contact: sfstoolbox@googlemail.com  
+
 Website: http://github.com/sfstoolbox/sfs
+
+If you have questions, bug reports or feature requests, please use the [Issue
+Section on the website](https://github.com/sfstoolbox/sfs/issues) to report them. 
 
 If you use the Toolbox for your publications please cite our AES Convention e-Brief:  
 H. Wierstorf, S. Spors - Sound Field Synthesis Toolbox.  
@@ -575,7 +582,6 @@ Quality & Usability Lab, together with
 Assessment of IP-based Applications  
 Telekom Innovation Laboratories, TU Berlin  
 Ernst-Reuter-Platz 7, 10587 Berlin, Germany 
-
 
 Copyright (c) 2013-2015  
 Institut fuer Nachrichtentechnik  

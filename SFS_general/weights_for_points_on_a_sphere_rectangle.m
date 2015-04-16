@@ -1,5 +1,5 @@
 function [w] = weights_for_points_on_a_sphere_rectangle(phi,theta)
-%WEIGHTS_FOR_POINTS_ON_A_SPHERE_RECTANGLE returns the weights for a given 
+%WEIGHTS_FOR_POINTS_ON_A_SPHERE_RECTANGLE returns the weights for a given
 % set of points on a sphere.
 %
 %   Usage: [w] = weights_for_points_on_a_sphere_rectangle(phi,theta)
@@ -7,15 +7,17 @@ function [w] = weights_for_points_on_a_sphere_rectangle(phi,theta)
 %   Input parameters:
 %       phi           - azimuth angles of given points (row vector) / rad
 %       theta         - elevation angles of given points (row vector) / rad
-% 
+%
 %   Output parameters:
-%       w             - weights for given set of points on the sphere  
-% 
-%   WEIGHTS_FOR_POINTS_ON_A_SPHERE_RECTANGLE(phi,theta) returns the weights 
-%   for a given set of points on a sphere. The weights will be achieved by 
-%   calculating a rectangle around every point given by its azimuth angle  
+%       w             - weights for given set of points on the sphere
+%
+%   WEIGHTS_FOR_POINTS_ON_A_SPHERE_RECTANGLE(phi,theta) returns the weights
+%   for a given set of points on a sphere. The weights will be achieved by
+%   calculating a rectangle around every point given by its azimuth angle
 %   (phi), elevation (theta) angle.
- 
+%
+%   See also: get_spherical_grid
+
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
@@ -64,9 +66,9 @@ a = (theta(1)-theta(2));
 b = (phi(4))-(phi(3));
 weights(1) = a*b;
 for ii=2:length(theta)-1
-    % if the next theta is not equal to the previous one -> calculate new weight
+    % If the next theta is not equal to the previous one -> calculate new weight
     if theta(ii)~=theta(ii+1) 
-        % calculate rectangle around the point with 
+        % Calculate rectangle around the point with 
         % b*a = (r*cos(theta)d_phi) * (r*d_theta)
         a = (theta(ii)-theta(ii+1));
         b = (phi(ii+1))-(phi(ii));
@@ -76,7 +78,7 @@ for ii=2:length(theta)-1
     end
 end
 
-% pole weight shouldn't be zero
+% Pole weight shouldn't be zero
 if weights(1)==0
     weights(1) = weights(2);
 end

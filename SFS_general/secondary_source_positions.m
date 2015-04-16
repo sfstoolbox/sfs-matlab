@@ -1,6 +1,6 @@
 function x0 = secondary_source_positions(conf)
-%SECONDARY_SOURCE_POSITIONS Generates the positions and directions of the
-%   secondary sources
+%SECONDARY_SOURCE_POSITIONS generates the positions, directions, and weights of
+%   the secondary sources
 %
 %   Usage: x0 = secondary_source_positions([conf])
 %

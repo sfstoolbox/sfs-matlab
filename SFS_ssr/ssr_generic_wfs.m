@@ -22,7 +22,7 @@ function ir = ssr_generic_wfs(xs,src,conf)
 %   array has its first loudspeaker at phi=0deg which is on the x-axis. If you
 %   have another setup you have to provide it with conf.secondary_sources.x0.
 %
-% see also: generic_nfchoa, brs_wfs, driving_function_imp_wfs
+% See also: generic_nfchoa, brs_wfs, driving_function_imp_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -76,9 +76,9 @@ N = conf.N;
 %% ===== Main ============================================================
 % Secondary sources
 x0 = secondary_source_positions(conf);
-% create empty impulse response for all secondary sources
+% Create empty impulse response for all secondary sources
 ir = zeros(N,size(x0,1));
 [x0,idx] = secondary_source_selection(x0,xs,src);
 x0 = secondary_source_tapering(x0,conf);
-% driving signals for the active speakers
+% Driving signals for the active speakers
 ir(:,idx) = driving_function_imp_wfs(x0,xs,src,conf);

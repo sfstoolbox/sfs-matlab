@@ -1,5 +1,5 @@
 function [ir,x0] = ir_nfchoa(X,phi,xs,src,irs,conf)
-%IR_NFCHOA Generate a IR for NFCHOA
+%IR_NFCHOA generates a binaural simulation of NFCHOA
 %
 %   Usage: [ir,x0] = ir_nfchoa(X,phi,xs,src,irs,[conf])
 %
@@ -21,7 +21,7 @@ function [ir,x0] = ir_nfchoa(X,phi,xs,src,irs,conf)
 %   response for a virtual source at xs for a virtual NFCHOA array and a
 %   listener located at X.
 %
-%   see also: ssr_brs_nfchoa, ir_nfchoa, ir_point_source, auralize_ir
+%   See also: ssr_brs_nfchoa, ir_nfchoa, ir_point_source, auralize_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -79,8 +79,7 @@ x0 = secondary_source_positions(conf);
 
 
 %% ===== BRIR ===========================================================
-% calculate driving function
+% Calculate driving function
 d = driving_function_imp_nfchoa(x0,xs,src,conf);
-
-% generate the impulse response for NFCHOA
+% Generate the impulse response for NFCHOA
 ir = ir_generic(X,phi,x0,d,irs,conf);

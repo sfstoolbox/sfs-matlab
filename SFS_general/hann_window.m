@@ -12,7 +12,7 @@ function win = hann_window(onset,offset,nsamples)
 %       win         - a Hann window (nsamples x 1) for multiplication
 %                     with the desired signal to be windowed
 %
-%   see also: click, tapering_window
+%   See also: click, tapering_window
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -82,9 +82,9 @@ offset=ceil(offset);
 if onset==0
     onsetwin = [];
 else
-    % generate an uneven window, see issue #18
+    % Generate an uneven window, see issue #18
     tmp = hann(2*onset+1);
-    % disregard the first entry, because its zero
+    % Disregard the first entry, because its zero
     onsetwin = tmp(2:onset+1);
 end
 % Generate offset window
@@ -92,7 +92,7 @@ if offset==0
     offsetwin = [];
 else
     tmp = hann(2*offset+1);
-    % disregard the last entry, becaus its zero
+    % Disregard the last entry, becaus its zero
     offsetwin = tmp(offset+1:end-1);
 end
 

@@ -21,7 +21,7 @@ function brs = ssr_brs_point_source(X,phi,xs,irs,conf)
 %   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
 %   http://spatialaudio.net/ssr/
 %
-%   see also: ir_generic, ir_point_source, get_ir
+%   See also: ir_generic, ir_point_source, get_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

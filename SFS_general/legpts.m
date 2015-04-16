@@ -1,5 +1,6 @@
 function [x w v] = legpts(n,int,meth)
 %LEGPTS  Legendre points and Gauss Quadrature Weights.
+%
 %  LEGPTS(N) returns N Legendre points X in (-1,1).
 %
 %  [X,W] = LEGPTS(N) returns also a row vector W of weights for Gauss quadrature.
@@ -13,18 +14,18 @@ function [x w v] = legpts(n,int,meth)
 %  the barycentric formula corresponding to the points X.
 %
 %  [X,W] = LEGPTS(N,METHOD) allows the user to select which method to use.
-%    METHOD = 'FASTSMALL' uses the recurrence relation for the Legendre 
-%       polynomials and their derivatives to perform Newton iteration 
+%    METHOD = 'FASTSMALL' uses the recurrence relation for the Legendre
+%       polynomials and their derivatives to perform Newton iteration
 %       on the WKB approximation to the roots.
 %    METHOD = 'FAST' uses the Glaser-Liu-Rokhlin fast algorithm, which
-%       is much faster for large N. 
-%    METHOD = 'GW' will use the traditional Golub-Welsch eigenvalue method, 
+%       is much faster for large N.
+%    METHOD = 'GW' will use the traditional Golub-Welsch eigenvalue method,
 %       which is maintained mostly for historical reasons.
 %       By default LEGPTS uses 'FASTSMALL' when N<=256 and FAST when N>256
 %
 %  See also chebpts and jacpts.
 
-%  Copyright 2011 by The University of Oxford and The Chebfun Developers. 
+%  Copyright 2011 by The University of Oxford and The Chebfun Developers.
 %  See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 %
 %  Redistribution and use in source and binary forms, with or without
@@ -34,14 +35,14 @@ function [x w v] = legpts(n,int,meth)
 %      * Redistributions in binary form must reproduce the above copyright
 %        notice, this list of conditions and the following disclaimer in the
 %        documentation and/or other materials provided with the distribution.
-%      * Neither the name of the University of Oxford nor the names of its 
-%        contributors may be used to endorse or promote products derived from 
+%      * Neither the name of the University of Oxford nor the names of its
+%        contributors may be used to endorse or promote products derived from
 %        this software without specific prior written permission.
-%  
+%
 %  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 %  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 %  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-%  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR 
+%  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
 %  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
 %  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
 %  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -54,9 +55,9 @@ function [x w v] = legpts(n,int,meth)
 %
 %  References:
 %   [1] G. H. Golub and J. A. Welsch, "Calculation of Gauss quadrature
-%       rules", Math. Comp. 23:221-230, 1969, 
-%   [2] A. Glaser, X. Liu and V. Rokhlin, "A fast algorithm for the 
-%       calculation of the roots of special functions", SIAM Journal  
+%       rules", Math. Comp. 23:221-230, 1969,
+%   [2] A. Glaser, X. Liu and V. Rokhlin, "A fast algorithm for the
+%       calculation of the roots of special functions", SIAM Journal
 %       on Scientific Computing", 29(4):1420-1438:, 2007.
 
 % Defaults
@@ -80,7 +81,7 @@ if nargin > 1
         if ischar(int), method = int; else interval = int; end
     end
     if ~any(strcmpi(method,{'default','GW','fast','fastsmall'}))
-        error('CHEBFUN:legpts:inputs',['Unrecognised input string.', method]); 
+        error('CHEBFUN:legpts:inputs',['Unrecognised input string.', method]);
     end
     if isa(interval,'domain')
         interval = interval.endsandbreaks;
@@ -94,7 +95,7 @@ end
 
 % Decide to use GW or FAST
 if n == 1
-% Trivial case when N = 1    
+% Trivial case when N = 1
     x = 0; w = 2; v = 1;
 elseif strcmpi(method,'GW')
 % GW, see [1]
@@ -105,23 +106,23 @@ elseif strcmpi(method,'GW')
    w = 2*V(1,i).^2;                      % Quadrature weights
    v = sqrt(1-x.^2).*abs(V(1,i))';       % Barycentric weights
    v = v./max(v);
-   
+
    % Enforce symmetry
-   ii = 1:floor(n/2);  x = x(ii);  w = w(ii); 
+   ii = 1:floor(n/2);  x = x(ii);  w = w(ii);
    vmid = v(floor(n/2)+1); v = v(ii);
    if mod(n,2)
         x = [x ; 0 ; -x(end:-1:1)];  w = [w  2-sum(2*w) w(end:-1:1)];
         v = [v ; vmid ; v(end:-1:1)];
    else
-        x = [x ; -x(end:-1:1)];      w = [w w(end:-1:1)];      
+        x = [x ; -x(end:-1:1)];      w = [w w(end:-1:1)];
         v = [v ; v(end:-1:1)];
    end
    v(2:2:n) = -v(2:2:end);
 elseif (n < 256 && ~strcmpi(method,'fast')) || strcmpi(method,'fastsmall')
-% Fastsmall    
+% Fastsmall
    [x ders] = fastsmall(n);              % Nodes and P_n'(x)
    w = 2./((1-x.^2).*ders.^2)';          % Quadrature weights
-   v = 1./ders; v = v./max(abs(v));      % Barycentric weights  
+   v = 1./ders; v = v./max(abs(v));      % Barycentric weights
    if ~mod(n,2), ii = (floor(n/2)+1):n; v(ii) = -v(ii);   end
 else
 % Fast, see [2]
@@ -132,7 +133,7 @@ else
 end
 
 % Normalise so that sum(w) = 2
-w = (2/sum(w))*w;           
+w = (2/sum(w))*w;
 
 % Rescale to arbitrary interval
 if ~all(interval == [-1 1])
@@ -157,7 +158,7 @@ end
 function [x PP] = fastsmall(n)
 
 % Asymptotic formula (WKB) - only positive x.
-if mod(n,2), s = 1; else s = 0; end 
+if mod(n,2), s = 1; else s = 0; end
 k = (n+s)/2:-1:1; theta = pi*(4*k-1)/(4*n+2);
 x = (1-(n-1)/(8*n^3)-1/(384*n^4)*(39-28./sin(theta).^2)).*cos(theta);
 
@@ -168,18 +169,18 @@ dx = inf; l = 0;
 % Loop until convergence
 while norm(dx,inf) > eps && l < 10
     l = l + 1;
-    for k = 1:n-1, 
-        P = ((2*k+1)*Pm1.*x-k*Pm2)/(k+1);           Pm2 = Pm1; Pm1 = P; 
-        PP = ((2*k+1)*(Pm2+x.*PPm1)-k*PPm2)/(k+1);  PPm2 = PPm1; PPm1 = PP;  
+    for k = 1:n-1,
+        P = ((2*k+1)*Pm1.*x-k*Pm2)/(k+1);           Pm2 = Pm1; Pm1 = P;
+        PP = ((2*k+1)*(Pm2+x.*PPm1)-k*PPm2)/(k+1);  PPm2 = PPm1; PPm1 = PP;
     end
-    dx = -P./PP; x = x + dx;    
+    dx = -P./PP; x = x + dx;
     Pm2 = 1; Pm1 = x; PPm2 = 0; PPm1 = 1;
 end
 
 % Once more for derivatives
-for k = 1:n-1, 
-    P = ((2*k+1)*Pm1.*x-k*Pm2)/(k+1);           Pm2 = Pm1; Pm1 = P; 
-    PP = ((2*k+1)*(Pm2+x.*PPm1)-k*PPm2)/(k+1);  PPm2 = PPm1; PPm1 = PP;  
+for k = 1:n-1,
+    P = ((2*k+1)*Pm1.*x-k*Pm2)/(k+1);           Pm2 = Pm1; Pm1 = P;
+    PP = ((2*k+1)*(Pm2+x.*PPm1)-k*PPm2)/(k+1);  PPm2 = PPm1; PPm1 = PP;
 end
 
 % Reflect for negative values
@@ -192,17 +193,17 @@ PP = [PP(end:-1:1+s) PP].';
 function [roots ders] = alg0_Leg(n) % Driver for 'Fast'.
 
 % Compute coefficients of P_m(0), m = 0,..,N via recurrence relation.
-Pm2 = 0; Pm1 = 1; 
+Pm2 = 0; Pm1 = 1;
 for k = 0:n-1, P = -k*Pm2/(k+1); Pm2 = Pm1; Pm1 = P; end
 
 % Get the first roots and derivative values to initialise.
 roots = zeros(n,1); ders = zeros(n,1);                      % Allocate storage
 if mod(n,2)                                                 % n is odd
     roots((n-1)/2) = 0;                                     % Zero is a root
-    ders((n+1)/2) = n*Pm2;                                  % P'(0)    
+    ders((n+1)/2) = n*Pm2;                                  % P'(0)
 else                                                        % n is even
     [roots(n/2+1) ders(n/2+1)] = alg2_Leg(P,n);             % Find first root
-end       
+end
 
 [roots ders] = alg1_Leg(roots,ders);          % Other roots and derivatives
 
@@ -210,7 +211,7 @@ end
 
 function [roots ders] = alg1_Leg(roots,ders)  % Main algorithm for 'Fast'
 n = length(roots);
-if mod(n,2), N = (n-1)/2; s = 1; else N = n/2; s = 0; end   
+if mod(n,2), N = (n-1)/2; s = 1; else N = n/2; s = 0; end
 
 % Approximate roots via asymptotic formula.
 k = (n-2+s)/2:-1:1; theta = pi*(4*k-1)/(4*n+2);
@@ -237,24 +238,24 @@ for j = N+1:n-1
         up(m-k) = (c1*(k+1)*u(m-k)+(k-n*(n+1)/(k+1))*u(m-k+1)/M^2)*c2;
         u(m-(k+1)) = up(m-k)/(k+2);
     end
-    up(1) = 0;  
+    up(1) = 0;
 
     % Newton iteration
-    hh = hh1; step = inf;  l = 0; 
+    hh = hh1; step = inf;  l = 0;
     while (abs(step) > eps) && (l < 10)
         l = l + 1;
         step = (u*hh)/(up*hh)/M;
-        h = h - step;        
+        h = h - step;
         Mhzz = (M*h)+zz;
         hh = [1;cumprod(Mhzz)];     % Powers of h (This is the fastest way!)
-        hh = hh(end:-1:1);          % Flip for more accuracy in inner product 
+        hh = hh(end:-1:1);          % Flip for more accuracy in inner product
     end
-      
+
     % Update
     x = x + h;
     roots(j+1) = x;
-    ders(j+1) = M*(up*hh);  
-       
+    ders(j+1) = M*(up*hh);
+
 end
 
 % Nodes are symmetric.

@@ -1,5 +1,5 @@
 function inoutsig = gaindb(inoutsig,gn)
-%GAINDB  increases/decreases level of signal by given gain
+%GAINDB increases/decreases level of signal by given gain
 %
 %   Usage:  outsig = gaindb(insig,gn);
 %
@@ -12,7 +12,7 @@ function inoutsig = gaindb(inoutsig,gn)
 %
 %   GAINDB(insig,gn) changes the level of the signal by gn dB.
 %
-%   see also: rms, db, setleveldb
+%   See also: rms, db, setleveldb
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

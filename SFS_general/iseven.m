@@ -1,5 +1,5 @@
 function bool = iseven(number)
-%ISEVEN true for even integer
+%ISEVEN returns true for even integer
 %
 %   Usage: bool = iseven(number)
 %
@@ -11,7 +11,7 @@ function bool = iseven(number)
 %
 %   ISEVEN(number) checks if the given number is even.
 %
-%   see also: isodd
+%   See also: isodd
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

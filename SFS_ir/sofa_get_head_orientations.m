@@ -16,7 +16,7 @@ function [phi,theta] = sofa_get_head_orientations(sofa,idx)
 %   defined in the given SOFA file or struct, specified by idx. If no idx is
 %   specified all head orientations are returned.
 %
-%   see also: get_ir, sofa_get_header, sofa_get_secondary_sources
+%   See also: get_ir, sofa_get_header, sofa_get_secondary_sources
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

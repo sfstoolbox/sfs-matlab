@@ -12,7 +12,7 @@ function sig = norm_signal(sig)
 %   NORM_SIGNAL(sig) normalizes the amplitude of the given signal to the range
 %   of ]-1:1[.
 %
-%   see also: auralize_ir
+%   See also: auralize_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

@@ -1,5 +1,5 @@
 function [points,weights] = get_spherical_grid(number,conf)
-%GET_SPHERICAL_GRID retruns grid points and weights
+%GET_SPHERICAL_GRID returns grid points and weights
 %
 %   Usage: [points,weights] = get_spherical_grid(number,[conf])
 %
@@ -23,7 +23,7 @@ function [points,weights] = get_spherical_grid(number,conf)
 %   References:
 %       J. Ahrens (2012) - "Analytic Methods of Sound Field Synthesis", Springer.
 %
-%   see also: secondary_source_positions,
+%   See also: secondary_source_positions,
 %       weights_for_points_on_a_sphere_rectangle
 
 %*****************************************************************************
@@ -80,7 +80,7 @@ filename = sprintf('%06.0fpoints.mat',number);
 basepath = get_sfs_path();
 
 if strcmp('equally_spaced_points',spherical_grid)
-    % check if we have a squared number of points, because only for those values
+    % Check if we have a squared number of points, because only for those values
     % are equally spaced points grids available.
     if mod(number,sqrt(number))~=0
         error('%s: number has to be a squared number.',upper(mfilename));
@@ -88,7 +88,7 @@ if strcmp('equally_spaced_points',spherical_grid)
     file = [basepath '/data/spherical_grids/equally_spaced_points/' filename];
     url = ['https://dev.qu.tu-berlin.de/projects/data/repository/revisions/' ...
         'master/raw/spherical_grids/equally_spaced_points/' filename];
-    % download file if not present
+    % Download file if not present
     if ~exist(file,'file')
         download_file(url,file);
     end
@@ -96,7 +96,7 @@ if strcmp('equally_spaced_points',spherical_grid)
     points = tmp(:,1:3);
     weights = tmp(:,4);
 elseif strcmp('fabian',spherical_grid)
-    % here we have only one number of secondary sources available
+    % Here we have only one number of secondary sources available
     if number~=11345
         error('%s: this grid is only available for 11345 sources.', ...
             upper(mfilename));
@@ -104,7 +104,7 @@ elseif strcmp('fabian',spherical_grid)
     file = [basepath '/data/spherical_grids/fabian/' filename];
     url = ['https://dev.qu.tu-berlin.de/projects/data/repository/revisions/' ...
         'master/raw/spherical_grids/fabian/' filename];
-    % download file if not present
+    % Download file if not present
     if ~exist(file,'file')
         download_file(url,file);
     end
@@ -112,28 +112,28 @@ elseif strcmp('fabian',spherical_grid)
     points = tmp(:,1:3);
     weights = tmp(:,4);
 elseif strcmp('gauss',spherical_grid)
-    % the number of secondary sources needs to be 2,8,18,32, ... , 
+    % The number of secondary sources needs to be 2,8,18,32, ... ,
     % see Ahrens (2012)
     if mod(number,sqrt(number/2))~=0
         error(['%s: the number of secondary sources needs to be ', ...
             '2*n^2 for a gauss grid.'],upper(mfilename));
     end
     number = sqrt(number/2);
-    % get gauss points and weights
+    % Get gauss points and weights
     [p,w] = legpts(number);
-    % sampling points along azimuth
+    % Sampling points along azimuth
     PHI = linspace(0,2*pi,2*number+1);
-    % remove the last one, because phi=0 and phi=2pi are the same
+    % Remove the last one, because phi=0 and phi=2pi are the same
     PHI = PHI(1:end-1);
-    % sampling points along elevation
+    % Sampling points along elevation
     THETA = acos(p)-pi/2;
-    % get grid points
+    % Get grid points
     [phi,theta] = meshgrid(PHI,THETA);
     [~,weights] = meshgrid(PHI,w);
     r = ones(size(phi));
-    % convert to cartesian
+    % Convert to cartesian
     [points(:,1) points(:,2) points(:,3)] = sph2cart(phi(:),theta(:),r(:));
-    % incorporating integration weights
+    % Incorporating integration weights
     weights = weights(:).*cos(theta(:));
 else
     error(['%s: the given spherical grid is not available, have a look at ' ...

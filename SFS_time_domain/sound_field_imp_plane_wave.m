@@ -21,7 +21,7 @@ function varargout = sound_field_imp_plane_wave(X,Y,Z,xs,t,conf)
 %   field of a plane wave going in the direction xs.
 %   To plot the result use plot_sound_field(P,x,y,z).
 %
-%   see also: sound_field_imp, plot_sound_field, sound_field_mono_plane_wave
+%   See also: sound_field_imp, plot_sound_field, sound_field_mono_plane_wave
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

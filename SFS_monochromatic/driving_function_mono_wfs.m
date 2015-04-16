@@ -22,7 +22,7 @@ function D = driving_function_mono_wfs(x0,xs,src,f,conf)
 %   the given secondary source and desired source type (src) for WFS for the
 %   given frequency.
 %
-%   see also: plot_sound_field, sound_field_mono_wfs_25d,
+%   See also: plot_sound_field, sound_field_mono_wfs_25d,
 %             driving_function_imp_wfs_25d
 
 %*****************************************************************************
@@ -74,7 +74,6 @@ end
 
 
 %% ===== Computation ====================================================
-
 % Calculate the driving function in time-frequency domain
 
 % Secondary source positions and directions

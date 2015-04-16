@@ -1,5 +1,5 @@
 function xv = virtual_secondary_source_positions(x0,xs,src,conf)
-%VIRTUAL_SECONDARY_SOURCE_POSITIONS Generates the positions and directions of a
+%VIRTUAL_SECONDARY_SOURCE_POSITIONS generates the positions and directions of a
 %   virtual secondary source distribution
 %
 %   Usage: xv = virtual_secondary_source_positions(x0,xs,src,conf)
@@ -30,6 +30,8 @@ function xv = virtual_secondary_source_positions(x0,xs,src,conf)
 %   positioning.
 %   Optionally (conf.localsfs.vss.consider_secondary_sources == true), the
 %   algorithm takes the positions of the real loudspeakers into account.
+%
+%   See also: driving_function_mono_localwfs, driving_function_imp_localwfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -98,13 +100,13 @@ consider_target_field       = conf.localsfs.vss.consider_target_field;
 
 if consider_target_field || consider_secondary_sources
   % =====================================================================
-  % adaptive positioning of virtual secondary sources
+  % Adaptive positioning of virtual secondary sources
   % =====================================================================
 
   Rl = virtualconf.secondary_sources.size/2;  % radius of local area
   xl = virtualconf.secondary_sources.center;  % center of local area
 
-  % determine vector poiting towards source
+  % Determine vector poiting towards source
   if strcmp('pw',src)
     % === Plane wave ===
     ns = bsxfun(@rdivide,-xs,vector_norm(xs,2));
@@ -114,18 +116,17 @@ if consider_target_field || consider_secondary_sources
   elseif strcmp('fs',src)
     % === Focused source ===
     ns = bsxfun(@rdivide,xl-xs,vector_norm(xs-xl,2));
-    % to_be_implemented('focussed sources for virtual_secondary_source_positions');
   end
   phis = atan2(ns(2),ns(1));  % azimuth angle of ns
 
   if strcmp('circle',geometry) || strcmp('circular',geometry)
     % =====================================================================
-    % virtual circular Array
+    % Virtual circular Array
     % =====================================================================
-    % valid arc of virtual secondary sources
+    % Valid arc of virtual secondary sources
 
     % CONSTRAINT 1 ========================================================
-    % consider the target field which shall reproduced
+    % Consider the target field which shall reproduced
     phid = pi;
     if consider_target_field
       if strcmp('pw',src)
@@ -139,13 +140,13 @@ if consider_target_field || consider_secondary_sources
     end
 
     % CONSTRAINT 2 ======================================================
-    % consider the position of the real loudspeaker array
+    % Consider the position of the real loudspeaker array
     delta_max = phid;
     delta_min = -phid;
     if (consider_secondary_sources && ~isempty(x0))
       delta_max = 0;
       delta_min = 0;
-      % for each secondary source
+      % For each secondary source
       for idx=1:size(x0,1)
         xc0 = x0(idx,1:3) - xl;  % vector from secondary source to local area
         Rc0 = vector_norm(xc0,2);  % distance from secondary source to local area
@@ -164,7 +165,7 @@ if consider_target_field || consider_secondary_sources
     delta_offset = eps;
 
     % SOURCE POSITIONING ==================================================
-    % === equi-angular sampling on valid arc ===
+    % === Equi-angular sampling on valid arc ===
     phi = phis + linspace(delta_min + delta_offset,delta_max-delta_offset, nls).';
 
     % Elevation angles
@@ -174,17 +175,17 @@ if consider_target_field || consider_secondary_sources
     xv(:,1:3) = [cx,cy,cz] + repmat(xl,nls,1);
     % Direction of the secondary sources
     xv(:,4:6) = direction_vector(xv(:,1:3),repmat(xl,nls,1).*ones(nls,3));
-    % equal weights for all sources
+    % Equal weights for all sources
     xv(:,7) = ones(nls,1);
 
   elseif strcmp('linear',geometry)
     % =====================================================================
-    % virtual linear Array
+    % Virtual linear Array
     % =====================================================================
     % valid line of virtual secondary sources
 
     % CONSTRAINT 1 ========================================================
-    % consider the target field which shall reproduced
+    % Consider the target field which shall reproduced
     if consider_target_field
       nd = ns;
       ndorth = ns*[0 1 0; -1 0 0; 0 0 1];
@@ -194,13 +195,13 @@ if consider_target_field || consider_secondary_sources
     end
 
     % CONSTRAINT 2 ========================================================
-    % consider the position of the real loudspeaker array
+    % Consider the position of the real loudspeaker array
     if (consider_secondary_sources && ~isempty(x0))
       xmax = inf;
       xmin = -inf;
-      % for each secondary source
+      % For each secondary source
       for idx=1:size(x0,1)
-        % this calculates the parameter t for the intersection between the linear
+        % This calculates the parameter t for the intersection between the linear
         % virtual array and the plane spanned by one loudspeaker (position +
         % orientation)
         n0 = x0(idx, 4:6);
@@ -222,14 +223,14 @@ if consider_target_field || consider_secondary_sources
     end
 
     % SOURCE POSITIONING ==================================================
-    % === equi-distant sampling on valid line ===
+    % === Equi-distant sampling on valid line ===
     x = linspace(xmin, xmax, nls);
 
     % Positions of the secondary sources
     xv(:,1:3) = repmat(xl, nls, 1) + x'*ndorth;
     % Direction of the secondary sources
     xv(:,4:6) = repmat(-nd, nls, 1);
-    % equal weights for all sources
+    % Equal weights for all sources
     xv(:,7) = ones(nls,1);
   else
     xv = secondary_source_positions(virtualconf);
@@ -239,11 +240,10 @@ if consider_target_field || consider_secondary_sources
   end
 else
   % =====================================================================
-  % non-adaptive positioning of  virtual secondary sources
+  % Non-adaptive positioning of  virtual secondary sources
   % =====================================================================
-  % just position the virtual secondary sources as you would do it with the
+  % Just position the virtual secondary sources as you would do it with the
   % loudspeakers. This ignores the virtual source position, the size of
   % the local listening area and the position of the real loudspeakers
-
   xv = secondary_source_positions(virtualconf);
 end

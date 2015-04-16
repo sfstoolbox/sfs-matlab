@@ -56,7 +56,7 @@ narginchk(nargmin,nargmax);
 isargvector(m1);
 if nargin == nargmin
   n1 = abs(m1);
-else
+else  
   isargvector(n1);
 end
 if nargin < 4
@@ -72,10 +72,13 @@ end
 
 %% ===== Computation ====================================================
 
-a = zeros(max(length(m1), length(n1)),max(length(m2), length(n2)));
+a = zeros(length(m1)*length(n1),length(m2)*length(n2));
 
-s1 = abs(m1) <= n1;
-s2 = abs(m2) <= n2;
+[m1, n1] = meshgrid(m1, n1);
+[m2, n2] = meshgrid(m2, n2);
+
+s1 = abs(m1(:)) <= n1(:);
+s2 = abs(m2(:)) <= n2(:);
 
 if any(s1) && any(s2)
   [l1, l2] = sphexp_index(m1(s1), n1(s1), m2(s2), n2(s2));

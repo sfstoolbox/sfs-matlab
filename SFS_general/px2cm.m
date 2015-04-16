@@ -11,7 +11,7 @@ function y = px2cm(x)
 %
 %   PX2CM(x) returns the given value x in centimeters.
 %
-%   see also: px2in, in2cm, in2px, cm2px, cm2in
+%   See also: px2in, in2cm, in2px, cm2px, cm2in
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -53,6 +53,6 @@ narginchk(nargmin,nargmax);
 
 
 %% ===== Computation =====================================================
-% default resolution
+% Default resolution
 dpi = 150;
 y = x/dpi * 2.54;

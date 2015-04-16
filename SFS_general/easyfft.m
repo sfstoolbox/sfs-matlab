@@ -18,7 +18,7 @@ function varargout = easyfft(sig,conf)
 %   the fast Fourier transformation. In addition to the amplitude and phase, the
 %   corresponding frequency axis for a plot is returned.
 %
-%   see also: easyifft, fft
+%   See also: easyifft, fft
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -89,7 +89,7 @@ amplitude = 2*amplitude / samples;
 % Calculate corresponding frequency axis
 f = fs*(0:ceil(samples/2)-1)'/samples;
 
-% return values
+% Return values
 if nargout>0, varargout{1}=amplitude; end
 if nargout>1, varargout{2}=phase; end
 if nargout>2, varargout{3}=f; end

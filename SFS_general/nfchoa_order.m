@@ -19,7 +19,7 @@ function M = nfchoa_order(nls,conf)
 %   M = <
 %        \ (nls-1)/2    odd nls
 %
-%   for a circular array and 
+%   for a circular array and
 %         _____
 %   M = \|nls/2
 %
@@ -28,7 +28,7 @@ function M = nfchoa_order(nls,conf)
 %   References:
 %       J. Ahrens (2012) - "Analytic Methods of Sound Field Synthesis", Springer.
 %
-%   see also: driving_function_imp_nfchoa, driving_function_mono_nfchoa
+%   See also: driving_function_imp_nfchoa, driving_function_mono_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -83,7 +83,7 @@ dimension = conf.dimension;
 
 
 %% ===== Computation =====================================================
-% get maximum order of spherical harmonics to avoid spatial aliasing
+% Get maximum order of spherical harmonics to avoid spatial aliasing
 if strcmp('2D',dimension) || strcmp('2.5D',dimension)
     % Ahrens (2012), p. 132
     if isodd(nls)

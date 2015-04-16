@@ -1,6 +1,6 @@
 function x0 = secondary_source_positions(conf)
-%SECONDARY_SOURCE_POSITIONS Generates the positions and directions of the
-%   secondary sources
+%SECONDARY_SOURCE_POSITIONS generates the positions, directions, and weights of
+%   the secondary sources
 %
 %   Usage: x0 = secondary_source_positions([conf])
 %
@@ -8,7 +8,8 @@ function x0 = secondary_source_positions(conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output options:
-%       x0          - secondary source positions, directions and weights / m
+%       x0          - secondary source positions, directions and weights
+%                     [n 7] / m
 %
 %   SECONDARY_SOURCES_POSITIONS(conf) generates the positions and directions
 %   x0 of secondary sources for a given geometry
@@ -31,7 +32,7 @@ function x0 = secondary_source_positions(conf)
 %                                   |        v
 %       -------------x--x--x--x--x--x--x--x--x--x--x------------> x-axis
 %                    |  |  |  |  |  |  |  |  |  |  | <- secondary source direction
-%                                   |              
+%                                   |
 %                                   |
 %                                   |
 %
@@ -46,7 +47,7 @@ function x0 = secondary_source_positions(conf)
 %                         x_        |         _x
 %                           -       |        -
 %                      x-_          |          _-x
-%                                   |         
+%                                   |
 %       --------------x---------------------------x------------------> x-axis
 %                        _          |          _
 %                      x-           |           -x
@@ -63,10 +64,10 @@ function x0 = secondary_source_positions(conf)
 %                                y-axis
 %                                   ^
 %                                   |
-%                       x   x   x   x   x   x   x  
-%                       |   |   |   |   |   |   |            
+%                       x   x   x   x   x   x   x
+%                       |   |   |   |   |   |   |
 %                    x--            |            --x
-%                                   |         
+%                                   |
 %                    x--            |            --x
 %                                   |
 %                    x--            |            --x
@@ -82,7 +83,7 @@ function x0 = secondary_source_positions(conf)
 %                       x   x   x   x   x   x   x
 %                                   |
 %
-% see also: secondary_source_selection, secondary_source_tapering 
+% see also: secondary_source_selection, secondary_source_tapering
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -174,7 +175,7 @@ elseif strcmp('circle',geometry) || strcmp('circular',geometry)
     [cx,cy,cz] = sph2cart(phi,theta,L/2);
     x0(:,1:3) = [cx,cy,cz] + repmat(X0,nls,1);
     % Direction of the secondary sources
-    x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1).*ones(nls,3));  
+    x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1).*ones(nls,3));
     % equal weights for all sources
     x0(:,7) = ones(nls,1);
 elseif strcmp('box',geometry)
@@ -229,7 +230,7 @@ elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)
     % weights
     [~,theta] = cart2sph(x0(:,1),x0(:,2),x0(:,3)); % get elevation
     x0(:,7) = x0(:,7) .* cos(theta);
-    
+
 else
     error('%s: %s is not a valid array geometry.',upper(mfilename),geometry);
 end

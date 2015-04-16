@@ -11,7 +11,7 @@ function phi = deg(phi)
 %
 %   DEG(phi) returns the given angles phi in degree.
 %
-%   see also: rad
+%   See also: rad
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

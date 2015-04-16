@@ -1,5 +1,5 @@
 function [ir,x0] = ir_localwfs(X,phi,xs,src,irs,conf)
-%IR_LOCALWFS generate a impulse response simulating WFS
+%IR_LOCALWFS generates a binaural simulation of local WFS
 %
 %   Usage: [ir,x0] = ir_localwfs(X,phi,xs,src,irs,[conf])
 %
@@ -21,7 +21,7 @@ function [ir,x0] = ir_localwfs(X,phi,xs,src,irs,conf)
 %   response for a virtual source at xs for a virtual LOCAL WFS array and a
 %   listener located at X.
 %
-% see also: ssr_brs_wfs, ir_point_source, auralize_ir
+%   See also: ssr_brs_wfs, ir_point_source, auralize_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -79,5 +79,5 @@ x0 = secondary_source_selection(x0,xs,src);
 x0 = secondary_source_tapering(x0,conf);
 % Get driving signals
 d = driving_function_imp_localwfs(x0,xs,src,conf);
-% generate the impulse response for WFS
+% Generate the impulse response for WFS
 ir = ir_generic(X,phi,x0,d,irs,conf);

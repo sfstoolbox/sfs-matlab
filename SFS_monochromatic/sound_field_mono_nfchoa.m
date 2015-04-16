@@ -28,7 +28,7 @@ function varargout = sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf)
 %   P with a summation.
 %   To plot the result use plot_sound_field(P,x,y,z,x0).
 %
-%   see also: plot_sound_field, sound_field_imp_nfchoa
+%   See also: plot_sound_field, sound_field_imp_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

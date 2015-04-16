@@ -9,7 +9,7 @@ function isargnegativescalar(varargin)
 %   ISARGNEGATIVESCALAR(args) tests if all given args are a negative
 %   scalar and returns an error otherwise.
 %
-%   see also: isargscalar, isargpositivescalar
+%   See also: isargscalar, isargpositivescalar
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

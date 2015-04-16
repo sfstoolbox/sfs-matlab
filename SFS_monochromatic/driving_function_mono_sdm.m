@@ -22,7 +22,7 @@ function D = driving_function_mono_sdm(x0,xs,src,f,conf)
 %   the given secondary sources, desired source type (src), and frequency.
 %   To derive the driving signals the spectral division method (SDM) is used.
 %
-%   see also: plot_sound_field, sound_field_mono_sdm, driving_function_imp_sdm
+%   See also: plot_sound_field, sound_field_mono_sdm, driving_function_imp_sdm
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

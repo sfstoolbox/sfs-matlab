@@ -6,7 +6,7 @@ function SFS_stop()
 %   SFS_STOP stops the Sound Field Synthesis Toolbox (SFS). 
 %   This function removes the path's of the toolbox.
 %
-%   see also: SFS_start, SFS_config, SFS_version
+%   See also: SFS_start, SFS_config, SFS_version
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

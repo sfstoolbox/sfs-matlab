@@ -13,7 +13,7 @@ function [z,p] = sphbesselh_zeros(order)
 %   SPHBESSELH_ZEROS(order) finds zeros and roots for a spherical hankel functin
 %   of the specified order.
 %
-%   see also: sphbesselh, driving_function_imp_nfchoa
+%   See also: sphbesselh, driving_function_imp_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -57,16 +57,16 @@ isargpositivescalar(order);
 
 %% ===== Main ============================================================
 if order<86
-    % --- compute ---
+    % --- Compute ---
     B = zeros(1,order+2);
     A = B;
     for n=0:order
         B(n+1) = factorial(2*order-n)/(factorial(order-n)*factorial(n)*2^(order-n));
     end
     B = B(end:-1:1);
-    % find zeros/roots
+    % Find zeros/roots
     z = roots(B);
-    % find roots
+    % Find roots
     A(2) = 1;
     p = roots(A);
 else
@@ -81,7 +81,7 @@ else
     file = sprintf('%s/data/sphbesselh_zeros/%s',get_sfs_path(),filename);
     url = ['https://dev.qu.tu-berlin.de/projects/data/repository/revisions/master/' ...
         'raw/sphbesselh_zeros/' filename];
-    % download file if not present
+    % Download file if not present
     if ~exist(file,'file')
         download_file(url,file);
     end

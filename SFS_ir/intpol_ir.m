@@ -22,7 +22,7 @@ function ir = intpol_ir(varargin)
 %   dimensions in order to save computational time, because this function could
 %   be called quiet often.
 %
-%   see also: get_ir, shorten_ir, read_irs
+%   See also: get_ir, shorten_ir, read_irs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -69,7 +69,7 @@ if nargin==4
     ir2 = varargin{2};
     x0 = varargin{3};
     xs = varargin{4};
-    % linear interpolation
+    % Linear interpolation
     ir = ir1 + (ir2-ir1) * norm(xs-x0(:,1))/norm(x0(:,2)-x0(:,1));
 else
     ir1 = varargin{1};
@@ -77,7 +77,7 @@ else
     ir3 = varargin{3};
     x0 = varargin{4};
     xs = varargin{5};
-    % linear interpolation
+    % Linear interpolation
     %
     %           x0(:,ii) xs
     % w(ii) = --------------
@@ -90,6 +90,6 @@ else
     if any(w<0)
         error('%s: one of your interpolation weights is <0.',upper(mfilename));
     end
-    % calculate desired ir with linear combination of ir1,ir2 and ir3
+    % Calculate desired ir with linear combination of ir1,ir2 and ir3
     ir = w(1)*ir1 + w(2)*ir2 + w(3)*ir3;
 end

@@ -9,7 +9,7 @@ function isargnumeric(varargin)
 %   ISARGNUMRIC(args) tests if all given args are numeric and returns
 %   an error otherwise.
 %
-%   see also: isargscalar
+%   See also: isargscalar
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

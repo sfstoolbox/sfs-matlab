@@ -17,7 +17,7 @@ function D = driving_function_mono_sdm_kx_ls(kx,xs,f,conf)
 %   for the given secondary sources, the virtual line source position and the
 %   frequency f. The driving signal is calculated in the kx domain.
 %
-%   see also: driving_function_mono_sdm_kx
+%   See also: driving_function_mono_sdm_kx
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -78,16 +78,16 @@ withev = conf.sdm.withev;
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
-% frequency
+% Frequency
 omega = 2*pi*f;
-% indexes for evanescent contributions and propagating part of the wave field
+% Indexes for evanescent contributions and propagating part of the wave field
 idxpr = (( abs(kx) <= (omega/c) ));
 idxev = (( abs(kx) > (omega/c) ));
 D = zeros(1,length(kx));
 
 
 if strcmp('2D',dimension)
-    
+
     % === 2-Dimensional ==================================================
 
     % Ensure 2D
@@ -102,9 +102,9 @@ if strcmp('2D',dimension)
 
 
 elseif strcmp('2.5D',dimension)
-    
+
     % === 2.5-Dimensional ================================================
-    
+
     % Reference point
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
@@ -117,9 +117,9 @@ elseif strcmp('2.5D',dimension)
 
 
 elseif strcmp('3D',dimension)
-    
+
     % === 3-Dimensional ==================================================
-    
+
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;

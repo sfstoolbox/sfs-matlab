@@ -9,7 +9,7 @@ function isargpositivescalar(varargin)
 %   ISARGPOSITIVESCALAR(args) tests if all given args are a positive
 %   scalar and returns an error otherwise.
 %
-%   see also: isargscalar, isargnegativescalar
+%   See also: isargscalar, isargnegativescalar
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

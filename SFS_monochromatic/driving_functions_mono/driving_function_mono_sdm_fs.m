@@ -17,7 +17,7 @@ function D = driving_function_mono_sdm_fs(x0,nk,f,conf)
 %   for the given secondary sources, the virtual focused source position and the
 %   frequency f.
 %
-%   see also: driving_function_mono_sdm
+%   See also: driving_function_mono_sdm
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -80,9 +80,9 @@ omega = 2*pi*f;
 
 
 if strcmp('2D',dimension)
-    
+
     % === 2-Dimensional ==================================================
-    
+
     % Ensure 2D
     x0 = x0(:,1:2);
     nk = nk(:,1:2);
@@ -96,9 +96,9 @@ if strcmp('2D',dimension)
 
 
 elseif strcmp('2.5D',dimension)
-    
+
     % === 2.5-Dimensional ================================================
-    
+
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
@@ -112,9 +112,9 @@ elseif strcmp('2.5D',dimension)
 
 
 elseif strcmp('3D',dimension)
-    
+
     % === 3-Dimensional ==================================================
-    
+
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;

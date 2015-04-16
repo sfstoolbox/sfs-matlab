@@ -9,7 +9,7 @@ function isargdir(varargin)
 %   ISARGDIR(args) tests if all given args are a directory and
 %   returns an error otherwise.
 %
-%   see also: isargfile
+%   See also: isargfile
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

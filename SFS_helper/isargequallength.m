@@ -9,7 +9,7 @@ function isargequallength(x1,varargin)
 %   ISARGEQUALLENGTH(x1,x2,...) tests if all given arigs have the same size.
 %   Reports an error otherwise.
 %
-%   see also: isargequalsize
+%   See also: isargequalsize
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

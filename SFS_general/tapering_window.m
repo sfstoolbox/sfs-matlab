@@ -17,7 +17,7 @@ function win = tapering_window(x0,conf)
 %   The mean distance of the secondary sources is calculated within this
 %   function in order to identify edges of the array.
 %
-%   see also: secondary_source_position, sound_field_mono_wfs, hann
+%   See also: secondary_source_position, sound_field_mono_wfs, hann
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -70,22 +70,22 @@ geometry = conf.secondary_sources.geometry;
 
 
 %% ===== Calculation =====================================================
-% number of speakers
+% Number of secondary sources
 nls = size(x0,1);
 % FIXME: at the moment the tapering window is not working for spherical arrays,
 % because we are not able to find the edges of the array.
 if usetapwin && nls>2 && ...
    ~(strcmp('sphere',geometry)||strcmp('spherical',geometry))
     win = ones(1,nls);
-    % get the mean distance between secondary sources and the smallest distance
+    % Get the mean distance between secondary sources and the smallest distance
     % to neighbour source for every secondary source. Due to long computing time
     % for really large secondary source numbers, the distance is approximated by
     % the first 100 (or less) sources. If you don't want this behavior, change
     % the following command to dx0 = secondary_source_distance(x0,0);
     dx0 = secondary_source_distance(x0,1);
-    % use only positions
+    % Use only positions
     x0 = x0(:,1:3);
-    % find the edges of the array
+    % Find the edges of the array
     edges = [];
     for ii=1:nls-1
         if norm(x0(ii,:)-x0(ii+1,:))>2*dx0
@@ -95,15 +95,15 @@ if usetapwin && nls>2 && ...
     if norm(x0(end,:)-x0(1,:))>2*dx0
         edges = [edges; nls; 1];
     end
-    % if we have any edges in our array apply a tapering window for every array
+    % If we have any edges in our array apply a tapering window for every array
     % part, consiting of two edges
     if ~isempty(edges)
-        % generate tapwin for every array part within the x0 vector
+        % Generate tapwin for every array part within the x0 vector
         for ii=2:length(edges)-2
             part_nls = edges(ii+1)-edges(ii)+1;
             win(edges(ii):edges(ii+1)) = part_hann_win(part_nls,tapwinlen);
         end
-        % generate tapwin for every array part consiting of the first and the
+        % Generate tapwin for every array part consiting of the first and the
         % last edge within the x0 vector
         if edges(1)==nls
             win = part_hann_win(nls,tapwinlen);

@@ -17,7 +17,7 @@ function [ Ynm ] = sphharmonics(n,m,theta,phi);
 %   phi and theta can be arrays but have to be of same size or one of them
 %   has to be a scalar.
 %
-%   see also: sphbesselj, sphbessely, sphbesselh, asslegendre
+%   See also: sphbesselj, sphbessely, sphbesselh, asslegendre
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

@@ -60,15 +60,15 @@ end
 
 
 %% ===== Computation =====================================================
-% create dirac pulse
+% Create dirac pulse
 ir = zeros(nsamples,1);
 ir(300) = 1;
-% angles of dummy irs
+% Angles of dummy irs
 theta = rad(-90:89);
 phi = rad(-180:179);
-% replicate ir for all directions
+% Replicate ir for all directions
 ir = repmat(ir,1,length(phi)*length(theta));
-% store data
+% Store data
 irs = new_irs();
 irs.left = ir;
 irs.right = ir;

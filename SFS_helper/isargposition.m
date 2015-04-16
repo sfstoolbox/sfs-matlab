@@ -10,7 +10,7 @@ function isargposition(varargin)
 %   ISARGPOSITION(args) tests if all given args are [1x3] vectors and
 %   returns an error otherwise.
 %
-%   see also: isargscalar, isargvector, isargxs
+%   See also: isargscalar, isargvector, isargxs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

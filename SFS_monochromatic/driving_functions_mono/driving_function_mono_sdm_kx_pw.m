@@ -22,7 +22,7 @@ function D = driving_function_mono_sdm_kx_pw(kx,nk,f,conf)
 %       and Linear Arrays of Loudspeakers", Transactions on Audio, Speech and
 %       Language Processing, Volume 18(8), p. 2038-2050
 %
-%   see also: driving_function_mono_sdm_kx, sound_field_mono_sdm_kx
+%   See also: driving_function_mono_sdm_kx, sound_field_mono_sdm_kx
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -80,12 +80,12 @@ driving_functions = conf.driving_functions;
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
-% frequency
+% Frequency
 omega = 2*pi*f;
 D = zeros(1,length(kx));
 
 if strcmp('2D',dimension)
-    
+
     % === 2-Dimensional ==================================================
 
     % Ensure 2D
@@ -100,21 +100,21 @@ if strcmp('2D',dimension)
 
 
 elseif strcmp('2.5D',dimension)
-    
+
     % === 2.5-Dimensional ================================================
-    
+
     % Reference point
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % D_2.5D using a plane wave as source model
-        %                  
+        %
         %                   e^(-i w/c nky*xrefy)
         % D_2.5D(x0,w) = 4i ----------------------
         %                     (2) /w          \
         %                    H0  | - nky*xrefy |
         %                         \c          /
         %
-        % see Ahrens and Spors (2010), (17)
+        % See Ahrens and Spors (2010), (17)
         %
         idx = find(kx>=omega/c*nk(:,1),1,'first');
         D(idx) = 4*1i*exp(-1i*omega/c*nk(2).*xref(2)) / ...
@@ -127,9 +127,9 @@ elseif strcmp('2.5D',dimension)
 
 
 elseif strcmp('3D',dimension)
-    
+
     % === 3-Dimensional ==================================================
-    
+
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;

@@ -22,7 +22,7 @@ function D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf)
 %       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
 %       PhD thesis, TU Berlin
 %
-%   see also: driving_function_mono_wfs, driving_function_imp_wfs_ps
+%   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -80,14 +80,14 @@ driving_functions = conf.driving_functions;
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
-% frequency
+% Frequency
 omega = 2*pi*f;
 
 
 if strcmp('2D',dimension) || strcmp('3D',dimension)
-    
+
     % === 2- or 3-Dimensional ============================================
-    
+
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % D using a line source
@@ -96,11 +96,11 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % D(x0,w) =  - -- -----------  H1  | - |x0-xs| |
         %              2c   |x0-xs|        \ c         /
         %
-        % see Wierstorf (2014), p.26 (2.55)
+        % See Wierstorf (2014), p.26 (2.55)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
-        % driving signal
+        % Driving signal
         D = -1i*omega/(2*c) .* vector_product(x0-xs,nx0,2) ./ r .* ...
             besselh(1,2,omega/c.*r);
         %
@@ -115,9 +115,9 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
 
 
 elseif strcmp('2.5D',dimension)
-    
+
     % === 2.5-Dimensional ================================================
-    
+
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
@@ -134,11 +134,11 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D(x0,w) =  - -- _ |---  -----------  H1  | - |x0-xs| |
         %                   2   \| c    |x0-xs|         \ c         /
         %
-        % see Wierstorf (2014), p.26 (2.56)
+        % See Wierstorf (2014), p.26 (2.56)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
-        % driving signal
+        % Driving signal
         D = -g0/2 .* sqrt(i*omega/c) .* vector_product(x0-xs,nx0,2) ./ r .* ...
             besselh(1,2,omega/c.*r);
         %

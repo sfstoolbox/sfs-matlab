@@ -25,7 +25,7 @@ function G = greens_function_mono(x,y,z,xs,src,f,conf)
 %       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
 %       PhD thesis, TU Berlin
 %
-%   see also: sound_field_mono
+%   See also: sound_field_mono
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -61,7 +61,7 @@ function G = greens_function_mono(x,y,z,xs,src,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-% disabled checking for performance reasons
+% Disabled checking for performance reasons
 nargmax = 7;
 if nargin<nargmax
     conf = SFS_config;
@@ -74,9 +74,9 @@ phase = conf.phase;
 
 
 %% ===== Computation =====================================================
-% frequency
+% Frequency
 omega = 2*pi*f;
-% calculate Green's function for the given source model
+% Calculate Green's function for the given source model
 if strcmp('ps',src)
     % Source model for a point source: 3D Green's function.
     %
@@ -84,7 +84,7 @@ if strcmp('ps',src)
     % G(x-xs,w) = --- -----------------
     %             4pi      |x-xs|
     %
-    % see: Wierstorf (2014), p.21 (2.28)
+    % See: Wierstorf (2014), p.21 (2.28)
     %
     G = 1/(4*pi) * exp(-1i*omega/c .* sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2)) ./ ...
             sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
@@ -96,7 +96,7 @@ elseif strcmp('ls',src)
     % G(x-xs,w) =  -  H0  |  - |x-xs|  |
     %              4       \ c        /
     %
-    % see: Wierstorf (2014), p.22 (2.32)
+    % See: Wierstorf (2014), p.22 (2.32)
     %
     G = 1i/4 * besselh(0,2,omega/c* ...
         sqrt( (x-xs(1)).^2 + (y-xs(2)).^2 + (z-xs(3)).^2 ));
@@ -106,9 +106,9 @@ elseif strcmp('pw',src)
     %
     % G(x,w) = e^(-i w/c n x)
     %
-    % see: Wierstorf (2014), p.21 (2.23)
+    % See: Wierstorf (2014), p.21 (2.23)
     %
-    % direction of plane wave
+    % Direction of plane wave
     nxs = xs / norm(xs);
     %
     % The following code enables us to replace this two for-loops
@@ -139,7 +139,7 @@ elseif strcmp('pw',src)
     XYZ(1:3:end,:) = x;
     XYZ(2:3:end,:) = y;
     XYZ(3:3:end,:) = z;
-    % calculate sound field
+    % Calculate sound field
     G = exp(-1i*omega/c.*N*XYZ);
 
 else

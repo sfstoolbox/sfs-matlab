@@ -16,7 +16,7 @@ function irs = irs_with_particular_elevation(irs,delta)
 %   angle delta, or by default the horizontal plane. Input should be an IRS-set
 %   with diffrent values for the elevation
 %
-%   see also: slice_irs, new_irs
+%   See also: slice_irs, new_irs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -64,7 +64,6 @@ end
 
 
 %% ===== Computation ====================================================
-
 % Finding the entries belonging to delta and slice the irs
 idx = (( round(irs.apparent_elevation*10)==round(10*delta) ));
 irs = slice_irs(irs,idx);

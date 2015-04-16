@@ -17,7 +17,7 @@ function irs = fix_irs_length(irs,conf)
 %   extrapolation in get_ir(). Also set the overall length to conf.N if
 %   conf.ir.useoriglength is set to "false".
 %
-%   see also: read_irs, fix_length
+%   See also: read_irs, fix_length
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -69,7 +69,7 @@ N = conf.N;
 
 
 %% ===== Main ============================================================
-% get distance of HRTF data set
+% Get distance of HRTF data set
 dist = max(irs.distance);
 if dist>10
     warning(['%s: Your maximum distance of the HRTF set is more than 10m. ', ...
@@ -77,7 +77,7 @@ if dist>10
         'get_ir().'],upper(mfilename));
     dist = 10;
 end
-% append zeros at the beginning of the HRTFs corresponding to its maximum
+% Append zeros at the beginning of the HRTFs corresponding to its maximum
 % distance
 samples = ceil(dist/c * fs);
 if N-samples<128

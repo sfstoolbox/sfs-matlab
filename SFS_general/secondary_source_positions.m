@@ -162,7 +162,7 @@ if strcmp('line',geometry) || strcmp('linear',geometry)
     x0(:,3) = X0(3) * ones(nls,1);
     % Direction of the secondary sources pointing to the -y direction
     x0(:,4:6) = direction_vector(x0(:,1:3),x0(:,1:3)+repmat([0 -1 0],nls,1));
-    % equal weights for all sources
+    % Equal weights for all sources
     x0(:,7) = ones(nls,1);
 elseif strcmp('circle',geometry) || strcmp('circular',geometry)
     % === Circular array ===
@@ -176,7 +176,7 @@ elseif strcmp('circle',geometry) || strcmp('circular',geometry)
     x0(:,1:3) = [cx,cy,cz] + repmat(X0,nls,1);
     % Direction of the secondary sources
     x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1).*ones(nls,3));
-    % equal weights for all sources
+    % Equal weights for all sources
     x0(:,7) = ones(nls,1);
 elseif strcmp('box',geometry)
     % === Boxed loudspeaker array ===
@@ -197,36 +197,36 @@ elseif strcmp('box',geometry)
     x0(1:nbox,3) = X0(3) + zeros(nbox,1);
     x0(1:nbox,4:6) = direction_vector(x0(1:nbox,1:3), ...
         x0(1:nbox,1:3)+repmat([0 -1 0],nbox,1));
-    % right
+    % Right
     x0(nbox+1:2*nbox,1) = X0(1) + ones(nbox,1) * L/2 + dx0;
     x0(nbox+1:2*nbox,2) = X0(2) + linspace(L/2,-L/2,nbox)';
     x0(nbox+1:2*nbox,3) = X0(3) + zeros(nbox,1);
     x0(nbox+1:2*nbox,4:6) = direction_vector(x0(nbox+1:2*nbox,1:3), ...
         x0(nbox+1:2*nbox,1:3)+repmat([-1 0 0],nbox,1));
-    % bottom
+    % Bottom
     x0(2*nbox+1:3*nbox,1) = X0(1) + linspace(L/2,-L/2,nbox)';
     x0(2*nbox+1:3*nbox,2) = X0(2) - ones(nbox,1) * L/2 - dx0;
     x0(2*nbox+1:3*nbox,3) = X0(3) + zeros(nbox,1);
     x0(2*nbox+1:3*nbox,4:6) = direction_vector(x0(2*nbox+1:3*nbox,1:3), ...
         x0(2*nbox+1:3*nbox,1:3)+repmat([0 1 0],nbox,1));
-    % left
+    % Left
     x0(3*nbox+1:nls,1) = X0(1) - ones(nbox,1) * L/2 - dx0;
     x0(3*nbox+1:nls,2) = X0(2) + linspace(-L/2,L/2,nbox)';
     x0(3*nbox+1:nls,3) = X0(3) + zeros(nbox,1);
     x0(3*nbox+1:nls,4:6) = direction_vector(x0(3*nbox+1:nls,1:3), ...
         x0(3*nbox+1:nls,1:3)+repmat([1 0 0],nbox,1));
-    % equal weights for all sources
+    % Equal weights for all sources
     x0(:,7) = ones(nls,1);
 elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)
-    % get spherical grid + weights
+    % Get spherical grid + weights
     [points,weights] = get_spherical_grid(nls,conf);
-    % secondary source positions
+    % Secondary source positions
     x0(:,1:3) = L/2 * points + repmat(X0,nls,1);
-    % secondary source directions
+    % Secondary source directions
     x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1));
-    % secondary source weights
+    % Secondary source weights
     x0(:,7) = weights;
-    % add integration weights (because we integrate over a sphere) to the grid
+    % Add integration weights (because we integrate over a sphere) to the grid
     % weights
     [~,theta] = cart2sph(x0(:,1),x0(:,2),x0(:,3)); % get elevation
     x0(:,7) = x0(:,7) .* cos(theta);

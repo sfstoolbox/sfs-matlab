@@ -13,7 +13,7 @@ function generate_movie(outfile,directory,pattern)
 %   given directory are processed. If no pattern is given, all png files are
 %   used.
 %
-%   see also: plot_sound_field, movie_sound_field_mono_wfs
+%   See also: plot_sound_field, movie_sound_field_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -63,7 +63,6 @@ isargdir(directory);
 
 
 %% ===== Movie ===========================================================
-
 % Generate a movie from the png files with MEncoder
 status = system('which mencoder');
 if status

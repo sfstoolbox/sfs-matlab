@@ -17,7 +17,7 @@ function sos = driving_function_imp_nfchoa_ls(N,R,r,conf)
 %   representation for the NFC-HOA driving function for a virtual line source
 %   as source model.
 %
-%   see also: sound_field_imp, sound_field_imp_nfchoa, driving_function_imp_nfchoa
+%   See also: sound_field_imp, sound_field_imp_nfchoa, driving_function_imp_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -71,15 +71,14 @@ driving_functions = conf.driving_functions;
 
 
 %% ===== Computation =====================================================
-
-% find spherical hankel function zeros
+% Find spherical hankel function zeros
 z = sphbesselh_zeros(N);
 
 % Get the delay and weighting factors
 if strcmp('2D',dimension)
 
     % === 2-Dimensional ==================================================
-    
+
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;

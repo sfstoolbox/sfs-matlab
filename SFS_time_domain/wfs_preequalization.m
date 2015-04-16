@@ -13,7 +13,7 @@ function ir = wfs_preequalization(ir,conf)
 %   WFS_PREEQUALIZATION(ir,conf) applies the pre-equalization filter for
 %   Wave Field Synthesis to the given impulse response.
 %
-%   see also: wfs_fir_prefilter, wfs_iir_prefilter, ir_wfs
+%   See also: wfs_fir_prefilter, wfs_iir_prefilter, ir_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -73,14 +73,14 @@ end
 len_ir = size(ir,1);
 % Get the filter
 if strcmp('FIR',conf.wfs.hpretype)
-    % get FIR filter
+    % Get FIR filter
     hpre = wfs_fir_prefilter(conf);
-    % apply filter
+    % Apply filter
     ir = convolution(hpre,ir);
 elseif strcmp('IIR',conf.wfs.hpretype)
-    % get IIR filter
+    % Get IIR filter
     hpre = wfs_iir_prefilter(conf);
-    % apply filter
+    % Apply filter
     ir = filter(hpre.b,hpre.a,ir,2);
 else
     error('%s: %s is an unknown filter type.',upper(mfilename),hpretype);

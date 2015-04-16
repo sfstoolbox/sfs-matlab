@@ -8,7 +8,7 @@ function print_png(outfile)
 %
 %   PRINT_EPS(outfile) plots the last figure as an eps file to outfile.
 %
-%   see also: plot_sound_field, print_png
+%   See also: plot_sound_field, print_png
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

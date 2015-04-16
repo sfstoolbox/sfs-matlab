@@ -21,7 +21,7 @@ function brs = ssr_brs(X,phi,x0,d,irs,conf)
 %   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
 %   http://spatialaudio.net/ssr/
 %
-%   see also: ssr_brs_wfs, ssr_brs_nfchoa, ir_generic
+%   See also: ssr_brs_wfs, ssr_brs_nfchoa, ir_generic
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -83,9 +83,9 @@ nangles = length(angles);
 brs = zeros(N,2*nangles);
 % Generate a BRS set for all given angles
 for ii = 1:nangles
-    % progress bar
+    % Progress bar
     if showprogress, progress_bar(ii,nangles); end
-    % compute BRIR for the desired driving signals
+    % Compute BRIR for the desired driving signals
     brs(:,(ii-1)*2+1:ii*2) = ...
         ir_generic(X,angles(ii)+phi,x0,d,irs,conf);
 end

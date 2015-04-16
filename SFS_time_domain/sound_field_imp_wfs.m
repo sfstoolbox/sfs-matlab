@@ -31,7 +31,7 @@ function varargout = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf)
 %   conf.plot.usedb = 1;
 %   plot_sound_field(p,x,y,z,x0,win,conf);
 %
-%   see also: driving_function_imp_wfs, sound_field_mono_wfs
+%   See also: driving_function_imp_wfs, sound_field_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

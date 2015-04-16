@@ -24,7 +24,7 @@ function brs = ssr_brs_nfchoa(X,phi,xs,src,irs,conf)
 %   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
 %   http://spatialaudio.net/ssr/
 %
-%   see also: ir_generic, ir_nfchoa, driving_function_imp_nfchoa
+%   See also: ir_generic, ir_nfchoa, driving_function_imp_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -74,9 +74,9 @@ isargstruct(conf);
 
 
 %% ===== Computation =====================================================
-% secondary sources
+% Secondary sources
 x0 = secondary_source_positions(conf);
-% calculate driving function
+% Calculate driving function
 d = driving_function_imp_nfchoa(x0,xs,src,conf);
-% calculate brs set
+% Calculate brs set
 brs = ssr_brs(X,phi,x0,d,irs,conf);

@@ -10,7 +10,7 @@ function figsize(x,y,unit)
 %
 %   FIGSIZE(x,y,unit) sets the size of the last figure to x,y in the given unit.
 %
-%   see also: plot_sound_field
+%   See also: plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -59,7 +59,7 @@ isargchar(unit)
 
 
 %% ===== Main ============================================================
-% convert to centimeters
+% Convert to centimeters
 if strcmp('px',unit) || strcmp('pixel',unit)
     x = px2cm(x);
     y = px2cm(y);

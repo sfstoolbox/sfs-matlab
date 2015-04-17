@@ -102,7 +102,7 @@ if strcmp('2D',dimension)
         %               pi r0 m=-N..N  (2)
         %                             Hm  (w/c r0)
         %
-        % see Wierstorf et al. (2015), eq.(#aov)
+        % see Wierstorf et al. (2015), eq.(#D:hoa:pw:2D)
         %
         for m=-N:N
             D = D - 2.*1i./(pi.*r0) .* 1i^(-m)./besselh(m,2,w/c.*r0) .* ...
@@ -126,7 +126,7 @@ elseif strcmp('2.5D',dimension)
         %                 r0 m=-N..N       (2)
         %                             w/c h|m| (w/c r0)
         %
-        % see Wierstorf et al. (2015), eq.(#cys)
+        % see Wierstorf et al. (2015), eq.(#D:hoa:pw:2.5D)
         %
         for m=-N:N
             D = D + 2.*1i./r0 .* 1i.^(-abs(m)) ./ ...
@@ -151,7 +151,7 @@ elseif strcmp('3D',dimension)
         %                    r0^2 n=0..N m=-n..n           (2)
         %                                             w/c hn  (w/c r0)
         %
-        % see Wierstorf et al. (2015), eq.(#fvw)
+        % see Wierstorf et al. (2015), eq.(#D:hoa:pw:3D)
         %
         for n=0:N
             for m=-n:n

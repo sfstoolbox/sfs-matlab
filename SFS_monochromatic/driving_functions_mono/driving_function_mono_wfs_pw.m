@@ -96,7 +96,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % D(x0,w) =  2 --- nk nx0  e^(-i w/c nk x0)
         %               c
         %
-        % see Wierstorf et al. (2015), eq.(#5sr)
+        % see Wierstorf et al. (2015), eq.(#D:wfs:pw)
         %
         D = -2*1i*omega/c .* vector_product(nk,nx0,2) .*  ...
             exp(-1i*omega/c.*vector_product(nk,x0,2));
@@ -131,7 +131,7 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D(x0,w) = 2 g0 nk nx0 _ |---  e^(-i w/c nk x0)
         %                             \|i c
         %
-        % see Wierstorf et al. (2015), eq.(#sev)
+        % see Wierstorf et al. (2015), eq.(#D:wfs:pw:2.5D)
         %
         D = -2*g0 .* vector_product(nk,nx0,2) .* sqrt(omega/(1i*c)) .* ...
             exp(-1i*omega/c.*vector_product(nk,x0,2));

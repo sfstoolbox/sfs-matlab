@@ -107,7 +107,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % D(x0,w) = --- --- ------------- e^(-i w/c |x0-xs|)
         %           2pi  c  |x0-xs|^(3/2)
         %
-        % see Wierstorf et al. (2015), eq.(#byv)
+        % see Wierstorf et al. (2015), eq.(#D:wfs:ps)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -122,7 +122,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % D(x0,w) = --- | --- - ------- |  ----------- e^(-i w/c |x0-xs|)
         %           2pi \  c    |x0-xs| /   |x0-xs|^2
         %
-        % see Wierstorf et al. (2015), eq.(#y49)
+        % see Wierstorf et al. (2015), eq.(#D:wfs:ps:woapprox)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -175,7 +175,7 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D(x0,w) = --- _ |--- ------------- e^(-i w/c |x0-xs|)
         %                2pi  \| c  |x0-xs|^(3/2)
         %
-        % see Wierstorf et al. (2015), eq.(#emr)
+        % see Wierstorf et al. (2015), eq.(#D:wfs:ps:2.5D)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -198,7 +198,7 @@ elseif strcmp('2.5D',dimension)
         % ---  | _ |---  - _ |---  ------- |  ----------- e^(-i w/c |x0-xs|)
         % 2pi  \  \| c      \|i w  |x0-xs| /   |x0-xs|^2
         %
-        % see Wierstorf et al. (2015), eq.(a11)
+        % see Wierstorf et al. (2015), eq.(#D:wfs:ps:woapprox:2.5D)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);

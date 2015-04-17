@@ -122,7 +122,8 @@ elseif strcmp('2.5D',dimension)
         %             2pi r0 m=-N..N  (2)
         %                             h|m| (w/c r0)
         %
-        % see Wierstorf et al. (2015), eq.(#eep)
+        % see Wierstorf et al. (2015), eq.(#D:hoa:ps:2.5D)
+        %
         for m=-N:N
             D = D + 1./(2.*pi.*r0) .* sphbesselh(abs(m),2,omega/c.*r) ./ ...
                 sphbesselh(abs(m),2,omega/c.*r0) .* exp(1i.*m.*(phi0-phi));
@@ -149,7 +150,7 @@ elseif strcmp('3D',dimension)
         %                      m
         %                     Yn(theta0,phi0)
         %
-        % see Wierstorf et al. (2015), eq.(#e0n)
+        % see Wierstorf et al. (2015), eq.(#D:hoa:ps:3D)
         %
         for n=0:N
             for m=-n:n

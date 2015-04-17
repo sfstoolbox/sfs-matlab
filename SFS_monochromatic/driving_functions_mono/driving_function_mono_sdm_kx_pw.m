@@ -116,7 +116,7 @@ elseif strcmp('2.5D',dimension)
         %                    H0  | - nky*xrefy |
         %                         \c          /
         %
-        % see Wierstorf et al. (2015), eq.(#7a6) and
+        % see Wierstorf et al. (2015), eq.(#D:sdm:pw:2.5D) and
         % Ahrens and Spors (2010), eq.(17)
         %
         idx = find(kx>=omega/c*nk(:,1),1,'first');

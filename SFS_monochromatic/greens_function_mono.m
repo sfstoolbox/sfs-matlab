@@ -84,7 +84,7 @@ if strcmp('ps',src)
     % G(x-xs,w) = --- -----------------
     %             4pi      |x-xs|
     %
-    % see: Wierstorf et al. (2015), eq.(#ynr)
+    % see: Wierstorf et al. (2015), eq.(#S:ps)
     %
     G = 1/(4*pi) * exp(-1i*omega/c .* sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2)) ./ ...
             sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
@@ -96,7 +96,7 @@ elseif strcmp('ls',src)
     % G(x-xs,w) =  - -  H0  |  - |x-xs|  |
     %                4       \ c        /
     %
-    % see: Wierstorf et al. (2015), eq.(#54d)
+    % see: Wierstorf et al. (2015), eq.(#S:ls)
     %
     G = -1i/4 * besselh(0,2,omega/c* ...
         sqrt( (x-xs(1)).^2 + (y-xs(2)).^2 + (z-xs(3)).^2 ));
@@ -106,7 +106,7 @@ elseif strcmp('pw',src)
     %
     % G(x,w) = e^(-i w/c n x)
     %
-    % see: Wierstorf et al. (2015), eq.(#vmd)
+    % see: Wierstorf et al. (2015), eq.(#S:pw)
     %
     % Direction of plane wave
     nxs = xs / norm(xs);

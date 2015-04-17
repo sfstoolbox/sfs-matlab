@@ -118,7 +118,7 @@ elseif strcmp('2.5D',dimension)
         %                    H0  | - nky*xrefy |
         %                         \c          /
         %
-        % see Wierstorf et al. (2015), eq.(#7a6) and
+        % see Wierstorf et al. (2015), eq.(#D:sdm:pw:2.5D) and
         % Ahrens and Spors (2010), eq.(17)
         %
         D = 4*1i.*exp(-1i*omega/c.*nk(:,2).*xref(:,2)) ./ ...

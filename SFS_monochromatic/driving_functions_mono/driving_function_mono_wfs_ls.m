@@ -96,7 +96,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % D(x0,w) =  - -- -----------  H1  | - |x0-xs| |
         %              2c   |x0-xs|        \ c         /
         %
-        % see Wierstorf et al. (2015), eq.(#e4b)
+        % see Wierstorf et al. (2015), eq.(#D:wfs:ls)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -134,7 +134,7 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D(x0,w) =  - -- _ |---  -----------  H1  | - |x0-xs| |
         %                   2   \| c    |x0-xs|         \ c         /
         %
-        % see Wierstorf et al. (2015), eq.(#z5x)
+        % see Wierstorf et al. (2015), eq.(#D:wfs:ls:2.5D)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);

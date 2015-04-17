@@ -11,7 +11,7 @@ function sig = db(sig)
 %
 %   DB(sig) converts the given signal to dB by applaying 20*log10.
 %
-%   see also: rms
+%   See also: rms
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

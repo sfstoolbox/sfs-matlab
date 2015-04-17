@@ -10,14 +10,14 @@ function R = rotation_matrix(phi,dim,orientation)
 %                     'counterclockwise' (default: 'counterclockwise')
 %
 %   Output parameters:
-%       R       - 3x3 rotation matrix to apply to your vector to 
+%       R       - 3x3 rotation matrix to apply to your vector to
 %                 rotate: R*y
-%                 
 %
-%   ROTATION_MATRIX(phi,dimension,orientation) returns a rotation matrix R, 
+%
+%   ROTATION_MATRIX(phi,dimension,orientation) returns a rotation matrix R,
 %   which is able to rotate a vector around the given dimension about phi.
 %
-%   see also: echo_direction
+%   See also: sin, cos
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -84,7 +84,7 @@ else
     error('%s: the given orientation "%s" is not known.', ...
         upper(mfilename),orientation);
 end
-% fill up matrix to rotate around the given axis
+% Fill up matrix to rotate around the given axis
 if dim==1
 
     R = [1 0  0;  ...

@@ -21,7 +21,7 @@ function varargout = sound_field_imp_point_source(X,Y,Z,xs,varargin)
 %   field of a point source positioned at xs.
 %   To plot the result use plot_sound_field(P,x,y,z).
 %
-%   see also: sound_field_imp, plot_sound_field, sound_field_mono_point_source
+%   See also: sound_field_imp, plot_sound_field, sound_field_mono_point_source
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

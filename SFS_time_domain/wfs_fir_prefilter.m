@@ -17,7 +17,7 @@ function hpre = wfs_fir_prefilter(conf)
 %       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
 %       "Theory of Sound Field Synthesis"
 %
-%   see also: wfs_preequalization, wfs_iir_prefilter, sound_field_imp_wfs, ir_wfs
+%   See also: wfs_preequalization, wfs_iir_prefilter, sound_field_imp_wfs, ir_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -74,7 +74,6 @@ fhigh = conf.wfs.hprefhigh; % Upper frequency limit of preequalization
 
 
 %% ===== Variables ======================================================
-
 % Number of coefficients for filter
 Nfilt=128;
 % Frequency axis
@@ -87,7 +86,6 @@ H = ones(1,length(f));
 
 
 %% ===== Computation ====================================================
-
 % Desired response
 %   ^
 % 1_|          fhigh_______
@@ -115,7 +113,7 @@ elseif strcmp('3D',dimension) || strcmp('2D',dimension)
 else
     error('%s: %s is not a valid conf.dimension entry',upper(mfilename));
 end
-% % Set the response for idxf < idxflow to the value at idxflow
+% Set the response for idxf < idxflow to the value at idxflow
 H(1:idxflow) = H(idxflow)*ones(1,idxflow);
 
 % Compute filter

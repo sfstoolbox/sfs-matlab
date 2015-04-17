@@ -9,7 +9,7 @@ function isargstruct(varargin)
 %   ISARGSTRUCT(args) tests if all given args are a struct and returns
 %   an error otherwise.
 %
-%   see also: isargchar
+%   See also: isargchar
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

@@ -31,7 +31,7 @@ function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 %       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
 %       "Theory of Sound Field Synthesis"
 %
-%   see also: greens_function_mono, sound_field_imp
+%   See also: greens_function_mono, sound_field_imp
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -88,7 +88,7 @@ if strcmp('ps',src)
     % g(x-xs,t) = ---------- delta(t - |x-xs|/c)
     %             4pi |x-xs|
     %
-    % see: Wierstorf et al. (2015), eq.(#2aq)
+    % See: Wierstorf et al. (2015), eq.(#2aq)
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
     g = 1./(4*pi.*r);
@@ -101,7 +101,7 @@ elseif strcmp('ls',src)
     % g(x-xs,t) = F |--  |  - |---  --_-_-_- delta(t - |x-xs|/c)
     %                \iw/    \|8pi  \||x-xs|
     %
-    % see: Wierstorf et al. (2015), eq.(#m3f)
+    % See: Wierstorf et al. (2015), eq.(#m3f)
     % Note, that the filter F^-1 is not implemented!!!!
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
@@ -113,7 +113,7 @@ elseif strcmp('pw',src)
     %
     % g(x,t) = delta(t - nx/c)
     %
-    % see: Wierstorf et al. (2015), eq.(#yhj)
+    % See: Wierstorf et al. (2015), eq.(#yhj)
     %
     % direction of plane wave
     nxs = xs / norm(xs);

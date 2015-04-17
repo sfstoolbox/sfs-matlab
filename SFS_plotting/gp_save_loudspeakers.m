@@ -11,7 +11,7 @@ function gp_save_loudspeakers(file,x0)
 %   loudspeakers, an orientation value calculated from x0(:,4:6), and the
 %   activity x0(:,7) of the loudspeakers in a text file useable by gnuplot.
 %
-%   see also: gp_save, gp_save_matrix
+%   See also: gp_save, gp_save_matrix
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

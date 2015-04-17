@@ -10,7 +10,7 @@ function isargxs(varargin)
 %   ISARGXS(args) tests if all given args are a [1x3] and/or [1x6]  vectors and
 %   returns an error otherwise.
 %
-%   see also: isargscalar, isargvector, isargposition
+%   See also: isargscalar, isargvector, isargposition
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

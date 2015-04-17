@@ -15,7 +15,7 @@ function ir = compensate_headphone(ir,conf)
 %   mentioned in the conf struct.
 %   The compensation is only applied, if the conf.ir.usehcomp value is not false.
 %
-%   see also: ir_wfs, ir_point_source, ir_generic
+%   See also: ir_wfs, ir_point_source, ir_generic
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

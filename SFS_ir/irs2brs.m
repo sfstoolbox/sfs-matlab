@@ -13,7 +13,7 @@ function brs = irs2brs(irs)
 %   SoundScape Renderer. The brs data set is a matrix containing the
 %   channels for all directions.
 %
-%   see also: set_wfs_25d
+%   See also: set_wfs_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

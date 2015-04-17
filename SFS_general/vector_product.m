@@ -14,7 +14,7 @@ function y = vector_product(x1,x2,dim)
 %   VECTOR_PRODUCT(x1,x2,dim) calculates the scalar product between the vectors
 %   given within the matrices along the dimension dim.
 %
-%   see also: vector_norm
+%   See also: vector_norm
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

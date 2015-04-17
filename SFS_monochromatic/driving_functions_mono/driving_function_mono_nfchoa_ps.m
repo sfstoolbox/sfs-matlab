@@ -23,7 +23,7 @@ function D = driving_function_mono_nfchoa_ps(x0,xs,f,N,conf)
 %       "Theory of Sound Field Synthesis"
 %       J. Ahrens (2012) - "Analytic Methods of Sound Field Synthesis", Springer
 %
-%   see also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_ps
+%   See also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_ps
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -82,21 +82,21 @@ X0 = conf.secondary_sources.center;
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
-% secondary source positions
+% Secondary source positions
 x00 = bsxfun(@minus,x0,X0);
 [phi0,theta0,r0] = cart2sph(x00(:,1),x00(:,2),x00(:,3));
-% point source
+% Point source
 xs0 = bsxfun(@minus,xs,X0);
 [phi,theta,r] = cart2sph(xs0(:,1),xs0(:,2),xs0(:,3));
-% wavenumber
+% Wavenumber
 omega = 2*pi*f;
-% initialize empty driving signal
+% Initialize empty driving signal
 D = zeros(size(x0,1),1);
 
 if strcmp('2D',dimension)
-    
+
     % === 2-Dimensional ==================================================
-    
+
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
@@ -107,9 +107,9 @@ if strcmp('2D',dimension)
 
 
 elseif strcmp('2.5D',dimension)
-    
+
     % === 2.5-Dimensional ================================================
-    
+
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
@@ -134,9 +134,9 @@ elseif strcmp('2.5D',dimension)
 
 
 elseif strcmp('3D',dimension)
-    
+
     % === 3-Dimensional ==================================================
-    
+
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % 3D point source, after Ahrens (2012), p.185 eq.(5.7)

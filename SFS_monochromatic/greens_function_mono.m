@@ -25,7 +25,7 @@ function G = greens_function_mono(x,y,z,xs,src,f,conf)
 %       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
 %       "Theory of Sound Field Synthesis"
 %
-%   see also: sound_field_mono
+%   See also: sound_field_mono
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -61,7 +61,7 @@ function G = greens_function_mono(x,y,z,xs,src,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-% disabled checking for performance reasons
+% Disabled checking for performance reasons
 nargmax = 7;
 if nargin<nargmax
     conf = SFS_config;
@@ -74,9 +74,9 @@ phase = conf.phase;
 
 
 %% ===== Computation =====================================================
-% frequency
+% Frequency
 omega = 2*pi*f;
-% calculate Green's function for the given source model
+% Calculate Green's function for the given source model
 if strcmp('ps',src)
     % Source model for a point source: 3D Green's function.
     %
@@ -108,7 +108,7 @@ elseif strcmp('pw',src)
     %
     % see: Wierstorf et al. (2015), eq.(#vmd)
     %
-    % direction of plane wave
+    % Direction of plane wave
     nxs = xs / norm(xs);
     %
     % The following code enables us to replace this two for-loops
@@ -139,7 +139,7 @@ elseif strcmp('pw',src)
     XYZ(1:3:end,:) = x;
     XYZ(2:3:end,:) = y;
     XYZ(3:3:end,:) = z;
-    % calculate sound field
+    % Calculate sound field
     G = exp(-1i*omega/c.*N*XYZ);
 
 else

@@ -28,7 +28,7 @@ function [x0,idx] = secondary_source_selection(x0,xs,src)
 %       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
 %       "Theory of Sound Field Synthesis"
 %
-% see also: secondary_source_positions, secondary_source_tapering
+%   See also: secondary_source_positions, secondary_source_tapering
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -102,7 +102,7 @@ if strcmp('pw',src)
     % === Plane wave ===
     % direction of the plane wave
     nk = bsxfun(@rdivide,xs,vector_norm(xs,2));
-    % secondary source selection
+    % Secondary source selection
     %
     %      / 1, if nk nx0 > 0
     % a = <
@@ -116,7 +116,7 @@ if strcmp('pw',src)
 
 elseif strcmp('ps',src) || strcmp('ls',src)
     % === Point source ===
-    % secondary source selection
+    % Secondary source selection
     %
     %      / 1, if (x0-xs) nx0 > 0
     % a = <
@@ -129,7 +129,7 @@ elseif strcmp('ps',src) || strcmp('ls',src)
 
 elseif strcmp('fs',src)
     % === Focused source ===
-    % secondary source selection
+    % Secondary source selection
     % NOTE: (xs-x0) nx0 > 0 is always true for a focused source
     %
     %      / 1, nxs (xs-x0) > 0
@@ -142,8 +142,8 @@ elseif strcmp('fs',src)
     idx = (( vector_product(nxs,xs-x0,2)>=eps ));
     x0 = x0_tmp(idx,:);
 elseif strcmp('vss', src)
-    % === virtual secondary sources ===
-    % multiple focussed source selection
+    % === Virtual secondary sources ===
+    % Multiple focussed source selection
     selector = false(size(x0_tmp,1),1);
     for xi=xs'
       [~, xdx] = secondary_source_selection(x0_tmp, xi(1:6)', 'fs');

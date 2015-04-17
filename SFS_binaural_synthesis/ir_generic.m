@@ -1,5 +1,5 @@
 function ir = ir_generic(X,phi,x0,d,irs,conf)
-%IR_GENERIC Generate a IR
+%IR_GENERIC generates an impulse response for the given source signals
 %
 %   Usage: ir = ir_generic(X,phi,x0,d,irs,[conf])
 %
@@ -18,7 +18,7 @@ function ir = ir_generic(X,phi,x0,d,irs,conf)
 %   IR_GENERIC(X,phi,x0,d,irs,conf) calculates a binaural room impulse
 %   response for the given secondary sources and driving signals.
 %
-%   see also: ir_wfs, ir_nfchoa, ir_point_source, auralize_ir
+%   See also: ir_wfs, ir_nfchoa, ir_point_source, auralize_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -83,13 +83,10 @@ ir_generic = zeros(N,2);
 warning('off','SFS:irs_intpol');
 for ii=1:size(x0,1)
 
-    % direction of the source from the listener
+    % Direction of the source from the listener
     x_direction = x0(ii,1:3)-X;
-    % change to spherical coordinates
+    % Change to spherical coordinates
     [alpha,theta,r] = cart2sph(x_direction(1),x_direction(2),x_direction(3));
-
-    % === Secondary source model: Greens function ===
-    g = 1./(4*pi*r);
 
     % Incoporate head orientation and ensure -pi <= alpha < pi
     alpha = correct_azimuth(alpha-phi);
@@ -102,7 +99,7 @@ for ii=1:size(x0,1)
     % === Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay ===
     % Also applying the weights of the secondary sources including integration
     % weights or tapering windows etc.
-    ir_generic = ir_generic + fix_length(convolution(ir,d(:,ii)),N).*g.*x0(ii,7);
+    ir_generic = ir_generic + fix_length(convolution(ir,d(:,ii)),N).*x0(ii,7);
 
 end
 warning('on','SFS:irs_intpol');

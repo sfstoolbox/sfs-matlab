@@ -14,7 +14,7 @@ function P = norm_sound_field_at_xref(P,x,y,z,conf)
 %   NORM_SOUND_FIELD_AT_XREF(P,x,y,z,conf) normalizes the given sound field P to 1 at
 %   the position conf.xref.
 %
-%   see also: norm_sound_field, sound_field_mono
+%   See also: norm_sound_field, sound_field_mono
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

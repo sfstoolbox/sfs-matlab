@@ -18,7 +18,7 @@ function D = driving_function_mono_nfchoa_fs(x0,xs,f,N,conf)
 %   signals for the given secondary sources, the focused source position
 %   and the frequency f.
 %
-%   see also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_fs
+%   See also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_fs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -76,9 +76,9 @@ driving_functions = conf.driving_functions;
 % Calculate the driving function in time-frequency domain
 
 if strcmp('2D',dimension)
-    
+
     % === 2-Dimensional ==================================================
-    
+
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
@@ -89,9 +89,9 @@ if strcmp('2D',dimension)
 
 
 elseif strcmp('2.5D',dimension)
-    
+
     % === 2.5-Dimensional ================================================
-    
+
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
@@ -104,9 +104,9 @@ elseif strcmp('2.5D',dimension)
 
 
 elseif strcmp('3D',dimension)
-    
+
     % === 3-Dimensional ==================================================
-    
+
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;

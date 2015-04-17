@@ -35,7 +35,7 @@ function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 %       PhD thesis, TU Berlin
 %       G. Williams (1999) - "Fourier Acoustics", Academic Press
 %
-%   see also: sound_field_mono, plot_sound_field, greens_function_imp
+%   See also: sound_field_mono, plot_sound_field, greens_function_imp
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -89,6 +89,7 @@ if size(x0,1)~=size(d,2)
         upper(mfilename),size(x0,1),size(d,2));
 end
 
+
 %% ===== Configuration ==================================================
 % Plotting result
 useplot = conf.plot.useplot;
@@ -108,14 +109,12 @@ L = conf.secondary_sources.size;
 
 
 %% ===== Computation =====================================================
-
 % Spatial grid
 [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
 
-
 % === Reshaping of the driving signal ===
 %
-% time reversal of driving function due to propagation of sound
+% Time reversal of driving function due to propagation of sound
 % later parts of the driving function are emitted later by secondary
 % sources
 %
@@ -146,7 +145,7 @@ max_distance_in_samples = ...
 
 % Append zeros at the beginning of the driving signal
 d = [zeros(max_distance_in_samples,size(d,2)); d];
-% correct time vector to work with inverted driving functions
+% Correct time vector to work with inverted driving functions
 % this will lead to a time point of t=0 for the starting of emitting the driving
 % signal
 t_inverted = t-size(d,1);
@@ -197,22 +196,22 @@ end
 
 % === Checking of sound field ===
 check_sound_field(p,t);
-% normalize field
+% Normalize field
 p = norm_sound_field(p,conf);
 
-% return parameter
+% Return parameter
 if nargout>0, varargout{1}=p; end
 if nargout>1, varargout{2}=x; end
 if nargout>2, varargout{3}=y; end
 if nargout>3, varargout{4}=z; end
 
 
-% === Plotting ===
+%% ===== Plotting ========================================================
 if nargout==0 || useplot
     plot_sound_field(p,x,y,z,x0,conf);
 end
 
-% some debug stuff
+% Some debug stuff
 if debug
     figure; imagesc(db(abs(d))); title('driving functions'); caxis([-100 0]); colorbar;
 end

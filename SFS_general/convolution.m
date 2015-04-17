@@ -1,5 +1,5 @@
 function z = convolution(x,y)
-%CONVOLUTION convolve the signals x and y
+%CONVOLUTION convolves the signals x and y
 %
 %   Usage: z = convolution(x,y)
 %
@@ -17,7 +17,7 @@ function z = convolution(x,y)
 %   domain and it is checked if we have only real signals to speed up the
 %   calculation. The length of z is length(x)+length(y)-1.
 %
-%   see also: fft_real, ifft_real, fft, ifft
+%   See also: fft_real, ifft_real, fft, ifft
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -57,26 +57,26 @@ nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
 isargmatrix(x,y);
-% check if only one of the inputs is a matrix
+% Check if only one of the inputs is a matrix
 if all(size(x)>1) && all(size(y)>1)
     error('%s: Only one of the inputs can be multi-dimensional.', ...
         upper(mfilename));
 end
-% ensure column vectors
+% Ensure column vectors
 if ~all(size(x)>1), x=column_vector(x); end
 if ~all(size(y)>1), y=column_vector(y); end
 
 
 %% ===== Computation =====================================================
-% if one of the input signals is a matrix repmat the vector of the other signal
+% If one of the input signals is a matrix repmat the vector of the other signal
 if all(size(x)>1)
     y = repmat(y,1,size(x,2));
 elseif all(size(y)>1)
     x = repmat(x,1,size(y,2));
 end
-% length of output signal
+% Length of output signal
 N = size(x,1)+size(y,1)-1;
-% convolve the signals in frequency domain
+% Convolve the signals in frequency domain
 if isreal(x) && isreal(y)
     z = ifft_real(fft_real(fix_length(x,N)).*fft_real(fix_length(y,N)),N);
 else

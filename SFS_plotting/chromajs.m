@@ -1,17 +1,23 @@
-function matlab_version_missing(mfile)
-%MATLAB_VERSION_MISSING indicates a function that is not implemented yet
+function map = chromajs(n)
+%CHROMAJS returns a divergent lightyellow-red color map
 %
-%   Usage: matlab_version_missing([mfilename])
+%   Usage: map = chromajs([n])
 %
-%   Input parameters
-%       mfile   - string containing the name of the calling m file.
-%                 NOTE: this variable is already avaiable in all m files as
-%                 mfilename!
+%   Input parameters:
+%       n   - optional length of colormap (default uses the figure default
+%             length)
 %
-%   MATLAB_VERSION_MISSING(mfile) results in an error that indicates that the
-%   desired plot functionality has to be implemented in Matlab. This is the
-%   case for a some heavier plotting functions that are first implemented using
-%   Gnuplot.
+%   Output parameters:
+%       map - colormap [n 3]
+%
+%   CHROMAJS(N) returns an N-by-3 matrix containing a divergent colormap.
+%   For details on the colormap have a look at:
+%   http://gka.github.io/palettes/#colors=lightyellow,orangered,deeppink,darkred|steps=7|bez=1|coL=1
+%
+%   For example, to reset the colormap of the current figure:
+%             colormap(chromajs)
+%
+% See also: generate_colormap, moreland, plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -46,29 +52,23 @@ function matlab_version_missing(mfile)
 %*****************************************************************************
 
 
-%% ===== Checking of input parameters ====================================
+%% ===== Checking input parameters =======================================
 nargmin = 0;
 nargmax = 1;
 narginchk(nargmin,nargmax);
-if exist('mfile','var')
-    if ~ischar(mfile)
-        error('%s: mfile has to be a string.',upper(mfilename));
-    end
-    filename = true;
-else
-    filename = false;
+if nargin < nargmax
+    n = size(get(gcf,'colormap'),1);
 end
 
 
-%% ===== Main ============================================================
-if(filename)
-    error(['%s: The Matlab version of the movie function has to be ', ...
-        'implemented yet. You can use the Gnuplot version by setting ', ...
-        'conf.gnuplot = 1. If you need the Matlab version, please feel ', ...
-        'free to implement it ;)'],upper(mfile));
-else
-    error(['The Matlab version of the movie function has to be ', ...
-        'implemented yet. You can use the Gnuplot version by setting ', ...
-        'conf.gnuplot = 1. If you need the Matlab version, please feel ', ...
-        'free to implement it ;)']);
-end
+%% ===== Computation =====================================================
+table = [ 255, 255, 224
+255, 223, 184
+255, 188, 148
+255, 151, 119
+255, 105,  98
+238,  66,  86
+210,  31,  71
+176,   6,  44
+139,   0,   0];
+map = generate_colormap(table,n);

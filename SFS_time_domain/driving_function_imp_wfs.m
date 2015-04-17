@@ -24,7 +24,7 @@ function [d,delay,weight] = driving_function_imp_wfs(x0,xs,src,conf)
 %   weighting and delay parameters of the WFS driving function for the given
 %   source type, position and secondary sources.
 %
-%   see also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs
+%   See also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -79,7 +79,6 @@ N = conf.N;
 
 
 %% ===== Computation =====================================================
-
 % Calculate pre-equalization filter if required
 pulse = wfs_preequalization(dirac_imp(),conf);
 

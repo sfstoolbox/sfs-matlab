@@ -17,7 +17,7 @@ function ild = interaural_level_difference(insigleft,insigright)
 %   between the left and right signal(s) by subtracting the dB value of
 %   the left signal(s) from the dB value of the right signal(s).
 %
-%   see also: interaural_time_difference
+%   See also: interaural_time_difference
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

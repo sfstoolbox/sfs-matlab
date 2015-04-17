@@ -11,7 +11,7 @@ function phi = rad(phi)
 %
 %   RAD(phi) returns the given angles phi in radians.
 %
-%   see also: deg
+%   See also: deg
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

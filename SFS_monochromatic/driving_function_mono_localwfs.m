@@ -28,7 +28,7 @@ function [D, x0, xv] = driving_function_mono_localwfs(x0,xs,src,f,conf)
 %       S. Spors (2010) - "Local Sound Field Synthesis by Virtual Secondary
 %                          Sources", 40th AES
 %
-%   see also: plot_sound_field, sound_field_mono_wfs
+%   See also: plot_sound_field, sound_field_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -94,25 +94,27 @@ method = conf.localsfs.method;
 switch method
   case 'wfs'
     % === Wave Field Synthesis ===
-    % create virtual source array
+    % Create virtual source array
     xv = virtual_secondary_source_positions(x0,xs,src,conf);
-    % optional tapering
+    % Secondary_source_selection
+    xv = secondary_source_selection(xv, xs, src);
+    % Optional tapering
     xv = secondary_source_tapering(xv,virtualconf);
-    % optional amplitude correction
+    % Optional amplitude correction
     % xv = secondary_source_amplitudecorrection(xv);
-    % driving functions for virtual source array
+    % Driving functions for virtual source array
     Dv = driving_function_mono_wfs(xv,xs,src,f,virtualconf);
   case 'nfchoa'
     % === Near-Field-Compensated Higher Order Ambisonics ===
-    % create virtual source array
+    % Create virtual source array
     xv = secondary_source_positions(virtualconf);
-    % driving functions for virtual source array
+    % Driving functions for virtual source array
     Dv = driving_function_mono_nfchoa(xv,xs,src,f,virtualconf);
   otherwise
     error('%s: %s is not a supported method for localsfs!',upper(mfilename),method);
 end
 
-% select secondary sources
+% Select secondary sources
 x0 = secondary_source_selection(x0, xv(:,1:6), 'vss');
-% driving functions for real source array
+% Driving functions for real source array
 D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf);

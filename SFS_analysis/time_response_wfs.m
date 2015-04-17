@@ -21,7 +21,7 @@ function varargout = time_response_wfs(X,xs,src,conf)
 %   sound field at the given position X. The sound field is simulated for the
 %   given source type (src) using the sound_field_imp_wfs function.
 %
-%   see also: sound_field_imp_wfs, freq_response_wfs, time_response_nfchoa
+%   See also: sound_field_imp_wfs, freq_response_wfs, time_response_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -68,25 +68,26 @@ if nargin<nargmax
 end
 isargstruct(conf);
 
+
 %% ===== Configuration ==================================================
 % Plotting result
 useplot = conf.plot.useplot;
 fs = conf.fs;
 showprogress = conf.showprogress;
-% disable progress bar for the sound field function
+% Disable progress bar for the sound field function
 conf.showprogress = 0;
-% disable normalization, otherwise the amplitude will always the same for all
+% Disable normalization, otherwise the amplitude will always the same for all
 % time steps
 conf.usenormalisation = 0;
-% disable plotting, otherwise the sound_field_imp fails
+% Disable plotting, otherwise the sound_field_imp fails
 conf.plot.useplot = 0;
-
-% select secondary source type
+% Select secondary source type
 if strcmp('2D',conf.dimension)
     greens_function = 'ls';
 else
     greens_function = 'ps';
 end
+
 
 %% ===== Computation ====================================================
 % Get the position of the loudspeakers
@@ -107,11 +108,12 @@ for ii = 1:length(t)
     s(ii) = real(p);
 end
 
-% return parameter
+% Return parameter
 if nargout>0, varargout{1}=s; end
 if nargout>1, varargout{2}=t; end
 
-% ===== Plotting =========================================================
+
+%% ===== Plotting ========================================================
 if nargout==0 || useplot
     figure;
     figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);

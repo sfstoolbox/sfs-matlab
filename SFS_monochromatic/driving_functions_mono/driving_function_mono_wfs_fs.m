@@ -25,7 +25,7 @@ function D = driving_function_mono_wfs_fs(x0,nx0,xs,f,conf)
 %       Perceptual Properties of Focused Sources in Wave Field Synthesis",
 %       AES127
 %
-%   see also: driving_function_mono_wfs, driving_function_imp_wfs_ps
+%   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -83,7 +83,7 @@ driving_functions = conf.driving_functions;
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
-% frequency
+% Frequency
 omega = 2*pi*f;
 
 
@@ -103,7 +103,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
-        % driving signal
+        % Driving signal
         D = 1/(2*pi) * 1i*omega/c .* ...
             vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(1i*omega/c.*r);
         %
@@ -120,7 +120,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
-        % driving signal
+        % Driving signal
         D = 1/(2*pi) * ( -1i.*omega/c + 1./r ) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(1i*omega./c.*r);
         %
@@ -135,7 +135,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
-        % driving signal
+        % Driving signal
         D = -1i*omega/(2*c) .* vector_product(x0-xs,nx0,2) ./ r .* ...
             besselh(1,1,omega/c.*r);
         %
@@ -173,7 +173,7 @@ elseif strcmp('2.5D',dimension)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
-        % driving signal
+        % Driving signal
         D = g0/(2*pi) * sqrt( 1i*omega/c ) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(1i*omega/c.*r);
         %
@@ -198,7 +198,7 @@ elseif strcmp('2.5D',dimension)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
-        % driving signal
+        % Driving signal
         D = -g0 * sqrt( omega/(2*pi*c*1i) ) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(1i*omega/c.*r);
         %
@@ -221,7 +221,7 @@ elseif strcmp('2.5D',dimension)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
-        % driving signal
+        % Driving signal
         D = -g0 * 1i*omega/(2*c) .* ...
             vector_product(x0-xs,nx0,2) ./ r .* besselh(1,1,omega/c.*r);
         %
@@ -245,7 +245,7 @@ elseif strcmp('2.5D',dimension)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
-        % driving signal
+        % Driving signal
         D = g0/(2*pi) .* ( sqrt(1i*omega/c) + sqrt(c/(1i*omega)) ./ r ) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(1i*omega/c.*r);
         %

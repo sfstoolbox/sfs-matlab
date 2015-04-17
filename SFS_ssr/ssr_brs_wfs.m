@@ -23,7 +23,7 @@ function brs = ssr_brs_wfs(X,phi,xs,src,irs,conf)
 %   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
 %   http://spatialaudio.net/ssr/
 %
-%   see also: ir_generic, ir_wfs, driving_function_imp_wfs
+%   See also: ir_generic, ir_wfs, driving_function_imp_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -73,9 +73,9 @@ isargstruct(conf);
 
 
 %% ===== Computation =====================================================
-% secondary sources
+% Secondary sources
 x0 = secondary_source_positions(conf);
-% calculate driving function
+% Calculate driving function
 d = driving_function_imp_wfs(x0,xs,src,conf);
-% calculate brs set
+% Calculate brs set
 brs = ssr_brs(X,phi,x0,d,irs,conf);

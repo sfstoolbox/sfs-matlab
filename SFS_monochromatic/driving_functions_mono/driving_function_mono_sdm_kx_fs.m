@@ -21,7 +21,7 @@ function D = driving_function_mono_sdm_kx_fs(kx,xs,f,conf)
 %       S. Spors and J. Ahrens (2010) - "Reproduction of Focused Sources by the
 %       Spectral Division Method", ISCCSP
 %
-%   see also: driving_function_mono_wfs, driving_function_imp_wfs_ps
+%   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -81,15 +81,15 @@ withev = conf.sdm.withev;
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
-% frequency
+% Frequency
 omega = 2*pi*f;
-% indexes for evanescent contributions and propagating part of the wave field
+% Indexes for evanescent contributions and propagating part of the wave field
 idxpr = (( abs(kx) <= (omega/c) ));
 idxev = (( abs(kx) > (omega/c) ));
 D = zeros(1,length(kx));
 
 if strcmp('2D',dimension)
-    
+
     % === 2-Dimensional ==================================================
 
     % Ensure 2D
@@ -104,9 +104,9 @@ if strcmp('2D',dimension)
 
 
 elseif strcmp('2.5D',dimension)
-    
+
     % === 2.5-Dimensional ================================================
-    
+
     % Reference point
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
@@ -114,7 +114,7 @@ elseif strcmp('2.5D',dimension)
         %                                   ____________
         %                         H0^(2)( \|(w/c)^2-kx^2 |yref-ys| )
         %                     / - --------------_-_-_-_-_-_---------, |kx|<|w/c|
-        %                     |      H0^(2)( \|(w/c)^2-kx^2 yref ) 
+        %                     |      H0^(2)( \|(w/c)^2-kx^2 yref )
         %                    <        ____________
         %                     | K0( \|kx^2-(w/c)^2 |yref-ys| )
         %                     \ ----------_-_-_-_-_-_---------,       |kx|>|w/c|
@@ -129,7 +129,7 @@ elseif strcmp('2.5D',dimension)
             D(idxev) =  exp(1i*kx(idxev)*xs(1)) .* ...
                 besselk(0,sqrt(kx(idxev).^2 - (omega/c).^2)*abs(xref(2)-xs(2))) ./ ...
                 besselk(0,sqrt(kx(idxev).^2 - (omega/c).^2)*abs(xref(2)-x0(2)));
-        end 
+        end
 
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
@@ -138,9 +138,9 @@ elseif strcmp('2.5D',dimension)
 
 
 elseif strcmp('3D',dimension)
-    
+
     % === 3-Dimensional ==================================================
-    
+
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;

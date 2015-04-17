@@ -54,9 +54,9 @@ narginchk(nargmin,nargmax);
 
 
 %% ===== Computation =====================================================
-% the following fields are only optional
+% The following fields are only optional
 opt_fields = {'room_corners'};
-% create our reference irs struct
+% Create our reference irs struct
 irs = struct;
 irs.description = 'Reference implementation of the irs struct.';
 irs.head = 'dummy';             % Used dummy head

@@ -24,7 +24,7 @@ function D = driving_function_mono_sdm_kx_pw(kx,nk,f,conf)
 %       and Linear Arrays of Loudspeakers", Transactions on Audio, Speech and
 %       Language Processing, Volume 18(8), p. 2038-2050
 %
-%   see also: driving_function_mono_sdm_kx, sound_field_mono_sdm_kx
+%   See also: driving_function_mono_sdm_kx, sound_field_mono_sdm_kx
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -82,12 +82,12 @@ driving_functions = conf.driving_functions;
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
-% frequency
+% Frequency
 omega = 2*pi*f;
 D = zeros(1,length(kx));
 
 if strcmp('2D',dimension)
-    
+
     % === 2-Dimensional ==================================================
 
     % Ensure 2D

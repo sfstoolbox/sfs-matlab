@@ -22,7 +22,7 @@ function D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf)
 %       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
 %       "Theory of Sound Field Synthesis"
 %
-%   see also: driving_function_mono_wfs, driving_function_imp_wfs_ps
+%   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -80,7 +80,7 @@ driving_functions = conf.driving_functions;
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
-% frequency
+% Frequency
 omega = 2*pi*f;
 
 
@@ -100,7 +100,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
-        % driving signal
+        % Driving signal
         D = -1i*omega/(2*c) .* vector_product(x0-xs,nx0,2) ./ r .* ...
             besselh(1,2,omega/c.*r);
         %
@@ -138,7 +138,7 @@ elseif strcmp('2.5D',dimension)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
-        % driving signal
+        % Driving signal
         D = -g0/2 .* sqrt(i*omega/c) .* vector_product(x0-xs,nx0,2) ./ r .* ...
             besselh(1,2,omega/c.*r);
         %

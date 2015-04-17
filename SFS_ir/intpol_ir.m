@@ -7,21 +7,22 @@ function ir = intpol_ir(varargin)
 %       ir1     - IR 1
 %       ir2     - IR 2
 %       ir3     - IR 3 (optional)
-%       x0      - matrix containing positions of single IRs / rad
-%       xs      - desired position after interpolation / rad
+%       x0      - matrix containing positions of single impulse
+%                 responses / [rad rad]
+%       xs      - desired position after interpolation / [rad rad]
 %
 %   Output parameters:
 %       ir      - IR for the given position
 %
-%   INTPOL_IR(ir1,phi1,theta1,ir2,phi2,theta2,ir3,phi3,theta3,alpha,beta)
+%   INTPOL_IR(ir1,ir2,ir3,x0,xs)
 %   interpolates the three given IRs ir1,ir2 and ir3 with their corresponding 
-%   angles (phi1,theta1),(phi2,theta2) and (phi3,theta3) for the given
-%   angles (alpha,beta) and returns an interpolated IR.
+%   angles x0 for the given angles xs and returns an interpolated impulse
+%   response.
 %   Note that the given parameter are not checked if they have all the right
 %   dimensions in order to save computational time, because this function could
 %   be called quiet often.
 %
-%   see also: get_ir, shorten_ir, read_irs
+%   See also: get_ir, shorten_ir, read_irs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -68,7 +69,7 @@ if nargin==4
     ir2 = varargin{2};
     x0 = varargin{3};
     xs = varargin{4};
-    % linear interpolation
+    % Linear interpolation
     ir = ir1 + (ir2-ir1) * norm(xs-x0(:,1))/norm(x0(:,2)-x0(:,1));
 else
     ir1 = varargin{1};
@@ -76,7 +77,7 @@ else
     ir3 = varargin{3};
     x0 = varargin{4};
     xs = varargin{5};
-    % linear interpolation
+    % Linear interpolation
     %
     %           x0(:,ii) xs
     % w(ii) = --------------
@@ -89,6 +90,6 @@ else
     if any(w<0)
         error('%s: one of your interpolation weights is <0.',upper(mfilename));
     end
-    % calculate desired ir with linear combination of ir1,ir2 and ir3
+    % Calculate desired ir with linear combination of ir1,ir2 and ir3
     ir = w(1)*ir1 + w(2)*ir2 + w(3)*ir3;
 end

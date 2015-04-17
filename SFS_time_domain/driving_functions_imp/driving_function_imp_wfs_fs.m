@@ -21,7 +21,7 @@ function [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs,conf)
 %       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
 %       "Theory of Sound Field Synthesis"
 %
-%   see also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_fs
+%   See also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_fs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -137,6 +137,30 @@ elseif strcmp('2.5D',dimension)
             'for a 2.5D focused source.'],upper(mfilename),driving_functions);
     end
 
+
+elseif strcmp('3D',dimension)
+
+    % === 3-Dimensional ==================================================
+
+    if strcmp('default',driving_functions)
+        % --- SFS Toolbox ------------------------------------------------
+        % d_3D using a point sink as source model
+        % 
+        %                      1  (xs-x0) nx0
+        % d_3D(x0,t) = h(t) * --- ------------- delta(t + |xs-x0|/c)
+        %                     2pi |xs-x0|^(3/2)
+        %
+        % See Wierstorf (2014), p.27 (2.64)
+        %
+        % r = |xs-x0|
+        r = vector_norm(xs-x0,2);
+        % Delay and amplitude weight
+        delay = -1/c .* r;
+        weight = 1/(2*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3/2);
+    else
+        error(['%s: %s, this type of driving function is not implemented', ...
+            'for a 3D focused source.'],upper(mfilename),driving_functions);
+    end
 
 else
     error('%s: the dimension %s is unknown.',upper(mfilename),dimension);

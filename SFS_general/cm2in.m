@@ -11,7 +11,7 @@ function y = cm2in(x)
 %
 %   CM2IN(x) returns the given value x in inches.
 %
-%   see also: cm2px, px2in, px2cm, in2cm, in2px
+%   See also: cm2px, px2in, px2cm, in2cm, in2px
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

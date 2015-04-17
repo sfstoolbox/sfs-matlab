@@ -30,7 +30,7 @@ function varargout = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
 %   conf.plot.usedb = 1;
 %   plot_sound_field(p,x,y,z,x0,win,conf);
 %
-%   see also: driving_function_imp_localwfs, sound_field_mono_localwfs
+%   See also: driving_function_imp_localwfs, sound_field_mono_localwfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -78,12 +78,15 @@ else
     isargstruct(conf);
 end
 
+
 %% ===== Configuration ==================================================
 if strcmp('2D',conf.dimension)
     greens_function = 'ls';
 else
     greens_function = 'ps';
 end
+useplot = conf.plot.useplot;
+
 
 %% ===== Computation =====================================================
 % Get secondary sources
@@ -103,8 +106,9 @@ end
 [varargout{1:min(nargout,4)}] = ...
     sound_field_imp(X,Y,Z,x0,greens_function,d,t,conf);
 % Return secondary sources if desired
-if nargout==5, varargout{5}=x0; end  
-  
+if nargout==5, varargout{5}=x0; end
+
+
 % === Plotting ===
 if nargout==0 || useplot
   hold on

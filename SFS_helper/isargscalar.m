@@ -8,7 +8,7 @@ function isargscalar(varargin)
 %   ISARGSCALAR(args) tests if all given args are a scalar and returns
 %   an error otherwise.
 %
-%   see also: isargpositivescalar
+%   See also: isargpositivescalar
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

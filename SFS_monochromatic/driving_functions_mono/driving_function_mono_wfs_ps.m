@@ -33,7 +33,7 @@ function D = driving_function_mono_wfs_ps(x0,nx0,xs,f,conf)
 %       S. Spors, J. Ahrens (2010) - "Analysis and Improvement of
 %       Pre-equalization in 2.5-Dimensional Wave Field Synthesis", AES128
 %
-%   see also: driving_function_mono_wfs, driving_function_imp_wfs_ps
+%   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -91,7 +91,7 @@ driving_functions = conf.driving_functions;
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
-% frequency
+% Frequency
 omega = 2*pi*f;
 
 
@@ -111,7 +111,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
-        % driving signal
+        % Driving signal
         D = 1/(2*pi) .* (1i*omega)/c .* ...
             vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c.*r);
         %
@@ -126,7 +126,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
-        % driving signal
+        % Driving signal
         D = 1/(2*pi) .* ( (1i*omega)/c - 1./r ) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(-1i*omega/c.*r);
         %
@@ -141,7 +141,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
-        % driving signal
+        % Driving signal
         D = -1/(2*c) .* 1i*omega/c * vector_product(x0-xs,nx0,2) ./ r .* besselh(1,2,omega/c*r);
         %
         %
@@ -179,7 +179,7 @@ elseif strcmp('2.5D',dimension)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
-        % driving signal
+        % Driving signal
         D = g0/(2*pi) .* sqrt(1i*omega/c) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c.*r);
         %
@@ -202,7 +202,7 @@ elseif strcmp('2.5D',dimension)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
-        % driving signal
+        % Driving signal
         D = g0/(2*pi) .* ( sqrt(1i*omega/c) - sqrt(c/(1i*omega) ./ r ) ) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(-1i*omega/c .* r);
         %
@@ -224,7 +224,7 @@ elseif strcmp('2.5D',dimension)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
-        % driving signal
+        % Driving signal
         D = sqrt(1i*omega/(2*pi*c)) * g0 * vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c .* r);
         %
     elseif strcmp('opperschall',driving_functions)
@@ -234,7 +234,7 @@ elseif strcmp('2.5D',dimension)
         %
         % 2.5D correction factor
         %         _____________________
-        %        |      |xref-x0|      
+        %        |      |xref-x0|
         % g0 = _ |---------------------
         %       \| |x0-xs| + |xref-x0|
         %
@@ -248,19 +248,19 @@ elseif strcmp('2.5D',dimension)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
-        % driving signal
+        % Driving signal
         D = sqrt(1i*omega/(2*pi*c)) * g0 .* vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c .* r);
         %
     elseif strcmp('volk2010',driving_functions)
         % --- Voelk 2010 --------------------------------------------------
         %         _____________________
-        %        |      |xref-x0|      
+        %        |      |xref-x0|
         % g0 = _ |---------------------
         %       \| |x0-xs| + |xref-x0|
         %
         g0 = sqrt( vector_norm(xref-x0,2) ./ (vector_norm(xs-x0,2) + vector_norm(x0-xref,2)) );
         %
-        % D_2.5D(x0,w) = 
+        % D_2.5D(x0,w) =
         %       ___    ___
         %      | 1    |i w (x0-xs) nx0
         % g0 _ |--- _ |--- ------------- e^(-i w/c |x0-xs|)
@@ -270,7 +270,7 @@ elseif strcmp('2.5D',dimension)
         %
         r = vector_norm(x0-xs,2);
         D = g0/sqrt(2*pi) * sqrt(1i*omega/c) * ...
-            vector_product(x0-xs,nx0,2)./r.^(3/2) .* exp(-1i*omega/c.*r); 
+            vector_product(x0-xs,nx0,2)./r.^(3/2) .* exp(-1i*omega/c.*r);
         %
     elseif strcmp('SDMapprox',driving_functions)
         % --- Spors 2010 --------------------------------------------------

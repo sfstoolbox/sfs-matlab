@@ -29,7 +29,7 @@ function outsig = noise(samples,nsigs,noisetype)
 %       s = RandStream.create('mt19937ar','seed',sum(100*clock));
 %       RandStream.setDefaultStream(s);     % in Matlab >= 7.7
 %
-%   see also: click, irn
+%   See also: click, irn
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -110,7 +110,7 @@ switch noisetype
 
     case 'red'
         outsig = cumsum(randn(samples,nsigs));
-        
+
     case 'brown'
         outsig = cumsum(randn(samples,nsigs));
 

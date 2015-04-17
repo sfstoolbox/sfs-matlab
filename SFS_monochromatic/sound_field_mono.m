@@ -39,7 +39,7 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %       "Theory of Sound Field Synthesis"
 %       G. Williams (1999) - "Fourier Acoustics", Academic Press
 %
-%   see also: plot_sound_field, sound_field_mono_wfs_25d
+%   See also: plot_sound_field, sound_field_mono_wfs_25d
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

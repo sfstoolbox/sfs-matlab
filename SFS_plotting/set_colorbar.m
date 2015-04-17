@@ -9,7 +9,7 @@ function set_colorbar(conf)
 %   SET_COLORBAR() drwas a color bar on the figure and sets the map to the color
 %   specified in conf.plot.colormap.
 %
-%   see also: plot_wavefield, set_colormap
+%   See also: plot_sound_field, set_colormap
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

@@ -1,20 +1,72 @@
 function m = moreland(n)
 %MORELAND   Divergent red-white-blue color map
+%
+%   Usage: m = moreland(n)
+%
+%   Input parameters:
+%       n - optional length of colormap (default uses the figure default length)
+%
+%   Output parameters:
+%       m - colormap
+%
 %   MORELAND(N) returns an N-by-3 matrix containing a divergent colormap.
-%   MORELAND, by itself, is the same length as the current figure's
-%   colormap. If no figure exists, MATLAB creates one.
+%   For details on the colormap have a look at:
+%   Without a given N the same length as the current figure's
+%   colormap is used.
+%   For details on the colormap have a look at:
+%   http://www.sandia.gov/~kmorel/documents/ColorMaps/
 %
 %   For example, to reset the colormap of the current figure:
-%
 %             colormap(moreland)
 %
-%   Coded by Lewis Marshall
+%   Original written by Lewis Marshall
+%
+%   See also: generate_colormap, chromjs, plot_sound_field
 
-if nargin < 1
-   n = size(get(gcf,'colormap'),1);
+%*****************************************************************************
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+%                         Assessment of IP-based Applications                *
+%                         Telekom Innovation Laboratories, TU Berlin         *
+%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+%                                                                            *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+%                         Universitaet Rostock                               *
+%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+%                                                                            *
+% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+%                                                                            *
+% The SFS is free software:  you can redistribute it and/or modify it  under *
+% the terms of the  GNU  General  Public  License  as published by the  Free *
+% Software Foundation, either version 3 of the License,  or (at your option) *
+% any later version.                                                         *
+%                                                                            *
+% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
+% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
+% FOR A PARTICULAR PURPOSE.                                                  *
+% See the GNU General Public License for more details.                       *
+%                                                                            *
+% You should  have received a copy  of the GNU General Public License  along *
+% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+%                                                                            *
+% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
+% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
+% ambisonics.                                                                *
+%                                                                            *
+% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+%*****************************************************************************
+
+
+%% ===== Checking input parameters =======================================
+nargmin = 0;
+nargmax = 1;
+narginchk(nargmin,nargmax);
+if nargin < nargmax
+    n = size(get(gcf,'colormap'),1);
 end
 
-m_table = [ 59,76,192
+
+%% ===== Computation =====================================================
+table = [ 59,76,192
 60,78,194
 61,80,195
 62,81,197
@@ -271,13 +323,4 @@ m_table = [ 59,76,192
 183,17,40
 181,11,39
 180,4,38];
-m = zeros(n,3);
-for i=1:n
-    for j=1:3
-        m(i,j)=interp1(linspace(1,n,257),m_table(:,j),i);
-    end
-end
-m=m/256;
-
-
-
+m = generate_colormap(table,n);

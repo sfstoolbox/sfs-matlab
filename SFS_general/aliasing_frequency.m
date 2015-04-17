@@ -19,14 +19,14 @@ function [fal,dx0] = aliasing_frequency(x0,conf)
 %   first calculated by calling secondary_source_positions().
 %   For a calculation that includes the dependency on the listener position have
 %   a look at Start (1997).
-%   
+%
 %   References:
 %       S. Spors and J. Ahrens (2009) - "Spatial sampling artifacts of wave field
 %       synthesis for the reproduction of virtual point sources", 126th AES Conv.
 %       E. Start (1997) - "Direct Sound Enhancement by Wave Field Synthesis",
 %       TU Delft.
 %
-%   see also: sound_field_mono_wfs, secondary_source_positions,
+%   See also: sound_field_mono_wfs, secondary_source_positions,
 %       secondary_source_distance
 
 %*****************************************************************************
@@ -83,11 +83,11 @@ c = conf.c;
 
 
 %% ===== Computation =====================================================
-% if no explicit secondary source distribution is given, calculate one
+% If no explicit secondary source distribution is given, calculate one
 if isempty(x0)
     x0 = secondary_source_positions(conf);
 end
-% get average distance between secondary sources
+% Get average distance between secondary sources
 dx0 = secondary_source_distance(x0);
-% calculate aliasing frequency
+% Calculate aliasing frequency
 fal = c/(2*dx0);

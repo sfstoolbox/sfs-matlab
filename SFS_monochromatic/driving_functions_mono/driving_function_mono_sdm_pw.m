@@ -24,7 +24,7 @@ function D = driving_function_mono_sdm_pw(x0,nk,f,conf)
 %       and Linear Arrays of Loudspeakers", Transactions on Audio, Speech and
 %       Language Processing, Volume 18(8), p. 2038-2050
 %
-%   see also: driving_function_mono_wfs, driving_function_imp_wfs_ps
+%   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -82,7 +82,7 @@ driving_functions = conf.driving_functions;
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
-% frequency
+% Frequency
 omega = 2*pi*f;
 
 
@@ -111,7 +111,7 @@ elseif strcmp('2.5D',dimension)
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % D_2.5D using a plane wave as source model
-        %                  
+        %
         %                   e^(-i w/c nky*xrefy)
         % D_2.5D(x0,w) = 4i ---------------------- e^(-i w/c nk x0)
         %                     (2) /w          \

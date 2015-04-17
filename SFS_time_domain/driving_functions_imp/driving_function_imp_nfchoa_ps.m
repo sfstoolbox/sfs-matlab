@@ -22,7 +22,7 @@ function sos = driving_function_imp_nfchoa_ps(N,R,r,conf)
 %       model-based rendering for 2.5-dimensional near-field compensated higher
 %       order Ambisonics", WASPAA, p. 61-64
 %
-%   see also: sound_field_imp, sound_field_imp_nfchoa, driving_function_imp_nfchoa
+%   See also: sound_field_imp, sound_field_imp_nfchoa, driving_function_imp_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -76,15 +76,14 @@ driving_functions = conf.driving_functions;
 
 
 %% ===== Computation =====================================================
-
-% find spherical hankel function zeros
+% Find spherical hankel function zeros
 z = sphbesselh_zeros(N);
 
 % Get the delay and weighting factors
 if strcmp('2D',dimension)
 
     % === 2-Dimensional ==================================================
-    
+
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
@@ -105,7 +104,7 @@ elseif strcmp('2.5D',dimension)
         %
         [sos,~] = zp2sos(z*c/r,z*c/R,1,'up','none');
         %
-        % compare Spors et al. (2011)
+        % Compare Spors et al. (2011)
         %
     else
         error(['%s: %s, this type of driving function is not implemented', ...

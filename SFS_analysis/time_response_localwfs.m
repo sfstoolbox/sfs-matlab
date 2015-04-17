@@ -21,7 +21,7 @@ function varargout = time_response_localwfs(X,xs,src,conf)
 %   sound field at the given position X. The sound field is simulated for the
 %   given source type (src) using the sound_field_imp_localwfs function.
 %
-%   see also: sound_field_imp_localwfs, freq_response_localwfs
+%   See also: sound_field_imp_localwfs, freq_response_localwfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -74,15 +74,15 @@ isargstruct(conf);
 useplot = conf.plot.useplot;
 fs = conf.fs;
 showprogress = conf.showprogress;
-% disable progress bar for the sound field function
+% Disable progress bar for the sound field function
 conf.showprogress = 0;
-% disable normalisation, otherwise the amplitude will always the same for all
+% Disable normalisation, otherwise the amplitude will always the same for all
 % time steps
 conf.usenormalisation = 0;
-% disable plotting, otherwise the sound_field_imp fails
+% Disable plotting, otherwise the sound_field_imp fails
 conf.plot.useplot = 0;
 
-% select secondary source type
+% Select secondary source type
 if strcmp('2D',conf.dimension)
     greens_function = 'ls';
 else
@@ -103,16 +103,17 @@ d = driving_function_imp_localwfs(x0,xs,src,conf);
 %d = convolution(d,hann_window(5,5,10));
 for ii = 1:length(t)
     if showprogress, progress_bar(ii,length(t)); end
-    % calculate sound field at the listener position
+    % Calculate sound field at the listener position
     p = sound_field_imp(X(1),X(2),X(3),x0,greens_function,d,t(ii),conf);
     s(ii) = real(p);
 end
 
-% return parameter
+% Return parameter
 if nargout>0, varargout{1}=s; end
 if nargout>1, varargout{2}=t; end
 
-% ===== Plotting =========================================================
+
+%% ===== Plotting ========================================================
 if nargout==0 || useplot
     figure;
     figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);

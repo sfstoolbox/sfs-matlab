@@ -17,7 +17,7 @@ function sig = delayline(sig,dt,weight,conf)
 %   The delay is implemented as integer delays or a fractional delay
 %   filter, see SFS_config.
 %
-%   see also: get_ir, driving_function_imp_wfs
+%   See also: get_ir, driving_function_imp_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -65,12 +65,11 @@ if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
 
 if usefracdelay
 
-    % additional configuration
+    % Additional configuration
     fracdelay_method = conf.fracdelay_method;
-
     rfactor = 100; % resample factor (1/stepsize of fractional delays)
     Lls = 30;      % length of least-squares factional delay filter
-    
+
     % Defining a temporary conf struct for recursive calling of delayline
     conf2.usefracdelay = false;
     conf2.fracdelay_method = '';
@@ -82,19 +81,14 @@ if usefracdelay
        sig = resample(sig2,1,rfactor);
 
     case 'least_squares'
-        if ~exist('hgls2','file')
-            error(['%s: the least_squares methods needs the hgls2 function ',...
-                'which you have to look for in the web ;)']);
-        end
         idt = floor(dt);
         sig = delayline(sig,idt,weight,conf2);
         if abs(dt-idt)>0
-            h = zeros(channels,1);
             for ii=1:channels
-                h(ii) = hgls2(Lls,dt(ii)-idt(ii),0.90);
+                h = general_least_squares(Lls,dt(ii)-idt(ii),0.90);
+                tmp = convolution(sig(:,ii),h);
+                sig(:,ii) = tmp(Lls/2:end-Lls/2);
             end
-            sig = convolution(sig,h);
-            sig = sig(Lls/2:end-Lls/2,:);
         end
 
     case 'interp1'
@@ -110,13 +104,13 @@ if usefracdelay
     end
 
 else
-    % from here on integer delays are considered
+    % From here on integer delays are considered
     idt = round(dt);
-    
-    % handling of too long delay values (returns vector of zeros)
+
+    % Handling of too long delay values (returns vector of zeros)
     idt(abs(idt)>samples) = samples;
-    
-    % handle positive or negative delays
+
+    % Handle positive or negative delays
     for ii=1:channels
         if idt(ii)>=0
             sig(:,ii) = [zeros(idt(ii),1); weight(ii)*sig(1:end-idt(ii),ii)];

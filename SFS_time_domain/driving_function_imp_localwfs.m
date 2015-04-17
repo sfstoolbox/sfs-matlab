@@ -28,7 +28,7 @@ function [d, x0, xv] = driving_function_imp_localwfs(x0,xs,src,conf)
 %       S. Spors (2010) - "Local Sound Field Synthesis by Virtual Secondary
 %                          Sources", 40th AES
 %
-%   see also: plot_sound_field, sound_field_mono_wfs
+%   See also: plot_sound_field, sound_field_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -62,6 +62,7 @@ function [d, x0, xv] = driving_function_imp_localwfs(x0,xs,src,conf)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;
 nargmax = 4;
@@ -75,6 +76,7 @@ else
     isargstruct(conf);
 end
 
+
 %% ===== Configuration ==================================================
 virtualconf = conf;
 virtualconf.secondary_sources.size = conf.localsfs.vss.size;
@@ -86,8 +88,8 @@ virtualconf.tapwinlen = conf.localsfs.tapwinlen;
 virtualconf.wfs = conf.localsfs.wfs;
 method = conf.localsfs.method;
 
-%% ===== Computation ====================================================
 
+%% ===== Computation ====================================================
 if strcmp('fs',src)
   error(['%s: %s is not a supported method source type! Try to use a point', ...
     ' source, if the source is inside the secondary source array but not', ...
@@ -98,21 +100,23 @@ end
 switch method
   case 'wfs'
     % === Wave Field Synthesis ===
-    % create virtual source array
+    % Create virtual source array
     xv = virtual_secondary_source_positions(x0,xs,src,conf);
-    % optional tapering
+    % Secondary_source_selection
+    xv = secondary_source_selection(xv, xs, src);
+    % Optional tapering
     xv = secondary_source_tapering(xv,virtualconf);
-    % optional amplitude correction
+    % Optional amplitude correction
     % xv = secondary_source_amplitudecorrection(xv);
-    % driving functions for virtual source array
+    % Driving functions for virtual source array
     dv = driving_function_imp_wfs(xv,xs,src,virtualconf);
   otherwise
     error('%s: %s is not a supported method for time domain localsfs!', ...
       upper(mfilename),method);
 end
 
-% select secondary sources
+% Select secondary sources
 x0 = secondary_source_selection(x0, xv(:,1:6), 'vss');
-% driving functions for real source array
+% Driving functions for real source array
 d = driving_function_imp_wfs_vss(x0,xv,dv,conf);
 end

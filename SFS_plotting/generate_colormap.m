@@ -1,20 +1,21 @@
-function cmd = gp_get_plot_command(p)
-%GP_GET_PLOT_COMMAND returns the gnuplot command for plotting the sound field
-%and loudspeaker
+function m = generate_colormap(table,n)
+%GENERATE_COLORMAP creates a Matlab colormap from the given table
 %
-%   Usage: cmd = gp_get_plot_command(p)
+%   usage: m = generate_colormap(table,n)
 %
 %   Input parameters:
-%       p   - struct holding all the conf.plot data and more
+%       table - matrix containing the color values as columns [r g b]. The
+%               single colors go from 0 to 255
+%       n     - size of the colormap
 %
 %   Output parameters:
-%       cmd - plot command to insert in gnuplot file
+%       m     - colormap
 %
-%   GP_GET_PLOT_COMMAND(p) returns the plot command for gnuplot to plot the
-%   sound field and loudspeaker as symbols or points, or completly without
-%   loudspeakers.
+%   GENERATE_COLORMAP(table,n) returns an n-by-3 matrix containing a colormap.
+%   The color values are specified in table, which will be interpolated to the
+%   desired number of entries n.
 %
-%   See also: gp_print_*, plot_wavefield
+% See also: moreland, chromajs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -49,21 +50,17 @@ function cmd = gp_get_plot_command(p)
 %*****************************************************************************
 
 
-if p.loudspeakers && p.realloudspeakers
-    % Plotting real loudspeaker symbols
-    cmd = sprintf([ ...
-        'call ''gp_draw_loudspeakers.gnu'' ''%s'' ''%f''\n', ...
-        'plot ''%s'' binary matrix with image'], ...
-        p.lsfile,p.lssize,p.datafile);
-elseif p.loudspeakers
-    % Plotting only points at the loudspeaker positions
-    cmd = sprintf([ ...
-        'plot ''%s'' binary matrix with image,\\\n', ...
-        '     ''%s'' u 1:2 w points ls 1'], ...
-        p.datafile,p.lsfile);
-else
-    % Plotting no loudspeakers at all
-    cmd = sprintf( ...
-        'plot ''%s'' binary matrix with image', ...
-        p.datafile);
+%% ===== Checking input parameters =======================================
+nargmin = 2;
+nargmax = 2;
+narginchk(nargmin,nargmax);
+
+
+%% ===== Computation =====================================================
+m = zeros(n,3);
+for ii=1:n
+    for jj=1:3
+        m(ii,jj)=interp1(linspace(1,n,size(table,1)),table(:,jj),ii);
+    end
 end
+m=m/256;

@@ -89,7 +89,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         %
         % d_2D(x0,t) = h(t) * 2 nk nx0 delta(t - 1/c nk x0)
         %
-        % See Wierstorf et al. (2015), eq.(#9a4)
+        % see Wierstorf et al. (2015), eq.(#d:wfs:pw)
         %
         % Delay and amplitude weight
         delay = 1/c * vector_product(nk,x0,2);
@@ -118,7 +118,7 @@ elseif strcmp('2.5D',dimension)
         %
         % d_2.5D(x0,t) = h(t) * 2 g0 nk nx0 delta(t - 1/c nk x0)
         %
-        % See Wierstorf et al. (2015), eq.(#cjo)
+        % See Wierstorf et al. (2015), eq.(#d:wfs:pw:2.5D)
         %
         % Delay and amplitude weight
         delay = 1/c .* vector_product(nk,x0,2);

@@ -186,7 +186,7 @@ for ii = 1:size(x0,1)
     % p(x,t) = | d(x0,t) g(x-x0,t) dx0
     %          /
     %
-    % see: Wierstorf et al. (2015), eq.(#46k) or Williams (1993), p. 36
+    % see Wierstorf et al. (2015), eq.(#single:layer) or Williams (1993), p. 36
     % x0(ii,7) is a weight for the single secondary sources which includes for
     % example a tapering window for WFS or a weighting of the sources for
     % integration on a sphere.

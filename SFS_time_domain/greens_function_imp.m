@@ -88,7 +88,7 @@ if strcmp('ps',src)
     % g(x-xs,t) = ---------- delta(t - |x-xs|/c)
     %             4pi |x-xs|
     %
-    % See: Wierstorf et al. (2015), eq.(#2aq)
+    % see Wierstorf et al. (2015), eq.(#s:ps)
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
     g = 1./(4*pi.*r);
@@ -101,7 +101,7 @@ elseif strcmp('ls',src)
     % g(x-xs,t) = F |--  |  - |---  --_-_-_- delta(t - |x-xs|/c)
     %                \iw/    \|8pi  \||x-xs|
     %
-    % See: Wierstorf et al. (2015), eq.(#m3f)
+    % see Wierstorf et al. (2015), eq.(#s:ls)
     % Note, that the filter F^-1 is not implemented!!!!
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
@@ -113,7 +113,7 @@ elseif strcmp('pw',src)
     %
     % g(x,t) = delta(t - nx/c)
     %
-    % See: Wierstorf et al. (2015), eq.(#yhj)
+    % see Wierstorf et al. (2015), eq.(#s:pw)
     %
     % direction of plane wave
     nxs = xs / norm(xs);

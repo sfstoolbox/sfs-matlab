@@ -91,7 +91,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % d(x0,t) = h(t) * - |--- ------------- delta(t-|x0-xs|/c)
         %                   \|2pi |x0-xs|^(3/2)
         %
-        % See Wierstorf et al. (2015) eq.(#3gg)
+        % see Wierstorf et al. (2015) eq.(#d:wfs:ls)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);

@@ -108,7 +108,7 @@ if strcmp('pw',src)
     % a = <
     %      \ 0, else
     %
-    % see Wierstorf et al. (2015), eq.(#3vy)
+    % see Wierstorf et al. (2015), eq.(#wfs:pw:selection)
     %
     % Direction of plane wave (nxs) is set above
     idx = (( vector_product(nk,nx0,2)>=eps ));
@@ -122,7 +122,8 @@ elseif strcmp('ps',src) || strcmp('ls',src)
     % a = <
     %      \ 0, else
     %
-    % see Wierstorf et al. (2015), eq.(#ykn) and eq.(#f51)
+    % see Wierstorf et al. (2015), eq.(#wfs:ps:selection) and
+    % eq.(#wfs:ls:selection)
     %
     idx = (( vector_product(x0-xs,nx0,2)>=eps ));
     x0 = x0_tmp(idx,:);
@@ -136,7 +137,8 @@ elseif strcmp('fs',src)
     % a = <
     %      \ 0, else
     %
-    % see Wierstorf et al. (2015), eq.(#rpa)
+    % see Wierstorf et al. (2015), eq.(#wfs:fs:selection)
+    %
     nxs = xs(:,4:6);
     xs = xs(:,1:3);
     idx = (( vector_product(nxs,xs-x0,2)>=eps ));

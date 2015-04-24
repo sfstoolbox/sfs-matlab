@@ -22,8 +22,8 @@ conf.showprogress = true;
 conf.resolution = 400;
 
 ns = [0, -1, 0];  % propagation direction of plane wave
-xs = [0,  0.5, 0];  % position of point source
-f = 1000;
+xs = [0,  2, 0];  % position of point source
+f = 1200;
 xrange = [-2 2];
 yrange = [-2 2];
 zrange = 0;
@@ -32,7 +32,7 @@ zrange = 0;
 sigma = inf;  % admittance of scatterer (inf to soft scatterer)
 R = 0.3;
 xq = [ 0, -1.0, 0];
-xt = [ 0.5, 0.5, 0]*R;
+xt = [ 0.5, 0.5, 0];
 conf.xref = xq;
      
 display(conf.scattering)
@@ -44,7 +44,7 @@ A1sph_shift = sphexp_mono_pw(ns,f,xq+xt,conf);
 A2sph = sphexp_mono_ps(xs,'R',f,xq,conf);
 A2sph_shift = sphexp_mono_ps(xs,'R', f,xq+xt,conf);
 % regular-to-regular spherical reexpansion (translatory shift)
-RRsph = sphexp_mono_translation(-xt, 'RR', f, conf);
+[RRsph, RRsphm] = sphexp_mono_translation(-xt, 'RR', f, conf);
 A1spht = RRsph*A1sph;
 A2spht = RRsph*A2sph;
 
@@ -162,20 +162,35 @@ plot_scatterer(xq,R);
 %% generic NFCHOA
 % loudspeakers
 x0 = secondary_source_positions(conf);
+
+A1spht_shift = RRsphm*sphexp_bandlimit(A1sph_shift,10);
+A2spht_shift = RRsphm*sphexp_bandlimit(A2sph_shift,10);
+
 % compute driving functions
-D1sph = driving_function_mono_nfchoa_sphexp(x0(:,1:3), A1sph, f, conf);
-D2sph = driving_function_mono_nfchoa_sphexp(x0(:,1:3), A2sph, f, conf);
+D1sphhoa = driving_function_mono_nfchoa_sphexp(x0(:,1:3), A1sph, f, conf);
+D2sphhoa = driving_function_mono_nfchoa_sphexp(x0(:,1:3), A2sph, f, conf);
+% compute driving functions for shifted expansions
+D1sphhoat = driving_function_mono_nfchoa_sphexp(x0(:,1:3), A1spht_shift, f, conf);
+D2sphhoat = driving_function_mono_nfchoa_sphexp(x0(:,1:3), A2spht_shift, f, conf);
+
 % compute fields
-P1sphhoa = sound_field_mono(xrange,yrange,zrange,x0,'ps',D1sph,f,conf);
-P2sphhoa = sound_field_mono(xrange,yrange,zrange,x0,'ps',D2sph,f,conf);
+P1sphhoa = sound_field_mono(xrange,yrange,zrange,x0,'ps',D1sphhoa,f,conf);
+P2sphhoa = sound_field_mono(xrange,yrange,zrange,x0,'ps',D2sphhoa,f,conf);
+% compute fields
+P1sphhoat = sound_field_mono(xrange,yrange,zrange,x0,'ps',D1sphhoat,f,conf);
+P2sphhoat = sound_field_mono(xrange,yrange,zrange,x0,'ps',D2sphhoat,f,conf);
 
 % plot
 [~,~,~,x1,y1,z1] = xyz_grid(xrange,yrange,zrange,conf);
 
 plot_sound_field(P1sphhoa, x1,y1,z1, x0, conf);
-title('plane wave');
+title('NFCHOA: plane wave');
 plot_sound_field(P2sphhoa ,x1,y1,z1, x0, conf);
-title('point source');
+title('NFCHOA: point source');
+plot_sound_field(P1sphhoat/5, x1,y1,z1, x0, conf);
+title('NFCHOA: plane wave (shifted reexpansion)');
+plot_sound_field(P2sphhoat/5, x1,y1,z1, x0, conf);
+title('NFCHOA: point source (shifted reexpansion)');
 
 %% Cylindrical expansion
 % A1cyl = cylexpR_mono_pw(ns,f,xq,conf);  % regular expansion plane wave

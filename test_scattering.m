@@ -7,10 +7,10 @@ SFS_start;
 %% Parameters
 conf = SFS_config_example;
 
-conf.dimension = '3D';
-conf.secondary_sources.geometry = 'linear';
+conf.dimension = '2.5D';
+conf.secondary_sources.geometry = 'circular';
 conf.secondary_sources.number = 60;
-conf.secondary_sources.size = 4;
+conf.secondary_sources.size = 3;
 conf.secondary_sources.center = [0, 0, 0];
 
 conf.plot.useplot = false;
@@ -23,7 +23,7 @@ conf.resolution = 400;
 
 ns = [0, -1, 0];  % propagation direction of plane wave
 xs = [0,  0.5, 0];  % position of point source
-f = 1500;
+f = 1000;
 xrange = [-2 2];
 yrange = [-2 2];
 zrange = 0;
@@ -158,6 +158,24 @@ plot_scatterer(xq,R);
 plot_sound_field(P2sphwfs ,x1,y1,z1, x0, conf);
 title('point source');
 plot_scatterer(xq,R);
+
+%% generic NFCHOA
+% loudspeakers
+x0 = secondary_source_positions(conf);
+% compute driving functions
+D1sph = driving_function_mono_nfchoa_sphexp(x0(:,1:3), A1sph, f, conf);
+D2sph = driving_function_mono_nfchoa_sphexp(x0(:,1:3), A2sph, f, conf);
+% compute fields
+P1sphhoa = sound_field_mono(xrange,yrange,zrange,x0,'ps',D1sph,f,conf);
+P2sphhoa = sound_field_mono(xrange,yrange,zrange,x0,'ps',D2sph,f,conf);
+
+% plot
+[~,~,~,x1,y1,z1] = xyz_grid(xrange,yrange,zrange,conf);
+
+plot_sound_field(P1sphhoa, x1,y1,z1, x0, conf);
+title('plane wave');
+plot_sound_field(P2sphhoa ,x1,y1,z1, x0, conf);
+title('point source');
 
 %% Cylindrical expansion
 % A1cyl = cylexpR_mono_pw(ns,f,xq,conf);  % regular expansion plane wave

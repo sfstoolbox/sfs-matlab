@@ -28,11 +28,14 @@ function [EF, EFm] = sphexp_mono_translation(t, mode, f, conf)
 %  where {E,F} = {R,S}. R denotes the regular spherical basis function, while
 %  S symbolizes the singular spherical basis function. Note that (S|S) and 
 %  (S|R) are respectively equivalent to (R|R) and (R|S). 
+%  The reexpansion coefficients can seperated into sectorial 
+%  (n = abs|m| and/or l = abs|s|) and tesseral (else) coefficients. Latter will
+%  only be computed, if conf.dimensions == '3D'.
 %
-%   References:
-%       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
-%                                    Helmholtz Equation in three 
-%                                    Dimensions", ELSEVIER
+%  References:
+%     Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
+%                                   Helmholtz Equation in three 
+%                                   Dimensions", ELSEVIER
 %
 %   see also: sphexp_mono_ps, sphexp_mono_pw
 %
@@ -84,6 +87,7 @@ end
 %% ===== Configuration ==================================================
 showprogress = conf.showprogress;
 Nse = conf.scattering.Nse;
+dimension = conf.dimension;
 
 %% ===== Variables ======================================================
 % convert (xpq) into spherical coordinates
@@ -204,21 +208,24 @@ for l=1:Nse
 end
 
 %% ===== Tesseral Coefficients ==========================================
-for m=-Nse:Nse
-  for s=-Nse:Nse
-    
-    lowerbound = Nse - max(abs(m),abs(s));
-    % left propagation
-    for n=(0:lowerbound-1)+abs(m)
-      amn1 = 1./sphexp_access(a,m,n);
-      amn2 = sphexp_access(a,m,n-1);        
-      for l=(abs(s)-abs(m)+n+1):(2*Nse-n-1)
-        [v, w] = sphexp_index(s,l, m, n+1);
-        S(v,w) = amn1 * ( ...
-          amn2                    * sphexp_access(S,s,l  ,m,n-1) - ...
-          sphexp_access(a,s,l)    * sphexp_access(S,s,l+1,m,n)   + ...
-          sphexp_access(a,s,l-1)  * sphexp_access(S,s,l-1,m,n) ...
-        );
+if strcmp('3D',dimension)
+
+  for m=-Nse:Nse
+    for s=-Nse:Nse
+      
+      lowerbound = Nse - max(abs(m),abs(s));
+      % left propagation
+      for n=(0:lowerbound-1)+abs(m)
+        amn1 = 1./sphexp_access(a,m,n);
+        amn2 = sphexp_access(a,m,n-1);        
+        for l=(abs(s)-abs(m)+n+1):(2*Nse-n-1)
+          [v, w] = sphexp_index(m, n+1, s, l);
+          S(v,w) = amn1 * ( ...
+            amn2                    * sphexp_access(S,m,n-1,s,l) - ...
+            sphexp_access(a,s,l)    * sphexp_access(S,m,n  ,s,l+1)   + ...
+            sphexp_access(a,s,l-1)  * sphexp_access(S,m,n  ,s,l-1) ...
+          );
+        end
       end
     end
     % up propagation
@@ -233,11 +240,11 @@ for m=-Nse:Nse
           sphexp_access(a,m,n-1)  * sphexp_access(S,s,l  ,m,n-1)...
           );
       end
-    end
-  end  
-  if showprogress, progress_bar(m+Nse,2*Nse); end % progress bar
-end
+    end  
+    if showprogress, progress_bar(m+Nse,2*Nse); end % progress bar
+  end
 
+end
 %% ====== Final Calculation Steps =======================================
 L = (Nse + 1)^2;
 EF = S(1:L,1:L);  % (E|F)(t)
@@ -253,8 +260,5 @@ for n=0:Nse
     end
   end
 end
-
-EF = EF.';
-EFm = EFm.';
 
 end

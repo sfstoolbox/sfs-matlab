@@ -50,28 +50,17 @@ function a = sphexp_access(A, m1, n1, m2, n2)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
-nargmax = 5;
-narginchk(nargmin,nargmax);
-isargvector(m1);
-if nargin == nargmin
+if nargin < 3
   n1 = abs(m1);
-else  
-  isargvector(n1);
 end
 if nargin < 4
   m2 = 0;
-else
-  isargvector(m2);
 end
-if nargin<nargmax
+if nargin < 5
   n2 = abs(m2);
-else
-  isargvector(n2);
 end
 
 %% ===== Computation ====================================================
-
 a = zeros(length(m1)*length(n1),length(m2)*length(n2));
 
 [m1, n1] = meshgrid(m1, n1);

@@ -52,28 +52,14 @@ function [l1, l2] = sphexp_index(m1, n1, m2, n2)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
-nargmax = 4;
-narginchk(nargmin,nargmax);
-isargvector(m1);
-if nargin == nargmin
+if nargin < 2
   n1 = abs(m1);
-else
-  isargvector(n1);
 end
 if nargin < 3
   m2 = 0;
-else
-  isargvector(m2);
 end
-if nargin < nargmax 
+if nargin < 4 
   n2 = abs(m2);
-else
-  isargvector(n2);
-end
-
-if any( abs(m1) > n1 | abs(m2) > n2 )
-  error('%s: |m1| > n1 or |m2| > n2',upper(mfilename));
 end
 
 %% ===== Computation ====================================================

@@ -138,7 +138,7 @@ end
 %
 for l=0:2*Nse  % n=l
   Hn  = sqrt(4*pi)*sphbasis(l,kr);  % radial basis function (see Variables)
-  for s=0:l  % m=s
+  for s=l:-inc:0  % m=s
     % spherical harmonics: conj(Y_n^m) = Y_n^-m (Gumerov2004, eq. 2.1.59)
     Ynm = sphharmonics(l,s, theta, phi);
 
@@ -169,7 +169,7 @@ for m=0:Nse-1
   % NOTE: sphexp_access(b, -m-1) == sphexp_access(b, -m-1, m+1)
   bm = 1./sphexp_access(b,-m-1); 
   for l=1:(2*Nse-m-1)
-    for s=-l:l
+    for s=-l:inc:l
       % +m
       [v, w] = sphexp_index(s,l,m+1);
       S(v,w) = bm * ( ...
@@ -196,13 +196,13 @@ end
 % while {E,F} = {R,S}
 %
 for l=1:Nse
-  for s=[-l,l]
-    for n=1:(2*Nse-l)
-      for m=(-n+1):(n-1)
-        % +s
-        [v, w] = sphexp_index( s, l, m, n);
-        S(v,w) = (-1).^(l+n)*sphexp_access(S,-m,n,-s);
-      end
+  for n=1:(2*Nse-l)
+    for m=(-n+1):(n-1)
+      s = [-l,l];
+      m = (-n+inc):inc:(n-inc);
+
+      [v, w] = sphexp_index( s, l, m, n);
+      S(v,w) = (-1).^(l+n)*sphexp_access(S,-m,n,-s).';
     end
   end
 end
@@ -212,7 +212,7 @@ if strcmp('3D',dimension)
 
   for m=-Nse:Nse
     for s=-Nse:Nse
-      
+
       lowerbound = Nse - max(abs(m),abs(s));
       % left propagation
       for n=(0:lowerbound-1)+abs(m)
@@ -252,12 +252,10 @@ EF = S(1:L,1:L);  % (E|F)(t)
 EFm = zeros(L);  
 for n=0:Nse
   for l=0:Nse
-    for m=-n:n
-      for s=-l:l
-        [v, w] = sphexp_index(s,l,m,n);
-        EFm(v,w) = (-1).^(l+n)*sphexp_access(EF,s,l,m,n);
-      end
-    end
+    m = -n:inc:n;
+    s = -l:inc:l;  
+    [v, w] = sphexp_index(s,l,m,n);
+    EFm(v,w) = (-1).^(l+n)*sphexp_access(EF,s,l,m,n);
   end
 end
 

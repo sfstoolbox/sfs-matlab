@@ -115,6 +115,13 @@ else
 end
 
 %% ===== Sectorial Coefficients =========================================
+% if translation vector's z-coordinate is zero, many coefficients are zero
+% this is to save some computation time
+if t(3) == 0
+ inc = 2;
+else
+ inc = 1;
+end
 
 % for n=0, m=0 (Gumerov2004, eq. 3.2.5)
 %
@@ -197,13 +204,10 @@ end
 %
 for l=1:Nse
   for n=1:(2*Nse-l)
-    for m=(-n+1):(n-1)
-      s = [-l,l];
-      m = (-n+inc):inc:(n-inc);
-
-      [v, w] = sphexp_index( s, l, m, n);
-      S(v,w) = (-1).^(l+n)*sphexp_access(S,-m,n,-s).';
-    end
+    s = [-l,l];
+    m = (-n+inc):inc:(n-inc);
+    [v, w] = sphexp_index( s, l, m, n);
+    S(v,w) = (-1).^(l+n)*sphexp_access(S,-m,n,-s, l).';
   end
 end
 

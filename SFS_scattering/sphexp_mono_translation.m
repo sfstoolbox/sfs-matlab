@@ -125,11 +125,11 @@ end
 
 % for n=0, m=0 (Gumerov2004, eq. 3.2.5)
 %
-%      s, 0        s, 0     ___     -l  -s
+%      s, 0        s, 0     ___     l   -s
 % (S|R)     = (R|S)     = \|4pi (-1)   S  (t)
 %      l, 0        l, 0                 l
 %
-%      s, 0        s, 0     ___     -l  -s
+%      s, 0        s, 0     ___     l   -s
 % (S|S)     = (R|R)     = \|4pi (-1)   R  (t)
 %      l, 0        l, 0                 l
 %
@@ -150,12 +150,12 @@ for l=0:2*Nse  % n=l
     Ynm = sphharmonics(l,s, theta, phi);
 
     v = sphexp_index(s,l);
-    S(v,1) = (-1).^l*Hn.*Ynm;  % s,l, m=0, n=0
-    S(1,v) = Hn.*conj(Ynm);   % s=0,l=0, m, n
+    S(v,1) = (-1).^l*Hn.*conj(Ynm);  % s,l, m=0, n=0
+    S(1,v) = Hn.*Ynm;   % s=0,l=0, m, n
 
     v = sphexp_index(-s,l);
-    S(v,1) = (-1).^l*Hn.*conj(Ynm); % -s,l, m=0, n=0
-    S(1,v) = Hn.*Ynm;  % s=0,l=0, -m, n  
+    S(v,1) = (-1).^l*Hn.*Ynm; % -s,l, m=0, n=0
+    S(1,v) = Hn.*conj(Ynm);  % s=0,l=0, -m, n  
   end
   if showprogress, progress_bar(v,L); end % progress bar
 end

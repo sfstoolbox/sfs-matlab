@@ -72,6 +72,7 @@ end
 c = conf.c;
 dimension = conf.dimension;
 Xc = conf.secondary_sources.center;
+xref = conf.xref - Xc;
 
 %% ===== Variables ======================================================
 Nse = sqrt(size(Pnm, 1))-1;
@@ -87,6 +88,11 @@ x00 = bsxfun(@minus,x0,Xc);
 omega = 2*pi*f;
 k = omega/c;
 kr0 = k.*r0;
+
+% reference radius
+[~, ~, rref] = cart2sph(xref(1),xref(2),xref(3));
+krref = k.*rref;
+
 % initialize empty driving signal
 D = zeros(size(x0,1),1);
 
@@ -99,36 +105,73 @@ if strcmp('2D',dimension)
   
 elseif strcmp('2.5D',dimension)
   % === 2.5-Dimensional ================================================
-  %                                m
-  %                       __      P
-  %               1      \         |m|
-  % D(phi0,w) = ------   /__    -------- e^(i m (phi0))
-  %             2pi r0  m=-N..N    m
-  %                               G
-  %                                |m|
-  %
-  % with regular spherical expansion of the sound field:
-  %          \~~   N \~~   n   m           m
-  % P(x,w) =  >       >       P  j (kr) . Y  (theta, phi)
-  %          /__ n=0 /__ m=-n  n  n        n 
-  %
-  % and 3D free field Green's Function:
-  %             \~~ oo  \~~   n   m           m
-  % G  (x0,f) =  >       >       G  . j (kr) . Y  (theta, phi)
-  %  ps         /__ n=0 /__ m=-n  n    n        n
-  %
-  % with the regular expansion coefficients (Gumerov2004, eq. 3.2.2):
-  %    m               (2)       -m
-  %   G  = -i  . k  . h   (kr0) Y  (pi/2, 0)
-  %    n               n         n
   
-  for m=-Nse:Nse
-    D = D + sphexp_access(Pnm, m) ./ ...
-      (sphbesselh(abs(m),2,kr0) .* sphharmonics(abs(m),-m, 0, 0) ) ...
-      .* exp(1i.*m.*phi0);      
-  end
-  
-  D = D./(-1j*2.*pi*kr0);  
+  if (rref == 0)
+    % --- Xref == Xc ----------------------------------------------------
+    %                                m
+    %                       __      P
+    %               1      \         |m|
+    % D(phi0,w) = ------   /__    -------- e^(i m (phi0))
+    %             2pi r0  m=-N..N    m
+    %                               G
+    %                                |m|
+    %
+    % with regular spherical expansion of the sound field:
+    %          \~~   N \~~   n   m           m
+    % P(x,w) =  >       >       P  j (kr) . Y  (theta, phi)
+    %          /__ n=0 /__ m=-n  n  n        n 
+    %
+    % and 3D free field Green's Function:
+    %             \~~ oo  \~~   n   m           m
+    % G  (x0,f) =  >       >       G  . j (kr) . Y  (theta, phi)
+    %  ps         /__ n=0 /__ m=-n  n    n        n
+    %
+    % with the regular expansion coefficients (Gumerov2004, eq. 3.2.2):
+    %    m               (2)       -m
+    %   G  = -i  . k  . h   (kr0) Y  (pi/2, 0)
+    %    n               n         n
+
+    for m=-Nse:Nse
+      D = D + sphexp_access(Pnm, m) ./ ...
+        (sphbesselh(abs(m),2,kr0) .* sphharmonics(abs(m),-m, 0, 0) ) ...
+        .* exp(1i.*m.*phi0);      
+    end
+    
+    D = D./(-1i*2.*pi*kr0);  
+  else
+    % --- Xref ~= Xc ----------------------------------------------------
+	%
+	% if the reference position is not in the middle of the array, things
+	% get a 'little' more complicated 
+    
+    hn = zeros(size(x0,1),1,Nse+1);
+    jn = hn;
+    for n=0:Nse
+    	hn(:,:,n+1) = sphbesselh(n,2,kr0);
+      jn(:,:,n+1) = sphbesselj(n,krref);
+    end      
+    
+    for m=-Nse:Nse
+      Pm = 0;
+      Gm = 0;
+      % for theta=0 the legendre polynom is zero if n+m is odd
+      for n=abs(m):2:Nse  
+        factor = jn(:,:,n+1) .* ...
+          (-1).^(m) .* ...
+          sqrt( (2*n+1) ./ (4*pi) ) .* ...
+          sqrt( factorial(n-abs(m)) ./ factorial(n+abs(m)) ) .* ...
+          asslegendre(n,abs(m),0);       
+        
+        Pm = Pm + sphexp_access(Pnm, m, n) .* factor;
+        
+        Gm = Gm + (-1i*k) .* hn(:,:,n+1) .* sphharmonics(n, -m, 0, 0) .* factor;
+      end
+      
+      D = D + Pm ./ Gm .* exp(1i.*m.*phi0);    
+    end
+
+    D = D./(2.*pi*r0);    
+  end  
   
 elseif strcmp('3D',dimension)
   % === 3-Dimensional ==================================================

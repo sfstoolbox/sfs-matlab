@@ -1,4 +1,4 @@
-function D = driving_function_mono_nfchoa_sphexp(x0,Pnm,f,conf)
+function D = driving_function_mono_nfchoa_sphexp(x0, Pnm,f,conf)
 %computes the nfchoa driving functions for a sound field expressed by regular 
 %spherical expansion coefficients.
 %
@@ -63,20 +63,24 @@ if nargin<nargmax
 else
     isargstruct(conf);
 end
+if mod(sqrt(size(Pnm, 1)),1) ~= 0
+  error(['%s: number of columns of Pnm (%s) is not the square of an', ...
+    'integer.'], upper(mfilename), sqrt(size(Pnm, 1)));
+end
 
 %% ===== Configuration ==================================================
 c = conf.c;
 dimension = conf.dimension;
-driving_functions = conf.driving_functions;
-Nse = conf.scattering.Nse;
-X0 = conf.secondary_sources.center;
+Xc = conf.secondary_sources.center;
 
 %% ===== Variables ======================================================
+Nse = sqrt(size(Pnm, 1))-1;
+
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
 % secondary source positions
-x00 = bsxfun(@minus,x0,X0);
+x00 = bsxfun(@minus,x0,Xc);
 [phi0,theta0,r0] = cart2sph(x00(:,1),x00(:,2),x00(:,3));
 
 % frequency depended stuff
@@ -91,13 +95,10 @@ D = zeros(size(x0,1),1);
 
 if strcmp('2D',dimension)
   % === 2-Dimensional ==================================================
-  error('%s: %s, 2D driving function is not implemented.',upper(mfilename));  
+  to_be_implemented; 
   
 elseif strcmp('2.5D',dimension)
   % === 2.5-Dimensional ================================================
-  
-  % --- SFS Toolbox ------------------------------------------------
-  %
   %                                m
   %                       __      P
   %               1      \         |m|

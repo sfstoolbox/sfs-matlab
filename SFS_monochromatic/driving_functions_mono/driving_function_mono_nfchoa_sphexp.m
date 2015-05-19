@@ -72,6 +72,7 @@ end
 c = conf.c;
 dimension = conf.dimension;
 Xc = conf.secondary_sources.center;
+N0 = conf.secondary_sources.number;
 xref = conf.xref - Xc;
 
 %% ===== Variables ======================================================
@@ -136,13 +137,12 @@ elseif strcmp('2.5D',dimension)
         (sphbesselh(abs(m),2,kr0) .* sphharmonics(abs(m),-m, 0, 0) ) ...
         .* exp(1i.*m.*phi0);      
     end
-    
-    D = D./(-1i*2.*pi*kr0);  
+    D = D./(-1i*k);  % factor from expansion of 3D free field Green's Function
   else
     % --- Xref ~= Xc ----------------------------------------------------
-	%
-	% if the reference position is not in the middle of the array, things
-	% get a 'little' more complicated 
+    %
+    % if the reference position is not in the middle of the array, things
+    % get a 'little' more complicated 
     
     hn = zeros(size(x0,1),1,Nse+1);
     jn = hn;
@@ -169,9 +169,9 @@ elseif strcmp('2.5D',dimension)
       
       D = D + Pm ./ Gm .* exp(1i.*m.*phi0);    
     end
-
-    D = D./(2.*pi*r0);    
-  end  
+  end
+  
+  D = D/N0;  % normalization due to angular sampling  
   
 elseif strcmp('3D',dimension)
   % === 3-Dimensional ==================================================

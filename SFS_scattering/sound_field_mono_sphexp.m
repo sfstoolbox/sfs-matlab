@@ -11,7 +11,7 @@ function [P, x, y, z] = sound_field_mono_sphexp(X,Y,Z,ABnm,mode,f,xq,conf)
 %       ABnm        - regular/singular spherical expansion coefficients
 %       mode        - 'R' for regular, 'S' for singular
 %       f           - frequency in Hz
-%       x0          - optional expansion center coordinates, default: [0, 0, 0]
+%       xq          - optional expansion center coordinates, default: [0, 0, 0]
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -65,9 +65,9 @@ else
     isargstruct(conf);
 end
 if nargin == nargmin
-  x0 = [0, 0, 0];
+  xq = [0, 0, 0];
 end  
-isargposition(x0);
+isargposition(xq);
 
 %% ===== Computation ====================================================
 [jn, hn, Ynm, x, y, z] = sphbasis_mono_XYZgrid(X,Y,Z,f,xq,conf);

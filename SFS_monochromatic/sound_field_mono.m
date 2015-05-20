@@ -5,9 +5,9 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %   Usage: [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,[conf])
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax]
-%       Y           - y-axis / m; single value or [ymin,ymax]
-%       Z           - z-axis / m; single value or [zmin,zmax]
+%       X           - x-axis / m; single value or [xmin,xmax] or nD-array
+%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
+%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       x0          - secondary sources [n x 6] / m
 %       src         - source model for the secondary sources. This describes the
 %                     Green's function, that is used for the modeling of the
@@ -31,7 +31,18 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %   function for the secondary sources. The simulation is done for one
 %   frequency in the frequency domain, by calculating the integral for P with a
 %   summation.
-%
+%   For the input of X,Y,Z (DIM as a wildcard) :
+%     * if DIM is given as single value, the respective dimension is
+%     squeezed, so that dimensionality of the simulated sound field P is
+%     decreased by one.
+%     * if DIM is given as [dimmin, dimmax], a linear grid for the
+%     respective dimension with a resolution defined in conf.resolution is 
+%     established
+%     * if DIM is given as n-dimensional array, all other dimensions have
+%     to be given as an n-dimensional arrays of the same size. Each triple of 
+%     X,Y,Z is interpreted as an evaluation point in an customized grid. For
+%     this option, plotting and normalisation is disabled.
+%   
 %   To plot the result use plot_sound_field(P,x,y,z).
 %
 %   References:
@@ -76,7 +87,16 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 nargmin = 7;
 nargmax = 8;
 narginchk(nargmin,nargmax);
-isargvector(X,Y,Z,D);
+
+isargnumeric(X,Y,Z);
+customGrid = numel(X) > 2 || numel(Y) > 2 || numel(Z) > 2;
+if customGrid
+  isargequalsize(X,Y,Z);
+else
+  isargvector(X,Y,Z);
+end
+
+isargvector(D);
 isargsecondarysource(x0);
 isargpositivescalar(f);
 isargchar(src);
@@ -97,15 +117,23 @@ end
 useplot = conf.plot.useplot;
 showprogress = conf.showprogress;
 
-
 %% ===== Computation ====================================================
-% Create a x-y-grid
-[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
-% Check what are the active axes to create an empty sound field with the correct
-% size
-[~,x1,x2,x3]  = xyz_axes_selection(x,y,z);
-% Initialize empty sound field
-P = squeeze(zeros(length(x3),length(x2),length(x1)));
+
+if customGrid
+  % just copy everything
+  xx = X; yy = Y; zz = Z;
+  x = X;   y = Y;  z = Z;
+  P = zeros(size(X));
+else
+  % Create a x-y-z-grid
+  [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
+  % Check what are the active axes to create an empty sound field with the 
+  % correct size
+  [~,x1,x2,x3]  = xyz_axes_selection(x,y,z);
+  % Initialize empty sound field
+  P = squeeze(zeros(length(x3),length(x2),length(x1)));
+end
+
 % Integration over secondary source positions
 for ii = 1:size(x0,1)
 
@@ -133,8 +161,10 @@ for ii = 1:size(x0,1)
 
 end
 
-% === Scale signal (at xref) ===
-P = norm_sound_field_at_xref(P,x,y,z,conf);
+if ~customGrid
+  % === Scale signal (at xref) ===
+  P = norm_sound_field_at_xref(P,x,y,z,conf);
+end
 
 % return parameter
 if nargout>0, varargout{1}=P; end
@@ -143,6 +173,6 @@ if nargout>2, varargout{3}=y; end
 if nargout>3, varargout{4}=z; end
 
 % ===== Plotting =========================================================
-if nargout==0 || useplot
+if (nargout==0 || useplot) && ~customGrid
     plot_sound_field(P,x,y,z,x0,conf);
 end

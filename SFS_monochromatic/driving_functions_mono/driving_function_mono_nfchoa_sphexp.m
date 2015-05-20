@@ -2,7 +2,7 @@ function D = driving_function_mono_nfchoa_sphexp(x0, Pnm,f,conf)
 %computes the nfchoa driving functions for a sound field expressed by regular 
 %spherical expansion coefficients.
 %
-%   Usage: D = driving_function_mono_nfchoa_sphexp(x0,Pnm,f,N,conf)
+%   Usage: D = driving_function_mono_nfchoa_sphexp(x0,Pnm,f,conf)
 %
 %   Input parameters:
 %       x0          - position of the secondary sources / m [nx3]
@@ -13,7 +13,7 @@ function D = driving_function_mono_nfchoa_sphexp(x0, Pnm,f,conf)
 %   Output parameters:
 %       D           - driving function signal [nx1]
 %
-%   DRIVING_FUNCTION_MONO_NFCHOA_SPHEXP(x0,Pnm,f,N,conf) returns NFCHOA
+%   DRIVING_FUNCTION_MONO_NFCHOA_SPHEXP(x0,Pnm,f,conf) returns NFCHOA
 %   driving signals for the given secondary sources, the virtual sound expressed
 %   by regular spherical expansion coefficients and the frequency f.
 %

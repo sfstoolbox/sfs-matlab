@@ -36,13 +36,13 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %     squeezed, so that dimensionality of the simulated sound field P is
 %     decreased by one.
 %     * if DIM is given as [dimmin, dimmax], a linear grid for the
-%     respective dimension with a resolution defined in conf.resolution is 
+%     respective dimension with a resolution defined in conf.resolution is
 %     established
-%     * if DIM is given as n-dimensional array, all other dimensions have
-%     to be given as an n-dimensional arrays of the same size. Each triple of 
-%     X,Y,Z is interpreted as an evaluation point in an customized grid. For
-%     this option, plotting and normalisation is disabled.
-%   
+%     * if DIM is given as n-dimensional array, the other dimensions have
+%     to be given as n-dimensional arrays of the same size or as a single value.
+%     Each triple of X,Y,Z is interpreted as an evaluation point in an
+%     customized grid. For this option, plotting and normalisation is disabled.
+%
 %   To plot the result use plot_sound_field(P,x,y,z).
 %
 %   References:
@@ -89,11 +89,25 @@ nargmax = 8;
 narginchk(nargmin,nargmax);
 
 isargnumeric(X,Y,Z);
-customGrid = numel(X) > 2 || numel(Y) > 2 || numel(Z) > 2;
-if customGrid
-  isargequalsize(X,Y,Z);
-else
-  isargvector(X,Y,Z);
+% unique index encoding which dimension is an nd-array
+customGrid = (numel(X) > 2) + 2*(numel(Y) > 2) + 4*(numel(Z) > 2);
+switch customGrid
+    case 1
+        isargscalar(Y,Z);
+    case 2
+        isargscalar(X,Z);
+    case 3
+        isargequalsize(X,Y); isargscalar(Z);
+    case 4
+        isargscalar(X,Y);
+    case 5
+        isargequalsize(X,Z); isargscalar(Y);
+    case 6
+        isargequalsize(Y,Z); isargscalar(X);
+    case 7
+        isargequalsize(X,Y,Z);
+    otherwise
+        isargvector(X,Y,Z);
 end
 
 isargvector(D);
@@ -120,33 +134,33 @@ showprogress = conf.showprogress;
 %% ===== Computation ====================================================
 
 if customGrid
-  % just copy everything
-  xx = X; yy = Y; zz = Z;
-  x = X;   y = Y;  z = Z;
-  P = zeros(size(X));
+    % just copy everything
+    xx = X; yy = Y; zz = Z;
+    x = X;   y = Y;  z = Z;
+    P = zeros(size(xx));
 else
-  % Create a x-y-z-grid
-  [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
-  % Check what are the active axes to create an empty sound field with the 
-  % correct size
-  [~,x1,x2,x3]  = xyz_axes_selection(x,y,z);
-  % Initialize empty sound field
-  P = squeeze(zeros(length(x3),length(x2),length(x1)));
+    % Create a x-y-z-grid
+    [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
+    % Check what are the active axes to create an empty sound field with the
+    % correct size
+    [~,x1,x2,x3]  = xyz_axes_selection(x,y,z);
+    % Initialize empty sound field
+    P = squeeze(zeros(length(x3),length(x2),length(x1)));
 end
 
 % Integration over secondary source positions
 for ii = 1:size(x0,1)
-
+    
     % progress bar
     if showprogress, progress_bar(ii,size(x0,1)); end
-
+    
     % ====================================================================
     % Secondary source model G(x-x0,omega)
     % This is the model for the secondary sources we apply.
     % The exact function is given by the dimensionality of the problem, e.g. a
     % point source for 3D
     G = greens_function_mono(xx,yy,zz,x0(ii,1:3),src,f,conf);
-
+    
     % ====================================================================
     % Integration
     %              /
@@ -158,12 +172,12 @@ for ii = 1:size(x0,1)
     % example a tapering window for WFS or a weighting of the sources for
     % integration on a sphere.
     P = P + D(ii) .* G .* x0(ii,7);
-
+    
 end
 
 if ~customGrid
-  % === Scale signal (at xref) ===
-  P = norm_sound_field_at_xref(P,x,y,z,conf);
+    % === Scale signal (at xref) ===
+    P = norm_sound_field_at_xref(P,x,y,z,conf);
 end
 
 % return parameter

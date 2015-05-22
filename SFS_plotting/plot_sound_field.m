@@ -167,6 +167,11 @@ if p.usedb
     if usenormalisation
         P_dB = P_dB - max(P_dB(:));
     end
+else
+  if usenormalisation
+    % === Scale signal (at xref) ===
+    P = norm_sound_field_at_xref(P,x,y,z,conf);
+  end
 end
 
 % Plotting

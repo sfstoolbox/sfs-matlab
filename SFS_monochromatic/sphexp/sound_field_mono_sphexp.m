@@ -83,6 +83,6 @@ else
   error('%s: %s is an unknown mode!',upper(mfilename), mode);
 end
 
-P = sound_field_mono_sphbasis(ABnm,fn,Ynm,conf);
+P = sound_field_mono_sphbasis(ABnm,fn,Ynm);
 
 end

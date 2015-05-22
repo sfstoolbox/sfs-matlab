@@ -53,21 +53,37 @@ function [P, x, y, z] = sound_field_mono_nfchoa_sht(X,Y,Z,Dnm,f,conf)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 5;
-nargmax = 7;
+nargmax = 6;
 narginchk(nargmin,nargmax);
 isargvector(Dnm);
 isargsquaredinteger(length(Dnm));
 isargnumeric(X,Y,Z);
+% unique index encoding which dimension is an nd-array
+customGrid = (numel(X) > 2) + 2*(numel(Y) > 2) + 4*(numel(Z) > 2);
+switch customGrid
+  case 1
+    isargscalar(Y,Z);
+  case 2
+    isargscalar(X,Z);
+  case 3
+    isargequalsize(X,Y); isargscalar(Z);
+  case 4
+    isargscalar(X,Y);
+  case 5
+    isargequalsize(X,Z); isargscalar(Y);
+  case 6
+    isargequalsize(Y,Z); isargscalar(X);
+  case 7
+    isargequalsize(X,Y,Z);
+  otherwise
+    isargvector(X,Y,Z);
+end
 isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
 else
     isargstruct(conf);
 end
-if nargin == nargmin
-  xq = [0, 0, 0];
-end  
-isargposition(xq);
 
 %% ===== Configuration ==================================================
 Xc = conf.secondary_sources.center;
@@ -77,9 +93,26 @@ r0 = conf.secondary_sources.size / 2;
 Nse = sqrt(length(Dnm)) - 1;
 
 %% ===== Computation ====================================================
+if customGrid
+  x = X;   y = Y;  z = Z;
+else
+  [X,Y,Z,x,y,z] = xyz_grid(X,Y,Z,conf);
+end
+% find coordinates, which are inside and outside the loudspeaker array
+select = sqrt((X-Xc(1)).^2 + (Y-Xc(2)).^2 + (Z-Xc(3)).^2) <= r0;
 
-Gnm = sphexp_mono_ps([r0, 0, 0], 'R', f, [0,0,0], conf);
+P = zeros(size(X));
+
+% regular expansion for the coordinates inside
+Gnm = sphexp_mono_ps([r0, 0, 0], 'R', Nse, f, [0,0,0], conf);
 Pnm = Gnm .* Dnm;
-[P, x, y, z] = sound_field_mono_sphexp(X,Y,Z, Pnm, 'R', f, Xc,conf);
+P(select) = sound_field_mono_sphexp(X(select),Y(select),Z(select), Pnm, ...
+  'R', f, Xc,conf);
+
+% singular expansion for the coordinates outside
+Gnm = sphexp_mono_ps([r0, 0, 0], 'S', Nse, f, [0,0,0], conf);
+Pnm = Gnm .* Dnm;
+P(~select) = sound_field_mono_sphexp(X(~select),Y(~select),Z(~select), Pnm, ...
+  'S', f, Xc,conf);
 
 end

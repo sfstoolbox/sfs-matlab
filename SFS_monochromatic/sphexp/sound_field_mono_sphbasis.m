@@ -1,8 +1,8 @@
-function P = sound_field_mono_sphbasis(ABnm, jh2n, Ynm,conf)
-%SOUND_FIELD_MONO_BASIS simulates a sound field with cylindrical/spherical
-%basic functions
+function P = sound_field_mono_sphbasis(ABnm, jh2n, Ynm)
+%SOUND_FIELD_MONO_SPHBASIS simulates a sound field with spherical basis 
+%functions
 %
-%   Usage: P = sound_field_mono_sphbasis(AB, jh2n, Y,conf)
+%   Usage: P = sound_field_mono_sphbasis(AB, jh2n, Ynm)
 %
 %   Input parameters:
 %       ABnm        - regular/singular spherical expansion coefficients
@@ -13,9 +13,9 @@ function P = sound_field_mono_sphbasis(ABnm, jh2n, Ynm,conf)
 %   Output parameters:
 %       P           - resulting soundfield
 %
-%   SOUND_FIELD_MONO_SPHBASIS(AB, JH2n, Y,conf)
+%   SOUND_FIELD_MONO_SPHBASIS(ABnm, jh2n, Ynm)
 %
-%   see also: sphbasis_mono_grid
+%   see also: sphbasis_mono_grid sound_field_mono_sphexp
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -51,42 +51,25 @@ function P = sound_field_mono_sphbasis(ABnm, jh2n, Ynm,conf)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;
-nargmax = 4;
+nargmax = 3;
 narginchk(nargmin,nargmax);
 isargvector(ABnm);
-if nargin<nargmax
-  conf = SFS_config;
-else
-  isargstruct(conf);
-end
 isargequallength(ABnm, Ynm);
-L = length(Ynm);
 Nse = length(jh2n) - 1;
-if (L ~= (Nse + 1)^2)
+if (length(Ynm) ~= (Nse + 1)^2)
   error('%s, length(Y) has to be (length(jhsn)+1).^2!',upper(mfilename));
 end
-
-%% ===== Configuration ==================================================
-% Plotting result
-showprogress = conf.showprogress;
-usenormalisation = conf.usenormalisation;
 
 %% ===== Computation ====================================================
 P = zeros(size(jh2n{1}));
 
 % spherical basic functions
 l = 0;
-for n=1:Nse
+for n=0:Nse
   for m=-n:n
-    l=l+1;
-    if showprogress, progress_bar(l,L); end  % progress bar
-    P = P + ABnm(l)*(jh2n{n}.*Ynm{l});
+    l=l+1;    
+    P = P + ABnm(l)*(jh2n{n+1}.*Ynm{l});
   end
 end
 
-if usenormalisation
-  P = P./max(abs(P(:)));
 end
-
-end
-

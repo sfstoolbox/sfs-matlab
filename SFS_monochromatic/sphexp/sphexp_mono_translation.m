@@ -86,7 +86,6 @@ end
 
 %% ===== Configuration ==================================================
 showprogress = conf.showprogress;
-Nse = conf.scattering.Nse;
 dimension = conf.dimension;
 
 %% ===== Variables ======================================================

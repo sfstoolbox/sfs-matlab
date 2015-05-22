@@ -1,7 +1,7 @@
-function Bnm = sphexp_mono_scatter(Anm, R, sigma, f)
+function Bnm = sphexp_mono_scatter(Anm, R, sigma, f, conf)
 %Singular Spherical Expansion of sphere-scattered field
 %
-%   Usage: Bl = sphexpS_mono_scatter(Al, R, sigma, f)
+%   Usage: Bl = sphexpS_mono_scatter(Al, R, sigma, f, conf)
 %
 %   Input parameters:
 %       Al          - regular spherical expansion of incident field                     
@@ -13,10 +13,11 @@ function Bnm = sphexp_mono_scatter(Anm, R, sigma, f)
 %       Bl          - singular spherical expansion coefficients of
 %                     scattered field
 %
-%   SPHEXPS_MONO_SCATTER(xs,f,xq,conf) computes the singular spherical expansion
-%   coefficients of a field resulting from a scattering of an incident field 
-%   at a sphere. Incident field is descriped by regular expansion coefficients 
-%   (expansion center is expected to be at the center of the sphere xq):
+%   SPHEXPS_MONO_SCATTER(Anm, R, sigma, f, conf) computes the singular spherical 
+%   expansion coefficients of a field resulting from a scattering of an incident
+%   field at a sphere. Incident field is descriped by regular expansion 
+%   coefficients (expansion center is expected to be at the center of the sphere
+%   xq):
 %
 %               \~~ oo  \~~   n   m  m
 %   p   (x,f) =  >       >       A  R  (x-x ) 
@@ -86,13 +87,18 @@ function Bnm = sphexp_mono_scatter(Anm, R, sigma, f)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 4;
-nargmax = 4;
+nargmax = 5;
 narginchk(nargmin,nargmax);
 isargvector(Anm);
 L = length(Anm);
 isargsquaredinteger(L);
 isargscalar(sigma);
 isargpositivescalar(f,R);
+if nargin<nargmax
+  conf = SFS_config;
+else
+  isargstruct(conf);
+end
 
 %% ===== Variables ======================================================
 k = 2*pi*f/conf.c;

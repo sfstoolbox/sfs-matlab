@@ -1,37 +1,42 @@
-function Al = cylexpR_mono_ls(xs,f,xq,conf)
-%Regular Cylindrical Expansion of Line Source
+function ABm = circexp_mono_ls(xs, mode, Nce, f, xq, conf)
+%Regular/Singular Cylindrical Expansion of Line Source
 %
-%   Usage: Al = cylexpR_mono_pw(xs,f,xq,conf)
+%   Usage: ABm = circexp_mono_ls(xs, mode, Nce, f, xq, conf)
 %
 %   Input parameters:
-%       xs          - position of line source 
+%       xs          - position of line source
+%       mode        - 'R' for regular, 'S' for singular
+%       Nse         - maximum order of spherical basis functions
 %       f           - frequency
 %       xq          - optional expansion center
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       Al          - regular cylindrical Expansion Coefficients
+%       ABm         - regular cylindrical Expansion Coefficients
 %
-%   CYLEXPR_MONO_PW(nk,xq,f,conf) computes the regular cylindrical
+%   circexp_mono_ls(nk,xq,f,conf) computes the regular cylindrical
 %   expansion coefficients for a line source. The expansion will be done 
 %   around the expansion coordinate xq:
 %
-%              \~~  oo       
-%   p  (x,f) =  >        A  R  (x-x ) 
-%    pw        /__ n=-oo  n  n     q
+%   Regular Expansion:
+%                \~~ oo        
+%   p    (x,f) =  >         A  R  (x-x ) 
+%    ls,R        /__ n=-oo   n  n     q
 %
-%   with the cylyndrical expansion coefficients:
+%   with the expansion coefficients:
+%    m   -i           
+%   A  = ---  S (x -x ) 
+%    n    4    n  s  q  
 %
-%             n
-%   A  = 4pi i  exp  (-i*n*phi  )
-%    n                        pw
+%   Singular Expansion:
+%                \~~ oo      m  
+%   p    (x,f) =  >         B  S  (x-x ) 
+%    ls,R        /__ n=-oo   n  n     q
 %
-%   References:
-%       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
-%                                    Helmholtz Equation in three 
-%                                    Dimensions", ELSEVIER
-%
-%   see also: eval_cylbasis_mono
+%   with the expansion coefficients):
+%    m   -i           
+%   A  = ---  R (x -x ) 
+%    n    4    n  s  q
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -66,51 +71,50 @@ function Al = cylexpR_mono_ls(xs,f,xq,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
-nargmax = 4;
+nargmin = 4;
+nargmax = 6;
 narginchk(nargmin,nargmax);
 isargposition(xs);
-isargpositivescalar(f);
+isargpositivescalar(f, Nce);
 if nargin<nargmax
     conf = SFS_config;
 else
     isargstruct(conf);
 end
 if nargin == nargmin
-  xq = [0, 0, 0];
+    xq = [0,0,0];
 else
   isargposition(xq);
 end
 
 %% ===== Configuration ==================================================
-showprogress = conf.showprogress;
-Nce = conf.scattering.Nce;
-timereverse = conf.scattering.timereverse;
-xref = conf.xref;
 c = conf.c;
 
-%% ===== Computation ====================================================
+%% ===== Variables ======================================================
 % convert (xs-xq) into cylindrical coordinates
 r = sqrt((xs(1)-xq(1)).^2 + (xs(2)-xq(2)).^2);
 phi = atan2(xs(2)-xq(2),xs(1)-xq(1));
 
 % frequency
-k = 2.*pi.*f./conf.c;
+k = 2.*pi.*f./c;
 kr = k.*r;
 
-if (timereverse)
-  H = @(x) conj(1j/4*besselh(x,2,kr));
+% select suitable basis function
+if strcmp('R', mode)
+  circbasis = @(nu,z) besselh(nu,2,z);
+elseif strcmp('S', mode)
+  circbasis = @besselj;
 else
-  H = @(x) 1j/4*besselh(x,2,kr);
+  error('unknown mode:');
 end
 
+%% ===== Computation ====================================================
 L = 2*Nce+1;
-Al = zeros(L,1);
+ABm = zeros(L,1);
 l = 0;
 for n=-Nce:Nce
   l = l+1;
-  Al(l) = H(n).*exp(-1j*n*phi);
-  if showprogress, progress_bar(l,L); end  % progress bar
+  ABm(l) = -1j/4*circbasis(n,kr).*exp(-1j*n*phi);
 end
 
 end

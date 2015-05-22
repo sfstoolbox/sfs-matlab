@@ -1,10 +1,10 @@
-function Anm = sphexp_mono_ps(xs, mode, Nse, f, xq, conf)
-%Regular/Singular Spherical Expansion of Point Source
+function Anm = sphexp_mono_ls(xs, mode, Nse, f, xq, conf)
+%Regular/Singular Spherical Expansion of Line Source
 %
-%   Usage: Anm = sphexp_mono_ps(xs, mode, Nse, f, xq, conf)
+%   Usage: Anm = sphexp_mono_ls(xs, mode, Nse, f, xq, conf)
 %
 %   Input parameters:
-%       xs          - position of point source
+%       xs          - position of line source
 %       mode        - 'R' for regular, 'S' for singular
 %       Nse         - maximum order of spherical basis functions
 %       f           - frequency
@@ -12,7 +12,7 @@ function Anm = sphexp_mono_ps(xs, mode, Nse, f, xq, conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       Anm         - regular Spherical Expansion Coefficients
+%       Al          - regular Spherical Expansion Coefficients
 %
 %   SPHEXP_MONO_PS(xs, mode, f, Nse, xq, conf) computes the regular/singular 
 %   Spherical Expansion Coefficients for a point source at xs. The expansion 
@@ -101,42 +101,15 @@ else
   isargposition(xq);
 end
 
-%% ===== Configuration ==================================================
-c = conf.c;
-
-%% ===== Variables ======================================================
-% convert (xs-xq) into spherical coordinates
-r = sqrt(sum((xs-xq).^2));
-phi = atan2(xs(2)-xq(2),xs(1)-xq(1));
-theta = asin((xs(3)-xq(3))/r);
-
-% frequency
-k = 2.*pi.*f./c;
-kr = k.*r;
-
+%% ===== Computation ====================================================
 % select suitable basis function
 if strcmp('R', mode)
-  sphbasis = @(nu,z) sphbesselh(nu,2,z);
+  Am = circexp_mono_ls(xs, mode, Nse, f, xq, conf);
+  Anm = sphexp_convert_circexp(Am);
 elseif strcmp('S', mode)
-  sphbasis = @sphbesselj;
+  error('%s: %s, mode not yet implemented', upper(mfilename), mode);
 else
-  error('unknown mode:');
-end
-
-%% ===== Computation ====================================================
-Anm = zeros( (Nse + 1).^2 ,1);
-for n=0:Nse
-  cn = -1j*k*sphbasis(n,kr);
-  for m=0:n    
-    % spherical harmonics: conj(Y_n^m) = Y_n^-m (Gumerov2004, eq. 2.1.59)
-    Ynm = sphharmonics(n,m, theta, phi);
-    % -m
-    v = sphexp_index(-m,n);  
-    Anm(v) = cn.*Ynm;
-    % +m
-    v = sphexp_index(m,n); 
-    Anm(v) = cn.*conj(Ynm);
-  end
+  error('%s: %s, unknown mode', upper(mfilename), mode);
 end
 
 end

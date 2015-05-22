@@ -67,7 +67,6 @@ function varargout = sound_field_mono_sdm(X,Y,Z,xs,src,f,conf)
 nargmin = 6;
 nargmax = 7;
 narginchk(nargmin,nargmax);
-isargvector(X,Y,Z);
 isargxs(xs);
 isargpositivescalar(f);
 isargchar(src);

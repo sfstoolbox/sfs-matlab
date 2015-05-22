@@ -88,6 +88,7 @@ end
 %% ===== Configuration ==================================================
 Xc = conf.secondary_sources.center;
 r0 = conf.secondary_sources.size / 2;
+dimension = conf.dimension;
 
 %% ===== Variables ======================================================
 Nse = sqrt(length(Dnm)) - 1;
@@ -101,18 +102,45 @@ end
 % find coordinates, which are inside and outside the loudspeaker array
 select = sqrt((X-Xc(1)).^2 + (Y-Xc(2)).^2 + (Z-Xc(3)).^2) <= r0;
 
+if strcmp('2D',dimension)
+  % === 2-Dimensional ==================================================
+  
+  error('%s: 2D not supported.',upper(mfilename));
+
+elseif strcmp('2.5D',dimension)
+  % === 2.5-Dimensional ================================================
+  
+  % regular expansion for the coordinates inside
+  GnmR = 2*pi*r0*sphexp_mono_ps([r0, 0, 0], 'R', Nse, f, [0,0,0], conf);
+
+  % singular expansion for the coordinates outside
+  GnmS = 2*pi*r0*sphexp_mono_ps([r0, 0, 0], 'S', Nse, f, [0,0,0], conf);
+  
+elseif strcmp('3D',dimension)
+  % === 3-Dimensional ==================================================
+  
+  % regular expansion for the coordinates inside
+  GnmR = sphexp_mono_ps([0, 0, r0], 'R', Nse, f, [0,0,0], conf);
+
+  % singular expansion for the coordinates outside
+  GnmS = sphexp_mono_ps([0, 0, r0], 'S', Nse, f, [0,0,0], conf);
+  
+  for n=0:Nse
+    v = sphexp_index(-n:n,n);
+    w = sphexp_index(0,n);
+    GnmR(v) = 2*pi*r0^2*sqrt(4*pi / (2*n+1))*GnmR(w);
+    GnmS(v) = 2*pi*r0^2*sqrt(4*pi / (2*n+1))*GnmS(w);
+  end
+else
+  error('%s: the dimension %s is unknown.',upper(mfilename),dimension);
+end
+
 P = zeros(size(X));
 
-% regular expansion for the coordinates inside
-Gnm = sphexp_mono_ps([r0, 0, 0], 'R', Nse, f, [0,0,0], conf);
-Pnm = Gnm .* Dnm;
-P(select) = sound_field_mono_sphexp(X(select),Y(select),Z(select), Pnm, ...
+PnmR = GnmR .* Dnm;
+P(select) = sound_field_mono_sphexp(X(select),Y(select),Z(select), PnmR, ...
   'R', f, Xc,conf);
-
-% singular expansion for the coordinates outside
-Gnm = sphexp_mono_ps([r0, 0, 0], 'S', Nse, f, [0,0,0], conf);
-Pnm = Gnm .* Dnm;
-P(~select) = sound_field_mono_sphexp(X(~select),Y(~select),Z(~select), Pnm, ...
-  'S', f, Xc,conf);
-
+PnmS = GnmS .* Dnm;
+P(~select) = sound_field_mono_sphexp(X(~select),Y(~select),Z(~select), ...
+  PnmS, 'S', f, Xc,conf);
 end

@@ -90,6 +90,9 @@ krref = k.*rref;
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
+% initialize empty driving signal
+Dnm = zeros(size(Pnm));
+
 if strcmp('2D',dimension)
   % === 2-Dimensional ==================================================
   
@@ -105,8 +108,6 @@ elseif strcmp('2.5D',dimension)
   % === 2.5-Dimensional ================================================
   
   if strcmp('default',driving_functions)
-    % initialize empty driving signal
-    Dnm = zeros(size(Pnm));
     
     if (rref == 0)
       % --- Xref == Xc -------------------------------------------------
@@ -176,8 +177,15 @@ elseif strcmp('3D',dimension)
   % === 3-Dimensional ==================================================
 
   if strcmp('default',driving_functions)
-    % --- SFS Toolbox --------------------------------------------------
-    to_be_implemented;
+    
+    for n=0:Nse
+      Gn0 = (-1i*k) .* sphbesselh(n,2,kr0) .* sphharmonics(n, 0, pi/2, 0); 
+  
+      v = sphexp_index(-n:n, n);        
+      Dnm(v) = sqrt( (2*n+1) ./ (4*pi) ) .* Pnm(v) ./ Gn0;
+    end    
+    
+    Dnm = Dnm./(2*pi*r0.^2);
   else
     error('%s: %s, this type of driving function is not implemented ', ...
       upper(mfilename), driving_functions);

@@ -1,32 +1,32 @@
-function [Jn, H2n, Ynm]  = sphbasis_mono(r,theta,phi,k,conf)
+function [jn, h2n, Ynm] = sphbasis_mono(r,theta,phi,Nse,k,conf)
 %Evaluate spherical basis functions for given input arguments
 %
-%   Usage: [Jn, H2n, Ynm]  = sphbasis_mono(r,theta,phi,k,conf)
+%   Usage: [jn, h2n, Ynm] = sphbasis_mono(r,theta,phi,Nse,k,conf)
 %
 %   Input parameters:
-%       r           - distance from origin
-%       theta       - elevation angle in rad
-%       phi         - azimuth angle in rad
+%       r           - distance from origin / m [n1 x n2 x ...]
+%       theta       - elevation angle / rad [n1 x n2 x ...]
+%       phi         - azimuth angle / rad [n1 x n2 x ...]
+%       Nse         - maximum order of spherical basis functions
 %       k           - wave number
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       Jn          - cell array of spherical bessel functions
-%       H2n         - cell array of spherical hankel functions of 2nd kind
+%       jn          - cell array of spherical bessel functions
+%       h2n         - cell array of spherical hankel functions of 2nd kind
 %       Ynm         - cell array of spherical harmonics
 %
 %   SPHBASIS_MONO(r,theta,phi,k,conf) computes spherical basis functions for
 %   the given arguments r, theta and phi. r, theta and phi can be of arbitrary
 %   (but same) size. Output will be stored in cell arrays (one cell entry for 
-%   each order) of length conf.scattering.Nse+1 for Jn and H2n. For Ynm the
-%   lenght is (conf.scattering.Nse+1).^2. The coefficients of Ynm are stored 
-%   with the linear index l resulting from the order m and the degree n of 
-%   the spherical harmonics: 
+%   each order) of length Nse+1 for jn and h2n. For Ynm the lenght is 
+%   (Nse+1).^2. The coefficients of Ynm are stored with the linear index l 
+%   resulting from the order m and the degree n of the spherical harmonics: 
 %         m                 2
 %   Y  = Y  ; with l = (n+1)  - (n - m)
 %    l    n
 %
-%   see also: sphbasis_mono_XYZgrid sphharmonics sphbesselj sphbesselh
+%   see also: sphbasis_mono_grid sphharmonics sphbesselj sphbesselh
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -61,10 +61,11 @@ function [Jn, H2n, Ynm]  = sphbasis_mono(r,theta,phi,k,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
+nargmin = 5;
+nargmax = 6;
 narginchk(nargmin,nargmax);
-isargequalsize(r,phi);
+isargpositivescalar(Nse);
+isargequalsize(r,phi,theta);
 isargscalar(k);
 if nargin<nargmax
     conf = SFS_config;
@@ -73,8 +74,6 @@ else
 end
 
 %% ===== Configuration ==================================================
-% Plotting result
-Nse = conf.scattering.Nse;
 showprogress = conf.showprogress;
 
 %% ===== Computation ====================================================
@@ -83,13 +82,13 @@ kr = k.*r;  % argument of bessel functions
 NJ = Nse + 1;
 L = (NJ).^2;
 
-Jn = cell(NJ,1);
-H2n = cell(NJ,1);
+jn = cell(NJ,1);
+h2n = cell(NJ,1);
 Ynm = cell(L,1);
 
 for n=0:Nse
-  Jn{n+1} = sphbesselj(n,kr);
-  H2n{n+1} = Jn{n+1} - 1j*sphbessely(n,kr);  
+  jn{n+1} = sphbesselj(n,kr);
+  h2n{n+1} = jn{n+1} - 1j*sphbessely(n,kr);  
   for m=0:n
     l_plus = (n + 1).^2 - (n - m);
     l_minus = (n + 1).^2 - (n + m);

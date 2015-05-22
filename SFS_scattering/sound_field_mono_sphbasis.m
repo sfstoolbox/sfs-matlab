@@ -1,25 +1,21 @@
-function [P, x, y, z] = sound_field_mono_sphexp(X,Y,Z,ABnm,mode,f,xq,conf)
-%SOUND_FIELD_MONO_SPHEXPR simulates a sound field given with 
-%regular/singular spherical expansion coefficients
+function P = sound_field_mono_sphbasis(ABnm, jh2n, Ynm,conf)
+%SOUND_FIELD_MONO_BASIS simulates a sound field with cylindrical/spherical
+%basic functions
 %
-%   Usage: [P, x, y, z] = sound_field_mono_sphexp(X,Y,Z,Al,f,x0,conf)
+%   Usage: P = sound_field_mono_sphbasis(AB, jh2n, Y,conf)
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax] or nD-array
-%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
-%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       ABnm        - regular/singular spherical expansion coefficients
-%       mode        - 'R' for regular, 'S' for singular
-%       f           - frequency in Hz
-%       xq          - optional expansion center coordinates, default: [0, 0, 0]
+%       jh2n        - cell array of spherical bessel/hankel(2nd kind) functions
+%       Ynm         - cell array of spherical harmonics
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - resulting soundfield
 %
-%   SOUND_FIELD_MONO_SPHEXPR(X,Y,Z,ABnm,mode,f,xq,conf)
+%   SOUND_FIELD_MONO_SPHBASIS(AB, JH2n, Y,conf)
 %
-%   see also: sphbasis_mono_grid, sound_field_mono_sphbasis
+%   see also: sphbasis_mono_grid
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -54,35 +50,43 @@ function [P, x, y, z] = sound_field_mono_sphexp(X,Y,Z,ABnm,mode,f,xq,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 8;
+nargmin = 3;
+nargmax = 4;
 narginchk(nargmin,nargmax);
 isargvector(ABnm);
-isargsquaredinteger(length(ABnm));
-isargnumeric(X,Y,Z);
-isargpositivescalar(f);
 if nargin<nargmax
-    conf = SFS_config;
+  conf = SFS_config;
 else
-    isargstruct(conf);
+  isargstruct(conf);
 end
-if nargin == nargmin
-  xq = [0, 0, 0];
-end  
-isargposition(xq);
+isargequallength(ABnm, Ynm);
+L = length(Ynm);
+Nse = length(jh2n) - 1;
+if (L ~= (Nse + 1)^2)
+  error('%s, length(Y) has to be (length(jhsn)+1).^2!',upper(mfilename));
+end
 
-%% ===== Variables ======================================================
-Nse = sqrt(length(ABnm)) - 1;
+%% ===== Configuration ==================================================
+% Plotting result
+showprogress = conf.showprogress;
+usenormalisation = conf.usenormalisation;
 
 %% ===== Computation ====================================================
-if strcmp('R', mode)
-  [fn, ~, Ynm, x, y, z] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf);
-elseif strcmp('S', mode)
-  [~, fn, Ynm, x, y, z] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf);
-else
-  error('%s: %s is an unknown mode!',upper(mfilename), mode);
+P = zeros(size(jh2n{1}));
+
+% spherical basic functions
+l = 0;
+for n=1:Nse
+  for m=-n:n
+    l=l+1;
+    if showprogress, progress_bar(l,L); end  % progress bar
+    P = P + ABnm(l)*(jh2n{n}.*Ynm{l});
+  end
 end
 
-P = sound_field_mono_sphbasis(ABnm,fn,Ynm,conf);
+if usenormalisation
+  P = P./max(abs(P(:)));
+end
 
 end
+

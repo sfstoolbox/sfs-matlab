@@ -1,10 +1,11 @@
-function Anm = sphexp_mono_pw(npw, f, xq, conf)
+function Anm = sphexp_mono_pw(npw, Nse, f, xq, conf)
 %Regular Spherical Expansion of Plane Wave
 %
-%   Usage: Al = sphexpR_mono_pw(npw,f,xq,conf)
+%   Usage: Al = sphexpR_mono_pw(npw,Nse,f,xq,conf)
 %
 %   Input parameters:
-%       npw         - unit vector propagation direction of plane wave 
+%       npw         - unit vector propagation direction of plane wave
+%       Nse         - maximum order of spherical basis functions
 %       f           - frequency
 %       xq          - optional expansion coordinate 
 %       conf        - optional configuration struct (see SFS_config)
@@ -12,7 +13,7 @@ function Anm = sphexp_mono_pw(npw, f, xq, conf)
 %   Output parameters:
 %       Al          - regular Spherical Expansion Coefficients
 %
-%   SPHEXP_MONO_PW(npw,f,xq,conf) computes the regular Spherical Expansion
+%   SPHEXP_MONO_PW(npw,Nse,f,xq,conf) computes the regular Spherical Expansion
 %   Coefficients for a plane wave. The expansion will be done around the
 %   expansion coordinate xq:
 %
@@ -73,8 +74,8 @@ function Anm = sphexp_mono_pw(npw, f, xq, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
-nargmax = 4;
+nargmin = 2;
+nargmax = 5;
 narginchk(nargmin,nargmax);
 isargposition(npw);
 if nargin<nargmax
@@ -82,6 +83,7 @@ if nargin<nargmax
 else
     isargstruct(conf);
 end
+isargpositivescalar(Nse);
 if nargin == 1
   f = 0;
 else
@@ -94,8 +96,6 @@ else
 end
 
 %% ===== Configuration ==================================================
-showprogress = conf.showprogress;
-Nse = conf.scattering.Nse;
 c = conf.c;
 
 %% ===== Computation ====================================================
@@ -106,8 +106,7 @@ theta = asin(npw(3));
 % phase shift due to expansion coordinate
 phase = exp(-1j*2*pi*f/c*npw*xq.');
 
-L = (Nse + 1).^2;
-Anm = zeros(L,1);
+Anm = zeros((Nse + 1).^2,1);
 for n=0:Nse
   cn = 4*pi*(1j)^(-n);
   for m=0:n
@@ -120,7 +119,6 @@ for n=0:Nse
     v = sphexp_index(m,n);
     Anm(v) = cn.*conj(Ynm);
   end
-  if showprogress, progress_bar(v,L); end % progress bar
 end
 
 Anm = Anm*phase;

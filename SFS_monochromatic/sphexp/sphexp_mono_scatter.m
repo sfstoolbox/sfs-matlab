@@ -1,14 +1,13 @@
-function Bnm = sphexp_mono_scatter(Anm, R, sigma, f, conf)
+function Bnm = sphexp_mono_scatter(Anm, R, sigma, f)
 %Singular Spherical Expansion of sphere-scattered field
 %
-%   Usage: Bl = sphexpS_mono_scatter(Al, R, sigma, f, conf)
+%   Usage: Bl = sphexpS_mono_scatter(Al, R, sigma, f)
 %
 %   Input parameters:
 %       Al          - regular spherical expansion of incident field                     
 %       R           - radius of sphere
 %       sigma       - admittance of sphere (from 0(sound soft) to inf(sound hard))
 %       f           - frequency in Hz
-%       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       Bl          - singular spherical expansion coefficients of
@@ -87,27 +86,17 @@ function Bnm = sphexp_mono_scatter(Anm, R, sigma, f, conf)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 4;
-nargmax = 5;
+nargmax = 4;
 narginchk(nargmin,nargmax);
 isargvector(Anm);
+L = length(Anm);
+isargsquaredinteger(L);
 isargscalar(sigma);
 isargpositivescalar(f,R);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
-
-%% ===== Configuration ==================================================
-showprogress = conf.showprogress;
-Nse = conf.scattering.Nse;
 
 %% ===== Variables ======================================================
 k = 2*pi*f/conf.c;
 kR = k.*R;
-
-L = (Nse + 1).^2;
-Bnm = zeros(L,1);
 
 %% ===== Computation ====================================================
 
@@ -120,13 +109,12 @@ else
     ./(k.*sphbesselh_derived(x,2,kR)+sigma.*sphbesselh(x,2,kR));
 end
 
-for n=0:Nse  
+Bnm = zeros(L,1);
+for n=0:(sqrt(L) - 1) 
   fac = T(n);
   
   v = sphexp_index(-n:n,n);
   Bnm(v) = fac.*Anm(v);
-
-  if showprogress, progress_bar(v(end),L); end % progress bar
 end
 
 end

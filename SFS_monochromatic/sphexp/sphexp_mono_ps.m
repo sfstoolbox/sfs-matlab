@@ -1,19 +1,20 @@
-function Anm = sphexp_mono_ps(xs, mode, f, xq, conf)
+function Anm = sphexp_mono_ps(xs, mode, Nse, f, xq, conf)
 %Regular/Singular Spherical Expansion of Point Source
 %
-%   Usage: Al = sphexpR_mono_ps(xs,f,xq,conf)
+%   Usage: Al = sphexpR_mono_ps(xs,f,Nse,xq,conf)
 %
 %   Input parameters:
 %       xs          - position of point source
 %       mode        - 'R' for regular, 'S' for singular
 %       f           - frequency
+%       Nse         - maximum order of spherical basis functions
 %       xq          - optional expansion center coordinate 
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       Al          - regular Spherical Expansion Coefficients
 %
-%   SPHEXP_MONO_PS(xs, mode, f, xq, conf) computes the regular/singular 
+%   SPHEXP_MONO_PS(xs, mode, f, Nse, xq, conf) computes the regular/singular 
 %   Spherical Expansion Coefficients for a point source at xs. The expansion 
 %   will be done around the expansion coordinate xq:
 %
@@ -84,11 +85,11 @@ function Anm = sphexp_mono_ps(xs, mode, f, xq, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
-nargmax = 5;
+nargmin = 4;
+nargmax = 6;
 narginchk(nargmin,nargmax);
 isargposition(xs);
-isargpositivescalar(f);
+isargpositivescalar(f, Nse);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -96,12 +97,12 @@ else
 end
 if nargin == nargmin
     xq = [0,0,0];
+else
+  isargposition(xq);
 end
-isargposition(xq);
+
 
 %% ===== Configuration ==================================================
-showprogress = conf.showprogress;
-Nse = conf.scattering.Nse;
 c = conf.c;
 
 %% ===== Variables ======================================================
@@ -124,8 +125,7 @@ else
 end
 
 %% ===== Computation ====================================================
-L = (Nse + 1).^2;
-Anm = zeros(L,1);
+Anm = zeros( (Nse + 1).^2 ,1);
 for n=0:Nse
   cn = -1j*k*sphbasis(n,kr);
   for m=0:n    
@@ -138,7 +138,6 @@ for n=0:Nse
     v = sphexp_index(m,n); 
     Anm(v) = cn.*conj(Ynm);
   end
-  if showprogress, progress_bar(v,L); end % progress bar
 end
 
 end

@@ -46,17 +46,12 @@ nargmin = 1;
 nargmax = 1;
 narginchk(nargmin,nargmax);
 isargvector(ABnm);
-
-%% ===== Variables ======================================================
-Nse = sqrt(length(ABnm)) - 1;
-isargpositivescalar(Nse);
-if mod(Nse,1) ~= 0
-  error('%s: Length of Array must be square of an integer');
-end
+L = length(ABnm);
+isargsquaredinteger(L);
 
 %% ===== Computation ====================================================
 
-for n=0:Nse 
+for n=0:(sqrt(L)-1)
   v = sphexp_index(-n:n,n);  
   ABnm(v) = conj(sphexp_access(ABnm,n:-1:-n,n));
 end

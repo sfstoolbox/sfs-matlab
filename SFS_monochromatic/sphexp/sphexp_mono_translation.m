@@ -1,7 +1,7 @@
-function [EF, EFm] = sphexp_mono_translation(t, mode, f, conf)
+function [EF, EFm] = sphexp_mono_translation(t, mode, Nse, f, conf)
 % Spherical translation coefficients (multipole re-expansion)
 %
-%   Usage: [EF, EFm] = sphexp_mono_translation(t, mode, f, conf)
+%   Usage: [EF, EFm] = sphexp_mono_translation(t, mode, Nse, f, conf)
 %
 %   Input parameters:
 %       t           - translatory shift [1x3] / m                    
@@ -72,12 +72,12 @@ function [EF, EFm] = sphexp_mono_translation(t, mode, f, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
-nargmax = 4;
+nargmin = 4;
+nargmax = 5;
 narginchk(nargmin,nargmax);
 isargposition(t);
 isargchar(mode);
-isargpositivescalar(f);
+isargpositivescalar(f, Nse);
 if nargin<nargmax
   conf = SFS_config;
 else

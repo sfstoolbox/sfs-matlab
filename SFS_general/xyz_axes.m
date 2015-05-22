@@ -14,7 +14,7 @@ function [x,y,z] = xyz_axes(X,Y,Z,conf)
 %
 %   XYZ_AXES(X,Y,Z,conf) creates the x-, y-, and -z-axis for the listening area.
 %
-%   see also: xyz_grid, xyz_axes_selection
+%   See also: xyz_grid, xyz_axes_selection
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -66,7 +66,7 @@ resolution = conf.resolution;
 
 
 %% ===== Computation =====================================================
-% creating x-, y-, and z-axis
+% Creating x-, y-, and z-axis
 x=linspace(X(1),X(2),resolution)';
 y=linspace(Y(1),Y(2),resolution)';
 z=linspace(Z(1),Z(2),resolution)';

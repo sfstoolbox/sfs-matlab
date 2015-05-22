@@ -21,7 +21,7 @@ function movie_sound_field_mono_wfs(X,Y,Z,xs,src,f,outfile,conf)
 %   movie of simulations of a sound field of the given source positioned at xs
 %   using a WFS driving function in the temporal domain with different phase.
 %
-%   see also: sound_field_mono_wfs, plot_sound_field
+%   See also: sound_field_mono_wfs, plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -72,7 +72,6 @@ end
 
 
 %% ===== Configuration ==================================================
-
 % Plotting
 useplot = conf.plot.useplot;
 % Temporary dir

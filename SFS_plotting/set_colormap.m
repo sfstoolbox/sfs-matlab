@@ -13,7 +13,7 @@ function set_colormap(map)
 %   three column matrix containing the R,G,B values between 0 and 1 or it can
 %   be a string to choose from a defined set of available maps.
 %
-%   see also: set_colorbar, plot_wavefield
+%   See also: set_colorbar, plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

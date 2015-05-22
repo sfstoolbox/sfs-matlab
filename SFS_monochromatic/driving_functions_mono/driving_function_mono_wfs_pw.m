@@ -22,7 +22,7 @@ function D = driving_function_mono_wfs_pw(x0,nx0,nk,f,conf)
 %       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
 %       PhD thesis, TU Berlin
 %
-%   see also: driving_function_mono_wfs, driving_function_imp_wfs_ps
+%   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -80,14 +80,14 @@ driving_functions = conf.driving_functions;
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
-% frequency
+% Frequency
 omega = 2*pi*f;
 
 
 if strcmp('2D',dimension) || strcmp('3D',dimension)
-    
+
     % === 2- or 3-Dimensional ============================================
-    
+
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % D using a plane wave as source model
@@ -96,7 +96,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % D(x0,w) =  2 --- nk nx0  e^(-i w/c nk x0)
         %               c
         %
-        % see Wierstorf (2014), p.25 (2.43)
+        % See Wierstorf (2014), p.25 (2.43)
         %
         D = -2*1i*omega/c .* vector_product(nk,nx0,2) .*  ...
             exp(-1i*omega/c.*vector_product(nk,x0,2));
@@ -112,9 +112,9 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
 
 
 elseif strcmp('2.5D',dimension)
-    
+
     % === 2.5-Dimensional ================================================
-    
+
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
@@ -126,12 +126,12 @@ elseif strcmp('2.5D',dimension)
         g0 = sqrt(2*pi*vector_norm(xref-x0,2));
         %
         % D_2.5D using a plane wave as source model
-        %                                ___
+        %                               ___
         %                              | w |
         % D_2.5D(x0,w) = 2 g0 nk nx0 _ |---  e^(-i w/c nk x0)
         %                             \|i c
         %
-        % see Wierstorf (2014), p.25 (2.44)
+        % See Wierstorf (2014), p.25 (2.44)
         %
         D = -2*g0 .* vector_product(nk,nx0,2) .* sqrt(omega/(1i*c)) .* ...
             exp(-1i*omega/c.*vector_product(nk,x0,2));

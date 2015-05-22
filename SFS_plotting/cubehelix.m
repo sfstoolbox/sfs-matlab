@@ -1,15 +1,36 @@
-function isargpositivescalar(varargin)
-%ISARGPOSITIVESCALAR tests if the given arg is a positive scalar
+function map = cubehelix(nlev,start,rots,hue,gamma)
+%CUBEHELIX returns the cubehelix colormap
 %
-%   Usage: isargpositivescalar(arg1,arg2,...)
+%   Usage: cubehelix([[n],start,rots,hue,gamma])
 %
-%   Input options:
-%       args        - list of args
+%   Input parameters:
+%       n     - optional length of colormap (default uses the figure default
+%               length)
+%       start - colour to begin at (1=red, 2=green, 3=red; e.g. 0.5=purple),
+%               default: 0.5
+%       rots  - number of rotations, default: -1.5
+%       hue   - hue intensity scaling, default: 1.2
+%       gamma - intensity correction, default: 1.0
 %
-%   ISARGPOSITIVESCALAR(args) tests if all given args are a positive
-%   scalar and returns an error otherwise.
+%   Output parameters:
+%       map   - colormap [n 3]
 %
-%   See also: isargscalar, isargnegativescalar
+%   CUBEHELIX(nlev,start,rots,hue,gamma) calculates a "cube helix" color map.
+%   The colors are a tapered helix around the diagonal of the RGB colour cube,
+%   from black [0,0,0] to white [1,1,1]. Deviations away from the diagonal vary
+%   quadratically, increasing from zero at black to a maximum and then
+%   decreasing to zero at white, all the time rotating in color.
+%   The routine returns an n-by-3 matrix.
+%
+%   For example, to reset the colormap of the current figure:
+%       colormap(cubehelix)
+%
+%   See arXiv:1108.5083 and https://www.mrao.cam.ac.uk/~dag/CUBEHELIX/ for more
+%   details.
+%
+%   Original written by Dave Green and Philip Graff
+%
+%   See also: chromajs, moreland, plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -44,9 +65,34 @@ function isargpositivescalar(varargin)
 %*****************************************************************************
 
 
-%% ===== Checking for scalar =============================================
-for ii = 1:nargin
-    if ~isnumeric(varargin{ii}) || ~isscalar(varargin{ii}) || varargin{ii}<0
-        error('%s need to be a positive scalar.',inputname(ii));
+%% ===== Checking input parameters =======================================
+nargmin = 0;
+nargmax = 5;
+narginchk(nargmin,nargmax);
+if nargin==0
+    n = size(get(gcf,'colormap'),1);
+end
+if nargin==0 | nargin==1
+    start = 0.5;
+    rots = -1.5;
+    hue = 1.2;
+    gamma = 1.0;
+else
+    error('%s: you have to use 0, 1, or 5 input args.',upper(mfilename));
+end
+map = zeros(n,3);
+A = [-0.14861,1.78277;-0.29227,-0.90649;1.97294,0];
+for ii=1:n
+    fract = (ii-1)/(n-1);
+    angle = 2*pi*(start/3+1+rots*fract);
+    fract = fract^gamma;
+    amp = hue*fract*(1-fract)/2;
+    map(ii,:) = fract+amp*(A*[cos(angle);sin(angle)])';
+    for jj=1:3
+        if map(ii,jj)<0
+            map(ii,jj) = 0;
+        elseif map(ii,jj)>1
+            map(ii,jj) = 1;
+        end
     end
 end

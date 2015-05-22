@@ -11,7 +11,7 @@ function save_irs(irs,outfile)
 %   specific fields. For a description of the mat format for the IR datasets,
 %   see IR_format.txt.
 %
-%   see also: read_irs, get_ir, intpol_ir, dummy_irs, new_irs
+%   See also: read_irs, get_ir, intpol_ir, dummy_irs, new_irs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

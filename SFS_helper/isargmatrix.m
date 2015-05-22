@@ -9,7 +9,7 @@ function isargmatrix(varargin)
 %   ISARGMATRIX(args) tests if all given args are a matrix and returns
 %   an error otherwise.
 %
-%   see also: isargvector, isargscalar
+%   See also: isargvector, isargscalar
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

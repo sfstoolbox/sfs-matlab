@@ -11,8 +11,7 @@ function bool = ismonoinc(x)
 %
 %   ISMONOTONIC(x) checks if the data in vector x are monotonic increasing.
 %
-%   see also: intpol_ir
-%
+%   See also: intpol_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

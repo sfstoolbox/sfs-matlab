@@ -28,7 +28,7 @@ function varargout = sound_field_mono_sdm(X,Y,Z,xs,src,f,conf)
 %   This means by calculating the integral for P with a summation.
 %   To plot the result use plot_sound_field(P,x,y,z,x0,win).
 %
-%   see also: plot_sound_field, sound_field_imp_wfs, driving_function_mono_wfs
+%   See also: plot_sound_field, sound_field_imp_wfs, driving_function_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

@@ -44,7 +44,7 @@ function [P,x,y,z] = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
 %       Pre-equalization in 2.5-Dimensional Wave Field Synthesis", 128th AES
 %       Conv.
 %
-%   see also: plot_sound_field, sound_field_mono_sdm
+%   See also: plot_sound_field, sound_field_mono_sdm
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

@@ -20,7 +20,7 @@ function movie_sound_field_imp_wfs(X,Y,Z,xs,src,outfile,conf)
 %   simulations of a sound field of the given source positioned at xs
 %   using a WFS driving function in the temporal domain with different phase.
 %
-%   see also: sound_field_imp_wfs, plot_sound_field, generate_movie
+%   See also: sound_field_imp_wfs, plot_sound_field, generate_movie
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

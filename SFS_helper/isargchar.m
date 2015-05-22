@@ -9,7 +9,7 @@ function isargchar(varargin)
 %   ISARGCHAR(args) tests if all given args are a char and returns
 %   an error otherwise.
 %
-%   see also: isargstruct
+%   See also: isargstruct
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

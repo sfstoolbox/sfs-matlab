@@ -17,7 +17,7 @@ function [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf)
 %   calculation for the whole listening area. It returns also the x-, y-, z-axis
 %   for the listening area, defined by the points given with X,Y,Z.
 %
-%   see also: xyz_axes, xyz_axes_selection, sound_field_mono
+%   See also: xyz_axes, xyz_axes_selection, sound_field_mono
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -65,16 +65,16 @@ end
 
 
 %% ===== Computation =====================================================
-% creating x-, y-axis
+% Creating x-, y-axis
 [x,y,z] = xyz_axes(X,Y,Z,conf);
-% check which dimensions will be non singleton
+% Check which dimensions will be non singleton
 dimensions = xyz_axes_selection(x,y,z);
-% create xyz-grid
+% Create xyz-grid
 if all(dimensions)
-    % create a 3D grid => size(xx)==[resolution resolution resolution]
+    % Create a 3D grid => size(xx)==[resolution resolution resolution]
     [xx,yy,zz] = meshgrid(x,y,z);
 elseif dimensions(1) && dimensions(2)
-    % create a 2D grid => size(xx)==[resolution resolution]
+    % Create a 2D grid => size(xx)==[resolution resolution]
     [xx,yy] = meshgrid(x,y);
     zz = meshgrid(z,y);
 elseif dimensions(1) && dimensions(3)
@@ -84,12 +84,12 @@ elseif dimensions(2) && dimensions(3)
     [yy,zz] = meshgrid(y,z);
     xx = meshgrid(x,z);
 elseif any(dimensions)
-    % create a 1D grid => size(xx)==[resolution 1]
+    % Create a 1D grid => size(xx)==[resolution 1]
     xx = x;
     yy = y;
     zz = z;
 else
-    % create a 0D grid => size(xx)==[1 1]
+    % Create a 0D grid => size(xx)==[1 1]
     xx = x(1);
     yy = y(1);
     zz = z(1);

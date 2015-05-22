@@ -10,7 +10,7 @@ function isargcoord(varargin)
 %   coordinate system. This means they have to be a vector with a length of 1,2
 %   or 3. Returns an error otherwise.
 %
-%   see also: isargvector
+%   See also: isargvector
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

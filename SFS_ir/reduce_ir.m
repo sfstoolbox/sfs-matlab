@@ -15,7 +15,7 @@ function ir = reduce_ir(ir,fs,nsamples,conf)
 %   REDUCE_IR(ir,fs,nsamples,conf) shortens and resamples a given IR.
 %   This can be useful for mobile phones.
 %
-%   see also: SFS_config, read_irs, intpol_ir, shorten_ir
+%   See also: SFS_config, read_irs, intpol_ir, shorten_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -98,7 +98,6 @@ short_ir(1:nsamples,2) = ...
 
 
 %% ===== Plotting =======================================================
-
 if(useplot)
     figure
     plot(resamp_ir(:,1),'-b'); hold on;

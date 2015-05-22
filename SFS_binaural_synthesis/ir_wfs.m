@@ -1,5 +1,5 @@
 function [ir,x0] = ir_wfs(X,phi,xs,src,irs,conf)
-%IR_WFS generate a impulse response simulating WFS
+%IR_WFS generates a binaural simulation of WFS
 %
 %   Usage: [ir,x0] = ir_wfs(X,phi,xs,src,irs,[conf])
 %
@@ -22,7 +22,7 @@ function [ir,x0] = ir_wfs(X,phi,xs,src,irs,conf)
 %   response for a virtual source at xs for a virtual WFS array and a
 %   listener located at X.
 %
-% see also: ssr_brs_wfs, ir_point_source, auralize_ir
+%   See also: ssr_brs_wfs, ir_point_source, auralize_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -80,5 +80,5 @@ x0 = secondary_source_selection(x0,xs,src);
 x0 = secondary_source_tapering(x0,conf);
 % Get driving signals
 d = driving_function_imp_wfs(x0,xs,src,conf);
-% generate the impulse response for WFS
+% Generate the impulse response for WFS
 ir = ir_generic(X,phi,x0,d,irs,conf);

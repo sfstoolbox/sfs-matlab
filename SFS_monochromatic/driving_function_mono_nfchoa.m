@@ -22,7 +22,7 @@ function D = driving_function_mono_nfchoa(x0,xs,src,f,conf)
 %   the given secondary source and desired source type (src) for NFCHOA for the
 %   given frequency.
 %
-%   see also: plot_sound_field, sound_field_mono_nfchoa, driving_function_imp_nfchoa
+%   See also: plot_sound_field, sound_field_mono_nfchoa, driving_function_imp_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -79,7 +79,7 @@ end
 % Secondary source positions
 x0 = x0(:,1:3);
 
-% get maximum order of spherical harmonics
+% Get maximum order of spherical harmonics
 N = nfchoa_order(size(x0,1),conf);
 
 % Source position

@@ -58,7 +58,7 @@ narginchk(nargmin,nargmax);
 if nargin==nargmax-1
     number_of_neighbours = 1;
 end
-% ensure column vector
+% Ensure column vector
 if size(b,2)>1
     b=b';
 end
@@ -69,9 +69,9 @@ end
 
 
 %% ===== Computation =====================================================
-% calculate distance between points
+% Calculate distance between points
 distance = vector_norm(bsxfun(@minus,A,b),1);
-% sort the distances in order to find the n lowest once
+% Sort the distances in order to find the n lowest once
 [~,idx] = sort(distance);
 idx = idx(1:number_of_neighbours);
 C = A(:,idx);

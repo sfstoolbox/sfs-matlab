@@ -13,7 +13,7 @@ function success = download_file(url,outfile)
 %   DOWNLOAD_FILE(url,file) downloads the given url and stores it at outfile.
 %   If outfile contains directories that do not exist yet, they will be created.
 %
-%   see also: get_spherical_grid
+%   See also: get_spherical_grid
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -56,11 +56,11 @@ isargchar(url,outfile)
 
 
 %% ===== Main ============================================================
-% download if file is not present
+% Download if file is not present
 if ~exist(outfile,'file')
-    % replace '\' with '/'
+    % Replace '\' with '/'
     outfile = strrep(outfile,'\','/');
-    % create dir
+    % Create dir
     % NOTE: newer versions of Matlab can do the following with the strsplit
     % function
     %dirs = strsplit(outfile,'/');

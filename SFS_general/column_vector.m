@@ -1,5 +1,5 @@
 function varargout = column_vector(varargin)
-%COLUMN_VECTOR make a column vector from the given vector
+%COLUMN_VECTOR makes a column vector from the given vector
 %
 %   Usage: [x1,x2,...] = column_vector(x1,x2,...)
 %
@@ -12,7 +12,7 @@ function varargout = column_vector(varargin)
 %   COLUMN_VECTOR(x1,x2,...) returns the given vectors x1,x2,... as column
 %   vectors.
 %
-%   see also: row_vector
+%   See also: row_vector
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

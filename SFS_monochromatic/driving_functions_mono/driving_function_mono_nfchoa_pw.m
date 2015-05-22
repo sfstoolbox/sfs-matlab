@@ -22,7 +22,7 @@ function D = driving_function_mono_nfchoa_pw(x0,nk,f,N,conf)
 %       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
 %       PhD thesis, TU Berlin
 %
-%   see also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_pw
+%   See also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_pw
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -80,20 +80,20 @@ driving_functions = conf.driving_functions;
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
-% angle of the secondary sources
+% Angle of the secondary sources
 points = bsxfun(@minus,x0,X0);
 [phi0,theta0,r0] = cart2sph(points(:,1),points(:,2),points(:,3));
-% angle of plane wave
+% Angle of plane wave
 [phi_pw,theta_pw,~] = cart2sph(nk(:,1),nk(:,2),nk(:,3));
-% wavenumber
+% Wavenumber
 w = 2*pi*f;
-% initialize empty driving signal
+% Initialize empty driving signal
 D = zeros(size(x0,1),1);
 
 if strcmp('2D',dimension)
-    
+
     % === 2-Dimensional ==================================================
-    
+
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         %                        __
@@ -115,17 +115,17 @@ if strcmp('2D',dimension)
 
 
 elseif strcmp('2.5D',dimension)
-    
+
     % === 2.5-Dimensional ================================================
-    
+
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         %                      __
         %                 2i  \            i^|m|
         % D_25D(phi0,w) = --  /__    ------------------ e^(i m (phi0-phi_pw) )
         %                 r0 m=-N..N       (2)
-        %                             w/c h|m| (w/c r0)  
-        % 
+        %                             w/c h|m| (w/c r0)
+        %
         % see wierstorf (2014), p.23 (2.37)
         %
         for m=-N:N
@@ -140,9 +140,9 @@ elseif strcmp('2.5D',dimension)
 
 
 elseif strcmp('3D',dimension)
-    
+
     % === 3-Dimensional ==================================================
-    
+
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         %                           __    __             -m

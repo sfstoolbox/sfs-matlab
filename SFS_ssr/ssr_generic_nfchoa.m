@@ -23,7 +23,7 @@ function ir = ssr_generic_nfchoa(xs,src,conf)
 %   have another setup you have to provide it with conf.secondary_sources.x0.
 %
 %
-% see also: generic_wfs, brs_nfchoa, driving_function_imp_nfchoa
+%   See also: generic_wfs, brs_nfchoa, driving_function_imp_nfchoa
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -73,5 +73,5 @@ isargstruct(conf);
 %% ===== Main ============================================================
 % Secondary sources
 x0 = secondary_source_positions(conf);
-% driving signals for the secondary sources
+% Driving signals for the secondary sources
 ir = driving_function_imp_nfchoa(x0,xs,src,conf);

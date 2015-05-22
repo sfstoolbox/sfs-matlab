@@ -1,15 +1,23 @@
-function isargpositivescalar(varargin)
-%ISARGPOSITIVESCALAR tests if the given arg is a positive scalar
+function map = chromajs(n)
+%CHROMAJS returns a divergent lightyellow-red color map
 %
-%   Usage: isargpositivescalar(arg1,arg2,...)
+%   Usage: map = chromajs([n])
 %
-%   Input options:
-%       args        - list of args
+%   Input parameters:
+%       n   - optional length of colormap (default uses the figure default
+%             length)
 %
-%   ISARGPOSITIVESCALAR(args) tests if all given args are a positive
-%   scalar and returns an error otherwise.
+%   Output parameters:
+%       map - colormap [n 3]
 %
-%   See also: isargscalar, isargnegativescalar
+%   CHROMAJS(N) returns an N-by-3 matrix containing a divergent colormap.
+%   For details on the colormap have a look at:
+%   http://gka.github.io/palettes/#colors=lightyellow,orangered,deeppink,darkred|steps=7|bez=1|coL=1
+%
+%   For example, to reset the colormap of the current figure:
+%             colormap(chromajs)
+%
+% See also: generate_colormap, moreland, plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -44,9 +52,23 @@ function isargpositivescalar(varargin)
 %*****************************************************************************
 
 
-%% ===== Checking for scalar =============================================
-for ii = 1:nargin
-    if ~isnumeric(varargin{ii}) || ~isscalar(varargin{ii}) || varargin{ii}<0
-        error('%s need to be a positive scalar.',inputname(ii));
-    end
+%% ===== Checking input parameters =======================================
+nargmin = 0;
+nargmax = 1;
+narginchk(nargmin,nargmax);
+if nargin < nargmax
+    n = size(get(gcf,'colormap'),1);
 end
+
+
+%% ===== Computation =====================================================
+table = [ 255, 255, 224
+255, 223, 184
+255, 188, 148
+255, 151, 119
+255, 105,  98
+238,  66,  86
+210,  31,  71
+176,   6,  44
+139,   0,   0];
+map = generate_colormap(table,n);

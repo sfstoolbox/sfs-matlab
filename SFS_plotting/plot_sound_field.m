@@ -16,7 +16,7 @@ function plot_sound_field(P,x,y,z,x0,conf)
 %   the secondary sources are added as dots or loudspeaker symbols depending on
 %   your setting of conf.plot.realloudspeakers.
 %
-%   see also: sound_field_mono, sound_field_imp
+%   See also: sound_field_mono, sound_field_imp
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -133,6 +133,8 @@ if(p.usedb)
         % problems with log(0).
         P(:) = eps;
     end
+    % Change default colormap to chromajs
+    conf.plot.colormap = 'chromajs';
 end
 
 % Check if we should plot loudspeakers symbols
@@ -156,7 +158,7 @@ end
 
 % Create a new figure
 figure;
-% set size
+% Set size
 figsize(p.size(1),p.size(2),p.size_unit);
 
 % Scale dB value if needed

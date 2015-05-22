@@ -13,7 +13,7 @@ function outsig = easyifft(amplitude,phase)
 %   EASYIFFT(amplitude,phase) generates the corresponding waveform from the
 %   amplitude and phase spectra using ifft.
 %
-%   see also: easyfft, ifft
+%   See also: easyfft, ifft
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

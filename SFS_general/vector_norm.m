@@ -13,7 +13,7 @@ function y = vector_norm(x,dim)
 %   VECTOR_NORM(x,dim) calculates the p-norm (with p=2) for the vectors
 %   given within the matrix along the dimension dim.
 %
-%   see also: norm, vector_product
+%   See also: norm, vector_product
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

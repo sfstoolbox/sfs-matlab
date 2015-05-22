@@ -1,5 +1,5 @@
 function out = sphbesselj(nu,z)
-% SPHBESSELJ spherical bessel function of first kind of order nu, and argument z
+%SPHBESSELJ spherical bessel function of first kind of order nu, and argument z
 %
 %   Usage: out = sphbesselj(nu,z)
 %
@@ -13,7 +13,7 @@ function out = sphbesselj(nu,z)
 %   SPHBESSELJ(nu,z) spherical bessel function of order nu, frist type, and
 %   argument z
 %
-%   see also: sphbesselh, sphbessely
+%   See also: sphbesselh, sphbessely
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -59,12 +59,12 @@ isargnumeric(z)
 %% ===== Computation =====================================================
 out = zeros(size(z));
 
-% avoid division by "0"
+% Avoid division by "0"
 if (nu==0)
     out(z==0) = 1;
 elseif (nu~=0)
     out(z==0) = 0;
 end
 
-% finally evaluate for z~=0
+% Finally evaluate for z~=0
 out(z~=0) = sqrt(pi./(2.*z(z~=0))) .* besselj(nu+0.5, z(z~=0));

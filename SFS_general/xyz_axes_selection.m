@@ -18,7 +18,7 @@ function [dimensions,x1,x2,x3] = xyz_axes_selection(x,y,z)
 %   z-axis if we have any activity on this axis or if it is a singleton axis.
 %   In addition the first non-singleton axis are returned.
 %
-%   see also: norm_wavefield, plot_wavefield, xyz_axes, xyz_grid
+%   See also: norm_wavefield, plot_wavefield, xyz_axes, xyz_grid
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -78,7 +78,7 @@ x1=x;
 x2=y;
 x3=z;
 if all(dimensions)
-    % do nothing
+    % Do nothing
 elseif dimensions(1) && dimensions(2)
     x3=z(1);
 elseif dimensions(1) && dimensions(3)

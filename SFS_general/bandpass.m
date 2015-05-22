@@ -15,7 +15,7 @@ function sig =  bandpass(sig,flow,fhigh,conf)
 %   BANDPASS(sig,flow,fhigh) filters the given signal with a bandpass filter
 %   with cutoff frequencies of flow and fhigh.
 %
-%   see also: sound_field_imp_wfs
+%   See also: sound_field_imp_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -69,15 +69,15 @@ N = 128;
 
 
 %% ===== Computation =====================================================
-% get frequency range
+% Get frequency range
 range = fhigh-flow;
-% calculate scaling factor for frequency range
+% Calculate scaling factor for frequency range
 scaling = range/20000;
-% design bandpass filter
+% Design bandpass filter
 Hf = [0 2*flow/fs (2+2*scaling)*flow/fs (2-0.2*scaling)*fhigh/fs 2*fhigh/fs 1];
 Hm = [0 0 1 1 0 0];
 b = fir2(N,Hf,Hm);
-% filter signal
+% Filter signal
 sig = convolution(sig,b);
-% compensate for delay & truncate result
+% Compensate for delay & truncate result
 sig = sig(N/2:end-(N/2)-1,:);

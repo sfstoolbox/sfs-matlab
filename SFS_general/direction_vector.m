@@ -15,7 +15,7 @@ function n = direction_vector(x1,x2)
 %   and x2 can each be stored in a matrix containing m different direction
 %   vectors.
 %
-%   see also: secondary_source_positions
+%   See also: secondary_source_positions
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

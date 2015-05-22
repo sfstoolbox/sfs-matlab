@@ -20,7 +20,7 @@ function irs_pw = extrapolate_farfield_hrtfset(irs,conf)
 %       transfer functions using sound field synthesis", In German Annual
 %       Conference on Acoustics (DAGA).
 %
-%   see also: get_ir, driving_function_imp_wfs
+%   See also: get_ir, driving_function_imp_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -91,9 +91,9 @@ conf.secondary_sources.x0 = zeros(nls,7);
  conf.secondary_sources.x0(:,3)] = sph2cart(phi,theta,R);
 conf.secondary_sources.x0(:,4:6) = ...
     direction_vector(conf.secondary_sources.x0(:,1:3),repmat(conf.xref,nls,1));
-% weights
+% Weights
 if strcmp('3D',dimension)
-    % use rectangular grid to get a first approximation of the grid weights
+    % Use rectangular grid to get a first approximation of the grid weights
     % R^2 * cos(theta) is the integrational weight for integration on a sphere
     conf.secondary_sources.x0(:,7) = ...
         weights_for_points_on_a_sphere_rectangle(phi,theta) .* ...
@@ -101,7 +101,7 @@ if strcmp('3D',dimension)
 else
     conf.secondary_sources.x0(:,7) = ones(nls,1);
 end
-% check if we have a 2D or 3D secondary source setup
+% Check if we have a 2D or 3D secondary source setup
 if any(irs.apparent_elevation-irs.apparent_elevation(1)) && ...
     any(irs.apparent_azimuth-irs.apparent_azimuth(1))
     % 3D case
@@ -126,7 +126,7 @@ end
 
 
 %% ===== Computation =====================================================
-% get virtual secondary source positions
+% Get virtual secondary source positions
 x0_all = secondary_source_positions(conf);
 conf.wfs.hpreflow = 50;
 conf.wfs.hprefhigh = aliasing_frequency(x0_all,conf);
@@ -148,28 +148,28 @@ end
 % Generate a irs set for all given angles
 for ii=1:nls
 
-    % show progress
+    % Show progress
     if showprogress, progress_bar(ii,nls); end;
 
-    % direction of plane wave
+    % Direction of plane wave
     [xs(1),xs(2),xs(3)] = sph2cart(phi(ii),theta(ii),R(ii));
     xs = -xs;
 
-    % calculate active virtual speakers
+    % Calculate active virtual speakers
     [x0,idx] = secondary_source_selection(x0_all,xs,'pw');
     ir = ir_all(:,:,idx);
-    % apply tapering window
+    % Apply tapering window
     x0 = secondary_source_tapering(x0,conf);
 
-    % get driving signals, temporarely deactivate WFS pre-filter, because it
+    % Get driving signals, temporarely deactivate WFS pre-filter, because it
     % will be applied once at the end
     tmp_usehpre = conf.wfs.usehpre;
     conf.wfs.usehpre = false;
     [~,delay,weight] = driving_function_imp_wfs(x0,xs,'pw',conf);
     conf.wfs.usehpre = tmp_usehpre;
-    % delay in samples
+    % Delay in samples
     delay = delay.*fs;
-    % sum up contributions from individual virtual speakers
+    % Sum up contributions from individual virtual speakers
     irs_pw.left(:,ii) = sum(delayline(squeeze(ir(:,1,:)),delay,weight,conf),2);
     irs_pw.right(:,ii) = sum(delayline(squeeze(ir(:,2,:)),delay,weight,conf),2);
     irs_pw.left(:,ii) = irs_pw.left(:,ii)/10^(amplitude_correction(ii)/20);

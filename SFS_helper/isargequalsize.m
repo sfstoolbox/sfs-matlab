@@ -9,7 +9,7 @@ function isargequalsize(x1,varargin)
 %   ISARGEQUALSIZE(x1,x2,...) tests if all given arrays have the same size.
 %   Reports an error otherwise.
 %
-%   see also: isargequallength
+%   See also: isargequallength
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -53,6 +53,6 @@ end
 %% ===== Checking for equal size =========================================
 for ii = 1:nargin-1
     if ~isequal(size(varargin{ii}),size(x1))
-        error('%s and %s have not the same size',inputname(1),inputname(2));
+        error('%s and %s have not the same size',inputname(1),inputname(ii+1));
     end
 end

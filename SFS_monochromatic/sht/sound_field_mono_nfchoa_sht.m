@@ -95,12 +95,29 @@ Nse = sqrt(length(Dnm)) - 1;
 
 %% ===== Computation ====================================================
 if customGrid
+  switch customGrid
+    case 1
+      Y = repmat(Y, size(X));
+      Z = repmat(Z, size(X));
+    case 2
+      X = repmat(X, size(Y));
+      Z = repmat(Z, size(Y));
+    case 3
+      Z = repmat(Z, size(Y));
+    case 4
+      X = repmat(X, size(Z));
+      Y = repmat(Y, size(Z));
+    case 5
+      Y = repmat(Y, size(Z));
+    case 6
+      X = repmat(X, size(Z));      
+  end
   x = X;   y = Y;  z = Z;
 else
   [X,Y,Z,x,y,z] = xyz_grid(X,Y,Z,conf);
 end
 % find coordinates, which are inside and outside the loudspeaker array
-select = sqrt((X-Xc(1)).^2 + (Y-Xc(2)).^2 + (Z-Xc(3)).^2) <= r0;
+select = sqrt((X(:)-Xc(1)).^2 + (Y(:)-Xc(2)).^2 + (Z(:)-Xc(3)).^2) <= r0;
 
 if strcmp('2D',dimension)
   % === 2-Dimensional ==================================================
@@ -137,10 +154,16 @@ end
 
 P = zeros(size(X));
 
-PnmR = GnmR .* Dnm;
-P(select) = sound_field_mono_sphexp(X(select),Y(select),Z(select), PnmR, ...
-  'R', f, Xc,conf);
-PnmS = GnmS .* Dnm;
-P(~select) = sound_field_mono_sphexp(X(~select),Y(~select),Z(~select), ...
-  PnmS, 'S', f, Xc,conf);
+
+if any(select(:))
+  Pnm = GnmR .* Dnm;
+  P(select) = sound_field_mono_sphexp(X(select),Y(select),Z(select), Pnm, ...
+    'R', f, Xc,conf);
+end
+if any(~select(:))
+  Pnm = GnmS .* Dnm;
+  P(~select) = sound_field_mono_sphexp(X(~select),Y(~select),Z(~select), ...
+    Pnm, 'S', f, Xc,conf);
+end
+
 end

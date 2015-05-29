@@ -6,6 +6,7 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
     - change default dB color map to chromajs
     - add missing hgls2 functionality (fractional delays)
     - add cubehelix and chromajs color maps
+    - remove noise() function, use the one from the LTFAT Toolbox instead
 
 1.1.0 (2. April 2015)
 

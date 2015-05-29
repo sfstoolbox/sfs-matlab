@@ -443,13 +443,8 @@ with the impulse response by the <code>auralize_ir()</code> function.
 
 ```Matlab
 conf = SFS_config_example;
-<<<<<<< HEAD
 hrtf = SOFAload('QU_KEMAR_anechoic_3m.sofa');
 ir = get_ir(hrtf,[0 0 0],[0 0],[rad(30) 0 3],conf);
-=======
-irs = read_irs('QU_KEMAR_anechoic_3m.mat',conf);
-ir = get_ir(irs,[rad(30) 0 3],'spherical',conf);
->>>>>>> master
 nsig = randn(44100,1);
 sig = auralize_ir(ir,nsig,1,conf);
 sound(sig,conf.fs);

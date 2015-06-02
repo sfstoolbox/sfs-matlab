@@ -9,6 +9,11 @@ source (loudspeaker) setups, time snapshots of full band impulses emitted by the
 secondary source distributions, or even generate Binaural Room Scanning (BRS)
 stimuli sets in order to simulate WFS with the SoundScape Renderer (SSR).
 
+This documentation is all about its usage, if you are interested in the
+underlying mathematics you should have a look at its PDF documentation [Theory
+of Sound Field
+Synthesis](https://github.com/sfstoolbox/sfs-documentation/releases/latest).
+
 ### Table of Contents
 
 **[Installation](#installation)**  

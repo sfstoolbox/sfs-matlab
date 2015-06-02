@@ -1,6 +1,6 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
-1.1.1 ()
+1.2.0 ()
 
     - fix remaining usegnuplot config entry
     - change default dB color map to chromajs

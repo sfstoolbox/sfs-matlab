@@ -18,8 +18,8 @@ function [delay,weight] = driving_function_imp_wfs_pw(x0,nx0,nk,conf)
 %   the WFS driving function for plane wave as source model.
 %
 %   References:
-%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
-%       PhD thesis, Tu Berlin
+%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
+%       "Theory of Sound Field Synthesis"
 %
 %   See also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_pw
 
@@ -89,7 +89,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         %
         % d_2D(x0,t) = h(t) * 2 nk nx0 delta(t - 1/c nk x0)
         %
-        % See Wierstorf (2014), p.25 (2.45)
+        % see Wierstorf et al. (2015), eq.(#d:wfs:pw)
         %
         % Delay and amplitude weight
         delay = 1/c * vector_product(nk,x0,2);
@@ -118,7 +118,7 @@ elseif strcmp('2.5D',dimension)
         %
         % d_2.5D(x0,t) = h(t) * 2 g0 nk nx0 delta(t - 1/c nk x0)
         %
-        % See Wierstorf (2014), p.25 (2.46)
+        % See Wierstorf et al. (2015), eq.(#d:wfs:pw:2.5D)
         %
         % Delay and amplitude weight
         delay = 1/c .* vector_product(nk,x0,2);

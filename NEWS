@@ -1,7 +1,8 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
-1.2.0 ()
+1.2.0 (2. June 2015)
 
+    - add PDF documentation "Theory of Sound Field Synthesis"
     - fix remaining usegnuplot config entry
     - change default dB color map to chromajs
     - add missing hgls2 functionality (fractional delays)

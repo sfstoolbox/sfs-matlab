@@ -132,9 +132,11 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     % desired distance. The desired direction is done by returning the nearest
     % neighbour or applying a linear interpolation.
     x0 = sofa_get_secondary_sources(header,'spherical');
+    % The head orientation/position of sources is equivalent
+    xs(1) = correct_azimuth(xs(1)-head_orientation(1));
+    xs(2) = correct_elevation(xs(2)-head_orientation(2));
     % Find nearest neighbours and interpolate if desired and needed
-    [neighbours,idx] = findnearestneighbour( ...
-        x0(:,1:2)',correct_azimuth(xs(1:2)-head_orientation),3);
+    [neighbours,idx] = findnearestneighbour(x0(:,1:2)',xs(1:2),3);
     ir = sofa_get_data_fir(sofa,idx);
     ir = ir_correct_distance(ir,x0(idx,3),xs(3),conf);
     ir = interpolate_ir(ir,neighbours,xs(1:2)',conf);

@@ -1,9 +1,3 @@
-% generate dir for storing images
-if ~exist('img','dir');
-    mkdir('img');
-end
-
-
 %% ===== Secondary sources ===============================================
 conf = SFS_config_example;
 conf.secondary_sources.size = 3;
@@ -17,7 +11,7 @@ figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 1]);
 pause(1)
-print_png('img/secondary_sources_linear.png');
+print_png('secondary_sources_linear.png');
 
 % === circular ===
 conf.secondary_sources.geometry = 'circle';
@@ -27,7 +21,7 @@ figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
-print_png('img/secondary_sources_circle.png');
+print_png('secondary_sources_circle.png');
 
 % === box shaped ===
 conf.secondary_sources.geometry = 'box';
@@ -37,7 +31,7 @@ figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
-print_png('img/secondary_sources_box.png');
+print_png('secondary_sources_box.png');
 
 % === spherical array ===
 conf.secondary_sources.geometry = 'sphere'; % or 'spherical'
@@ -47,7 +41,7 @@ figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
-print_png('img/secondary_sources_sphere.png');
+print_png('secondary_sources_sphere.png');
 
 % === arbitrary shaped arrays ===
 % create a stadium like shape by combining two half circles with two linear
@@ -87,13 +81,13 @@ figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2.5 2.5]);
-print_png('img/secondary_sources_arbitrary.png');
+print_png('secondary_sources_arbitrary.png');
 conf.plot.realloudspeakers = true;
 figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2.5 2.5]);
-print_png('img/secondary_sources_arbitrary_realloudspeakers.png');
+print_png('secondary_sources_arbitrary_realloudspeakers.png');
 
 %% ===== Monochromatic sound fields ======================================
 % === stereo setup ===
@@ -101,7 +95,7 @@ conf = SFS_config_example;
 x0 = [-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1];
 % [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 sound_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800,conf)
-print_png('img/sound_field_stereo.png');
+print_png('sound_field_stereo.png');
 
 % === WFS 3D ===
 conf = SFS_config_example;
@@ -111,11 +105,11 @@ conf.secondary_sources.number = 225;
 conf.secondary_sources.geometry = 'sphere';
 % [P,x,y,z,x0,win] = sound_field_mono_wfs_25d(X,Y,Z,xs,src,fconf);
 sound_field_mono_wfs([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
-print_png('img/sound_field_wfs_3d_xy.png');
+print_png('sound_field_wfs_3d_xy.png');
 sound_field_mono_wfs([-2 2],0,[-2 2],[0 -1 0],'pw',800,conf);
-print_png('img/sound_field_wfs_3d_xz.png');
+print_png('sound_field_wfs_3d_xz.png');
 sound_field_mono_wfs(0,[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
-print_png('img/sound_field_wfs_3d_yz.png');
+print_png('sound_field_wfs_3d_yz.png');
 
 
 % simulating 2.5D WFS with circular array and a point source
@@ -124,20 +118,20 @@ conf.dimension = '2.5D';
 conf.plot.useplot = 1;
 % [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
 [P,x,y,z,x0] = sound_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf);
-print_png('img/sound_field_wfs_25d.png');
+print_png('sound_field_wfs_25d.png');
 % plotting WFS with all secondary sources
 x0_all = secondary_source_positions(conf);
 [~,idx] = secondary_source_selection(x0,[0 2.5 0],'ps');
 x0_all(:,7) = zeros(1,size(x0_all,1));
 x0_all(idx,7) = x0(:,7);
 plot_sound_field(P,x,y,z,x0_all,conf);
-print_png('img/sound_field_wfs_25d_with_all_sources.png');
+print_png('sound_field_wfs_25d_with_all_sources.png');
 % simulating 2.5D NFCHOA with circular array and a plane wave
 conf = SFS_config_example;
 conf.dimension = '2.5D';
 % sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf);
 sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
-print_png('img/sound_field_nfchoa_25d.png');
+print_png('sound_field_nfchoa_25d.png');
 
 % 2D local WFS with box shaped array and circular virtual array
 conf = SFS_config_example;
@@ -152,7 +146,7 @@ conf.localsfs.vss.geometry = 'circular';
 conf.localsfs.vss.number = 56;
 sound_field_mono_localwfs([-1 1],[-1 1],0,[1.0 -1.0 0],'pw',7000,conf);
 axis([-1.1 1.1 -1.1 1.1]);
-print_png('img/sound_field_localwfs_2d.png');
+print_png('sound_field_localwfs_2d.png');
 
 % --- spatio-temporal snapshots of the sound field ---
 conf = SFS_config_example;
@@ -160,10 +154,10 @@ conf.dimension = '2.5D';
 conf.plot.useplot = true;
 % sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
 [p,x,y,z,x0] = sound_field_imp_nfchoa([-2 2],[-2 2],0,[0 2 0],'ps',200,conf);
-print_png('img/sound_field_imp_nfchoa_25d.png');
+print_png('sound_field_imp_nfchoa_25d.png');
 conf.plot.usedb = true;
 plot_sound_field(p,x,y,z,x0,conf);
-print_png('img/sound_field_imp_nfchoa_25d_dB.png');
+print_png('sound_field_imp_nfchoa_25d_dB.png');
 
 
 % --- impulse response of the system ---
@@ -185,7 +179,7 @@ set(gca,'XTick',[10 100 250 1000 5000 20000]);
 legend('w/o pre-filter','w pre-filter');
 xlabel('frequency / Hz');
 ylabel('magnitude / dB');
-print_png('img/impulse_response_wfs_25d.png');
+print_png('impulse_response_wfs_25d.png');
 % alternative variant
 conf = SFS_config_example;
 [a,f] = freq_response_wfs([0 0 0],[0 2.5 0],'ps',conf);
@@ -197,4 +191,4 @@ set(gca,'XTick',[10 100 250 1000 5000 20000]);
 legend('w pre-filter');
 xlabel('frequency / Hz');
 ylabel('magnitude / dB');
-print_png('img/impulse_response_wfs_25d_mono.png');
+print_png('impulse_response_wfs_25d_mono.png');

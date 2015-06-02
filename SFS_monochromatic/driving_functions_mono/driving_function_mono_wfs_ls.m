@@ -19,8 +19,8 @@ function D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf)
 %   frequency f.
 %
 %   References:
-%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
-%       PhD thesis, TU Berlin
+%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
+%       "Theory of Sound Field Synthesis"
 %
 %   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
@@ -96,7 +96,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % D(x0,w) =  - -- -----------  H1  | - |x0-xs| |
         %              2c   |x0-xs|        \ c         /
         %
-        % See Wierstorf (2014), p.26 (2.55)
+        % see Wierstorf et al. (2015), eq.(#D:wfs:ls)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -134,7 +134,7 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D(x0,w) =  - -- _ |---  -----------  H1  | - |x0-xs| |
         %                   2   \| c    |x0-xs|         \ c         /
         %
-        % See Wierstorf (2014), p.26 (2.56)
+        % see Wierstorf et al. (2015), eq.(#D:wfs:ls:2.5D)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);

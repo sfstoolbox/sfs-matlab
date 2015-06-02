@@ -18,8 +18,8 @@ function [delay,weight] = driving_function_imp_wfs_ls(x0,nx0,xs,conf)
 %   the WFS driving function for a line source as source model.
 %
 %   References:
-%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
-%       PhD thesis, Tu Berlin
+%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
+%       "Theory of Sound Field Synthesis"
 %
 %   See also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_ls
 
@@ -91,7 +91,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % d(x0,t) = h(t) * - |--- ------------- delta(t-|x0-xs|/c)
         %                   \|2pi |x0-xs|^(3/2)
         %
-        % See Wierstorf2014 p.26, (2.57)
+        % see Wierstorf et al. (2015) eq.(#d:wfs:ls)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);

@@ -41,72 +41,76 @@ function test_delayline()
 
 
 %% ===== Configuration ==================================================
-
-% delays to evaluate
+% Delays to evaluate
+dt=[-5 -2.5 0 2.5 5];
 %dt=[-1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
 %dt=[0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
-dt=[-5 -2.5 0 2.5 5];
 %dt=1*[0 0.01 0.02 0.03 0.04 0.05 0.06 0.07 0.08 0.09 0.1];
 %dt=linspace(0,2,200);
+% Parameters for delayline
+conf.usefracdelay = true;
+fracdelay_methods = { ...
+    'least_squares'; ...
+    'resample'; ...
+    'interp1'; ...
+};
 
-% parameters for delayline
-conf.usefracdelay = 1;
-%conf.fracdelay_method = 'least_squares';
-%conf.fracdelay_method = 'resample';
 conf.fracdelay_method = 'interp1';
 
-% length of input signal
+% Length of input signal
 L=256;
-
-% create frequency axis
+% Create frequency axis
 w = (0:1:(L-1))/L; 
 wpi = w*pi;
 wpi2=wpi(2:L);
-
-% set up input signal
+% Set up input signal
 insig = zeros(L,1);
 insig(L/2) = 1;
 
 
-%% ===== Computation =====================================================
-for n=1:length(dt)
-    outsig(:,n) = delayline(insig,dt(n),1,conf);
+%% ===== Computation and Plotting ========================================
+for method = fracdelay_methods'
+    conf.fracdelay_method = method{:};
 
-    H(:,n) = freqz(outsig(:,n),1,wpi);
-    magresp(:,n) = abs(H(:,n));
-    uwphase(:,n)=-unwrap(angle(H(:,n)));
-    
-    phasdel(:,n) = uwphase(2:L,n)./wpi2';
+    % --- Computation ---
+    % Test all given delays
+    for n=1:length(dt)
+        outsig(:,n) = delayline(insig,dt(n),1,conf);
+        H(:,n) = freqz(outsig(:,n),1,wpi);
+        magresp(:,n) = abs(H(:,n));
+        uwphase(:,n)=-unwrap(angle(H(:,n)));
+        phasdel(:,n) = uwphase(2:L,n)./wpi2';
+    end
+
+    % --- Plotting ---
+    % setup legend and axis
+    t=1:L;
+    t=t-L/2;
+    % Phase delay
+    figure;
+    plot(wpi2/pi,phasdel-(L/2)+1);
+    title([method{:},' - phase delay']);
+    ylabel('phase delay');
+    xlabel('normalized frequency');
+    grid on;
+    % Magnitude response
+    figure;
+    plot(wpi/pi,magresp);
+    title([method{:},' - magnitude response']);
+    ylabel('magnitude');
+    xlabel('normalized frequency');
+    grid on;
+    % Impluse response
+    figure;
+    %plot(t(L/2-10:L/2+10),outsig(L/2-10:L/2+10,:));
+    imagesc(dt,t(L/2-50:L/2+50),db(abs(outsig(L/2-50:L/2+50,:))));
+    title([method{:},' - impulse response']);
+    caxis([-100 10]);
+    ylabel('samples');
+    xlabel('delay');
+    set(gca,'XTick',dt)
+    turn_imagesc;
+    colorbar;
+    grid on;
+
 end
-
-
-
-%% ===== Plotting =====================================================
-% setup legend and axis
-t=1:L;
-t=t-L/2;
-
-% phase delay
-figure;
-plot(wpi2/pi,phasdel-(L/2)+1);
-ylabel('phase delay');
-xlabel('normalized frequency');
-grid on;
-
-% magnitude response
-figure;
-plot(wpi/pi,magresp);
-ylabel('magnitude');
-xlabel('normalized frequency');
-grid on;
-
-% impluse response
-figure;
-%plot(t(L/2-10:L/2+10),outsig(L/2-10:L/2+10,:));
-imagesc(dt,t(L/2-50:L/2+50),db(abs(outsig(L/2-50:L/2+50,:))));
-caxis([-100 10]);
-ylabel('samples');
-xlabel('delay');
-turn_imagesc;
-colorbar;
-grid on;

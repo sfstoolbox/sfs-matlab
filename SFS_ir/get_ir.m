@@ -131,8 +131,13 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     % response is shifted in time and its amplitude is weighted according to the
     % desired distance. The desired direction is done by returning the nearest
     % neighbour or applying a linear interpolation.
+    % NOTE: for SimpleFreeFieldHRIR head rotation is always zero in the SOFA
+    % file and we handle a change in head rotation as if the source position is
+    % changed accordingly.
+    %
+    % Get measured source positions
     x0 = sofa_get_secondary_sources(header,'spherical');
-    % The head orientation/position of sources is equivalent
+    % Combine head orientation and desired direction of source (see note above)
     xs(1) = correct_azimuth(xs(1)-head_orientation(1));
     xs(2) = correct_elevation(xs(2)-head_orientation(2));
     % Find nearest neighbours and interpolate if desired and needed

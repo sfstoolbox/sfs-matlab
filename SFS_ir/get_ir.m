@@ -147,10 +147,13 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     ir = interpolate_ir(ir,neighbours,xs(1:2)',conf);
 
 elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)
-    % FIXME: we should remove this altogether, as SingleRoomDRIR is original
-    % considered to have only one source and use a microphone array:
+    %
     % http://www.sofaconventions.org/mediawiki/index.php/SingleRoomDRIR
-    to_be_implemented;
+    %
+    error(['%s: SingleRoomDRIR is not supported as it should handle ', ...
+           'microphone array recordings. If you used it for (multiple) ', ...
+           'loudspeakers in a room you should consider to use ', ...
+           'MultiSpeakerBRIR instead.'], upper(mfilename));
 
 elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
     %

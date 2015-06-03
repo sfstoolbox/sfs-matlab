@@ -1,5 +1,11 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
+2.0.0 ()
+
+    - add support for SOFA
+    - add SOFA convention SimpleFreeFieldHRIR
+    - add SOFA convention MultiSpeakerBRIR
+
 1.2.0 (2. June 2015)
 
     - add PDF documentation "Theory of Sound Field Synthesis"

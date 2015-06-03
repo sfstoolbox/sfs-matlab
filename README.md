@@ -14,6 +14,12 @@ underlying mathematics you should have a look at its PDF documentation [Theory
 of Sound Field
 Synthesis](https://github.com/sfstoolbox/sfs-documentation/releases/latest).
 
+**Attention:** the master branch has incorporates already
+[SOFA](http://sofaconventions.org/) as file format for HRTFs which replaces the
+old irs file format used by the Toolbox. If you still need this you should
+download [the latest version with irs file
+support](https://github.com/sfstoolbox/sfs/releases/tag/1.2.0).
+
 ### Table of Contents
 
 **[Installation](#installation)**  

@@ -100,13 +100,13 @@ elseif nargin==nargmax-2
     conf = SFS_config;
 end
 if length(head_orientation)==1
-    head_orientation = [head_orientation 0];
+    head_orientation = [head_orientation 0]; % [azimuth elevation]
 end
 
 
 %% ===== Computation ====================================================
 %
-% === SOFA loading ===
+% === SOFA meta data ===
 header = sofa_get_header(sofa);
 
 % === Coordinate system conversion ===
@@ -117,7 +117,9 @@ if strcmp('cartesian',coordinate_system)
 elseif ~strcmp('spherical',coordinate_system)
     error('%s: unknown coordinate system type.',upper(mfilename));
 end
-% Store desired apparent position of source (in spherical coordinates)
+% Store desired position of source (in spherical coordinates).
+% This is the source position relative to the listener position (don't
+% considering the listeners head orientation), [xs] = (rad, rad, m).
 xs = [correct_azimuth(xs(1)-X(1)) ...
       correct_elevation(xs(2)-X(2)) ...
       abs(X(3)-xs(3))];
@@ -127,15 +129,15 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     %
     % http://www.sofaconventions.org/mediawiki/index.php/SimpleFreeFieldHRIR
     %
-    % Returns a single impulse response for the specified position. The impulse
+    % Returns a single impulse response for the desired position. The impulse
     % response is shifted in time and its amplitude is weighted according to the
     % desired distance. The desired direction is done by returning the nearest
     % neighbour or applying a linear interpolation.
-    % NOTE: for SimpleFreeFieldHRIR head rotation is always zero in the SOFA
-    % file and we handle a change in head rotation as if the source position is
-    % changed accordingly.
+    % NOTE: for SimpleFreeFieldHRIR head orientation is always zero in the SOFA
+    % file and we handle a change in head orientation by chnaging the source
+    % position accordingly.
     %
-    % Get measured source positions
+    % Get measured loudspeaker positions
     x0 = sofa_get_secondary_sources(header,'spherical');
     % Combine head orientation and desired direction of source (see note above)
     xs(1) = correct_azimuth(xs(1)-head_orientation(1));
@@ -146,27 +148,17 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     ir = ir_correct_distance(ir,x0(idx,3),xs(3),conf);
     ir = interpolate_ir(ir,neighbours,xs(1:2)',conf);
 
-elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)
-    %
-    % http://www.sofaconventions.org/mediawiki/index.php/SingleRoomDRIR
-    %
-    error(['%s: SingleRoomDRIR is not supported as it should handle ', ...
-           'microphone array recordings. If you used it for (multiple) ', ...
-           'loudspeakers in a room you should consider to use ', ...
-           'MultiSpeakerBRIR instead.'], upper(mfilename));
-
 elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
     %
     % http://www.sofaconventions.org/mediawiki/index.php/MultiSpeakerBRIR
     %
-    % This looks for the nearest loudspeaker corresponding to the specified
-    % source and listener position. For that loudspeaker the impulse reponse for
-    % the specified head orientation is returned. If the head orientation could
-    % not perfectly matched, an interpolation is applied as in the
-    % SimpleFreeFieldHRIR case. If the specified head orientation is out of
-    % bounds, the nearest head orientation is returned.
+    % This looks for the nearest loudspeaker corresponding to the desired source
+    % position. For that loudspeaker the impulse reponse for the specified head
+    % orientation is returned. If the head orientation could not perfectly
+    % matched, an interpolation is applied. If the specified head orientation is
+    % out of bounds, the nearest head orientation is returned.
     %
-    % Find nearest secondary source
+    % Find nearest loudspeaker
     x0 = sofa_get_secondary_sources(header,'spherical');
     [~,idx_emitter] = findnearestneighbour(x0(:,1:3)',xs,1);
     % Find nearest head orientation in the horizontal plane
@@ -192,6 +184,15 @@ elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
     ir = sofa_get_data_fire(sofa,idx_head,idx_emitter);
     ir = reshape(ir,[size(ir,1) size(ir,2) size(ir,4)]); % [M R E N] => [M R N]
     ir = interpolate_ir(ir,neighbours_head,head_orientation',conf);
+
+elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)
+    %
+    % http://www.sofaconventions.org/mediawiki/index.php/SingleRoomDRIR
+    %
+    error(['%s: SingleRoomDRIR is not supported as it should handle ', ...
+           'microphone array recordings. If you used it for (multiple) ', ...
+           'loudspeakers in a room you should consider to use ', ...
+           'MultiSpeakerBRIR instead.'], upper(mfilename));
 
 else
     error('%s: %s convention is currently not supported.', ...

@@ -433,7 +433,7 @@ In order to easily use different HRIR sets the toolbox incorporates the
 [SOFA file format](http://sofaconventions.org)
 for HRIRs and BRIRs. A large set of different impulse responses is now available
 in these format, see for example:
-FIXME: add link to HRTF data sets.
+http://www.sofaconventions.org/mediawiki/index.php/Files.
 
 The files dealing with the binaural simulations are in the folder
 <code>SFS_binaural_synthesis</code>. Files dealing with HRTFs are in the folder

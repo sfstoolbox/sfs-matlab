@@ -1,7 +1,7 @@
 function movie_sound_field_imp_wfs(X,Y,Z,xs,src,outfile,conf)
 %MOVIE_SOUND_FIELD_IMP_WFS generates movie a WFS sound field
 %
-%   Usage: movie_sound_field_imp_wfs_25d(X,Y,Z,xs,src,outfile,[conf])
+%   Usage: movie_sound_field_imp_wfs(X,Y,Z,xs,src,outfile,[conf])
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] 
@@ -87,7 +87,7 @@ conf.usenormalisation = 0;
 % Simulate the time by different phase values
 for ii = 1:length(t)-1
     % Calculate sound field for the given phase
-    [p,x,y,z,x0,win] = sound_field_imp_wfs(X,Y,Z,xs,src,t(ii),conf);
+    [p,x,y,z,x0] = sound_field_imp_wfs(X,Y,Z,xs,src,t(ii),conf);
 
     % === Save temporary data ===
     if ~exist(tmpdir,'dir')
@@ -95,7 +95,7 @@ for ii = 1:length(t)-1
     end
     conf.plot.file = sprintf('%s/%s_%04.0f.png',tmpdir,rn,ii);
     %conf.plot.usedb = 1;
-    plot_sound_field(2*p,x,y,z,x0,win,conf);
+    plot_sound_field(2*p,x,y,z,x0,conf);
 end
 % Enable the empty sound field warning
 warning('on','SFS:check_sound_field');

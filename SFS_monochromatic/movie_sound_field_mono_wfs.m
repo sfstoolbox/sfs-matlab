@@ -1,7 +1,7 @@
 function movie_sound_field_mono_wfs(X,Y,Z,xs,src,f,outfile,conf)
-%MOVIE_SOUND_FIELD_MONO_WFS_25D generates movie a WFS sound field
+%MOVIE_SOUND_FIELD_MONO_WFS generates movie a WFS sound field
 %
-%   Usage: movie_sound_field_mono_wfs_25d(X,Y,Z,xs,src,f,outfile,[conf])
+%   Usage: movie_sound_field_mono_wfs(X,Y,Z,xs,src,f,outfile,[conf])
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax]

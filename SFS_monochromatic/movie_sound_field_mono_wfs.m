@@ -93,7 +93,7 @@ for ii = 1:length(phase)-1
     if ~exist(tmpdir,'dir')
         mkdir(tmpdir);
     end
-    conf.plot.file = sprintf('%s/%s_%i.png',tmpdir,rn,ii+10);
+    conf.plot.file = sprintf('%s/%s_%04.0f.png',tmpdir,rn,ii);
     plot_sound_field(P,x,y,z,x0,conf);
 end
 

@@ -104,5 +104,5 @@ plot_sound_field(Ppw, x1,y1,z1, [], conf);
 title('3D NFCHOA (sht domain): plane wave');
 plot_sound_field(Pps, x1,y1,z1, [], conf);
 title('3D NFCHOA (sht domain): point source');
-plot_sound_field(Pls./Plgt, x1,y1,z1, [], conf);
+plot_sound_field(Pls, x1,y1,z1, [], conf);
 title('3D NFCHOA (sht domain): line source');

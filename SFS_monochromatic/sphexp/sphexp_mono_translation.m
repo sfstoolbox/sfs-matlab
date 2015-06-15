@@ -211,6 +211,7 @@ for l=1:Nse
 end
 
 %% ===== Tesseral Coefficients ==========================================
+if ~strcmp('2.5D', dimension)
   for m=-Nse:Nse
     for s=-Nse:Nse
 
@@ -244,6 +245,7 @@ end
     end  
     if showprogress, progress_bar(m+Nse,2*Nse); end % progress bar
   end
+end
 %% ====== Final Calculation Steps =======================================
 L = (Nse + 1)^2;
 EF = S(1:L,1:L);  % (E|F)(t)

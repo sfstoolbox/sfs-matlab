@@ -1,17 +1,17 @@
 function Anm = sphexp_mono_pw(npw, Nse, f, xq, conf)
 %Regular Spherical Expansion of Plane Wave
 %
-%   Usage: Al = sphexpR_mono_pw(npw,Nse,f,xq,conf)
+%   Usage: Anm = sphexp_mono_pw(npw, Nse, f, xq, conf)
 %
 %   Input parameters:
 %       npw         - unit vector propagation direction of plane wave
 %       Nse         - maximum order of spherical basis functions
-%       f           - frequency
+%       f           - frequency [m x 1] or [1 x m]
 %       xq          - optional expansion coordinate 
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       Al          - regular Spherical Expansion Coefficients
+%       Anm         - regular Spherical Expansion Coefficients [(Nse+1)^2 x m]
 %
 %   SPHEXP_MONO_PW(npw,Nse,f,xq,conf) computes the regular Spherical Expansion
 %   Coefficients for a plane wave. The expansion will be done around the
@@ -74,7 +74,7 @@ function Anm = sphexp_mono_pw(npw, Nse, f, xq, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
+nargmin = 3;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargposition(npw);
@@ -84,12 +84,8 @@ else
     isargstruct(conf);
 end
 isargpositivescalar(Nse);
-if nargin == 1
-  f = 0;
-else
-  isargpositivescalar(f);
-end
-if nargin <= 2
+isargvector(f);
+if nargin == nargmin
   xq = [0,0,0];
 else
   isargposition(xq);
@@ -104,9 +100,10 @@ phi = atan2(npw(2),npw(1));
 theta = asin(npw(3));
 
 % phase shift due to expansion coordinate
-phase = exp(-1j*2*pi*f/c*npw*xq.');
+phase = exp(-1j*2*pi*row_vector(f)/c*(npw*xq.'));
+Nf = length(phase);
 
-Anm = zeros((Nse + 1).^2,1);
+Anm = zeros((Nse + 1).^2, Nf);
 for n=0:Nse
   cn = 4*pi*(1j)^(-n);
   for m=0:n
@@ -114,14 +111,12 @@ for n=0:Nse
     Ynm = sphharmonics(n,m, theta, phi);
     % -m
     v = sphexp_index(-m,n);
-    Anm(v) = cn.*Ynm;
+    Anm(v,:) = cn.*Ynm.*phase;
     % +m
     v = sphexp_index(m,n);
-    Anm(v) = cn.*conj(Ynm);
+    Anm(v,:) = cn.*conj(Ynm).*phase;
   end
 end
-
-Anm = Anm*phase;
 
 end
 

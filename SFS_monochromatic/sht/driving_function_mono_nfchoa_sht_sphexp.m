@@ -6,13 +6,13 @@ function Dnm = driving_function_mono_nfchoa_sht_sphexp(Pnm, f, conf)
 %
 %   Input parameters:
 %       Pnm         - regular spherical expansion coefficients of virtual
-%                     sound field [nx1]
-%       f           - frequency in Hz
+%                     sound field [nxm]
+%       f           - frequency in Hz [m x 1] or [1 x m]
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       Dnm         - regular spherical expansion coefficients of driving
-%                     function signal
+%                     function signal [n x m]
 %
 %   DRIVING_FUNCTION_MONO_NFCHOA_HARM_SPHEXP(Pnm, f, conf) returns regular
 %   spherical expansion coefficients of the NFCHOA driving function for a
@@ -57,13 +57,17 @@ function Dnm = driving_function_mono_nfchoa_sht_sphexp(Pnm, f, conf)
 nargmin = 2;
 nargmax = 3;
 narginchk(nargmin,nargmax);
-isargvector(Pnm);
-isargsquaredinteger(length(Pnm));
-isargpositivescalar(f);
+isargmatrix(Pnm);
+isargsquaredinteger(size(Pnm,1));
+isargvector(f);
 if nargin<nargmax
   conf = SFS_config;
 else
   isargstruct(conf);
+end
+if size(Pnm,2) ~= length(f)
+  error('number of rows in %s have to match length of %s', inputname(1), ...
+    inputname(2));
 end
 
 %% ===== Configuration ==================================================
@@ -76,14 +80,14 @@ r0 = conf.secondary_sources.size / 2;
 rref = norm( conf.xref - Xc );  % reference radius
 
 %% ===== Variables ======================================================
-Nse = sqrt(length(Pnm))-1;
+Nse = sqrt(size(Pnm,1))-1;
 
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
 % frequency depended stuff
-omega = 2*pi*f;
-k = omega/c;
+omega = 2*pi*row_vector(f);
+k = omega./c;
 kr0 = k.*r0;
 krref = k.*rref;
 
@@ -125,25 +129,23 @@ elseif strcmp('2.5D',dimension)
       %    n               n         n
       
       for m=-Nse:Nse      
-        v = sphexp_index(m, abs(m):Nse);
+        v = sphexp_index(m, abs(m):Nse);  % v(1) contains index for n=abs(m)
       
-        Dnm(v) = sphexp_access(Pnm, m)./ ...
-          (sphbesselh(abs(m),2,kr0) .* sphharmonics(abs(m),-m, 0, 0) );      
-      end
-      % factor from expansion of 3D free field Green's Function
-      Dnm = Dnm./(-1i*k);  
-      
+        Dnm(v,:) = Pnm(v(1),:) ./ ...
+          ( -1i.*repmat(k.*sphbesselh(abs(m),2,kr0), length(v), 1) ...
+          .* sphharmonics(abs(m),-m, 0, 0) );      
+      end      
     else
       % --- Xref ~= Xc --------------------------------------------------
       %
       % if the reference position is not in the middle of the array, 
       % things get a 'little' more complicated
       
-      hn = zeros(Nse+1,1);
+      hn = zeros(size(Pnm));
       jn = hn;
       for n=0:Nse
-        hn(n+1) = sphbesselh(n,2,kr0);
-        jn(n+1) = sphbesselj(n,krref);
+        hn(n+1,:) = sphbesselh(n,2,kr0);
+        jn(n+1,:) = sphbesselj(n,krref);
       end
     
       for m=-Nse:Nse
@@ -151,7 +153,7 @@ elseif strcmp('2.5D',dimension)
         Gm = 0;
         % for theta=0 the legendre polynom is zero if n+m is odd
         for n=abs(m):2:Nse
-          factor = jn(n+1) .* ...
+          factor = jn(n+1,:) .* ...
             (-1).^(m) .* ...
             sqrt( (2*n+1) ./ (4*pi) ) .* ...
             sqrt( factorial(n-abs(m)) ./ factorial(n+abs(m)) ) .* ...
@@ -180,9 +182,10 @@ elseif strcmp('3D',dimension)
     
     for n=0:Nse
       Gn0 = (-1i*k) .* sphbesselh(n,2,kr0) .* sphharmonics(n, 0, pi/2, 0); 
-  
-      v = sphexp_index(-n:n, n);        
-      Dnm(v) = sqrt( (2*n+1) ./ (4*pi) ) .* Pnm(v) ./ Gn0;
+      
+      v = sphexp_index(-n:n, n);
+      Dnm(v,:) = sqrt( (2*n+1) ./ (4*pi) ) .* Pnm(v,:) ./ ...
+        repmat(Gn0,length(v),1);
     end    
     
     Dnm = Dnm./(2*pi*r0.^2);

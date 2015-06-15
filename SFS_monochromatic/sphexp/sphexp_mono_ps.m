@@ -7,12 +7,12 @@ function Anm = sphexp_mono_ps(xs, mode, Nse, f, xq, conf)
 %       xs          - position of point source
 %       mode        - 'R' for regular, 'S' for singular
 %       Nse         - maximum order of spherical basis functions
-%       f           - frequency
+%       f           - frequency [m x 1] or [1 x m]
 %       xq          - optional expansion center coordinate 
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       Anm         - regular Spherical Expansion Coefficients
+%       Anm         - regular Spherical Expansion Coefficients [(Nse+1)^2 x m]
 %
 %   SPHEXP_MONO_PS(xs, mode, f, Nse, xq, conf) computes the regular/singular 
 %   Spherical Expansion Coefficients for a point source at xs. The expansion 
@@ -89,14 +89,15 @@ nargmin = 4;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargposition(xs);
-isargpositivescalar(f, Nse);
-if nargin<nargmax
+isargpositivescalar(Nse);
+isargvector(f);
+if nargin < nargmax
     conf = SFS_config;
 else
     isargstruct(conf);
 end
 if nargin == nargmin
-    xq = [0,0,0];
+  xq = [0,0,0];
 else
   isargposition(xq);
 end
@@ -111,8 +112,9 @@ phi = atan2(xs(2)-xq(2),xs(1)-xq(1));
 theta = asin((xs(3)-xq(3))/r);
 
 % frequency
-k = 2.*pi.*f./c;
+k = 2.*pi.*row_vector(f)./c;
 kr = k.*r;
+Nf = length(kr);
 
 % select suitable basis function
 if strcmp('R', mode)
@@ -124,18 +126,18 @@ else
 end
 
 %% ===== Computation ====================================================
-Anm = zeros( (Nse + 1).^2 ,1);
+Anm = zeros( (Nse + 1).^2 , Nf);
 for n=0:Nse
-  cn = -1j*k*sphbasis(n,kr);
+  cn = -1j.*k.*sphbasis(n, kr);
   for m=0:n    
     % spherical harmonics: conj(Y_n^m) = Y_n^-m (Gumerov2004, eq. 2.1.59)
     Ynm = sphharmonics(n,m, theta, phi);
     % -m
     v = sphexp_index(-m,n);  
-    Anm(v) = cn.*Ynm;
+    Anm(v,:) = cn.*Ynm;
     % +m
     v = sphexp_index(m,n); 
-    Anm(v) = cn.*conj(Ynm);
+    Anm(v,:) = cn.*conj(Ynm);
   end
 end
 

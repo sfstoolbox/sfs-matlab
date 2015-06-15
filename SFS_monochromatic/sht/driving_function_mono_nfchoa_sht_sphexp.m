@@ -131,9 +131,9 @@ elseif strcmp('2.5D',dimension)
       for m=-Nse:Nse      
         v = sphexp_index(m, abs(m):Nse);  % v(1) contains index for n=abs(m)
       
-        Dnm(v,:) = Pnm(v(1),:) ./ ...
-          ( -1i.*repmat(k.*sphbesselh(abs(m),2,kr0), length(v), 1) ...
-          .* sphharmonics(abs(m),-m, 0, 0) );      
+        Dnm(v,:) = repmat( Pnm(v(1),:) ./ ( -1i.*k.* ...
+          sphbesselh(abs(m),2,kr0).*sphharmonics(abs(m),-m, 0, 0) ) ...
+          , length(v), 1);
       end      
     else
       % --- Xref ~= Xc --------------------------------------------------
@@ -149,8 +149,8 @@ elseif strcmp('2.5D',dimension)
       end
     
       for m=-Nse:Nse
-        Pm = 0;
-        Gm = 0;
+        Pm = zeros(1,length(f));
+        Gm = Pm;
         % for theta=0 the legendre polynom is zero if n+m is odd
         for n=abs(m):2:Nse
           factor = jn(n+1,:) .* ...
@@ -159,13 +159,16 @@ elseif strcmp('2.5D',dimension)
             sqrt( factorial(n-abs(m)) ./ factorial(n+abs(m)) ) .* ...
             asslegendre(n,abs(m),0);
 
-          Pm = Pm + sphexp_access(Pnm, m, n) .* factor;
+          v = sphexp_index(m,n);
+        
+          Pm = Pm + Pnm(v,:) .* factor;
 
-          Gm = Gm + (-1i*k) .* hn(n+1) .* sphharmonics(n, -m, 0, 0) .* factor;
+          Gm = Gm + (-1i*k) .* hn(n+1,:) .* sphharmonics(n, -m, 0, 0) ...
+              .* factor;
         end
 
         v = sphexp_index(m, abs(m):Nse);        
-        Dnm(v) = Pm ./ Gm;        
+        Dnm(v,:) = repmat( Pm./Gm, length(v), 1 );        
       end     
     end
     Dnm = Dnm./(2*pi*r0);

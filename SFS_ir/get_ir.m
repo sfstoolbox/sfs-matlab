@@ -1,4 +1,4 @@
-function ir = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
+function [ir,x0] = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %GET_IR returns an impulse response for the given apparent angle
 %
 %   Usage: ir = get_ir(sofa,X,head_orientation,xs,[coordinate_system],[conf])
@@ -23,6 +23,7 @@ function ir = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %
 %   Output parameters:
 %       ir      - impulse response for the given position (length of IR x 2)
+%       x0      - position corresponding to the returned impulse response
 %
 %   GET_IR(sofa,X,head_orientation,xs) returns a single impulse response from
 %   the given SOFA file or struct. The impulse response is determined by the
@@ -146,7 +147,7 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     [neighbours,idx] = findnearestneighbour(x0(:,1:2)',xs(1:2),3);
     ir = sofa_get_data_fir(sofa,idx);
     ir = ir_correct_distance(ir,x0(idx,3),xs(3),conf);
-    ir = interpolate_ir(ir,neighbours,xs(1:2)',conf);
+    [ir,x0] = interpolate_ir(ir,neighbours,xs(1:2)',conf);
 
 elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
     %
@@ -160,7 +161,8 @@ elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
     %
     % Find nearest loudspeaker
     x0 = sofa_get_secondary_sources(header,'spherical');
-    [~,idx_emitter] = findnearestneighbour(x0(:,1:3)',xs,1);
+    [neighbours_emitter,idx_emitter] = findnearestneighbour(x0(:,1:3)',xs,1);
+    x0 = neighbours_emitter(:,1);
     % Find nearest head orientation in the horizontal plane
     [phi,theta] = sofa_get_head_orientations(header);
     [neighbours_head,idx_head] = ...

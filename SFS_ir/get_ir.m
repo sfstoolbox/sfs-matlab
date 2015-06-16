@@ -92,12 +92,12 @@ narginchk(nargmin,nargmax)
 if nargin==nargmax-1
     if isstruct(coordinate_system)
         conf = coordinate_system;
-        coordinate_system = 'spherical';
+        coordinate_system = 'cartesian';
     else
         conf = SFS_config;
     end
 elseif nargin==nargmax-2
-    coordinate_system = 'spherical';
+    coordinate_system = 'cartesian';
     conf = SFS_config;
 end
 if length(head_orientation)==1
@@ -113,20 +113,18 @@ header = sofa_get_header(sofa);
 
 % === Coordinate system conversion ===
 % Convert everything to spherical coordinates
-if strcmp('cartesian',coordinate_system)
-    [xs(1),xs(2),xs(3)] = cart2sph(xs(1),xs(2),xs(3));
-    [X(1),X(2),X(3)] = cart2sph(X(1),X(2),X(3));
-elseif ~strcmp('spherical',coordinate_system)
+if strcmp('spherical',coordinate_system)
+    [xs(1),xs(2),xs(3)] = sph2cart(xs(1),xs(2),xs(3));
+    [X(1),X(2),X(3)] = sph2cart(X(1),X(2),X(3));
+elseif ~strcmp('cartesian',coordinate_system)
     error('%s: unknown coordinate system type.',upper(mfilename));
 end
 % Get the listener position during the measurement
-X_sofa = sofa_get_listener_position(header,'spherical');
-% Store desired position of source (in spherical coordinates).
-% This is the source position relative to the listener position (don't
-% considering the listeners head orientation), [xs] = (rad, rad, m).
-xs = [correct_azimuth(xs(1)-X(1)+X_sofa(1)) ...
-      correct_elevation(xs(2)-X(2)+X_sofa(2)) ...
-      abs(xs(3)-X(3)+X_sofa(3))];
+X_sofa = sofa_get_listener_position(header,'cartesian');
+% Store desired position of source (in cartesian coordinates).
+% This is the source position relative to the listener position,
+% [xs] = (m, m, m).
+xs = xs-X+X_sofa;
 
 % === Get Impulse Response ===
 if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
@@ -138,11 +136,12 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     % desired distance. The desired direction is done by returning the nearest
     % neighbour or applying a linear interpolation.
     % NOTE: for SimpleFreeFieldHRIR head orientation is always zero in the SOFA
-    % file and we handle a change in head orientation by chnaging the source
+    % file and we handle a change in head orientation by changing the source
     % position accordingly.
     %
-    % Get measured loudspeaker positions
+    % Get measured loudspeaker positions and go to spherical coordinates
     x0 = sofa_get_secondary_sources(header,'spherical');
+    [xs(1),xs(2),xs(3)] = cart2sph(xs(1),xs(2),xs(3));
     % Combine head orientation and desired direction of source (see note above)
     xs(1) = correct_azimuth(xs(1)-head_orientation(1));
     xs(2) = correct_elevation(xs(2)-head_orientation(2));
@@ -151,6 +150,7 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     ir = sofa_get_data_fir(sofa,idx);
     ir = ir_correct_distance(ir,x0(idx,3),xs(3),conf);
     [ir,x0] = interpolate_ir(ir,neighbours,xs(1:2)',conf);
+    [x0(1),x0(2),x0(3)] = sph2cart(x0(1),x0(2),x0(3));
 
 elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
     %
@@ -164,24 +164,20 @@ elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
     %
     % Check if we are requesting a listening position that is available
     if norm(X-X_sofa)>0.01
-        [X(1) X(2) X(3)] = sph2cart(X(1),X(2),X(3));
-        [X_sofa(1) X_sofa(2) X_sofa(3)] = sph2cart(X_sofa(1),X_sofa(2),X_sofa(3));
         warning('SFS:get_ir',['Your choosen listening position ', ...
                               '(%.2f,%.2f,%.2f)m deviates from the ', ...
                               'measured one (%.2f,%.2f,%.2f)m.'], ...
-                X(1),X(2),X(3),X_sofa(1),X_sofa(2),X_sofa(3));
+                             X(1),X(2),X(3),X_sofa(1),X_sofa(2),X_sofa(3));
     end
     % Find nearest loudspeaker
-    x0 = sofa_get_secondary_sources(header,'spherical');
+    x0 = sofa_get_secondary_sources(header,'cartesian');
     [neighbours_emitter,idx_emitter] = findnearestneighbour(x0(:,1:3)',xs,1);
     x0 = neighbours_emitter(:,1);
     if norm(x0'-xs)>0.01
-        [xs(1) xs(2) xs(3)] = sph2cart(xs(1),xs(2),xs(3));
-        [xs_sofa(1) xs_sofa(2) xs_sofa(3)] = sph2cart(x0(1),x0(2),x0(3));
-        warning('SFS:get_ir',['Your choosen loudspeaker position (%.2f,', ...
+        warning('SFS:get_ir',['Your desired loudspeaker position (%.2f,', ...
                               '%.2f,%.2f)m deviates from the measured ', ...
                               'one (%.2f,%.2f,%.2f)m.'], ...
-                xs(1),xs(2),xs(3),xs_sofa(1),xs_sofa(2),xs_sofa(3));
+                             xs(1),xs(2),xs(3),x0(1),x0(2),x0(3));
     end
     % Find nearest head orientation in the horizontal plane
     [phi,theta] = sofa_get_head_orientations(header);
@@ -224,8 +220,8 @@ end
 % Reshape [1 2 N] to [N 2]
 ir = squeeze(ir)';
 % Convert x0 to the specified coordinate system
-if strcmp('cartesian',coordinate_system)
-    [x0(1),x0(2),x0(3)] = sph2cart(x0(1),x0(2),x0(3));
+if strcmp('spherical',coordinate_system)
+    [x0(1),x0(2),x0(3)] = cart2sph(x0(1),x0(2),x0(3));
 end
 
 warning('on','SOFA:upgrade')

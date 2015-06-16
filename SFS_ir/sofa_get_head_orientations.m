@@ -1,18 +1,22 @@
-function [irs,opt_fields] = new_irs()
-%NEW_IRS creates an empty irs struct in the right format
+function [phi,theta] = sofa_get_head_orientations(sofa,idx)
+%SOFA_GET_HEAD_ORIENTATIONS returns phi, theta from the given SOFA data set
 %
-%   Usage: irs = new_irs()
+%   Usage: [phi,theta] = sofa_get_head_orientations(sofa,[idx])
 %
-%   Output options
-%       irs         - irs struct in the desired format
-%       opt_fields  - cell array containing which of the fields in the returning
-%                     irs struct are optional
+%   Input parameters:
+%       sofa    - impulse response data set (SOFA struct/file)
+%       idx     - index of secondary sources that should be returned.
+%                 If no index is specified all sources will be returned.
 %
-%   NEW_IRS() creates a irs struct in the format we have defined for the IR data
-%   sets. This function creates a reference implementation of the format. So
-%   don't change this function!
+%   Output parameters:
+%       phi     - head orientations in the horizontal plane
+%       theta   - head orientations in the median plane
 %
-%   See also: check_irs, IR_format.txt
+%   SOFA_GET_HEAD_ORIENTATIONS(sofa,idx) returns head orientation [phi,theta] as
+%   defined in the given SOFA file or struct, specified by idx. If no idx is
+%   specified all head orientations are returned.
+%
+%   See also: get_ir, sofa_get_header, sofa_get_secondary_sources
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -48,40 +52,19 @@ function [irs,opt_fields] = new_irs()
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 0;
-nargmax = 0;
-narginchk(nargmin,nargmax);
+nargmin = 1;
+nargmax = 2;
+narginchk(nargmin,nargmax)
+if nargin==nargmax-1
+   idx = ':';
+else
+    isargvector(idx);
+end
 
 
-%% ===== Computation =====================================================
-% The following fields are only optional
-opt_fields = {'room_corners'};
-% Create our reference irs struct
-irs = struct;
-irs.description = 'Reference implementation of the irs struct.';
-irs.head = 'dummy';             % Used dummy head
-irs.ears = 'dummy';             % Used dummy head ears
-irs.room = 'dummy';             % Used room
-irs.room_corners = [0 0 0]';    % corners of the used room
-irs.source = 'dummy';           % Used loudsoeaker
-irs.distance = 1;               % Distance between head and source. NOTE: this
-                                %>has to be norm(head_position-source_position)
-irs.fs = 44100;                 % Sampling rate
-irs.head_position = [0 0 0]';   % Position of head
-irs.head_reference = [0 1 0]';  % Position to which the head is pointing.
-                                %>head_direction = head_reference-head_position
-irs.source_position = [0 1 0]'; % Position of loudspeaker source
-irs.source_reference = [0 0 0]';% Position to which the source is pointing.
-                                %>source_direction =
-                                %>source_reference-source_position
-irs.head_azimuth = NaN;         % Head azimuth (NaN if no rotation took place)
-irs.head_elevation = NaN;       % Head elevation (NaN if no rotation took place)
-irs.torso_azimuth = NaN;        % Torso azimuth (NaN if no rotation took place)
-irs.torso_elevation = NaN;      % Torso elevation (NaN if no rotation took
-                                %>place)
-irs.apparent_azimuth = [];      % Apparent azimuth of source in relation to
-                                %>head direction
-irs.apparent_elevation = [];    % Apparent elevation of source in relation to
-                                %>head direction
-irs.left = [];                  % Left ear signal
-irs.right = [];                 % Right ear signal
+%% ===== Computation ====================================================
+header = sofa_get_header(sofa);
+listener_view = SOFAconvertCoordinates(header.ListenerView, ...
+                                       header.ListenerView_Type,'spherical');
+phi = correct_azimuth(rad(listener_view(idx,1)));
+theta = correct_elevation(rad(listener_view(idx,2)));

@@ -5,7 +5,7 @@ function [C,idx] = findnearestneighbour(A,b,number_of_neighbours)
 %
 %   Input parameters:
 %       A                     - matrix
-%       b                     - colum to search for in A
+%       b                     - column to search for in A
 %       number_of_neighbours  - number of nearest neighbours to find
 %
 %   output parameters:

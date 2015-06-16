@@ -1,19 +1,20 @@
-function brs = irs2brs(irs)
-%IRS2BRS converts a irs data set to an brs set suitable for the SSR
+function boolean = sofa_is_file(sofa)
+%SOFA_CHECK returns 1 for a sofa file, 0 for a sofa struct or an error otherwise
 %
-%   Usage: brs = irs2brs(irs)
+%   Usage: number = sofa_check(sofa)
 %
 %   Input parameters:
-%       irs     - irs data set
+%       sofa    - sofa struct or file name
 %
 %   Output parameters:
-%       brs     - brs data set
+%       number  - 1: sofa is a file
+%                 0: sofa is a struct
 %
-%   IRS2BRS(irs) converts a irs data set into a brs set suitable for the
-%   SoundScape Renderer. The brs data set is a matrix containing the
-%   channels for all directions.
+%   SOFA_CHECK(sofa) checks if the given sofa is a file or a struct. In the
+%   first case a 1 is returned, in the second case a 0. If none of both is true
+%   an error will be thrown.
 %
-%   See also: set_wfs_25d
+%   See also: sofa_get_header, sofa_get_data
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -50,30 +51,16 @@ function brs = irs2brs(irs)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
-nargmax = 2;
+nargmax = 1;
 narginchk(nargmin,nargmax)
-if nargin==nargmax-1
-    conf = SFS_config;
-end
-check_irs(irs);
-isargstruct(conf);
 
 
 %% ===== Main ===========================================================
-
-% Check if only one elevation angle is given
-if length(unique(irs.apparent_elevation))~=1
-    error(['%s: Your irs set has different elevation angles, which is',...
-        ' not supported by the SoundScape Renderer.'],upper(mfilename));
+if ~isstruct(sofa) && exist(sofa,'file')
+    boolean = true;
+elseif isstruct(sofa) && isfield(sofa,'GLOBAL_Conventions') && ...
+       strcmp('SOFA',sofa.GLOBAL_Conventions)
+    boolean = false;
+else
+    error('%s: sofa has to be a file or a SOFA struct.',upper(mfilename));
 end
-
-% TODO: check the order of angles
-%       I think the user have to check this by itself. Because the user
-%       could also be interested in a particular angle order
-
-for ii = 1:length(irs.apparent_azimuth)
-    brs(:,(ii-1)*2+1:ii*2) = [irs.left(:,ii) irs.right(:,ii)];
-end
-
-
-

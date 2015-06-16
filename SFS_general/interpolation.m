@@ -1,22 +1,28 @@
-function irs = irs_with_particular_elevation(irs,delta)
-%IRS_WITH_PARTICULAR_ELEVATION(irs,delta) returns an IRS set which only contains
-%data for one elevation
+function B = interpolation(A,X,x)
+%INTPOLATION interpolates the given data A(X) at the point x
 %
-%   Usage: irs = irs_with_particular_elevation(irs,[delta])
+%   Usage: B = interpolation(A,X,x)
 %
 %   Input parameters:
-%       irs     - IR data set
-%       delta   - elevation angle for the desired IR / rad
-%                 default: 0
+%       A       - matrix containing data as rows in the form [N M], where
+%                     M ... number of points X (2 or 3)
+%                     N ... samples of data A
+%       X       - matrix containing positions b as columns, at which A(X) is
+%                 given [D M]
+%                     M ... number of points X (2 or 3)
+%                     D ... dimension of space (1 or 2)
+%       x       - desired point at which A should be interpolated [D 1]
 %
 %   Output parameters:
-%       irs      - IRS for the given elevation
+%       B       - interpolated data at point x [N 1]
 %
-%   IRS_WITH_PARTICULAR_ELEVATION(irs,delta) returns a IRS set for the given
-%   angle delta, or by default the horizontal plane. Input should be an IRS-set
-%   with diffrent values for the elevation
+%   INTERPOLATION(A,X,x) interpolates the data A given at two or three points X
+%   at the desired position x.
+%   Note that the given parameter are not checked if they have all the correct
+%   dimensions in order to save computational time, because this function could
+%   be called quiet often.
 %
-%   See also: slice_irs, new_irs
+%   See also: interpolate_ir, get_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -51,19 +57,37 @@ function irs = irs_with_particular_elevation(irs,delta)
 %*****************************************************************************
 
 
-%% ===== Checking of input  parameters ==================================
-nargmin = 1;
-nargmax = 2;
-narginchk(nargmin,nargmax)
-check_irs(irs);
-if nargin==nargmax
-    isargscalar(delta);
-else
-    delta = 0;
-end
+%% ===== Checking of input parameters ===================================
+% Disabled for time constrains
+%nargmin = 3;
+%nargmax = 3;
+%narginchk(nargmin,nargmax);
 
 
 %% ===== Computation ====================================================
-% Finding the entries belonging to delta and slice the irs
-idx = (( round(irs.apparent_elevation*10)==round(10*delta) ));
-irs = slice_irs(irs,idx);
+% --- 1D interpolation ---
+if size(A,2)==2
+    % Linear interpolation
+    B = A(:,1) + (A(:,2)-A(:,1)) * ...
+         norm(x-X(:,1)) / norm(X(:,2)-X(:,1));
+% --- 2D interpolation ---
+elseif size(A,2)==3
+    % Interpolation between three points (compare Vector Based Amplitude Panning)
+    %
+    %           X(:,ii) x
+    % w(ii) = ------------
+    %         |X(:,ii)||x|
+    %
+    % FIXME: this is not working if |X(:,ii)| or |x| = 0!
+    w = vector_product(X,repmat(x,[1 3]),1) ./ ...
+        (vector_norm(X,1)./norm(x));
+    % The interpolation with 3 points hasn't been checked yet, hence we are
+    % including a checking of the w parameters
+    if any(w<0)
+        error('%s: one of your interpolation weights is <0.',upper(mfilename));
+    end
+    % Calculate desired B with linear combination w(ii)
+    B = w(1)*A(:,1) + w(2)*A(:,2) + w(3)*A(:,3);
+else
+    error('%s: size(A,2) has to be 2 or 3.',upper(mfilename));
+end

@@ -9,6 +9,17 @@ source (loudspeaker) setups, time snapshots of full band impulses emitted by the
 secondary source distributions, or even generate Binaural Room Scanning (BRS)
 stimuli sets in order to simulate WFS with the SoundScape Renderer (SSR).
 
+This documentation is all about its usage, if you are interested in the
+underlying mathematics you should have a look at its PDF documentation [Theory
+of Sound Field
+Synthesis](https://github.com/sfstoolbox/sfs-documentation/releases/latest).
+
+**Attention:** the master branch incorporates already
+[SOFA](http://sofaconventions.org/) as file format for HRTFs which replaces the
+old irs file format formerly used by the SFS Toolbox. If you still need this
+you should download [the latest version with irs file
+support](https://github.com/sfstoolbox/sfs/releases/tag/1.2.0).
+
 ### Table of Contents
 
 **[Installation](#installation)**  
@@ -150,10 +161,10 @@ axis([-2 2 -2 2]);
 
 #### Arbitrary Shaped Arrays
 
-You can create arbitrarily shaped arrays by settings the values of the single
-loudspeaker directly in the <code>conf.secondary_sources.x0</code> matrix, which
-has to be empty if you want to use one of the above predefined shapes. The rows
-of the matrix contain the single loudspeakers and the six columns are
+You can create arbitrarily shaped arrays by setting
+<code>conf.secondary_sources.geometry</code> to 'custom' and define the values
+of the single loudspeaker directly in the <code>conf.secondary_sources.x0</code>
+matrix. The rows of the matrix contain the single loudspeakers and the six columns are
 <code>[x y z nx ny nz w]</code>, the position and direction and weight of the
 single loudspeakers. The weight <code>w</code> is a factor the driving function
 of this particular loudspeaker is multiplied with in a function that calculates
@@ -192,6 +203,7 @@ x04 = [(R*x0(:,1:3)')' (R*x0(:,4:6)')'];
 x04(:,1) = x04(:,1) + ones(size(x0,1),1)*1.5;
 x04(:,7) = x0(:,7);
 % combine everything
+conf.secondary_sources.geometry = 'custom';
 conf.secondary_sources.x0 = [x01; x02; x03; x04];
 % if we gave the conf.x0 to the secondary_source_positions function it will
 % simply return the defined x0 matrix
@@ -423,13 +435,11 @@ area for a specified WFS or NFC-HOA system.
 You can even download a set of HRTFs, which will just work with the Toolbox at 
 http://dev.qu.tu-berlin.de/projects/measurements/wiki/2010-11-kemar-anechoic
 
-In order to easily use different HRIR sets the toolbox incorporates its own
-[struct based file
-format](http://dev.qu.tu-berlin.de/projects/measurements/wiki/IRs_file_format)
-for HRIRs and BRIRs. The toolbox provides conversion functions for three other
-free available data sets (CIPIC,MIT,Oldenburg). In the future it will
-incorporate the newly advancing [SOFA HRTF file
-format](http://sourceforge.net/projects/sofacoustics).
+In order to easily use different HRIR sets the toolbox incorporates the
+[SOFA file format](http://sofaconventions.org)
+for HRIRs and BRIRs. A large set of different impulse responses is now available
+in these format, see for example:
+http://www.sofaconventions.org/mediawiki/index.php/Files.
 
 The files dealing with the binaural simulations are in the folder
 <code>SFS_binaural_synthesis</code>. Files dealing with HRTFs are in the folder
@@ -444,8 +454,8 @@ with the impulse response by the <code>auralize_ir()</code> function.
 
 ```Matlab
 conf = SFS_config_example;
-irs = read_irs('QU_KEMAR_anechoic_3m.mat',conf);
-ir = get_ir(irs,[rad(30) 0 3],'spherical',conf);
+hrtf = SOFAload('QU_KEMAR_anechoic_3m.sofa');
+ir = get_ir(hrtf,[0 0 0],[0 0],[rad(30) 0 3],conf);
 nsig = randn(44100,1);
 sig = auralize_ir(ir,nsig,1,conf);
 sound(sig,conf.fs);
@@ -460,9 +470,9 @@ conf.secondary_sources.size = 3;
 conf.secondary_sources.number = 56;
 conf.secondary_sources.geometry = 'circle';
 conf.dimension = '2.5D';
-irs = read_irs('QU_KEMAR_anechoic_3m.mat',conf);
-% ir = ir_wfs(X,phi,xs,src,irs,conf);
-ir = ir_wfs([0 0 0],pi/2,[0 3 0],'ps',irs,conf);
+hrtf = SOFAload('QU_KEMAR_anechoic_3m.sofa',conf);
+% ir = ir_wfs(X,phi,xs,src,hrtf,conf);
+ir = ir_wfs([0 0 0],pi/2,[0 3 0],'ps',hrtf,conf);
 nsig = randn(44100,1);
 sig = auralize_ir(ir,nsig,1,conf);
 ```

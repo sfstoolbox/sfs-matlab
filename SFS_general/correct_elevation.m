@@ -12,7 +12,7 @@ function delta = correct_elevation(delta)
 %   CORRECT_ELEVATION(delta) returns a value for elevation delta between
 %   -pi/2 and pi/2.
 %
-%   See also: correct_azimuth, read_irs, get_ir
+%   See also: correct_azimuth, get_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

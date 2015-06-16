@@ -19,8 +19,8 @@ function D = driving_function_mono_wfs_fs(x0,nx0,xs,f,conf)
 %   frequency f.
 %
 %   References:
-%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
-%       PhD thesis, TU Berlin
+%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
+%       "Theory of Sound Field Synthesis"
 %       S. Spors, H. Wierstorf, M. Geier, J. Ahrens (2009) - "Physical and
 %       Perceptual Properties of Focused Sources in Wave Field Synthesis",
 %       AES127
@@ -99,7 +99,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % D(x0,w) = --- --- ------------- e^(i w/c |x0-xs|)
         %           2pi  c  |x0-xs|^(3/2)
         %
-        % See Wierstorf (2014), p. 27 (2.62)
+        % see Wierstorf et al. (2015), eq.(#D:wfs:fs)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -116,7 +116,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % --- |--- + ------- |  ----------- e^(i w/c |x0-xs|)
         % 2pi \ c    |x0-xs| /   |x0-xs|^2
         %
-        % See Wierstorf (2014), p. 27 (2.60)
+        % see Wierstorf et al. (2015), eq.(#D:wfs:fs:woapprox)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -131,7 +131,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % D(x0,w) =  - -- --------- H1  | - |x0-xs| |
         %              2c  |x0-xs|      \ c         /
         %
-        % See Wierstorf (2014), p. 27 (2.66)
+        % compare Wierstorf et al. (2015), eq.(#D:wfs:fs:ls)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -169,7 +169,7 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D(x0,w) = ---  _ |--- ------------- e^(i w/c |x0-xs|)
         %                2pi   \| c  |x0-xs|^(3/2)
         %
-        % See Wierstorf (2014), p.27 (2.63)
+        % see Wierstorf et al. (2015), eq.(#D:wfs:fs:2.5D)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -194,7 +194,7 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D(x0,w) = -g0 _ |------  ------------- e^(i w/c |x0-xs|)
         %                     \|2pi ic  |x0-xs|^(3/2)
         %
-        % See Spors (2009), (7)
+        % see Spors (2009), eq.(7)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -217,7 +217,7 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D(x0,w) = -g0 -- -----------  H1  | - |x0-xs| |
         %                    2c   |x0-xs|        \ c         /
         %
-        % See Spors et al. (2009), (6)
+        % see Spors et al. (2009), eq.(6)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -241,7 +241,7 @@ elseif strcmp('2.5D',dimension)
         %   ---  | _ |---  + _ |---  ------- |  ----------- e^(i w/c |x0-xs|)
         %   2pi  \  \| c      \|i w  |x0-xs| /   |x0-xs|^2
         %
-        % See Wierstorf (2014), p.27 (2.61)
+        % see Wierstorf et al. (2015), eq.(#D:wfs:fs:woapprox:2.5D)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);

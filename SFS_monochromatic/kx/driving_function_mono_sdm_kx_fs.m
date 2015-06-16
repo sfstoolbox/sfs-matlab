@@ -120,7 +120,7 @@ elseif strcmp('2.5D',dimension)
         %                     \ ----------_-_-_-_-_-_---------,       |kx|>|w/c|
         %                          K0( \|kx^2-(w/c)^2 yref )
         %
-        % see Spors and Ahrens (2010), (7)
+        % see Spors and Ahrens (2010), eq.(7)
         %
         D(idxpr) =  exp(1i*kx(idxpr)*xs(1)) .* ...
             besselh(0,2,sqrt( (omega/c)^2 - kx(idxpr).^2 )*abs(xref(2)-xs(2))) ./ ...

@@ -64,12 +64,21 @@ isargdir(directory);
 
 %% ===== Movie ===========================================================
 % Generate a movie from the png files with MEncoder
-status = system('which mencoder');
-if status
-    error('%s: mencoder is needed to generate the movie.',upper(mfilename));
+status1 = system('which mencoder > /dev/null');
+status2 = system('which avconv > /dev/null');
+if status1 & status2
+    error('%s: mencoder or avconv is needed to generate the movie.', ...
+        upper(mfilename));
 else
-    cmd = sprintf(['mencoder mf://%s/%s*.png -mf fps=25:type=png', ...
-        ' -ovc lavc -lavcopts vcodec=mpeg4:mbd=2:trell -oac copy -o %s'],...
-        directory,pattern,outfile);
+    if ~status1
+        cmd = sprintf(['mencoder mf://%s/%s*.png -mf fps=25:type=png', ...
+                       ' -ovc lavc -lavcopts vcodec=mpeg4:mbd=2:trell ', ...
+                       '-oac copy -o %s'],...
+                      directory,pattern,outfile);
+    else
+        cmd = sprintf(['avconv -f image2 -r 25 -i %s/%s_%%04d.png ', ...
+                       '-c:v libx264 -crf 19 %s'], ...
+                      directory,pattern,outfile);
+    end
     system(cmd);
 end

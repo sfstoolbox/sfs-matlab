@@ -1,19 +1,19 @@
 function ir = shorten_ir(ir,nsamples)
-%SHORTEN_IR shortens a IR
+%SHORTEN_IR shortens an impulse response
 %
 %   Usage: ir = shorten_ir(ir,nsamples)
 %
 %   Input parameters:
-%       ir          - IR signal with length x channels
-%       nsamples    - length of the target IR
+%       ir          - impulse response with length x channels
+%       nsamples    - length of the target impulse response
 %
 %   Output paramteres:
-%       ir          - IR signal with nsamples x n
+%       ir          - impulse response signal with nsamples x n
 %
-%   SHORTEN_HRIR(ir,nsamples) shortens a given IR to the given number of samples
-%   nsamples and applying a 5% long hanning window.
+%   SHORTEN_IR(ir,nsamples) shortens a given impulse response to the given
+%   number of samples nsamples and applying a 5% long hanning window.
 %
-%   See also: SFS_config, read_irs, intpol_ir, reduce_ir
+%   See also: get_ir, reduce_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -56,7 +56,6 @@ isargpositivescalar(nsamples);
 
 
 %% ===== Computation ====================================================
-% Window IR
+% Window impulse response
 win = hann_window(0,ceil(0.05*nsamples),nsamples);
-
 ir = ir(1:nsamples,:) .* repmat(win,[1 size(ir,2)]);

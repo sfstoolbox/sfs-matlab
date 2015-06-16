@@ -1,21 +1,29 @@
-function irspart = slice_irs(irs,idx)
-%SLICE_IRS returns a part of an IRs set given by idx
+function ir = sofa_get_data_fir(sofa,idx)
+%SOFA_GET_DATA_FIR returns impulse responses from a SOFA file or struct
 %
-%   Usage: irspart = slice_irs(irs,idx)
+%   Usage: ir = sofa_get_data_fir(sofa,[idx])
 %
 %   Input parameters:
-%       irs     - IR data set
-%       idx     - idx to slice out of the IR set
-%       conf    - optional configuration struct (see SFS_config)
+%       sofa    - impulse response data set (SOFA struct/file)
+%       idx     - index of the single impulse responses that should be returned
+%                 idx could be a single value, then only one impulse response
+%                 will be returned, or it can be a vector then all impulse
+%                 responses for the corresponding index positions will be
+%                 returned.
+%                 If no index is specified all data will be returned.
 %
 %   Output parameters:
-%       irspart - HRIR/BRIR containing only the part of the original IR set
-%                 given by idx
+%       ir      - impulse response (M,2,N), where
+%                   M ... number of impulse responses
+%                   N ... samples
 %
-%   SLICE_IRS(irs,idx) returns a part of the IR set irs given by idx. The new
-%   part is a full IR set containing all the necessary struct elements.
+%   SOFA_GET_DATA_FIR(sofa,idx) returns impulse response of the given
+%   SOFA file or struct, specified by idx. If no idx is specified all data
+%   contained in sofa is returned.
+%   For the struct the SOFA file has to loaded before with SOFAload().
+%   For a description of the SOFA file format see: http://sofaconventions.org
 %
-%   See also: get_ir, read_irs
+%   See also: sofa_get_data_fire, sofa_get_header, get_ir, SOFAload
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -51,35 +59,31 @@ function irspart = slice_irs(irs,idx)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
+nargmin = 1;
 nargmax = 2;
-narginchk(nargmin,nargmax);
+narginchk(nargmin,nargmax)
+if nargin==nargmax-1
+    idx = [];
+else
+    isargvector(idx);
+end
 
 
-%% ===== Slicing the IR set ==============================================
-irspart = irs;
-irspart.left = irs.left(:,idx);
-irspart.right = irs.right(:,idx);
-irspart.apparent_azimuth = irs.apparent_azimuth(idx);
-irspart.apparent_elevation = irs.apparent_elevation(idx);
-if ~all(size(irs.head_azimuth)==[1 1])
-    irspart.head_azimuth = irs.head_azimuth(idx);
-end
-if ~all(size(irs.head_elevation)==[1 1])
-    irspart.head_elevation = irs.head_elevation(idx);
-end
-if ~all(size(irs.torso_azimuth)==[1 1])
-    irspart.torso_azimuth = irs.torso_azimuth(idx);
-end
-if ~all(size(irs.torso_elevation)==[1 1])
-    irspart.torso_elevation = irs.torso_elevation(idx);
-end
-if ~all(size(irs.distance)==[1 1])
-    irspart.distance = irs.distance(idx);
-end
-if ~all(size(irs.source_position)==[3 1])
-    irspart.source_position = irs.source_position(idx);
-end
-if ~all(size(irs.source_reference)==[3 1])
-    irspart.source_reference = irs.source_reference(idx);
+%% ===== Computation ====================================================
+if length(idx)==0
+    if sofa_is_file(sofa)
+        sofa = SOFAload(sofa);
+    end
+    ir = sofa.Data.IR;
+else
+    header = sofa_get_header(sofa);
+    if sofa_is_file(sofa)
+        ir = zeros(length(idx),2,header.API.N);
+        for ii=1:length(idx)
+            tmp = SOFAload(sofa,[idx(ii) 1]);
+            ir(ii,:,:) = tmp.Data.IR;
+        end
+    else
+        ir = sofa.Data.IR(idx,:,:);
+    end
 end

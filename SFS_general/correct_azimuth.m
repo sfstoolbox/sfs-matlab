@@ -12,7 +12,7 @@ function phi = correct_azimuth(phi)
 %   CORRECT_AZIMUTH(phi) returns a value for azimuth phi between
 %   -pi and +pi-eps.
 %
-%   See also: correct_elevation, read_irs, get_ir
+%   See also: correct_elevation, get_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

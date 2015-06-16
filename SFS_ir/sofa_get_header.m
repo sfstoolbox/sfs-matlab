@@ -1,20 +1,19 @@
-function irs = correct_irs_angle_order(irs,conf)
-%CORRECT_IRS_ANGLE_ORDER reorders the angle entries of a irs to be increasing
+function header = sofa_get_header(sofa)
+%SOFA_GET_HEADER returns the header of a SOFA file or struct
 %
-%   Usage: irs = correct_irs_angle_order(irs,[conf])
+%   Usage: header = sofa_get_header(sofa)
 %
-%   Input options
-%       irs     - irs struct
-%       conf    - optional configuration struct (see SFS_config)
+%   Input parameters:
+%       sofa    - impulse response data set (SOFA struct/file)
 %
-%   Output options
-%       irs     - irs struct with corrected angle ordering
+%   Output parameters:
+%       header  - SOFA header
 %
-%   CORRECT_IRS_ANGLE_ORDER(irs,conf) corrects the order of the azimuth and
-%   elevation entries to be increasing over the whole range. This is needed for
-%   the interpolation functions.
+%   SOFA_GET_HEADER(sofa) returns the header of the given SOFA file or struct.
+%   For the struct the SOFA file has to loaded before with SOFAload().
+%   For a description of the SOFA file format see: http://sofaconventions.org
 %
-%   See also: ir_intpol
+%   See also: sofa_get_data, sofa_is_file, get_ir, SOFAload 
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -51,40 +50,17 @@ function irs = correct_irs_angle_order(irs,conf)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
-nargmax = 2;
-narginchk(nargmin,nargmax);
-if nargin==nargmax-1
-    conf = SFS_config;
-end
-if conf.debug
-    check_irs(irs);
-end
+nargmax = 1;
+narginchk(nargmin,nargmax)
 
 
-%% ===== Computation =====================================================
-% Sort azimuth angle and reorder the whole irs
-irs.apparent_azimuth = correct_azimuth(irs.apparent_azimuth);
-[~,idx] = sort(irs.apparent_azimuth);
-irs.left = irs.left(:,idx);
-irs.right = irs.right(:,idx);
-irs.apparent_azimuth = irs.apparent_azimuth(idx);
-irs.apparent_elevation = irs.apparent_elevation(idx);
-if ~isequal(size(irs.head_azimuth),[1 1])
-    irs.head_azimuth = irs.head_azimuth(idx);
-end
-if ~isequal(size(irs.head_elevation),[1 1])
-    irs.head_elevation = irs.head_elevation(idx);
-end
-if ~isequal(size(irs.torso_azimuth),[1 1])
-    irs.torso_azimuth = irs.torso_azimuth(idx);
-end
-if ~isequal(size(irs.torso_elevation),[1 1])
-    irs.torso_elevation = irs.torso_elevation(idx);
-end
-if ~isequal(size(irs.distance),[1 1])
-    irs.distance = irs.distance(idx);
-end
-if ~(isequal(size(irs.source_position),[3 1]) || ...
-        isequal(size(irs.source_position),[1 3]))
-    irs.source_position = irs.source_position(:,idx);
+%% ===== Computation ====================================================
+% Get only the metadata of the SOFA data set
+if sofa_is_file(sofa)
+    header = SOFAload(sofa,'nodata');
+else
+    header = sofa;
+    if isfield(sofa.Data,'IR')
+        header.Data = rmfield(sofa.Data,'IR');
+    end
 end

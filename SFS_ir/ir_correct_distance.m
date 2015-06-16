@@ -1,21 +1,29 @@
-function irs = read_irs(irsfile,conf)
-%READ_IRS Read a HRIR/BRIR dataset
+function ir = ir_correct_distance(ir,ir_distance,r,conf)
+%IR_CORRECT_DISTANCE weights and delays the impulse reponse for a desired
+%distance
 %
-%   Usage: irs = read_irs(irsfile,[conf])
+%   Usage: ir = ir_correct_distance(ir,ir_distance,r,conf)
 %
 %   Input parameters:
-%       irsfile - filename of irs mat file
+%       ir          - impulse responses [M C N]
+%                       M ... number of measurements
+%                       C ... number of receiver channels
+%                       N ... number of samples
+%       ir_distance - distance of the given impulse responses [M 1]
+%       r           - desired distance [1]
+%       conf        - configuration struct (see SFS_config), containing:
+%                       conf.c
+%                       conf.fs
+%                       conf.N
+%                       conf.ir.useoriglength
 %
 %   Output paramteres:
-%       irs   - irs struct. For details on the containing fields have a look at
-%               the IR_format.txt file.
-%       conf  - optional configuration struct (see SFS_config)
+%       ir          - impulse responses [M C N]
 %
-%   READ_IRS(irsfile) loads a IR dataset as a struct containing the format
-%   specific fields. For a description of the mat format for the IR datasets,
-%   see IR_format.txt.
+%   IR_CORRECT_DISTANCE(ir,ir_distance,r,conf) weights and delays the given
+%   impulse responses, that they are conform with the specified distance r.
 %
-%   See also: get_ir, intpol_ir, dummy_irs, new_irs, ir_point_source
+%   See also: get_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -51,26 +59,47 @@ function irs = read_irs(irsfile,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
-nargmax = 2;
-narginchk(nargmin,nargmax);
-if nargin==nargmax-1
-    conf = SFS_config;
-end
-isargfile(irsfile);
-isargstruct(conf);
+%nargmin = 4;
+%nargmax = 4;
+%narginchk(nargmin,nargmax);
 
 
-%% ===== Configuration ================================================
+%% ===== Configuration ==================================================
+c = conf.c;
+fs = conf.fs;
 useoriglength = conf.ir.useoriglength;
+%N = conf.N; is used if useoriglength==false
 
 
-%% ===== Read IR files ================================================
-% Load the mat file
-load(irsfile);
-% Check irs format
-check_irs(irs);
-if ~useoriglength
-    % Correct beginning zeros and length of impulse response
-    irs = fix_irs_length(irs,conf);
+%% ===== Computation ====================================================
+% Stop extrapolation for distances larger than 10m
+if any(ir_distance>10)
+    ir_distance = min(ir_distance,10);
+    warning(['%s: Your desired radius is larger than 10m, but we will ', ...
+        'only extrapolate up to 10m. All larger radii will be set to ', ...
+        '10m.'],upper(mfilename));
 end
+% Append zeros at the beginning of the impulse responses corresponding to
+% its maximum radius
+if ~useoriglength
+    zero_padding = ceil(ir_distance/c * fs);
+    if conf.N-zero_padding<128
+        error(['%s: choose a larger conf.N value, because otherwise you ', ...
+            'will have only %i samples of your original impulse response.'], ...
+            upper(mfilename),conf.N-zero_padding);
+    end
+else
+    zero_padding = 0;
+end
+% Time delay of the source (at the listener position)
+delay = (r-ir_distance)/c*fs; % / samples
+% Amplitude weighting (point source model)
+% This gives weight=1 for r==ir_distance
+weight = ir_distance./r;
+if abs(delay)>size(ir,3)
+    error(['%s: your impulse response is to short for a desired ', ...
+        'delay of %.1f samples.'],upper(mfilename),delay);
+end
+% Apply delay and weighting
+ir = delayline(ir,[delay+zero_padding; delay+zero_padding], ...
+               [weight; weight],conf);

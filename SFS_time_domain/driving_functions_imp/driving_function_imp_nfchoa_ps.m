@@ -104,7 +104,7 @@ elseif strcmp('2.5D',dimension)
         %
         [sos,~] = zp2sos(z*c/r,z*c/R,1,'up','none');
         %
-        % Compare Spors et al. (2011)
+        % compare Spors et al. (2011)
         %
     else
         error(['%s: %s, this type of driving function is not implemented', ...

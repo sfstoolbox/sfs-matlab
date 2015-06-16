@@ -22,8 +22,8 @@ function G = greens_function_mono(x,y,z,xs,src,f,conf)
 %   f.
 %
 %   References:
-%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
-%       PhD thesis, TU Berlin
+%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
+%       "Theory of Sound Field Synthesis"
 %
 %   See also: sound_field_mono
 
@@ -84,7 +84,7 @@ if strcmp('ps',src)
     % G(x-xs,w) = --- -----------------
     %             4pi      |x-xs|
     %
-    % See: Wierstorf (2014), p.21 (2.28)
+    % see: Wierstorf et al. (2015), eq.(#S:ps)
     %
     G = 1/(4*pi) * exp(-1i*omega/c .* sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2)) ./ ...
             sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
@@ -92,13 +92,13 @@ if strcmp('ps',src)
 elseif strcmp('ls',src)
     % Source model for a line source: 2D Green's function.
     %
-    %              i   (2) / w        \
-    % G(x-xs,w) =  -  H0  |  - |x-xs|  |
-    %              4       \ c        /
+    %                i   (2) / w        \
+    % G(x-xs,w) =  - -  H0  |  - |x-xs|  |
+    %                4       \ c        /
     %
-    % See: Wierstorf (2014), p.22 (2.32)
+    % see: Wierstorf et al. (2015), eq.(#S:ls)
     %
-    G = 1i/4 * besselh(0,2,omega/c* ...
+    G = -1i/4 * besselh(0,2,omega/c* ...
         sqrt( (x-xs(1)).^2 + (y-xs(2)).^2 + (z-xs(3)).^2 ));
 
 elseif strcmp('pw',src)
@@ -106,7 +106,7 @@ elseif strcmp('pw',src)
     %
     % G(x,w) = e^(-i w/c n x)
     %
-    % See: Wierstorf (2014), p.21 (2.23)
+    % see: Wierstorf et al. (2015), eq.(#S:pw)
     %
     % Direction of plane wave
     nxs = xs / norm(xs);

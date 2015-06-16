@@ -1,21 +1,42 @@
-function P = sound_field_mono_basis(AB, JH2n, Y,conf)
-%SOUND_FIELD_MONO_BASIS simulates a sound field with cylindrical/spherical
-%basic functions
+function [jn, h2n, Ynm, x, y, z] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf)
+%Evaluate spherical basis functions for given grid in cartesian coordinates
 %
-%   Usage: P = sound_field_mono_basis(AB, JH2n, Y,conf)
+%
+%   Usage: [jn, h2n, Ynm, x, y, z] = circbasis_mono_grid(X,Y,Z,f,xq,conf)
 %
 %   Input parameters:
-%       AB          - regular/singular cylindrical/spherical expansion coefficients
-%       JH2n        - cell array of cylindrical/spherical bessel/hankel(2nd kind) functions
-%       Y           - cell array of cylindrical/spherical harmonics
+%       X           - x-axis / m; single value or [xmin,xmax] or nD-array
+%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
+%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
+%       Nce         - maximum order of circular basis functions
+%       f           - frequency in Hz
+%       xq          - optional center of coordinate system
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       P           - resulting soundfield
+%       jn          - cell array of cylindrical bessel functions
+%       h2n         - cell array of cylindrical hankel functions of 2nd kind
+%       Ynm         - cell array of cylindrical harmonics
+%       x           - corresponding x axis / m
+%       y           - corresponding y axis / m
+%       z           - corresponding z axis / m
 %
-%   SOUND_FIELD_MONO_BASIS(AB, JH2n, Y,conf)
+%   CIRCBASIS_MONO_GRID(X,Y,Z,f,xq,conf) computes circular basis functions
+%   for given grid in cartesian coordinates. This is a wrapper function for
+%   circbasis_mono.
+%   For the input of X,Y,Z (DIM as a wildcard) :
+%     * if DIM is given as single value, the respective dimension is
+%     squeezed, so that dimensionality of the simulated sound field P is
+%     decreased by one.
+%     * if DIM is given as [dimmin, dimmax], a linear grid for the
+%     respective dimension with a resolution defined in conf.resolution is
+%     established
+%     * if DIM is given as n-dimensional array, the other dimensions have
+%     to be given as n-dimensional arrays of the same size or as a single value.
+%     Each triple of X,Y,Z is interpreted as an evaluation point in an
+%     customized grid. For this option, plotting and normalisation is disabled.
 %
-%   see also: cylbasis_mono_XYZgrid, sphbasis_mono_XYZgrid
+%   see also: circbasis_mono
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -50,53 +71,62 @@ function P = sound_field_mono_basis(AB, JH2n, Y,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
-nargmax = 4;
+nargmin = 5;
+nargmax = 7;
 narginchk(nargmin,nargmax);
-isargvector(AB);
+
+isargnumeric(X,Y,Z);
+% unique index encoding which dimension is an nd-array
+customGrid = (numel(X) > 2) + 2*(numel(Y) > 2) + 4*(numel(Z) > 2);
+switch customGrid
+  case 1
+    isargscalar(Y,Z);
+  case 2
+    isargscalar(X,Z);
+  case 3
+    isargequalsize(X,Y); isargscalar(Z);
+  case 4
+    isargscalar(X,Y);
+  case 5
+    isargequalsize(X,Z); isargscalar(Y);
+  case 6
+    isargequalsize(Y,Z); isargscalar(X);
+  case 7
+    isargequalsize(X,Y,Z);
+  otherwise
+    isargvector(X,Y,Z);
+end
+isargpositivescalar(f,Nce);
 if nargin<nargmax
   conf = SFS_config;
 else
   isargstruct(conf);
 end
-if length(AB) ~= length(Y)
-  error('%s: length missmatch.',upper(mfilename));
+if nargin == nargmin
+  xq = [0, 0, 0];
 end
-
-%% ===== Configuration ==================================================
-% Plotting result
-showprogress = conf.showprogress;
-usenormalisation = conf.usenormalisation;
+isargposition(xq);
 
 %% ===== Computation ====================================================
-L = length(Y);
-N = length(JH2n);
-P = zeros(size(JH2n{1}));
-
-if L == N
-  % cylindrical basic functions
-  for l=1:L    
-    P = P + AB(l)*(JH2n{l}.*Y{l});
-    if showprogress, progress_bar(l,L); end  % progress bar
-  end  
-elseif L == N^2
-  % spherical basic functions
-  l = 0;
-  for n=0:N-1
-    for m=-n:n
-      l=l+1;
-      if showprogress, progress_bar(l,L); end  % progress bar
-      P = P + AB(l)*(JH2n{n+1}.*Y{l});
-    end
-  end  
+if customGrid
+  % just copy everything
+  xx = X; yy = Y;
+  x = X;   y = Y;  z = Z;
 else
-  error(['%s: lengths of arrays are not suited for cylindrical or .' ...
-    , 'spherical basic funcions'],upper(mfilename));
+  % Create a x-y-grid
+  [xx,yy,~,x,y,z] = xyz_grid(X,Y,Z,conf);
 end
 
-if usenormalisation
-  P = P./max(abs(P(:)));
-end
+k = 2*pi*f/conf.c;  % wavenumber
+
+% shift coordinates to expansion coordinate
+xx = xx-xq(1);
+yy = yy-xq(2);
+
+% coordinate transformation
+r = sqrt(xx.^2 + yy.^2);
+phi = atan2(yy,xx);
+
+[jn, h2n, Ynm] = circbasis_mono(r, phi, Nce, k, conf);
 
 end
-

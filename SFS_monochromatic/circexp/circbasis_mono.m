@@ -1,24 +1,29 @@
-function [P, x, y, z] = sound_field_mono_cylexpS(X,Y,Z,Bl,f,x0,conf)
-%SOUND_FIELD_MONO_CYLEXPS simulates a sound field with singular cylindrical
-%expansion coefficients
+function [Jn, H2n, Yn]  = circbasis_mono(r, phi, Nce, k, conf)
+%Evaluate circular basis functions for given input arguments
 %
-%   Usage: [P, x, y, z] = sound_field_mono_cylexpS(X,Y,Z,Bl,f,x0,conf)
+%   Usage: [Jn, H2n, Yn]  = circbasis_mono(r, phi, Nce, k, conf)
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax]
-%       Y           - y-axis / m; single value or [ymin,ymax]
-%       Z           - z-axis / m; single value or [zmin,zmax]
-%       Bl          - singular cylindrical expansion coefficients
-%       f           - frequency in Hz
-%       x0          - optional expansion center coordinates, default: [0, 0, 0]
+%       r           - distance from z-axis in cylindrical coordinates 
+%       phi         - azimuth angle in cylindrical coordinates
+%       k           - wave number
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       P           - resulting soundfield
+%       Jn          - cell array of cylindrical bessel functions
+%       H2n         - cell array of cylindrical hankel functions of 2nd kind
+%       Yn          - cell array of cylindrical harmonics
 %
-%   SOUND_FIELD_MONO_CYLEXPS(X,Y,Z,Bl,f,x0,conf)
+%   CIRCBASIS_MONO(r, phi, Nce, k, conf) computes cylindrical basis functions
+%   for the given arguments r and phi. r and phi can be of arbitrary (but same)
+%   size. Output will be stored in cell arrays (one cell entry for each order)
+%   of length 2*Nce+1 . Each cell array entry contains a 
+%   matrix of the same size as r and phi.
 %
-%   see also: cylbasis_mono_XYZgrid, sound_field_mono_basis
+%   References:
+%       Williams (1999) - "Fourier Acoustics", ACADEMIC PRESS
+%
+%   see also: cylbasis_mono_XYZgrid besselj besselh
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -53,24 +58,42 @@ function [P, x, y, z] = sound_field_mono_cylexpS(X,Y,Z,Bl,f,x0,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 7;
+nargmin = 4;
+nargmax = 5;
 narginchk(nargmin,nargmax);
-isargvector(X,Y,Z,Bl);
-isargpositivescalar(f);
+isargequalsize(r,phi);
+isargscalar(k);
+isargpositivescalar(Nce);
 if nargin<nargmax
     conf = SFS_config;
 else
     isargstruct(conf);
 end
-if nargin == nargmin
-  x0 = [0, 0, 0];
-end  
-isargposition(x0);
+
+%% ===== Configuration ==================================================
+showprogress = conf.showprogress;
 
 %% ===== Computation ====================================================
-[~, Hn, Yn, x, y, z] = cylbasis_mono_XYZgrid(X,Y,Z,f,x0,conf);
+kr = k.*r;  % argument of bessel functions
 
-P = sound_field_mono_basis(Bl,Hn,Yn,conf);
+L = 2*Nce + 1;
+Jn = cell(L,1);
+H2n = cell(L,1);
+Yn = cell(L,1);
+
+l = 0;
+for n=-Nce:0
+  % negative n
+  l = l + 1;
+  Jn{l} = besselj(n,kr);
+  H2n{l} = Jn{l} - 1j*bessely(n,kr);
+  Yn{l} = exp(1j*n*phi);
+  % positive n
+  Jn{L-l+1} = (-1)^n*Jn{l};
+  H2n{L-l+1} = (-1)^n*H2n{l};
+  Yn{L-l+1} = conj(Yn{l});  
+  if showprogress, progress_bar(n+Nce,Nce); end  % progress bar
+end
+
 end
 

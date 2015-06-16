@@ -1,18 +1,25 @@
-function [Alplus, SRplus, Alminus, SRminus] = cylexpSR_mono(Bl, xq, f, conf)
-%Regular-To-Regular Cylindrical Reexpansion (Translatory shift of Expansion)
+function [P, x, y, z] = sound_field_mono_circexp(X,Y,Z, Pm,mode,f,xq,conf)
+%SOUND_FIELD_MONO_SPHEXPR simulates a sound field given with 
+%regular/singular spherical expansion coefficients
 %
-%   Usage: [Alplus, RRplus, Alminus, RRminus] = cylexpRR_mono(Al, xq, f, conf)
+%   Usage: [P, x, y, z] = sound_field_mono_sphexp(X,Y,Z,Al,f,xq,conf)
 %
 %   Input parameters:
-%       Bl          - original singular cylindrical expansion coefficients [nx1]    
-%       xq          - original expansion center coordinate
-%       f           - frequency
+%       X           - x-axis / m; single value or [xmin,xmax] or nD-array
+%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
+%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
+%       Pm          - regular/singular spherical expansion coefficients
+%       mode        - 'R' for regular, 'S' for singular
+%       f           - frequency in Hz
+%       xq          - optional expansion center coordinates, default: [0, 0, 0]
+%       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       Alplus      - regular cylindrical expansion coefficients [nx1] 
-%       SRplus      - singular-to-regular cylindrical reexpansion coefficients [nxn]
-%       Alminus     - regular cylindrical expansion coefficients [nx1] 
-%       SRminus     - singular-to-regular cylindrical reexpansion coefficients [nxn]     
+%       P           - resulting soundfield
+%
+%   SOUND_FIELD_MONO_CIRCEXPR(X,Y,Z,Pm,mode,f,xq,conf)
+%
+%   see also: circbasis_mono_grid, sound_field_mono_circbasis
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -46,49 +53,38 @@ function [Alplus, SRplus, Alminus, SRminus] = cylexpSR_mono(Bl, xq, f, conf)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
-
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
-nargmax = 4;
+nargmin = 6;
+nargmax = 8;
 narginchk(nargmin,nargmax);
-isargposition(xq);
-if nargin<nargmax
-  conf = SFS_config;
-else
-  isargstruct(conf);
+isargvector(Pm);
+if mod(size(Pm, 1)-1, 2) ~= 0
+  error('Number of row of %s has be to odd', inputname(Pm));
 end
+isargnumeric(X,Y,Z);
+isargpositivescalar(f);
+if nargin<nargmax
+    conf = SFS_config;
+else
+    isargstruct(conf);
+end
+if nargin == nargmin
+  xq = [0, 0, 0];
+end  
+isargposition(xq);
 
-%% ===== Configuration ==================================================
-showprogress = conf.showprogress;
-Nce = conf.scattering.Nce;
+%% ===== Variables ======================================================
+Nce = ( size(Pm, 1) - 1 ) / 2;
 
 %% ===== Computation ====================================================
-% convert (xq) into spherical coordinates
-r = sqrt(sum(xq(1:2).^2));
-phi = atan2(xq(2),xq(1));
-
-% frequency
-k = 2*pi*f/conf.c;
-kr = k*r;
-
-L = 2*Nce+1;
-SRplus = zeros(L,L);
-SRminus = zeros(L,L);
-
-s = 0;
-for n=-Nce:Nce
-  s = s+1;
-  l = 0;
-  for m=-Nce:Nce
-    l = l+1;
-    SRplus(s,l) = besselh(n-m,2,kr) .* exp(-1j.*(n-m).*phi);
-    SRminus(s,l) = SRplus(s,l) .* -1.^(n-m);  
-  end
-  if showprogress, progress_bar(s,L); end  % progress bar
+if strcmp('R', mode)
+  [fn, ~, Ym, x, y, z] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf);
+elseif strcmp('S', mode)
+  [~, fn, Ym, x, y, z] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf);
+else
+  error('%s: %s is an unknown mode!',upper(mfilename), mode);
 end
 
-Alplus = SRplus*Bl;
-Alminus = SRminus*Bl;
+P = sound_field_mono_circbasis(Pm,fn,Ym);
 
 end
-

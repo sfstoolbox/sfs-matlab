@@ -1,31 +1,36 @@
-function [Jcyl, H2cyl, Ycyl, x, y, z] = cylbasis_mono_XYZgrid(X,Y,Z,f,xq,conf)
-%Evaluate cylindrical basis functions for given grid in cartesian coordinates
+function [EF, EFm] = circexp_mono_translation(t, mode, Nce, f, conf)
+% Circular translation coefficients (multipole re-expansion)
 %
-%
-%   Usage: [Jcyl, H2cyl, Ycyl, x, y, z] = cylbasis_mono_XYZgrid(X,Y,Z,f,xq,conf)
+%   Usage: [EF, EFm] = circexp_mono_translation(t, mode, Nse, f, conf)
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax]
-%       Y           - y-axis / m; single value or [ymin,ymax]
-%       Z           - z-axis / m; single value or [zmin,zmax]
-%       f           - frequency in Hz
-%       xq          - optional center of coordinate system
+%       t           - translatory shift [1x3] / m                    
+%       mode        - 'RS' for regular-to-singular reexpansion
+%                     'RR' for regular-to-regular reexpansion
+%                     'SR' for singular-to-regular reexpansion
+%                     'SS' for singular-to-singular reexpansion
+%       f           - frequency / Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       Jcyl        - cell array of cylindrical bessel functions
-%       H2cyl       - cell array of cylindrical hankel functions of 2nd kind
-%       Ycyl        - cell array of cylindrical harmonics
-%       x           - corresponding x axis / m
-%       y           - corresponding y axis / m
-%       z           - corresponding z axis / m
+%       EF          - circular re-expansion coefficients for t
+%       EFm         - circular re-expansion coefficients for -t
+%  
+%  CIRCEXP_MONO_TRANSLATION(t, mode, f, conf) computes the circular re-expansion
+%  coefficients to perform as translatory shift of circular basis function.
+%  Multipole Re-expansion computes the circular basis function for a shifted
+%  coordinate system (x+t) based on the original basis functions for (x). 
 %
-%   CYLBASIS_MONO_XYZGRID(X,Y,Z,f,xq,conf) computes cylindrical basis functions 
-%   for given grid in cartesian coordinates. This is a wrapper function for
-%   cylbasis_mono.
+%              \~~ inf
+%  E (x + t) =  >      (E|F)   (t) F (x)
+%   n          /__ l=0      l,n     l
 %
-%   see also: cylbasis_mono
-
+%  where {E,F} = {R,S}. R denotes the regular circular basis function, while
+%  S symbolizes the singular circular basis function. Note that (S|S) and 
+%  (S|R) are respectively equivalent to (R|R) and (R|S).
+%
+%  see also: circexp_mono_ps, circexp_mono_pw
+ 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
@@ -60,39 +65,52 @@ function [Jcyl, H2cyl, Ycyl, x, y, z] = cylbasis_mono_XYZgrid(X,Y,Z,f,xq,conf)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 4;
-nargmax = 6;
+nargmax = 5;
 narginchk(nargmin,nargmax);
-isargvector(X,Y,Z);
-isargpositivescalar(f);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
-if nargin == nargmin
-  xq = [0, 0, 0];
-end  
 isargposition(xq);
+if nargin<nargmax
+  conf = SFS_config;
+else
+  isargstruct(conf);
+end
+
+%% ===== Configuration ==================================================
+showprogress = conf.showprogress;
+c = conf.c;
+
+%% ===== Variables ======================================================
+% convert t into spherical coordinates
+r = norm(t(1:2));
+phi = atan2(t(2),t(1));
+
+% frequency
+k = 2*pi*f/c;
+kr = k*r;
+
+L = 2*Nce+1;
+RRplus = zeros(L,L);
+RRminus = zeros(L,L);
+
+% select suitable basis function
+if strcmp('RR', mode) || strcmp('SS', mode)
+  circbasis = @besselj;
+elseif strcmp('SR', mode) || strcmp('RS', mode)
+  circbasis = @(nu,z) besselh(nu,2,z);
+else
+  error('unknown mode:');
+end
 
 %% ===== Computation ====================================================
-
-% Create a x-y-grid
-[xx,yy,~,x,y,z] = xyz_grid(X,Y,Z,conf);
-
-k = 2*pi*f/conf.c;  % wavenumber
-
-% shift coordinates to expansion coordinate
-xx = xx-xq(1);
-yy = yy-xq(2);
-
-% coordinate transformation
-r = vector_norm(cat(3,xx,yy),3);
-phi = atan2(yy,xx);
-
-[Jcyl, H2cyl, Ycyl] = cylbasis_mono(r, phi, k, conf);
-
+s = 0;
+for n=-Nce:Nce
+  s = s+1;
+  l = 0;
+  for m=-Nce:Nce
+    l = l+1;
+    RRplus(s,l) = circbasis(n-m,kr) .* exp(-1j.*(n-m).*phi);
+    RRminus(s,l) = RRplus(s,l) .* -1.^(n-m);
+  end
+  if showprogress, progress_bar(s,L); end  % progress bar
 end
 
-
-
-
+end

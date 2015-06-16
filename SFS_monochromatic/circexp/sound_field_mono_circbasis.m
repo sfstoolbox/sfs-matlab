@@ -1,29 +1,21 @@
-function [Jn, H2n, Yn]  = cylbasis_mono(r,phi,k,conf)
-%Evaluate cylindrical basis functions for given input arguments
+function P = sound_field_mono_circbasis(Pm, JH2m, Ym)
+%simulates a sound field with spherical basis functions
 %
-%   Usage: [Jn, H2n, Yn]  = cylbasis_mono(r,phi,k,conf)
+%   Usage: P = sound_field_mono_circbasis(Pm, JH2m, Ym)
 %
 %   Input parameters:
-%       r           - distance from z-axis in cylindrical coordinates 
-%       phi         - azimuth angle in cylindrical coordinates
-%       k           - wave number
+%       Pm          - regular/singular circular expansion coefficients
+%       JH2m        - cell array of cylindrical bessel/hankel(2nd kind) functions
+%       Ym          - cell array of cylindrical harmonics (exponential
+%                     functions)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       Jn          - cell array of cylindrical bessel functions
-%       H2n         - cell array of cylindrical hankel functions of 2nd kind
-%       Yn          - cell array of cylindrical harmonics
+%       P           - resulting soundfield
 %
-%   CYLBASIS_MONO(r,phi,k,conf) computes cylindrical basis functions for
-%   the given arguments r and phi. r and phi can be of arbitrary (but same)
-%   size. Output will be stored in cell arrays (one cell entry for each order)
-%   of length 2*conf.scattering.Nce+1 . Each cell array entry contains a 
-%   matrix of the same size as r and phi.
+%   SOUND_FIELD_MONO_CIRCBASIS(Pm, JH2m, Ym)
 %
-%   References:
-%       Williams (1999) - "Fourier Acoustics", ACADEMIC PRESS
-%
-%   see also: cylbasis_mono_XYZgrid besselj besselh
+%   see also: circbasis_mono_grid sound_field_mono_circexp
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -59,42 +51,25 @@ function [Jn, H2n, Yn]  = cylbasis_mono(r,phi,k,conf)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;
-nargmax = 4;
+nargmax = 3;
 narginchk(nargmin,nargmax);
-isargequalsize(r,phi);
-isargscalar(k);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
+isargvector(Pm);
+isargequallength(Pm, Ym);
+Nse = length(JH2m) - 1;
+if (length(Ym) ~= (Nse + 1)^2)
+  error('%s, length(%s) has to be (length(%s)+1).^2!', upper(mfilename), ...
+    inputname(Ym), inputname(JH2m));
 end
-
-%% ===== Configuration ==================================================
-% Plotting result
-Nce = conf.scattering.Nce;
-showprogress = conf.showprogress;
 
 %% ===== Computation ====================================================
-kr = k.*r;  % argument of bessel functions
-
-L = 2*Nce + 1;
-Jn = cell(L,1);
-H2n = cell(L,1);
-Yn = cell(L,1);
+P = zeros(size(JH2m{1}));
 
 l = 0;
-for n=-Nce:0
-  % negative n
-  l = l + 1;
-  Jn{l} = besselj(n,kr);
-  H2n{l} = Jn{l} - 1j*bessely(n,kr);
-  Yn{l} = exp(1j*n*phi);
-  % positive n
-  Jn{L-l+1} = (-1)^n*Jn{l};
-  H2n{L-l+1} = (-1)^n*H2n{l};
-  Yn{L-l+1} = conj(Yn{l});  
-  if showprogress, progress_bar(n+Nce,Nce); end  % progress bar
+for n=0:Nse
+  for m=-n:n
+    l=l+1;    
+    P = P + Pm(l)*(JH2m{n+1}.*Ym{l});
+  end
 end
 
 end
-

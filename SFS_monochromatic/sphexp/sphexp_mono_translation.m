@@ -13,8 +13,8 @@ function [EF, EFm] = sphexp_mono_translation(t, mode, Nse, f, conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       EF          - singular spherical expansion coefficients of
-%                     scattered field
+%       EF          - spherical re-expansion coefficients for t
+%       EFm         - spherical re-expansion coefficients for -t
 %  
 %  SPHEXP_MONO_TRANSLATION(t, mode, f, conf) computes the spherical re-expansion
 %  coefficients to perform as translatory shift of spherical basis function.
@@ -38,7 +38,7 @@ function [EF, EFm] = sphexp_mono_translation(t, mode, Nse, f, conf)
 %                                   Dimensions", ELSEVIER
 %
 %   see also: sphexp_mono_ps, sphexp_mono_pw
-%
+
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
@@ -89,7 +89,7 @@ showprogress = conf.showprogress;
 dimension = conf.dimension;
 
 %% ===== Variables ======================================================
-% convert (xpq) into spherical coordinates
+% convert t into spherical coordinates
 r = sqrt(sum(t.^2));
 phi = atan2(t(2),t(1));
 theta = asin(t(3)./r);

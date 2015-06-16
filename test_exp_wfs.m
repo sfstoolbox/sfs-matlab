@@ -6,196 +6,159 @@ SFS_start;
 
 %% Parameters
 conf = SFS_config_example;
-
+conf.showprogress = true;
 conf.dimension = '2.5D';
+
+% plotting
+conf.plot.usedb = false;
+conf.plot.useplot = false;
+conf.usenormalisation = true;
+conf.resolution = 300;
+
+xrange = [-2 2];
+yrange = [-4 0];
+zrange = 0;
+
+[~,~,~,x1,y1,z1] = xyz_grid(xrange,yrange,zrange,conf);
+
+% secondary sources
 conf.secondary_sources.geometry = 'linear';
-conf.secondary_sources.number = 60;
+conf.secondary_sources.number = 64;
 conf.secondary_sources.size = 4;
 conf.secondary_sources.center = [0, 0, 0];
 
-conf.plot.useplot = false;
-
-conf.scattering.Nse = 23;
-conf.scattering.Nce = 23;
-
-conf.showprogress = true;
-conf.resolution = 400;
-
+f = 1000;
 ns = [0, -1, 0];  % propagation direction of plane wave
-xs = [0,  1.0, 0];  % position of point source
-f = 1200;
-xrange = [-2 2];
-yrange = [-2 2];
-zrange = 0;
+xs = [0, 2, 0];  % position of point source
+ls = xs;          % position of line source
 
-% scatterer
-sigma = inf;  % admittance of scatterer (inf to soft scatterer)
-R = 0.3;
-xq = [ 0, -1, 0];
-xt = [ 0.5, 0.5, 0];
-conf.xref = xq;
-     
-display(conf.scattering)
+xq = [0 -2 0];  % expansion center
+conf.xref = xq;  % reference position
 
-%% Spherical Expansion
-% spherical expansion
-A1sph = sphexp_mono_pw(ns,f,xq,conf);
-A1sph_shift = sphexp_mono_pw(ns,f,xq+xt,conf);
-A2sph = sphexp_mono_ps(xs,'R',f,xq,conf);
-A2sph_shift = sphexp_mono_ps(xs,'R', f,xq+xt,conf);
-% regular-to-regular spherical reexpansion (translatory shift)
-[RRsph, RRsphm] = sphexp_mono_translation(-xt, 'RR', f, conf);
-A1spht = RRsph*A1sph;
-A2spht = RRsph*A2sph;
+xt = [ 0.5, 0.5, 0];  % position of the sweet spot
+rt = 1.0;  % "size" of the sweet spot
+Nce = circexp_truncation_order(rt, f, 1e-6, conf);  % 2.5DHOA order for sweet spot
 
-% Evaluate spherical basis functions 
-[Jsphn, Hsphn, Ysphnm] = ...
-  sphbasis_mono_XYZgrid(xrange,yrange,zrange,f,xq,conf);
-%
-[Jsphnt, Hsphnt, Ysphnmt] = ...
-  sphbasis_mono_XYZgrid(xrange,yrange,zrange,f,xq+xt,conf);
+sigma = inf;  % (inf for sound soft scatterer)
 
-% compute fields
-P1sph = sound_field_mono_basis(A1sph, Jsphn, Ysphnm, conf);
-P1sph_shift = sound_field_mono_basis(A1sph_shift, Jsphnt, Ysphnmt, conf);
-P1spht = sound_field_mono_basis(A1spht, Jsphnt, Ysphnmt, conf);
-P2sph = sound_field_mono_basis(A2sph, Jsphn, Ysphnm, conf);
-P2sph_shift = sound_field_mono_basis(A2sph_shift, Jsphnt, Ysphnmt, conf);
-P2spht = sound_field_mono_basis(A2spht, Jsphnt, Ysphnmt, conf);
-
-% plot
-[~,~,~,x1,y1,z1] = xyz_grid(xrange,yrange,zrange,conf);
-
-plot_sound_field(P1sph ,x1,y1,z1, [], conf);
-plot_scatterer(xq,R);
-title('plane wave');
-plot_sound_field(P1sph_shift ,x1,y1,z1, [], conf);
-plot_scatterer(xq,R);
-title('plane wave (shifted expansion)');
-plot_sound_field(P1spht ,x1,y1,z1, [], conf);
-plot_scatterer(xq,R);
-title('plane wave (shifted reexpansion)');
-plot_sound_field(P2sph ,x1,y1,z1, [], conf);
-plot_scatterer(xq,R);
-title('point source');
-plot_sound_field(P2sph_shift ,x1,y1,z1, [], conf);
-plot_scatterer(xq,R);
-title('point source (shifted expansion)');
-plot_sound_field(P2spht ,x1,y1,z1, [], conf);
-plot_scatterer(xq,R);
-title('point source (shifted reexpansion)');
-
-%% Scattering with Sphere
-% scatterer is assumed to be located at coordinates origin
-B1sph = sphexp_mono_scatter(A1sph, R, sigma, f, conf); 
-B2sph = sphexp_mono_scatter(A2sph, R, sigma, f, conf);
-
-% compute fields
-P1sph_scatter = sound_field_mono_basis(A1sph, Hsphn, Ysphnm, conf);
-P2sph_scatter = sound_field_mono_basis(A2sph, Hsphn, Ysphnm, conf);
-
-%% WFS Reproduction of Spherical Expansion
-% regular spherical expansion of plane wave and point source
-A1sph = sphexp_mono_pw(ns,f,xq,conf);
-A2sph = sphexp_mono_ps(xs,'R',f,xq,conf);
-% loudspeakers
-x0 = secondary_source_positions(conf);
-x0pw = secondary_source_selection(x0,ns,'pw');
-x0ps = secondary_source_selection(x0,xs,'ps');
-% compute driving functions and sound fields
-D1sph = driving_function_mono_wfs_sphexp(x0pw(:,1:3),x0pw(:,4:6),A1sph,'R',f,xq,conf);
-D2sph = driving_function_mono_wfs_sphexp(x0ps(:,1:3),x0ps(:,4:6),A2sph,'R',f,xq,conf);
-% compute fields
-P1sphwfs = sound_field_mono(xrange,yrange,zrange,x0pw,'ps',D1sph,f,conf);
-P2sphwfs = sound_field_mono(xrange,yrange,zrange,x0ps,'ps',D2sph,f,conf);
-% plot
-[~,~,~,x1,y1,z1] = xyz_grid(xrange,yrange,zrange,conf);
-
-plot_sound_field(P1sphwfs ,x1,y1,z1, x0pw, conf);
-title('plane wave');
-plot_sound_field(P2sphwfs ,x1,y1,z1, x0ps, conf);
-title('point source');
-
-%% WFS Reproduction of focused source using time reversal
-% singular spherical expansion of point source
-B1sph = sphexp_mono_ps(xs, 'S', f, xs, conf);
-% loudspeakers
-x0 = secondary_source_positions(conf);
-x0ps = secondary_source_selection(x0,xs,'ps');
-x0fs = secondary_source_selection(x0,[xs,0 1 0],'fs');
-% compute driving functions
-D1sph = driving_function_mono_wfs_sphexp(x0ps(:,1:3),x0ps(:,4:6),B1sph,'S',f,xs,conf);
-D2sph = driving_function_mono_wfs_sphexp(x0fs(:,1:3),x0fs(:,4:6),B1sph,'S',f,xs,conf);
-% compute fields
-P1sphwfs = sound_field_mono(xrange,yrange,zrange,x0,'ps',D1sph,f,conf);
-P2sphwfs = sound_field_mono(xrange,yrange,zrange,x0,'ps',conj(D2sph),f,conf);
-% plot
-[~,~,~,x1,y1,z1] = xyz_grid(xrange,yrange,zrange,conf);
-
-plot_sound_field(P1sphwfs,x1,y1,z1, x0, conf);
-title('point source');
-plot_sound_field(P2sphwfs,x1,y1,z1, x0, conf);
-title('focused source');
-
-%% WFS Reproduction using virtual Scatterer and time reversal
-% regular spherical expansion of plane wave and point source
-A1sph = sphexp_mono_pw(ns,f,xq,conf);
-A2sph = sphexp_mono_ps(xs,'R',f,xq,conf);
+%% Spherical Expansion Coefficients
+% regular spherical expansion at xq
+Apwnm = sphexp_mono_pw(ns, Nce,f,xq,conf);
+Apsnm = sphexp_mono_ps(xs,'R', Nce,f,xq,conf);
+Alsnm = sphexp_mono_ls(xs,'R', Nce,f,xq,conf);
+% regular spherical expansion at xq+xt
+Apwnm_t = sphexp_mono_pw(ns,Nce,f,xq+xt,conf);
+Apsnm_t = sphexp_mono_ps(xs,'R',Nce,f,xq+xt,conf);
+Alsnm_t = sphexp_mono_ls(xs,'R',Nce,f,xq+xt,conf);
 % compute timereversed incident field
-A1sph_timereversed = sphexp_mono_timereverse(A1sph);
-A2sph_timereversed = sphexp_mono_timereverse(A2sph);
-% compute scattered field
-B1sph = sphexp_mono_scatter(A1sph_timereversed, R, sigma, f, conf); 
-B2sph = sphexp_mono_scatter(A2sph_timereversed, R, sigma, f, conf);
-% loudspeakers
+Apwnm_rev = sphexp_mono_timereverse(Apwnm);
+Apsnm_rev = sphexp_mono_timereverse(Apsnm);
+Alsnm_rev = sphexp_mono_timereverse(Alsnm);
+% compute timereversed incident field
+Apwnm_t_rev = sphexp_mono_timereverse(Apwnm_t);
+Apsnm_t_rev = sphexp_mono_timereverse(Apsnm_t);
+Alsnm_t_rev = sphexp_mono_timereverse(Alsnm_t);
+% scatterer is assumed to be located at the expansion center (i.e. xq)
+Bpwnm = sphexp_mono_scatter(Apwnm_rev, rt, sigma, f, conf); 
+Bpsnm = sphexp_mono_scatter(Apsnm_rev, rt, sigma, f, conf);
+Blsnm = sphexp_mono_scatter(Alsnm_rev, rt, sigma, f, conf);
+% scatterer is assumed to be located at the expansion center (i.e. xq+xt)
+Bpwnm_t = sphexp_mono_scatter(Apwnm_t_rev, rt, sigma, f, conf); 
+Bpsnm_t = sphexp_mono_scatter(Apsnm_t_rev, rt, sigma, f, conf);
+Blsnm_t = sphexp_mono_scatter(Alsnm_t_rev, rt, sigma, f, conf);
+
+%% Circular Expansion Coefficients
+% regular circular expansion at xq
+Apwm = circexp_mono_pw(ns, Nce,f,xq,conf);
+Alsm = circexp_mono_ls(xs, 'R', Nce,f,xq,conf);
+% regular circular expansion at xq+xt
+Apwm_t = circexp_mono_pw(ns,Nce,f,xq+xt,conf);
+Alsm_t = circexp_mono_ls(xs, 'R', Nce,f,xq+xt,conf);
+% compute timereversed incident field
+Apwm_rev = circexp_mono_timereverse(Apwm);
+Alsm_rev = circexp_mono_timereverse(Alsm);
+% compute timereversed incident field
+Apwm_t_rev = circexp_mono_timereverse(Apwm_t);
+Alsm_t_rev = circexp_mono_timereverse(Alsm_t);
+% scatterer is assumed to be located at the expansion center (i.e. xq)
+Bpwm = circexp_mono_scatter(Apwm_rev, rt, sigma, f, conf); 
+Blsm = circexp_mono_scatter(Alsm_rev, rt, sigma, f, conf);
+% scatterer is assumed to be located at the expansion center (i.e. xq+xt)
+Bpwm_t = circexp_mono_scatter(Apwm_t_rev, rt, sigma, f, conf); 
+Blsm_t = circexp_mono_scatter(Alsm_t_rev, rt, sigma, f, conf);
+
+%% generic WFS in spatial domain using Spherical Expansion Coefficients
+conf.dimension = '2.5D';
+% loudspeakers (TODO: implicit selection of loudspeakers in driving
+% function)
 x0 = secondary_source_positions(conf);
-x0pw = secondary_source_selection(x0,ns,'pw');
-x0ps = secondary_source_selection(x0,xs,'ps');
 % compute driving functions
-D1sph = driving_function_mono_wfs_sphexp(x0pw(:,1:3),x0pw(:,4:6),B1sph,'S',f,xq,conf);
-D2sph = driving_function_mono_wfs_sphexp(x0ps(:,1:3),x0ps(:,4:6),B2sph,'S',f,xq,conf);
+Dpw = driving_function_mono_wfs_sphexp(x0(:,1:3),x0(:,4:6), Apwnm,'R',f,xq,conf);
+Dps = driving_function_mono_wfs_sphexp(x0(:,1:3),x0(:,4:6), Apsnm,'R',f,xq,conf);
+Dls = driving_function_mono_wfs_sphexp(x0(:,1:3),x0(:,4:6), Alsnm,'R',f,xq,conf);
 % compute fields
-P1sphwfs = sound_field_mono(xrange,yrange,zrange,x0pw,'ps',conj(D1sph),f,conf);
-P2sphwfs = sound_field_mono(xrange,yrange,zrange,x0ps,'ps',conj(D2sph),f,conf);
+Ppw = sound_field_mono(xrange,yrange,zrange,x0,'ps',Dpw,f,conf);
+Pps = sound_field_mono(xrange,yrange,zrange,x0,'ps',Dps,f,conf);
+Pls = sound_field_mono(xrange,yrange,zrange,x0,'ps',Dls,f,conf);
 % plot
-[~,~,~,x1,y1,z1] = xyz_grid(xrange,yrange,zrange,conf);
+plot_sound_field(Ppw, x1,y1,z1, [], conf);
+title('2.5D WFS with spherical expansion (spatial domain): plane wave');
+plot_sound_field(Pps, x1,y1,z1, [], conf);
+title('2.5D WFS with spherical expansion (spatial domain): point source');
+plot_sound_field(Pls, x1,y1,z1, [], conf);
+title('2.5D WFS with spherical expansion (spatial domain): line source');
 
-plot_sound_field(P1sphwfs ,x1,y1,z1, x0pw, conf);
-title('plane wave');
-plot_scatterer(xq,R);
-plot_sound_field(P2sphwfs ,x1,y1,z1, x0ps, conf);
-title('point source');
-plot_scatterer(xq,R);
-
-%% generic NFCHOA
-% loudspeakers
+%% generic WFS in spatial domain using circular Expansion Coefficients
+conf.dimension = '2D';
+% loudspeakers (TODO: implicit selection of loudspeakers in driving
+% function)
 x0 = secondary_source_positions(conf);
-
-A1spht_shift = RRsphm*sphexp_bandlimit(A1sph_shift,10);
-A2spht_shift = RRsphm*sphexp_bandlimit(A2sph_shift,10);
-
 % compute driving functions
-D1sphhoa = driving_function_mono_nfchoa_sphexp(x0(:,1:3), A1sph, f, conf);
-D2sphhoa = driving_function_mono_nfchoa_sphexp(x0(:,1:3), A2sph, f, conf);
-% compute driving functions for shifted expansions
-D1sphhoat = driving_function_mono_nfchoa_sphexp(x0(:,1:3), A1spht_shift, f, conf);
-D2sphhoat = driving_function_mono_nfchoa_sphexp(x0(:,1:3), A2spht_shift, f, conf);
-
+Dpw = driving_function_mono_wfs_circexp(x0(:,1:3),x0(:,4:6), Apwm,'R',f,xq,conf);
+Dls = driving_function_mono_wfs_circexp(x0(:,1:3),x0(:,4:6), Alsm,'R',f,xq,conf);
 % compute fields
-P1sphhoa = sound_field_mono(xrange,yrange,zrange,x0,'ps',D1sphhoa,f,conf);
-P2sphhoa = sound_field_mono(xrange,yrange,zrange,x0,'ps',D2sphhoa,f,conf);
-% compute fields
-P1sphhoat = sound_field_mono(xrange,yrange,zrange,x0,'ps',D1sphhoat,f,conf);
-P2sphhoat = sound_field_mono(xrange,yrange,zrange,x0,'ps',D2sphhoat,f,conf);
-
+Ppw = sound_field_mono(xrange,yrange,zrange,x0,'ls',Dpw,f,conf);
+Pls = sound_field_mono(xrange,yrange,zrange,x0,'ls',Dls,f,conf);
 % plot
-[~,~,~,x1,y1,z1] = xyz_grid(xrange,yrange,zrange,conf);
+plot_sound_field(Ppw, x1,y1,z1, [], conf);
+title('2D WFS with circular expansion (spatial domain): plane wave');
+plot_sound_field(Pls, x1,y1,z1, [], conf);
+title('2D WFS with circular expansion (spatial domain): line source');
 
-plot_sound_field(P1sphhoa, x1,y1,z1, x0, conf);
-title('NFCHOA: plane wave');
-plot_sound_field(P2sphhoa ,x1,y1,z1, x0, conf);
-title('NFCHOA: point source');
-plot_sound_field(P1sphhoat/5, x1,y1,z1, x0, conf);
-title('NFCHOA: plane wave (shifted reexpansion)');
-plot_sound_field(P2sphhoat/5, x1,y1,z1, x0, conf);
-title('NFCHOA: point source (shifted reexpansion)');
+%% LWFS in spatial domain using virtual Spherical Scatterer and time reversal
+conf.dimension = '2.5D';
+% loudspeakers (TODO: implicit selection of loudspeakers in driving
+% function)
+x0 = secondary_source_positions(conf);
+% compute driving functions
+Dpw = driving_function_mono_wfs_sphexp(x0(:,1:3),x0(:,4:6), Bpwnm,'S',f,xq,conf);
+Dps = driving_function_mono_wfs_sphexp(x0(:,1:3),x0(:,4:6), Bpsnm,'S',f,xq,conf);
+Dls = driving_function_mono_wfs_sphexp(x0(:,1:3),x0(:,4:6), Blsnm,'S',f,xq,conf);
+% compute fields
+Ppw = sound_field_mono(xrange,yrange,zrange,x0,'ps',conj(Dpw),f,conf);
+Pps = sound_field_mono(xrange,yrange,zrange,x0,'ps',conj(Dps),f,conf);
+Pls = sound_field_mono(xrange,yrange,zrange,x0,'ps',conj(Dls),f,conf);
+% plot
+plot_sound_field(Ppw, x1,y1,z1, [], conf);
+title('2.5D local WFS with spherical expansion (spatial domain): plane wave');
+plot_sound_field(Pps, x1,y1,z1, [], conf);
+title('2.5D local WFS with spherical expansion (spatial domain): point source');
+plot_sound_field(Pls, x1,y1,z1, [], conf);
+title('2.5D local WFS with spherical expansion (spatial domain): line source');
+
+%% LWFS in spatial domain using virtual Spherical Scatterer and time reversal
+conf.dimension = '2D';
+% loudspeakers (TODO: implicit selection of loudspeakers in driving
+% function)
+x0 = secondary_source_positions(conf);
+% compute driving functions
+Dpw = driving_function_mono_wfs_circexp(x0(:,1:3),x0(:,4:6),Bpwm,'S',f,xq,conf);
+Dls = driving_function_mono_wfs_circexp(x0(:,1:3),x0(:,4:6),Blsm,'S',f,xq,conf);
+% compute fields
+Ppw = sound_field_mono(xrange,yrange,zrange,x0,'ls',conj(Dpw),f,conf);
+Pls = sound_field_mono(xrange,yrange,zrange,x0,'ls',conj(Dls),f,conf);
+% plot
+plot_sound_field(Ppw, x1,y1,z1, [], conf);
+title('2D local WFS with circular expansion (spatial domain): plane wave');
+plot_sound_field(Pls, x1,y1,z1, [], conf);
+title('2D local WFS with circular expansion (spatial domain): line source');

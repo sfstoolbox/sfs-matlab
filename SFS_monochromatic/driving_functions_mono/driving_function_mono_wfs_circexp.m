@@ -1,21 +1,22 @@
-function D = driving_function_mono_wfs_cylexpS(x0,n0,Bl,f,xq,conf)
-%DRIVING_FUNCTION_MONO_WFS_CYLEXPS computes the time reversed wfs driving 
-%functions for a sound field expressed by singular cylindrical expansion coefficients.
+function D = driving_function_mono_wfs_circexp(x0,n0,Pm,mode,f,xq,conf)
+%computes the time reversed wfs driving functions for a sound field expressed 
+%by singular cylindrical expansion coefficients.
 %
-%   Usage: D = driving_function_mono_wfs_cylexpS(x0,n0,Bl,f,xq,conf)
+%   Usage: D = driving_function_mono_wfs_circexp(x0,n0,Pm,mode,f,xq,conf)
 %
 %   Input parameters:
 %       x0          - position of the secondary sources / m [nx3]
 %       n0          - directions of the secondary sources / m [nx3]
-%       Bl          - singular spherical expansion coefficients of sound field
-%       f           - frequency in Hz
+%       Pm          - circular expansion coefficients of sound field
+%       mode        - 'R' for regular expansion, 'S' for singular expansion
+%       f           - frequency / Hz
 %       xq          - optional expansion center coordinates, default: [0, 0, 0]
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
 %
-%   DRIVING_FUNCTION_MONO_WFS_CYLEXPS(x0,n0,Bl,f,xq,conf)
+%   DRIVING_FUNCTION_MONO_WFS_CIRCEXP(x0,n0,Pm,mode,f,xq,conf)
 %
 %   see also: driving_function_mono_wfs_sphexpS
 %
@@ -58,8 +59,8 @@ function D = driving_function_mono_wfs_cylexpS(x0,n0,Bl,f,xq,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 6;
+nargmin = 5;
+nargmax = 7;
 narginchk(nargmin,nargmax);
 isargmatrix(x0,n0);
 isargpositivescalar(f);
@@ -77,26 +78,22 @@ isargposition(xq);
 c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
-Nce = conf.scattering.Nce;
-showprogress = conf.showprogress;
 
 %% ===== Computation ====================================================
-% Calculate the driving function in time-frequency domain
-
+Nce = (size(Pm, 1)-1)/2;
 
 % apply shift to the center of expansion xq
 x = x0(:,1)-xq(1);
 y = x0(:,2)-xq(2);
-z = x0(:,3)-xq(3);
 
 % conversion to cylindrical coordinates
-r = sqrt(x.^2 + y.^2);
-phi = atan2(y,x);
+r0 = sqrt(x.^2 + y.^2);
+phi0 = atan2(y,x);
 
 % frequency depended stuff
 omega = 2*pi*f;
 k = omega/c;
-kr = k.*r;
+kr0 = k.*r0;
 
 % gradient in spherical coordinates
 Gradr = zeros(size(x0,1),1);
@@ -106,16 +103,28 @@ Gradz = zeros(size(x0,1),1);
 % directional weights for conversion spherical gradient into carthesian 
 % coordinates + point product with normal vector n0 (directional derivative 
 % in cartesian coordinates)
-Sn0r     =  cos(phi).*n0(:,1)...
-         +  sin(phi).*n0(:,2);
-Sn0phi   = -sin(phi).*n0(:,1)...
-         +  cos(phi).*n0(:,2);
+Sn0r     =  cos(phi0).*n0(:,1)...
+         +  sin(phi0).*n0(:,2);
+Sn0phi   = -sin(phi0).*n0(:,1)...
+         +  cos(phi0).*n0(:,2);
 Sn0z     =            n0(:,3);
 
-% indexing the expansion coefficients
-L = 2*Nce+1;
-l = 0;
+% select suitable basis function
+if strcmp('R', mode)
+  circbasis = @besselj;
+  circbasis_derived = @besselj_derived;
+elseif strcmp('S', mode)
+  circbasis = @(nu,z) besselh(nu,2,z);
+  circbasis_derived = @(nu,z) besselh_derived(nu,2,z);
+else
+  error('unknown mode:');
+end
 
+%% ===== Computation ====================================================
+% Calculate the driving function in time-frequency domain
+
+% indexing the expansion coefficients
+l = 0;
 
 if strcmp('2D',dimension) || strcmp('3D',dimension)
   
@@ -139,16 +148,14 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
     
     for n=-Nce:Nce
       l = l + 1;      
-      h_prime = k.*besselh_derived(n,2,kr);
-      h = besselh(n, 2, kr);
-      Yn = exp(1j.*n.*phi);      
-      Gradr   = Gradr   +       ( Bl(l).*h_prime.*Yn  );
-      Gradphi = Gradphi + 1./r.*( Bl(l).*h.*1j.*n.*Yn );
-      if showprogress, progress_bar(l,L); end % progress bar
+      cn_prime = k.*circbasis_derived(n,kr0);
+      cn = circbasis(n,kr0);
+      Yn = exp(1j.*n.*phi0);      
+      Gradr   = Gradr   +       ( Pm(l).*cn_prime.*Yn  );
+      Gradphi = Gradphi + 1./r0.*( Pm(l).*cn.*1j.*n.*Yn );
     end
     % directional gradient + time reversion (conjugate complex)
     D = Sn0r.*Gradr + Sn0phi.*Gradphi + Sn0z.*Gradz;
-    D = -conj(D);
   else
     error(['%s: %s, this type of driving function is not implemented ', ...
       'for a 2D/3D line source.'],upper(mfilename),driving_functions);

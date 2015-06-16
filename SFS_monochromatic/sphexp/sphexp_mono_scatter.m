@@ -100,12 +100,15 @@ else
   isargstruct(conf);
 end
 
+%% ===== Configuration ==================================================
+c = conf.c;
+
 %% ===== Variables ======================================================
-k = 2*pi*f/conf.c;
+% frequency
+k = 2.*pi.*row_vector(f)./c;
 kR = k.*R;
 
-%% ===== Computation ====================================================
-
+% select suitable transformation function
 if isinf(sigma)
   T = @(x) -sphbesselj(x,kR)./sphbesselh(x,2,kR);
 elseif sigma == 0
@@ -115,12 +118,11 @@ else
     ./(k.*sphbesselh_derived(x,2,kR)+sigma.*sphbesselh(x,2,kR));
 end
 
-Bnm = zeros(L,1);
+%% ===== Computation ====================================================
+Bnm = zeros(size(Anm));
 for n=0:(sqrt(L) - 1) 
-  fac = T(n);
-  
   v = sphexp_index(-n:n,n);
-  Bnm(v) = fac.*Anm(v);
+  Bnm(v,:) = T(n).*Anm(v,:);
 end
 
 end

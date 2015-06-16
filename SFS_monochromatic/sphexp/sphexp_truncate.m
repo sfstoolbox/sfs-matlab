@@ -1,17 +1,19 @@
-function Anm = sphexp_bandlimit(Anm, N)
+function Anm = sphexp_truncate(Anm, N)
+% Truncates spherical expansion by setting remaining coefficients to zero
 %
-%   Usage: Anm = sphexp_bandlimit(Anm, N)
+%   Usage: Anm = sphexp_truncate(Anm, N)
 %
 %   Input parameters:
-%       Anm         - 1D array of spherical expansion coefficients
+%       Anm         - 1D array of spherical expansion coefficients [n x Nf]
 %
 %   Output parameters:
-%       Anm         - 1D array of bandlimited spherical expansion coefficients
+%       Anm         - 1D array of bandlimited spherical expansion
+%                     coefficients [N x Nf]
 %
-%   SPHEXP_BANDLIMIT(Anm, N) sets coefficients belonging to an order higher 
+%   SPHEXP_TRUNCATE(Anm, N) sets coefficients belonging to an order higher 
 %   than N to zero.
 %
-%   see also: sphexp_access
+%   see also: sphexp_access sphexp_truncation_order
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -49,16 +51,16 @@ function Anm = sphexp_bandlimit(Anm, N)
 nargmin = 1;
 nargmax = 4;
 narginchk(nargmin,nargmax);
-isargvector(Anm);
+isargmatrix(Anm);
 isargpositivescalar(N);
 
-if any( (N^2 + 1) > length(Anm) )
+if any( (N^2 + 1) > size(Anm, 1) )
   error('%s: order(%d) exceeds size of array',upper(mfilename), N);
 end
 
 %% ===== Computation ====================================================
-v = sphexp_index(+N,N);
-Anm(v+1:end) = 0;
+v = sphexp_index(+N,N);  % last element array is n=N, m=+N
+Anm(v+1:end,:) = 0;
 
 end
 

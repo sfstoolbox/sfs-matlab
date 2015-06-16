@@ -1,20 +1,20 @@
 function ABm = circexp_mono_ls(xs, mode, Nce, f, xq, conf)
-%Regular/Singular Cylindrical Expansion of Line Source
+%regular/singular circular expansion  of line source
 %
 %   Usage: ABm = circexp_mono_ls(xs, mode, Nce, f, xq, conf)
 %
 %   Input parameters:
 %       xs          - position of line source
 %       mode        - 'R' for regular, 'S' for singular
-%       Nse         - maximum order of spherical basis functions
-%       f           - frequency
-%       xq          - optional expansion center
+%       Nce         - maximum order of circular basis functions
+%       f           - frequency / Hz [1 x m] or [m x 1]
+%       xq          - optional expansion center / m [1 x 3]
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ABm         - regular cylindrical Expansion Coefficients
 %
-%   circexp_mono_ls(nk,xq,f,conf) computes the regular cylindrical
+%   CIRCEXP_MONO_LS(xs, mode, Nce, f, xq, conf) computes the regular circular
 %   expansion coefficients for a line source. The expansion will be done 
 %   around the expansion coordinate xq:
 %
@@ -75,7 +75,9 @@ nargmin = 4;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargposition(xs);
-isargpositivescalar(f, Nce);
+isargchar(mode);
+isargpositivescalar(Nce);
+isargvector(f);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -96,7 +98,7 @@ r = sqrt((xs(1)-xq(1)).^2 + (xs(2)-xq(2)).^2);
 phi = atan2(xs(2)-xq(2),xs(1)-xq(1));
 
 % frequency
-k = 2.*pi.*f./c;
+k = 2.*pi.*row_vector(f)./c;
 kr = k.*r;
 
 % select suitable basis function
@@ -110,11 +112,12 @@ end
 
 %% ===== Computation ====================================================
 L = 2*Nce+1;
-ABm = zeros(L,1);
+Nf = length(kr);
+ABm = zeros(L,Nf);
 l = 0;
 for n=-Nce:Nce
   l = l+1;
-  ABm(l) = -1j/4*circbasis(n,kr).*exp(-1j*n*phi);
+  ABm(l,:) = -1j/4*circbasis(n,kr).*exp(-1j*n*phi);
 end
 
 end

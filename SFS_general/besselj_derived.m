@@ -1,26 +1,23 @@
-function Nce = circexp_truncation_order(r, f, nmse, conf)
-%Truncation order for circular expansion of an arbitrary sound field
+function out = besselj_derived(nu,z)
+% BESSELJ_DERIVED derivative of cylindrical bessel function of order nu, and argument z
 %
-%   Usage: Nce = circexp_truncation_order(r, f, epsilon, conf)
+%   Usage: out = besselh_derived(nu,z)
 %
 %   Input parameters:
-%       r           - max 2D distance from expansion center / m
-%       f           - frequency / Hz
-%       nmse        - maximum bound for normalized mean squared error
-%       conf        - optional configuration struct (see SFS_config)
+%       nu  - order of bessel function
+%       z   - argument of bessel function
 %
 %   Output parameters:
-%       Nce         - Maximum order for circular expansion
+%       out - value of bessel function at point z
 %
-%   CIRCEXP_TRUNCATION_ORDER(r, f, epsilon, conf) yields the order up to which 
-%   a the circular expansion coefficients of an arbitrary sound field have
-%   be summed up. For a given frequency and maximum radius the normalized 
-%   truncation mean squared error is below the specified error bound (nmse).
+%   BESSELJ_DERIVED(nu,z) derivation of cylindrical bessel function of 
+%   order nu, and argument z
 %
 %   References:
-%       Kennedy et al. (2007) - "Intrinsic Limits of Dimensionality and 
-%                               Richness in Random Multipath Fields",
-%                               IEEE Transactions on Signal Processing
+%       (4.1-51) in Ziomek (1995) - "Fundamentals of acoustic field theory 
+%                                   and space-time signal processing"
+%
+%   see also: besselj
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -54,25 +51,12 @@ function Nce = circexp_truncation_order(r, f, nmse, conf)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
-%% ===== Checking of input  parameters ==================================
-nargmin = 3;
-nargmax = 4;
+%% ===== Checking input parameters =======================================
+nargmin = 2;
+nargmax = 2;
 narginchk(nargmin,nargmax);
-isargpositivescalar(f,r,nmse);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargscalar(nu)
+isargnumeric(z)
 
-%% ===== Configuration ==================================================
-c = conf.c;
-
-%% ===== Computation ====================================================
-% See Kennedy et al. (eq. 36)
-lambda = c/f;  % wave length
-delta = max(0, ceil(0.5*log(0.0093/nmse)));
-Nce = ceil(pi*r*exp(1)/lambda) + delta;
-
-end
-
+%% ===== Computation =====================================================
+out = 0.5*(besselj(nu-1,z) - besselj(nu+1,z)); 

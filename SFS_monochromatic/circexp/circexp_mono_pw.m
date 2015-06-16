@@ -1,18 +1,19 @@
-function Al = cylexpR_mono_pw(nk,f,xq,conf)
-%Regular Cylindrical Expansion of Plane Wave
+function Am = circexp_mono_pw(nk, Nce, f, xq, conf)
+%regular circular expansion of plane wave
 %
-%   Usage: Al = cylexpR_mono_pw(nk,f,xq,conf)
+%   Usage: Am = circexp_mono_pw(nk, Nce, f, xq, conf)
 %
 %   Input parameters:
 %       nk          - propagation direction of plane wave 
-%       f           - frequency
+%       Nce         - maximum order of circular basis functions
+%       f           - frequency / Hz [1 x m] or [m x 1]
 %       xq          - optional expansion center
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       Al          - regular cylindrical Expansion Coefficients
+%       Am          - regular cylindrical Expansion Coefficients
 %
-%   CYLEXPR_MONO_PW(nk,xq,f,conf) computes the regular cylindrical
+%   CIRCEXP_MONO_PW(nk, Nce, f, xq, conf) computes the regular circular
 %   expansion coefficients for a plane wave. The expansion will be done a
 %   round the expansion coordinate xq:
 %
@@ -25,11 +26,6 @@ function Al = cylexpR_mono_pw(nk,f,xq,conf)
 %             n
 %   A  = 4pi i  exp  (-i*n*phi  )
 %    n                        pw
-%
-%   References:
-%       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
-%                                    Helmholtz Equation in three 
-%                                    Dimensions", ELSEVIER
 %
 %   see also: eval_cylbasis_mono
 
@@ -66,8 +62,8 @@ function Al = cylexpR_mono_pw(nk,f,xq,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
-nargmax = 4;
+nargmin = 3;
+nargmax = 5;
 narginchk(nargmin,nargmax);
 isargposition(nk);
 isargpositivescalar(f);
@@ -82,33 +78,24 @@ end
 isargposition(xq);
 
 %% ===== Configuration ==================================================
-showprogress = conf.showprogress;
-Nce = conf.scattering.Nce;
-timereverse = conf.scattering.timereverse;
-xref = conf.xref;
 c = conf.c;
 
-%% ===== Computation ====================================================
-if (timereverse)
-  n_sign = 1;
-else
-  n_sign = -1;
-end
-
+%% ===== Variables ======================================================
 % convert nk into cylindrical coordinates
 phi = atan2(nk(2),nk(1));
 
 % delay of plane wave to reference point
 nk = nk./vector_norm(nk,2);
-delay = 2*pi*f/c*(nk*(xq-xref)');
+delay = 2*pi*row_vector(f)/c*(nk*xq.');
 
+%% ===== Computation ====================================================
 L = 2*Nce+1;
-Al = zeros(L,1);
+Nf = length(delay);
+Am = zeros(L,Nf);
 l = 0;
 for n=-Nce:Nce
   l = l+1;
-  Al(l) = (1j)^(n_sign*n).*exp(-1j*n*phi).*exp(-1j*delay);
-  if showprogress, progress_bar(l,L); end  % progress bar
+  Am(l,:) = (1j)^(-n).*exp(-1j*n*phi).*exp(-1j*delay);
 end
 
 end

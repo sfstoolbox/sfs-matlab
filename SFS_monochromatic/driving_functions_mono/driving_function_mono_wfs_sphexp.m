@@ -1,4 +1,4 @@
-function D = driving_function_mono_wfs_sphexp(x0,n0,ABnm,mode,f,xq,conf)
+function D = driving_function_mono_wfs_sphexp(x0,n0,Pnm,mode,f,xq,conf)
 %computes the wfs driving functions for a sound field expressed by spherical 
 %expansion coefficients.
 %
@@ -7,7 +7,7 @@ function D = driving_function_mono_wfs_sphexp(x0,n0,ABnm,mode,f,xq,conf)
 %   Input parameters:
 %       x0          - position of the secondary sources / m [nx3]
 %       n0          - directions of the secondary sources / m [nx3]
-%       ABnm        - singular spherical expansion coefficients of sound field
+%       Pnm        - singular spherical expansion coefficients of sound field
 %       mode        - 'R' for regular expansion, 'S' for singular expansion
 %       f           - frequency in Hz
 %       xq          - optional expansion center coordinates, default: [0, 0, 0]
@@ -63,6 +63,7 @@ nargmin = 5;
 nargmax = 7;
 narginchk(nargmin,nargmax);
 isargmatrix(x0,n0);
+isargvector(Pnm);
 isargpositivescalar(f);
 isargchar(mode);
 if nargin<nargmax
@@ -78,12 +79,11 @@ end
 
 %% ===== Configuration ==================================================
 c = conf.c;
-dimension = conf.dimension;
 driving_functions = conf.driving_functions;
-Nse = conf.scattering.Nse;
-showprogress = conf.showprogress;
 
 %% ===== Variables ======================================================
+Nse = sqrt(size(Pnm, 1))-1;
+
 % apply shift to the center of expansion xq
 x = x0(:,1)-xq(1);
 y = x0(:,2)-xq(2);
@@ -131,7 +131,6 @@ end
 % Calculate the driving function in time-frequency domain
 
 % indexing the expansion coefficients
-L = (Nse + 1).^2;
 l = 0;
 
 if (strcmp('default',driving_functions))
@@ -162,11 +161,10 @@ if (strcmp('default',driving_functions))
     for m=-n:n
       l = l + 1;
       Ynm = sphharmonics(n,m, theta0, phi0);
-      Gradr   = Gradr   +       ( ABnm(l).*cn_prime.*Ynm);
-      Gradphi = Gradphi + 1./r0.*( ABnm(l).*cn.*1j.*m.*Ynm );
+      Gradr   = Gradr   +       ( Pnm(l).*cn_prime.*Ynm);
+      Gradphi = Gradphi + 1./r0.*( Pnm(l).*cn.*1j.*m.*Ynm );
       %Gradtheta = 0;  TODO
     end
-    if showprogress, progress_bar(l,L); end % progress bar
   end
   % directional gradient
   D = Sn0r.*Gradr + Sn0phi.*Gradphi + Sn0theta.*Gradtheta;

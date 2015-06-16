@@ -1,20 +1,20 @@
-function Bl = cylexpS_mono_scatter(Al, R, sigma, f, conf)
-%Singular Spherical Expansion of cylinder-scattered field
+function Bm = circexp_mono_scatter(Am, R, sigma, f, conf)
+%singular circular expansion of cylinder-scattered field
 %
-%   Usage: Bl = cylexpS_mono_scatter(Al, R, sigma, f, conf)
+%   Usage: Bm = circexp_mono_scatter(Al, R, sigma, f, conf)
 %
 %   Input parameters:
-%       Al          - regular cylindrical expansion of incident field (cylexpR_*)                     
-%       R           - radius of cylinder
+%       Am          - regular circular expansion of incident field [n x m]          
+%       R           - radius of cylinder / m
 %       sigma       - complex admittance of scatterer
-%       f           - frequency in Hz
+%       f           - frequency / Hz [1 x m] or [m x 1]
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       Bl          - singular cylindrical expansion coefficients of
-%                     scattered field
+%       Bm          - singular circular expansion coefficients of
+%                     scattered field [n x m]
 %
-%   CYLEXPS_MONO_SCATTER(Al, R, sigma, f, conf) computes the singular 
+%   CIRCEXP_MONO_SCATTER(Am, R, sigma, f, conf) computes the singular 
 %   cylindrical expansion coefficients of a field resulting from a scattering 
 %   of an incident field at a cylindrical. Incident field is descriped by 
 %   regular expansion coefficients (expansion center is expected to be at the 
@@ -42,12 +42,7 @@ function Bl = cylexpS_mono_scatter(Al, R, sigma, f, conf)
 %
 %   where k = 2*pi*f/c.
 %
-%   References:
-%       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
-%                                    Helmholtz Equation in three 
-%                                    Dimensions", ELSEVIER
-%
-%   see also: cylexpR_mono_pw
+%   see also: circexp_mono_pw circexp_mono_ls
 
 
 
@@ -55,9 +50,10 @@ function Bl = cylexpS_mono_scatter(Al, R, sigma, f, conf)
 nargmin = 4;
 nargmax = 5;
 narginchk(nargmin,nargmax);
-isargvector(Al);
+isargmatrix(Am);
 isargscalar(sigma);
-isargpositivescalar(f,R);
+isargpositivescalar(R);
+isargvector(f);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -65,13 +61,14 @@ else
 end
 
 %% ===== Configuration ==================================================
-showprogress = conf.showprogress;
-Nce = conf.scattering.Nce;
+c = conf.c;
 
-%% ===== Computation ====================================================
-k = 2*pi*f/conf.c;
+%% ===== Variables ======================================================
+% frequency
+k = 2.*pi.*row_vector(f)./c;
 kR = k.*R;
 
+% select suitable transformation function
 if isinf(sigma)
   T = @(x) -besselj(x,kR)./besselh(x,2,kR);
 elseif sigma == 0
@@ -81,13 +78,13 @@ else
     ./(k.*besselh_derived(x,2,kR)+sigma.*besselh(x,2,kR));
 end
 
-L = 2*Nce+1;
-Bl = zeros(L,1);
+%% ===== Computation ====================================================
+Nce = (size(Am,1)-1)/2;
+Bm = zeros(size(Am));
 l = 0;
 for n=-Nce:Nce
   l = l+1;
-  Bl(l) = T(n).*Al(l);
-  if showprogress, progress_bar(l,L); end % progress bar
+  Bm(l,:) = T(n).*Am(l,:);
 end
 
 end

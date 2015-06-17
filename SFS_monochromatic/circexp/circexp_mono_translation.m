@@ -1,10 +1,10 @@
-function [EF, EFm] = circexp_mono_translation(t, mode, Nce, f, conf)
+function [EF, EFm] = circexp_mono_translation(xt, mode, Nce, f, conf)
 % Circular translation coefficients (multipole re-expansion)
 %
 %   Usage: [EF, EFm] = circexp_mono_translation(t, mode, Nse, f, conf)
 %
 %   Input parameters:
-%       t           - translatory shift [1x3] / m                    
+%       xt           - translatory shift [1x3] / m                    
 %       mode        - 'RS' for regular-to-singular reexpansion
 %                     'RR' for regular-to-regular reexpansion
 %                     'SR' for singular-to-regular reexpansion
@@ -22,8 +22,8 @@ function [EF, EFm] = circexp_mono_translation(t, mode, Nce, f, conf)
 %  coordinate system (x+t) based on the original basis functions for (x). 
 %
 %              \~~ inf
-%  E (x + t) =  >      (E|F)   (t) F (x)
-%   n          /__ l=0      l,n     l
+%  E (x + t) =  >         (E|F)   (xt) F (x)
+%   n          /__ l=-inf      l,n     l
 %
 %  where {E,F} = {R,S}. R denotes the regular circular basis function, while
 %  S symbolizes the singular circular basis function. Note that (S|S) and 
@@ -67,7 +67,9 @@ function [EF, EFm] = circexp_mono_translation(t, mode, Nce, f, conf)
 nargmin = 4;
 nargmax = 5;
 narginchk(nargmin,nargmax);
-isargposition(xq);
+isargposition(xt);
+isargchar(mode);
+isargpositivescalar(Nce,f);
 if nargin<nargmax
   conf = SFS_config;
 else
@@ -75,21 +77,20 @@ else
 end
 
 %% ===== Configuration ==================================================
-showprogress = conf.showprogress;
 c = conf.c;
 
 %% ===== Variables ======================================================
 % convert t into spherical coordinates
-r = norm(t(1:2));
-phi = atan2(t(2),t(1));
+rt = norm(xt(1:2));
+phit = atan2(xt(2),xt(1));
 
 % frequency
 k = 2*pi*f/c;
-kr = k*r;
+kr = k*rt;
 
 L = 2*Nce+1;
-RRplus = zeros(L,L);
-RRminus = zeros(L,L);
+EF = zeros(L,L);
+EFm = EF;
 
 % select suitable basis function
 if strcmp('RR', mode) || strcmp('SS', mode)
@@ -107,10 +108,9 @@ for n=-Nce:Nce
   l = 0;
   for m=-Nce:Nce
     l = l+1;
-    RRplus(s,l) = circbasis(n-m,kr) .* exp(-1j.*(n-m).*phi);
-    RRminus(s,l) = RRplus(s,l) .* -1.^(n-m);
+    EF(s,l) = circbasis(n-m,kr) .* exp(-1j.*(n-m).*phit);
+    EFm(s,l) = EF(s,l) .* (-1)^(n-m);
   end
-  if showprogress, progress_bar(s,L); end  % progress bar
 end
 
 end

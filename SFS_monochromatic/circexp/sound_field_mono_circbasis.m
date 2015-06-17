@@ -55,21 +55,21 @@ nargmax = 3;
 narginchk(nargmin,nargmax);
 isargvector(Pm);
 isargequallength(Pm, Ym);
-Nse = length(JH2m) - 1;
-if (length(Ym) ~= (Nse + 1)^2)
-  error('%s, length(%s) has to be (length(%s)+1).^2!', upper(mfilename), ...
-    inputname(Ym), inputname(JH2m));
+if length(Ym) ~= length(JH2m)
+  error('%s, length(%s) has to be length(%s)!', upper(mfilename), ...
+    inputname(2), inputname(3));
 end
+
+%% ===== Variables ======================================================
+Nce = length(JH2m) - 1;
 
 %% ===== Computation ====================================================
 P = zeros(size(JH2m{1}));
 
 l = 0;
-for n=0:Nse
-  for m=-n:n
-    l=l+1;    
-    P = P + Pm(l)*(JH2m{n+1}.*Ym{l});
-  end
+for n=0:Nce
+  l=l+1;    
+  P = P + Pm(l).*(JH2m{l}.*Ym{l});
 end
 
 end

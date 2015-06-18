@@ -115,7 +115,7 @@ warning('off','SOFA:upgrade')
 header = sofa_get_header(sofa);
 
 % === Coordinate system conversion ===
-% Convert everything to spherical coordinates
+% Convert everything to cartesian coordinates
 if strcmp('spherical',coordinate_system)
     [xs(1),xs(2),xs(3)] = sph2cart(xs(1),xs(2),xs(3));
     [X(1),X(2),X(3)] = sph2cart(X(1),X(2),X(3));

@@ -121,10 +121,6 @@ elseif ~strcmp('cartesian',coordinate_system)
 end
 % Get the listener position during the measurement
 X_sofa = sofa_get_listener_position(header,'cartesian');
-% Store desired position of source (in cartesian coordinates).
-% This is the source position relative to the listener position,
-% [xs] = (m, m, m).
-xs = xs-X+X_sofa;
 
 % === Get Impulse Response ===
 if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
@@ -139,6 +135,9 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     % file and we handle a change in head orientation by changing the source
     % position accordingly.
     %
+    % For SimpleFreeFieldHRIR only the relative position between listener
+    % position and source position is of relevance.
+    xs = xs-X+X_sofa;
     % Get measured loudspeaker positions and go to spherical coordinates
     x0 = sofa_get_secondary_sources(header,'spherical');
     [xs(1),xs(2),xs(3)] = cart2sph(xs(1),xs(2),xs(3));
@@ -174,7 +173,7 @@ elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
     [neighbours_emitter,idx_emitter] = findnearestneighbour(x0(:,1:3)',xs,1);
     x0 = neighbours_emitter(:,1);
     if norm(x0'-xs)>0.01
-        warning('SFS:get_ir',['Your desired loudspeaker position (%.2f,', ...
+        warning('SFS:get_ir',['Your chosen loudspeaker position (%.2f,', ...
                               '%.2f,%.2f)m deviates from the measured ', ...
                               'one (%.2f,%.2f,%.2f)m.'], ...
                              xs(1),xs(2),xs(3),x0(1),x0(2),x0(3));

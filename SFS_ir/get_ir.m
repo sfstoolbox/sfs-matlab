@@ -10,7 +10,10 @@ function [ir,x0] = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %       head_orientation  - orientation of the listener with [phi theta] /
 %                           (rad, rad)
 %       xs                - position of the desired source, specified in the
-%                           defined coordinate_system, see below
+%                           defined coordinate_system, see below. For
+%                           SOFA convention SimpleFreeFieldHRIR xs will be
+%                           interpreted relative to X, for MultiSpeakerBRIR as
+%                           an absolute position.
 %       coordinate_system - coordinate system X and xs are specified in,
 %                           avialable systems are:
 %                             'spherical' - spherical system (default) with

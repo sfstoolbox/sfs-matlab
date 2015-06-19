@@ -1,23 +1,21 @@
-function [P, x, y, z] = sound_field_mono_nfchoa_sht(X,Y,Z,Dnm,f,conf)
-%SOUND_FIELD_MONO_NFCHOA_SHT simulates a sound field given with the 
-%spherical harmonics transform of the nfchoa driving function
+function Pnm = sphexp_mono_nfchoa_sht(Dnm,mode,f,conf)
+%SPHEXP_MONO_NFCHOA_SHT yields spherical expansion coefficients of a sound field
+%resulting from of the nfchoa driving function given as a spherical harmonics 
+%transform 
 %
-%   Usage: [P, x, y, z] = sound_field_mono_sht(X,Y,Z,Dnm,f,conf)
+%   Usage: Pnm = sphexp_mono_nfchoa_sht(Dnm,mode,f,conf)
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax] or nD-array
-%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
-%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       Dnm         - spherical harmonics transform of nfchoa driving function
+%       mode        - 'R' for regular, 'S' for singular
 %       f           - frequency in Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       P           - resulting soundfield
+%       Pnm         - spherical expansion coefficients of a sound field
+%                     reproduced by nfchoa driving function
 %
-%   SOUND_FIELD_MONO_NFCHOA_SHT(X,Y,Z,ABnm,mode,f,conf)
-%
-%   see also: sphbasis_mono_grid, sound_field_mono_sphexp
+%   SPHEXP_MONO_NFCHOA_SHT(Dnm,mode,f,conf)
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -52,33 +50,16 @@ function [P, x, y, z] = sound_field_mono_nfchoa_sht(X,Y,Z,Dnm,f,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 6;
+nargmin = 3;
+nargmax = 4;
 narginchk(nargmin,nargmax);
-isargvector(Dnm);
-isargsquaredinteger(length(Dnm));
-isargnumeric(X,Y,Z);
-% unique index encoding which dimension is an nd-array
-customGrid = (numel(X) > 2) + 2*(numel(Y) > 2) + 4*(numel(Z) > 2);
-switch customGrid
-  case 1
-    isargscalar(Y,Z);
-  case 2
-    isargscalar(X,Z);
-  case 3
-    isargequalsize(X,Y); isargscalar(Z);
-  case 4
-    isargscalar(X,Y);
-  case 5
-    isargequalsize(X,Z); isargscalar(Y);
-  case 6
-    isargequalsize(Y,Z); isargscalar(X);
-  case 7
-    isargequalsize(X,Y,Z);
-  otherwise
-    isargvector(X,Y,Z);
+isargmatrix(Dnm);
+isargsquaredinteger(size(Dnm,1));
+isargvector(f);
+isargchar(mode);
+if ~strcmp('R', mode) && ~strcmp('S', mode)
+  error('%s: unknown mode (%s)!', upper(mfilename), mode);
 end
-isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -86,46 +67,38 @@ else
 end
 
 %% ===== Configuration ==================================================
-Xc = conf.secondary_sources.center;
 r0 = conf.secondary_sources.size / 2;
+dimension = conf.dimension;
+
+%% ===== Variables ======================================================
+Nse = sqrt(size(Dnm,1)) - 1;
 
 %% ===== Computation ====================================================
-if customGrid
-  switch customGrid
-    case 1
-      Y = repmat(Y, size(X));
-      Z = repmat(Z, size(X));
-    case 2
-      X = repmat(X, size(Y));
-      Z = repmat(Z, size(Y));
-    case 3
-      Z = repmat(Z, size(Y));
-    case 4
-      X = repmat(X, size(Z));
-      Y = repmat(Y, size(Z));
-    case 5
-      Y = repmat(Y, size(Z));
-    case 6
-      X = repmat(X, size(Z));      
+if strcmp('2D',dimension)
+  % === 2-Dimensional ==================================================
+  
+  error('%s: 2D not supported.',upper(mfilename));
+
+elseif strcmp('2.5D',dimension)
+  % === 2.5-Dimensional ================================================
+  
+  % regular/singular expansion
+  Gnm = 2*pi*r0*sphexp_mono_ps([r0, 0, 0], mode, Nse, f, [0,0,0], conf);
+elseif strcmp('3D',dimension)
+  % === 3-Dimensional ==================================================
+  
+  % regular/singular expansion
+  Gnm = sphexp_mono_ps([0, 0, r0], mode, Nse, f, [0,0,0], conf);
+  
+  for n=0:Nse
+    v = sphexp_index(-n:n,n);
+    w = sphexp_index(0,n);
+    Gnm(v,:) = 2*pi*r0^2*sqrt(4*pi / (2*n+1))*Gnm(w,:);
   end
-  x = X;   y = Y;  z = Z;
 else
-  [X,Y,Z,x,y,z] = xyz_grid(X,Y,Z,conf);
+  error('%s: the dimension %s is unknown.',upper(mfilename),dimension);
 end
-% find coordinates, which are inside and outside the loudspeaker array
-select = sqrt((X(:)-Xc(1)).^2 + (Y(:)-Xc(2)).^2 + (Z(:)-Xc(3)).^2) <= r0;
 
-P = zeros(size(X));
-
-if any(select(:))
-  Pnm = sphexp_mono_nfchoa_sht(Dnm,'R',f,conf);
-  P(select) = sound_field_mono_sphexp(X(select),Y(select),Z(select), Pnm, ...
-    'R', f, Xc,conf);
-end
-if any(~select(:))
-  Pnm = sphexp_mono_nfchoa_sht(Dnm,'S',f,conf);
-  P(~select) = sound_field_mono_sphexp(X(~select),Y(~select),Z(~select), ...
-    Pnm, 'S', f, Xc,conf);
-end
+Pnm = Gnm .* Dnm;
 
 end

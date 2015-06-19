@@ -1,17 +1,19 @@
-function Anm = sphexp_truncate(Anm, N)
+function Anm = sphexp_truncate(Pnm, N, Nshift)
 % Truncates spherical expansion by setting remaining coefficients to zero
 %
-%   Usage: Anm = sphexp_truncate(Anm, N)
+%   Usage: Anm = sphexp_truncate(Pnm, N, Nshift)
 %
 %   Input parameters:
-%       Anm         - 1D array of spherical expansion coefficients [n x Nf]
+%       Pnm         - 1D array of spherical expansion coefficients [n x Nf]
+%       N           - maximum order of spherical expansion
+%       Nshift      - 
 %
 %   Output parameters:
 %       Anm         - 1D array of bandlimited spherical expansion
 %                     coefficients [N x Nf]
 %
-%   SPHEXP_TRUNCATE(Anm, N) sets coefficients belonging to an order higher 
-%   than N to zero.
+%   SPHEXP_TRUNCATE(Pnm, N, Nshift) sets coefficients belonging to an order
+%   higher than N to zero.
 %
 %   see also: sphexp_access sphexp_truncation_order
 
@@ -48,19 +50,26 @@ function Anm = sphexp_truncate(Anm, N)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
-nargmax = 4;
+nargmin = 2;
+nargmax = 3;
 narginchk(nargmin,nargmax);
-isargmatrix(Anm);
+isargmatrix(Pnm);
 isargpositivescalar(N);
-
-if any( (N^2 + 1) > size(Anm, 1) )
-  error('%s: order(%d) exceeds size of array',upper(mfilename), N);
+if nargin == nargmin
+  Nshift = 0;
+else
+  isargscalar(Nshift);
 end
+%% ===== Variable =======================================================
+Nse = sqrt(size(Pnm, 1))-1; 
 
 %% ===== Computation ====================================================
-v = sphexp_index(+N,N);  % last element array is n=N, m=+N
-Anm(v+1:end,:) = 0;
+Anm = zeros(size(Pnm));
+
+for m=max(-N+Nshift,-Nse):min(N+Nshift,Nse)
+  v = sphexp_index(m,abs(m):Nse);
+  Anm(v,:) = Pnm(v,:);
+end
 
 end
 

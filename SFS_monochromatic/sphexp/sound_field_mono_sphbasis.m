@@ -54,11 +54,15 @@ nargmin = 3;
 nargmax = 3;
 narginchk(nargmin,nargmax);
 isargvector(ABnm);
-isargequallength(ABnm, Ynm);
-Nse = length(jh2n) - 1;
-if (length(Ynm) ~= (Nse + 1)^2)
-  error('%s, length(Y) has to be (length(jhsn)+1).^2!',upper(mfilename));
+if length(Ynm) ~= length(jh2n)^2
+  error('%s: length(Y) has to be equal length(jh2n)^2!',upper(mfilename));
 end
+if length(Ynm) < length(ABnm)
+  error('%s: length(Y) has to larger equal length(ABnm)!',upper(mfilename));
+end
+
+%% ===== Variables ======================================================
+Nse = sqrt(size(ABnm,1)) - 1;
 
 %% ===== Computation ====================================================
 P = zeros(size(jh2n{1}));

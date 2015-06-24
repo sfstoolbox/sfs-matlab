@@ -1,4 +1,4 @@
-function ir_new = interpolate_ir(ir,x0,xs,conf)
+function [ir_new,x0_new] = interpolate_ir(ir,x0,xs,conf)
 %INTERPOLATE_IR interpolates three given IRs for the given angle
 %
 %   Usage: ir = interpolate_ir(ir,x0,xs)
@@ -14,6 +14,7 @@ function ir_new = interpolate_ir(ir,x0,xs,conf)
 %
 %   Output parameters:
 %       ir      - impulse response for the given position [1 C N]
+%       x0      - position corresponding to the returned impulse response
 %
 %   INTERPOLATE_IR(ir,x0,xs)
 %   interpolates the two to three given impulse responses from ir with their
@@ -73,10 +74,12 @@ prec = 0.001; % ~ 0.05 deg
 
 %% ===== Computation ====================================================
 ir_new = ir(1,:,:);
+x0_new = xs;
 % Check if we have found directly the desired point or have to interpolate
 % bewteen different impulse responses
 if norm(x0(:,1)-xs)<prec || ~useinterpolation
     % Return the first nearest neighbour
+    x0_new = x0(:,1);
     return;
 else
     % === IR interpolation ===

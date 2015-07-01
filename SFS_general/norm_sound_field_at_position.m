@@ -1,7 +1,8 @@
-function P = norm_sound_field_at_xref(P,x,y,z,conf)
-%NORM_SOUND_FIELD_AT_XREF normalizes the sound field to 1 at xref
+function P = norm_sound_field_at_position(P,x,y,z,conf)
+%NORM_SOUND_FIELD_AT_POSITION normalizes the sound field to 1 at
+%conf.normalised_position
 %
-%   Usage: P = norm_sound_field_at_xref(P,x,y,z,[conf])
+%   Usage: P = norm_sound_field_at_position(P,x,y,z,[conf])
 %
 %   Input options:
 %       P       - sound field
@@ -11,8 +12,8 @@ function P = norm_sound_field_at_xref(P,x,y,z,conf)
 %   Output options:
 %       P       - normalized sound field
 %
-%   NORM_SOUND_FIELD_AT_XREF(P,x,y,z,conf) normalizes the given sound field P to 1 at
-%   the position conf.xref.
+%   NORM_SOUND_FIELD_AT_POSITION(P,x,y,z,conf) normalizes the given sound field
+%   P to 1 at the position conf.normalised_position.
 %
 %   See also: norm_sound_field, sound_field_mono
 
@@ -66,7 +67,7 @@ end
 if ~conf.usenormalisation
     return;
 end
-xref = conf.xref;
+normalised_position = conf.normalised_position;
 resolution = conf.resolution;
 
 
@@ -74,18 +75,18 @@ resolution = conf.resolution;
 % Get our active axis
 [dimensions] = xyz_axes_selection(x,y,z);
 
-% Use the half of the x axis and xref
+% Use the half of the x axis and normalised_position
 if dimensions(1)
-    xidx = find(x>xref(1),1);
-    check_idx(xidx,x,xref(1),'X',resolution);
+    xidx = find(x>normalised_position(1),1);
+    check_idx(xidx,x,normalised_position(1),'X',resolution);
 end
 if dimensions(2)
-    yidx = find(y>xref(2),1);
-    check_idx(yidx,y,xref(2),'Y',resolution);
+    yidx = find(y>normalised_position(2),1);
+    check_idx(yidx,y,normalised_position(2),'Y',resolution);
 end
 if dimensions(3)
-    zidx = find(z>xref(3),1);
-    check_idx(zidx,z,xref(3),'Z',resolution);
+    zidx = find(z>normalised_position(3),1);
+    check_idx(zidx,z,normalised_position(3),'Z',resolution);
 end
 
 % Scale signal to 1
@@ -112,12 +113,12 @@ end % of function
 
 
 %% ===== Subfunctions ====================================================
-function check_idx(idx,x,xref,str,resolution)
+function check_idx(idx,x,normalised_position,str,resolution)
     % abs(x(1)-x(end))/resolution gives us the maximum distance between to samples.
-    % If abs(x(xidx)-xref(1)) is greater this indicates that we are out of our
+    % If abs(x(xidx)-normalised_position(1)) is greater this indicates that we are out of our
     % bounds
-    if isempty(idx) || abs(x(idx)-xref)>2*abs(x(1)-x(end))/resolution
-        error('%s: your used conf.xref is out of your %s boundaries', ...
+    if isempty(idx) || abs(x(idx)-normalised_position)>2*abs(x(1)-x(end))/resolution
+        error('%s: your used conf.normalised_position is out of your %s boundaries', ...
             upper(mfilename),str);
     end
 end

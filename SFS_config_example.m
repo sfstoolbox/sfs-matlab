@@ -128,12 +128,6 @@ conf.driving_functions = 'default'; % string
 % Don't worry, SFS checks for you if conf.N is large enough)
 conf.N = 2048; % samples
 %
-% === 2.5D ===
-% The amplitude will be correct at the point xref for 2.5D
-% synthesis.
-% This point is also used to scale the sound field to 1 at this point.
-conf.xref = [0 0 0]; % / m
-%
 % === Tapering ===
 % The truncation of the loudspeaker array leads to diffraction of the
 % synthesized sound field. It has been shown that the truncation can be discribed
@@ -157,8 +151,11 @@ conf.resolution = 300; % / samples
 % Phase of omega of sound field (change this value to create monochromatic sound
 % fields with different phases, for example this can be useful to create a movie)
 conf.phase = 0; % / rad
-% normalize the simulated sound field?
+% Normalize the simulated sound field?
 conf.usenormalisation = true; % boolean
+% Point at which the sound field should be scaled to 1.
+conf.normalised_position = [0 0 0]; % / m
+%
 
 
 % ===== Secondary Sources ================================================

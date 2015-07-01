@@ -64,7 +64,7 @@ conf.secondary_sources.number = 56;
 conf.secondary_sources.size = 2;
 conf.secondary_sources.center = [0, 0, 0];
 conf.driving_functions = 'default';
-conf.xref = conf.secondary_sources.center;
+conf.normalised_position = conf.secondary_sources.center;
 % listening area
 X = [0 0 0];
 xs = [1.0, -1.0, 0];  % propagation direction of plane wave
@@ -115,7 +115,7 @@ conf.secondary_sources.center = [0, 1, 0];
 conf.driving_functions = 'default';
 % listening area
 X = [0 0 0];
-conf.xref = X;
+conf.normalised_position = X;
 xs = [1.0, -1.0, 0];  % propagation direction of plane wave
 src = 'pw';
 xrange = [-1, 1];
@@ -164,7 +164,7 @@ conf.secondary_sources.center = [0, 0, 0];
 conf.driving_functions = 'default';
 % listening area
 X = [0 0 0];
-conf.xref = X;
+conf.normalised_position = X;
 xs = [1.0, -1.0, 0];  % propagation direction of plane wave
 src = 'pw';
 xrange = [-1, 1];

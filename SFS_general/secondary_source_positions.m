@@ -24,7 +24,8 @@ function x0 = secondary_source_positions(conf)
 %   given direction. For a linear array the secondary sources are pointing
 %   towards the negative y-direction. If you create a linear array with default
 %   position conf.secondary_sources.center = [0 0 0], your listening area is in
-%   the area y<0, which means the y value of conf.xref should also be <0!
+%   the area y<0, which means the y value of conf.normalised_position should
+%   also be <0!
 %
 % See also: secondary_source_selection, secondary_source_tapering
 

@@ -72,7 +72,7 @@ conf.secondary_sources.number = 56;
 conf.secondary_sources.size = 3;
 conf.secondary_sources.center = [0, 1.5, 0];
 conf.driving_functions = 'default';
-conf.xref = conf.localsfs.vss.center;
+X0 = conf.localsfs.vss.center;
 % impulse response
 conf.ir.usehcomp = false;
 % listening area, virtual source
@@ -87,8 +87,8 @@ Z = 0;
 %% temporal impulse responses
 irs = dummy_irs;
 % calculate impulse response for WFS and local WFS
-s_lwfs = ir_localwfs(conf.xref,pi/2,xs,src,irs,conf);
-s_wfs = ir_wfs(conf.xref,pi/2,xs,src,irs,conf);
+s_lwfs = ir_localwfs(X0,pi/2,xs,src,irs,conf);
+s_wfs = ir_wfs(X0,pi/2,xs,src,irs,conf);
 % plot frequency response
 [S_lwfs, ~, f_lwfs] = easyfft(s_lwfs(:,1)./max(abs(s_lwfs(:,1))), conf);
 [S_wfs, ~, f_wfs] = easyfft(s_wfs(:,1)./max(abs(s_wfs(:,1))), conf);

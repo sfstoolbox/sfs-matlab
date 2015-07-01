@@ -64,7 +64,6 @@ if strcmp('QU_KEMAR',hrtf_set)
     conf.N = 1024;
     conf.c = 343;
     conf.fs = 44100;
-    conf.xref = [0 0 0];
     conf.usetapwin = true;
     conf.tapwinlen = 0.3;
     conf.secondary_sources.geometry = 'circle';
@@ -117,7 +116,6 @@ elseif strcmp('FABIAN_3D',hrtf_set)
     conf.dimension = '3D';
     conf.fs = 44100;
     conf.c = 343;
-    conf.xref = [0 0 0];
     conf.usetapwin = false;
     conf.tapwinlen = 0.3;
     conf.secondary_sources.geometry = 'sphere';

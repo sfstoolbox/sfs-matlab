@@ -105,25 +105,25 @@ for ii=1:size(scenarios)
             X = [-2 2];
             Y = [-3 0.15];
             Z = 0;
-            conf.xref = [0 -1.5 0];
+            conf.normalised_position = [0 -1.5 0];
             conf.secondary_sources.number = 20;
         case 'circular'
             X = [-2 2];
             Y = [-2 2];
             Z = 0;
-            conf.xref = [0 0 0];
+            conf.normalised_position = [0 0 0];
             conf.secondary_sources.number = 56;
         case 'box'
             X = [-2 2];
             Y = [-2 2];
             Z = 0;
-            conf.xref = [0 0 0];
+            conf.normalised_position = [0 0 0];
             conf.secondary_sources.number = 80;
         case 'sphere'
             X = [-2 2];
             Y = [-2 2];
             Z = 0;
-            conf.xref = [0 0 0];
+            conf.normalised_position = [0 0 0];
             conf.secondary_sources.number = 900;
     end
 

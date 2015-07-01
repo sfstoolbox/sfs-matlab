@@ -245,13 +245,6 @@ This depends on the specification of <code>X,Y,Z</code>. For example
 <code>[-2 2],0,[-2 2]</code> the xz-plane; <code>[-2 2],0,0</code> a line along
 the x-axis; <code>3,2,1</code> a single point.
 
-For all 2.5D functions the configuration <code>conf.xref</code> is important as
-it defines the point for which the amplitude is corrected in the sound field.
-The default entry is
-```Matlab
-conf.xref = [0 0 0];
-```
-
 #### Wave Field Synthesis
 
 The following will simulate the field of a virtual plane wave with a frequency

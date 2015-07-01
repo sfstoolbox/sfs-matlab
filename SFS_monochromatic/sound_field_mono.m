@@ -135,8 +135,8 @@ for ii = 1:size(x0,1)
 
 end
 
-% === Scale signal (at xref) ===
-P = norm_sound_field_at_xref(P,x,y,z,conf);
+% === Scale signal at conf.normalised_position ===
+P = norm_sound_field_at_position(P,x,y,z,conf);
 
 % return parameter
 if nargout>0, varargout{1}=P; end

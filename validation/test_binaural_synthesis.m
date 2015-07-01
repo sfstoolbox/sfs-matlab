@@ -88,7 +88,6 @@ conf.secondary_sources.geometry = 'linear';
 conf.secondary_sources.number = 20;
 X = [0 -2 0];
 phi = pi/2;
-conf.xref = X;
 % Plane wave
 src = 'pw';
 xs = [0.5 -1 0];
@@ -107,7 +106,6 @@ conf.secondary_sources.geometry = 'circle';
 conf.secondary_sources.number = 64;
 X = [0 0 0];
 phi = pi/2;
-conf.xref = X;
 % Plane wave
 src = 'pw';
 xs = [0.5 -1 0];
@@ -126,7 +124,6 @@ conf.secondary_sources.geometry = 'box';
 conf.secondary_sources.number = 80;
 X = [0 0 0];
 phi = pi/2;
-conf.xref = X;
 % Plane wave
 src = 'pw';
 xs = [0.5 -1 0];

@@ -76,7 +76,7 @@ end
 c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
-xref = conf.secondary_source.center - [0 1 0];
+xref = conf.secondary_sources.center - [0 1 0];
 
 
 %% ===== Computation ====================================================

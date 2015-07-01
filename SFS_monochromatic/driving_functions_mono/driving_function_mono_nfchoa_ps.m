@@ -72,7 +72,6 @@ end
 
 
 %% ===== Configuration ==================================================
-xref = conf.xref;
 c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
@@ -110,8 +109,6 @@ elseif strcmp('2.5D',dimension)
 
     % === 2.5-Dimensional ================================================
 
-    % Reference point
-    xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D point source, after Ahrens (2012), p.186 eq.(5.8)

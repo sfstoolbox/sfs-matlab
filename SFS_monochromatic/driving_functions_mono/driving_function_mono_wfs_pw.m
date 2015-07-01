@@ -71,7 +71,6 @@ end
 
 
 %% ===== Configuration ==================================================
-%xref = conf.xref;
 c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
@@ -116,7 +115,6 @@ elseif strcmp('2.5D',dimension)
     % === 2.5-Dimensional ================================================
 
     % Reference point
-    %xref = repmat(xref,[size(x0,1) 1]);
     xref = get_xref([x0 nx0]);
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
@@ -124,7 +122,7 @@ elseif strcmp('2.5D',dimension)
         %        ______________
         % g0 = \| 2pi |xref-x0|
         %
-        g0 = sqrt(2*pi*vector_norm(xref-x0(:,1:3),2));
+        g0 = sqrt(2*pi*vector_norm(xref-x0,2));
         %
         % D_2.5D using a plane wave as source model
         %                               ___

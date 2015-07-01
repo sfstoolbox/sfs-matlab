@@ -73,10 +73,10 @@ end
 
 
 %% ===== Configuration ==================================================
-xref = conf.xref;
 c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
+xref = conf.secondary_source.center - [0 1 0];
 
 
 %% ===== Computation ====================================================
@@ -105,7 +105,6 @@ elseif strcmp('2.5D',dimension)
 
     % === 2.5-Dimensional ================================================
 
-    % Reference point
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % D_2.5D using a plane wave as source model

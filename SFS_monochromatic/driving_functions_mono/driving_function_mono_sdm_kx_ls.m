@@ -67,11 +67,11 @@ end
 
 
 %% ===== Configuration ==================================================
-xref = conf.xref;
 c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
 x0 = conf.secondary_sources.center;
+xref = x0 - [0 1 0];
 withev = conf.sdm.withev;
 
 
@@ -105,7 +105,6 @@ elseif strcmp('2.5D',dimension)
 
     % === 2.5-Dimensional ================================================
 
-    % Reference point
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;

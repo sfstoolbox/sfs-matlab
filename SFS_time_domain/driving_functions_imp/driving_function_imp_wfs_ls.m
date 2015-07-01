@@ -71,7 +71,6 @@ end
 %% ===== Configuration ==================================================
 % Speed of sound
 c = conf.c;
-xref = conf.xref;
 fs = conf.fs;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
@@ -109,7 +108,7 @@ elseif strcmp('2.5D',dimension)
     % === 2.5-Dimensional ================================================
 
     % Reference point
-    xref = repmat(xref,[size(x0,1) 1]);
+    xref = get_xref([x0 nx0]);
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;

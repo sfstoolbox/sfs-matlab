@@ -61,7 +61,7 @@ function D = driving_function_mono_wfs_pw(x0,nx0,nk,f,conf)
 nargmin = 4;
 nargmax = 5;
 narginchk(nargmin,nargmax);
-isargmatrix(x0,nx0,nk);
+isargmatrix(x0,nk);
 isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
@@ -71,7 +71,7 @@ end
 
 
 %% ===== Configuration ==================================================
-xref = conf.xref;
+%xref = conf.xref;
 c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
@@ -116,14 +116,15 @@ elseif strcmp('2.5D',dimension)
     % === 2.5-Dimensional ================================================
 
     % Reference point
-    xref = repmat(xref,[size(x0,1) 1]);
+    %xref = repmat(xref,[size(x0,1) 1]);
+    xref = get_xref([x0 nx0]);
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D correction factor
         %        ______________
         % g0 = \| 2pi |xref-x0|
         %
-        g0 = sqrt(2*pi*vector_norm(xref-x0,2));
+        g0 = sqrt(2*pi*vector_norm(xref-x0(:,1:3),2));
         %
         % D_2.5D using a plane wave as source model
         %                               ___

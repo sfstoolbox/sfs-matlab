@@ -86,13 +86,13 @@ if ~strcmp('custom',geometry)
     X0 = conf.secondary_sources.center;
     % Number of secondary sources
     nls = conf.secondary_sources.number;
+    x0 = zeros(nls,7);
     % Diameter/length of array
     L = conf.secondary_sources.size;
 end
 
 
 %% ===== Main ============================================================
-x0 = zeros(nls,7);
 if strcmp('line',geometry) || strcmp('linear',geometry)
     % === Linear array ===
     %

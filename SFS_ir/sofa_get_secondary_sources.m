@@ -1,7 +1,7 @@
-function x0 = sofa_get_secondary_sources(sofa,idx,coordinate_system)
+function [x0,nss] = sofa_get_secondary_sources(sofa,idx,coordinate_system)
 %SOFA_GET_SECONDARY_SOURCES returns x0 from the given SOFA data set
 %
-%   Usage: x0 = sofa_get_secondary_sources(sofa,[idx],[coordinate_system])
+%   Usage: [x0,nss] = sofa_get_secondary_sources(sofa,[idx],[coordinate_system])
 %
 %   Input parameters:
 %       sofa              - impulse response data set (SOFA struct/file)
@@ -15,6 +15,7 @@ function x0 = sofa_get_secondary_sources(sofa,idx,coordinate_system)
 %
 %   Output parameters:
 %       x0      - secondary source matrix [n 7]
+%       nss     - number of secondary sources
 %
 %   SOFA_GET_SECONDARY_SOURCES(sofa,idx,coordinate_system) returns secondary
 %   sources as defined in the given SOFA file or struct, specified by idx.
@@ -112,6 +113,8 @@ else
     error('%s: %s convention currently not supported.', ...
         upper(mfilename),header.GLOBAL_SOFAConventions);
 end
+
+nss = size(x0,1);
 
 if strcmp('cartesian',coordinate_system)
     return;

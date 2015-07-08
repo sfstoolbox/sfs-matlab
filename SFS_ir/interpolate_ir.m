@@ -67,8 +67,8 @@ narginchk(nargmin,nargmax);
 
 %% ===== Configuration ==================================================
 useinterpolation = conf.ir.useinterpolation;
-% Precission of the wanted angle. If an impulse response within the given
-% precission could be found no interpolation is applied.
+% Precision of the wanted angle. If an impulse response within the given
+% precision could be found no interpolation is applied.
 prec = 0.001; % ~ 0.05 deg
 
 
@@ -76,7 +76,7 @@ prec = 0.001; % ~ 0.05 deg
 ir_new = ir(1,:,:);
 x0_new = xs;
 % Check if we have found directly the desired point or have to interpolate
-% bewteen different impulse responses
+% between different impulse responses
 if norm(x0(:,1)-xs)<prec || ~useinterpolation
     % Return the first nearest neighbour
     x0_new = x0(:,1);

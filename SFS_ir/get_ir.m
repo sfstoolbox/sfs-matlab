@@ -16,9 +16,10 @@ function [ir,x0] = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %                           an absolute position.
 %       coordinate_system - coordinate system X and xs are specified in,
 %                           avialable systems are:
-%                             'spherical' - spherical system (default) with
+%                             'cartesian' - cartesian system (default) with
+%                                           [x y z] / m
+%                             'spherical' - spherical system with
 %                                           [phi theta r] / (rad, rad, m)
-%                             'cartesian' - cartesian system with [x y z] / m
 %       conf              - optional configuration struct (see SFS_config),
 %                           which will be passed to:
 %                             interpolate_ir
@@ -152,7 +153,7 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     ir = sofa_get_data_fir(sofa,idx);
     ir = ir_correct_distance(ir,x0(idx,3),xs(3),conf);
     [ir,x0] = interpolate_ir(ir,neighbours,xs(1:2)',conf);
-    [x0(1),x0(2),x0(3)] = sph2cart(x0(1),x0(2),x0(3));
+    [x0(1),x0(2),x0(3)] = sph2cart(x0(1),x0(2),xs(3));
 
 elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
     %

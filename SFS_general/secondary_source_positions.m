@@ -81,12 +81,14 @@ end
 %conf.secondary_sources.x0;
 % Array type
 geometry = conf.secondary_sources.geometry;
-% Center of the array
-X0 = conf.secondary_sources.center;
-% Number of secondary sources
-nls = conf.secondary_sources.number;
-% Diameter/length of array
-L = conf.secondary_sources.size;
+if ~strcmp('custom',geometry)
+    % Center of the array
+    X0 = conf.secondary_sources.center;
+    % Number of secondary sources
+    nls = conf.secondary_sources.number;
+    % Diameter/length of array
+    L = conf.secondary_sources.size;
+end
 
 
 %% ===== Main ============================================================

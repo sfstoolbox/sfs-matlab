@@ -96,14 +96,14 @@ if usetapwin && nls>2 && ...
         edges = [edges; nls; 1];
     end
     % If we have any edges in our array apply a tapering window for every array
-    % part, consiting of two edges
+    % part, consisting of two edges
     if ~isempty(edges)
         % Generate tapwin for every array part within the x0 vector
         for ii=2:length(edges)-2
             part_nls = edges(ii+1)-edges(ii)+1;
             win(edges(ii):edges(ii+1)) = part_hann_win(part_nls,tapwinlen);
         end
-        % Generate tapwin for every array part consiting of the first and the
+        % Generate tapwin for every array part consisting of the first and the
         % last edge within the x0 vector
         if edges(1)==nls
             win = part_hann_win(nls,tapwinlen);

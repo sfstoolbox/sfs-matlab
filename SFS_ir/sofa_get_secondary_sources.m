@@ -83,7 +83,7 @@ end
 header = sofa_get_header(sofa);
 
 if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
-    % For free field HRTFs the source positions are equaivalent to the apparent
+    % For free field HRTFs the source positions are equivalent to the apparent
     % positons of the sources
     apparent_directions = SOFAcalculateAPV(header);
     [apparent_positions(:,1) apparent_positions(:,2) apparent_positions(:,3)] = ...

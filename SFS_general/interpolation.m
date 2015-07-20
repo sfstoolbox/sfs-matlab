@@ -58,7 +58,7 @@ function B = interpolation(A,X,x)
 
 
 %% ===== Checking of input parameters ===================================
-% Disabled for time constrains
+% Disabled for time constraints
 %nargmin = 3;
 %nargmax = 3;
 %narginchk(nargmin,nargmax);

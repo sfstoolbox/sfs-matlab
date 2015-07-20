@@ -4,7 +4,7 @@ function [EF, EFm] = sphexp_mono_translation(t, mode, Nse, f, conf)
 %   Usage: [EF, EFm] = sphexp_mono_translation(t, mode, Nse, f, conf)
 %
 %   Input parameters:
-%       t           - translatory shift [1x3] / m                    
+%       t           - translatory shift [1x3] / m
 %       mode        - 'RS' for regular-to-singular reexpansion
 %                     'RR' for regular-to-regular reexpansion
 %                     'SR' for singular-to-regular reexpansion
@@ -15,26 +15,26 @@ function [EF, EFm] = sphexp_mono_translation(t, mode, Nse, f, conf)
 %   Output parameters:
 %       EF          - spherical re-expansion coefficients for t
 %       EFm         - spherical re-expansion coefficients for -t
-%  
+%
 %  SPHEXP_MONO_TRANSLATION(t, mode, f, conf) computes the spherical re-expansion
 %  coefficients to perform as translatory shift of spherical basis function.
 %  Multipole Re-expansion computes the spherical basis function for a shifted
-%  coordinate system (x+t) based on the original basis functions for (x). 
+%  coordinate system (x+t) based on the original basis functions for (x).
 %
 %   m          \~~ inf \~~ l         s,m     s
 %  E (x + t) =  >       >       (E|F)   (t) F (x)
 %   n          /__ l=0 /__ s=-l      l,n     l
 %
 %  where {E,F} = {R,S}. R denotes the regular spherical basis function, while
-%  S symbolizes the singular spherical basis function. Note that (S|S) and 
-%  (S|R) are respectively equivalent to (R|R) and (R|S). 
-%  The reexpansion coefficients can seperated into sectorial 
+%  S symbolizes the singular spherical basis function. Note that (S|S) and
+%  (S|R) are respectively equivalent to (R|R) and (R|S).
+%  The reexpansion coefficients can seperated into sectorial
 %  (n = abs|m| and/or l = abs|s|) and tesseral (else) coefficients. Latter will
 %  only be computed, if conf.dimensions == '3D'.
 %
 %  References:
-%     Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
-%                                   Helmholtz Equation in three 
+%     Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the
+%                                   Helmholtz Equation in three
 %                                   Dimensions", ELSEVIER
 %
 %   see also: sphexp_mono_ps, sphexp_mono_pw
@@ -114,8 +114,8 @@ else
 end
 
 %% ===== Sectorial Coefficients =========================================
-% if translation vector's z-coordinate is zero, many coefficients are zero
-% this is to save some computation time
+% if translation vector's z-coordinate is zero, many coefficients are zero.
+% This is to save some computation time
 if t(3) == 0
  inc = 2;
 else
@@ -154,11 +154,12 @@ for l=0:2*Nse  % n=l
 
     v = sphexp_index(-s,l);
     S(v,1) = (-1).^l*Hn.*Ynm; % -s,l, m=0, n=0
-    S(1,v) = Hn.*conj(Ynm);  % s=0,l=0, -m, n  
+    S(1,v) = Hn.*conj(Ynm);  % s=0,l=0, -m, n
   end
   if showprogress, progress_bar(v,L); end % progress bar
 end
 
+%% ===== Sectorial Coefficients ==========================================
 % for n=|m| (Gumerov2004, eq. 3.2.78)
 %
 %  -m-1      s,m+1      -s      s-1,m      s-1      s-1,m
@@ -168,12 +169,12 @@ end
 %  -m-1      s,-m-1     s       s+1,-m     -s-1     s+1,-m
 % b     (E|F)(t)     = b   (E|F)(t)     - b    (E|F)(t)
 %  m+1       l,|m+1|    l       l-1,|m|    l+1      l+1,|m|
-% 
+%
 % while {E,F} = {R,S}
 %
 for m=0:Nse-1
   % NOTE: sphexp_access(b, -m-1) == sphexp_access(b, -m-1, m+1)
-  bm = 1./sphexp_access(b,-m-1); 
+  bm = 1./sphexp_access(b,-m-1);
   for l=1:(2*Nse-m-1)
     for s=-l:inc:l
       % +m
@@ -181,13 +182,13 @@ for m=0:Nse-1
       S(v,w) = bm * ( ...
         sphexp_access(b,-s ,l)    * sphexp_access(S,s-1,l-1,m) - ...
         sphexp_access(b,s-1,l+1)  * sphexp_access(S,s-1,l+1,m)...
-        );  
+        );
       % -m
       [v, w] = sphexp_index(s,l,-m-1);
       S(v,w) = bm * ( ...
         sphexp_access(b,s   ,l)   * sphexp_access(S,s+1,l-1,-m) - ...
         sphexp_access(b,-s-1,l+1) * sphexp_access(S,s+1,l+1,-m)...
-        );     
+        );
     end
   end
   if showprogress, progress_bar(m,Nse); end % progress bar
@@ -211,7 +212,8 @@ for l=1:Nse
 end
 
 %% ===== Tesseral Coefficients ==========================================
-if ~strcmp('2.5D', dimension)
+% TODO: there is a bug somewhere in here
+if strcmp('3D', dimension)
   for m=-Nse:Nse
     for s=-Nse:Nse
 
@@ -219,7 +221,7 @@ if ~strcmp('2.5D', dimension)
       % left propagation
       for n=(0:lowerbound-1)+abs(m)
         amn1 = 1./sphexp_access(a,m,n);
-        amn2 = sphexp_access(a,m,n-1);        
+        amn2 = sphexp_access(a,m,n-1);
         for l=(abs(s)-abs(m)+n+1):(2*Nse-n-1)
           [v, w] = sphexp_index(m, n+1, s, l);
           S(v,w) = amn1 * ( ...
@@ -233,7 +235,7 @@ if ~strcmp('2.5D', dimension)
     % up propagation
     for l=(0:lowerbound-1)+abs(s)
       asl1 = 1./sphexp_access(a,s,l);
-      asl2 = sphexp_access(a,s,l-1);        
+      asl2 = sphexp_access(a,s,l-1);
       for n=(abs(m)-abs(s)+l+2):(2*Nse-l-1)
         [v, w] = sphexp_index(s,l+1, m, n);
         S(v,w) = asl1 * ( ...
@@ -242,7 +244,7 @@ if ~strcmp('2.5D', dimension)
           sphexp_access(a,m,n-1)  * sphexp_access(S,s,l  ,m,n-1)...
           );
       end
-    end  
+    end
     if showprogress, progress_bar(m+Nse,2*Nse); end % progress bar
   end
 end
@@ -250,11 +252,11 @@ end
 L = (Nse + 1)^2;
 EF = S(1:L,1:L);  % (E|F)(t)
 % SR(-t)
-EFm = zeros(L);  
+EFm = zeros(L);
 for n=0:Nse
   for l=0:Nse
     m = -n:inc:n;
-    s = -l:inc:l;  
+    s = -l:inc:l;
     [v, w] = sphexp_index(s,l,m,n);
     EFm(v,w) = (-1).^(l+n)*sphexp_access(EF,s,l,m,n);
   end

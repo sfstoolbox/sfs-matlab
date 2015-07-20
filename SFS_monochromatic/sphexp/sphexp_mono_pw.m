@@ -6,19 +6,19 @@ function Anm = sphexp_mono_pw(npw, Nse, f, xq, conf)
 %   Input parameters:
 %       npw         - unit vector propagation direction of plane wave
 %       Nse         - maximum order of spherical basis functions
-%       f           - frequency [m x 1] or [1 x m]
-%       xq          - optional expansion coordinate 
+%       f           - frequency / Hz [Nf x 1] or [1 x Nf]
+%       xq          - optional expansion coordinate
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       Anm         - regular Spherical Expansion Coefficients [(Nse+1)^2 x m]
+%       Anm         - regular Spherical Expansion Coefficients [(Nse+1)^2 x Nf]
 %
 %   SPHEXP_MONO_PW(npw,Nse,f,xq,conf) computes the regular Spherical Expansion
 %   Coefficients for a plane wave. The expansion will be done around the
 %   expansion coordinate xq:
 %
 %              \~~ oo  \~~   n   m  m
-%   p  (x,f) =  >       >       A  R  (x-x ) 
+%   p  (x,f) =  >       >       A  R  (x-x )
 %    pw        /__ n=0 /__ m=-n  n  n     q
 %
 %   with the expansion coefficients (Gumerov, p. 74, eq. 2.3.6):
@@ -27,16 +27,16 @@ function Anm = sphexp_mono_pw(npw, Nse, f, xq, conf)
 %   A  = 4pi i   Y   (theta  , phi  )
 %    n            n       pw     pw
 %
-%   The coefficients are stored in linear arrays with index l resulting from 
+%   The coefficients are stored in linear arrays with index l resulting from
 %   m and n:
-% 
+%
 %         m                 2
 %   A  = A  ; with l = (n+1)  - (n - m)
-%    l    n   
+%    l    n
 %
 %   References:
-%       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
-%                                    Helmholtz Equation in three 
+%       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the
+%                                    Helmholtz Equation in three
 %                                    Dimensions", ELSEVIER
 %
 %   see also: sphexp_access sphexp_index sphbasis_mono

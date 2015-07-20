@@ -1,14 +1,14 @@
 function Pnm = sphexp_mono_nfchoa_sht(Dnm,mode,f,conf)
 %SPHEXP_MONO_NFCHOA_SHT yields spherical expansion coefficients of a sound field
-%resulting from of the nfchoa driving function given as a spherical harmonics 
-%transform 
+%resulting from of the nfchoa driving function given as a spherical harmonics
+%transform
 %
 %   Usage: Pnm = sphexp_mono_nfchoa_sht(Dnm,mode,f,conf)
 %
 %   Input parameters:
 %       Dnm         - spherical harmonics transform of nfchoa driving function
 %       mode        - 'R' for regular, 'S' for singular
-%       f           - frequency in Hz
+%       f           - frequency / Hz [Nf x 1] or [1 x Nf]
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -76,20 +76,20 @@ Nse = sqrt(size(Dnm,1)) - 1;
 %% ===== Computation ====================================================
 if strcmp('2D',dimension)
   % === 2-Dimensional ==================================================
-  
+
   error('%s: 2D not supported.',upper(mfilename));
 
 elseif strcmp('2.5D',dimension)
   % === 2.5-Dimensional ================================================
-  
-  % regular/singular expansion
+
+  % regular/singular expansion of 3D Green's function
   Gnm = 2*pi*r0*sphexp_mono_ps([r0, 0, 0], mode, Nse, f, [0,0,0], conf);
 elseif strcmp('3D',dimension)
   % === 3-Dimensional ==================================================
-  
-  % regular/singular expansion
+
+  % regular/singular expansion of 3D Green's function
   Gnm = sphexp_mono_ps([0, 0, r0], mode, Nse, f, [0,0,0], conf);
-  
+
   for n=0:Nse
     v = sphexp_index(-n:n,n);
     w = sphexp_index(0,n);

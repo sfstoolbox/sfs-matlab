@@ -1,33 +1,33 @@
 function Bnm = sphexp_mono_scatter(Anm, R, sigma, f, conf)
-%Singular Spherical Expansion of sphere-scattered field
+% Singular Spherical Expansion of a sphere-scattered sound field
 %
 %   Usage: Bl = sphexpS_mono_scatter(Al, R, sigma, f, conf)
 %
 %   Input parameters:
-%       Al          - regular spherical expansion of incident field                     
-%       R           - radius of sphere
+%       Anm         - regular spherical expansion of incident sound field
+%       R           - radius of sphere / m
 %       sigma       - admittance of sphere (from 0(sound soft) to inf(sound hard))
-%       f           - frequency in Hz
+%       f           - frequency / Hz [Nf x 1] or [1 x Nf]
 %
 %   Output parameters:
-%       Bl          - singular spherical expansion coefficients of
+%       Bnm         - singular spherical expansion coefficients of
 %                     scattered field
 %
-%   SPHEXPS_MONO_SCATTER(Anm, R, sigma, f, conf) computes the singular spherical 
+%   SPHEXPS_MONO_SCATTER(Anm, R, sigma, f, conf) computes the singular spherical
 %   expansion coefficients of a field resulting from a scattering of an incident
-%   field at a sphere. Incident field is descriped by regular expansion 
+%   field at a sphere. Incident field is descriped by regular expansion
 %   coefficients (expansion center is expected to be at the center of the sphere
 %   xq):
 %
 %               \~~ oo  \~~   n   m  m
-%   p   (x,f) =  >       >       A  R  (x-x ) 
+%   P   (x,f) =  >       >       A  R  (x-x )
 %    ind        /__ n=0 /__ m=-n  n  n     q
 %
 %   The scattered field is descriped by singular expansion coefficients,
-%   expanded around the center of the sphere xq. 
+%   expanded around the center of the sphere xq.
 %
 %               \~~ oo  \~~   n   m  m
-%   p   (x,f) =  >       >       B  S  (x-x ) 
+%   P   (x,f) =  >       >       B  S  (x-x )
 %    sca        /__ n=0 /__ m=-n  n  n     q
 %
 %   Due to the boundary conditions on the surface of the sphere the
@@ -41,14 +41,14 @@ function Bnm = sphexp_mono_scatter(Anm, R, sigma, f, conf)
 %
 %   where k = 2*pi*f/c. The coefficients are stored in linear arrays with
 %   index l resulting from m and n:
-% 
+%
 %         m         m               2
 %   A  = A  ; B  = B  with l = (n+1)  - (n - m)
 %    l    n    l    n
 %
 %   References:
-%       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
-%                                    Helmholtz Equation in three 
+%       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the
+%                                    Helmholtz Equation in three
 %                                    Dimensions", ELSEVIER
 %
 %   see also: sphexp_mono_ps, sphexp_mono_pw
@@ -93,7 +93,8 @@ isargvector(Anm);
 L = length(Anm);
 isargsquaredinteger(L);
 isargscalar(sigma);
-isargpositivescalar(f,R);
+isargpositivescalar(R);
+isargvector(f);
 if nargin<nargmax
   conf = SFS_config;
 else
@@ -120,7 +121,7 @@ end
 
 %% ===== Computation ====================================================
 Bnm = zeros(size(Anm));
-for n=0:(sqrt(L) - 1) 
+for n=0:(sqrt(L) - 1)
   v = sphexp_index(-n:n,n);
   Bnm(v,:) = T(n).*Anm(v,:);
 end

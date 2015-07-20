@@ -15,13 +15,13 @@ function [a, b] = sphexp_translation_auxiliary(Nse,conf)
 %
 %   SPHEXP_TRANSLATION_AUXILIARY(Nse,conf)
 %
-%   Auxiliary coefficients for the calculation of tesseral spherical 
+%   Auxiliary coefficients for the calculation of tesseral spherical
 %   translation coefficients (Gumerov2004, eq. 2.2.8 and 3.2.65):
 %
 %         +------------------+
 %    m    |(n+1+|m|)(n+1-|m|)           _
 %   a  =  |------------------  for |m|  < n
-%    n   \|   (2n+1)(2n+3) 
+%    n   \|   (2n+1)(2n+3)
 %
 %         0                    else
 %
@@ -37,10 +37,10 @@ function [a, b] = sphexp_translation_auxiliary(Nse,conf)
 %    m     |(n-m)(n-m-1)               _
 %   b  = - |------------       for -n  < m  < 0
 %    n    \|(2n-1)(2n+1)
-%      
+%
 %          0                   else
 %
-%   The coefficients are stored in linear arrays with index l resulting from 
+%   The coefficients are stored in linear arrays with index l resulting from
 %   m and n:
 %
 %         m         m               2
@@ -48,8 +48,8 @@ function [a, b] = sphexp_translation_auxiliary(Nse,conf)
 %    l    n    l    n
 %
 %   References:
-%       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
-%                                    Helmholtz Equation in three 
+%       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the
+%                                    Helmholtz Equation in three
 %                                    Dimensions", ELSEVIER
 %
 %   see also: sphexp_mono_ps, sphexp_mono_pw
@@ -87,16 +87,14 @@ function [a, b] = sphexp_translation_auxiliary(Nse,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 0;
+nargmin = 1;
 nargmax = 2;
 narginchk(nargmin,nargmax);
+isargpositivescalar(Nse);
 if nargin<nargmax
     conf = SFS_config;
 else
     isargstruct(conf);
-end
-if nargin == nargmin
-  Nse = conf.scattering.Nse;
 end
 
 %% ===== Configuration ==================================================
@@ -109,7 +107,7 @@ b = zeros(L,1);
 for n=0:Nse
   a_denum = (2*n+1)*(2*n+3);
   b_denum = (2*n-1)*(2*n+1);
-  
+
   m = -n:n;
   v = sphexp_index(m,n);
 

@@ -82,7 +82,7 @@ Nse = sqrt(size(Pnm, 1))-1;
 % Calculate the driving function in time-frequency domain
 
 % secondary source positions
-x00 = bsxfun(@minus,x0,Xc);
+x00 = bsxfun(@minus,x0(:,1:3),Xc);
 [phi0, ~,r0] = cart2sph(x00(:,1),x00(:,2),x00(:,3));
 
 % frequency depended stuff

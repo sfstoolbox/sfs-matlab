@@ -1,21 +1,22 @@
-function Anm = sphexp_truncate(Pnm, N, Nshift)
+function Anm = sphexp_truncate(Pnm, N, M, Mshift)
 % Truncates spherical expansion by setting remaining coefficients to zero
 %
-%   Usage: Anm = sphexp_truncate(Pnm, N, Nshift)
+%   Usage: Anm = sphexp_truncate(Pnm, N, M, Mshift)
 %
 %   Input parameters:
 %       Pnm         - 1D array of spherical expansion coefficients [n x Nf]
-%       N           - maximum order of spherical expansion
-%       Nshift      - 
+%       N           - maximum degree of spherical expansion
+%       M           - maximum order of spherical expansion
+%       Mshift      - shift for asymmetric trunction with respect to order
 %
 %   Output parameters:
 %       Anm         - 1D array of bandlimited spherical expansion
 %                     coefficients [N x Nf]
 %
-%   SPHEXP_TRUNCATE(Pnm, N, Nshift) sets coefficients belonging to an order
-%   higher than N to zero.
+%   SPHEXP_TRUNCATE(Pnm, N, M, Mshift) sets coefficients belonging to an degree
+%   n higher than N or an order m exceeding: -M+Mshift to +M+Mshift to zero.
 %
-%   see also: sphexp_access sphexp_truncation_order
+%   see also: sphexp_truncation_order
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -51,22 +52,27 @@ function Anm = sphexp_truncate(Pnm, N, Nshift)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 2;
-nargmax = 3;
+nargmax = 4;
 narginchk(nargmin,nargmax);
 isargmatrix(Pnm);
 isargpositivescalar(N);
-if nargin == nargmin
-  Nshift = 0;
-else
-  isargscalar(Nshift);
+switch nargin
+  case 2
+    M = N;
+    Mshift = 0;
+  case 3
+    isargpositivescalar(M);
+    Mshift = 0;
+  case 4
+    isargscalar(Mshift);
 end
 %% ===== Variable =======================================================
-Nse = sqrt(size(Pnm, 1))-1; 
+Nse = min(sqrt(size(Pnm, 1))-1, N);
 
 %% ===== Computation ====================================================
 Anm = zeros(size(Pnm));
 
-for m=max(-N+Nshift,-Nse):min(N+Nshift,Nse)
+for m=max(-M+Mshift,-Nse):min(M+Mshift,Nse)
   v = sphexp_index(m,abs(m):Nse);
   Anm(v,:) = Pnm(v,:);
 end

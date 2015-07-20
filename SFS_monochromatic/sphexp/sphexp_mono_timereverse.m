@@ -1,13 +1,14 @@
 function ABnm = sphexp_mono_timereverse(ABnm)
 % compute coefficients of time reversed sound field
 %
-%   Usage: Bnm = sphexp_mono_timereverse(ABnm, conf)
+%   Usage: ABnm = sphexp_mono_timereverse(ABnm)
 %
 %   Input parameters:
-%       ABnm          - spherical expansion coefficients
+%       ABnm          - spherical expansion coefficients of sound field
 %
 %   Output parameters:
-%       ABnm          - time reversed spherical expansion coefficients
+%       ABnm          - spherical expansion coefficients of time reversed
+%                       sound field
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -52,7 +53,7 @@ isargsquaredinteger(L);
 %% ===== Computation ====================================================
 
 for n=0:(sqrt(L)-1)
-  v = sphexp_index(-n:n,n);  
+  v = sphexp_index(-n:n,n);
   ABnm(v) = conj(sphexp_access(ABnm,n:-1:-n,n));
 end
 

@@ -12,13 +12,16 @@ function Nse = sphexp_truncation_order(r, f, nmse, conf)
 %   Output parameters:
 %       Nse         - Maximum order for spherical expansion
 %
-%   SPHEXP_TRUNCATION_ORDER(r, f, epsilon, conf) yields the order up to which 
+%   SPHEXP_TRUNCATION_ORDER(r, f, nmse, conf) yields the order up to which
 %   a the spherical expansion coefficients of an arbitrary sound field have
-%   be summed up. For a given frequency and maximum radius the normalized 
-%   truncation mean squared error is below the specified error bound (nmse).
+%   be summed up. For a given frequency (f) the normalized truncation mean
+%   squared error is below the specified error bound (nmse) at any point inside
+%   a spherical volume around the expansion center with a radius r. Note, that
+%   this approximation holds for any sound field and might heavily over-estimate
+%   the needed order in specific cases.
 %
 %   References:
-%       Kennedy et al. (2007) - "Intrinsic Limits of Dimensionality and 
+%       Kennedy et al. (2007) - "Intrinsic Limits of Dimensionality and
 %                               Richness in Random Multipath Fields",
 %                               IEEE Transactions on Signal Processing
 
@@ -71,7 +74,7 @@ c = conf.c;
 %% ===== Computation ====================================================
 % See Kennedy et al. (eq. 42/43)
 lambda = c/f;  % wave length
-delta = max(0, ceil(log(0.67848/nmse)));
+delta = max(0, ceil(log(0.67848/nmse)));  % nmse dependent term
 Nse = ceil(pi*r*exp(1)/lambda) + delta;
 
 end

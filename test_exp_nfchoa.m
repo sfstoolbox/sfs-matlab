@@ -38,7 +38,7 @@ xq = conf.secondary_sources.center;  % expansion center
 conf.xref = xq;  % reference position
 
 %% Spherical Basis Functions
-[jn, ~, Ynm, x, y, z] = sphbasis_mono_grid(xrange,yrange,zrange,max(Ncet,Nse),f,xq,conf);
+[jn, ~, Ynm] = sphbasis_mono_grid(xrange,yrange,zrange,max(Ncet,Nse),f,xq,conf);
 
 %% Spherical Expansion Coefficients
 % regular spherical expansion at xq
@@ -93,6 +93,8 @@ Ppw_shift_trunc = sound_field_mono(xrange,yrange,zrange,x0,'ps',Dpw_shift_trunc,
 Pps_shift_trunc = sound_field_mono(xrange,yrange,zrange,x0,'ps',Dps_shift_trunc,f,conf);
 Pls_shift_trunc = sound_field_mono(xrange,yrange,zrange,x0,'ls',Dls_shift_trunc,f,conf);
 % plot
+[~,~,~,x,y,z] = xyz_grid(xrange,yrange,zrange,conf);
+
 plot_sound_field(Ppw, x,y,z, [], conf);
 title('2.5D NFCHOA (spatial domain): plane wave');
 plot_sound_field(Pps, x,y,z, [], conf);
@@ -151,6 +153,8 @@ Ppw_shift_trunc = sound_field_mono_sphbasis(Ppwnm_shift_trunc, jn, Ynm);
 Pps_shift_trunc = sound_field_mono_sphbasis(Ppsnm_shift_trunc, jn, Ynm);
 Pls_shift_trunc = sound_field_mono_sphbasis(Plsnm_shift_trunc, jn, Ynm);
 % plot
+[~,~,~,x,y,z] = xyz_grid(xrange,yrange,zrange,conf);
+
 plot_sound_field(Ppw, x,y,z, [], conf);
 title('2.5D NFCHOA (sht domain): plane wave');
 plot_sound_field(Pps, x,y,z, [], conf);
@@ -185,6 +189,8 @@ Ppw = sound_field_mono_sphbasis(Ppwnm, jn, Ynm);
 Pps = sound_field_mono_sphbasis(Ppsnm, jn, Ynm);
 Pls = sound_field_mono_sphbasis(Plsnm, jn, Ynm);
 % plot
+[~,~,~,x,y,z] = xyz_grid(xrange,yrange,zrange,conf);
+
 plot_sound_field(Ppw, x,y,z, [], conf);
 title('3D NFCHOA (sht domain): plane wave');
 plot_sound_field(Pps, x,y,z, [], conf);

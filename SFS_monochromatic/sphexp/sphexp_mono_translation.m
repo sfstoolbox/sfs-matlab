@@ -9,7 +9,7 @@ function [EF, EFm] = sphexp_mono_translation(t, mode, Nse, f, conf)
 %                     'RR' for regular-to-regular reexpansion
 %                     'SR' for singular-to-regular reexpansion
 %                     'SS' for singular-to-singular reexpansion
-%       f           - frequency / Hz
+%       f           - frequency [1 x Nf] / Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -77,7 +77,8 @@ nargmax = 5;
 narginchk(nargmin,nargmax);
 isargposition(t);
 isargchar(mode);
-isargpositivescalar(f, Nse);
+isargpositivescalar(Nse);
+isargvector(f);
 if nargin<nargmax
   conf = SFS_config;
 else
@@ -95,20 +96,21 @@ phi = atan2(t(2),t(1));
 theta = asin(t(3)./r);
 
 % frequency
+Nf = length(f);
 k = 2*pi*f/conf.c;
-kr = k*r;
+kr = reshape(k, 1, 1, Nf)*r;
 
 L = (2*Nse + 1).^2;
-S = zeros(L);
+S = zeros(L, L, Nf);
 
 % Auxilary Coefficients for Computations
 [a, b] = sphexp_translation_auxiliary(2*Nse,conf);
 
 % select suitable basis function
 if strcmp('RR', mode) || strcmp('SS', mode)
-  sphbasis = @sphbesselj;
+  sphbasis = @(nu) sphbesselj(nu, kr);
 elseif strcmp('SR', mode) || strcmp('RS', mode)
-  sphbasis = @(nu,z) sphbesselh(nu,2,z);
+  sphbasis = @(nu) sphbesselh(nu, 2, kr);
 else
   error('unknown mode:');
 end
@@ -143,18 +145,18 @@ end
 %      0, m        0, n          n
 %
 for l=0:2*Nse  % n=l
-  Hn  = sqrt(4*pi)*sphbasis(l,kr);  % radial basis function (see Variables)
+  Hn  = sqrt(4*pi)*sphbasis(l);  % radial basis function (see Variables)
   for s=l:-inc:0  % m=s
     % spherical harmonics: conj(Y_n^m) = Y_n^-m (Gumerov2004, eq. 2.1.59)
     Ynm = sphharmonics(l,s, theta, phi);
 
     v = sphexp_index(s,l);
-    S(v,1) = (-1).^l*Hn.*conj(Ynm);  % s,l, m=0, n=0
-    S(1,v) = Hn.*Ynm;   % s=0,l=0, m, n
+    S(v,1,:) = (-1).^l*Hn.*conj(Ynm);  % s,l, m=0, n=0
+    S(1,v,:) = Hn.*Ynm;   % s=0,l=0, m, n
 
     v = sphexp_index(-s,l);
-    S(v,1) = (-1).^l*Hn.*Ynm; % -s,l, m=0, n=0
-    S(1,v) = Hn.*conj(Ynm);  % s=0,l=0, -m, n
+    S(v,1,:) = (-1).^l*Hn.*Ynm; % -s,l, m=0, n=0
+    S(1,v,:) = Hn.*conj(Ynm);  % s=0,l=0, -m, n
   end
   if showprogress, progress_bar(v,L); end % progress bar
 end
@@ -179,13 +181,13 @@ for m=0:Nse-1
     for s=-l:inc:l
       % +m
       [v, w] = sphexp_index(s,l,m+1);
-      S(v,w) = bm * ( ...
+      S(v,w,:) = bm * ( ...
         sphexp_access(b,-s ,l)    * sphexp_access(S,s-1,l-1,m) - ...
         sphexp_access(b,s-1,l+1)  * sphexp_access(S,s-1,l+1,m)...
         );
       % -m
       [v, w] = sphexp_index(s,l,-m-1);
-      S(v,w) = bm * ( ...
+      S(v,w,:) = bm * ( ...
         sphexp_access(b,s   ,l)   * sphexp_access(S,s+1,l-1,-m) - ...
         sphexp_access(b,-s-1,l+1) * sphexp_access(S,s+1,l+1,-m)...
         );
@@ -203,11 +205,11 @@ end
 % while {E,F} = {R,S}
 %
 for l=1:Nse
-  for n=1:(2*Nse-l)
+  for n=inc:(2*Nse-l)
     s = [-l,l];
     m = (-n+inc):inc:(n-inc);
     [v, w] = sphexp_index( s, l, m, n);
-    S(v,w) = (-1).^(l+n)*sphexp_access(S,-m,n,-s, l).';
+    S(v,w,:) = (-1).^(l+n)*sphexp_access(S,-m,n,-s, l).';
   end
 end
 
@@ -224,7 +226,7 @@ if strcmp('3D', dimension)
         amn2 = sphexp_access(a,m,n-1);
         for l=(abs(s)-abs(m)+n+1):(2*Nse-n-1)
           [v, w] = sphexp_index(m, n+1, s, l);
-          S(v,w) = amn1 * ( ...
+          S(v,w,:) = amn1 * ( ...
             amn2                    * sphexp_access(S,m,n-1,s,l) - ...
             sphexp_access(a,s,l)    * sphexp_access(S,m,n  ,s,l+1)   + ...
             sphexp_access(a,s,l-1)  * sphexp_access(S,m,n  ,s,l-1) ...
@@ -238,7 +240,7 @@ if strcmp('3D', dimension)
       asl2 = sphexp_access(a,s,l-1);
       for n=(abs(m)-abs(s)+l+2):(2*Nse-l-1)
         [v, w] = sphexp_index(s,l+1, m, n);
-        S(v,w) = asl1 * ( ...
+        S(v,w,:) = asl1 * ( ...
           asl2                    * sphexp_access(S,s,l-1,m,n)   - ...
           sphexp_access(a,m,n)    * sphexp_access(S,s,l  ,m,n+1) + ...
           sphexp_access(a,m,n-1)  * sphexp_access(S,s,l  ,m,n-1)...
@@ -250,15 +252,15 @@ if strcmp('3D', dimension)
 end
 %% ====== Final Calculation Steps =======================================
 L = (Nse + 1)^2;
-EF = S(1:L,1:L);  % (E|F)(t)
+EF = S(1:L,1:L,:);  % (E|F)(t)
 % SR(-t)
-EFm = zeros(L);
+EFm = zeros(L,L,Nf);
 for n=0:Nse
   for l=0:Nse
     m = -n:inc:n;
     s = -l:inc:l;
     [v, w] = sphexp_index(s,l,m,n);
-    EFm(v,w) = (-1).^(l+n)*sphexp_access(EF,s,l,m,n);
+    EFm(v,w,:) = (-1).^(l+n)*sphexp_access(EF,s,l,m,n);
   end
 end
 

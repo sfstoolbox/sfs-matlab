@@ -4,7 +4,8 @@ function a = sphexp_access(A, m1, n1, m2, n2)
 %   Usage: a = sphexp_access(A, m1, n1, m2, n2)
 %
 %   Input parameters:
-%       A           - 1D, 2D array of expansion coefficients
+%       A           - 1D, 2D, 3D array of expansion coefficients (3rd
+%                     dimension for temporal frequency)
 %       m1          - order of 1st dimension
 %       n1          - degree of 1st dimension (optional, default = |m1|)
 %       m2          - order of 2st dimension (optional, default = 0)
@@ -50,28 +51,39 @@ function a = sphexp_access(A, m1, n1, m2, n2)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
+L1 = length(m1);
 if nargin < 3
   n1 = abs(m1);
+elseif length(n1) < L1
+  n1 = repmat(n1, [1 L1]);
+elseif length(n1) > L1
+  m1 = repmat(m1, [1 length(n2)]);
+  L1 = length(m2);
 end
+
 if nargin < 4
   m2 = 0;
 end
+
+L2 = length(m2);
 if nargin < 5
   n2 = abs(m2);
+elseif length(n2) < L2
+  n2 = repmat(n2, [1 L2]);
+elseif length(n2) > L2
+  m2 = repmat(m2, [1 length(n2)]);
+  L2 = length(m2);  
 end
 
 %% ===== Computation ====================================================
-a = zeros(length(m1)*length(n1),length(m2)*length(n2));
+a = zeros(L1, L2, size(A, 3));
 
-[m1, n1] = meshgrid(m1, n1);
-[m2, n2] = meshgrid(m2, n2);
-
-s1 = abs(m1(:)) <= n1(:);
-s2 = abs(m2(:)) <= n2(:);
+s1 = abs(m1) <= n1;
+s2 = abs(m2) <= n2;
 
 if any(s1) && any(s2)
-  [l1, l2] = sphexp_index(m1(s1), n1(s1), m2(s2), n2(s2));
-  a(s1,s2) = A(l1,l2);
+  [v, w] = sphexp_index(m1(s1), n1(s1), m2(s2), n2(s2));
+  a(s1,s2,:) = A(v,w,:);
 end
 
 end

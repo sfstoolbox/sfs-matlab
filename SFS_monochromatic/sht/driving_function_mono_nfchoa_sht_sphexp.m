@@ -97,18 +97,7 @@ krref = k.*rref;
 % initialize empty driving signal
 Dnm = zeros(size(Pnm));
 
-if strcmp('2D',dimension)
-  % === 2-Dimensional ==================================================
-  
-  if strcmp('default',driving_functions)
-    % --- SFS Toolbox ------------------------------------------------
-    to_be_implemented;
-  else
-    error('%s: %s, this type of driving function is not implemented ', ...
-      upper(mfilename), driving_functions);
-  end
-  
-elseif strcmp('2.5D',dimension)
+if strcmp('2.5D',dimension)
   % === 2.5-Dimensional ================================================
   
   if strcmp('default',driving_functions)
@@ -197,5 +186,6 @@ elseif strcmp('3D',dimension)
       upper(mfilename), driving_functions);
   end
 else
-  error('%s: the dimension %s is unknown.',upper(mfilename),dimension);
+  error('%s: the dimension %s is unknown or not supported.',  ...
+    upper(mfilename),dimension);
 end

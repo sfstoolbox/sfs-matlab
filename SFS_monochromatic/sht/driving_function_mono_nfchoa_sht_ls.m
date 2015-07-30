@@ -1,11 +1,11 @@
-function Dnm = driving_function_mono_nfchoa_sht_ps(xs, Nse, f, conf)
+function Dnm = driving_function_mono_nfchoa_sht_ls(xs, Nse, f, conf)
 %computes the spherical harmonics transform of nfchoa driving functions 
-%for a point source.
+%for a line source.
 %
-%   Usage: D = driving_function_mono_nfchoa_sht_ps(xs, Nse, f, conf)
+%   Usage: D = driving_function_mono_nfchoa_sht_ls(xs, Nse, f, conf)
 %
 %   Input parameters:
-%       xs          - position of point source [1 x 3] / m
+%       xs          - position of line source [1 x 3] / m
 %       Nse         - maximum order of spherical basis functions
 %       f           - frequency [m x 1] or [1 x m] / Hz
 %       conf        - optional configuration struct (see SFS_config)
@@ -16,9 +16,9 @@ function Dnm = driving_function_mono_nfchoa_sht_ps(xs, Nse, f, conf)
 %
 %   DRIVING_FUNCTION_MONO_NFCHOA_SHT_LS(xs, Nse, f, conf) returns spherical 
 %   harmonics transform of the NFCHOA driving function with maximum order Nse
-%   for a virtual point source at xs.
+%   for a virtual line source at xs.
 %
-%   see also: sphexp_mono_ps driving_function_mono_nfchoa_sht_sphexp
+%   see also: sphexp_mono_ls driving_function_mono_nfchoa_sht_sphexp
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -71,6 +71,6 @@ X0 = conf.secondary_sources.center;
 %% ===== Computation ====================================================
 
 % Calculate spherical expansion coefficients of point source
-Pnm = sphexp_mono_ps(xs, 'R', Nse, f, X0, conf);
+Pnm = sphexp_mono_ls(xs, 'R', Nse, f, X0, conf);
 % Calculate spherical harmonics driving function
 Dnm = driving_function_mono_nfchoa_sht_sphexp(Pnm, f, conf);

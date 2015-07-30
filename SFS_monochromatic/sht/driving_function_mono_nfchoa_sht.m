@@ -1,11 +1,12 @@
-function Dnm = driving_function_mono_nfchoa_sht_ps(xs, Nse, f, conf)
+function Dnm = driving_function_mono_nfchoa_sht(xs, src, Nse, f, conf)
 %computes the spherical harmonics transform of nfchoa driving functions 
-%for a point source.
+%for a specified source model
 %
-%   Usage: D = driving_function_mono_nfchoa_sht_ps(xs, Nse, f, conf)
+%   Usage: D = driving_function_mono_nfchoa_sht(xs, src, Nse, f, conf)
 %
 %   Input parameters:
-%       xs          - position of point source [1 x 3] / m
+%       xs          - position of virtual source or direction of plane
+%                     wave [1 x 3] / m 
 %       Nse         - maximum order of spherical basis functions
 %       f           - frequency [m x 1] or [1 x m] / Hz
 %       conf        - optional configuration struct (see SFS_config)
@@ -14,11 +15,11 @@ function Dnm = driving_function_mono_nfchoa_sht_ps(xs, Nse, f, conf)
 %       Dnm         - regular spherical harmonics transform of driving
 %                     function signal [n x m]
 %
-%   DRIVING_FUNCTION_MONO_NFCHOA_SHT_LS(xs, Nse, f, conf) returns spherical 
+%   DRIVING_FUNCTION_MONO_NFCHOA_SHT(xs, src, Nse, f, conf) returns spherical 
 %   harmonics transform of the NFCHOA driving function with maximum order Nse
-%   for a virtual point source at xs.
+%   for a specified source model.
 %
-%   see also: sphexp_mono_ps driving_function_mono_nfchoa_sht_sphexp
+%   see also: driving_function_mono_nfchoa_sht_sphexp
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -53,10 +54,11 @@ function Dnm = driving_function_mono_nfchoa_sht_ps(xs, Nse, f, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
-nargmax = 4;
+nargmin = 4;
+nargmax = 5;
 narginchk(nargmin,nargmax);
 isargposition(xs);
+isargchar(src);
 isargpositivescalar(Nse);
 isargvector(f);
 if nargin<nargmax
@@ -65,12 +67,26 @@ else
   isargstruct(conf);
 end
 
-%% ===== Configuration ==================================================
-X0 = conf.secondary_sources.center;
-
 %% ===== Computation ====================================================
 
-% Calculate spherical expansion coefficients of point source
-Pnm = sphexp_mono_ps(xs, 'R', Nse, f, X0, conf);
-% Calculate spherical harmonics driving function
-Dnm = driving_function_mono_nfchoa_sht_sphexp(Pnm, f, conf);
+% Get SHT of driving signals
+if strcmp('pw',src)
+    % === Plane wave =====================================================
+    % Direction of plane wave
+    nk = xs / norm(xs);
+    % SHT of Driving signal
+    Dnm = driving_function_mono_nfchoa_sht_pw(nk, Nse, f,conf);
+
+elseif strcmp('ps',src)
+    % === Point source ===================================================
+    % SHT of Driving signal
+    Dnm = driving_function_mono_nfchoa_sht_ps(xs, Nse, f,conf);
+    
+elseif strcmp('ls',src)
+    % === Line source ====================================================
+    % SHT of Driving signal
+    Dnm = driving_function_mono_nfchoa_sht_ls(xs, Nse, f,conf);
+    
+else
+    error('%s: %s is not a known source type.',upper(mfilename),src);
+end

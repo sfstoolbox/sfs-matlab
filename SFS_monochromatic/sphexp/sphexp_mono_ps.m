@@ -118,9 +118,9 @@ Nf = length(kr);
 
 % select suitable basis function
 if strcmp('R', mode)
-  sphbasis = @(nu,z) sphbesselh(nu,2,z);
+  sphbasis = @(nu) sphbesselh(nu,2,kr);
 elseif strcmp('S', mode)
-  sphbasis = @sphbesselj;
+  sphbasis = @(nu) sphbesselj(nu, kr);
 else
   error('unknown mode:');
 end
@@ -128,7 +128,7 @@ end
 %% ===== Computation ====================================================
 Anm = zeros( (Nse + 1).^2 , Nf);
 for n=0:Nse
-  cn = -1j.*k.*sphbasis(n, kr);
+  cn = -1j.*k.*sphbasis(n);
   for m=0:n    
     % spherical harmonics: conj(Y_n^m) = Y_n^-m (Gumerov2004, eq. 2.1.59)
     Ynm = sphharmonics(n,m, theta, phi);

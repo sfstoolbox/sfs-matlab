@@ -11,15 +11,12 @@ function Dnm = driving_function_mono_nfchoa_sht_sphexp(Pnm, f, conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       Dnm         - regular spherical expansion coefficients of driving
+%       Dnm         - regular spherical harmonics transform of driving
 %                     function signal [n x m]
 %
-%   DRIVING_FUNCTION_MONO_NFCHOA_HARM_SPHEXP(Pnm, f, conf) returns regular
-%   spherical expansion coefficients of the NFCHOA driving function for a
-%   virtual sound expressed by regular spherical expansion coefficients
-%   and the frequency f.
-%
-%   see also: driving_function_mono_nfchoa_sphexp
+%   DRIVING_FUNCTION_MONO_NFCHOA_SHT_SPHEXP(Pnm, f, conf) returns spherical
+%   harmonics transform of the NFCHOA driving function for a virtual sound 
+%   expressed by regular spherical expansion coefficients and the frequency f.
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -66,8 +63,8 @@ else
   isargstruct(conf);
 end
 if size(Pnm,2) ~= length(f)
-  error('number of rows in %s have to match length of %s', inputname(1), ...
-    inputname(2));
+  error( '%s:number of rows in %s have to match length of %s', ...
+    upper(mfilename), inputname(1), inputname(2) );
 end
 
 %% ===== Configuration ==================================================

@@ -107,7 +107,7 @@ if strcmp('R', mode)
   Am = circexp_mono_ls(xs, mode, Nse, f, xq, conf);
   Anm = sphexp_convert_circexp(Am);
 elseif strcmp('S', mode)
-  error('%s: %s, mode not yet implemented', upper(mfilename), mode);
+  to_be_implemented;
 else
   error('%s: %s, unknown mode', upper(mfilename), mode);
 end

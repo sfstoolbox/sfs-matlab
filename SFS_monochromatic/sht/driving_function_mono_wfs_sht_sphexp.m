@@ -1,33 +1,30 @@
-function Dnm = driving_function_mono_nfchoa_sht(xs, src, Nse, f, conf)
-%DRIVING_FUNCTION_MONO_NFCHOA_SHT computes the spherical harmonics transform of
-%nfchoa driving functions for a specified source model
+function Dnm = driving_function_mono_wfs_sht_sphexp(Pnm, mode, f, conf)
+%DRIVING_FUNCTION_MONO_WFS_SHT_SPHEXP computes spherical harmonics transform 
+%the wfs driving functions for a sound field expressed by spherical expansion 
+%coefficients.
 %
-%   Usage: D = driving_function_mono_nfchoa_sht(xs, src, Nse, f, conf)
+%   Usage: Dnm = driving_function_mono_wfs_sht_sphexp(Pnm, mode, f, conf)
 %
 %   Input parameters:
-%       xs          - position of virtual source or direction of plane
-%                     wave [1 x 3] / m 
-%       Nse         - maximum order of spherical basis functions
-%       f           - frequency [m x 1] or [1 x m] / Hz
+%       Pnm         - regular/singular spherical expansion coefficients of 
+%                     sound field
+%       mode        - 'R' for regular expansion, 'S' for singular expansion
+%       f           - frequency / Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       Dnm         - regular spherical harmonics transform of driving
 %                     function signal [n x m]
 %
-%   DRIVING_FUNCTION_MONO_NFCHOA_SHT(xs, src, Nse, f, conf) returns spherical 
-%   harmonics transform of the NFCHOA driving function with maximum order Nse
-%   for a specified source model.
-%
-%   see also: driving_function_mono_nfchoa_sht_sphexp
+%   DRIVING_FUNCTION_MONO_WFS_SHT_SPHEXP(Pnm, mode, f, conf)
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -54,39 +51,73 @@ function Dnm = driving_function_mono_nfchoa_sht(xs, src, Nse, f, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 5;
+nargmin = 3;
+nargmax = 4;
 narginchk(nargmin,nargmax);
-isargposition(xs);
-isargchar(src);
-isargpositivescalar(Nse);
+isargmatrix(Pnm);
 isargvector(f);
+isargchar(mode);
 if nargin<nargmax
-  conf = SFS_config;
+    conf = SFS_config;
 else
-  isargstruct(conf);
+    isargstruct(conf);
+end
+
+%% ===== Configuration ==================================================
+c = conf.c;
+driving_functions = conf.driving_functions;
+r0 = conf.secondary_sources.size / 2;
+
+%% ===== Variables ======================================================
+Nse = sqrt(size(Pnm, 1))-1;
+
+% frequency depended stuff
+k = 2.*pi.*f(:)./c;
+kr0 = k.*r0;
+
+% select suitable basis function
+if strcmp('R', mode)
+  sphbasis_derived = @(nu) k.*sphbesselj_derived(nu, kr0);
+elseif strcmp('S', mode)
+  sphbasis_derived = @(nu) k.*sphbesselh_derived(nu,2,kr0);
+else
+  error('%s: unknown mode (%s)!', upper(mfilename), mode);
 end
 
 %% ===== Computation ====================================================
+% Calculate the driving function in time-frequency domain
 
-% Get SHT of driving signals
-if strcmp('pw',src)
-    % === Plane wave =====================================================
-    % Direction of plane wave
-    nk = xs / norm(xs);
-    % SHT of Driving signal
-    Dnm = driving_function_mono_nfchoa_sht_pw(nk, Nse, f,conf);
+if (strcmp('default',driving_functions))
+  % --- SFS Toolbox ------------------------------------------------
+  %
+  %             d    
+  % D(x0, w) = ---- Ps(x0,w)
+  %            d r0
+  % with regular/singular spherical expansion of the sound field:
+  %          \~~   N \~~   n   m  m
+  % P(x,w) =  >       >       B  F (x) 
+  %          /__ n=0 /__ m=-n  n  n
+  %
+  % where F = {R,S}.
+  %
+  % regular spherical basis functions:
+  %  m                  m
+  % R  (x) = j (kr)  . Y  (theta, phi)
+  %  n        n         n     
+  % singular spherical basis functions:
+  %  m        (2)         m
+  % S  (x) = h   (kr)  . Y  (theta, phi)
+  %  n        n           n    
 
-elseif strcmp('ps',src)
-    % === Point source ===================================================
-    % SHT of Driving signal
-    Dnm = driving_function_mono_nfchoa_sht_ps(xs, Nse, f,conf);
+  Dnm = zeros( size(Pnm) );  
+  for n=0:Nse
+    v = sphexp_index(-n:n, n);  % m=-n:n
     
-elseif strcmp('ls',src)
-    % === Line source ====================================================
-    % SHT of Driving signal
-    Dnm = driving_function_mono_nfchoa_sht_ls(xs, Nse, f,conf);
-    
+    Dnm(v,:) = Pnm(v,:) .* repmat( sphbasis_derived(n), 2*n+1, 1);
+  end
+  Dnm = -2.*Dnm;
+  
 else
-    error('%s: %s is not a known source type.',upper(mfilename),src);
+  error(['%s: %s, this type of driving function is not implemented ', ...
+    'for a 2.5D point source.'], upper(mfilename), driving_functions);
 end

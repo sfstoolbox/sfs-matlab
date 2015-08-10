@@ -1,6 +1,7 @@
 function Dnm = driving_function_mono_nfchoa_sht_sphexp(Pnm, f, conf)
-%computes the spherical harmonics transform of nfchoa driving functions 
-%for a sound field expressed by regular spherical expansion coefficients.
+%DRIVING_FUNCTION_MONO_NFCHOA_SHT_SPHEXP computes the spherical harmonics 
+%transform of nfchoa driving functions for a sound field expressed by regular 
+%spherical expansion coefficients.
 %
 %   Usage: D = driving_function_mono_nfchoa_sht_sphexp(Pnm, f, conf)
 %

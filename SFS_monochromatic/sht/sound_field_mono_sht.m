@@ -1,6 +1,6 @@
-function [P, x, y, z] = sound_field_mono_nfchoa_sht(X,Y,Z,Dnm,f,conf)
-%SOUND_FIELD_MONO_NFCHOA_SHT simulates a sound field given with the 
-%spherical harmonics transform of the nfchoa driving function
+function [P, x, y, z] = sound_field_mono_sht(X,Y,Z,Dnm,f,conf)
+%SOUND_FIELD_MONO_SHT simulates a sound field given with the spherical 
+%harmonics transform of the driving function
 %
 %   Usage: [P, x, y, z] = sound_field_mono_sht(X,Y,Z,Dnm,f,conf)
 %
@@ -15,7 +15,7 @@ function [P, x, y, z] = sound_field_mono_nfchoa_sht(X,Y,Z,Dnm,f,conf)
 %   Output parameters:
 %       P           - resulting soundfield
 %
-%   SOUND_FIELD_MONO_NFCHOA_SHT(X,Y,Z,ABnm,mode,f,conf)
+%   SOUND_FIELD_MONO_SHT(X,Y,Z,Dnm,f,conf)
 %
 %   see also: sphbasis_mono_grid, sound_field_mono_sphexp
 
@@ -58,6 +58,7 @@ narginchk(nargmin,nargmax);
 isargvector(Dnm);
 isargsquaredinteger(length(Dnm));
 isargnumeric(X,Y,Z);
+
 % unique index encoding which dimension is an nd-array
 customGrid = (numel(X) > 2) + 2*(numel(Y) > 2) + 4*(numel(Z) > 2);
 switch customGrid
@@ -78,6 +79,7 @@ switch customGrid
   otherwise
     isargvector(X,Y,Z);
 end
+
 isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;

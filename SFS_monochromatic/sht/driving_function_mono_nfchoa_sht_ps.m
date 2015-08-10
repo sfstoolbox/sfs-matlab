@@ -1,6 +1,6 @@
 function Dnm = driving_function_mono_nfchoa_sht_ps(xs, Nse, f, conf)
-%computes the spherical harmonics transform of nfchoa driving functions 
-%for a point source.
+%DRIVING_FUNCTION_MONO_NFCHOA_SHT_PS computes the spherical harmonics 
+%transform of nfchoa driving functions for a point source.
 %
 %   Usage: D = driving_function_mono_nfchoa_sht_ps(xs, Nse, f, conf)
 %
@@ -14,7 +14,7 @@ function Dnm = driving_function_mono_nfchoa_sht_ps(xs, Nse, f, conf)
 %       Dnm         - regular spherical harmonics transform of driving
 %                     function signal [n x m]
 %
-%   DRIVING_FUNCTION_MONO_NFCHOA_SHT_LS(xs, Nse, f, conf) returns spherical 
+%   DRIVING_FUNCTION_MONO_NFCHOA_SHT_PS(xs, Nse, f, conf) returns spherical 
 %   harmonics transform of the NFCHOA driving function with maximum order Nse
 %   for a virtual point source at xs.
 %

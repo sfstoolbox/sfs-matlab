@@ -1,5 +1,5 @@
 function Anm = sphexp_mono_ls(xs, mode, Nse, f, xq, conf)
-%Regular/Singular Spherical Expansion of Line Source
+%SPHEXP_MONO_LS compute the regular/singular spherical expansion of line source
 %
 %   Usage: Anm = sphexp_mono_ls(xs, mode, Nse, f, xq, conf)
 %
@@ -14,43 +14,11 @@ function Anm = sphexp_mono_ls(xs, mode, Nse, f, xq, conf)
 %   Output parameters:
 %       Al          - regular Spherical Expansion Coefficients
 %
-%   SPHEXP_MONO_PS(xs, mode, f, Nse, xq, conf) computes the regular/singular 
-%   Spherical Expansion Coefficients for a point source at xs. The expansion 
-%   will be done around the expansion coordinate xq:
+%   SPHEXP_MONO_LS(xs, mode, f, Nse, xq, conf) computes the regular/singular 
+%   spherical expansion coefficients for a point source at xs. The expansion 
+%   will be done around the expansion coordinate xq.
 %
-%   Regular Expansion:
-%                \~~ oo  \~~   n   m  m
-%   p    (x,f) =  >       >       A  R  (x-x ) 
-%    ps,R        /__ n=0 /__ m=-n  n  n     q
-%
-%   with the expansion coefficients (Gumerov2004, eq. 3.2.2):
-%    m               -m
-%   A  = -i  . k  . S  (x  - x )
-%    n               n   s    q
-%
-%   Singular Expansion:
-%                \~~ oo  \~~   n   m  m
-%   p    (x,f) =  >       >       B  S  (x-x ) 
-%    ps,S        /__ n=0 /__ m=-n  n  n     q
-%   
-%   with the expansion coefficients (Gumerov2004, eq. 3.2.2):
-%    m               -m
-%   B  = -i  . k  . R  (x  - x )
-%    n               n   s    q
-%
-%   The coefficients are stored in linear arrays with index l resulting from 
-%   m and n:
-% 
-%         m         m               2
-%   A  = A  ; B  = B  with l = (n+1)  - (n - m)
-%    l    n    l    n
-%
-%   References:
-%       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
-%                                    Helmholtz Equation in three 
-%                                    Dimensions", ELSEVIER
-%
-%   see also: sphexp_access sphexp_index sphbasis_mono
+%   see also: sphexp_mono_ps sphexp_mono_pw sphexp_convert_circexp
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *

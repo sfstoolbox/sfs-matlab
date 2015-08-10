@@ -1,7 +1,7 @@
-function a = sphexp_access(A, m1, n1, m2, n2)
-%Access array elements of spherical expansion coefficients
+function a = sphexp_access(Anm, m1, n1, m2, n2)
+%SPHEXP_ACCESS yields array elements of spherical expansion coefficients
 %
-%   Usage: a = sphexp_access(A, m1, n1, m2, n2)
+%   Usage: a = sphexp_access(Anm, m1, n1, m2, n2)
 %
 %   Input parameters:
 %       A           - 1D, 2D, 3D array of expansion coefficients (3rd
@@ -14,7 +14,10 @@ function a = sphexp_access(A, m1, n1, m2, n2)
 %   Output parameters:
 %       a           - coefficients
 %
-%   SPHEXP_ACCESS(A, m1, n1, m2, n2)
+%   SPHEXP_ACCESS(Anm, m1, n1, m2, n2) computes one/two indices for accessing
+%   1D/2D arrays of spherical expansion coefficients
+%   A(n1,m1) => A(l1) ; A(n2,m2) => A(l2)
+%   CAUTION: THIS FUNCTION DOES NOT USE ANY CHECK OF INPUT ARGUMENTS
 %
 %   see also: sphexp_access
 
@@ -76,14 +79,14 @@ elseif length(n2) > L2
 end
 
 %% ===== Computation ====================================================
-a = zeros(L1, L2, size(A, 3));
+a = zeros(L1, L2, size(Anm, 3));
 
 s1 = abs(m1) <= n1;
 s2 = abs(m2) <= n2;
 
 if any(s1) && any(s2)
   [v, w] = sphexp_index(m1(s1), n1(s1), m2(s2), n2(s2));
-  a(s1,s2,:) = A(v,w,:);
+  a(s1,s2,:) = Anm(v,w,:);
 end
 
 end

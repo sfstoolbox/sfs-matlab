@@ -1,5 +1,5 @@
 function Anm = sphexp_mono_ps(xs, mode, Nse, f, xq, conf)
-%Regular/Singular Spherical Expansion of Point Source
+%SPHEXP_MONO_PS computes regular/singular spherical expansion of point source
 %
 %   Usage: Anm = sphexp_mono_ps(xs, mode, Nse, f, xq, conf)
 %
@@ -7,7 +7,7 @@ function Anm = sphexp_mono_ps(xs, mode, Nse, f, xq, conf)
 %       xs          - position of point source
 %       mode        - 'R' for regular, 'S' for singular
 %       Nse         - maximum order of spherical basis functions
-%       f           - frequency [m x 1] or [1 x m]
+%       f           - frequency [Nf x 1] or [1 x Nf]
 %       xq          - optional expansion center coordinate 
 %       conf        - optional configuration struct (see SFS_config)
 %
@@ -50,7 +50,7 @@ function Anm = sphexp_mono_ps(xs, mode, Nse, f, xq, conf)
 %                                    Helmholtz Equation in three 
 %                                    Dimensions", ELSEVIER
 %
-%   see also: sphexp_access sphexp_index sphbasis_mono
+%   see also: sphexp_mono_ls sphexp_mono_pw
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *

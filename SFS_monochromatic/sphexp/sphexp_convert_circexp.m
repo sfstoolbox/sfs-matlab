@@ -1,5 +1,6 @@
 function Anm = sphexp_convert_circexp(Am)
-% compute converts circular expansion into spherical expansion coefficients
+%SPHEXP_CONVERT_CIRCEXP compute converts regular circular expansion into 
+%spherical expansion coefficients
 %
 %   Usage: Anm = sphexp_convert_circexp(Am)
 %
@@ -10,6 +11,10 @@ function Anm = sphexp_convert_circexp(Am)
 %       Anm           - regular spherical expansion coefficients
 %
 %   References:
+%       Hahn, Spors (2015) - "Sound Field Synthesis of Virtual Cylindrical
+%                            Waves using Circular and Spherical Loudspeaker 
+%                            Arrays", 138th AES Convention
+%
 %
 
 %*****************************************************************************
@@ -53,6 +58,7 @@ Nce = (length(Am)-1)/2;
 
 %% ===== Computation ====================================================
 
+% Implementation of Hahn2015, Eq. (14)
 Anm = zeros((Nce+1).^2,1);
 for m=-Nce:Nce
   % for theta=0 the legendre polynom is zero if n+m is odd

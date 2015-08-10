@@ -1,7 +1,8 @@
 function Bnm = sphexp_mono_scatter(Anm, R, sigma, f, conf)
-% Singular Spherical Expansion of a sphere-scattered sound field
+%SPHEXP_MONO_SCATTER compute the singular spherical expansion of a sphere-
+%scattered sound field
 %
-%   Usage: Bl = sphexpS_mono_scatter(Al, R, sigma, f, conf)
+%   Usage: Bnm = sphexp_mono_scatter(Anm, R, sigma, f, conf)
 %
 %   Input parameters:
 %       Anm         - regular spherical expansion of incident sound field
@@ -13,7 +14,7 @@ function Bnm = sphexp_mono_scatter(Anm, R, sigma, f, conf)
 %       Bnm         - singular spherical expansion coefficients of
 %                     scattered field
 %
-%   SPHEXPS_MONO_SCATTER(Anm, R, sigma, f, conf) computes the singular spherical
+%   SPHEXP_MONO_SCATTER(Anm, R, sigma, f, conf) computes the singular spherical
 %   expansion coefficients of a field resulting from a scattering of an incident
 %   field at a sphere. Incident field is descriped by regular expansion
 %   coefficients (expansion center is expected to be at the center of the sphere
@@ -51,7 +52,7 @@ function Bnm = sphexp_mono_scatter(Anm, R, sigma, f, conf)
 %                                    Helmholtz Equation in three
 %                                    Dimensions", ELSEVIER
 %
-%   see also: sphexp_mono_ps, sphexp_mono_pw
+%   see also: sphexp_mono_ps, sphexp_mono_pw, sphexp_mono_timereverse
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *

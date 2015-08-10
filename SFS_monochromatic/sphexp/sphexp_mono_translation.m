@@ -1,5 +1,6 @@
 function [EF, EFm] = sphexp_mono_translation(t, mode, Nse, f, conf)
-% Spherical translation coefficients (multipole re-expansion)
+%SPHEXP_MONO_TRANSLATION computes spherical translation coefficients 
+%(multipole re-expansion)
 %
 %   Usage: [EF, EFm] = sphexp_mono_translation(t, mode, Nse, f, conf)
 %
@@ -16,10 +17,11 @@ function [EF, EFm] = sphexp_mono_translation(t, mode, Nse, f, conf)
 %       EF          - spherical re-expansion coefficients for t
 %       EFm         - spherical re-expansion coefficients for -t
 %
-%  SPHEXP_MONO_TRANSLATION(t, mode, f, conf) computes the spherical re-expansion
-%  coefficients to perform as translatory shift of spherical basis function.
-%  Multipole Re-expansion computes the spherical basis function for a shifted
-%  coordinate system (x+t) based on the original basis functions for (x).
+%  SPHEXP_MONO_TRANSLATION(t, mode, Nse, f, conf) computes the spherical 
+%  re-expansion coefficients to perform as translatory shift of spherical basis
+%  function. Multipole Re-expansion computes the spherical basis function for a
+%  shifted coordinate system (x+t) based on the original basis functions for
+%  (x).
 %
 %   m          \~~ inf \~~ l         s,m     s
 %  E (x + t) =  >       >       (E|F)   (t) F (x)
@@ -27,10 +29,10 @@ function [EF, EFm] = sphexp_mono_translation(t, mode, Nse, f, conf)
 %
 %  where {E,F} = {R,S}. R denotes the regular spherical basis function, while
 %  S symbolizes the singular spherical basis function. Note that (S|S) and
-%  (S|R) are respectively equivalent to (R|R) and (R|S).
-%  The reexpansion coefficients can seperated into sectorial
-%  (n = abs|m| and/or l = abs|s|) and tesseral (else) coefficients. Latter will
-%  only be computed, if conf.dimensions == '3D'.
+%  (S|R) are respectively equivalent to (R|R) and (R|S). The reexpansion 
+%  coefficients can seperated into sectorial (n = abs|m| and/or l = abs|s|) 
+%  and tesseral (else) coefficients. Latter will only be computed, if 
+%  conf.dimensions == '3D'.
 %
 %  References:
 %     Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the

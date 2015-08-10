@@ -54,6 +54,8 @@ nargmin = 3;
 nargmax = 3;
 narginchk(nargmin,nargmax);
 isargvector(ABnm);
+L = size(ABnm,1);
+isargsquaredinteger(L);
 if length(Ynm) ~= length(jh2n)^2
   error('%s: length(Y) has to be equal length(jh2n)^2!',upper(mfilename));
 end
@@ -62,7 +64,7 @@ if length(Ynm) < length(ABnm)
 end
 
 %% ===== Variables ======================================================
-Nse = sqrt(size(ABnm,1)) - 1;
+Nse = sqrt(L) - 1;
 
 %% ===== Computation ====================================================
 P = zeros(size(jh2n{1}));
@@ -74,6 +76,4 @@ for n=0:Nse
     l=l+1;    
     P = P + ABnm(l)*(jh2n{n+1}.*Ynm{l});
   end
-end
-
 end

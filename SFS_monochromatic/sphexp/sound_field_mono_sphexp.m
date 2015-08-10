@@ -1,6 +1,6 @@
 function [P, x, y, z] = sound_field_mono_sphexp(X,Y,Z,ABnm,mode,f,xq,conf)
-%SOUND_FIELD_MONO_SPHEXPR simulates a sound field given with 
-%regular/singular spherical expansion coefficients
+%SOUND_FIELD_MONO_SPHEXPR simulates a sound field given with regular/singular
+%spherical expansion coefficients
 %
 %   Usage: [P, x, y, z] = sound_field_mono_sphexp(X,Y,Z,Al,f,x0,conf)
 %
@@ -68,8 +68,9 @@ else
 end
 if nargin == nargmin
   xq = [0, 0, 0];
-end  
-isargposition(xq);
+else
+  isargposition(xq); 
+end
 
 %% ===== Variables ======================================================
 Nse = sqrt(length(ABnm)) - 1;
@@ -80,7 +81,7 @@ if strcmp('R', mode)
 elseif strcmp('S', mode)
   [~, fn, Ynm, x, y, z] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf);
 else
-  error('%s: %s is an unknown mode!',upper(mfilename), mode);
+  error('%s: %s is an unknown mode!', upper(mfilename), mode);
 end
 
 P = sound_field_mono_sphbasis(ABnm,fn,Ynm);

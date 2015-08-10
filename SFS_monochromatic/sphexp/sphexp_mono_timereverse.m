@@ -1,5 +1,5 @@
 function ABnm = sphexp_mono_timereverse(ABnm)
-% compute coefficients of time reversed sound field
+%SPHEXP_MONO_TIMEREVERSE compute coefficients of a time reversed sound field
 %
 %   Usage: ABnm = sphexp_mono_timereverse(ABnm)
 %

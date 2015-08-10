@@ -1,5 +1,6 @@
 function Anm = sphexp_truncate(Pnm, N, M, Mshift)
-% Truncates spherical expansion by setting remaining coefficients to zero
+%SPHEXP_TRUNCATE truncates spherical expansion by setting remaining 
+%coefficients to zero
 %
 %   Usage: Anm = sphexp_truncate(Pnm, N, M, Mshift)
 %
@@ -11,10 +12,10 @@ function Anm = sphexp_truncate(Pnm, N, M, Mshift)
 %
 %   Output parameters:
 %       Anm         - 1D array of bandlimited spherical expansion
-%                     coefficients [N x Nf]
+%                     coefficients [n x Nf]
 %
 %   SPHEXP_TRUNCATE(Pnm, N, M, Mshift) sets coefficients belonging to an degree
-%   n higher than N or an order m exceeding: -M+Mshift to +M+Mshift to zero.
+%   n higher than N or an order m exceeding (-M+Mshift:+M+Mshift) to zero.
 %
 %   see also: sphexp_truncation_order
 

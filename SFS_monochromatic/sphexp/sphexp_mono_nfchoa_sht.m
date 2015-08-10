@@ -1,9 +1,8 @@
-function Pnm = sphexp_mono_nfchoa_sht(Dnm,mode,f,conf)
+function Pnm = sphexp_mono_nfchoa_sht(Dnm, mode, f, conf)
 %SPHEXP_MONO_NFCHOA_SHT yields spherical expansion coefficients of a sound field
-%resulting from of the nfchoa driving function given as a spherical harmonics
-%transform
+%resulting from of a driving function given as a spherical harmonics transform
 %
-%   Usage: Pnm = sphexp_mono_nfchoa_sht(Dnm,mode,f,conf)
+%   Usage: Pnm = sphexp_mono_nfchoa_sht(Dnm, mode, f, conf)
 %
 %   Input parameters:
 %       Dnm         - spherical harmonics transform of nfchoa driving function
@@ -15,7 +14,7 @@ function Pnm = sphexp_mono_nfchoa_sht(Dnm,mode,f,conf)
 %       Pnm         - spherical expansion coefficients of a sound field
 %                     reproduced by nfchoa driving function
 %
-%   SPHEXP_MONO_NFCHOA_SHT(Dnm,mode,f,conf)
+%   SPHEXP_MONO_NFCHOA_SHT(Dnm, mode, f, conf)
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *

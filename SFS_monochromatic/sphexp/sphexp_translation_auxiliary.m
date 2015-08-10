@@ -1,5 +1,6 @@
 function [a, b] = sphexp_translation_auxiliary(Nse,conf)
-%Auxiliary coefficients for the recursive calculation of spherical translation coefficients
+%SPHEXP_TRANSLATION_AUXILIARY yields the auxiliary coefficients for the 
+%recursive calculation of spherical translation coefficients
 %
 %   Usage: [a, b] = sphexp_translation_auxiliary(Nse,conf)
 %
@@ -13,10 +14,9 @@ function [a, b] = sphexp_translation_auxiliary(Nse,conf)
 %       b           - auxiliary coefficients for the calculation of sectorial
 %                     spherical translation coefficients
 %
-%   SPHEXP_TRANSLATION_AUXILIARY(Nse,conf)
-%
-%   Auxiliary coefficients for the calculation of tesseral spherical
-%   translation coefficients (Gumerov2004, eq. 2.2.8 and 3.2.65):
+%   SPHEXP_TRANSLATION_AUXILIARY(Nse,conf) computes the auxiliary coefficients
+%   for the calculation of tesseral spherical translation coefficients 
+%   (Gumerov2004, eq. 2.2.8 and 3.2.65):
 %
 %         +------------------+
 %    m    |(n+1+|m|)(n+1-|m|)           _
@@ -52,8 +52,8 @@ function [a, b] = sphexp_translation_auxiliary(Nse,conf)
 %                                    Helmholtz Equation in three
 %                                    Dimensions", ELSEVIER
 %
-%   see also: sphexp_mono_ps, sphexp_mono_pw
-%
+%   see also: sphexp_mono_translation
+
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *

@@ -1,5 +1,5 @@
 function Anm = sphexp_mono_pw(npw, Nse, f, xq, conf)
-%Regular Spherical Expansion of Plane Wave
+%SPHEXP_MONO_PW computes the regular spherical expansion of plane wave
 %
 %   Usage: Anm = sphexp_mono_pw(npw, Nse, f, xq, conf)
 %
@@ -13,9 +13,9 @@ function Anm = sphexp_mono_pw(npw, Nse, f, xq, conf)
 %   Output parameters:
 %       Anm         - regular Spherical Expansion Coefficients [(Nse+1)^2 x Nf]
 %
-%   SPHEXP_MONO_PW(npw,Nse,f,xq,conf) computes the regular Spherical Expansion
-%   Coefficients for a plane wave. The expansion will be done around the
-%   expansion coordinate xq:
+%   SPHEXP_MONO_PW(npw, Nse, f, xq, conf) computes the regular spherical 
+%   expansion coefficients for a plane wave. The expansion will be done around
+%   the expansion coordinate xq:
 %
 %              \~~ oo  \~~   n   m  m
 %   p  (x,f) =  >       >       A  R  (x-x )
@@ -39,7 +39,7 @@ function Anm = sphexp_mono_pw(npw, Nse, f, xq, conf)
 %                                    Helmholtz Equation in three
 %                                    Dimensions", ELSEVIER
 %
-%   see also: sphexp_access sphexp_index sphbasis_mono
+%   see also: sphexp_mono_ls sphexp_mono_ps
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *

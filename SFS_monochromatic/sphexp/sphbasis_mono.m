@@ -1,5 +1,5 @@
 function [jn, h2n, Ynm] = sphbasis_mono(r,theta,phi,Nse,k,conf)
-%Evaluate spherical basis functions for given input arguments
+%SPHBASIS_MONO evaluates spherical basis functions for given input arguments
 %
 %   Usage: [jn, h2n, Ynm] = sphbasis_mono(r,theta,phi,Nse,k,conf)
 %
@@ -16,12 +16,13 @@ function [jn, h2n, Ynm] = sphbasis_mono(r,theta,phi,Nse,k,conf)
 %       h2n         - cell array of spherical hankel functions of 2nd kind
 %       Ynm         - cell array of spherical harmonics
 %
-%   SPHBASIS_MONO(r,theta,phi,k,conf) computes spherical basis functions for
-%   the given arguments r, theta and phi. r, theta and phi can be of arbitrary
-%   (but same) size. Output will be stored in cell arrays (one cell entry for 
-%   each order) of length Nse+1 for jn and h2n. For Ynm the lenght is 
-%   (Nse+1).^2. The coefficients of Ynm are stored with the linear index l 
-%   resulting from the order m and the degree n of the spherical harmonics: 
+%   SPHBASIS_MONO(r,theta,phi,Nse,k,conf) computes spherical basis functions 
+%   for the given arguments r, theta and phi. r, theta and phi can be of 
+%   arbitrary (but same) size. Output will be stored in cell arrays (one cell
+%   entry for each order) of length Nse+1 for jn and h2n. For Ynm the lenght 
+%   is (Nse+1).^2. The coefficients of Ynm are stored with the linear index l 
+%   resulting from the order m and the degree n of the spherical harmonics:
+%
 %         m                 2
 %   Y  = Y  ; with l = (n+1)  - (n - m)
 %    l    n
@@ -68,9 +69,9 @@ isargpositivescalar(Nse);
 isargequalsize(r,phi,theta);
 isargscalar(k);
 if nargin<nargmax
-    conf = SFS_config;
+  conf = SFS_config;
 else
-    isargstruct(conf);
+  isargstruct(conf);
 end
 
 %% ===== Configuration ==================================================

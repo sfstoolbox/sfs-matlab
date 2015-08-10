@@ -1,7 +1,8 @@
 function Nse = sphexp_truncation_order(r, f, nmse, conf)
-%Truncation order for spherical expansion of an arbitrary sound field
+%SPHEXP_TRUNCATION_ORDER yields the bound of summation for a spherical expansion
+%of an arbitrary sound field
 %
-%   Usage: Nse = sphexp_truncation_order(r, f, epsilon, conf)
+%   Usage: Nse = sphexp_truncation_order(r, f, nmse, conf)
 %
 %   Input parameters:
 %       r           - max 3D distance from expansion center / m
@@ -10,7 +11,7 @@ function Nse = sphexp_truncation_order(r, f, nmse, conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       Nse         - Maximum order for spherical expansion
+%       Nse         - maximum order for spherical expansion
 %
 %   SPHEXP_TRUNCATION_ORDER(r, f, nmse, conf) yields the order up to which
 %   a the spherical expansion coefficients of an arbitrary sound field have
@@ -24,6 +25,8 @@ function Nse = sphexp_truncation_order(r, f, nmse, conf)
 %       Kennedy et al. (2007) - "Intrinsic Limits of Dimensionality and
 %                               Richness in Random Multipath Fields",
 %                               IEEE Transactions on Signal Processing
+%
+%   see also: sphexp_truncation
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *

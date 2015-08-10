@@ -1,8 +1,8 @@
 function [jn, h2n, Ynm, x, y, z] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf)
-%Evaluate spherical basis functions for given grid in cartesian coordinates
+%SPHBASIS_MONO_GRID(X,Y,Z,f,xq,conf) evaluates spherical basis functions for 
+%given grid in cartesian coordinates
 %
-%
-%   Usage: [jn, h2n, Ynm, x, y, z] = sphbasis_mono_grid(X,Y,Z,f,xq,conf)
+%   Usage: [jn, h2n, Ynm, x, y, z] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -21,7 +21,7 @@ function [jn, h2n, Ynm, x, y, z] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf)
 %       y           - corresponding y axis / m
 %       z           - corresponding z axis / m
 %
-%   SPHBASIS_MONO_GRID(X,Y,Z,f,xq,conf) computes spherical basis functions
+%   SPHBASIS_MONO_GRID(X,Y,Z,Nse,f,xq,conf) computes spherical basis functions
 %   for given grid in cartesian coordinates. This is a wrapper function for
 %   sphbasis_mono.
 %   For the input of X,Y,Z (DIM as a wildcard) :
@@ -96,6 +96,7 @@ switch customGrid
   otherwise
     isargvector(X,Y,Z);
 end
+
 isargpositivescalar(f,Nse);
 if nargin<nargmax
   conf = SFS_config;
@@ -114,21 +115,19 @@ if customGrid
   x = X;   y = Y;  z = Z;
 else
   % Create a x-y-grid
-  [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
+  [xx, yy, zz, x, y, z] = xyz_grid(X, Y, Z, conf);
 end
 
 k = 2*pi*f/conf.c;  % wavenumber
 
 % shift coordinates to expansion coordinate
-xx = xx-xq(1);
-yy = yy-xq(2);
-zz = zz-xq(3);
+xx = xx - xq(1);
+yy = yy - xq(2);
+zz = zz - xq(3);
 
 % coordinate transformation
 r = sqrt(xx.^2 + yy.^2 + zz.^2);
-phi = atan2(yy,xx);
+phi = atan2(yy, xx);
 theta = asin(zz./r);
 
 [jn, h2n, Ynm] = sphbasis_mono(r, theta, phi, Nse, k, conf);
-
-end

@@ -1,7 +1,7 @@
-function Am = circexp_mono_pw(nk, Nce, f, xq, conf)
-%regular circular expansion of plane wave
+function Am = circexp_mono_pw(npw, Nce, f, xq, conf)
+%CIRCEXP_MONO_PW computes regular circular expansion coefficients of plane wave
 %
-%   Usage: Am = circexp_mono_pw(nk, Nce, f, xq, conf)
+%   Usage: Am = circexp_mono_pw(npw, Nce, f, xq, conf)
 %
 %   Input parameters:
 %       nk          - propagation direction of plane wave 
@@ -13,7 +13,7 @@ function Am = circexp_mono_pw(nk, Nce, f, xq, conf)
 %   Output parameters:
 %       Am          - regular cylindrical Expansion Coefficients
 %
-%   CIRCEXP_MONO_PW(nk, Nce, f, xq, conf) computes the regular circular
+%   CIRCEXP_MONO_PW(npw, Nce, f, xq, conf) computes the regular circular
 %   expansion coefficients for a plane wave. The expansion will be done a
 %   round the expansion coordinate xq:
 %
@@ -27,7 +27,7 @@ function Am = circexp_mono_pw(nk, Nce, f, xq, conf)
 %   A  = 4pi i  exp  (-i*n*phi  )
 %    n                        pw
 %
-%   see also: eval_cylbasis_mono
+%   see also: circexp_mono_ls circexp_mono_scatter
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
@@ -65,7 +65,7 @@ function Am = circexp_mono_pw(nk, Nce, f, xq, conf)
 nargmin = 3;
 nargmax = 5;
 narginchk(nargmin,nargmax);
-isargposition(nk);
+isargposition(npw);
 isargpositivescalar(f);
 if nargin<nargmax
     conf = SFS_config;
@@ -82,11 +82,11 @@ c = conf.c;
 
 %% ===== Variables ======================================================
 % convert nk into cylindrical coordinates
-phi = atan2(nk(2),nk(1));
+phi = atan2(npw(2),npw(1));
 
 % delay of plane wave to reference point
-nk = nk./vector_norm(nk,2);
-delay = 2*pi*row_vector(f)/c*(nk*xq.');
+npw = npw./vector_norm(npw,2);
+delay = 2*pi*row_vector(f)/c*(npw*xq.');
 
 %% ===== Computation ====================================================
 L = 2*Nce+1;

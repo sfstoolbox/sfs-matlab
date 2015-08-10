@@ -1,8 +1,8 @@
-function [P, x, y, z] = sound_field_mono_circexp(X,Y,Z, Pm,mode,f,xq,conf)
-%SOUND_FIELD_MONO_SPHEXPR simulates a sound field given with 
-%regular/singular spherical expansion coefficients
+function [P, x, y, z] = sound_field_mono_circexp(X,Y,Z,Pm,mode,f,xq,conf)
+%SOUND_FIELD_MONO_CIRCEXP yields a sound field given with regular/singular
+%spherical expansion coefficients
 %
-%   Usage: [P, x, y, z] = sound_field_mono_sphexp(X,Y,Z,Al,f,xq,conf)
+%   Usage: [P, x, y, z] = sound_field_mono_circexp(X,Y,Z,Pm,mode,f,xq,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -17,7 +17,7 @@ function [P, x, y, z] = sound_field_mono_circexp(X,Y,Z, Pm,mode,f,xq,conf)
 %   Output parameters:
 %       P           - resulting soundfield
 %
-%   SOUND_FIELD_MONO_CIRCEXPR(X,Y,Z,Pm,mode,f,xq,conf)
+%   SOUND_FIELD_MONO_CIRCEXP(X,Y,Z,Pm,mode,f,xq,conf)
 %
 %   see also: circbasis_mono_grid, sound_field_mono_circbasis
 
@@ -63,15 +63,18 @@ if mod(size(Pm, 1)-1, 2) ~= 0
 end
 isargnumeric(X,Y,Z);
 isargpositivescalar(f);
+
 if nargin<nargmax
     conf = SFS_config;
 else
     isargstruct(conf);
 end
+
 if nargin == nargmin
   xq = [0, 0, 0];
-end  
-isargposition(xq);
+else
+  isargposition(xq);
+end
 
 %% ===== Variables ======================================================
 Nce = ( size(Pm, 1) - 1 ) / 2;

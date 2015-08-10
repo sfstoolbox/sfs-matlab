@@ -1,6 +1,6 @@
 function [jn, h2n, Ynm, x, y, z] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf)
-%Evaluate spherical basis functions for given grid in cartesian coordinates
-%
+%CIRCBASIS_MONO_GRID evaluate spherical basis functions for given grid in 
+%cartesian coordinates
 %
 %   Usage: [jn, h2n, Ynm, x, y, z] = circbasis_mono_grid(X,Y,Z,f,xq,conf)
 %

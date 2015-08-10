@@ -1,13 +1,14 @@
 function Bm = circexp_mono_scatter(Am, R, sigma, f, conf)
-%singular circular expansion of cylinder-scattered field
+%CIRCEXP_MONO_SCATTER computes the singular circular expansion coefficients of
+%cylinder-scattered field
 %
 %   Usage: Bm = circexp_mono_scatter(Al, R, sigma, f, conf)
 %
 %   Input parameters:
-%       Am          - regular circular expansion of incident field [n x m]          
+%       Am          - regular circular expansion of incident field [n x Nf]          
 %       R           - radius of cylinder / m
 %       sigma       - complex admittance of scatterer
-%       f           - frequency / Hz [1 x m] or [m x 1]
+%       f           - frequency / Hz [1 x Nf] or [Nf x 1]
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:

@@ -1,5 +1,5 @@
 function [Jn, H2n, Yn]  = circbasis_mono(r, phi, Nce, k, conf)
-%Evaluate circular basis functions for given input arguments
+%CIRCBASIS_MONO evaluates circular basis functions for given input arguments
 %
 %   Usage: [Jn, H2n, Yn]  = circbasis_mono(r, phi, Nce, k, conf)
 %

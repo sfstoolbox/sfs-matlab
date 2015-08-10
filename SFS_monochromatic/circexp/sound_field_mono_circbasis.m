@@ -1,11 +1,13 @@
 function P = sound_field_mono_circbasis(Pm, JH2m, Ym)
-%simulates a sound field with spherical basis functions
+%SOUND_FIELD_MONO_CIRCBASIS simulates a sound field with spherical basis
+%functions
 %
 %   Usage: P = sound_field_mono_circbasis(Pm, JH2m, Ym)
 %
 %   Input parameters:
 %       Pm          - regular/singular circular expansion coefficients
-%       JH2m        - cell array of cylindrical bessel/hankel(2nd kind) functions
+%       JH2m        - cell array of cylindrical bessel/hankel(2nd kind) 
+%                     functions
 %       Ym          - cell array of cylindrical harmonics (exponential
 %                     functions)
 %       conf        - optional configuration struct (see SFS_config)

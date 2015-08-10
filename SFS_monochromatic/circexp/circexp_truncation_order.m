@@ -1,7 +1,8 @@
 function Nce = circexp_truncation_order(r, f, nmse, conf)
-%Truncation order for circular expansion of an arbitrary sound field
+%CIRCEXP_TRUNCATION_ORDER computes truncation order for circular expansion 
+%coefficients of an arbitrary sound field
 %
-%   Usage: Nce = circexp_truncation_order(r, f, epsilon, conf)
+%   Usage: Nce = circexp_truncation_order(r, f, nmse, conf)
 %
 %   Input parameters:
 %       r           - max 2D distance from expansion center / m

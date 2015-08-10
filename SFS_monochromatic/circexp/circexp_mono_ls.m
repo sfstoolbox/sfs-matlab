@@ -1,5 +1,5 @@
 function ABm = circexp_mono_ls(xs, mode, Nce, f, xq, conf)
-%regular/singular circular expansion  of line source
+%CIRCEXP_MONO_LS computes the regular/singular circular expansion of line source
 %
 %   Usage: ABm = circexp_mono_ls(xs, mode, Nce, f, xq, conf)
 %
@@ -37,6 +37,8 @@ function ABm = circexp_mono_ls(xs, mode, Nce, f, xq, conf)
 %    m   -i           
 %   A  = ---  R (x -x ) 
 %    n    4    n  s  q
+%
+%   see also: circexp_mono_pw circexp_mono_scatter
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *

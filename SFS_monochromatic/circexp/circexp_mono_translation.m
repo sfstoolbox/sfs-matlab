@@ -1,7 +1,8 @@
 function [EF, EFm] = circexp_mono_translation(xt, mode, Nce, f, conf)
-% Circular translation coefficients (multipole re-expansion)
+%CIRCEXP_MONO_TRANSLATION compute circular translation coefficients 
+%(multipole re-expansion)
 %
-%   Usage: [EF, EFm] = circexp_mono_translation(t, mode, Nse, f, conf)
+%   Usage: [EF, EFm] = circexp_mono_translation(xt, mode, Nce, f, conf)
 %
 %   Input parameters:
 %       xt           - translatory shift [1x3] / m                    
@@ -94,9 +95,9 @@ EFm = EF;
 
 % select suitable basis function
 if strcmp('RR', mode) || strcmp('SS', mode)
-  circbasis = @besselj;
+  circbasis = @(nu) besselj(nu, kr);
 elseif strcmp('SR', mode) || strcmp('RS', mode)
-  circbasis = @(nu,z) besselh(nu,2,z);
+  circbasis = @(nu) besselh(nu, 2, kr);
 else
   error('unknown mode:');
 end
@@ -108,7 +109,7 @@ for n=-Nce:Nce
   l = 0;
   for m=-Nce:Nce
     l = l+1;
-    EF(s,l) = circbasis(n-m,kr) .* exp(-1j.*(n-m).*phit);
+    EF(s,l) = circbasis(n-m) .* exp(-1j.*(n-m).*phit);
     EFm(s,l) = EF(s,l) .* (-1)^(n-m);
   end
 end

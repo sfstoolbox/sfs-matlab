@@ -1,5 +1,5 @@
 function Pm = circexp_mono_timereverse(Pm)
-% compute coefficients of time reversed sound field
+%CIRCEXP_MONO_TIMEREVERSE computes coefficients of a time reversed sound field
 %
 %   Usage: Bnm = circexp_mono_timereverse(Pnm, conf)
 %
@@ -8,6 +8,8 @@ function Pm = circexp_mono_timereverse(Pm)
 %
 %   Output parameters:
 %       Pm          - time reversed circexp expansion coefficients [n x Nf]
+%
+%   CIRCEXP_MONO_TIMEREVERSE(Pm)
 
 %*****************************************************************************
 % Copyright (c) 2010-2014 Quality & Usability Lab, together with             *

@@ -1,14 +1,4 @@
-function boolean = test_impulse_responses()
-%TEST_IMPULSE_RESPONSES tests time behavior of WFS and local WFS
-%
-%   Usage: boolean = test_impulse_responses()
-%
-%   Output parameters:
-%       booelan - true or false
-%
-%   TEST_IMPULSE_RESPONSES() compares the time-frequency response of
-%   WFS and local WFS by calculating impulse responses, their frequency
-%   spectrum, and spatial-temporal sound field.
+function [hpreflow, hprefhigh] = localwfs_findhpref(X, phi, xs, src, conf)
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -42,70 +32,79 @@ function boolean = test_impulse_responses()
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
+%% ===== Checking of input  parameters ==================================
+nargmin = 4;
+nargmax = 5;
+narginchk(nargmin,nargmax);
+if nargin<nargmax
+    conf = SFS_config;
+else
+    isargstruct(conf);
+end
 
-%% ===== Configuration ===================================================
-boolean = false;
-%% Parameters
-conf = SFS_config_example;
-conf.showprogress = true;
-conf.resolution = 400;
-conf.plot.useplot = true;
-conf.plot.loudspeakers = true;
-conf.plot.realloudspeakers = false;
-conf.plot.usedb = true;
-conf.tapwinlen = 0.3;
-% config for virtual array
-conf.localsfs.method = 'wfs';
-conf.localsfs.wfs = conf.wfs;
-conf.localsfs.usetapwin = true;
-conf.localsfs.tapwinlen = 0.3;
-conf.localsfs.vss.size = 1.0;
-conf.localsfs.vss.center = [0, 0.5, 0];
-conf.localsfs.vss.geometry = 'linear';
-conf.localsfs.vss.number = 56;
-conf.localsfs.vss.consider_target_field = true;
-conf.localsfs.vss.consider_secondary_sources = true;
-% config for real array
-conf.dimension = '2.5D';
-conf.secondary_sources.geometry = 'linear';
-conf.secondary_sources.number = 56;
-conf.secondary_sources.size = 3;
-conf.secondary_sources.center = [0, 1.5, 0];
-conf.driving_functions = 'default';
-conf.xref = conf.localsfs.vss.center;
-% impulse response
+if conf.debug
+    isargposition(X);
+    isargxs(xs);
+    isargscalar(phi);
+    isargchar(src);
+end
+
+%% ===== Configuration ==================================================
+conf.plot.useplot = false;  % disable plotting in easyfft
 conf.ir.usehcomp = false;
-% listening area, virtual source
-xs = [0.0, -1.0, 0];  % propagation direction of plane wave
-src = 'pw';
-X = [-1.5 1.5];
-Y = [-1, 1.55];
-Z = 0;
-
-
-%% ===== Computation =====================================================
-%% temporal impulse responses
-irs = dummy_irs;
-
-% === WFS ===
-% calculate impulse response
-s_wfs = ir_wfs(conf.xref,pi/2,xs,src,irs,conf);
-% plot frequency response
-[S_wfs, ~, f_wfs] = easyfft(s_wfs(:,1)./max(abs(s_wfs(:,1))), conf);
-% plot spatio-temporal sound field
-sound_field_imp_wfs(X,Y,Z, xs, src, 190, conf);
-
-% === Local WFS ===
-conf.tapwinlen = 1.0;
-% calculate prefilter
-[conf.wfs.hpreflow, conf.wfs.hprefhigh] = ...
-  localwfs_findhpref(conf.xref, pi/2, xs, src, conf);
+conf.wfs.usehpre = false;     % no prefilter
 conf.localsfs.wfs = conf.wfs;
-% calculate impulse response
-s_lwfs = ir_localwfs(conf.xref,pi/2,xs,src,irs,conf);
-% plot frequency response
-[S_lwfs, ~, f_lwfs] = easyfft(s_lwfs(:,1)./max(abs(s_lwfs(:,1))), conf);
-% plot spatio-temporal sound field
-sound_field_imp_localwfs(X,Y,Z, xs, src, 350, conf);
+%% ===== Variables ======================================================
+N = conf.N;
+irs = dummy_irs(N);         % Impulse responses
+fs = conf.fs;               % Sampling rate
+f0 = fs/conf.N;             % Spectral resolution
+dimension = conf.dimension; % dimensionality
 
-boolean = true;
+%% ===== Computation ====================================================
+% Compute impulse response/amplitude spectrum without prefilter
+ir = ir_localwfs(X, phi, xs, src, irs, conf);
+[H,~,f]=easyfft(ir(:,1),conf);
+
+H = H./H(1);  % Normalize amplitude spectrum with H(f=0Hz)
+
+% Model of local WFS spectrum without prefilter:
+%   ^
+% 1_| ______flow        
+%   |       \          
+%   |        \   
+%   |         \_______
+%   |          fhigh
+%   -------------------------> f
+
+if strcmp('2.5D',dimension)  
+    % Expected slope: 6dB per frequency-doubling
+    % Find 6dB cut-off frequency
+    flowidx = find(H <= 1/2, 1, 'first');
+    hpreflow = f(flowidx)/2;
+
+elseif strcmp('3D',dimension) || strcmp('2D',dimension)
+    % Expected slope: 12dB per frequency-doubling
+    % Find 12dB cut-off frequency 
+    flowidx = find(H <= 1/4, 1, 'first');
+    hpreflow = f(flowidx)/4;  
+    
+else
+    error('%s: %s is not a valid conf.dimension entry',upper(mfilename));
+end
+
+% aliasing is characterized by strong fluctuations of the spectrum
+% 
+grad = gradient(db(H));
+grad = grad(flowidx:end)./f0;
+
+fhighidx = flowidx - 1 + ...
+  find( grad - grad(flowidx)  > 2.3*abs( grad(flowidx) ) , 1, 'first');
+  
+if isempty(fhighidx)
+  hprefhigh = fs/2;
+else
+  hprefhigh = f(fhighidx);
+end 
+
+end

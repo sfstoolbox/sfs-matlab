@@ -58,7 +58,6 @@ conf.localsfs.wfs = conf.wfs;
 N = conf.N;
 irs = dummy_irs(N);         % Impulse responses
 fs = conf.fs;               % Sampling rate
-f0 = fs/conf.N;             % Spectral resolution
 dimension = conf.dimension; % dimensionality
 
 %% ===== Computation ====================================================
@@ -93,18 +92,17 @@ else
     error('%s: %s is not a valid conf.dimension entry',upper(mfilename));
 end
 
-% aliasing is characterized by strong fluctuations of the spectrum
-% 
-grad = gradient(db(H));
-grad = grad(flowidx:end)./f0;
+% approximated slope beginning at hpreflow
+Hslope = hpreflow./f(flowidx:end);
+% mean of H(f) evaluated from f to fs/2
+Hmean = cumsum(H(end:-1:flowidx));  % cumulative sum
+Hmean = Hmean./(1:length(Hmean)).';  % cumulative mean
+Hmean = fliplr(Hmean);
+% fhighidx is the frequency where both functions intersect the first time
+fhighidx = flowidx - 1 + find( Hslope <= Hmean, 1, 'first');
 
-fhighidx = flowidx - 1 + ...
-  find( grad - grad(flowidx)  > 2.3*abs( grad(flowidx) ) , 1, 'first');
-  
 if isempty(fhighidx)
   hprefhigh = fs/2;
 else
   hprefhigh = f(fhighidx);
 end 
-
-end

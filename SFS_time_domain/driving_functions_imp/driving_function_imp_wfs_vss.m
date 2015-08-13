@@ -1,6 +1,6 @@
 function d = driving_function_imp_wfs_vss(x0,xv,dv,conf)
 %DRIVING_FUNCTION_IMP_WFS_VSS returns the driving signal d for a given set of
-%virtual secondary sources and the corresponding dricing signals
+%virtual secondary sources and their corresponding driving signals
 %
 %   Usage: d = driving_function_imp_wfs_vss(x0,xv,dv,conf)
 %
@@ -9,7 +9,7 @@ function d = driving_function_imp_wfs_vss(x0,xv,dv,conf)
 %                     sources / m [nx7]
 %       xv          - position, direction, and weights of the virtual secondary
 %                     sources / m [mx7]
-%       dv          - driving signals of virtual secondary sources [sxm]
+%       dv          - driving signals of virtual secondary sources [Sxm]
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:

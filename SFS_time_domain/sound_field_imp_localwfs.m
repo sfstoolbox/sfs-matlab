@@ -91,10 +91,8 @@ useplot = conf.plot.useplot;
 %% ===== Computation =====================================================
 % Get secondary sources
 x0 = secondary_source_positions(conf);
-x0 = secondary_source_selection(x0,xs,src);
-x0 = secondary_source_tapering(x0,conf);
 % Get driving signals
-[d, ~, xv] = driving_function_imp_localwfs(x0,xs,src,conf);
+[d, x0, xv] = driving_function_imp_localwfs(x0,xs,src,conf);
 % Fix the time to account for sample offset of the pre-equalization filter
 switch (conf.wfs.usehpre + conf.localsfs.wfs.usehpre)
   case 1

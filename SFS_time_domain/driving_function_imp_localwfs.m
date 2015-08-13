@@ -159,8 +159,8 @@ switch method
     Nv = size(xv,1);
     N0 = size(x0,1);
     
-    tau0 = inf(N0, Nv);
-    w0 = zeros(N0, Nv);
+    tau0 = inf(N0, Nv);  % rows for ss; columns for vss
+    w0 = zeros(N0, Nv);  % rows for ss; columns for vss
     
     % interate over all virtual secondary sources
     idx = 1;
@@ -184,6 +184,9 @@ switch method
       idx = idx + 1;
     end    
     
+    % SWITCH DIMENSIONS OF WEIGHTS AND DELAYS
+    w0 = w0.';      % NOW: rows for vss; columns for ss
+    tau0 = tau0.';  % NOW: rows for vss; columns for ss    
     % select non-zero weights
     selector = w0 ~= 0;
     % Remove delay offset, in order to begin always at t=0 with the first wave 
@@ -191,14 +194,15 @@ switch method
     tau0 = tau0 - min(tau0(selector));     
     % Shift and weight prototype driving function
     pulse = repmat( [pulse; zeros(N-length(pulse),1)] , 1, sum(selector(:)) );
-    dtmp = delayline(pulse, tau0(selector)*fs, w0(selector), conf);
+    pulse = delayline(pulse, tau0(selector)*fs, w0(selector), conf);
     % Compose impulse responses
     d = zeros(N, N0);
     kdx = 1;
     for idx=1:N0
-      l = sum( w0(idx, :) ~= 0 );
+      l = sum( w0(:, idx) ~= 0 );
       if l > 0
-        d(:, idx) = sum( dtmp(:, kdx:kdx+l-1), 2 );
+        % sum up prototypes which belong to the idx'th secondary source
+        d(:, idx) = sum( pulse(:, kdx:kdx+l-1), 2 );
         kdx = kdx + l;
       end
     end

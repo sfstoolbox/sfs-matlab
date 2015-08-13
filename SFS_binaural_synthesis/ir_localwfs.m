@@ -75,9 +75,7 @@ end
 %% ===== Computation =====================================================
 % Get secondary sources
 x0 = secondary_source_positions(conf);
-x0 = secondary_source_selection(x0,xs,src);
-x0 = secondary_source_tapering(x0,conf);
 % Get driving signals
-d = driving_function_imp_localwfs(x0,xs,src,conf);
+[d, x0] = driving_function_imp_localwfs(x0,xs,src,conf);
 % Generate the impulse response for WFS
 ir = ir_generic(X,phi,x0,d,irs,conf);

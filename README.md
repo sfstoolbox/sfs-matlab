@@ -129,6 +129,30 @@ axis([-2 2 -2 2]);
 
 ![Image](doc/img/secondary_sources_box.png)
 
+#### Box Shaped Array with Smoothed Edges
+
+<code>conf.secondary_sources.edge_radius</code> defines the bending radius of
+corners. It can be chosen in a range between <code>0.0</code> and the half of
+<code>conf.secondary_sources.size</code>. While the prior value respresents a
+non-smoothed box the latter extrema yields a circular array. Note that the
+non-smoothed box behaves it little bit different than the Box Shaped Array
+since loudspeakers might also be place directly in the corners of the box.
+
+```Matlab
+conf = SFS_config_example;
+conf.secondary_sources.geometry = 'smooth-box';
+conf.secondary_sources.number = 84;
+conf.secondary_sources.edge_radius = 0.3;
+x0 = secondary_source_positions(conf);
+figure;
+figsize(540,404,'px');
+draw_loudspeakers(x0,conf);
+axis([-2 2 -2 2]);
+%print_png('img/secondary_sources_smooth-box.png');
+```
+
+![Image](doc/img/secondary_sources_smooth-box.png)
+
 #### Spherical Array
 
 For a spherical array you need a grid to place the secondary sources on the

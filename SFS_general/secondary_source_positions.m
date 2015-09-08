@@ -212,6 +212,15 @@ elseif strcmp('box',geometry)
         x0(3*nbox+1:nls,1:3)+repmat([1 0 0],nbox,1));
     % Equal weights for all sources
     x0(:,7) = ones(nls,1);
+elseif strcmp('smooth-box', geometry)    
+    % ratio for smoothing the edges
+    ratio = 2*conf.secondary_sources.corner_radius./L;     
+    t = (0:nls-1)/nls;    
+    [x0(:,1:3), x0(:,4:6)] = smooth_box(t, ratio);
+    % scale "unit" smooth-box
+    x0(:,1:3) = bsxfun(@plus, x0(:,1:3).*L/2, X0);    
+    % Equal weights for all sources
+    x0(:,7) = 1;
 elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)
     % Get spherical grid + weights
     [points,weights] = get_spherical_grid(nls,conf);

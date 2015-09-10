@@ -253,6 +253,30 @@ elseif strcmp('2.5D',dimension)
         % --- Delft 1988 -------------------------------------------------
         to_be_implemented;
         %
+    elseif strcmp('verheijen1997',driving_functions)
+        % --- Verheijen1997 --------------------------------------------------
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        % 2.5D correction factor
+        %         _____________________
+        %        |      |xref-x0|
+        % g0 = _ |---------------------
+        %       \| |x0-xs| + |xref-x0|
+        %
+        g0 = sqrt( vector_norm(xref-x0,2) ./ (r + vector_norm(x0-xref,2)) );
+        %
+        % D_2.5D(x0,w) =
+        %       ___    ___
+        %      | 1    |i w (x0-xs) nx0
+        % g0 _ |--- _ |--- ------------- e^(+i w/c |x0-xs|)
+        %     \|2pi  \| c  |x0-xs|^(3/2)
+        %
+        % Time-Reversed Version of Verheijen (1997), eq. (2.33b)
+        %
+        % Driving signal
+        D = g0/sqrt(2*pi) * sqrt( 1i*omega/c ) .* ...
+            vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(1i*omega/c.*r);
+
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D focused source.'],upper(mfilename),driving_functions);

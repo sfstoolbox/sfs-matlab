@@ -247,6 +247,9 @@ conf.localsfs.vss.center = [0, 0, 0];
 conf.localsfs.vss.geometry = 'circular';
 conf.localsfs.vss.number = 56;
 conf.localsfs.vss.grid = 'equally_spaced_points';
+% driving function to create the focused sources, i.e. virtual secondary
+% sources
+conf.localsfs.vss.driving_functions = 'default';
 %
 % linear vss distribution: rotate the distribution orthogonal to the progation 
 % direction of the desired sound source

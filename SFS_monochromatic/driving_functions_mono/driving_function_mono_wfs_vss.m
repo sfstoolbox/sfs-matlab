@@ -71,13 +71,10 @@ end
 %% ===== Configuration ==================================================
 dimension = conf.dimension;
 
+conf.driving_functions = conf.localsfs.vss.driving_functions;
 
 %% ===== Computation ====================================================
-% Get driving signals
-if strcmp('2.5D',dimension) || strcmp('3D',dimension)
-    % === Focussed Point Sink ===
-    conf.driving_functions = 'default';
-elseif strcmp('2D',dimension)
+if strcmp('2D',dimension) && strcmp(conf.driving_functions, 'default')
     % === Focussed Line Sink ===
     % We have to use the driving function setting directly, because in opposite
     % to the case of a non-focused source where 'ps' and 'ls' are available as
@@ -85,8 +82,6 @@ elseif strcmp('2D',dimension)
     % Have a look at driving_function_mono_wfs_fs() for details on the
     % implemented focused source types.
     conf.driving_functions = 'line_sink';
-else
-    error('%s: %s is not a known source type.',upper(mfilename),dimension);
 end
 
 % Get driving signals for real secondary sources

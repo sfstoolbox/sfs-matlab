@@ -149,10 +149,10 @@ elseif strcmp('2.5D',dimension)
         %                             ___
         %                            | 1    (xs-x0) nx0
         % d_2.5D(x0,t) = h(t) * g0 _ |---  ------------- delta(t+|x0-xs|/c)
-        %                           \|2pi  |x0-xs|^(3/2)
+        %                           \|2pi  |xs-x0|^(3/2)
         %
         % Inverse Fourier Transform of Time-Reversed Version of 
-        % Verheijen (2010), eq. (2.33b)
+        % Verheijen (1997), eq. (2.33b)
         %
         % Delay and amplitude weight
         delay = -1/c .* r;

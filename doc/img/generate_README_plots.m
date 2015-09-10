@@ -34,7 +34,7 @@ axis([-2 2 -2 2]);
 print_png('secondary_sources_box.png');
 
 % === box shaped with smoothed edges ===
-conf.secondary_sources.geometry = 'smooth-box';
+conf.secondary_sources.geometry = 'rounded-box';
 conf.secondary_sources.number = 84;
 conf.secondary_sources.corner_radius = 0.3;
 x0 = secondary_source_positions(conf);
@@ -42,7 +42,7 @@ figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
-print_png('secondary_sources_smooth-box.png');
+print_png('secondary_sources_rounded-box.png');
 
 % === spherical array ===
 conf.secondary_sources.geometry = 'sphere'; % or 'spherical'

@@ -138,18 +138,13 @@ elseif strcmp('circle',geometry) || strcmp('circular',geometry)
     %                    x
     %                    |
     %
-    % Azimuth angles
-    phi = linspace(0,(2-2/nls)*pi,nls)'; % 0..2pi
-    %phi = linspace(pi/2,(5/2-2/nls)*pi,nls)'; % pi/2..5/2pi, Room Pinta
-    % Elevation angles
-    theta = zeros(nls,1);
-    % Positions of the secondary sources
-    [cx,cy,cz] = sph2cart(phi,theta,L/2);
-    x0(:,1:3) = [cx,cy,cz] + repmat(X0,nls,1);
-    % Direction of the secondary sources
-    x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1).*ones(nls,3));  
+    % 'circle' is special case of 'rounded-box' with fully rounded corners
+    t = (0:nls-1)/nls;
+    [x0(:,1:3), x0(:,4:6)] = rounded_box(t, 1.0);  % 1.0 for circle
+    % scale unit circle
+    x0(:,1:3) = bsxfun(@plus, x0(:,1:3).*L/2, X0);  
     % Equal weights for all sources
-    x0(:,7) = ones(nls,1);
+    x0(:,7) = 1;
 elseif strcmp('box',geometry)
     % === Boxed loudspeaker array ===
     %
@@ -175,6 +170,9 @@ elseif strcmp('box',geometry)
     %        x   x   x   x   x   x   x
     %                    |
     %
+    % 'box' is special case of 'rounded-box' where there is no rounding
+    % and the sources in the corners are skipped
+    
     % Number of secondary sources per linear array
     % ensures that nls/4 is always an integer.
     if rem(nls,4)~=0
@@ -185,33 +183,17 @@ elseif strcmp('box',geometry)
     end
     % Distance between secondary sources
     dx0 = L/(nbox-1);
-    % Position and direction of the loudspeakers
-    % Top
-    x0(1:nbox,1) = X0(1) + linspace(-L/2,L/2,nbox)';
-    x0(1:nbox,2) = X0(2) + ones(nbox,1) * L/2 + dx0;
-    x0(1:nbox,3) = X0(3) + zeros(nbox,1);
-    x0(1:nbox,4:6) = direction_vector(x0(1:nbox,1:3), ...
-        x0(1:nbox,1:3)+repmat([0 -1 0],nbox,1));
-    % Right
-    x0(nbox+1:2*nbox,1) = X0(1) + ones(nbox,1) * L/2 + dx0;
-    x0(nbox+1:2*nbox,2) = X0(2) + linspace(L/2,-L/2,nbox)';
-    x0(nbox+1:2*nbox,3) = X0(3) + zeros(nbox,1);
-    x0(nbox+1:2*nbox,4:6) = direction_vector(x0(nbox+1:2*nbox,1:3), ...
-        x0(nbox+1:2*nbox,1:3)+repmat([-1 0 0],nbox,1));
-    % Bottom
-    x0(2*nbox+1:3*nbox,1) = X0(1) + linspace(L/2,-L/2,nbox)';
-    x0(2*nbox+1:3*nbox,2) = X0(2) - ones(nbox,1) * L/2 - dx0;
-    x0(2*nbox+1:3*nbox,3) = X0(3) + zeros(nbox,1);
-    x0(2*nbox+1:3*nbox,4:6) = direction_vector(x0(2*nbox+1:3*nbox,1:3), ...
-        x0(2*nbox+1:3*nbox,1:3)+repmat([0 1 0],nbox,1));
-    % Left
-    x0(3*nbox+1:nls,1) = X0(1) - ones(nbox,1) * L/2 - dx0;
-    x0(3*nbox+1:nls,2) = X0(2) + linspace(-L/2,L/2,nbox)';
-    x0(3*nbox+1:nls,3) = X0(3) + zeros(nbox,1);
-    x0(3*nbox+1:nls,4:6) = direction_vector(x0(3*nbox+1:nls,1:3), ...
-        x0(3*nbox+1:nls,1:3)+repmat([1 0 0],nbox,1));
+    % length of one edge of the rectangular bounding box
+    Lbound = L + 2*dx0;
+    % index t for the positions on the boundary
+    t = linspace(-L/2,L/2,nbox)./Lbound;  % this skips the corners
+    t = [t, t+1, t+2, t+3]*0.25;  % repeat and shift to get all 4 edges
+    % 'box' is special case of 'rounded-box' where there is no rounding
+    [x0(:,1:3), x0(:,4:6)] = rounded_box(t, 0.0);  % 0.0 for square
+    % scale "unit" box
+    x0(:,1:3) = bsxfun(@plus, x0(:,1:3).*Lbound/2, X0);    
     % Equal weights for all sources
-    x0(:,7) = ones(nls,1);
+    x0(:,7) = 1;
 elseif strcmp('rounded-box', geometry)    
     % ratio for rounding the edges
     ratio = 2*conf.secondary_sources.corner_radius./L;     

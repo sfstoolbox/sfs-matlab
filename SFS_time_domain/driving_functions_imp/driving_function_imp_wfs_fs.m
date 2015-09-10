@@ -20,6 +20,8 @@ function [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs,conf)
 %   References:
 %       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
 %       "Theory of Sound Field Synthesis"
+%       E. Verheijen (1997) - "Sound Reproduction by Wave Field Synthesis", PhD
+%       thesis, TU Delft
 %
 %   See also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_fs
 
@@ -108,11 +110,10 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
 elseif strcmp('2.5D',dimension)
 
     % === 2.5-Dimensional ================================================
-
+    % Reference point
+    xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        % Reference point
-        xref = repmat(xref,[size(x0,1) 1]);
         % 2.5D correction factor
         %        ______________
         % g0 = \| 2pi |xref-x0|
@@ -130,8 +131,33 @@ elseif strcmp('2.5D',dimension)
         % r = |xs-x0|
         r = vector_norm(xs-x0,2);
         % Delay and amplitude weight
-        delay =  -1/c .* r;
+        delay = -1/c .* r;
         weight = g0/(2*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3/2);
+        
+    elseif strcmp('verheijen1997',driving_functions)
+        % --- Verheijen1997 --------------------------------------------------
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        % 2.5D correction factor
+        %         _____________________
+        %        |      |xref-x0|
+        % g0 = _ |---------------------
+        %       \| |x0-xs| + |xref-x0|
+        %
+        g0 = sqrt( vector_norm(xref-x0,2) ./ (r + vector_norm(x0-xref,2)) );
+        %
+        %                             ___
+        %                            | 1    (xs-x0) nx0
+        % d_2.5D(x0,t) = h(t) * g0 _ |---  ------------- delta(t+|x0-xs|/c)
+        %                           \|2pi  |x0-xs|^(3/2)
+        %
+        % Inverse Fourier Transform of Time-Reversed Version of 
+        % Verheijen (2010), eq. (2.33b)
+        %
+        % Delay and amplitude weight
+        delay = -1/c .* r;
+        weight = g0/sqrt(2*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3/2);
+        
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D focused source.'],upper(mfilename),driving_functions);

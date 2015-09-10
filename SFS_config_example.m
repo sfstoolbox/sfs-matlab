@@ -171,9 +171,9 @@ conf.secondary_sources.size = 3; % / m
 % Center of array, X0
 conf.secondary_sources.center = [0 0 0]; % / m
 % Array geometry
-% Possible values are: 'line', 'box', 'smooth-box', 'circle', 'sphere', 'custom'
+% Possible values are: 'line', 'box', 'rounded-box', 'circle', 'sphere', 'custom'
 conf.secondary_sources.geometry = 'circle'; % string
-% exclusive for 'smooth-box' array geometry. Defines the bending radius for
+% exclusive for 'rounded-box' array geometry. Defines the bending radius for
 % the corners of the smoothed box
 conf.secondary_sources.corner_radius = 0.0; % / m
 % Vector containing custom secondary source positions and directions.

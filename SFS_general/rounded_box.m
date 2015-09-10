@@ -1,12 +1,12 @@
-function [x0, n0] = smooth_box(t, ratio)
-%SMOOTH_BOX computes position and direction vectors in 3D given a parameter 
-%   indicating the position on the boundary of a box with smooth corners.
+function [x0, n0] = rounded_box(t, ratio)
+%ROUNDED_BOX computes position and direction vectors in 3D given a parameter 
+%   indicating the position on the boundary of a box with rounded corners.
 %
-%   Usage: [x0, n0] = smooth_box(t, ratio)
+%   Usage: [x0, n0] = rounded_box(t, ratio)
 %
 %   Input options:
 %       t      - parameter indicating position on the boundary [1 x n]
-%       ratio  - ratio between bending radius of smooth corners and the 
+%       ratio  - ratio between bending radius of the rounded corners and the 
 %                half edge length of the rectangular bounding box (0,1) 
 %
 %   Output options:
@@ -15,16 +15,16 @@ function [x0, n0] = smooth_box(t, ratio)
 %
 %   The box has rectangular bounding box in the horizontal plane with an edge 
 %   length of 2 and its center at [0,0,0]. Choosing 0.0 for ratio leads to a
-%   square with sharp corners,  while 1.0 yields a circle. 
-%   The parameter t indicates the position on the  boundary starting for t=0 
+%   square, while 1.0 yields a circle. 
+%   The parameter t indicates the position on the boundary starting for t=0 
 %   yielding x0=[1,0,0] and following the boundary in a counter-clockwise
-%   manner. This function is period with respect to t with a period of 1.
+%   manner. This function is periodic with respect to t with a period of 1.
 %   Given two parameters t1 and t2=t1+delta, this function yields two positions
-%   x01=smooth_box(t1, ratio) and x02=smooth_box(t2, ratio), whose distance 
-%   ALONG THE BOUNDARY of the box is smooth_box(delta, ratio).
-%   n0 is orthogonal to the boundary. However, for ratio=1 and t=1/8, 3/8, 
-%   5/8, ..., i.e a location in a sharp corner, n0 has an angle of 45 degree
-%   to the adjacent edges of the box.
+%   x01=rounded_box(t1, ratio) and x02=rounded_box(t2, ratio), whose distance 
+%   ALONG THE BOUNDARY of the box is rounded_box(delta, ratio).
+%   n0 is orthogonal to the boundary and poiting inwards the box. 
+%   However, for ratio=1 and t=1/8, 3/8, 5/8, ..., i.e a location in a corner
+%   of a square, n0 has an angle of 45 degree to the adjacent edges of the box.
 %
 % See also: secondary_source_positions
 
@@ -75,12 +75,12 @@ end
 
 ratio_prime = (1.0 - ratio);
 
-% the smooth box can be divided into four quarters, where each can be handled
+% the rounded box can be divided into four quarters, where each can be handled
 % in the same manner and is rotated afterwards
 rot_ind = mod( floor(t*4), 4 ) + 1;  % index for rotating
 t = mod(t, 0.25)*4;  % map t to a single quarter
 
-% length of a quarter of the smoothed box
+% length of a quarter of the rounded box
 % (quarter circle + 2*linear segment);
 l = pi/2*ratio + 2*ratio_prime;
 

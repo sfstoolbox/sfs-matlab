@@ -22,15 +22,15 @@ support](https://github.com/sfstoolbox/sfs/releases/tag/1.2.0).
 
 ### Table of Contents
 
-**[Installation](#installation)**  
-**[Requirements](#requirements)**  
-**[Usage](#usage)**  
-  [Secondary Sources](#secondary-sources)  
-  [Simulate Monochromatic Sound Fields](#simulate-monochromatic-sound-fields)  
-  [Simulate Time Snapshots of Sound Fields](#simulate-time-snapshots-of-sound-fields)  
-  [Make Binaural Simulations of Your Systems](#make-binaural-simulations-of-your-systems)  
-  [Small helper functions](#small-helper-functions)  
-  [Plotting with Matlab or gnuplot](#plotting-with-matlab-or-gnuplot)  
+**[Installation](#installation)**
+**[Requirements](#requirements)**
+**[Usage](#usage)**
+  [Secondary Sources](#secondary-sources)
+  [Simulate Monochromatic Sound Fields](#simulate-monochromatic-sound-fields)
+  [Simulate Time Snapshots of Sound Fields](#simulate-time-snapshots-of-sound-fields)
+  [Make Binaural Simulations of Your Systems](#make-binaural-simulations-of-your-systems)
+  [Small helper functions](#small-helper-functions)
+  [Plotting with Matlab or gnuplot](#plotting-with-matlab-or-gnuplot)
 **[Credits and License](#credits-and-license)**
 
 
@@ -48,16 +48,16 @@ subpathes.
 Requirements
 ------------
 
-**Matlab**  
+**Matlab**
 You need Matlab version 2011b or newer to run the Toolbox.
 On older version the Toolbox should also work, but you need to add
 [narginchk.m](http://gist.github.com/hagenw/5642886) to the
 <code>SFS_helper</code>
 directory.
 
-**Octave**  
-You need Octave version 3.6 or newer to run the Toolbox. In addition, 
-you will need the following additional packages from 
+**Octave**
+You need Octave version 3.6 or newer to run the Toolbox. In addition,
+you will need the following additional packages from
 [octave-forge](http://octave.sourceforge.net/):
 * audio (e.g. for wavwrite)
 * signal (e.g. for firls)
@@ -129,11 +129,35 @@ axis([-2 2 -2 2]);
 
 ![Image](doc/img/secondary_sources_box.png)
 
+#### Box Shaped Array with Rounded Edges
+
+<code>conf.secondary_sources.edge_radius</code> defines the bending radius of
+the corners. It can be chosen in a range between <code>0.0</code> and the half
+of <code>conf.secondary_sources.size</code>. While the prior represents a
+square box the latter yields a circle. Note that the
+square box behaves it little bit different than the Box Shaped Array
+since loudspeakers might also be place directly in the corners of the box.
+
+```Matlab
+conf = SFS_config_example;
+conf.secondary_sources.geometry = 'rounded-box';
+conf.secondary_sources.number = 84;
+conf.secondary_sources.corner_radius = 0.3;
+x0 = secondary_source_positions(conf);
+figure;
+figsize(540,404,'px');
+draw_loudspeakers(x0,conf);
+axis([-2 2 -2 2]);
+print_png('img/secondary_sources_rounded-box.png');
+```
+
+![Image](doc/img/secondary_sources_rounded-box.png)
+
 #### Spherical Array
 
 For a spherical array you need a grid to place the secondary sources on the
 sphere. At the moment we provide grids with the Toolbox, that can be find here:
-http://github.com/sfstoolbox/data/tree/master/spherical_grids  
+http://github.com/sfstoolbox/data/tree/master/spherical_grids
 You have to specify your desired grid, for example
 <code>conf.secondary_sources.grid = 'equally_spaced_points'</code>. The
 <code>secondary_source_positions()</code> functions will then automatically
@@ -240,7 +264,7 @@ axis([-2 2 -2.5 2.5]);
 With the files in <code>SFS_monochromatic</code> you can simulate a
 monochromatic sound field in a specified area for different techniques like WFS
 and NFC-HOA. The area can be a 3D cube, a 2D plane, a line or only one point.
-This depends on the specification of <code>X,Y,Z</code>. For example 
+This depends on the specification of <code>X,Y,Z</code>. For example
 <code>[-2 2],[-2 2],[-2 2]</code> will be a 3D cube;
 <code>[-2 2],0,[-2 2]</code> the xz-plane; <code>[-2 2],0,0</code> a line along
 the x-axis; <code>3,2,1</code> a single point.
@@ -391,7 +415,7 @@ sound_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800,conf)
 With the files in <code>SFS_time_domain</code> you can simulate snapshots in
 time of an impulse originating from your WFS or NFC-HOA system.
 
-In the following we will create a snapshot in time after 200 samples for a broadband 
+In the following we will create a snapshot in time after 200 samples for a broadband
 virtual point source placed at (0 2 0) m for 2.5D NFC-HOA.
 
 ```Matlab
@@ -410,7 +434,7 @@ true;</code>. In this case the default color map is changed and a color bar
 is plotted in the figure. For none dB plots no color bar is shown in the plots.
 In these cases the color coding goes always from -1 to 1, with clipping of
 larger values.
-You could change the color 
+You could change the color
 
 ```Matlab
 conf.plot.usedb = true;
@@ -432,7 +456,7 @@ conf.plot.colormap = 'jet'; % Matlab rainbow color map
 If you have a set of head-related transfer functions (HRTFs) you can simulate
 the ear signals reaching a listener sitting at a given point in the listening
 area for a specified WFS or NFC-HOA system.
-You can even download a set of HRTFs, which will just work with the Toolbox at 
+You can even download a set of HRTFs, which will just work with the Toolbox at
 http://dev.qu.tu-berlin.de/projects/measurements/wiki/2010-11-kemar-anechoic
 
 In order to easily use different HRIR sets the toolbox incorporates the
@@ -574,22 +598,22 @@ this license.
 Website: http://github.com/sfstoolbox/sfs
 
 If you have questions, bug reports or feature requests, please use the [Issue
-Section on the website](https://github.com/sfstoolbox/sfs/issues) to report them. 
+Section on the website](https://github.com/sfstoolbox/sfs/issues) to report them.
 
-If you use the Toolbox for your publications please cite our AES Convention e-Brief:  
-H. Wierstorf, S. Spors - Sound Field Synthesis Toolbox.  
+If you use the Toolbox for your publications please cite our AES Convention e-Brief:
+H. Wierstorf, S. Spors - Sound Field Synthesis Toolbox.
 In the Proceedings of *132nd Convention of the
-Audio Engineering Society*, 2012  
+Audio Engineering Society*, 2012
 [ [pdf](http://audio.qu.tu-berlin.de/wp-content/uploads/publications/2012/wierstorf2012_SFS_toolbox_AES.pdf) ]
 [ [bibtex](doc/aes132_paper.bib) ]
 
-Copyright (c) 2010-2015  
-Quality & Usability Lab, together with  
-Assessment of IP-based Applications  
-Telekom Innovation Laboratories, TU Berlin  
-Ernst-Reuter-Platz 7, 10587 Berlin, Germany 
+Copyright (c) 2010-2015
+Quality & Usability Lab, together with
+Assessment of IP-based Applications
+Telekom Innovation Laboratories, TU Berlin
+Ernst-Reuter-Platz 7, 10587 Berlin, Germany
 
-Copyright (c) 2013-2015  
-Institut fuer Nachrichtentechnik  
-Universitaet Rostock  
+Copyright (c) 2013-2015
+Institut fuer Nachrichtentechnik
+Universitaet Rostock
 Richard-Wagner-Strasse 31, 18119 Rostock

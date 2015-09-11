@@ -133,7 +133,7 @@ axis([-2 2 -2 2]);
 
 <code>conf.secondary_sources.edge_radius</code> defines the bending radius of
 the corners. It can be chosen in a range between <code>0.0</code> and the half
-of <code>conf.secondary_sources.size</code>. While the prior respresents a
+of <code>conf.secondary_sources.size</code>. While the prior represents a
 square box the latter yields a circle. Note that the
 square box behaves it little bit different than the Box Shaped Array
 since loudspeakers might also be place directly in the corners of the box.

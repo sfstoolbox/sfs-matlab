@@ -63,7 +63,6 @@ narginchk(nargmin,nargmax);
 isargposition(X);
 isargxs(xs);
 isargscalar(phi);
-check_irs(irs);
 if nargin<nargmax
     conf = SFS_config;
 end

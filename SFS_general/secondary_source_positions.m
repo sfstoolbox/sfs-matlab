@@ -113,8 +113,8 @@ if strcmp('line',geometry) || strcmp('linear',geometry)
     x0(:,3) = X0(3) * ones(nls,1);
     % Direction of the secondary sources pointing to the -y direction
     x0(:,4:6) = direction_vector(x0(:,1:3),x0(:,1:3)+repmat([0 -1 0],nls,1));
-    % Equal weights for all sources
-    x0(:,7) = ones(nls,1);
+    % Weight each secondary source by the inter-loudspeaker distance
+    x0(:,7) = L./(nls-1);
 elseif strcmp('circle',geometry) || strcmp('circular',geometry)
     % === Circular array ===
     %
@@ -140,11 +140,11 @@ elseif strcmp('circle',geometry) || strcmp('circular',geometry)
     %
     % 'circle' is special case of 'rounded-box' with fully rounded corners
     t = (0:nls-1)/nls;
-    [x0(:,1:3), x0(:,4:6)] = rounded_box(t, 1.0);  % 1.0 for circle
-    % scale unit circle
-    x0(:,1:3) = bsxfun(@plus, x0(:,1:3).*L/2, X0);  
-    % Equal weights for all sources
-    x0(:,7) = 1;
+    [x0(:,1:3), x0(:,4:6), x0(:,7)] = rounded_box(t,1.0);  % 1.0 for circle
+    % Scale unit circle and shift center to X0
+    x0(:,1:3) = bsxfun(@plus, x0(:,1:3).*L/2, X0);
+    % Scale weights
+    x0(:,7) = x0(:,7).*L/2;
 elseif strcmp('box',geometry)
     % === Boxed loudspeaker array ===
     %
@@ -172,7 +172,7 @@ elseif strcmp('box',geometry)
     %
     % 'box' is special case of 'rounded-box' where there is no rounding
     % and the sources in the corners are skipped
-    
+    %
     % Number of secondary sources per linear array
     % ensures that nls/4 is always an integer.
     if rem(nls,4)~=0
@@ -183,26 +183,29 @@ elseif strcmp('box',geometry)
     end
     % Distance between secondary sources
     dx0 = L/(nbox-1);
-    % length of one edge of the rectangular bounding box
+    % Length of one edge of the rectangular bounding box
     Lbound = L + 2*dx0;
-    % index t for the positions on the boundary
+    % Index t for the positions on the boundary
     t = linspace(-L/2,L/2,nbox)./Lbound;  % this skips the corners
     t = [t, t+1, t+2, t+3]*0.25;  % repeat and shift to get all 4 edges
     % 'box' is special case of 'rounded-box' where there is no rounding
-    [x0(:,1:3), x0(:,4:6)] = rounded_box(t, 0.0);  % 0.0 for square
-    % scale "unit" box
-    x0(:,1:3) = bsxfun(@plus, x0(:,1:3).*Lbound/2, X0);    
-    % Equal weights for all sources
-    x0(:,7) = 1;
-elseif strcmp('rounded-box', geometry)    
-    % ratio for rounding the edges
-    ratio = 2*conf.secondary_sources.corner_radius./L;     
-    t = (0:nls-1)/nls;    
-    [x0(:,1:3), x0(:,4:6)] = rounded_box(t, ratio);
-    % scale "unit" rounded-box
-    x0(:,1:3) = bsxfun(@plus, x0(:,1:3).*L/2, X0);    
-    % Equal weights for all sources
-    x0(:,7) = 1;
+    [x0(:,1:3), x0(:,4:6), x0(:,7)] = rounded_box(t,0.0);  % 0.0 for square
+    % Scale "unit" box and shift center to X0
+    x0(:,1:3) = bsxfun(@plus, x0(:,1:3).*Lbound/2, X0);
+    % Scale integration weights
+    x0(:,7) = x0(:,7).*Lbound/2;
+    % Correct weights of loudspeakers near corners
+    corners = [1,nbox,nbox+1,2*nbox,2*nbox+1,3*nbox,3*nbox+1,4*nbox];
+    x0(corners,7) = (1 + sqrt(2)) *dx0/2;  % instead of 3/2 * dx0
+elseif strcmp('rounded-box', geometry)
+    % Ratio for rounding the edges
+    ratio = 2*conf.secondary_sources.corner_radius./L;
+    t = (0:nls-1)/nls;
+    [x0(:,1:3), x0(:,4:6), x0(:,7)] = rounded_box(t, ratio);
+    % Scale "unit" rounded-box and shift center to X0
+    x0(:,1:3) = bsxfun(@plus, x0(:,1:3).*L/2, X0);
+    % Scale integration weights
+    x0(:,7) = x0(:,7).*L/2;
 elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)
     % Get spherical grid + weights
     [points,weights] = get_spherical_grid(nls,conf);
@@ -210,8 +213,8 @@ elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)
     x0(:,1:3) = L/2 * points + repmat(X0,nls,1);
     % Secondary source directions
     x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1));
-    % Secondary source weights
-    x0(:,7) = weights;
+    % Secondary source weights + distance scaling
+    x0(:,7) = weights .* L^2/4;
     % Add integration weights (because we integrate over a sphere) to the grid
     % weights
     [~,theta] = cart2sph(x0(:,1),x0(:,2),x0(:,3)); % get elevation

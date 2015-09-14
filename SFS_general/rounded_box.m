@@ -142,10 +142,12 @@ n0(:,1:2) = [sum( n0 .* rotx(rot_ind, :), 2), sum( n0 .* roty(rot_ind, :), 2)];
 
 %% ===== Weights =============================================================
 
-% distance between adjacent samples
+% Distance between adjacent samples. This takes the special geometry into
+% account and is faster than using the more general secondary_source_distance()
+% function.
 dist = mod( t - t([N,1:N-1]), 1);  % distance to neighbor
 dist = min( abs(dist), abs(1 - dist) );  % take periodicity into account
-% half of the distance to the "left" and half of the distance to the
+% Half of the distance to the "left" and half of the distance to the
 % "right" neighbor
 w0 = ( 0.5*dist + 0.5*dist([2:N,1]) )*4*l;
 w0 = w0.';

@@ -5,6 +5,16 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
     - add support for SOFA
     - add SOFA convention SimpleFreeFieldHRIR
     - add SOFA convention MultiSpeakerBRIR
+    - calculate integration weights (x0(:,7)) of secondary sources based on their
+      distances to their neighbours
+    - add rounded-box as new loudspeaker array geometry
+    - the secondary source window function is now normalized to avoid changes in
+      amplitude if the number of active sources changes
+    - fix bugs in local sound field synthesis time domain implementation
+    - speedup local sound field synthesis processing by fewer calls to
+      delayline()
+    - add heuristic to find a good local wave field synthesis pre-filter
+    - loudspeaker geometry can now be read from a SOFA file
 
 1.2.0 (2. June 2015)
 

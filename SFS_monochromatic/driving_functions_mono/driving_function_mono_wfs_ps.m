@@ -23,8 +23,10 @@ function D = driving_function_mono_wfs_ps(x0,nx0,xs,f,conf)
 %       "Theory of Sound Field Synthesis"
 %       S. Spors, R. Rabenstein, J. Ahrens (2008) - "The Theory of Wave Field
 %       Synthesis Revisited", AES124
-%       E. Start (1997) - "Direct Sound Enhancement by Wave Field
-%       Synthesis", PhD thesis, TU Delft
+%       E. Start (1997) - "Direct Sound Enhancement by Wave Field Synthesis", 
+%       PhD thesis, TU Delft
+%       E. Verheijen (1997) - "Sound Reproduction by Wave Field Synthesis", PhD
+%       thesis, TU Delft
 %       S. Spors, J. Ahrens (2010) - "Analysis and Improvement of
 %       Pre-equalization in 2.5-Dimensional Wave Field Synthesis", AES128
 %
@@ -152,134 +154,136 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
 
 elseif strcmp('2.5D',dimension)
 
-    % === 2.5-Dimensional ================================================
-
-    % Reference point
-    xref = repmat(xref,[size(x0,1) 1]);
-    if any( strcmp(driving_functions, ...
-      {'default', 'reference_point', 'opperschall', 'volk2010'} ))
-        % Driving function with only one stationary phase approximation,
-        % reference to one point in field
-        %
-        % r = |x0-xs|
-        r = vector_norm(x0-xs,2);
-        % 2.5D correction factor
-        %         _____________________
-        %        |      |xref-x0|
-        % g0 = _ |---------------------
-        %       \| |x0-xs| + |xref-x0|
-        %
-        % see Start (1997), eq. (3.11)
-        %
-        g0 = sqrt( vector_norm(xref-x0,2) ./ (r + vector_norm(x0-xref,2)) );
-        %
-        % D_2.5D(x0,w) =
-        %       ___    ___
-        %      | 1    |i w (x0-xs) nx0
-        % g0 _ |--- _ |--- ------------- e^(-i w/c |x0-xs|)
-        %     \|2pi  \| c  |x0-xs|^(3/2)
-        %
-        % see Start (1997), eq. (3.10)
-        %
-        % Driving signal
-        D = g0/sqrt(2*pi) * sqrt( 1i*omega/c ) .* ...
-            vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c.*r);    
-    elseif any( strcmp(driving_functions, {'reference_line', 'delft1988'} ))
-        % Driving function with two stationary phase approximations,
-        % reference to a line parallel to a LINEAR secondary source distribution
-        %
-        % distance ref-line to linear ssd
-        dref = vector_product(xref-x0,nx0,2);
-        % distance source and linear ssd   
-        ds = vector_product(xs-x0,nx0,2);  
-        %
-        % 2.5D correction factor
-        %        _______________________
-        % g0 = \| d_ref / (d_ref - d_s)
-        %
-        % see Start (1997), eq. (3.16)        %
-        %
-        g0 = sqrt( dref / (dref - ds));
-        %                      _____
-        %                     |i w   (x0-xs) nx0
-        % D_2.5D(x0,w) = g0 _ |----- ------------  e^(-i w/c |x0-xs|)
-        %                    \|2pi c |x0-xs|^(3/2)
-        %
-        % see Start (1997), eq. (3.17)
-        %
-        % r = |x0-xs|
-        r = vector_norm(x0-xs,2);
-        % Driving signal
-        D = sqrt(1i*omega/(2*pi*c)) * g0 * vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c .* r);
-        %
-    elseif strcmp('legacy',driving_functions)
-        % --- SFS Toolbox ------------------------------------------------
-        % 2.5D correction factor
-        %        _____________
-        % g0 = \| 2pi |xref-x0|
-        %
-        g0 = sqrt(2*pi*vector_norm(xref-x0,2));
-        %
-        % D_2.5D using a point source and large distance approximation
-        %                       ___
-        %                g0    |i w  (x0-xs) nx0
-        % D_2.5D(x0,w) = --- _ |--- ------------- e^(-i w/c |x0-xs|)
-        %                2pi  \| c  |x0-xs|^(3/2)
-        %
-        % see Wierstorf et al. (2015), eq.(#D:wfs:ps:2.5D)
-        %
-        % r = |x0-xs|
-        r = vector_norm(x0-xs,2);
-        % Driving signal
-        D = g0/(2*pi) .* sqrt(1i*omega/c) .* ...
-            vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c.*r);
-        %
-    elseif strcmp('point_source',driving_functions)
-        % 2.5D correction factor
-        %        ______________
-        % g0 = \| 2pi |xref-x0|
-        %
-        g0 = sqrt(2*pi*vector_norm(xref-x0,2));
-        %
-        % D_2.5D using a point source as source model
-        %
-        % D_2.5D(x0,w) =
-        %           ___       ___
-        %  g0  /   |i w      | c      1    \  (x0-xs) nx0
-        % ---  | _ |---  - _ |---  ------- |  ----------- e^(-i w/c |x0-xs|)
-        % 2pi  \  \| c      \|i w  |x0-xs| /   |x0-xs|^2
-        %
-        % see Wierstorf et al. (2015), eq.(#D:wfs:ps:woapprox:2.5D)
-        %
-        % r = |x0-xs|
-        r = vector_norm(x0-xs,2);
-        % Driving signal
-        D = g0/(2*pi) .* ( sqrt(1i*omega/c) - sqrt(c/(1i*omega) ./ r ) ) .* ...
-            vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(-1i*omega/c .* r);
-        %
-    elseif strcmp('SDMapprox',driving_functions)
-        % --- Spors 2010 --------------------------------------------------
-        % Driving function derived by approximation of the SDM
-        %
-        % 2.5D correction factor
-        %        _______________________
-        % g0 = \| -y_ref / (y_s - y_ref)
-        %
-        g0 = sqrt(- xref(1,2) / (xs(1,2) - xref(1,2)));
-        %
-        %                1 i w       ys    (2)/w       \
-        % D_2.5D(x0,w) = - --- g0 ------- H1 | -|x0-xs| |
-        %                2  c     |x0-xs|     \c       /
-        %
-        % see Spors and Ahrens (2010), eq.(24)
-        %
-        r = vector_norm(x0-xs,2);
-        D = 1/2 * 1i*omega/c * g0 * xs(1,2)./r .* besselh(1,2,omega/c*r);
-        %   
-    else
-        error(['%s: %s, this type of driving function is not implemented ', ...
-            'for a 2.5D point source.'],upper(mfilename),driving_functions);
-    end
+  % === 2.5-Dimensional ================================================
+  
+  % Reference point
+  xref = repmat(xref,[size(x0,1) 1]);
+  switch driving_functions
+    case {'default', 'reference_point', 'opperschall', 'volk2010'}
+      % Driving function with only one stationary phase approximation,
+      % reference to one point in field
+      %
+      % r = |x0-xs|
+      r = vector_norm(x0-xs,2);
+      % 2.5D correction factor
+      %         _____________________
+      %        |      |xref-x0|
+      % g0 = _ |---------------------
+      %       \| |xref-x0| + |x0-xs|
+      %
+      % see Start (1997), eq. (3.11)
+      %
+      g0 = sqrt( vector_norm(xref-x0,2) ./ (vector_norm(xref-x0,2) + r) );
+      %
+      % D_2.5D(x0,w) =
+      %       ___    ___
+      %      | 1    |i w (x0-xs) nx0
+      % g0 _ |--- _ |--- ------------- e^(-i w/c |x0-xs|)
+      %     \|2pi  \| c  |x0-xs|^(3/2)
+      %
+      % see Start (1997), eq. (3.10)
+      %
+      % Driving signal
+      D = g0/sqrt(2*pi) .* sqrt( 1i*omega/c ) .* ...
+        vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c.*r);
+      %
+    case {'reference_line', 'delft1988'}
+      % Driving function with two stationary phase approximations,
+      % reference to a line parallel to a LINEAR secondary source distribution
+      %
+      % distance ref-line to linear ssd
+      dref = vector_product(xref-x0,nx0,2);
+      % distance source and linear ssd
+      ds = vector_product(xs-x0,nx0,2);
+      %
+      % 2.5D correction factor
+      %        _______________________
+      % g0 = \| d_ref / (d_ref - d_s)
+      %
+      % see Start (1997), eq. (3.16)
+      %
+      g0 = sqrt( dref ./ (dref - ds) );
+      %                      _____
+      %                     |i w   (x0-xs) nx0
+      % D_2.5D(x0,w) = g0 _ |----- ------------  e^(-i w/c |x0-xs|)
+      %                    \|2pi c |x0-xs|^(3/2)
+      %
+      % see Start (1997), eq. (3.17)
+      %
+      % r = |x0-xs|
+      r = vector_norm(x0-xs,2);
+      % Driving signal
+      D = sqrt(1i*omega/(2*pi*c)) .* g0 .* ...
+        vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c .* r);
+      %
+    case 'legacy'
+      % --- SFS Toolbox ------------------------------------------------
+      % 2.5D correction factor
+      %        _____________
+      % g0 = \| 2pi |xref-x0|
+      %
+      g0 = sqrt(2*pi*vector_norm(xref-x0,2));
+      %
+      % D_2.5D using a point source and large distance approximation
+      %                       ___
+      %                g0    |i w  (x0-xs) nx0
+      % D_2.5D(x0,w) = --- _ |--- ------------- e^(-i w/c |x0-xs|)
+      %                2pi  \| c  |x0-xs|^(3/2)
+      %
+      % see Wierstorf et al. (2015), eq.(#D:wfs:ps:2.5D)
+      %
+      % r = |x0-xs|
+      r = vector_norm(x0-xs,2);
+      % Driving signal
+      D = g0/(2*pi) .* sqrt(1i*omega/c) .* ...
+        vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(-1i*omega/c.*r);
+      %
+    case 'point_source'
+      % 2.5D correction factor
+      %        ______________
+      % g0 = \| 2pi |xref-x0|
+      %
+      g0 = sqrt(2*pi*vector_norm(xref-x0,2));
+      %
+      % D_2.5D using a point source as source model
+      %
+      % D_2.5D(x0,w) =
+      %           ___       ___
+      %  g0  /   |i w      | c      1    \  (x0-xs) nx0
+      % ---  | _ |---  - _ |---  ------- |  ----------- e^(-i w/c |x0-xs|)
+      % 2pi  \  \| c      \|i w  |x0-xs| /   |x0-xs|^2
+      %
+      % see Wierstorf et al. (2015), eq.(#D:wfs:ps:woapprox:2.5D)
+      %
+      % r = |x0-xs|
+      r = vector_norm(x0-xs,2);
+      % Driving signal
+      D = g0/(2*pi) .* ( sqrt(1i*omega/c) - sqrt(c/(1i*omega) ./ r ) ) .* ...
+        vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(-1i*omega/c .* r);
+      %
+    case 'SDMapprox'
+      % --- Spors 2010 --------------------------------------------------
+      % Driving function derived by approximation of the SDM
+      %
+      % 2.5D correction factor
+      %        _______________________
+      % g0 = \| -y_ref / (y_s - y_ref)
+      %
+      g0 = sqrt(- xref(1,2) / (xs(1,2) - xref(1,2)));
+      %
+      %                1 i w       ys    (2)/w       \
+      % D_2.5D(x0,w) = - --- g0 ------- H1 | -|x0-xs| |
+      %                2  c     |x0-xs|     \c       /
+      %
+      % see Spors and Ahrens (2010), eq.(24)
+      %
+      r = vector_norm(x0-xs,2);
+      D = 1/2 * 1i*omega/c * g0 * xs(1,2)./r .* besselh(1,2,omega/c*r);
+      %
+    otherwise
+      error(['%s: %s, this type of driving function is not implemented ', ...
+        'for a 2.5D point source.'],upper(mfilename),driving_functions);
+  end
 
 else
     error('%s: the dimension %s is unknown.',upper(mfilename),dimension);

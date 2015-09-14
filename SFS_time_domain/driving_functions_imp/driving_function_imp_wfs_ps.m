@@ -20,6 +20,8 @@ function [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs,conf)
 %   References:
 %       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
 %       "Theory of Sound Field Synthesis"
+%       E. Start (1997) - "Direct Sound Enhancement by Wave Field Synthesis", 
+%       PhD thesis, TU Delft
 %       E. Verheijen (1997) - "Sound Reproduction by Wave Field Synthesis", PhD
 %       thesis, TU Delft
 %
@@ -108,59 +110,92 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
 
 elseif strcmp('2.5D',dimension)
 
-    % === 2.5-Dimensional ================================================
-
-    % Reference point
-    xref = repmat(xref,[size(x0,1) 1]);
-    if strcmp('default',driving_functions)
-        % --- SFS Toolbox ------------------------------------------------
-        % 2.5D correction factor
-        %        ______________
-        % g0 = \| 2pi |xref-x0|
-        %
-        g0 = sqrt(2*pi*vector_norm(xref-x0,2));
-        %
-        % d_2.5D using a point source as source model
-        %
-        %                        g0  (x0-xs) nx0
-        % d_2.5D(x0,t) = h(t) * --- ------------- delta(t-|x0-xs|/c)
-        %                       2pi |x0-xs|^(3/2)
-        %
-        % see Wierstorf et al. (2015), eq.(#d:wfs:ps:2.5D)
-        %
-        % r = |x0-xs|
-        r = vector_norm(x0-xs,2);
-        % Delay and amplitude weight
-        delay = 1/c .* r;
-        weight = g0/(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
-
-    elseif strcmp('verheijen1997',driving_functions)
-        % --- Verheijen1997 --------------------------------------------------
-        % r = |x0-xs|
-        r = vector_norm(x0-xs,2);
-        % 2.5D correction factor
-        %         _____________________
-        %        |      |xref-x0|
-        % g0 = _ |---------------------
-        %       \| |x0-xs| + |xref-x0|
-        %
-        g0 = sqrt( vector_norm(xref-x0,2) ./ (r + vector_norm(x0-xref,2)) );
-        %
-        %                             ___
-        %                            | 1    (x0-xs) nx0
-        % d_2.5D(x0,t) = h(t) * g0 _ |---  ------------- delta(t-|x0-xs|/c)
-        %                           \|2pi  |x0-xs|^(3/2)
-        %
-        % Inverse Fourier Transform of Verheijen (1997), eq. (2.33b)
-        %
-        % Delay and amplitude weight
-        delay = 1/c .* r;
-        weight = g0/sqrt(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
-        
-    else
-        error(['%s: %s, this type of driving function is not implemented', ...
-            'for a 2.5D point source.'],upper(mfilename),driving_functions);
-    end
+  % === 2.5-Dimensional ================================================
+  
+  % Reference point
+  xref = repmat(xref,[size(x0,1) 1]);
+  switch driving_functions
+    case {'default', 'reference_point'}
+      % Driving function with only one stationary phase approximation,
+      % reference to one point in field
+      %
+      % r = |x0-xs|
+      r = vector_norm(x0-xs,2);
+      % 2.5D correction factor
+      %         _____________________
+      %        |      |xref-x0|
+      % g0 = _ |---------------------
+      %       \| |xref-x0| + |x0-xs|
+      %
+      % see Start (1997), eq. (3.11)
+      %
+      g0 = sqrt( vector_norm(xref-x0,2) ./ (vector_norm(x0-xref,2) + r) );
+      %                                 ___
+      %                                | 1    (x0-xs) nx0
+      % d_2.5D(x0,t) = h_pre(t) * g0 _ |---  ------------- delta(t-|x0-xs|/c)
+      %                               \|2pi  |x0-xs|^(3/2)
+      %
+      % Inverse Fourier Transform of Start (1997), eq. (3.10)
+      %
+      % Delay and amplitude weight
+      delay = 1/c .* r;
+      weight = g0/sqrt(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
+      %
+    case 'reference_line'
+      % Driving function with two stationary phase approximations,
+      % reference to a line parallel to a LINEAR secondary source distribution
+      %
+      % distance ref-line to linear ssd
+      dref = vector_product(xref-x0,nx0,2);
+      % distance source and linear ssd   
+      ds = vector_product(xs-x0,nx0,2);  
+      %
+      % 2.5D correction factor
+      %        _______________________
+      % g0 = \| d_ref / (d_ref - d_s)
+      %
+      % see Start (1997), eq. (3.16)
+      %
+      g0 = sqrt( dref ./ (dref - ds) );
+      %                                 ___
+      %                                | 1    (x0-xs) nx0
+      % d_2.5D(x0,t) = h_pre(t) * g0 _ |---  ------------- delta(t-|x0-xs|/c)
+      %                               \|2pi  |x0-xs|^(3/2)
+      %
+      % Inverse Fourier Transform of Start (1997), eq. (3.17)
+      %
+      % r = |x0-xs|
+      r = vector_norm(x0-xs,2);
+      % Delay and amplitude weight
+      delay = 1/c .* r;
+      weight = g0/sqrt(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
+      %
+    case 'legacy'
+      % --- SFS Toolbox ------------------------------------------------
+      % 2.5D correction factor
+      %        ______________
+      % g0 = \| 2pi |xref-x0|
+      %
+      g0 = sqrt(2*pi*vector_norm(xref-x0,2));
+      %
+      % d_2.5D using a point source as source model
+      %
+      %                        g0  (x0-xs) nx0
+      % d_2.5D(x0,t) = h(t) * --- ------------- delta(t-|x0-xs|/c)
+      %                       2pi |x0-xs|^(3/2)
+      %
+      % see Wierstorf et al. (2015), eq.(#d:wfs:ps:2.5D)
+      %
+      % r = |x0-xs|
+      r = vector_norm(x0-xs,2);
+      % Delay and amplitude weight
+      delay = 1/c .* r;
+      weight = g0/(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
+      %
+    otherwise
+      error(['%s: %s, this type of driving function is not implemented', ...
+        'for a 2.5D point source.'],upper(mfilename),driving_functions);
+  end
 
 else
     error('%s: the dimension %s is unknown.',upper(mfilename),dimension);

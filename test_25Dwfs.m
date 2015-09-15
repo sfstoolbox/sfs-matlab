@@ -12,7 +12,6 @@ conf.secondary_sources.center = [0,1,0];
 
 conf.usetapwin = false;
 
-
 %%
 f = 5000;  % temporal frequency
 positions = { [0,3,0], [0, -1, 0] };  % source positions
@@ -56,8 +55,8 @@ for idx=1:2
     plot(y, db(Pwfs), 'r');
     hold on;
     plot(y, db(Pgt), 'b');
-    hold off; 
-
-    idx = idx + 1;
+    hold off;
+    
   end
+  
 end

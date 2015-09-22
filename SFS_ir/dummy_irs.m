@@ -77,8 +77,8 @@ dirac_position = 300;
 
 %% ===== Computation =====================================================
 % Angles of dummy irs (in 1deg)
-theta = -90:89;
-phi = -180:179;
+theta = [-90 89];
+phi = [-180 179];
 M = length(phi)*length(theta);
 ir = zeros(M,2,nsamples);
 % Create dirac pulse

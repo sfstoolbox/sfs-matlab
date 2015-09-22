@@ -5,15 +5,17 @@ function sofa = dummy_irs(nsamples,conf)
 %
 %   Input parameters:
 %       nsamples  - length of impulse response in samples, default: 1024
+%       conf      - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       sofa      - sofa struct
 %
 %   DUMMY_IRS(nsamples) creates a dummy impulse response data set (Dirac
-%   impulse) to check processing without real impulse responses. It has a
-%   resolution of 1 deg for phi and theta, its length is given by nsamples.
+%   impulse) to check processing without real impulse responses. It returns only
+%   one Dirac impulse, which is then applied for all direction if you for
+%   example use it together with ir_wfs().
 %
-%   See also: SOFAgetConventions
+%   See also: SOFAgetConventions, get_ir, ir_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -76,11 +78,7 @@ dirac_position = 300;
 
 
 %% ===== Computation =====================================================
-% Angles of dummy irs (in 1deg)
-theta = [-90 89];
-phi = [-180 179];
-M = length(phi)*length(theta);
-ir = zeros(M,2,nsamples);
+ir = zeros(1,2,nsamples);
 % Create dirac pulse
 ir(:,:,dirac_position) = 1;
 % Store data
@@ -95,11 +93,8 @@ sofa.GLOBAL_Comment = ['HRIR dummy set (Dirac pulse) for testing your',...
 sofa.ListenerPosition = [0 0 0];
 sofa.ListenerView = [1 0 0];
 sofa.ListenerUp = [0 0 1];
+elevation = 0;
+azimuth = 0;
 distance = dirac_position/fs*c;
-% Get angles and distance in to the correct format
-azimuth = repmat(phi,length(theta),1);
-azimuth = azimuth(:);
-elevation = repmat(theta,1,length(phi))';
-distance = distance.*ones(M,1);
 sofa.SourcePosition = [nav2sph(azimuth) elevation distance];
 sofa = SOFAupdateDimensions(sofa);

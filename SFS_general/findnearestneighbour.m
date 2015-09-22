@@ -16,7 +16,7 @@ function [C,idx] = findnearestneighbour(A,b,number_of_neighbours)
 %   column vectors with the nearest neighbour points from the matrix A to the
 %   point b. In addition to the values, the indices are also returned.
 %
-%   See also: find, findrows
+%   See also: find, findrows, get_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -62,10 +62,6 @@ end
 if size(b,2)>1
     b=b';
 end
-if number_of_neighbours>size(A,2)
-    error(['%s: your number of neighbours to look for is larger than the ', ...
-        'available points.'],upper(mfilename));
-end
 
 
 %% ===== Computation =====================================================
@@ -73,5 +69,5 @@ end
 distance = vector_norm(bsxfun(@minus,A,b),1);
 % Sort the distances in order to find the n lowest once
 [~,idx] = sort(distance);
-idx = idx(1:number_of_neighbours);
+idx = idx(1:min(number_of_neighbours,length(idx)));
 C = A(:,idx);

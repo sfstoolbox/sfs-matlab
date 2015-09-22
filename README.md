@@ -456,13 +456,17 @@ conf.plot.colormap = 'jet'; % Matlab rainbow color map
 If you have a set of head-related transfer functions (HRTFs) you can simulate
 the ear signals reaching a listener sitting at a given point in the listening
 area for a specified WFS or NFC-HOA system.
-You can even download a set of HRTFs, which will just work with the Toolbox at
-http://dev.qu.tu-berlin.de/projects/measurements/wiki/2010-11-kemar-anechoic
+You can even download the example [QU_KEMAR_anechoic_3m.sofa](https://github.com/sfstoolbox/data/raw/master/HRTFs/QU_KEMAR_anechoic_3m.sofa)
+HRTF set, which will just work with the Toolbox and is used in the examples
+below.
 
-In order to easily use different HRIR sets the toolbox incorporates the
-[SOFA file format](http://sofaconventions.org)
-for HRIRs and BRIRs. A large set of different impulse responses is now available
-in these format, see for example:
+In order to easily use different HRTF sets the toolbox uses the
+[SOFA file format](http://sofaconventions.org). In order to use it you have
+to install the SOFA API for
+Matlab/Octave from https://github.com/sofacoustics/API_MO and run `SOFAstart` before
+you can use it inside the SFS Toolbox.
+If you are looking for different HRTFs, a large set of different impulse
+responses is now available in these format, see for example:
 http://www.sofaconventions.org/mediawiki/index.php/Files.
 
 The files dealing with the binaural simulations are in the folder

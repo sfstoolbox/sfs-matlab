@@ -316,7 +316,7 @@ have to explicitly say if we want also plot the results, by
 ```Matlab
 conf = SFS_config_example;
 conf.dimension = '2.5D';
-conf.plot.useplot = 1;
+conf.plot.useplot = true;
 % [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
 [P,x,y,z,x0] = sound_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf);
 %print_png('img/sound_field_wfs_25d.png');
@@ -498,7 +498,7 @@ conf.secondary_sources.size = 3;
 conf.secondary_sources.number = 56;
 conf.secondary_sources.geometry = 'circle';
 conf.dimension = '2.5D';
-conf.ir.usehcomp = 0;
+conf.ir.usehcomp = false;
 hrtf = SOFAload('QU_KEMAR_anechoic_3m.sofa');
 % ir = ir_wfs(X,phi,xs,src,hrtf,conf);
 ir = ir_wfs([0 0 0],pi/2,[0 3 0],'ps',hrtf,conf);
@@ -515,11 +515,11 @@ becomes very noise as you can see in the figure).
 
 ```Matlab
 conf = SFS_config_example;
-conf.ir.usehcomp = 0;
-conf.wfs.usehpre = 0;
+conf.ir.usehcomp = false;
+conf.wfs.usehpre = false;
 irs = dummy_irs(conf);
 [ir1,x0] = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
-conf.wfs.usehpre = 1;
+conf.wfs.usehpre = true;
 conf.wfs.hprefhigh = aliasing_frequency(x0,conf);
 ir2 = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
 [a1,p,f] = easyfft(norm_signal(ir1(:,1)),conf);

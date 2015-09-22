@@ -22,15 +22,15 @@ support](https://github.com/sfstoolbox/sfs/releases/tag/1.2.0).
 
 ### Table of Contents
 
-**[Installation](#installation)**
-**[Requirements](#requirements)**
-**[Usage](#usage)**
-  [Secondary Sources](#secondary-sources)
-  [Simulate Monochromatic Sound Fields](#simulate-monochromatic-sound-fields)
-  [Simulate Time Snapshots of Sound Fields](#simulate-time-snapshots-of-sound-fields)
-  [Make Binaural Simulations of Your Systems](#make-binaural-simulations-of-your-systems)
-  [Small helper functions](#small-helper-functions)
-  [Plotting with Matlab or gnuplot](#plotting-with-matlab-or-gnuplot)
+**[Installation](#installation)**  
+**[Requirements](#requirements)**  
+**[Usage](#usage)**  
+  [Secondary Sources](#secondary-sources)  
+  [Simulate Monochromatic Sound Fields](#simulate-monochromatic-sound-fields)  
+  [Simulate Time Snapshots of Sound Fields](#simulate-time-snapshots-of-sound-fields)  
+  [Make Binaural Simulations of Your Systems](#make-binaural-simulations-of-your-systems)  
+  [Small helper functions](#small-helper-functions)  
+  [Plotting with Matlab or gnuplot](#plotting-with-matlab-or-gnuplot)  
 **[Credits and License](#credits-and-license)**
 
 

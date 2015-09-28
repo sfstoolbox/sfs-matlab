@@ -63,8 +63,8 @@ if size(b,2)>1
     b=b';
 end
 if number_of_neighbours>size(A,2)
-    error(['%s: your number of neighbours is larger than the available ', ...
-        'points.'],upper(mfilename));
+    error(['%s: your number of neighbours to look for is larger than the ', ...
+        'available points.'],upper(mfilename));
 end
 
 

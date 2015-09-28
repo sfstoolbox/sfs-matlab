@@ -22,15 +22,15 @@ support](https://github.com/sfstoolbox/sfs/releases/tag/1.2.0).
 
 ### Table of Contents
 
-**[Installation](#installation)**
-**[Requirements](#requirements)**
-**[Usage](#usage)**
-  [Secondary Sources](#secondary-sources)
-  [Simulate Monochromatic Sound Fields](#simulate-monochromatic-sound-fields)
-  [Simulate Time Snapshots of Sound Fields](#simulate-time-snapshots-of-sound-fields)
-  [Make Binaural Simulations of Your Systems](#make-binaural-simulations-of-your-systems)
-  [Small helper functions](#small-helper-functions)
-  [Plotting with Matlab or gnuplot](#plotting-with-matlab-or-gnuplot)
+**[Installation](#installation)**  
+**[Requirements](#requirements)**  
+**[Usage](#usage)**  
+  [Secondary Sources](#secondary-sources)  
+  [Simulate Monochromatic Sound Fields](#simulate-monochromatic-sound-fields)  
+  [Simulate Time Snapshots of Sound Fields](#simulate-time-snapshots-of-sound-fields)  
+  [Make Binaural Simulations of Your Systems](#make-binaural-simulations-of-your-systems)  
+  [Small helper functions](#small-helper-functions)  
+  [Plotting with Matlab or gnuplot](#plotting-with-matlab-or-gnuplot)  
 **[Credits and License](#credits-and-license)**
 
 
@@ -316,7 +316,7 @@ have to explicitly say if we want also plot the results, by
 ```Matlab
 conf = SFS_config_example;
 conf.dimension = '2.5D';
-conf.plot.useplot = 1;
+conf.plot.useplot = true;
 % [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
 [P,x,y,z,x0] = sound_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf);
 %print_png('img/sound_field_wfs_25d.png');
@@ -456,13 +456,17 @@ conf.plot.colormap = 'jet'; % Matlab rainbow color map
 If you have a set of head-related transfer functions (HRTFs) you can simulate
 the ear signals reaching a listener sitting at a given point in the listening
 area for a specified WFS or NFC-HOA system.
-You can even download a set of HRTFs, which will just work with the Toolbox at
-http://dev.qu.tu-berlin.de/projects/measurements/wiki/2010-11-kemar-anechoic
+You can even download the example [QU_KEMAR_anechoic_3m.sofa](https://github.com/sfstoolbox/data/raw/master/HRTFs/QU_KEMAR_anechoic_3m.sofa)
+HRTF set, which will just work with the Toolbox and is used in the examples
+below.
 
-In order to easily use different HRIR sets the toolbox incorporates the
-[SOFA file format](http://sofaconventions.org)
-for HRIRs and BRIRs. A large set of different impulse responses is now available
-in these format, see for example:
+In order to easily use different HRTF sets the toolbox uses the
+[SOFA file format](http://sofaconventions.org). In order to use it you have
+to install the SOFA API for
+Matlab/Octave from https://github.com/sofacoustics/API_MO and run `SOFAstart` before
+you can use it inside the SFS Toolbox.
+If you are looking for different HRTFs, a large set of different impulse
+responses is now available in these format, see for example:
 http://www.sofaconventions.org/mediawiki/index.php/Files.
 
 The files dealing with the binaural simulations are in the folder
@@ -494,7 +498,8 @@ conf.secondary_sources.size = 3;
 conf.secondary_sources.number = 56;
 conf.secondary_sources.geometry = 'circle';
 conf.dimension = '2.5D';
-hrtf = SOFAload('QU_KEMAR_anechoic_3m.sofa',conf);
+conf.ir.usehcomp = false;
+hrtf = SOFAload('QU_KEMAR_anechoic_3m.sofa');
 % ir = ir_wfs(X,phi,xs,src,hrtf,conf);
 ir = ir_wfs([0 0 0],pi/2,[0 3 0],'ps',hrtf,conf);
 nsig = randn(44100,1);
@@ -510,11 +515,11 @@ becomes very noise as you can see in the figure).
 
 ```Matlab
 conf = SFS_config_example;
-conf.ir.usehcomp = 0;
-conf.wfs.usehpre = 0;
-irs = dummy_irs;
+conf.ir.usehcomp = false;
+conf.wfs.usehpre = false;
+irs = dummy_irs(conf);
 [ir1,x0] = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
-conf.wfs.usehpre = 1;
+conf.wfs.usehpre = true;
 conf.wfs.hprefhigh = aliasing_frequency(x0,conf);
 ir2 = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
 [a1,p,f] = easyfft(norm_signal(ir1(:,1)),conf);

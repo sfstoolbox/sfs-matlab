@@ -1,4 +1,5 @@
 clear variables
+close all
 
 conf = SFS_config_example;
 conf.plot.usedb = true;
@@ -7,19 +8,22 @@ conf.usenormalisation = false;
 
 conf.secondary_sources.geometry = 'linear';
 conf.secondary_sources.size = 100;
-conf.secondary_sources.number = 5000;
-conf.secondary_sources.center = [0,1,0];
+conf.secondary_sources.number = 10000;
+conf.secondary_sources.center = [0,5,0];
 
 conf.usetapwin = false;
+conf.tapwinlen = 0.5;
 
 %%
-f = 5000;  % temporal frequency
-positions = { [0,3,0], [0, -1, 0] };  % source positions
-sources = {'ps', 'pw'};
+f = 2000;  % temporal frequency
+positions = { [0,7,0], [0, -1, 0], [0,3,0,0,-1,0] };  % source positions
+sources = {'ps', 'pw', 'fs'};
+gtsources = {'ps', 'pw', 'ps'};
 
-for idx=1:2
+for idx=1:length(positions)
   xs = positions{idx};
   src = sources{idx};
+  gt = gtsources{idx};
   
   x0 = secondary_source_positions(conf);
   x0 = secondary_source_selection(x0, xs, src);
@@ -34,7 +38,7 @@ for idx=1:2
     Y = 0;
     Z = 0;
 
-    [Pgt,x] = sound_field_mono(X,Y,Z,[xs,0,-1,0,1], src, 1, f, conf);
+    [Pgt,x] = sound_field_mono(X,Y,Z,[xs(1:3),0,-1,0,1], gt, 1, f, conf);
     Pwfs = sound_field_mono(X,Y,Z,x0, 'ps', D0, f, conf);
 
     figure;
@@ -48,7 +52,7 @@ for idx=1:2
     Y = [-1,3];
     Z = 0;  
 
-    [Pgt,~,y] = sound_field_mono(X,Y,Z,[xs,0,-1,0,1], src, 1, f, conf);
+    [Pgt,~,y] = sound_field_mono(X,Y,Z,[xs(1:3),0,-1,0,1], gt, 1, f, conf);
     Pwfs = sound_field_mono(X,Y,Z,x0, 'ps', D0, f, conf);
 
     subplot(1,2,2)

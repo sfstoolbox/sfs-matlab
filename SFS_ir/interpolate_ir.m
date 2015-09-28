@@ -77,7 +77,7 @@ ir_new = ir(1,:,:);
 x0_new = xs;
 % Check if we have found directly the desired point or have to interpolate
 % between different impulse responses
-if norm(x0(:,1)-xs)<prec || ~useinterpolation
+if norm(x0(:,1)-xs)<prec || ~useinterpolation || size(x0,2)==1
     % Return the first nearest neighbour
     x0_new = x0(:,1);
     return;

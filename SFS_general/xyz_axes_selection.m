@@ -18,7 +18,7 @@ function [dimensions,x1,x2,x3] = xyz_axes_selection(x,y,z)
 %   z-axis if we have any activity on this axis or if it is a singleton axis.
 %   In addition the first non-singleton axis are returned.
 %
-%   See also: norm_wavefield, plot_wavefield, xyz_axes, xyz_grid
+%   See also: norm_wavefield, plot_wavefield, xyz_axes, xyz_grid, is_grid_custom
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -57,12 +57,12 @@ function [dimensions,x1,x2,x3] = xyz_axes_selection(x,y,z)
 nargmin = 3;
 nargmax = 3;
 narginchk(nargmin,nargmax);
-isargmatrix(x,y,z);
+isargnumeric(x,y,z);
 
 
 %% ===== Computation =====================================================
-dimensions = [1 1 1];
 % Check if we have any inactive dimensions
+dimensions = [1 1 1];
 if x(1)==x(end)
     dimensions(1) = 0;
 end

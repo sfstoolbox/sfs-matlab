@@ -4,9 +4,9 @@ function movie_sound_field_imp_wfs(X,Y,Z,xs,src,outfile,conf)
 %   Usage: movie_sound_field_imp_wfs(X,Y,Z,xs,src,outfile,[conf])
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax] 
-%       Y           - y-axis / m; single value or [ymin,ymax]
-%       Z           - z-axis / m; single value or [zmin,zmax]
+%       X           - x-axis / m; single value or [xmin,xmax] or nD-array 
+%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
+%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       xs          - position of point source / m
 %       src         - sourcetype of the virtual source:
 %                         'pw' - plane wave (xs, ys are the direction of the

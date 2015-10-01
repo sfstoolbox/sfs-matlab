@@ -4,9 +4,9 @@ function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 %   Usage: [p,x,y,z] = sound_field_imp(X,Y,Z,x0,src,d,t,[conf])
 %
 %   Input options:
-%       X           - x-axis / m; single value or [xmin,xmax]
-%       Y           - y-axis / m; single value or [ymin,ymax]
-%       Z           - z-axis / m; single value or [zmin,zmax]
+%       X           - x-axis / m; single value or [xmin,xmax] or nD-array
+%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
+%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       x0          - positions of secondary sources / m
 %       src         - source model of the Green's function. Valid models are:
 %                       'ps' - point source

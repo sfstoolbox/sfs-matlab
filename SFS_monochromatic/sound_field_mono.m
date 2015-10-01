@@ -189,6 +189,6 @@ if nargout>2, varargout{3}=y; end
 if nargout>3, varargout{4}=z; end
 
 % ===== Plotting =========================================================
-if (nargout==0 || useplot) && ~customGrid
+if (nargout==0 || useplot)
     plot_sound_field(P,x,y,z,x0,conf);
 end

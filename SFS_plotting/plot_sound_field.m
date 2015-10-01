@@ -55,8 +55,8 @@ function plot_sound_field(P,x,y,z,x0,conf)
 nargmin = 4;
 nargmax = 6;
 narginchk(nargmin,nargmax);
-isargvector(x,y,z);
-isargnumeric(P);
+%isargvector(x,y,z);
+isargnumeric(x,y,z,P);
 if nargin==nargmax-1
     if isstruct(x0)
         conf = x0;
@@ -94,6 +94,8 @@ p.file = conf.plot.file;
 
 
 %% ===== Calculation =====================================================
+% Check if the plot should be done with a custom grid
+usecustomgrid = numel(x) > 2 || numel(y) > 2 || numel(z) > 2;
 % Handle the given axis and check which should be plotted
 [dimensions,x1,x2] = xyz_axes_selection(x,y,z);
 if all(dimensions)
@@ -182,12 +184,28 @@ if sum(dimensions)==1 % singleton dimension
     end
 else
 
-    if p.usedb
-        % Plot the amplitude of the sound field in dB
-        imagesc(x1,x2,P_dB,p.caxis);
-    else
-        % Plot the sound field
-        imagesc(x1,x2,real(P),p.caxis);
+    if p.usedb % plot the amplitude of the sound field in dB
+        if usecustomgrid % non-regular grid
+            if length(p.caxis)==2
+                scatter(x1(:),x2(:),[], ...
+                        min(p.caxis(2), max(p.caxis(1),P_dB(:))));
+            else
+                scatter(x1(:),x2(:),[],P_dB(:));
+            end
+        else % regular grid
+            imagesc(x1,x2,P_dB,p.caxis);
+        end
+    else % plot the sound field
+        if usecustomgrid % non-regular grid
+            if length(p.caxis)==2
+                scatter(x1(:),x2(:),[], ...
+                        min(p.caxis(2), max(p.caxis(1),real(P(:)))));
+            else
+                scatter(x1(:),x2(:),[],real(P(:)));
+            end
+        else % regular grid
+            imagesc(x1,x2,real(P),p.caxis);
+        end
     end
 
     % Add color bar

@@ -89,29 +89,7 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 nargmin = 7;
 nargmax = 8;
 narginchk(nargmin,nargmax);
-
 isargnumeric(X,Y,Z);
-% unique index encoding which dimension is an nd-array
-customGrid = (numel(X) > 2) + 2*(numel(Y) > 2) + 4*(numel(Z) > 2);
-switch customGrid
-    case 1
-        isargscalar(Y,Z);
-    case 2
-        isargscalar(X,Z);
-    case 3
-        isargequalsize(X,Y); isargscalar(Z);
-    case 4
-        isargscalar(X,Y);
-    case 5
-        isargequalsize(X,Z); isargscalar(Y);
-    case 6
-        isargequalsize(Y,Z); isargscalar(X);
-    case 7
-        isargequalsize(X,Y,Z);
-    otherwise
-        isargvector(X,Y,Z);
-end
-
 isargvector(D);
 isargsecondarysource(x0);
 isargpositivescalar(f);
@@ -134,35 +112,33 @@ useplot = conf.plot.useplot;
 showprogress = conf.showprogress;
 
 %% ===== Computation ====================================================
+% Create a x-y-z-grid
+usecustomgrid = is_grid_custom(X,Y,Z);
+[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
 
-if customGrid
-    % just copy everything
-    xx = X; yy = Y; zz = Z;
-    x = X;   y = Y;  z = Z;
-    P = zeros(size(xx));
+% Check what are the active axes to create an empty sound field with the
+% correct size
+[~,x1,x2,x3]  = xyz_axes_selection(x,y,z);
+% Initialize empty sound field
+if usecustomgrid
+    P = zeros(size(x1));
 else
-    % Create a x-y-z-grid
-    [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
-    % Check what are the active axes to create an empty sound field with the
-    % correct size
-    [~,x1,x2,x3]  = xyz_axes_selection(x,y,z);
-    % Initialize empty sound field
     P = squeeze(zeros(length(x3),length(x2),length(x1)));
 end
 
 % Integration over secondary source positions
 for ii = 1:size(x0,1)
-    
+
     % progress bar
     if showprogress, progress_bar(ii,size(x0,1)); end
-    
+
     % ====================================================================
     % Secondary source model G(x-x0,omega)
     % This is the model for the secondary sources we apply.
     % The exact function is given by the dimensionality of the problem, e.g. a
     % point source for 3D
     G = greens_function_mono(xx,yy,zz,x0(ii,1:3),src,f,conf);
-    
+
     % ====================================================================
     % Integration
     %              /
@@ -174,10 +150,10 @@ for ii = 1:size(x0,1)
     % example a tapering window for WFS or a weighting of the sources for
     % integration on a sphere.
     P = P + D(ii) .* G .* x0(ii,7);
-    
+
 end
 
-if ~customGrid
+if ~usecustomgrid
     % === Scale signal (at xref) ===
     P = norm_sound_field_at_xref(P,x,y,z,conf);
 end

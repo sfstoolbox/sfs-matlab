@@ -120,7 +120,7 @@ end
 delay = delay-min(delay);
 % Append zeros at the end of the driving function. This is necessary, because
 % the delayline function cuts into the end of the driving signals in order to
-% delay them. NOTE: this is can be changed by the conf.N setting
+% delay them. NOTE: this can be changed by the conf.N setting
 d_proto = repmat([row_vector(pulse) zeros(1,N-length(pulse))]',1,size(x0,1));
 % Shift and weight prototype driving function
 d = delayline(d_proto,delay*fs,weight,conf);

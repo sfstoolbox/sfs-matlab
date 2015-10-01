@@ -1,21 +1,4 @@
-function irs = order_irs_fields(irs)
-%ORDER_IRS_FIELDS orders the fields in irs according to the new_irs reference
-%
-%   Usage: irs = order_irs_fields(irs)
-%
-%   Input options:
-%       irs -   irs struct
-%
-%   Output options
-%       irs - irs struct with the fields in the order as in new_irs()
-%
-%   ORDER_IRS_FIELDS(irs) reorders the fields in the given irs according to the
-%   order given in the new_irs function, which is our reference implementation
-%   for the irs format. If the given irs struct contains more fields, the
-%   additional fields will be appended at the end of the struct in the order
-%   given in the original struct.
-%
-%   See also: new_irs, check_irs, IR_format.txt
+function [hpreflow, hprefhigh] = localwfs_findhpref(X, phi, xs, src, conf)
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -49,52 +32,77 @@ function irs = order_irs_fields(irs)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
-
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
-nargmax = 1;
+nargmin = 4;
+nargmax = 5;
 narginchk(nargmin,nargmax);
-% Disable the ordering warning, becuase we wanted to reorder the entries
-warning('off','SFS:irs_fields_order');
-check_irs(irs);
-warning('on','SFS:irs_fields_order');
-
-
-%% ===== Computation =====================================================
-% Get the reference implementation of the irs format and reorder the fields of
-% the given irs according to the reference implementation.
-[ref_irs,opt_fields] = new_irs();
-% Get fields
-ref_fields = fieldnames(ref_irs);
-% Get the fields for the given irs
-fields = fieldnames(irs);
-% If the number of fields is identical sort directly
-if length(ref_fields)==length(fields)
-    irs = orderfields(irs,ref_fields);
+if nargin<nargmax
+    conf = SFS_config;
 else
-    % Remove unneeded optional fields from the reference
-    idx = [];
-    for ii = 1:length(ref_fields)
-        if ~isfield(irs,ref_fields{ii}) && strcmp(opt_fields,ref_fields{ii})
-            idx = [idx ii];
-        end
-    end
-    ref_fields(idx) = [];
-    % Get the indices of the positions of the ref_fields in the given irs
-    idx = [];
-    for ii = 1:length(ref_fields)
-        for jj = 1:length(fields)
-            if strcmp(fields{jj},ref_fields{ii})
-                idx = [idx,jj];
-            end
-        end
-    end
-    % Get the indices for additional fields
-    for jj = 1:length(fields)
-        if ~any(idx==jj)
-            idx = [idx,jj];
-        end
-    end
-    sorted_fields = fields(idx);
-    irs = orderfields(irs,sorted_fields);
+    isargstruct(conf);
 end
+
+if conf.debug
+    isargposition(X);
+    isargxs(xs);
+    isargscalar(phi);
+    isargchar(src);
+end
+
+%% ===== Configuration ==================================================
+conf.plot.useplot = false;  % disable plotting in easyfft
+conf.ir.usehcomp = false;
+conf.wfs.usehpre = false;     % no prefilter
+conf.localsfs.wfs = conf.wfs;
+%% ===== Variables ======================================================
+N = conf.N;
+irs = dummy_irs(N);         % Impulse responses
+fs = conf.fs;               % Sampling rate
+dimension = conf.dimension; % dimensionality
+
+%% ===== Computation ====================================================
+% Compute impulse response/amplitude spectrum without prefilter
+ir = ir_localwfs(X, phi, xs, src, irs, conf);
+[H,~,f]=easyfft(ir(:,1),conf);
+
+H = H./H(1);  % Normalize amplitude spectrum with H(f=0Hz)
+
+% Model of local WFS spectrum without prefilter:
+%   ^
+% 1_| ______flow        
+%   |       \          
+%   |        \   
+%   |         \_______
+%   |          fhigh
+%   -------------------------> f
+
+if strcmp('2.5D',dimension)  
+    % Expected slope: 6dB per frequency-doubling
+    % Find 6dB cut-off frequency
+    flowidx = find(H <= 1/2, 1, 'first');
+    hpreflow = f(flowidx)/2;
+
+elseif strcmp('3D',dimension) || strcmp('2D',dimension)
+    % Expected slope: 12dB per frequency-doubling
+    % Find 12dB cut-off frequency 
+    flowidx = find(H <= 1/4, 1, 'first');
+    hpreflow = f(flowidx)/4;  
+    
+else
+    error('%s: %s is not a valid conf.dimension entry',upper(mfilename));
+end
+
+% approximated slope beginning at hpreflow
+Hslope = hpreflow./f(flowidx:end);
+% mean of H(f) evaluated from f to fs/2
+Hmean = cumsum(H(end:-1:flowidx));  % cumulative sum
+Hmean = Hmean./(1:length(Hmean)).';  % cumulative mean
+Hmean = fliplr(Hmean);
+% fhighidx is the frequency where both functions intersect the first time
+fhighidx = flowidx - 1 + find( Hslope <= Hmean, 1, 'first');
+
+if isempty(fhighidx)
+  hprefhigh = fs/2;
+else
+  hprefhigh = f(fhighidx);
+end 

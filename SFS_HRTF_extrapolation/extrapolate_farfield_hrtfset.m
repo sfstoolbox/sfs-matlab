@@ -1,16 +1,16 @@
-function irs_pw = extrapolate_farfield_hrtfset(irs,conf)
+function sofa_pw = extrapolate_farfield_hrtfset(sofa,conf)
 %EXTRAPOLATE_FARFIELD_HRTFSET far-field extrapolation of a given HRTF dataset
 %
-%   Usage: irs = extrapolate_farfield_hrtfset(irs,[conf])
+%   Usage: sofa = extrapolate_farfield_hrtfset(sofa,[conf])
 %
 %   Input parameters:
-%       irs     - IR data set for the virtual secondary sources
+%       sofa    - IR data set for the virtual secondary sources
 %       conf    - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       irs     - IR data set extra polated to conation plane wave IRs
+%       sofa    - IR data set extra polated to conation plane wave IRs
 %
-%   EXTRAPOLATE_FARFIELD_HRTFSET(IRS) generates a far-field extrapolated set of
+%   EXTRAPOLATE_FARFIELD_HRTFSET(SOFA) generates a far-field extrapolated set of
 %   impulse responses, using the given irs set. Far-field means that the
 %   resulting impulse responses are plane waves. The extrapolation is done via
 %   WFS.
@@ -59,38 +59,33 @@ function irs_pw = extrapolate_farfield_hrtfset(irs,conf)
 nargmin = 1;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-check_irs(irs);
 if nargin<nargmax
     conf = SFS_config;
 else
     isargstruct(conf);
 end
+isargstruct(sofa);
 
 
 %% ===== Configuration ===================================================
 fs = conf.fs;
 dimension = conf.dimension;
-N = size(irs.left,1);
 showprogress = conf.showprogress;
 conf.ir.usehcomp = false;
 
 
 %% ===== Variables ======================================================
-nls = length(irs.apparent_azimuth);
-if length(irs.distance)==1
-    R = repmat(irs.distance,nls,1);
-else
-    R = irs.distance';
-end
-phi = irs.apparent_azimuth';
-theta = irs.apparent_elevation';
+[nls,~,N] = size(sofa.Data.IR);
+APV = SOFAcalculateAPV(sofa);
+phi = rad(APV(:,1));
+theta = rad(APV(:,2));
+R = APV(:,3);
 conf.secondary_sources.number = nls;
-conf.secondary_sources.x0 = zeros(nls,7);
 [conf.secondary_sources.x0(:,1), ...
  conf.secondary_sources.x0(:,2), ...
  conf.secondary_sources.x0(:,3)] = sph2cart(phi,theta,R);
 conf.secondary_sources.x0(:,4:6) = ...
-    direction_vector(conf.secondary_sources.x0(:,1:3),repmat(conf.xref,nls,1));
+    direction_vector(conf.secondary_sources.x0,repmat(conf.xref,nls,1));
 % Weights
 if strcmp('3D',dimension)
     % Use rectangular grid to get a first approximation of the grid weights
@@ -102,8 +97,7 @@ else
     conf.secondary_sources.x0(:,7) = ones(nls,1);
 end
 % Check if we have a 2D or 3D secondary source setup
-if any(irs.apparent_elevation-irs.apparent_elevation(1)) && ...
-    any(irs.apparent_azimuth-irs.apparent_azimuth(1))
+if any(phi-phi(1)>eps('single')) && any(theta-theta(1)>eps('single'))
     % 3D case
     conf.usetapwin = false;
     if ~strcmp('3D',dimension)
@@ -119,9 +113,9 @@ end
 if strcmp('2.5D',dimension)
     % Apply a amplitude correction, due to 2.5D. This will result in a correct
     % reproduced ILD in the resulting impulse responses (see, Spors 2011)
-    amplitude_correction = -1.7 * sin(irs.apparent_azimuth);
+    amplitude_correction = -1.7 * sin(phi);
 else
-    amplitude_correction = zeros(size(irs.apparent_azimuth));
+    amplitude_correction = zeros(nls,1);
 end
 
 
@@ -132,20 +126,26 @@ conf.wfs.hpreflow = 50;
 conf.wfs.hprefhigh = aliasing_frequency(x0_all,conf);
 
 % Initialize new irs set
-irs_pw = irs;
-irs_pw.description = 'Extrapolated HRTF set containing plane waves';
-irs_pw.left = zeros(N,nls);
-irs_pw.right = zeros(N,nls);
-irs_pw.distance = Inf;
-
+sofa_pw = sofa;
+sofa_pw.GLOBAL_Comment = 'Extrapolated HRTF set containing plane waves';
+sofa_pw.Data.IR = zeros(nls,2,N);
+sofa_pw.SourcePosition = [Inf 0 0];
 
 % Get all HRTFs for the secondary source positions
-ir_all = zeros(size(irs.left,1),2,nls);
+ir_all = zeros(nls,2,N);
+X = SOFAconvertCoordinates(sofa.ListenerPosition, ...
+                           sofa.ListenerPosition_Type, ...
+                           'cartesian');
+head_orientation = SOFAconvertCoordinates(sofa.ListenerView, ...
+                                          sofa.ListenerView_Type, ...
+                                          'spherical');
+head_orientation = rad(head_orientation(1,1:2));
 for ii=1:nls
-    ir_all(:,:,ii) = get_ir(irs,x0_all(ii,1:3),'cartesian',conf);
+    ir_all(ii,:,:) = get_ir(sofa,X,head_orientation, ...
+                            x0_all(ii,1:3),'cartesian',conf)';
 end
 
-% Generate a irs set for all given angles
+% Generate a impulse response set for all given angles
 for ii=1:nls
 
     % Show progress
@@ -157,7 +157,7 @@ for ii=1:nls
 
     % Calculate active virtual speakers
     [x0,idx] = secondary_source_selection(x0_all,xs,'pw');
-    ir = ir_all(:,:,idx);
+    ir = ir_all(idx,:,:);
     % Apply tapering window
     x0 = secondary_source_tapering(x0,conf);
 
@@ -170,13 +170,16 @@ for ii=1:nls
     % Delay in samples
     delay = delay.*fs;
     % Sum up contributions from individual virtual speakers
-    irs_pw.left(:,ii) = sum(delayline(squeeze(ir(:,1,:)),delay,weight,conf),2);
-    irs_pw.right(:,ii) = sum(delayline(squeeze(ir(:,2,:)),delay,weight,conf),2);
-    irs_pw.left(:,ii) = irs_pw.left(:,ii)/10^(amplitude_correction(ii)/20);
-    irs_pw.right(:,ii) = irs_pw.right(:,ii)/10^(-amplitude_correction(ii)/20);
+    for jj=1:size(x0,1)
+        % Delay and weight HRTFs
+        sofa_pw.Data.IR(ii,:,:) = squeeze(sofa_pw.Data.IR(ii,:,:)) + ...
+            delayline(squeeze(ir(jj,:,:))',delay(jj),weight(jj),conf)';
+    end
+    sofa_pw.Data.IR(ii,1,:) = sofa_pw.Data.IR(ii,1,:)/10^(amplitude_correction(ii)/20);
+    sofa_pw.Data.IR(ii,2,:) = sofa_pw.Data.IR(ii,2,:)/10^(-amplitude_correction(ii)/20);
 
 end
 
 %% ===== Pre-equalization ===============================================
-irs_pw.left = wfs_preequalization(irs_pw.left,conf);
-irs_pw.right = wfs_preequalization(irs_pw.right,conf);
+sofa_pw.Data.IR(:,1,:) = wfs_preequalization(squeeze(sofa_pw.Data.IR(:,1,:))',conf)';
+sofa_pw.Data.IR(:,2,:) = wfs_preequalization(squeeze(sofa_pw.Data.IR(:,2,:))',conf)';

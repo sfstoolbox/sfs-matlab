@@ -64,7 +64,6 @@ isargposition(X);
 isargsecondarysource(x0);
 isargmatrix(d);
 isargscalar(phi);
-check_irs(irs);
 if nargin<nargmax
     conf = SFS_config;
 end

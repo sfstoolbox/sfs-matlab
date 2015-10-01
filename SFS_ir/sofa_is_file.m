@@ -1,22 +1,20 @@
-function irs = irs_with_particular_elevation(irs,delta)
-%IRS_WITH_PARTICULAR_ELEVATION(irs,delta) returns an IRS set which only contains
-%data for one elevation
+function boolean = sofa_is_file(sofa)
+%SOFA_CHECK returns 1 for a sofa file, 0 for a sofa struct or an error otherwise
 %
-%   Usage: irs = irs_with_particular_elevation(irs,[delta])
+%   Usage: number = sofa_check(sofa)
 %
 %   Input parameters:
-%       irs     - IR data set
-%       delta   - elevation angle for the desired IR / rad
-%                 default: 0
+%       sofa    - sofa struct or file name
 %
 %   Output parameters:
-%       irs      - IRS for the given elevation
+%       number  - 1: sofa is a file
+%                 0: sofa is a struct
 %
-%   IRS_WITH_PARTICULAR_ELEVATION(irs,delta) returns a IRS set for the given
-%   angle delta, or by default the horizontal plane. Input should be an IRS-set
-%   with diffrent values for the elevation
+%   SOFA_CHECK(sofa) checks if the given sofa is a file or a struct. In the
+%   first case a 1 is returned, in the second case a 0. If none of both is true
+%   an error will be thrown.
 %
-%   See also: slice_irs, new_irs
+%   See also: sofa_get_header, sofa_get_data
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -53,17 +51,16 @@ function irs = irs_with_particular_elevation(irs,delta)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
-nargmax = 2;
+nargmax = 1;
 narginchk(nargmin,nargmax)
-check_irs(irs);
-if nargin==nargmax
-    isargscalar(delta);
+
+
+%% ===== Main ===========================================================
+if ~isstruct(sofa) && exist(sofa,'file')
+    boolean = true;
+elseif isstruct(sofa) && isfield(sofa,'GLOBAL_Conventions') && ...
+       strcmp('SOFA',sofa.GLOBAL_Conventions)
+    boolean = false;
 else
-    delta = 0;
+    error('%s: sofa has to be a file or a SOFA struct.',upper(mfilename));
 end
-
-
-%% ===== Computation ====================================================
-% Finding the entries belonging to delta and slice the irs
-idx = (( round(irs.apparent_elevation*10)==round(10*delta) ));
-irs = slice_irs(irs,idx);

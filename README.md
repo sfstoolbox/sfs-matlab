@@ -9,6 +9,17 @@ source (loudspeaker) setups, time snapshots of full band impulses emitted by the
 secondary source distributions, or even generate Binaural Room Scanning (BRS)
 stimuli sets in order to simulate WFS with the SoundScape Renderer (SSR).
 
+This documentation is all about its usage, if you are interested in the
+underlying mathematics you should have a look at its PDF documentation [Theory
+of Sound Field
+Synthesis](https://github.com/sfstoolbox/sfs-documentation/releases/latest).
+
+**Attention:** the master branch incorporates already
+[SOFA](http://sofaconventions.org/) as file format for HRTFs which replaces the
+old irs file format formerly used by the SFS Toolbox. If you still need this
+you should download [the latest version with irs file
+support](https://github.com/sfstoolbox/sfs/releases/tag/1.2.0).
+
 ### Table of Contents
 
 **[Installation](#installation)**  
@@ -37,16 +48,16 @@ subpathes.
 Requirements
 ------------
 
-**Matlab**  
+**Matlab**
 You need Matlab version 2011b or newer to run the Toolbox.
 On older version the Toolbox should also work, but you need to add
 [narginchk.m](http://gist.github.com/hagenw/5642886) to the
 <code>SFS_helper</code>
 directory.
 
-**Octave**  
-You need Octave version 3.6 or newer to run the Toolbox. In addition, 
-you will need the following additional packages from 
+**Octave**
+You need Octave version 3.6 or newer to run the Toolbox. In addition,
+you will need the following additional packages from
 [octave-forge](http://octave.sourceforge.net/):
 * audio (e.g. for wavwrite)
 * signal (e.g. for firls)
@@ -118,11 +129,35 @@ axis([-2 2 -2 2]);
 
 ![Image](doc/img/secondary_sources_box.png)
 
+#### Box Shaped Array with Rounded Edges
+
+<code>conf.secondary_sources.edge_radius</code> defines the bending radius of
+the corners. It can be chosen in a range between <code>0.0</code> and the half
+of <code>conf.secondary_sources.size</code>. While the prior represents a
+square box the latter yields a circle. Note that the
+square box behaves it little bit different than the Box Shaped Array
+since loudspeakers might also be place directly in the corners of the box.
+
+```Matlab
+conf = SFS_config_example;
+conf.secondary_sources.geometry = 'rounded-box';
+conf.secondary_sources.number = 84;
+conf.secondary_sources.corner_radius = 0.3;
+x0 = secondary_source_positions(conf);
+figure;
+figsize(540,404,'px');
+draw_loudspeakers(x0,conf);
+axis([-2 2 -2 2]);
+print_png('img/secondary_sources_rounded-box.png');
+```
+
+![Image](doc/img/secondary_sources_rounded-box.png)
+
 #### Spherical Array
 
 For a spherical array you need a grid to place the secondary sources on the
 sphere. At the moment we provide grids with the Toolbox, that can be find here:
-http://github.com/sfstoolbox/data/tree/master/spherical_grids  
+http://github.com/sfstoolbox/data/tree/master/spherical_grids
 You have to specify your desired grid, for example
 <code>conf.secondary_sources.grid = 'equally_spaced_points'</code>. The
 <code>secondary_source_positions()</code> functions will then automatically
@@ -150,10 +185,10 @@ axis([-2 2 -2 2]);
 
 #### Arbitrary Shaped Arrays
 
-You can create arbitrarily shaped arrays by settings the values of the single
-loudspeaker directly in the <code>conf.secondary_sources.x0</code> matrix, which
-has to be empty if you want to use one of the above predefined shapes. The rows
-of the matrix contain the single loudspeakers and the six columns are
+You can create arbitrarily shaped arrays by setting
+<code>conf.secondary_sources.geometry</code> to 'custom' and define the values
+of the single loudspeaker directly in the <code>conf.secondary_sources.x0</code>
+matrix. The rows of the matrix contain the single loudspeakers and the six columns are
 <code>[x y z nx ny nz w]</code>, the position and direction and weight of the
 single loudspeakers. The weight <code>w</code> is a factor the driving function
 of this particular loudspeaker is multiplied with in a function that calculates
@@ -192,6 +227,7 @@ x04 = [(R*x0(:,1:3)')' (R*x0(:,4:6)')'];
 x04(:,1) = x04(:,1) + ones(size(x0,1),1)*1.5;
 x04(:,7) = x0(:,7);
 % combine everything
+conf.secondary_sources.geometry = 'custom';
 conf.secondary_sources.x0 = [x01; x02; x03; x04];
 % if we gave the conf.x0 to the secondary_source_positions function it will
 % simply return the defined x0 matrix
@@ -228,7 +264,7 @@ axis([-2 2 -2.5 2.5]);
 With the files in <code>SFS_monochromatic</code> you can simulate a
 monochromatic sound field in a specified area for different techniques like WFS
 and NFC-HOA. The area can be a 3D cube, a 2D plane, a line or only one point.
-This depends on the specification of <code>X,Y,Z</code>. For example 
+This depends on the specification of <code>X,Y,Z</code>. For example
 <code>[-2 2],[-2 2],[-2 2]</code> will be a 3D cube;
 <code>[-2 2],0,[-2 2]</code> the xz-plane; <code>[-2 2],0,0</code> a line along
 the x-axis; <code>3,2,1</code> a single point.
@@ -280,7 +316,7 @@ have to explicitly say if we want also plot the results, by
 ```Matlab
 conf = SFS_config_example;
 conf.dimension = '2.5D';
-conf.plot.useplot = 1;
+conf.plot.useplot = true;
 % [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
 [P,x,y,z,x0] = sound_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf);
 %print_png('img/sound_field_wfs_25d.png');
@@ -379,7 +415,7 @@ sound_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800,conf)
 With the files in <code>SFS_time_domain</code> you can simulate snapshots in
 time of an impulse originating from your WFS or NFC-HOA system.
 
-In the following we will create a snapshot in time after 200 samples for a broadband 
+In the following we will create a snapshot in time after 200 samples for a broadband
 virtual point source placed at (0 2 0) m for 2.5D NFC-HOA.
 
 ```Matlab
@@ -398,7 +434,7 @@ true;</code>. In this case the default color map is changed and a color bar
 is plotted in the figure. For none dB plots no color bar is shown in the plots.
 In these cases the color coding goes always from -1 to 1, with clipping of
 larger values.
-You could change the color 
+You could change the color
 
 ```Matlab
 conf.plot.usedb = true;
@@ -420,16 +456,18 @@ conf.plot.colormap = 'jet'; % Matlab rainbow color map
 If you have a set of head-related transfer functions (HRTFs) you can simulate
 the ear signals reaching a listener sitting at a given point in the listening
 area for a specified WFS or NFC-HOA system.
-You can even download a set of HRTFs, which will just work with the Toolbox at 
-http://dev.qu.tu-berlin.de/projects/measurements/wiki/2010-11-kemar-anechoic
+You can even download the example [QU_KEMAR_anechoic_3m.sofa](https://github.com/sfstoolbox/data/raw/master/HRTFs/QU_KEMAR_anechoic_3m.sofa)
+HRTF set, which will just work with the Toolbox and is used in the examples
+below.
 
-In order to easily use different HRIR sets the toolbox incorporates its own
-[struct based file
-format](http://dev.qu.tu-berlin.de/projects/measurements/wiki/IRs_file_format)
-for HRIRs and BRIRs. The toolbox provides conversion functions for three other
-free available data sets (CIPIC,MIT,Oldenburg). In the future it will
-incorporate the newly advancing [SOFA HRTF file
-format](http://sourceforge.net/projects/sofacoustics).
+In order to easily use different HRTF sets the toolbox uses the
+[SOFA file format](http://sofaconventions.org). In order to use it you have
+to install the SOFA API for
+Matlab/Octave from https://github.com/sofacoustics/API_MO and run `SOFAstart` before
+you can use it inside the SFS Toolbox.
+If you are looking for different HRTFs, a large set of different impulse
+responses is now available in these format, see for example:
+http://www.sofaconventions.org/mediawiki/index.php/Files.
 
 The files dealing with the binaural simulations are in the folder
 <code>SFS_binaural_synthesis</code>. Files dealing with HRTFs are in the folder
@@ -444,8 +482,8 @@ with the impulse response by the <code>auralize_ir()</code> function.
 
 ```Matlab
 conf = SFS_config_example;
-irs = read_irs('QU_KEMAR_anechoic_3m.mat',conf);
-ir = get_ir(irs,[rad(30) 0 3],'spherical',conf);
+hrtf = SOFAload('QU_KEMAR_anechoic_3m.sofa');
+ir = get_ir(hrtf,[0 0 0],[0 0],[rad(30) 0 3],'spherical',conf);
 nsig = randn(44100,1);
 sig = auralize_ir(ir,nsig,1,conf);
 sound(sig,conf.fs);
@@ -460,9 +498,10 @@ conf.secondary_sources.size = 3;
 conf.secondary_sources.number = 56;
 conf.secondary_sources.geometry = 'circle';
 conf.dimension = '2.5D';
-irs = read_irs('QU_KEMAR_anechoic_3m.mat',conf);
-% ir = ir_wfs(X,phi,xs,src,irs,conf);
-ir = ir_wfs([0 0 0],pi/2,[0 3 0],'ps',irs,conf);
+conf.ir.usehcomp = false;
+hrtf = SOFAload('QU_KEMAR_anechoic_3m.sofa');
+% ir = ir_wfs(X,phi,xs,src,hrtf,conf);
+ir = ir_wfs([0 0 0],pi/2,[0 3 0],'ps',hrtf,conf);
 nsig = randn(44100,1);
 sig = auralize_ir(ir,nsig,1,conf);
 ```
@@ -476,11 +515,11 @@ becomes very noise as you can see in the figure).
 
 ```Matlab
 conf = SFS_config_example;
-conf.ir.usehcomp = 0;
-conf.wfs.usehpre = 0;
-irs = dummy_irs;
+conf.ir.usehcomp = false;
+conf.wfs.usehpre = false;
+irs = dummy_irs(conf);
 [ir1,x0] = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
-conf.wfs.usehpre = 1;
+conf.wfs.usehpre = true;
 conf.wfs.hprefhigh = aliasing_frequency(x0,conf);
 ir2 = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
 [a1,p,f] = easyfft(norm_signal(ir1(:,1)),conf);
@@ -564,22 +603,22 @@ this license.
 Website: http://github.com/sfstoolbox/sfs
 
 If you have questions, bug reports or feature requests, please use the [Issue
-Section on the website](https://github.com/sfstoolbox/sfs/issues) to report them. 
+Section on the website](https://github.com/sfstoolbox/sfs/issues) to report them.
 
-If you use the Toolbox for your publications please cite our AES Convention e-Brief:  
-H. Wierstorf, S. Spors - Sound Field Synthesis Toolbox.  
+If you use the Toolbox for your publications please cite our AES Convention e-Brief:
+H. Wierstorf, S. Spors - Sound Field Synthesis Toolbox.
 In the Proceedings of *132nd Convention of the
-Audio Engineering Society*, 2012  
+Audio Engineering Society*, 2012
 [ [pdf](http://audio.qu.tu-berlin.de/wp-content/uploads/publications/2012/wierstorf2012_SFS_toolbox_AES.pdf) ]
 [ [bibtex](doc/aes132_paper.bib) ]
 
-Copyright (c) 2010-2015  
-Quality & Usability Lab, together with  
-Assessment of IP-based Applications  
-Telekom Innovation Laboratories, TU Berlin  
-Ernst-Reuter-Platz 7, 10587 Berlin, Germany 
+Copyright (c) 2010-2015
+Quality & Usability Lab, together with
+Assessment of IP-based Applications
+Telekom Innovation Laboratories, TU Berlin
+Ernst-Reuter-Platz 7, 10587 Berlin, Germany
 
-Copyright (c) 2013-2015  
-Institut fuer Nachrichtentechnik  
-Universitaet Rostock  
+Copyright (c) 2013-2015
+Institut fuer Nachrichtentechnik
+Universitaet Rostock
 Richard-Wagner-Strasse 31, 18119 Rostock

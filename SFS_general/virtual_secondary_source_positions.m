@@ -84,11 +84,7 @@ end
 
 %% ===== Configuration ===================================================
 virtualconf = conf;
-virtualconf.secondary_sources.size     = conf.localsfs.vss.size;
-virtualconf.secondary_sources.center   = conf.localsfs.vss.center;
-virtualconf.secondary_sources.geometry = conf.localsfs.vss.geometry;
-virtualconf.secondary_sources.number   = conf.localsfs.vss.number;
-virtualconf.secondary_sources.grid     = conf.localsfs.vss.grid;
+virtualconf.secondary_sources = conf.localsfs.vss;
 
 geometry                    = conf.localsfs.vss.geometry;
 nls                         = conf.localsfs.vss.number;

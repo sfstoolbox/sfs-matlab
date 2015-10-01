@@ -1,17 +1,21 @@
-function save_irs(irs,outfile)
-%SAVE_IRS Save a HRIR/BRIR dataset
+function brs = sofa2brs(sofa)
+%SOFA2BRS converts a sofa file/struct to a brs set suitable for the SSR
 %
-%   Usage: save_irs(irs,irsfile)
+%   Usage: brs = sofa2brs(sofa)
 %
 %   Input parameters:
-%       irs     - irs struct
-%       irsfile - filename of irs mat file
+%       sofa    - sofa struct or file name
 %
-%   SAVE_IRS(irs,irsfile) saves a IR dataset as a struct containing the format
-%   specific fields. For a description of the mat format for the IR datasets,
-%   see IR_format.txt.
+%   Output parameters:
+%       brs     - brs data set
 %
-%   See also: read_irs, get_ir, intpol_ir, dummy_irs, new_irs
+%   SOFA2BRS(sofa) converts a the given sofa file or struct into a brs set
+%   suitable for th SoundScape Renderer. The brs data set is a matrix
+%   containing the channels for all directions. As the SoundScape Renderer is
+%   currently only working in the horizontal plane, only impulse responses from
+%   the sofa data set are used with an elevation of 0.
+%
+%   See also: sofa_get_header, sofa_get_data, SOFAcalculateAPV
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -47,16 +51,31 @@ function save_irs(irs,outfile)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
-nargmax = 2;
-narginchk(nargmin,nargmax);
-check_irs(irs);
-isargchar(outfile);
+nargmin = 1;
+nargmax = 1;
+narginchk(nargmin,nargmax)
 
 
-%% ===== Save IR file ===================================================
-
-% Save as mat file
-% If -v7 doesn't work use -v6, but note this won't use any compression of your
-% data
-save('-v7',outfile,'irs');
+%% ===== Main ===========================================================
+header = sofa_get_header(sofa);
+if ~strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
+    error('%s: this SOFA Convention is currently not supported.');
+end
+% Get available source positions relative to listener view
+x0 = SOFAcalculateAPV(header); % / [deg deg m]
+% Find elevation = 0
+idx = find(abs(x0(:,2))<=eps);
+if length(idx)==0
+    error(['%s: Your sofa file has no data for an elevation angle of 0deg.' ...
+        ' Other angles are not supported by the SoundScape Renderer.'], ...
+        upper(mfilename));
+end
+% Sort azimuth angle in ascending order
+[~,sort_idx] = sort(correct_azimuth(rad(x0(idx,1))));
+% Get corresponding impulse responses
+ir = sofa_get_data(sofa,idx(sort_idx));
+% Generate brs set
+brs = zeros(sofa.API.N,2*size(ir,1));
+for ii = 1:size(ir,1)
+    brs(:,ii*2-1:ii*2) = squeeze(ir(ii,:,:))';
+end

@@ -1,19 +1,28 @@
-function brs = irs2brs(irs)
-%IRS2BRS converts a irs data set to an brs set suitable for the SSR
+function B = interpolation(A,X,x)
+%INTPOLATION interpolates the given data A(X) at the point x
 %
-%   Usage: brs = irs2brs(irs)
+%   Usage: B = interpolation(A,X,x)
 %
 %   Input parameters:
-%       irs     - irs data set
+%       A       - matrix containing data as rows in the form [N M], where
+%                     M ... number of points X (2 or 3)
+%                     N ... samples of data A
+%       X       - matrix containing positions b as columns, at which A(X) is
+%                 given [D M]
+%                     M ... number of points X (2 or 3)
+%                     D ... dimension of space (1 or 2)
+%       x       - desired point at which A should be interpolated [D 1]
 %
 %   Output parameters:
-%       brs     - brs data set
+%       B       - interpolated data at point x [N 1]
 %
-%   IRS2BRS(irs) converts a irs data set into a brs set suitable for the
-%   SoundScape Renderer. The brs data set is a matrix containing the
-%   channels for all directions.
+%   INTERPOLATION(A,X,x) interpolates the data A given at two or three points X
+%   at the desired position x.
+%   Note that the given parameter are not checked if they have all the correct
+%   dimensions in order to save computational time, because this function could
+%   be called quiet often.
 %
-%   See also: set_wfs_25d
+%   See also: interpolate_ir, get_ir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -48,32 +57,37 @@ function brs = irs2brs(irs)
 %*****************************************************************************
 
 
-%% ===== Checking of input  parameters ==================================
-nargmin = 1;
-nargmax = 2;
-narginchk(nargmin,nargmax)
-if nargin==nargmax-1
-    conf = SFS_config;
+%% ===== Checking of input parameters ===================================
+% Disabled for time constraints
+%nargmin = 3;
+%nargmax = 3;
+%narginchk(nargmin,nargmax);
+
+
+%% ===== Computation ====================================================
+% --- 1D interpolation ---
+if size(A,2)==2
+    % Linear interpolation
+    B = A(:,1) + (A(:,2)-A(:,1)) * ...
+         norm(x-X(:,1)) / norm(X(:,2)-X(:,1));
+% --- 2D interpolation ---
+elseif size(A,2)==3
+    % Interpolation between three points (compare Vector Based Amplitude Panning)
+    %
+    %           X(:,ii) x
+    % w(ii) = ------------
+    %         |X(:,ii)||x|
+    %
+    % FIXME: this is not working if |X(:,ii)| or |x| = 0!
+    w = vector_product(X,repmat(x,[1 3]),1) ./ ...
+        (vector_norm(X,1)./norm(x));
+    % The interpolation with 3 points hasn't been checked yet, hence we are
+    % including a checking of the w parameters
+    if any(w<0)
+        error('%s: one of your interpolation weights is <0.',upper(mfilename));
+    end
+    % Calculate desired B with linear combination w(ii)
+    B = w(1)*A(:,1) + w(2)*A(:,2) + w(3)*A(:,3);
+else
+    error('%s: size(A,2) has to be 2 or 3.',upper(mfilename));
 end
-check_irs(irs);
-isargstruct(conf);
-
-
-%% ===== Main ===========================================================
-
-% Check if only one elevation angle is given
-if length(unique(irs.apparent_elevation))~=1
-    error(['%s: Your irs set has different elevation angles, which is',...
-        ' not supported by the SoundScape Renderer.'],upper(mfilename));
-end
-
-% TODO: check the order of angles
-%       I think the user have to check this by itself. Because the user
-%       could also be interested in a particular angle order
-
-for ii = 1:length(irs.apparent_azimuth)
-    brs(:,(ii-1)*2+1:ii*2) = [irs.left(:,ii) irs.right(:,ii)];
-end
-
-
-

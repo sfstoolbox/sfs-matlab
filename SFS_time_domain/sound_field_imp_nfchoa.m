@@ -68,7 +68,6 @@ function varargout = sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
 nargmin = 6;
 nargmax = 7;
 narginchk(nargmin,nargmax);
-isargvector(X,Y,Z);
 isargxs(xs);
 isargchar(src);
 isargscalar(t);

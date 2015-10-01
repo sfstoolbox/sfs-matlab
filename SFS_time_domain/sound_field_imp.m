@@ -74,7 +74,7 @@ function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 nargmin = 7;
 nargmax = 8;
 narginchk(nargmin,nargmax);
-isargvector(X,Y);
+isargnumeric(X,Y,Z);
 isargmatrix(x0,d);
 isargchar(src);
 isargscalar(t);
@@ -110,7 +110,9 @@ L = conf.secondary_sources.size;
 
 %% ===== Computation =====================================================
 % Spatial grid
+usecustomgrid = is_grid_custom(X,Y,Z);
 [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
+[~,x1,x2,x3] = xyz_axes_selection(x,y,z); % get active axes
 
 % === Reshaping of the driving signal ===
 %
@@ -139,7 +141,6 @@ d = d(end:-1:1,:);
 % First get the maximum distance of the listening area and convert it into time
 % samples, than compare it to the size of the secondary sources. If the size is
 % biger use this for padding zeros.
-[~,x1,x2,x3] = xyz_axes_selection(x,y,z); % get active axes
 max_distance_in_samples = ...
         round(max(norm([x(1) y(1) z(1)]-[x(end) y(end) z(end)])/c*fs,2*L/c*fs));
 
@@ -154,7 +155,11 @@ d = [d; zeros(max_distance_in_samples,size(d,2))];
 
 
 % Initialize empty sound field (dependent on the axes we want)
-p = squeeze(zeros(length(x3),length(x2),length(x1)));
+if usecustomgrid
+    p = zeros(size(x1));
+else
+    p = squeeze(zeros(length(x3),length(x2),length(x1)));
+end
 
 % Apply bandbass filter
 if usebandpass
@@ -194,10 +199,12 @@ for ii = 1:size(x0,1)
 
 end
 
-% === Checking of sound field ===
-check_sound_field(p,t);
-% Normalize field
-p = norm_sound_field(p,conf);
+if ~usecustomgrid
+    % === Checking of sound field ===
+    check_sound_field(p,t);
+    % Normalize field
+    p = norm_sound_field(p,conf);
+end
 
 % Return parameter
 if nargout>0, varargout{1}=p; end

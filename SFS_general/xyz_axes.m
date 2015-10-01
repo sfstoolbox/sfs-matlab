@@ -53,7 +53,6 @@ function [x,y,z] = xyz_axes(X,Y,Z,conf)
 nargmin = 3;
 nargmax = 4;
 narginchk(nargmin,nargmax);
-[X,Y,Z] = axis_vector(X,Y,Z);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -66,7 +65,8 @@ resolution = conf.resolution;
 
 
 %% ===== Computation =====================================================
-% Creating x-, y-, and z-axis
-x=linspace(X(1),X(2),resolution)';
-y=linspace(Y(1),Y(2),resolution)';
-z=linspace(Z(1),Z(2),resolution)';
+x = X; y = Y; z = Z;
+dimensions = xyz_axes_selection(X,Y,Z);
+if dimensions(1), x = linspace(x(1),x(2),resolution)'; end
+if dimensions(2), y = linspace(y(1),y(2),resolution)'; end
+if dimensions(3), z = linspace(z(1),z(2),resolution)'; end

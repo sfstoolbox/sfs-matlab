@@ -4,9 +4,9 @@ function varargout = sound_field_mono_sdm(X,Y,Z,xs,src,f,conf)
 %   Usage: [P,x,y,z,x0] = sound_field_mono_sdm(X,Y,Z,xs,src,f,[conf])
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax]
-%       Y           - y-axis / m; single value or [ymin,ymax]
-%       Z           - z-axis / m; single value or [zmin,zmax]
+%       X           - x-axis / m; single value or [xmin,xmax] or nD-array
+%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
+%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       xs          - position of virtual source / m
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the

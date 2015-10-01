@@ -4,9 +4,9 @@ function varargout = sound_field_mono_line_source(X,Y,Z,xs,varargin)
 %   Usage: [P,x,y,z] = sound_field_mono_line_source(X,Y,Z,xs,f,[conf])
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax]
-%       Y           - y-axis / m; single value or [ymin,ymax]
-%       Z           - z-axis / m; single value or [zmin,zmax]
+%       X           - x-axis / m; single value or [xmin,xmax] or nD-array
+%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
+%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       xs          - position of line source / m
 %       f           - monochromatic frequency / Hz
 %       conf        - optional configuration struct (see SFS_config)

@@ -56,7 +56,7 @@ function [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf)
 nargmin = 3;
 nargmax = 4;
 narginchk(nargmin,nargmax);
-isargvector(X,Y,Z);
+isargnumeric(X,Y,Z);
 if nargin<nargmax
     conf = SFS_config;
 else
@@ -65,32 +65,38 @@ end
 
 
 %% ===== Computation =====================================================
-% Creating x-, y-axis
-[x,y,z] = xyz_axes(X,Y,Z,conf);
-% Check which dimensions will be non singleton
-dimensions = xyz_axes_selection(x,y,z);
-% Create xyz-grid
-if all(dimensions)
-    % Create a 3D grid => size(xx)==[resolution resolution resolution]
-    [xx,yy,zz] = meshgrid(x,y,z);
-elseif dimensions(1) && dimensions(2)
-    % Create a 2D grid => size(xx)==[resolution resolution]
-    [xx,yy] = meshgrid(x,y);
-    zz = meshgrid(z,y);
-elseif dimensions(1) && dimensions(3)
-    [xx,zz] = meshgrid(x,z);
-    yy = meshgrid(y,z);
-elseif dimensions(2) && dimensions(3)
-    [yy,zz] = meshgrid(y,z);
-    xx = meshgrid(x,z);
-elseif any(dimensions)
-    % Create a 1D grid => size(xx)==[resolution 1]
-    xx = x;
-    yy = y;
-    zz = z;
+if is_grid_custom(X,Y,Z)
+    x = X; xx = X;
+    y = Y; yy = Y;
+    z = Z; zz = Z;
 else
-    % Create a 0D grid => size(xx)==[1 1]
-    xx = x(1);
-    yy = y(1);
-    zz = z(1);
+    % Creating axes
+    [x,y,z] = xyz_axes(X,Y,Z,conf);
+    % Check which dimensions will be non singleton
+    dimensions = xyz_axes_selection(x,y,z);
+    % Create xyz-grid
+    if all(dimensions)
+        % Create a 3D grid => size(xx)==[resolution resolution resolution]
+        [xx,yy,zz] = meshgrid(x,y,z);
+    elseif dimensions(1) && dimensions(2)
+        % Create a 2D grid => size(xx)==[resolution resolution]
+        [xx,yy] = meshgrid(x,y);
+        zz = z;
+    elseif dimensions(1) && dimensions(3)
+        [xx,zz] = meshgrid(x,z);
+        yy = y;
+    elseif dimensions(2) && dimensions(3)
+        [yy,zz] = meshgrid(y,z);
+        xx = x;
+    elseif any(dimensions)
+        % Create a 1D grid => size(xx)==[resolution 1]
+        xx = x;
+        yy = y;
+        zz = z;
+    else
+        % Create a 0D grid => size(xx)==[1 1]
+        xx = x(1);
+        yy = y(1);
+        zz = z(1);
+    end
 end

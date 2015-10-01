@@ -95,7 +95,7 @@ p.file = conf.plot.file;
 
 %% ===== Calculation =====================================================
 % Check if the plot should be done with a custom grid
-usecustomgrid = numel(x) > 2 || numel(y) > 2 || numel(z) > 2;
+usecustomgrid = is_grid_custom(x,y,z);
 % Handle the given axis and check which should be plotted
 [dimensions,x1,x2] = xyz_axes_selection(x,y,z);
 if all(dimensions)

@@ -96,6 +96,7 @@ p.file = conf.plot.file;
 %% ===== Calculation =====================================================
 % Check if the plot should be done with a custom grid
 usecustomgrid = is_grid_custom(x,y,z);
+
 % Handle the given axis and check which should be plotted
 [dimensions,x1,x2] = xyz_axes_selection(x,y,z);
 if all(dimensions)
@@ -125,14 +126,10 @@ else
     to_be_implemented(mfilename);
 end
 
-if(p.usedb)
-    % Check if we have any activity in the sound field
-    if max(abs(P(:)))~=0
-        % For the dB case scale the signal maximum to 0 dB
-        %P = P./max(abs(P(:)));
-    else
-        % If we have only zeros in the sound field set the field to eps to avoid
-        % problems with log(0).
+if p.usedb
+    % If we have only zeros in the sound field set the field to eps to avoid
+    % problems with log(0).
+    if max(abs(P(:)))==0
         P(:) = eps;
     end
     % Change default colormap to chromajs

@@ -1,4 +1,4 @@
-function P = norm_sound_field(P,conf)
+function P = norm_sound_field(P)
 %NORM_SOUND_FIELD normalizes the sound field to 1
 %
 %   Usage: P = norm_sound_field(P)

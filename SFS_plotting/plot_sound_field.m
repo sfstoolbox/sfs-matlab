@@ -122,6 +122,26 @@ end
 % Normalisation
 if p.usenormalisation
     % TODO: Find positions near secondary sources to exclude from normalisation
+    % If we have a regular grid, we have to create it in order to be searchable
+    %if min(size(x1))<2
+    %    [xx1,xx2] = meshgrid(x1,x2);
+    %else
+    %    xx1 = x1;
+    %    xx2 = x2;
+    %end
+    %xx1 = xx1(:);
+    %xx2 = xx2(:);
+    % Next steps:
+    % * create a matrix from xx1 and xx2
+    % * choose the corresponding dimensions from the loudspeakers using
+    %   dimensions (as is done in draw_loudspeakers()
+    % * find the n nearest neighbour points for every loudspeaker
+    % * remove thos points from P and look afterwards for its maximum
+    % * scale P by that maximum
+    % FIXME: I cannot remove the points completely from P, before putting it
+    % into norm_sound_field(), because those points will then not being scaled
+    % accordingly.
+    [C,idx] = findnearestneighbour(A,b,number_of_neighbours)
     P = norm_sound_field(P);
 end
 

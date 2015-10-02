@@ -81,8 +81,8 @@ t = round(linspace(-20,900,10*25));
 rn = sprintf('%04.0f',10000*rand);
 % Disable the empty sound field warning
 warning('off','SFS:check_sound_field');
-conf.plot.useplot = 0;
-conf.usenormalisation = 0;
+conf.plot.useplot = false;
+conf.plot.usenormalisation = false;
 % Simulate the time by different phase values
 for ii = 1:length(t)-1
     % Calculate sound field for the given phase

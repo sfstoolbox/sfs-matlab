@@ -77,8 +77,8 @@ isargstruct(conf);
 %% ===== Configuration ==================================================
 % Tmp dir
 tmpdir = conf.tmpdir;
-usenormalisation = conf.usenormalisation;
 % Plotting
+p.usenormalisation = conf.plot.usenormalisation;
 p.cmd = conf.plot.cmd;
 p.usedb = conf.plot.usedb;
 p.mode = conf.plot.mode;
@@ -166,7 +166,7 @@ figsize(p.size(1),p.size(2),p.size_unit);
 % Scale dB value if needed
 if p.usedb
     P_dB = 20*log10(abs(P));
-    if usenormalisation
+    if p.usenormalisation
         P_dB = P_dB - max(P_dB(:));
     end
 end

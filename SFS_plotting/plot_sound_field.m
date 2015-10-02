@@ -173,7 +173,7 @@ if sum(dimensions)==1 % 1D plot
     end
 else % 2D plot
     if is_grid_custom(x,y,z) % non-regular grid
-        scatter(x1(:),x2(:),[],min(p.caxis(2), max(p.caxis(1),P(:))));
+        scatter(x1(:),x2(:),[],min(p.caxis(2),max(p.caxis(1),P(:))),'filled');
     else % regular grid
         imagesc(x1,x2,P,p.caxis);
     end

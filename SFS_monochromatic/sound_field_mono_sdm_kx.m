@@ -170,9 +170,6 @@ for n=1:length(x)
     P(:,n) = sum ( Pkx .* repmat(exp(-1j*kx*x(n))',1,resolution),1 )';
 end
 
-% === Scale signal (at xref) ===
-P = norm_sound_field_at_xref(P,x,y,z,conf);
-
 %% ===== Plotting ========================================================
 if nargout==0 || useplot
     plot_sound_field(P,x,y,z,conf);

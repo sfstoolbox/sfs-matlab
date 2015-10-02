@@ -94,9 +94,6 @@ p.file = conf.plot.file;
 
 
 %% ===== Calculation =====================================================
-% Check if the plot should be done with a custom grid
-usecustomgrid = is_grid_custom(x,y,z);
-
 % Handle the given axis and check which should be plotted
 [dimensions,x1,x2] = xyz_axes_selection(x,y,z);
 if all(dimensions)
@@ -108,10 +105,6 @@ elseif ~any(dimensions)
     error(['%s: you have only one point in the sound field. ', ...
         'Omitting the plotting.'],upper(mfilename));
 elseif ~dimensions(1)
-    % FIXME: in order to work with gnuplot the label should be printed
-    % with the extra function, which can handle if the output should be
-    % LaTeX or something else
-    %str_xlabel = print_label('y','m',conf);
     p.xlabel = 'y / m';
     p.ylabel = 'z / m';
 elseif ~dimensions(2)
@@ -134,6 +127,10 @@ if p.usedb
     end
     % Change default colormap to chromajs
     conf.plot.colormap = 'chromajs';
+    % Calculate sound pressure level in dB
+    P = 20*log10(abs(P));
+else
+    P = real(P);
 end
 
 % Check if we should plot loudspeakers symbols
@@ -152,7 +149,6 @@ if p.caxis, else
     end
 end
 
-
 %% ===== Plotting ========================================================
 
 % Create a new figure
@@ -161,48 +157,26 @@ figure;
 figsize(p.size(1),p.size(2),p.size_unit);
 
 % Scale dB value if needed
-if p.usedb
-    P_dB = 20*log10(abs(P));
-    if p.usenormalisation
-        P_dB = P_dB - max(P_dB(:));
-    end
-end
+%if p.usedb
+%    if p.usenormalisation
+%        P_dB = P_dB - max(P_dB(:));
+%    end
+%end
 
 % Plotting
-if sum(dimensions)==1 % singleton dimension
+if sum(dimensions)==1 % 1D plot
+    plot(x1,P);
+    xlabel(p.xlabel);
     if p.usedb
-        plot(x1,P_dB);
-        xlabel(p.xlabel);
         ylabel('Amplitude / dB');
     else
-        plot(x1,real(P));
-        xlabel(p.xlabel);
         ylabel('Amplitude');
     end
-else
-
-    if p.usedb % plot the amplitude of the sound field in dB
-        if usecustomgrid % non-regular grid
-            if length(p.caxis)==2
-                scatter(x1(:),x2(:),[], ...
-                        min(p.caxis(2), max(p.caxis(1),P_dB(:))));
-            else
-                scatter(x1(:),x2(:),[],P_dB(:));
-            end
-        else % regular grid
-            imagesc(x1,x2,P_dB,p.caxis);
-        end
-    else % plot the sound field
-        if usecustomgrid % non-regular grid
-            if length(p.caxis)==2
-                scatter(x1(:),x2(:),[], ...
-                        min(p.caxis(2), max(p.caxis(1),real(P(:)))));
-            else
-                scatter(x1(:),x2(:),[],real(P(:)));
-            end
-        else % regular grid
-            imagesc(x1,x2,real(P),p.caxis);
-        end
+else % 2D plot
+    if is_grid_custom(x,y,z) % non-regular grid
+        scatter(x1(:),x2(:),[],min(p.caxis(2), max(p.caxis(1),P(:))));
+    else % regular grid
+        imagesc(x1,x2,P,p.caxis);
     end
 
     % Add color bar
@@ -218,7 +192,6 @@ else
     xlabel(p.xlabel);
     ylabel(p.ylabel);
     % Add loudspeaker to the plot
-    %x0(:,1:2) = x0(:,2:3);
     if p.loudspeakers % && dimensions(1) && dimensions(2)
         hold on;
         draw_loudspeakers(x0,dimensions,conf);

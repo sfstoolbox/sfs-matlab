@@ -1,19 +1,18 @@
 function P = norm_sound_field(P,conf)
 %NORM_SOUND_FIELD normalizes the sound field to 1
 %
-%   Usage: P = norm_sound_field(P,[conf])
+%   Usage: P = norm_sound_field(P)
 %
 %   Input options:
 %       P       - sound field
-%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output options:
 %       P       - normalized sound field
 %
-%   NORM_SOUND_FIELD(P,[conf]) normalizes the given sound field P to
+%   NORM_SOUND_FIELD(P,) normalizes the given sound field P to
 %   max(abs(P(:))) = 1.
 %
-%   See also: norm_sound_field_at_xref, sound_field_imp
+%   See also: norm_sound_field_at_xref, plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -50,22 +49,11 @@ function P = norm_sound_field(P,conf)
 
 %% ===== Checking of input parameters ====================================
 nargmin = 1;
-nargmax = 2;
+nargmax = 1;
 narginchk(nargmin,nargmax);
 isargnumeric(P);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
-
-
-%% ===== Configuration ===================================================
-usenormalisation = conf.usenormalisation;
 
 
 %% ===== Computation =====================================================
 % Set maximum to 1
-if usenormalisation
-    P = P/max(abs(P(:)));
-end
+P = P/max(abs(P(:)));

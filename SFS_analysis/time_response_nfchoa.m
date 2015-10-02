@@ -78,7 +78,7 @@ showprogress = conf.showprogress;
 conf.showprogress = 0;
 % Disable normalization, otherwise the amplitude will always the same for all
 % time steps
-conf.usenormalization = 0;
+conf.usenormalisation = 0;
 
 
 %% ===== Computation ====================================================

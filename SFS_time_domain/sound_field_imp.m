@@ -110,7 +110,6 @@ L = conf.secondary_sources.size;
 
 %% ===== Computation =====================================================
 % Spatial grid
-usecustomgrid = is_grid_custom(X,Y,Z);
 [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
 [~,x1,x2,x3] = xyz_axes_selection(x,y,z); % get active axes
 
@@ -155,7 +154,7 @@ d = [d; zeros(max_distance_in_samples,size(d,2))];
 
 
 % Initialize empty sound field (dependent on the axes we want)
-if usecustomgrid
+if is_grid_custom(X,Y,Z)
     p = zeros(size(x1));
 else
     p = squeeze(zeros(length(x3),length(x2),length(x1)));
@@ -199,12 +198,8 @@ for ii = 1:size(x0,1)
 
 end
 
-if ~usecustomgrid
-    % === Checking of sound field ===
-    check_sound_field(p,t);
-    % Normalize field
-    p = norm_sound_field(p,conf);
-end
+% === Checking of sound field ===
+check_sound_field(p,t);
 
 % Return parameter
 if nargout>0, varargout{1}=p; end

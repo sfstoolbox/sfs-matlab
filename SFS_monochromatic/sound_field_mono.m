@@ -113,14 +113,13 @@ showprogress = conf.showprogress;
 
 %% ===== Computation ====================================================
 % Create a x-y-z-grid
-usecustomgrid = is_grid_custom(X,Y,Z);
 [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
 
 % Check what are the active axes to create an empty sound field with the
 % correct size
 [~,x1,x2,x3]  = xyz_axes_selection(x,y,z);
 % Initialize empty sound field
-if usecustomgrid
+if is_grid_custom(X,Y,Z)
     P = zeros(size(x1));
 else
     P = squeeze(zeros(length(x3),length(x2),length(x1)));
@@ -151,11 +150,6 @@ for ii = 1:size(x0,1)
     % integration on a sphere.
     P = P + D(ii) .* G .* x0(ii,7);
 
-end
-
-if ~usecustomgrid
-    % === Scale signal (at xref) ===
-    P = norm_sound_field_at_xref(P,x,y,z,conf);
 end
 
 % return parameter

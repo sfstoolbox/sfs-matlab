@@ -1,5 +1,5 @@
 function P = norm_sound_field(P)
-%NORM_SOUND_FIELD normalizes the sound field to 1
+%NORM_SOUND_FIELD normalizes the sound field
 %
 %   Usage: P = norm_sound_field(P)
 %
@@ -9,10 +9,11 @@ function P = norm_sound_field(P)
 %   Output options:
 %       P       - normalized sound field
 %
-%   NORM_SOUND_FIELD(P,) normalizes the given sound field P to
-%   max(abs(P(:))) = 1.
+%   NORM_SOUND_FIELD(P) normalizes the given sound field P to 1 at its center
+%   position, or if the given value at the center is < 0.3 to 1 as its maximum
+%   value.
 %
-%   See also: norm_sound_field_at_xref, plot_sound_field
+%   See also: plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -55,5 +56,12 @@ isargnumeric(P);
 
 
 %% ===== Computation =====================================================
-% Set maximum to 1
-P = P/max(abs(P(:)));
+% If abs(P)>0.3 at center of sound field use that value for normalization,
+% otherwise look for the maximum value in the sound field. The first case is the
+% better normalization for monochromaticsound field, the second one for
+% time-domain sound fields
+if abs(P(round(end/2),round(end/2)))>0.3
+    P = P/max(abs(P(round(end/2),round(end/2))));
+else
+    P = P/max(abs(P(:)));
+end

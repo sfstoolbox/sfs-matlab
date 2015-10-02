@@ -119,6 +119,12 @@ else
     to_be_implemented(mfilename);
 end
 
+% Normalisation
+if p.usenormalisation
+    % TODO: Find positions near secondary sources to exclude from normalisation
+    P = norm_sound_field(P);
+end
+
 if p.usedb
     % If we have only zeros in the sound field set the field to eps to avoid
     % problems with log(0).
@@ -155,13 +161,6 @@ end
 figure;
 % Set size
 figsize(p.size(1),p.size(2),p.size_unit);
-
-% Scale dB value if needed
-%if p.usedb
-%    if p.usenormalisation
-%        P_dB = P_dB - max(P_dB(:));
-%    end
-%end
 
 % Plotting
 if sum(dimensions)==1 % 1D plot

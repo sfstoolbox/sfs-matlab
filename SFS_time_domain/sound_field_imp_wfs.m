@@ -28,10 +28,14 @@ function varargout = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf)
 %   the time t.
 %
 %   To plot the result use:
-%   conf.plot.usedb = 1;
-%   plot_sound_field(p,x,y,z,x0,win,conf);
+%   >> conf.plot.usedb = 1;
+%   >> plot_sound_field(p,x,y,z,x0,conf);
+%   or simple call the function without output argument:
+%   >> conf.plot.usedb = 1;
+%   >> sound_field_imp_wfs(X,Y,Z,xs,src,t,conf)
+%   
 %
-%   See also: driving_function_imp_wfs, sound_field_mono_wfs
+%   See also: driving_function_imp_wfs, sound_field_imp, sound_field_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

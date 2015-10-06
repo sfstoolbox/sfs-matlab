@@ -86,10 +86,32 @@ driving_functions = conf.driving_functions;
 % Frequency
 omega = 2*pi*f;
 
+if strcmp('2D',dimension)
+    % === 2-Dimensional ============================================
 
-if strcmp('2D',dimension) || strcmp('3D',dimension)
+    switch driving_functions
+      case {'default', 'line_sink'}
+        % D using a line sink as source model
+        %
+        %              iw (x0-xs)nk  (1)/ w         \
+        % D(x0,w) =  - -- --------- H1  | - |x0-xs| |
+        %              2c  |x0-xs|      \ c         /
+        %
+        % compare Wierstorf et al. (2015), eq.(#D:wfs:fs:ls)
+        %
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        % Driving signal
+        D = -1i*omega/(2*c) .* vector_product(x0-xs,nx0,2) ./ r .* ...
+            besselh(1,1,omega/c.*r);
+      otherwise
+        error(['%s: %s, this type of driving function is not implemented ', ...
+          'for a focused source.'],upper(mfilename),driving_functions);
+    end
+    
+elseif strcmp('3D',dimension)
 
-    % === 2- or 3-Dimensional ============================================
+    % === 3-Dimensional ============================================
 
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
@@ -147,7 +169,6 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a focused source.'],upper(mfilename),driving_functions);
     end
-
 
 elseif strcmp('2.5D',dimension)
 

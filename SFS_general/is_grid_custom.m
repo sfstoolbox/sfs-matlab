@@ -57,4 +57,4 @@ isargnumeric(x,y,z);
 
 
 %% ===== Computation =====================================================
-bool = any([min(size(x))>1 min(size(y))>2 min(size(z))>2]);
+bool = any([numel(x)>2, numel(y)>2, numel(z)>2]);

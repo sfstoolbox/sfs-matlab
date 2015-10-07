@@ -98,7 +98,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         %
         % see Wierstorf et al. (2015), eq.(#D:wfs:pw)
         %
-        D = -2*1i*omega/c .* vector_product(nk,nx0,2) .*  ...
+        D = 2*1i*omega/c .* vector_product(nk,nx0,2) .*  ...
             exp(-1i*omega/c.*vector_product(nk,x0,2));
         %
     elseif strcmp('delft1988',driving_functions)

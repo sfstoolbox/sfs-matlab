@@ -23,10 +23,13 @@ function varargout = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf)
 %       z           - corresponding z axis / m
 %       x0          - active secondary sources / m
 %
-%   SOUND_FIELD_MONO_WFS(X,Y,Z,xs,src,f,conf) simulates a sound field for the
-%   given source type (src) using WFS driving functions in the temporal domain.
-%   This means by calculating the integral for P with a summation.
-%   To plot the result use plot_sound_field(P,x,y,z,x0,win).
+%   SOUND_FIELD_MONO_WFS(X,Y,Z,xs,src,f,conf) simulates a monochromatic sound
+%   field for the given source type (src) synthesized with wave field synthesis.
+%
+%   To plot the result use:
+%   plot_sound_field(P,x,y,z,x0,conf);
+%   or simple call the function without output argument:
+%   sound_field_mono_wfs(X,Y,Z,xs,src,f,conf)
 %
 %   See also: plot_sound_field, sound_field_imp_wfs, driving_function_mono_wfs
 

@@ -25,21 +25,24 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %       y           - corresponding y axis / m
 %       z           - corresponding z axis / m
 %
-%   SOUND_FIELD_MONO(X,Y,Z,x0,src,D,f,conf) simulates a sound field
-%   for the given secondary sources, driven by the corresponding driving
+%   SOUND_FIELD_MONO(X,Y,Z,x0,src,D,f,conf) simulates a monochromatic sound
+%   field for the given secondary sources, driven by the corresponding driving
 %   signals. The given source model src is applied by the corresponding Green's
 %   function for the secondary sources. The simulation is done for one
 %   frequency in the frequency domain, by calculating the integral for P with a
 %   summation.
 %
-%   To plot the result use plot_sound_field(P,x,y,z).
+%   To plot the result use:
+%   plot_sound_field(P,x,y,z,conf);
+%   or simple call the function without output argument:
+%   sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %
 %   References:
 %       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
 %       "Theory of Sound Field Synthesis"
 %       G. Williams (1999) - "Fourier Acoustics", Academic Press
 %
-%   See also: plot_sound_field, sound_field_mono_wfs_25d
+%   See also: plot_sound_field, sound_field_imp
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

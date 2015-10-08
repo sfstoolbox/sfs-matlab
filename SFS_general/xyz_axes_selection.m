@@ -59,48 +59,13 @@ nargmax = 3;
 narginchk(nargmin,nargmax);
 isargnumeric(x,y,z);
 
-
 %% ===== Computation =====================================================
-% Check if we have any inactive dimensions
-dimensions = [1 1 1];
-if x(1)==x(end)
-    dimensions(1) = 0;
-end
-if y(1)==y(end)
-    dimensions(2) = 0;
-end
-if z(1)==z(end)
-    dimensions(3) = 0;
-end
+dims = {x,y,z};
+dimensions = ~is_dim_singleton(dims{:});
+Nd = sum(dimensions);
 
-% Return the axis
-x1=x;
-x2=y;
-x3=z;
-if all(dimensions)
-    % Do nothing
-elseif dimensions(1) && dimensions(2)
-    x3=z(1);
-elseif dimensions(1) && dimensions(3)
-    x2=z;
-    x3=y(1);
-elseif dimensions(2) && dimensions(3)
-    x1=y;
-    x2=z;
-    x3=x(1);
-elseif dimensions(1)
-    x2=y(1);
-    x3=z(1);
-elseif dimensions(2)
-    x1=y;
-    x2=x(1);
-    x3=z(1);
-elseif dimensions(3)
-    x1=z;
-    x2=x(1);
-    x3=z(1);
-else
-    x1=x(1);
-    x2=y(1);
-    x3=z(1);
-end
+newdims = {x(1),y(1),z(1)};  % default case, if all dimensions are singleton
+newdims(Nd+1:end) = newdims(~dimensions); % move singleton dimensions to the end
+newdims(1:Nd) = dims(dimensions);  % move non-singleton dimensions to the front
+
+[x1, x2, x3] = newdims{:};

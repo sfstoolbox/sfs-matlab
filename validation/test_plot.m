@@ -50,7 +50,10 @@ narginchk(nargmin,nargmax);
 
 %% ===== Configuration ===================================================
 conf = SFS_config_example;
+conf.resolution = 50;
 
+% 3-D plots
+sound_field_mono_wfs([-2 2],[-2 2],[-2 2],[0 -1 0],'pw',1000,conf)
 % 2-D plots
 sound_field_mono_wfs([-2 2],[-2 2],0,[0 -1 0],'pw',1000,conf)
 sound_field_mono_wfs([-2 2],0,[-2 2],[0 -1 0],'pw',1000,conf)
@@ -61,15 +64,17 @@ sound_field_mono_wfs(0,0,[-2 2],[0 -1 0],'pw',1000,conf)
 sound_field_mono_wfs(0,[-2 2],0,[0 -1 0],'pw',1000,conf)
 
 % Non-regular grid
-x1 = sort(randi([-2000 2000],300,1)/1000);
-x2 = sort(randi([-2000 2000],300,1)/1000);
-X1 = repmat(x1',[conf.resolution 1]);
-X2 = repmat(x2',[conf.resolution 1])';
+x1 = randi([-2000 2000],conf.resolution.^3,1)/1000;
+x2 = randi([-2000 2000],conf.resolution.^3,1)/1000;
+x3 = randi([-2000 2000],conf.resolution.^3,1)/1000;
+% 3-D plots
+sound_field_mono_wfs(x1,x2,x3,[0 -1 0],'pw',1000,conf)
 % 2-D plots
-sound_field_mono_wfs(X1,X2,0,[0 -1 0],'pw',1000,conf)
-sound_field_mono_wfs(X1,0,X2,[0 -1 0],'pw',1000,conf)
-sound_field_mono_wfs(0,X1,X2,[0 -1 0],'pw',1000,conf)
+sound_field_mono_wfs(x1,x2,0,[0 -1 0],'pw',1000,conf)
+sound_field_mono_wfs(x1,0,x2,[0 -1 0],'pw',1000,conf)
+sound_field_mono_wfs(0,x1,x2,[0 -1 0],'pw',1000,conf)
 % 1-D plots
 sound_field_mono_wfs(x1,0,0,[0 -1 0],'pw',1000,conf)
-sound_field_mono_wfs(0,0,x2,[0 -1 0],'pw',1000,conf)
 sound_field_mono_wfs(0,x2,0,[0 -1 0],'pw',1000,conf)
+sound_field_mono_wfs(0,0,x3,[0 -1 0],'pw',1000,conf)
+

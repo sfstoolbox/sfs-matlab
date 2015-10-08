@@ -113,17 +113,13 @@ showprogress = conf.showprogress;
 
 %% ===== Computation ====================================================
 % Create a x-y-z-grid
-[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
+[xx,yy,zz] = xyz_grid(X,Y,Z,conf);
 
 % Check what are the active axes to create an empty sound field with the
 % correct size
-[~,x1,x2,x3]  = xyz_axes_selection(x,y,z);
+[~,x1]  = xyz_axes_selection(xx,yy,zz);
 % Initialize empty sound field
-if is_grid_custom(X,Y,Z)
-    P = zeros(size(x1));
-else
-    P = squeeze(zeros(length(x3),length(x2),length(x1)));
-end
+P = zeros(size(x1));
 
 % Integration over secondary source positions
 for ii = 1:size(x0,1)
@@ -160,5 +156,5 @@ if nargout>3, varargout{4}=z; end
 
 % ===== Plotting =========================================================
 if (nargout==0 || useplot)
-    plot_sound_field(P,x,y,z,x0,conf);
+    plot_sound_field(P,X,Y,Z,x0,conf);
 end

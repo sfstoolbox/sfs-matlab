@@ -1,18 +1,17 @@
-function bool = is_grid_custom(x,y,z)
-%IS_GRID_CUSTOM returns true for a custom grid, otherwise false
+function bool = is_dim_custom(varargin)
+%IS_DIM_CUSTOM returns true for a custom grid, otherwise false
 %
-%   Usage: bool = is_grid_custom(x,y,z)
+%   Usage: bool = is_grid_custom(x1,x2,...)
 %
 %   Input parameters:
-%       x        - x-axis / m; single value or [xmin,xmax] or nD-array
-%       y        - y-axis / m; single value or [ymin,ymax] or nD-array
-%       z        - z-axis / m; single value or [zmin,zmax] or nD-array
+%       x1,x2,... - axis / m; single value or [xmin,xmax] or nD-array
 %
 %   Output parameters:
-%       bool     - true if any of x,y,z is nD-array otherwise false
+%       bool      - array of logical indicating whether each input is an 
+%                   nD-array
 %
-%   IS_GRID_CUSTOM(x,y,z) checks if we have a custom grid by checking if any of
-%   the given x,y,z values is a nD-array.
+%   IS_DIM_CUSTOM(x1,x2,..) checks if we have a custom grid by checking if any 
+%   of the given x,y,z values is a nD-array.
 %
 %   See also: xyz_axes, xyz_axes_selection, plot_sound_field
 
@@ -50,11 +49,7 @@ function bool = is_grid_custom(x,y,z)
 
 
 %% ===== Checking input parameters =======================================
-nargmin = 3;
-nargmax = 3;
-narginchk(nargmin,nargmax);
-isargnumeric(x,y,z);
-
+isargnumeric(varargin{:});
 
 %% ===== Computation =====================================================
-bool = any([numel(x)>2, numel(y)>2, numel(z)>2]);
+bool = cellfun(@(x) numel(x)>2, varargin);

@@ -1,4 +1,4 @@
-function [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf)
+function [xx,yy,zz] = xyz_grid(X,Y,Z,conf)
 %XYZ_GRID returns a xyz-grid for the listening area
 %
 %   Usage: [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z)
@@ -11,7 +11,6 @@ function [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf)
 %
 %   Output parameters:
 %       xx,yy,zz - matrices representing the xy-grid / m
-%       x,y,z    - x-, y-, z-axis / m
 %
 %   XYZ_GRID(X,Y,Z) creates a xyz-grid to avoid a loop in the sound field
 %   calculation for the whole listening area. It returns also the x-, y-, z-axis
@@ -58,45 +57,35 @@ nargmax = 4;
 narginchk(nargmin,nargmax);
 isargnumeric(X,Y,Z);
 if nargin<nargmax
-    conf = SFS_config;
+  conf = SFS_config;
 else
-    isargstruct(conf);
+  isargstruct(conf);
 end
 
+%% ===== Configuration ====================================================
+resolution = conf.resolution;
 
 %% ===== Computation =====================================================
-if is_grid_custom(X,Y,Z)
-    x = X; xx = X;
-    y = Y; yy = Y;
-    z = Z; zz = Z;
+dims = {X,Y,Z};
+
+if any( is_dim_custom(X,Y,Z) )
+  xx = X;
+  yy = Y;
+  zz = Z;
 else
-    % Creating axes
-    [x,y,z] = xyz_axes(X,Y,Z,conf);
-    % Check which dimensions will be non singleton
-    dimensions = xyz_axes_selection(x,y,z);
-    % Create xyz-grid
-    if all(dimensions)
-        % Create a 3D grid => size(xx)==[resolution resolution resolution]
-        [xx,yy,zz] = meshgrid(x,y,z);
-    elseif dimensions(1) && dimensions(2)
-        % Create a 2D grid => size(xx)==[resolution resolution]
-        [xx,yy] = meshgrid(x,y);
-        zz = z;
-    elseif dimensions(1) && dimensions(3)
-        [xx,zz] = meshgrid(x,z);
-        yy = y;
-    elseif dimensions(2) && dimensions(3)
-        [yy,zz] = meshgrid(y,z);
-        xx = x;
-    elseif any(dimensions)
-        % Create a 1D grid => size(xx)==[resolution 1]
-        xx = x;
-        yy = y;
-        zz = z;
-    else
-        % Create a 0D grid => size(xx)==[1 1]
-        xx = x(1);
-        yy = y(1);
-        zz = z(1);
-    end
+  % Check which dimensions will be non singleton
+  dimensions = xyz_axes_selection(X,Y,Z);
+  % Create axes
+  axes = {X(1),Y(1),Z(1)};  % x,y,z axis
+  % create regular grid in each non-singleton dimension
+  axes(dimensions) = cellfun( @(D) linspace(D(1),D(2),resolution).', ...
+    dims(dimensions), 'UniformOutput', false );
+  % Create xyz-grid
+  grids = axes;  % x,y,z grids
+  if sum(dimensions) >= 2
+    % create 2D/3D grid
+    [grids{dimensions}] = meshgrid(axes{dimensions});
+  end
+  
+  [xx,yy,zz] = grids{:};
 end

@@ -1,7 +1,7 @@
-function plot_sound_field(P,x,y,z,x0,conf)
+function plot_sound_field(P,X,Y,Z,x0,conf)
 %PLOT_SOUND_FIELD plot the given sound field
 %
-%   Usage: plot_sound_field(P,x,y,z,[x0],[conf])
+%   Usage: plot_sound_field(P,X,Y,Z,[x0],[conf])
 %
 %   Input parameters:
 %       P           - matrix containing the sound field in the format P = P(y,x)
@@ -55,8 +55,7 @@ function plot_sound_field(P,x,y,z,x0,conf)
 nargmin = 4;
 nargmax = 6;
 narginchk(nargmin,nargmax);
-%isargvector(x,y,z);
-isargnumeric(x,y,z,P);
+isargnumeric(X,Y,Z,P);
 if nargin==nargmax-1
     if isstruct(x0)
         conf = x0;
@@ -95,13 +94,16 @@ p.file = conf.plot.file;
 
 %% ===== Calculation =====================================================
 % Handle the given axis and check which should be plotted
-[dimensions,x1,x2] = xyz_axes_selection(x,y,z);
-if all(dimensions)
-    error(['%s: at the moment no method is implemented to plot ', ...
-        'a complete 3D cube of points. Your sound field has the ', ...
-        'dimension [%i %i %i]. Discard one of the dimension for ', ...
-        'plotting.'],upper(mfilename),size(P,1),size(P,2),size(P,3));
-elseif ~any(dimensions)
+[dimensions,x1,x2,x3] = xyz_axes_selection(X,Y,Z);
+% check whether some of the axis have custom size
+is_custom = is_dim_custom(X,Y,Z);
+
+if any( is_custom ) && sum( is_custom ) < sum( dimensions ) 
+  error(['%s: it is not possible to combine an axis with regular sampled ' ...
+    'grid with an axis with custom grid']);  
+end
+
+if ~any(dimensions)
     error(['%s: you have only one point in the sound field. ', ...
         'Omitting the plotting.'],upper(mfilename));
 elseif ~dimensions(1)
@@ -113,10 +115,6 @@ elseif ~dimensions(2)
 elseif ~dimensions(3)
     p.xlabel = 'x / m';
     p.ylabel = 'y / m';
-else
-    % FIXME: in this case every three axis should be plotted and we should
-    % switch to use splot or some other alternativ to plot it in 3D.
-    to_be_implemented(mfilename);
 end
 
 % Normalisation
@@ -164,40 +162,55 @@ figure;
 % Set size
 figsize(p.size(1),p.size(2),p.size_unit);
 
-% Plotting
-if sum(dimensions)==1 % 1D plot
-    plot(x1,P);
+switch sum(dimensions)
+  case 1
+    % === 1D Plot ====
+    if any(is_custom)  % custom grid
+      stem(x1,P);  % do not connect plot pointss
+    else % regular grid
+      x1 = linspace(x1(1),x1(2),conf.resolution);
+      plot(x1,P);
+    end    
     xlabel(p.xlabel);
     if p.usedb
         ylabel('Amplitude / dB');
     else
         ylabel('Amplitude');
     end
-else % 2D plot
-    if all([min(size(x1))>1 min(size(x2))>1]) % non-regular grid
-        scatter(x1(:),x2(:),[],min(p.caxis(2),max(p.caxis(1),P(:))),'filled');
-    else % regular grid
-        imagesc(x1,x2,P,p.caxis);
+  case 2
+    % === 2D Plot ====
+    if any(is_custom)  % custom grid
+      scatter(x1(:),x2(:),[],min(p.caxis(2),max(p.caxis(1),P(:))),'filled');
+    else  % regular grid
+      imagesc(x1,x2,P,p.caxis);
     end
-
+    
     % Add color bar
-    set_colorbar(conf);
-
+    set_colorbar(conf);    
     % Set the y direction in normal mode (imagesc uses the reverse mode by
     % default)
     turn_imagesc;
-
     % Set the axis to use the same amount of space for the same length (m)
-    axis image;
+    axis image;    
     % Labels etc. for the plot
     xlabel(p.xlabel);
-    ylabel(p.ylabel);
+    ylabel(p.ylabel);    
     % Add loudspeaker to the plot
     if p.loudspeakers % && dimensions(1) && dimensions(2)
         hold on;
         draw_loudspeakers(x0,dimensions,conf);
         hold off;
+    end    
+  case 3
+    if ~any(is_custom)
+      [x1,x2,x3] = xyz_grid(X,Y,Z,conf);
     end
+    % === 3D Plot ====
+    scatter3(x1(:),x2(:),x3(:),[],min(p.caxis(2),max(p.caxis(1),P(:))),'filled');
+    % Add color bar
+    set_colorbar(conf);
+    % Set the axis to use the same amount of space for the same length (m)
+    axis image;
 end
 
 % Save as file

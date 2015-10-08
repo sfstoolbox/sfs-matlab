@@ -1,20 +1,19 @@
-function [x,y,z] = xyz_axes(X,Y,Z,conf)
-%XYZ_AXES returns the x-, y-, and z-axis for the listening area
+function bool = is_dim_singleton(varargin)
+%IS_DIM_CUSTOM returns true for a custom grid, otherwise false
 %
-%   Usage: [x,y,z] = xyz_aex(X,Y,Z,[conf])
+%   Usage: bool = is_dim_singleton(x1,x2,...)
 %
 %   Input parameters:
-%       X        - x-axis / m; single value or [xmin,xmax]
-%       Y        - y-axis / m; single value or [ymin,ymax]
-%       Z        - z-axis / m; single value or [zmin,zmax]
-%       conf     - optional configuration struct (see SFS_config)
+%       x1,x2,... - axis / m; single value or [xmin,xmax] or nD-array
 %
 %   Output parameters:
-%       x,y,z    - x-, y-, z-axis / m
+%       bool      - array of logical indicating whether each input is an 
+%                   nD-array
 %
-%   XYZ_AXES(X,Y,Z,conf) creates the x-, y-, and -z-axis for the listening area.
+%   IS_DIM_CUSTOM(x1,x2,..) checks if we have a custom grid by checking if any 
+%   of the given x,y,z values is a nD-array.
 %
-%   See also: xyz_grid, xyz_axes_selection
+%   See also: xyz_axes, xyz_axes_selection, plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -50,23 +49,7 @@ function [x,y,z] = xyz_axes(X,Y,Z,conf)
 
 
 %% ===== Checking input parameters =======================================
-nargmin = 3;
-nargmax = 4;
-narginchk(nargmin,nargmax);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
-
-
-% ===== Configuration ====================================================
-resolution = conf.resolution;
-
+isargnumeric(varargin{:});
 
 %% ===== Computation =====================================================
-x = X; y = Y; z = Z;
-dimensions = xyz_axes_selection(X,Y,Z);
-if dimensions(1), x = linspace(x(1),x(2),resolution)'; end
-if dimensions(2), y = linspace(y(1),y(2),resolution)'; end
-if dimensions(3), z = linspace(z(1),z(2),resolution)'; end
+bool = cellfun(@(x) numel(x) <= 2 && x(1) == x(end), varargin);

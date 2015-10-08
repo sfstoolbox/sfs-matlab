@@ -18,9 +18,9 @@ function varargout = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf)
 %
 %   Output options:
 %       p           - simulated sound field
-%       x           - corresponding x axis / m
-%       y           - corresponding y axis / m
-%       z           - corresponding z axis / m
+%       x          - corresponding x values / m 
+%       y          - corresponding y values / m
+%       z          - corresponding z values / m
 %       x0          - secondary sources / m
 %
 %   SOUND_FIELD_IMP_WFS(X,Y,Z,xs,src,t,conf) simulates a sound field of the
@@ -29,7 +29,7 @@ function varargout = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf)
 %
 %   To plot the result use:
 %   conf.plot.usedb = 1;
-%   plot_sound_field(p,x,y,z,x0,win,conf);
+%   plot_sound_field(p,X,Y,Z,x0,win,conf);
 %
 %   See also: driving_function_imp_wfs, sound_field_mono_wfs
 

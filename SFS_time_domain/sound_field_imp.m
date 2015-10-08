@@ -18,9 +18,9 @@ function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 %
 %   Output options:
 %       p           - simulated sound field
-%       x           - corresponding x axis / m
-%       y           - corresponding y axis / m
-%       z           - corresponding z axis / m
+%       x           - corresponding x values / m
+%       y           - corresponding y values  / m
+%       z           - corresponding z values  / m
 %
 %   SOUND_FIELD_IMP(X,Y,Z,x0,src,d,t,conf) computes the sound field synthesized by 
 %   secondary sources driven by individual driving functions at time t.
@@ -28,7 +28,7 @@ function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 %
 %   To plot the result use:
 %   conf.plot.usedb = 1;
-%   plot_sound_field(p,x,y,z,conf);
+%   plot_sound_field(p,X,Y,Z,conf);
 %
 %   References:
 %       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
@@ -110,8 +110,8 @@ L = conf.secondary_sources.size;
 
 %% ===== Computation =====================================================
 % Spatial grid
-[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
-[~,x1,x2,x3] = xyz_axes_selection(x,y,z); % get active axes
+[x,y,z] = xyz_grid(X,Y,Z,conf);
+[~,x1,x2,x3]  = xyz_axes_selection(x,y,z); % get active axes
 
 % === Reshaping of the driving signal ===
 %
@@ -140,8 +140,9 @@ d = d(end:-1:1,:);
 % First get the maximum distance of the listening area and convert it into time
 % samples, than compare it to the size of the secondary sources. If the size is
 % biger use this for padding zeros.
-max_distance_in_samples = ...
-        round(max(norm([x(1) y(1) z(1)]-[x(end) y(end) z(end)])/c*fs,2*L/c*fs));
+max_distance = norm( [ max(x(:)) max(y(:)) max(z(:)) ] - ...
+  [ min(x(:)) min(y(:)) min(z(:)) ] );
+max_distance_in_samples = round(max(max_distance/c*fs,2*L/c*fs));
 
 % Append zeros at the beginning of the driving signal
 d = [zeros(max_distance_in_samples,size(d,2)); d];
@@ -154,17 +155,13 @@ d = [d; zeros(max_distance_in_samples,size(d,2))];
 
 
 % Initialize empty sound field (dependent on the axes we want)
-if is_grid_custom(X,Y,Z)
-    p = zeros(size(x1));
-else
-    p = squeeze(zeros(length(x3),length(x2),length(x1)));
-end
+p = zeros(size(x1));
 
 % Apply bandbass filter
 if usebandpass
     d = bandpass(d,bandpassflow,bandpassfhigh,conf);
 end
-    
+
     
 % Integration over secondary sources
 for ii = 1:size(x0,1)
@@ -210,7 +207,7 @@ if nargout>3, varargout{4}=z; end
 
 %% ===== Plotting ========================================================
 if nargout==0 || useplot
-    plot_sound_field(p,x,y,z,x0,conf);
+    plot_sound_field(p,X,Y,Z,x0,conf);
 end
 
 % Some debug stuff

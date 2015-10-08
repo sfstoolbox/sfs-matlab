@@ -85,7 +85,7 @@ Z = 0;
 
 %% ===== Computation =====================================================
 %% temporal impulse responses
-irs = dummy_irs;
+irs = dummy_irs(conf.N,conf);
 
 % === WFS ===
 % calculate impulse response

@@ -43,7 +43,7 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %     Each triple of X,Y,Z is interpreted as an evaluation point in an
 %     customized grid. For this option, plotting and normalisation is disabled.
 %
-%   To plot the result use plot_sound_field(P,x,y,z).
+%   To plot the result use plot_sound_field(P,X,Y,Z).
 %
 %   References:
 %       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -

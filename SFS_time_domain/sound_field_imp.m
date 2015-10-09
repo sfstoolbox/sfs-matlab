@@ -22,13 +22,19 @@ function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 %       y           - corresponding y values  / m
 %       z           - corresponding z values  / m
 %
-%   SOUND_FIELD_IMP(X,Y,Z,x0,src,d,t,conf) computes the sound field synthesized by 
-%   secondary sources driven by individual driving functions at time t.
-%   The source model for the secondary sources can be chosen.
-%
+%   SOUND_FIELD_IMP(X,Y,Z,x0,src,d,t,conf) simulates a sound field for the
+%   given secondary sources, driven by the corresponding driving signals. The
+%   given source model src is applied by the corresponding Green's function
+%   for the secondary sources. The simulation is done at one time sample, by
+%   calculating the integral for p with a summation.
+%%
 %   To plot the result use:
-%   conf.plot.usedb = 1;
 %   plot_sound_field(p,X,Y,Z,conf);
+%   or simple call the function without output argument:
+%   sound_field_imp(X,Y,Z,x0,src,d,t,conf)
+%   For plotting you may also consider to display the result in dB, by setting
+%   the following configuration option before:
+%   conf.plot.usedB = true;
 %
 %   References:
 %       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",

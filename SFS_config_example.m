@@ -286,7 +286,7 @@ conf.ir.useinterpolation = true; % boolean
 %
 % === Headphone compensation ===
 % Headphone compensation
-conf.ir.usehcomp = true; % boolean
+conf.ir.usehcomp = false; % boolean
 % Headphone compensation file for left and right ear.
 conf.ir.hcompfile = 'data/headphone_compensation/QU_KEMAR_AKGK601_hcomp.wav'; % string
 %

@@ -23,11 +23,16 @@ function varargout = sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
 %       x0          - positions and directions of the secondary sources / m
 %
 %   SOUND_FIELD_IMP_NFCHOA(X,Y,Z,xs,src,t,conf) simulates a sound field of the
-%   given source type (src) using a NFC-HOA driving function at the time point t.
+%   given source type (src) synthesized with near-field compensated higher order
+%   Ambisonics at time t.
 %
 %   To plot the result use:
-%   conf.plot.usedb = 1;
 %   plot_sound_field(p,x,y,z,x0,conf);
+%   or simple call the function without output argument:
+%   sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
+%   For plotting you may also consider to display the result in dB, by setting
+%   the following configuration option before:
+%   conf.plot.usedB = true;
 %
 %   See also: driving_function_imp_nfchoa, sound_field_mono_nfchoa
 

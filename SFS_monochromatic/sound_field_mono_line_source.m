@@ -17,9 +17,13 @@ function varargout = sound_field_mono_line_source(X,Y,Z,xs,varargin)
 %       y           - corresponding y axis / m
 %       z           - corresponding z axis / m
 %
-%   SOUND_FIELD_MONO_LINE_SOURCE(X,Y,Z,xs,f,conf) simulates a sound
-%   field of a line source positioned at xs.
-%   To plot the result use plot_sound_field(P,x,y,z).
+%   SOUND_FIELD_MONO_LINE_SOURCE(X,Y,Z,xs,f,conf) simulates a monochromatic
+%   sound field of a line source positioned at xs.
+%
+%   To plot the result use:
+%   plot_sound_field(P,x,y,z,conf);
+%   or simple call the function without output argument:
+%   sound_field_mono_line_source(X,Y,Z,xs,f,conf)
 %
 %   See also: sound_field_mono, plot_sound_field, sound_field_imp_point_source
 

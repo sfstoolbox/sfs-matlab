@@ -1,5 +1,5 @@
 function [P,x,y,z] = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
-%SOUND_FIELD_SDM_WFS_25D_KX simulates the sound field of a given source for SDM
+%SOUND_FIELD_MONO_SDM_KX simulates the sound field of a given source for SDM
 %in the kx domain
 %
 %   Usage: [P,x,y,z] = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,[conf])
@@ -23,13 +23,14 @@ function [P,x,y,z] = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
 %       y           - corresponding y axis / m
 %       z           - corresponding z axis / m
 %
-%   SOUND_FIELD_MONO_SDM_KX(X,Y,Z,xs,src,f,conf) simulates a sound field of
-%   the given source type (src) using a SDM driving function in the
-%   spectro-temporal freqeuncy domain. Note, that the linaer secondary sources are
-%   placed automatically on a line parrallel to the x-axis accordingly to
-%   conf.secondary_sources.center. The field can only be calculated in the
-%   xy-plane, meaning only Z=0 is allowed.
-%   To plot the result use plot_sound_field(P,x,y,z).
+%   SOUND_FIELD_MONO_SDM_KX(X,Y,Z,xs,src,f,conf) simulates a monochromatic sound
+%   field of the given source type (src) synthesized with the spectral devision
+%   method (SDM). Note, that the linaer secondary sources are placed automatically
+%   on a line parrallel to the x-axis accordingly to conf.secondary_sources.center.
+%   The field can only be calculated in the xy-plane, meaning only Z=0 is allowed.
+%
+%   To plot the result use:
+%   plot_sound_field(P,x,y,z,conf);
 %
 %   NOTE: due to numerical problems with the fft and the bessel functions needed
 %   in SDM (which resulted in an imaginary part which is hundreds of orders

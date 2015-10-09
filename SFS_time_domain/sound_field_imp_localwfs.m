@@ -23,12 +23,16 @@ function varargout = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
 %       x0          - secondary sources / m
 %
 %   SOUND_FIELD_IMP_LOCALWFS(X,Y,Z,xs,src,t,conf) simulates a sound field of the
-%   given source type (src) using a LOCALWFS driving function with a delay line at
-%   the time t.
+%   given source type (src) synthesized with local wave field synthesis at the
+%   time t.
 %
 %   To plot the result use:
-%   conf.plot.usedb = 1;
-%   plot_sound_field(p,X,Y,Z,x0,win,conf);
+%   plot_sound_field(p,X,Y,Z,x0,conf);
+%   or simple call the function without output argument:
+%   sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
+%   For plotting you may also consider to display the result in dB, by setting
+%   the following configuration option before:
+%   conf.plot.usedB = true;
 %
 %   See also: driving_function_imp_localwfs, sound_field_mono_localwfs
 

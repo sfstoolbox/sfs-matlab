@@ -1,7 +1,7 @@
 function varargout = sound_field_imp_point_source(X,Y,Z,xs,varargin)
 %SOUND_FIELD_IMP_POINT_SOURCE simulates a sound field for a point source
 %
-%   Usage: [P,x,y,z] = sound_field_imp_point_source(X,Y,Z,xs,t,[conf])
+%   Usage: [p,x,y,z] = sound_field_imp_point_source(X,Y,Z,xs,t,[conf])
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -12,14 +12,21 @@ function varargout = sound_field_imp_point_source(X,Y,Z,xs,varargin)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       P           - simulated sound field
+%       p           - simulated sound field
 %       x           - corresponding x axis / m
 %       y           - corresponding y axis / m
 %       z           - corresponding z axis / m
 %
 %   SOUND_FIELD_IMP_POINT_SOURCE(X,Y,Z,xs,t,conf) simulates a sound
-%   field of a point source positioned at xs.
-%   To plot the result use plot_sound_field(P,x,y,z).
+%   field of a point source positioned at xs at time t.
+%
+%   To plot the result use:
+%   plot_sound_field(p,x,y,z,conf);
+%   or simple call the function without output argument:
+%   sound_field_imp_point_source(X,Y,Z,xs,t,conf)
+%   For plotting you may also consider to display the result in dB, by setting
+%   the following configuration option before:
+%   conf.plot.usedB = true;
 %
 %   See also: sound_field_imp, plot_sound_field, sound_field_mono_point_source
 

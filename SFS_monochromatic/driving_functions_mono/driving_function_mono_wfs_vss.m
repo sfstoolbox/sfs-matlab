@@ -89,6 +89,11 @@ else
     error('%s: %s is not a known source type.',upper(mfilename),dimension);
 end
 
+% Adjust weights of secondary sources in order to use the tapering
+% correctly. Integration weights for the secondary sources will be applied
+% later, when the sound field is computed
+x0(:,7) = 1;
+
 % Get driving signals for real secondary sources
 %
 % See Spors (2010), fig. 2 & eq. (12)

@@ -17,9 +17,13 @@ function varargout = sound_field_mono_plane_wave(X,Y,Z,xs,f,conf)
 %       y           - corresponding y axis / m
 %       z           - corresponding z axis / m
 %
-%   SOUND_FIELD_MONO_PLANE_WAVE(X,Y,Z,xs,f,conf) simulates a sound
+%   SOUND_FIELD_MONO_PLANE_WAVE(X,Y,Z,xs,f,conf) simulates a monochromatic sound
 %   field of a plane wave going in the direction xs.
-%   To plot the result use plot_sound_field(P,x,y,z).
+%
+%   To plot the result use:
+%   plot_sound_field(P,x,y,z,conf);
+%   or simple call the function without output argument:
+%   sound_field_mono_plane_wave(X,Y,Z,xs,f,conf)
 %
 %   See also: sound_field_mono, plot_sound_field, sound_field_mono_point_source
 

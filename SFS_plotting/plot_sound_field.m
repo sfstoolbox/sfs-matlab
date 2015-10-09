@@ -11,12 +11,13 @@ function plot_sound_field(P,X,Y,Z,x0,conf)
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   PLOT_SOUND_FIELD(P,X,Y,Z,x0,conf) plots the sound field P in dependence
-%   of the axes that are not singleton. To calculate what axes these are you
-%   have to provide all three of them. For a given set x0 of secondary sources
+%   of the axes that are non-singleton. You have to provide the axes in the same
+%   syntax as for the sound field functions, see help sound_field_mono for a
+%   detailed explanation of the syntax. For a given set x0 of secondary sources
 %   the secondary sources are added as dots or loudspeaker symbols depending on
 %   your setting of conf.plot.realloudspeakers.
 %
-%   See also: sound_field_mono, sound_field_imp
+%   See also: sound_field_mono, sound_field_imp, draw_loudspeakers
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -166,7 +167,6 @@ switch sum(dimensions)
   case 1
     % === 1D Plot ====
     if any(is_custom)  % custom grid
-        %stem(x1,P);  % do not connect plot points
         plot(x1,P,'o','MarkerFaceColor','blue','MarkerSize',3)
     else % regular grid
         x1 = linspace(x1(1),x1(2),conf.resolution);

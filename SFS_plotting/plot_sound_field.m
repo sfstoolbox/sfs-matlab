@@ -10,7 +10,7 @@ function plot_sound_field(P,X,Y,Z,x0,conf)
 %                     Default: plot no secondary sources
 %       conf        - optional configuration struct (see SFS_config)
 %
-%   PLOT_SOUND_FIELD(P,x,y,z,x0,conf) plots the sound field P in dependence
+%   PLOT_SOUND_FIELD(P,X,Y,Z,x0,conf) plots the sound field P in dependence
 %   of the axes that are not singleton. To calculate what axes these are you
 %   have to provide all three of them. For a given set x0 of secondary sources
 %   the secondary sources are added as dots or loudspeaker symbols depending on
@@ -98,9 +98,9 @@ p.file = conf.plot.file;
 % check whether some of the axis have custom size
 is_custom = is_dim_custom(X,Y,Z);
 
-if any( is_custom ) && sum( is_custom ) < sum( dimensions ) 
+if any(is_custom) && sum(is_custom) < sum(dimensions)
   error(['%s: it is not possible to combine an axis with regular sampled ' ...
-    'grid with an axis with custom grid']);  
+    'grid with an axis with custom grid']);
 end
 
 if ~any(dimensions)
@@ -146,7 +146,7 @@ if p.realloudspeakers && size(x0,1)>1000
     p.realloudspeakers = 0;
 end
 
-% set the color bar axis to default values if not given otherwise
+% Set the color bar axis to default values if not given otherwise
 if p.caxis, else
     if p.usedb
         p.caxis = [-45,0];
@@ -166,11 +166,12 @@ switch sum(dimensions)
   case 1
     % === 1D Plot ====
     if any(is_custom)  % custom grid
-      stem(x1,P);  % do not connect plot pointss
+        %stem(x1,P);  % do not connect plot points
+        plot(x1,P,'o','MarkerFaceColor','blue','MarkerSize',3)
     else % regular grid
-      x1 = linspace(x1(1),x1(2),conf.resolution);
-      plot(x1,P);
-    end    
+        x1 = linspace(x1(1),x1(2),conf.resolution);
+        plot(x1,P);
+    end
     xlabel(p.xlabel);
     if p.usedb
         ylabel('Amplitude / dB');
@@ -180,27 +181,27 @@ switch sum(dimensions)
   case 2
     % === 2D Plot ====
     if any(is_custom)  % custom grid
-      scatter(x1(:),x2(:),[],min(p.caxis(2),max(p.caxis(1),P(:))),'filled');
+        scatter(x1(:),x2(:),[],min(p.caxis(2),max(p.caxis(1),P(:))),'filled');
     else  % regular grid
-      imagesc(x1,x2,P,p.caxis);
+        imagesc(x1,x2,P,p.caxis);
     end
-    
+
     % Add color bar
-    set_colorbar(conf);    
+    set_colorbar(conf);
     % Set the y direction in normal mode (imagesc uses the reverse mode by
     % default)
     turn_imagesc;
     % Set the axis to use the same amount of space for the same length (m)
-    axis image;    
+    axis image;
     % Labels etc. for the plot
     xlabel(p.xlabel);
-    ylabel(p.ylabel);    
+    ylabel(p.ylabel);
     % Add loudspeaker to the plot
     if p.loudspeakers % && dimensions(1) && dimensions(2)
         hold on;
         draw_loudspeakers(x0,dimensions,conf);
         hold off;
-    end    
+    end
   case 3
     if ~any(is_custom)
       [x1,x2,x3] = xyz_grid(X,Y,Z,conf);

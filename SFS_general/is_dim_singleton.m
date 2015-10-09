@@ -1,5 +1,5 @@
 function bool = is_dim_singleton(varargin)
-%IS_DIM_CUSTOM returns true for a custom grid, otherwise false
+%IS_DIM_SINGLETON returns true for a singleton dimension
 %
 %   Usage: bool = is_dim_singleton(x1,x2,...)
 %
@@ -7,13 +7,13 @@ function bool = is_dim_singleton(varargin)
 %       x1,x2,... - axis / m; single value or [xmin,xmax] or nD-array
 %
 %   Output parameters:
-%       bool      - array of logical indicating whether each input is an 
-%                   nD-array
+%       bool      - array of logical indicating whether each input is a
+%                   singleton dimension
 %
-%   IS_DIM_CUSTOM(x1,x2,..) checks if we have a custom grid by checking if any 
-%   of the given x,y,z values is a nD-array.
+%   IS_DIM_SINGLETON(x1,x2,..) checks if we have a singleton dimension for any
+%   of the given x,y,z values.
 %
-%   See also: xyz_axes, xyz_axes_selection, plot_sound_field
+%   See also: is_dim_custom, xyz_axes_selection, plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -50,6 +50,7 @@ function bool = is_dim_singleton(varargin)
 
 %% ===== Checking input parameters =======================================
 isargnumeric(varargin{:});
+
 
 %% ===== Computation =====================================================
 bool = cellfun(@(x) numel(x) <= 2 && x(1) == x(end), varargin);

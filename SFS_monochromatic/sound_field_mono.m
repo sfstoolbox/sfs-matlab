@@ -41,7 +41,7 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %     * if DIM is given as n-dimensional array, the other dimensions have
 %     to be given as n-dimensional arrays of the same size or as a single value.
 %     Each triple of X,Y,Z is interpreted as an evaluation point in an
-%     customized grid. For this option, plotting and normalisation is disabled.
+%     customized grid.
 %
 %   To plot the result use plot_sound_field(P,X,Y,Z).
 %
@@ -50,7 +50,7 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %       "Theory of Sound Field Synthesis"
 %       G. Williams (1999) - "Fourier Acoustics", Academic Press
 %
-%   See also: plot_sound_field, sound_field_mono_wfs_25d
+%   See also: plot_sound_field, sound_field_mono_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -110,6 +110,7 @@ end
 % Plotting result
 useplot = conf.plot.useplot;
 showprogress = conf.showprogress;
+
 
 %% ===== Computation ====================================================
 % Create a x-y-z-grid

@@ -13,7 +13,7 @@ function bool = is_dim_custom(varargin)
 %   IS_DIM_CUSTOM(x1,x2,..) checks if we have a custom grid by checking if any 
 %   of the given x,y,z values is a nD-array.
 %
-%   See also: xyz_axes, xyz_axes_selection, plot_sound_field
+%   See also: xyz_grid, xyz_axes_selection, plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -50,6 +50,7 @@ function bool = is_dim_custom(varargin)
 
 %% ===== Checking input parameters =======================================
 isargnumeric(varargin{:});
+
 
 %% ===== Computation =====================================================
 bool = cellfun(@(x) numel(x)>2, varargin);

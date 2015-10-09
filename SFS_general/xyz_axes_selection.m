@@ -1,5 +1,5 @@
 function [dimensions,x1,x2,x3] = xyz_axes_selection(x,y,z)
-%XYZ_AXES_SELECTION returns the first two active dimensions and a vector
+%XYZ_AXES_SELECTION returns the first non-singleton axes and a vector
 %indicating which axes are selected
 %
 %   Usage: [dimensions,x1,x2,x3] = xyz_axes_selection(x,y,z)
@@ -16,9 +16,10 @@ function [dimensions,x1,x2,x3] = xyz_axes_selection(x,y,z)
 %
 %   XYZ_AXES_SELECTION(x,y,z) returns a indicating vector for the x-, y- and
 %   z-axis if we have any activity on this axis or if it is a singleton axis.
-%   In addition the first non-singleton axis are returned.
+%   In addition, the axes are reordered starting first with the non-singleton
+%   axes.
 %
-%   See also: norm_wavefield, plot_wavefield, xyz_axes, xyz_grid, is_grid_custom
+%   See also: plot_sound_field, xyz_grid, is_dim_custom
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -58,6 +59,7 @@ nargmin = 3;
 nargmax = 3;
 narginchk(nargmin,nargmax);
 isargnumeric(x,y,z);
+
 
 %% ===== Computation =====================================================
 dims = {x,y,z};

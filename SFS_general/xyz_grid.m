@@ -1,7 +1,7 @@
 function [xx,yy,zz] = xyz_grid(X,Y,Z,conf)
 %XYZ_GRID returns a xyz-grid for the listening area
 %
-%   Usage: [xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z)
+%   Usage: [xx,yy,zz] = xyz_grid(X,Y,Z)
 %
 %   Input parameters:
 %       X        - x-axis / m; single value or [xmin,xmax]
@@ -10,13 +10,12 @@ function [xx,yy,zz] = xyz_grid(X,Y,Z,conf)
 %       conf     - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       xx,yy,zz - matrices representing the xy-grid / m
+%       xx,yy,zz - matrices representing the xyz-grid / m
 %
 %   XYZ_GRID(X,Y,Z) creates a xyz-grid to avoid a loop in the sound field
-%   calculation for the whole listening area. It returns also the x-, y-, z-axis
-%   for the listening area, defined by the points given with X,Y,Z.
+%   calculation for the whole listening area.
 %
-%   See also: xyz_axes, xyz_axes_selection, sound_field_mono
+%   See also: xyz_axes_selection, is_dim_custom, sound_field_mono
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -62,8 +61,10 @@ else
   isargstruct(conf);
 end
 
+
 %% ===== Configuration ====================================================
 resolution = conf.resolution;
+
 
 %% ===== Computation =====================================================
 dims = {X,Y,Z};
@@ -75,17 +76,16 @@ if any( is_dim_custom(X,Y,Z) )
 else
   % Check which dimensions will be non singleton
   dimensions = xyz_axes_selection(X,Y,Z);
-  % Create axes
-  axes = {X(1),Y(1),Z(1)};  % x,y,z axis
+  % Create xyz-axes
+  xyz_axes = {X(1),Y(1),Z(1)};
   % create regular grid in each non-singleton dimension
-  axes(dimensions) = cellfun( @(D) linspace(D(1),D(2),resolution).', ...
-    dims(dimensions), 'UniformOutput', false );
+  xyz_axes(dimensions) = cellfun( @(D) linspace(D(1),D(2),resolution).', ...
+    dims(dimensions),'UniformOutput',false );
   % Create xyz-grid
-  grids = axes;  % x,y,z grids
-  if sum(dimensions) >= 2
+  grids = xyz_axes;
+  if sum(dimensions)>=2
     % create 2D/3D grid
-    [grids{dimensions}] = meshgrid(axes{dimensions});
+    [grids{dimensions}] = meshgrid(xyz_axes{dimensions});
   end
-  
   [xx,yy,zz] = grids{:};
 end

@@ -89,6 +89,18 @@ if strcmp('ps',src)
     G = 1/(4*pi) * exp(-1i*omega/c .* sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2)) ./ ...
             sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
 
+elseif strcmp('dps',src)
+    % Source model for a 3D dipole source.
+    %
+    %  d                1   / -iw       1    \   (x0-xs) ns
+    % ---- G(x-xs,w) = --- | ----- - -------  | ----------- e^(-i w/c |x0-xs|)
+    % d ns             4pi  \  c     |x0-xs| /   |x0-xs|^2
+    %
+    r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
+    scalar = xs(4).*(x-xs(1)) + xs(5).*(y-xs(2))  + xs(6).*(z-xs(3));
+    %    
+    G = 1/(4*pi) .* (-1i*omega/c - 1./r) .* scalar./r.^2 .* exp(-1i*omega/c.*r);
+    
 elseif strcmp('ls',src)
     % Source model for a line source: 2D Green's function.
     %
@@ -109,7 +121,7 @@ elseif strcmp('pw',src)
     % see: Wierstorf et al. (2015), eq.(#S:pw)
     %
     % Direction of plane wave
-    nxs = xs / norm(xs);
+    nxs = xs(:,1:3) / norm(xs(:,1:3));
     %
     % The following code enables us to replace this two for-loops
     % for ii = 1:size(x,1)

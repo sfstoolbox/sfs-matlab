@@ -8,9 +8,10 @@ function G = greens_function_mono(x,y,z,xs,src,f,conf)
 %                 calculated / m
 %       xs      - position of the source
 %       src     - source model of the Green's function. Valid models are:
-%                   'ps' - point source
-%                   'ls' - line source
-%                   'pw' - plane wave
+%                   'ps'  - point source
+%                   'ls'  - line source
+%                   'pw'  - plane wave
+%                   'dps' - dipole point source
 %       f       - frequency of the source / Hz
 %       conf    - optional configuration struct (see SFS_config)
 %
@@ -90,17 +91,19 @@ if strcmp('ps',src)
             sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
 
 elseif strcmp('dps',src)
-    % Source model for a 3D dipole source.
+    % Source model for a dipol point source: derivation of 3D Green's function.
     %
-    %  d                1   / -iw       1    \   (x0-xs) ns
-    % ---- G(x-xs,w) = --- | ----- - -------  | ----------- e^(-i w/c |x0-xs|)
-    % d ns             4pi  \  c     |x0-xs| /   |x0-xs|^2
+    %   d                1  / -iw     1    \ (x-xs) nxs
+    % ----- G(x-xs,w) = --- | --- - ------ | ---------- e^(-i w/c |x-xs|)
+    % d nxs             4pi \  c    |x-xs| / |x-xs|^2
     %
+    % r = |x-xs|
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
+    % scalar = (x-xs) nxs
     scalar = xs(4).*(x-xs(1)) + xs(5).*(y-xs(2))  + xs(6).*(z-xs(3));
-    %    
+    %
     G = 1/(4*pi) .* (-1i*omega/c - 1./r) .* scalar./r.^2 .* exp(-1i*omega/c.*r);
-    
+
 elseif strcmp('ls',src)
     % Source model for a line source: 2D Green's function.
     %

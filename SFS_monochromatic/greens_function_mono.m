@@ -91,18 +91,18 @@ if strcmp('ps',src)
             sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
 
 elseif strcmp('dps',src)
-    % Source model for a dipol point source: derivation of 3D Green's function.
+    % Source model for a dipole point source: derivation of 3D Green's function.
     %
-    %   d                1  / -iw     1    \ (x-xs) nxs
-    % ----- G(x-xs,w) = --- | --- - ------ | ---------- e^(-i w/c |x-xs|)
-    % d nxs             4pi \  c    |x-xs| / |x-xs|^2
+    %  d                1   / iw       1    \   (x-xs) ns
+    % ---- G(x-xs,w) = --- | ----- + ------- | ----------- e^(-i w/c |x-xs|)
+    % d ns             4pi  \  c     |x-xs| /   |x-xs|^2
     %
     % r = |x-xs|
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
     % scalar = (x-xs) nxs
     scalar = xs(4).*(x-xs(1)) + xs(5).*(y-xs(2))  + xs(6).*(z-xs(3));
     %
-    G = 1/(4*pi) .* (-1i*omega/c - 1./r) .* scalar./r.^2 .* exp(-1i*omega/c.*r);
+    G = 1/(4*pi) .* (1i*omega/c + 1./r) .* scalar./r.^2 .* exp(-1i*omega/c.*r);
 
 elseif strcmp('ls',src)
     % Source model for a line source: 2D Green's function.

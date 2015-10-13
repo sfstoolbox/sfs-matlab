@@ -100,8 +100,6 @@ switch method
     xv = secondary_source_selection(xv, xs, src);
     % Optional tapering
     xv = secondary_source_tapering(xv,virtualconf);
-    % Optional amplitude correction
-    % xv = secondary_source_amplitudecorrection(xv);
     % Driving functions for virtual source array
     Dv = driving_function_mono_wfs(xv,xs,src,f,virtualconf);
   case 'nfchoa'

@@ -108,8 +108,6 @@ switch method
     xv = secondary_source_selection(xv, xs, src);
     % Optional tapering
     xv = secondary_source_tapering(xv,virtualconf);
-    % Optional amplitude correction
-    % xv = secondary_source_amplitudecorrection(xv);
     
     % Calculate pre-equalization filter if required ( hpre(t) * hpre(-t) )
     pulse = wfs_preequalization(dirac_imp(),conf);    

@@ -54,8 +54,8 @@ conf = SFS_config_example;
 % 3-D plots
 tmp = conf.resolution;
 conf.resolution = 50;
-%sound_field_mono_wfs([-2 2],[-2 2],[-2 2],[0 -1 0],'pw',1000,conf)
-%title('3D sound field')
+sound_field_mono_wfs([-2 2],[-2 2],[-2 2],[0 -1 0],'pw',1000,conf)
+title('3D sound field')
 conf.resolution = tmp;
 % 2-D plots
 sound_field_mono_wfs([-2 2],[-2 2],0,[0 -1 0],'pw',1000,conf)
@@ -77,8 +77,8 @@ x1 = randi([-2000 2000],125000,1)/1000;
 x2 = randi([-2000 2000],125000,1)/1000;
 x3 = randi([-2000 2000],125000,1)/1000;
 % 3-D plots
-%sound_field_mono_wfs(x1,x2,x3,[0 -1 0],'pw',1000,conf)
-%title('3D sound field, custom grid')
+sound_field_mono_wfs(x1,x2,x3,[0 -1 0],'pw',1000,conf)
+title('3D sound field, custom grid')
 % 2-D plots
 sound_field_mono_wfs(x1,x2,0,[0 -1 0],'pw',1000,conf)
 title('2D sound field, xy-axes, custom grid')

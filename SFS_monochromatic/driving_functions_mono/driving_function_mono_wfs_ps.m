@@ -118,7 +118,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
     elseif strcmp('point_source',driving_functions)
         % D using a point source as source model
         %
-        %            1  / -iw      1    \  (x0-xs) nx0
+        %            1  / i w      1    \  (x0-xs) nx0
         % D(x0,w) = --- | --- - ------- |  ----------- e^(-i w/c |x0-xs|)
         %           2pi \  c    |x0-xs| /   |x0-xs|^2
         %
@@ -127,7 +127,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % Driving signal
-        D = 1/(2*pi) .* ( (-1i*omega)/c - 1./r ) .* ...
+        D = 1/(2*pi) .* ( (1i*omega)/c - 1./r ) .* ...
             vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(-1i*omega/c.*r);
         %
     elseif strcmp('line_source',driving_functions)

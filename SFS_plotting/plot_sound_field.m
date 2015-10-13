@@ -229,6 +229,8 @@ switch sum(dimensions)
     end
     % === 3D Plot ====
     scatter3(x1(:),x2(:),x3(:),[],limit_colors(P,p.caxis),'filled');
+    % Fix perspective of plot in Matlab (http://bit.ly/1LISaz9)
+    set(gcf,'renderer','opengl');
     % Add color bar
     set_colorbar(conf);
     % Set the axis to use the same amount of space for the same length (m)

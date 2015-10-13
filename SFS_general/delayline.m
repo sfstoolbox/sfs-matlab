@@ -14,7 +14,7 @@ function sig = delayline(sig,dt,weight,conf)
 %                 applied to the first channel and so on.
 %       dt      - delay / samples
 %       weight  - amplitude weighting factor
-%       conf    - mandatory configuration struct (see SFS_config).
+%       conf    - configuration struct (see SFS_config).
 %                 Used settings are:
 %                     conf.usefracdelay;
 %                     conf.fracdelay_method; (only if conf.usefracdelay==true)
@@ -23,9 +23,9 @@ function sig = delayline(sig,dt,weight,conf)
 %       sig     - delayed signal
 %
 %   DELAYLINE(sig,dt,weight,conf) implementes a delayline, that delays the given
-%   signal by dt samples and applies a amplitude weighting factor.
-%   The delay is implemented as integer delays or a fractional delay
-%   filter, see SFS_config.
+%   signal by dt samples and applies an amplitude weighting factor. The delay is
+%   implemented as integer delay or fractional delay filter, see description of
+%   conf input parameter.
 %
 %   See also: get_ir, driving_function_imp_wfs
 
@@ -75,7 +75,7 @@ usefracdelay = conf.usefracdelay;
 if ndims(sig)==3
     [M C samples] = size(sig);
     channels = M * C;
-    % Reshape [M C N] => [N C*M], this will be redone at the end of the file
+    % Reshape [M C N] => [N C*M], this will be redone at the end of the function
     sig = reshape(sig,[channels,samples])';
     reshaped = true;
 else

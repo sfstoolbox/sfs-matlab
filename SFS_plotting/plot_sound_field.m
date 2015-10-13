@@ -181,11 +181,10 @@ switch sum(dimensions)
   case 2
     % === 2D Plot ====
     if any(is_custom)  % custom grid
-        scatter(x1(:),x2(:),[],min(p.caxis(2),max(p.caxis(1),P(:))),'filled');
+        scatter(x1(:),x2(:),[],limit_colors(P,p.caxis),'filled');
     else  % regular grid
         imagesc(x1,x2,P,p.caxis);
     end
-
     % Add color bar
     set_colorbar(conf);
     % Set the y direction in normal mode (imagesc uses the reverse mode by
@@ -207,7 +206,7 @@ switch sum(dimensions)
       [x1,x2,x3] = xyz_grid(X,Y,Z,conf);
     end
     % === 3D Plot ====
-    scatter3(x1(:),x2(:),x3(:),[],min(p.caxis(2),max(p.caxis(1),P(:))),'filled');
+    scatter3(x1(:),x2(:),x3(:),[],limit_colors(P,p.caxis),'filled');
     % Add color bar
     set_colorbar(conf);
     % Set the axis to use the same amount of space for the same length (m)
@@ -219,4 +218,21 @@ if ~isempty(p.file) && strcmp('png',p.file(end-2:end))
     print_png(p.file);
 elseif ~isempty(p.file) && strcmp('eps',p.file(end-2:end))
     print_eps(p.file);
+end
+end
+
+
+%% ===== Helper functions ================================================
+function P = limit_colors(P,caxis)
+    % Limits the number of different values in P to 64.
+    % This speeds up plotting with the scatter function in octave, see:
+    % http://savannah.gnu.org/bugs/?40663
+    %
+    number_of_colors = 64;
+    % First apply the caxis values
+    P = min(caxis(2),max(caxis(1),P(:)));
+    % Transform to [0...64] and transform to integer
+    P = fix(number_of_colors/range(P(:)) .* (P+abs(min(P(:)))));
+    % Transform back to [caxis(1)...caxis(2)]
+    P = abs(caxis(2)-caxis(1))/number_of_colors .* P + caxis(1);
 end

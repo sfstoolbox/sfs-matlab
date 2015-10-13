@@ -133,7 +133,7 @@ elseif strcmp('2.5D',dimension)
         %
         % see Wierstorf et al. (2015), eq.(#D:wfs:pw:2.5D)
         %
-        D = -2*g0 .* vector_product(nk,nx0,2) .* sqrt(omega/(1i*c)) .* ...
+        D = 2*g0 .* vector_product(nk,nx0,2) .* sqrt(omega/(1i*c)) .* ...
             exp(-1i*omega/c.*vector_product(nk,x0,2));
         %
     elseif strcmp('delft1988',driving_functions)

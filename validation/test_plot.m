@@ -50,46 +50,50 @@ narginchk(nargmin,nargmax);
 
 %% ===== Configuration ===================================================
 conf = SFS_config_example;
+xs = [0 -1 0];
+src = 'pw';
+f = 1000;
 
+
+%% ===== Monochromatic plots =============================================
 % 3-D plots
 tmp = conf.resolution;
 conf.resolution = 50;
-sound_field_mono_wfs([-2 2],[-2 2],[-2 2],[0 -1 0],'pw',1000,conf)
+sound_field_mono_wfs([-2 2],[-2 2],[-2 2],xs,src,f,conf)
 title('3D sound field')
 conf.resolution = tmp;
 % 2-D plots
-sound_field_mono_wfs([-2 2],[-2 2],0,[0 -1 0],'pw',1000,conf)
+sound_field_mono_wfs([-2 2],[-2 2],0,xs,src,f,conf)
 title('2D sound field, xy-axes')
-sound_field_mono_wfs([-2 2],0,[-2 2],[0 -1 0],'pw',1000,conf)
+sound_field_mono_wfs([-2 2],0,[-2 2],xs,src,f,conf)
 title('2D sound field, xz-axes')
-sound_field_mono_wfs(0,[-2 2],[-2 2],[0 -1 0],'pw',1000,conf)
+sound_field_mono_wfs(0,[-2 2],[-2 2],xs,src,f,conf)
 title('2D sound field, yz-axes')
 % 1-D plots
-sound_field_mono_wfs([-2 2],0,0,[0 -1 0],'pw',1000,conf)
+sound_field_mono_wfs([-2 2],0,0,xs,src,f,conf)
 title('1D sound field, x-axis')
-sound_field_mono_wfs(0,[-2 2],0,[0 -1 0],'pw',1000,conf)
+sound_field_mono_wfs(0,[-2 2],0,xs,src,f,conf)
 title('1D sound field, y-axis')
-sound_field_mono_wfs(0,0,[-2 2],[0 -1 0],'pw',1000,conf)
+sound_field_mono_wfs(0,0,[-2 2],xs,src,f,conf)
 title('1D sound field, z-axis')
-
-% Non-regular grid
+% === Custom grid ===
 x1 = randi([-2000 2000],125000,1)/1000;
 x2 = randi([-2000 2000],125000,1)/1000;
 x3 = randi([-2000 2000],125000,1)/1000;
 % 3-D plots
-sound_field_mono_wfs(x1,x2,x3,[0 -1 0],'pw',1000,conf)
+sound_field_mono_wfs(x1,x2,x3,xs,src,f,conf)
 title('3D sound field, custom grid')
 % 2-D plots
-sound_field_mono_wfs(x1,x2,0,[0 -1 0],'pw',1000,conf)
+sound_field_mono_wfs(x1,x2,0,xs,src,f,conf)
 title('2D sound field, xy-axes, custom grid')
-sound_field_mono_wfs(x1,0,x2,[0 -1 0],'pw',1000,conf)
+sound_field_mono_wfs(x1,0,x2,xs,src,f,conf)
 title('2D sound field, xz-axes, custom grid')
-sound_field_mono_wfs(0,x1,x2,[0 -1 0],'pw',1000,conf)
+sound_field_mono_wfs(0,x1,x2,xs,src,f,conf)
 title('2D sound field, yz-axes, custom grid')
 % 1-D plots
-sound_field_mono_wfs(x1,0,0,[0 -1 0],'pw',1000,conf)
+sound_field_mono_wfs(x1,0,0,xs,src,f,conf)
 title('1D sound field, x-axis, custom grid')
-sound_field_mono_wfs(0,x2,0,[0 -1 0],'pw',1000,conf)
+sound_field_mono_wfs(0,x2,0,xs,src,f,conf)
 title('1D sound field, y-axis, custom grid')
-sound_field_mono_wfs(0,0,x3,[0 -1 0],'pw',1000,conf)
+sound_field_mono_wfs(0,0,x3,xs,src,f,conf)
 title('1D sound field, z-axis, custom grid')

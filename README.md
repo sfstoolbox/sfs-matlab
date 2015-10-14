@@ -92,7 +92,7 @@ figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 1]);
-%print_png('img/secondary_sources_linear.png');
+%print_png('doc/img/secondary_sources_linear.png');
 ```
 
 ![Image](doc/img/secondary_sources_linear.png)
@@ -108,7 +108,7 @@ figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
-%print_png('img/secondary_sources_circle.png');
+%print_png('doc/img/secondary_sources_circle.png');
 ```
 
 ![Image](doc/img/secondary_sources_circle.png)
@@ -124,7 +124,7 @@ figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
-%print_png('img/secondary_sources_box.png');
+%print_png('doc/img/secondary_sources_box.png');
 ```
 
 ![Image](doc/img/secondary_sources_box.png)
@@ -148,7 +148,7 @@ figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
-print_png('img/secondary_sources_rounded-box.png');
+print_png('doc/img/secondary_sources_rounded-box.png');
 ```
 
 ![Image](doc/img/secondary_sources_rounded-box.png)
@@ -178,7 +178,7 @@ figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
-%print_png('img/secondary_sources_sphere.png');
+%print_png('doc/img/secondary_sources_sphere.png');
 ```
 
 ![Image](doc/img/secondary_sources_sphere.png)
@@ -236,7 +236,7 @@ figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2.5 2.5]);
-%print_png('img/secondary_sources_arbitrary.png');
+%print_png('doc/img/secondary_sources_arbitrary.png');
 ```
 
 ![Image](doc/img/secondary_sources_arbitrary.png)
@@ -253,7 +253,7 @@ figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2.5 2.5]);
-%print_png('img/secondary_sources_arbitrary_realloudspeakers.png');
+%print_png('doc/img/secondary_sources_arbitrary_realloudspeakers.png');
 ```
 
 ![Image](doc/img/secondary_sources_arbitrary_realloudspeakers.png)
@@ -294,11 +294,11 @@ conf.secondary_sources.number = 225;
 conf.secondary_sources.geometry = 'sphere';
 % [P,x,y,z,x0,win] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
 sound_field_mono_wfs([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
-%print_png('img/sound_field_wfs_3d_xy.png');
+%print_png('doc/img/sound_field_wfs_3d_xy.png');
 sound_field_mono_wfs([-2 2],0,[-2 2],[0 -1 0],'pw',800,conf);
-%print_png('img/sound_field_wfs_3d_xz.png');
+%print_png('doc/img/sound_field_wfs_3d_xz.png');
 sound_field_mono_wfs(0,[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
-%print_png('img/sound_field_wfs_3d_yz.png');
+%print_png('doc/img/sound_field_wfs_3d_yz.png');
 ```
 
 ![Image](doc/img/sound_field_wfs_3d_xy.png)
@@ -322,7 +322,7 @@ conf.secondary_sources.number = 225;
 conf.secondary_sources.geometry = 'sphere';
 conf.resolution = 100;
 sound_field_mono_wfs([-2 2],[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
-%print_png('img/sound_field_wfs_3d_xyz.png');
+%print_png('doc/img/sound_field_wfs_3d_xyz.png');
 ```
 
 ![Image](doc/img/sound_field_wfs_3d_xyz.png)
@@ -340,7 +340,7 @@ conf.dimension = '2.5D';
 conf.plot.useplot = true;
 % [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
 [P,x,y,z,x0] = sound_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf);
-%print_png('img/sound_field_wfs_25d.png');
+%print_png('doc/img/sound_field_wfs_25d.png');
 ```
 
 ![Image](doc/img/sound_field_wfs_25d.png)
@@ -358,7 +358,7 @@ x0_all = secondary_source_positions(conf);
 x0_all(:,7) = zeros(1,size(x0_all,1));
 x0_all(idx,7) = x0(:,7);
 plot_sound_field(P,x,y,z,x0_all,conf);
-%print_png('img/sound_field_wfs_25d_with_all_sources.png');
+%print_png('doc/img/sound_field_wfs_25d_with_all_sources.png');
 ```
 
 ![Image](doc/img/sound_field_wfs_25d_with_all_sources.png)
@@ -374,7 +374,7 @@ conf = SFS_config_example;
 conf.dimension = '2.5D';
 % sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf);
 sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
-%print_png('img/sound_field_nfchoa_25d.png');
+%print_png('doc/img/sound_field_nfchoa_25d.png');
 ```
 
 ![Image](doc/img/sound_field_nfchoa_25d.png)
@@ -408,7 +408,7 @@ conf.localsfs.vss.number = 56;
 % sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf);
 sound_field_mono_localwfs([-1 1],[-1 1],0,[1.0 -1.0 0],'pw',7000,conf);
 axis([-1.1 1.1 -1.1 1.1]);
-%print_png('img/sound_field_localwfs_2d.png');
+%print_png('doc/img/sound_field_localwfs_2d.png');
 ```
 
 ![Image](doc/img/sound_field_localwfs_2d.png)
@@ -426,7 +426,7 @@ conf = SFS_config_example;
 x0 = [-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1];
 % [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 sound_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800,conf)
-%print_png('img/sound_field_stereo.png');
+%print_png('doc/img/sound_field_stereo.png');
 ```
 ![Image](doc/img/sound_field_stereo.png)
 
@@ -445,7 +445,7 @@ conf.dimension = '2.5D';
 conf.plot.useplot = true;
 % sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
 [p,x,y,z,x0] = sound_field_imp_nfchoa([-2 2],[-2 2],0,[0 2 0],'ps',200,conf);
-%print_png('img/sound_field_imp_nfchoa_25d.png');
+%print_png('doc/img/sound_field_imp_nfchoa_25d.png');
 ```
 
 ![Image](doc/img/sound_field_imp_nfchoa_25d.png)
@@ -460,7 +460,7 @@ You could change the color
 ```Matlab
 conf.plot.usedb = true;
 plot_sound_field(p,x,y,z,x0,conf);
-%print_png('img/sound_field_imp_nfchoa_25d_dB.png');
+%print_png('doc/img/sound_field_imp_nfchoa_25d_dB.png');
 ```
 
 ![Image](doc/img/sound_field_imp_nfchoa_25d_dB.png)
@@ -488,13 +488,13 @@ X = randi([-2000 2000],125000,1)/1000;
 Y = randi([-2000 2000],125000,1)/1000;
 Z = randi([-2000 2000],125000,1)/1000;
 sound_field_mono_wfs(X,Y,Z,[0 -1 0],'pw',800,conf);
-%print_png('img/sound_field_wfs_3d_xyz_custom_grid.png');
+%print_png('doc/img/sound_field_wfs_3d_xyz_custom_grid.png');
 conf.plot.usedb = true;
 conf.dimension = '2.5D';
 conf.secondary_sources.number = 64;
 conf.secondary_sources.geometry = 'circle';
 sound_field_imp_nfchoa(X,Y,0,[0 2 0],'ps',200,conf);
-%print_png('img/sound_field_imp_nfchoa_25d_dB_custom_grid.png');
+%print_png('doc/img/sound_field_imp_nfchoa_25d_dB_custom_grid.png');
 ```
 
 ![Image](doc/img/sound_field_wfs_3d_xyz_custom_grid.png)
@@ -583,7 +583,7 @@ set(gca,'XTick',[10 100 250 1000 5000 20000]);
 legend('w/o pre-filter','w pre-filter');
 xlabel('frequency / Hz');
 ylabel('magnitude / dB');
-%print_png('img/impulse_response_wfs_25d.png');
+%print_png('doc/img/impulse_response_wfs_25d.png');
 ```
 
 ![Image](doc/img/impulse_response_wfs_25d.png)
@@ -595,7 +595,7 @@ frequency range will be affected.
 ```Matlab
 freq_response_wfs([0 0 0],[0 2.5 0],'ps',conf);
 axis([10 20000 -20 20]);
-%print_png('img/impulse_response_wfs_25d_mono.png');
+%print_png('doc/img/impulse_response_wfs_25d_mono.png');
 ```
 
 ![Image](doc/img/impulse_response_wfs_25d_mono.png)

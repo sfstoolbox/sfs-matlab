@@ -118,10 +118,8 @@ showprogress = conf.showprogress;
 %% ===== Computation ====================================================
 % Create a x-y-z-grid
 [xx,yy,zz] = xyz_grid(X,Y,Z,conf);
+[~,x1]  = xyz_axes_selection(xx,yy,zz); % get first non-singleton axis
 
-% Check what are the active axes to create an empty sound field with the
-% correct size
-[~,x1]  = xyz_axes_selection(xx,yy,zz);
 % Initialize empty sound field
 P = zeros(size(x1));
 

@@ -1,13 +1,13 @@
-function [P,x,y,z] = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
+function varargout = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
 %SOUND_FIELD_MONO_SDM_KX simulates the sound field of a given source for SDM
 %in the kx domain
 %
 %   Usage: [P,x,y,z] = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,[conf])
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax]
-%       Y           - y-axis / m; single value or [ymin,ymax]
-%       Z           - z-axis / m; single value or [zmin,zmax]
+%       X           - x-axis / m; [xmin,xmax]
+%       Y           - y-axis / m; [ymin,ymax]
+%       Z           - z-axis / m; single value
 %       xs          - position of point source / m
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
@@ -30,8 +30,10 @@ function [P,x,y,z] = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
 %   The field can only be calculated in the xy-plane, meaning only Z=0 is allowed.
 %
 %   To plot the result use:
-%   plot_sound_field(P,x,y,z,conf);
-%
+%   plot_sound_field(P,X,Y,Z,conf);
+%   or simple call the function without output argument:
+%   sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
+%%
 %   NOTE: due to numerical problems with the fft and the bessel functions needed
 %   in SDM (which resulted in an imaginary part which is hundreds of orders
 %   greater/smaller than the real part) the FFT is done by hand in this
@@ -117,7 +119,10 @@ kxal = omega/c;
 % Factor by which kx is extended of kx = omega/c criteria
 Nkx=1.5;
 kx = linspace(-Nkx*kxal,Nkx*kxal,Nkx*resolution*10);
-[~,~,~,x,y,z] = xyz_grid(X,Y,Z,conf);
+% Create axes
+x = linspace(X(1),X(2),resolution);
+y = linspace(Y(1),Y(2),resolution);
+z = Z;
 % Indexes for evanescent contributions and propagating part of the sound field
 idxpr = (( abs(kx) <= (omega/c) ));
 idxev = (( abs(kx) > (omega/c) ));
@@ -134,11 +139,11 @@ Gkx = zeros(length(kx),length(y));
 % G_3D(kx,y,w) = <                ____________
 %                 \ 1/(2pi) K0( \|kx^2-(w/c)^2 y )
 %
-[K,Y] = meshgrid(kx(idxpr),abs(y-X0(2)));
-Gkx(idxpr,:) = -1j/4 .* besselh(0,2,sqrt( (omega/c)^2 - K.^2 ).* Y).';
+[kk,yy] = meshgrid(kx(idxpr),abs(y-X0(2)));
+Gkx(idxpr,:) = -1j/4 .* besselh(0,2,sqrt( (omega/c)^2 - kk.^2 ).* yy).';
 if(withev)
-    [K,Y] = meshgrid(kx(idxev),abs(y-X0(2)));
-    Gkx(idxev,:) = 1/(2*pi) .* besselk(0,sqrt( K.^2 - (omega/c)^2).* Y).';
+    [kk,yy] = meshgrid(kx(idxev),abs(y-X0(2)));
+    Gkx(idxev,:) = 1/(2*pi) .* besselk(0,sqrt( kk.^2 - (omega/c)^2).* yy).';
 end
 
 % ========================================================================
@@ -157,7 +162,7 @@ Pkx = repmat(Dkx.',1,length(y)) .* Gkx;
 
 
 %% ===== Inverse spatial Fourier transformation =========================
-% 
+%
 %            /
 % P(x,y,w) = | Pkx(kx,y,w) * e^(-i kx x) dkx
 %            /
@@ -171,7 +176,14 @@ for n=1:length(x)
     P(:,n) = sum ( Pkx .* repmat(exp(-1j*kx*x(n))',1,resolution),1 )';
 end
 
+% return parameter
+if nargout>0, varargout{1}=P; end
+if nargout>1, varargout{2}=x; end
+if nargout>2, varargout{3}=y; end
+if nargout>3, varargout{4}=z; end
+
+
 %% ===== Plotting ========================================================
 if nargout==0 || useplot
-    plot_sound_field(P,x,y,z,conf);
+    plot_sound_field(P,X,Y,Z,conf);
 end

@@ -198,7 +198,7 @@ print_png('sound_field_imp_nfchoa_25d_dB_custom_grid.png');
 conf = SFS_config_example;
 conf.ir.usehcomp = 0;
 conf.wfs.usehpre = 0;
-irs = dummy_irs;
+irs = dummy_irs(conf);
 [ir1,x0] = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
 conf.wfs.usehpre = 1;
 conf.wfs.hprefhigh = aliasing_frequency(x0);

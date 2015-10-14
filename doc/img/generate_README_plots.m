@@ -106,7 +106,7 @@ print_png('secondary_sources_arbitrary_realloudspeakers.png');
 conf = SFS_config_example;
 x0 = [-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1];
 % [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
-sound_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800,conf)
+sound_field_mono([-2 2],[-1 3],0,x0,'ps',[5 5],800,conf)
 print_png('sound_field_stereo.png');
 
 % === WFS 3D ===

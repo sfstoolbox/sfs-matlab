@@ -129,6 +129,8 @@ end
 if ~any(dimensions)
     error(['%s: you have only one point in the sound field. ', ...
         'Omitting the plotting.'],upper(mfilename));
+elseif ~dimensions(1) && ~dimensions(2)
+    p.xlabel = 'z / m';
 elseif ~dimensions(1)
     p.xlabel = 'y / m';
     p.ylabel = 'z / m';

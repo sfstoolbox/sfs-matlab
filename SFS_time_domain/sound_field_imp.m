@@ -19,15 +19,15 @@ function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 %   Output options:
 %       p           - simulated sound field
 %       x           - corresponding x values / m
-%       y           - corresponding y values  / m
-%       z           - corresponding z values  / m
+%       y           - corresponding y values / m
+%       z           - corresponding z values / m
 %
 %   SOUND_FIELD_IMP(X,Y,Z,x0,src,d,t,conf) simulates a sound field for the
 %   given secondary sources, driven by the corresponding driving signals. The
 %   given source model src is applied by the corresponding Green's function
 %   for the secondary sources. The simulation is done at one time sample, by
 %   calculating the integral for p with a summation.
-%%
+%
 %   To plot the result use:
 %   plot_sound_field(p,X,Y,Z,conf);
 %   or simple call the function without output argument:
@@ -116,8 +116,8 @@ L = conf.secondary_sources.size;
 
 %% ===== Computation =====================================================
 % Spatial grid
-[x,y,z] = xyz_grid(X,Y,Z,conf);
-[~,x1,x2,x3]  = xyz_axes_selection(x,y,z); % get active axes
+[xx,yy,zz] = xyz_grid(X,Y,Z,conf);
+[~,x1]  = xyz_axes_selection(xx,yy,zz); % get first non-singleton axis
 
 % === Reshaping of the driving signal ===
 %
@@ -146,8 +146,8 @@ d = d(end:-1:1,:);
 % First get the maximum distance of the listening area and convert it into time
 % samples, than compare it to the size of the secondary sources. If the size is
 % biger use this for padding zeros.
-max_distance = norm( [ max(x(:)) max(y(:)) max(z(:)) ] - ...
-  [ min(x(:)) min(y(:)) min(z(:)) ] );
+max_distance = norm( [max(xx(:)) max(yy(:)) max(zz(:))] - ...
+    [min(xx(:)) min(yy(:)) min(zz(:))] );
 max_distance_in_samples = round(max(max_distance/c*fs,2*L/c*fs));
 
 % Append zeros at the beginning of the driving signal
@@ -159,7 +159,6 @@ t_inverted = t-size(d,1);
 % Append zeros at the end of the driving signal
 d = [d; zeros(max_distance_in_samples,size(d,2))];
 
-
 % Initialize empty sound field (dependent on the axes we want)
 p = zeros(size(x1));
 
@@ -168,7 +167,6 @@ if usebandpass
     d = bandpass(d,bandpassflow,bandpassfhigh,conf);
 end
 
-    
 % Integration over secondary sources
 for ii = 1:size(x0,1)
 
@@ -206,9 +204,9 @@ check_sound_field(p,t);
 
 % Return parameter
 if nargout>0, varargout{1}=p; end
-if nargout>1, varargout{2}=x; end
-if nargout>2, varargout{3}=y; end
-if nargout>3, varargout{4}=z; end
+if nargout>1, varargout{2}=xx; end
+if nargout>2, varargout{3}=yy; end
+if nargout>3, varargout{4}=zz; end
 
 
 %% ===== Plotting ========================================================

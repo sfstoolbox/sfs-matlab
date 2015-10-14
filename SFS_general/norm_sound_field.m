@@ -1,17 +1,21 @@
-function P = norm_sound_field(P)
+function P = norm_sound_field(P,conf)
 %NORM_SOUND_FIELD normalizes the sound field
 %
-%   Usage: P = norm_sound_field(P)
+%   Usage: P = norm_sound_field(P,[conf])
 %
 %   Input options:
 %       P       - sound field
+%       conf    - optional configuration struct (see SFS_config)
 %
 %   Output options:
 %       P       - normalized sound field
 %
-%   NORM_SOUND_FIELD(P) normalizes the given sound field P to 1 at its center
-%   position, or if the given value at the center is < 0.3 to 1 as its maximum
-%   value.
+%   NORM_SOUND_FIELD(P) normalizes the given sound field P. This depends on the
+%   conf.plot.normalisation setting. It can be one of the following:
+%       'auto'   - if the given absolute sound field value at the center is
+%                  > 0.3 it uses automatically 'center', otherwise it uses 'max'
+%       'center' - normalises to center of sound field == 1
+%       'max'    - normalises to max of sound field == 1
 %
 %   See also: plot_sound_field
 
@@ -50,18 +54,36 @@ function P = norm_sound_field(P)
 
 %% ===== Checking of input parameters ====================================
 nargmin = 1;
-nargmax = 1;
+nargmax = 2;
 narginchk(nargmin,nargmax);
+if nargin==nargmax-1
+    conf = SFS_config;
+end
 isargnumeric(P);
+isargstruct(conf);
+
+
+%% ===== Configuration ===================================================
+method = conf.plot.normalisation;
 
 
 %% ===== Computation =====================================================
-% If abs(P)>0.3 at center of sound field use that value for normalization,
-% otherwise look for the maximum value in the sound field. The first case is the
-% better normalization for monochromaticsound field, the second one for
-% time-domain sound fields
-if abs(P(round(end/2),round(end/2)))>0.3
+if strcmp('auto',method)
+    % If sound field at center > 0.3 normalise to center sound field == 1,
+    % otherwise normalise to max sound field == 1
+    if abs(P(round(end/2),round(end/2)))>0.3
+        method = 'center';
+    else
+        method = 'max';
+    end
+end
+if strcmp('center',method)
+    % Center of sound field == 1
     P = P/max(abs(P(round(end/2),round(end/2))));
-else
+elseif strcmp('max',method)
+    % Max of sound field == 1
     P = P/max(abs(P(:)));
+else
+    error(['%s: conf.plot.normalisation has to be ''auto'', ''center'' or ', ...
+          ['''max''.',upper(mfilename));
 end

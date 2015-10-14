@@ -315,6 +315,11 @@ conf.ir.brsangles = 0:1:359; % / degree
 conf.plot.useplot = false; % boolean
 % Normalize the sound field for plotting
 conf.plot.usenormalisation = true; % boolean
+% Normalisation method. Available methods are:
+%   'auto'      - 'center' if center of sound field > 0.3, otherwise 'max'
+%   'center'    - center of sound field == 1
+%   'max'       - max of sound field == 1
+conf.plot.normalisation = 'auto'; % string
 % Plot mode (uses the GraphDefaults function). Avaiable modes are:
 %   'monitor'   - displays the plot on the monitor
 %   'paper'     - eps output in conf.plot.outfile

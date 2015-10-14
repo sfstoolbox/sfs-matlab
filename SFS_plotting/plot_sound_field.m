@@ -146,7 +146,7 @@ end
 
 % Normalisation
 if p.usenormalisation
-    P = norm_sound_field(P);
+    P = norm_sound_field(P,conf);
 end
 
 if p.usedb
@@ -160,7 +160,7 @@ if p.usedb
     % Calculate sound pressure level in dB
     P = 20*log10(abs(P));
     if p.usenormalisation
-        P = P - max(P(:)); % ensure 0 dB max for monochromatic dB plots
+        P = P - max(P(:)); % ensure 0 dB max for dB plots
     end
 else
     P = real(P);

@@ -57,6 +57,7 @@ t = 300;
 
 
 %% ===== Monochromatic plots =============================================
+conf.plot.normalisation = 'center';
 % 3-D plots
 tmp = conf.resolution;
 conf.resolution = 50;
@@ -101,6 +102,7 @@ title('1D monochromatic sound field, z-axis, custom grid')
 
 
 %% ===== Time-domain plots ===============================================
+conf.plot.normalisation = 'max';
 % 3-D plots
 tmp = conf.resolution;
 conf.resolution = 50;

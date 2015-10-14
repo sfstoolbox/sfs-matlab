@@ -327,6 +327,7 @@ sound_field_mono_wfs([-2 2],[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
 
 ![Image](doc/img/sound_field_wfs_3d_xyz.png)
 
+
 In the next plot we use a two dimensional array, 2.5D WFS and a virtual point source
 located at (0 2.5 0) m. The 3D example showed you, that the sound fields are
 automatically plotted if we specify now output arguments. If we specify one, we
@@ -470,6 +471,36 @@ command.
 ```Matlab
 conf.plot.colormap = 'jet'; % Matlab rainbow color map
 ```
+
+### Custom grid for sound field simulations
+
+As stated earlier you can provide the sound field simulation functions a custom
+grid instead of the `[min max]` ranges. Again, you can provide it for one
+dimension, two dimensions, or all three dimensions.
+
+```Matlab
+conf = SFS_config_example;
+conf.dimension = '3D';
+conf.secondary_sources.number = 225;
+conf.secondary_sources.geometry = 'sphere';
+conf.resolution = 100;
+X = randi([-2000 2000],125000,1)/1000;
+Y = randi([-2000 2000],125000,1)/1000;
+Z = randi([-2000 2000],125000,1)/1000;
+sound_field_mono_wfs(X,Y,Z,[0 -1 0],'pw',800,conf);
+%print_png('img/sound_field_wfs_3d_xyz_custom_grid.png');
+conf.plot.usedb = true;
+conf.dimension = '2.5D';
+conf.secondary_sources.number = 64;
+conf.secondary_sources.geometry = 'circle';
+sound_field_imp_nfchoa(X,Y,0,[0 2 0],'ps',200,conf);
+%print_png('img/sound_field_imp_nfchoa_25d_dB_custom_grid.png');
+```
+
+![Image](doc/img/sound_field_wfs_3d_xyz_custom_grid.png)
+
+![Image](doc/img/sound_field_imp_nfchoa_25d_dB_custom_grid.png)
+
 
 ### Make binaural simulations of your systems
 

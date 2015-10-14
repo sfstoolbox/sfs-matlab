@@ -53,6 +53,7 @@ conf = SFS_config_example;
 xs = [0 -1 0];
 src = 'pw';
 f = 1000;
+t = 300;
 
 
 %% ===== Monochromatic plots =============================================
@@ -60,40 +61,129 @@ f = 1000;
 tmp = conf.resolution;
 conf.resolution = 50;
 sound_field_mono_wfs([-2 2],[-2 2],[-2 2],xs,src,f,conf)
-title('3D sound field')
+title('3D monochromatic sound field')
 conf.resolution = tmp;
 % 2-D plots
 sound_field_mono_wfs([-2 2],[-2 2],0,xs,src,f,conf)
-title('2D sound field, xy-axes')
+title('2D monochromatic sound field, xy-axes')
 sound_field_mono_wfs([-2 2],0,[-2 2],xs,src,f,conf)
-title('2D sound field, xz-axes')
+title('2D monochromatic sound field, xz-axes')
 sound_field_mono_wfs(0,[-2 2],[-2 2],xs,src,f,conf)
-title('2D sound field, yz-axes')
+title('2D monochromatic sound field, yz-axes')
 % 1-D plots
 sound_field_mono_wfs([-2 2],0,0,xs,src,f,conf)
-title('1D sound field, x-axis')
+title('1D monochromatic sound field, x-axis')
 sound_field_mono_wfs(0,[-2 2],0,xs,src,f,conf)
-title('1D sound field, y-axis')
+title('1D monochromatic sound field, y-axis')
 sound_field_mono_wfs(0,0,[-2 2],xs,src,f,conf)
-title('1D sound field, z-axis')
+title('1D monochromatic sound field, z-axis')
 % === Custom grid ===
 x1 = randi([-2000 2000],125000,1)/1000;
 x2 = randi([-2000 2000],125000,1)/1000;
 x3 = randi([-2000 2000],125000,1)/1000;
 % 3-D plots
 sound_field_mono_wfs(x1,x2,x3,xs,src,f,conf)
-title('3D sound field, custom grid')
+title('3D monochromatic sound field, custom grid')
 % 2-D plots
 sound_field_mono_wfs(x1,x2,0,xs,src,f,conf)
-title('2D sound field, xy-axes, custom grid')
+title('2D monochromatic sound field, xy-axes, custom grid')
 sound_field_mono_wfs(x1,0,x2,xs,src,f,conf)
-title('2D sound field, xz-axes, custom grid')
+title('2D monochromatic sound field, xz-axes, custom grid')
 sound_field_mono_wfs(0,x1,x2,xs,src,f,conf)
-title('2D sound field, yz-axes, custom grid')
+title('2D monochromatic sound field, yz-axes, custom grid')
 % 1-D plots
 sound_field_mono_wfs(x1,0,0,xs,src,f,conf)
-title('1D sound field, x-axis, custom grid')
+title('1D monochromatic sound field, x-axis, custom grid')
 sound_field_mono_wfs(0,x2,0,xs,src,f,conf)
-title('1D sound field, y-axis, custom grid')
+title('1D monochromatic sound field, y-axis, custom grid')
 sound_field_mono_wfs(0,0,x3,xs,src,f,conf)
-title('1D sound field, z-axis, custom grid')
+title('1D monochromatic sound field, z-axis, custom grid')
+
+
+%% ===== Time-domain plots ===============================================
+% 3-D plots
+tmp = conf.resolution;
+conf.resolution = 50;
+sound_field_imp_wfs([-2 2],[-2 2],[-2 2],xs,src,t,conf)
+title('3D time-domain sound field')
+conf.resolution = tmp;
+% 2-D plots
+sound_field_imp_wfs([-2 2],[-2 2],0,xs,src,t,conf)
+title('2D time-domain sound field, xy-axes')
+sound_field_imp_wfs([-2 2],0,[-2 2],xs,src,t,conf)
+title('2D time-domain sound field, xz-axes')
+sound_field_imp_wfs(0,[-2 2],[-2 2],xs,src,t,conf)
+title('2D time-domain sound field, yz-axes')
+% 1-D plots
+sound_field_imp_wfs([-2 2],0,0,xs,src,t,conf)
+title('1D time-domain sound field, x-axis')
+sound_field_imp_wfs(0,[-2 2],0,xs,src,t,conf)
+title('1D time-domain sound field, y-axis')
+sound_field_imp_wfs(0,0,[-2 2],xs,src,t,conf)
+title('1D time-domain sound field, z-axis')
+% === Custom grid ===
+x1 = randi([-2000 2000],125000,1)/1000;
+x2 = randi([-2000 2000],125000,1)/1000;
+x3 = randi([-2000 2000],125000,1)/1000;
+% 3-D plots
+sound_field_imp_wfs(x1,x2,x3,xs,src,t,conf)
+title('3D time-domain sound field, custom grid')
+% 2-D plots
+sound_field_imp_wfs(x1,x2,0,xs,src,t,conf)
+title('2D time-domain sound field, xy-axes, custom grid')
+sound_field_imp_wfs(x1,0,x2,xs,src,t,conf)
+title('2D time-domain sound field, xz-axes, custom grid')
+sound_field_imp_wfs(0,x1,x2,xs,src,t,conf)
+title('2D time-domain sound field, yz-axes, custom grid')
+% 1-D plots
+sound_field_imp_wfs(x1,0,0,xs,src,t,conf)
+title('1D time-domain sound field, x-axis, custom grid')
+sound_field_imp_wfs(0,x2,0,xs,src,t,conf)
+title('1D time-domain sound field, y-axis, custom grid')
+sound_field_imp_wfs(0,0,x3,xs,src,t,conf)
+title('1D time-domain sound field, z-axis, custom grid')
+
+
+%% ===== Time-domain plots in dB =========================================
+conf.plot.usedb = true;
+% 3-D plots
+tmp = conf.resolution;
+conf.resolution = 50;
+sound_field_imp_wfs([-2 2],[-2 2],[-2 2],xs,src,t,conf)
+title('3D time-domain sound field')
+conf.resolution = tmp;
+% 2-D plots
+sound_field_imp_wfs([-2 2],[-2 2],0,xs,src,t,conf)
+title('2D time-domain sound field, xy-axes')
+sound_field_imp_wfs([-2 2],0,[-2 2],xs,src,t,conf)
+title('2D time-domain sound field, xz-axes')
+sound_field_imp_wfs(0,[-2 2],[-2 2],xs,src,t,conf)
+title('2D time-domain sound field, yz-axes')
+% 1-D plots
+sound_field_imp_wfs([-2 2],0,0,xs,src,t,conf)
+title('1D time-domain sound field, x-axis')
+sound_field_imp_wfs(0,[-2 2],0,xs,src,t,conf)
+title('1D time-domain sound field, y-axis')
+sound_field_imp_wfs(0,0,[-2 2],xs,src,t,conf)
+title('1D time-domain sound field, z-axis')
+% === Custom grid ===
+x1 = randi([-2000 2000],125000,1)/1000;
+x2 = randi([-2000 2000],125000,1)/1000;
+x3 = randi([-2000 2000],125000,1)/1000;
+% 3-D plots
+sound_field_imp_wfs(x1,x2,x3,xs,src,t,conf)
+title('3D time-domain sound field, custom grid')
+% 2-D plots
+sound_field_imp_wfs(x1,x2,0,xs,src,t,conf)
+title('2D time-domain sound field, xy-axes, custom grid')
+sound_field_imp_wfs(x1,0,x2,xs,src,t,conf)
+title('2D time-domain sound field, xz-axes, custom grid')
+sound_field_imp_wfs(0,x1,x2,xs,src,t,conf)
+title('2D time-domain sound field, yz-axes, custom grid')
+% 1-D plots
+sound_field_imp_wfs(x1,0,0,xs,src,t,conf)
+title('1D time-domain sound field, x-axis, custom grid')
+sound_field_imp_wfs(0,x2,0,xs,src,t,conf)
+title('1D time-domain sound field, y-axis, custom grid')
+sound_field_imp_wfs(0,0,x3,xs,src,t,conf)
+title('1D time-domain sound field, z-axis, custom grid')

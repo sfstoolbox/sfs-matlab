@@ -122,6 +122,9 @@ sound_field_mono_wfs([-2 2],0,[-2 2],[0 -1 0],'pw',800,conf);
 print_png('sound_field_wfs_3d_xz.png');
 sound_field_mono_wfs(0,[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
 print_png('sound_field_wfs_3d_yz.png');
+conf.resolution = 100;
+sound_field_mono_wfs([-2 2],[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
+print_png('sound_field_wfs_3d_xyz.png');
 
 
 % simulating 2.5D WFS with circular array and a point source
@@ -172,6 +175,25 @@ plot_sound_field(p,x,y,z,x0,conf);
 print_png('sound_field_imp_nfchoa_25d_dB.png');
 
 
+% --- custom grids ---
+conf = SFS_config_example;
+conf.dimension = '3D';
+conf.secondary_sources.number = 225;
+conf.secondary_sources.geometry = 'sphere';
+conf.resolution = 100;
+X = randi([-2000 2000],125000,1)/1000;
+Y = randi([-2000 2000],125000,1)/1000;
+Z = randi([-2000 2000],125000,1)/1000;
+sound_field_mono_wfs(X,Y,Z,[0 -1 0],'pw',800,conf);
+print_png('sound_field_wfs_3d_xyz_custom_grid.png');
+conf.plot.usedb = true;
+conf.dimension = '2.5D';
+conf.secondary_sources.number = 64;
+conf.secondary_sources.geometry = 'circle';
+sound_field_imp_nfchoa(X,Y,0,[0 2 0],'ps',200,conf);
+print_png('sound_field_imp_nfchoa_25d_dB_custom_grid.png');
+
+
 % --- impulse response of the system ---
 conf = SFS_config_example;
 conf.ir.usehcomp = 0;
@@ -204,3 +226,4 @@ legend('w pre-filter');
 xlabel('frequency / Hz');
 ylabel('magnitude / dB');
 print_png('impulse_response_wfs_25d_mono.png');
+

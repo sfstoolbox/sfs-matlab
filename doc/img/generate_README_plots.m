@@ -106,7 +106,7 @@ print_png('secondary_sources_arbitrary_realloudspeakers.png');
 conf = SFS_config_example;
 x0 = [-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1];
 % [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
-sound_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800,conf)
+sound_field_mono([-2 2],[-1 3],0,x0,'ps',[5 5],800,conf)
 print_png('sound_field_stereo.png');
 
 % === WFS 3D ===
@@ -122,9 +122,9 @@ sound_field_mono_wfs([-2 2],0,[-2 2],[0 -1 0],'pw',800,conf);
 print_png('sound_field_wfs_3d_xz.png');
 sound_field_mono_wfs(0,[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
 print_png('sound_field_wfs_3d_yz.png');
-conf.resolution = 100;
-sound_field_mono_wfs([-2 2],[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
-print_png('sound_field_wfs_3d_xyz.png');
+%conf.resolution = 100;
+%sound_field_mono_wfs([-2 2],[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
+%print_png('sound_field_wfs_3d_xyz.png');
 
 
 % simulating 2.5D WFS with circular array and a point source
@@ -139,7 +139,7 @@ x0_all = secondary_source_positions(conf);
 [~,idx] = secondary_source_selection(x0,[0 2.5 0],'ps');
 x0_all(:,7) = zeros(1,size(x0_all,1));
 x0_all(idx,7) = x0(:,7);
-plot_sound_field(P,x,y,z,x0_all,conf);
+plot_sound_field(P,[-2 2],[-2 2],0,x0_all,conf);
 print_png('sound_field_wfs_25d_with_all_sources.png');
 % simulating 2.5D NFCHOA with circular array and a plane wave
 conf = SFS_config_example;
@@ -181,6 +181,7 @@ conf.dimension = '3D';
 conf.secondary_sources.number = 225;
 conf.secondary_sources.geometry = 'sphere';
 conf.resolution = 100;
+conf.plot.usenormalisation = false;
 X = randi([-2000 2000],125000,1)/1000;
 Y = randi([-2000 2000],125000,1)/1000;
 Z = randi([-2000 2000],125000,1)/1000;
@@ -201,7 +202,7 @@ conf.wfs.usehpre = 0;
 irs = dummy_irs(conf);
 [ir1,x0] = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
 conf.wfs.usehpre = 1;
-conf.wfs.hprefhigh = aliasing_frequency(x0);
+conf.wfs.hprefhigh = aliasing_frequency(x0,conf);
 ir2 = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
 [a1,p,f] = easyfft(norm_signal(ir1(:,1)),conf);
 a2 = easyfft(norm_signal(ir2(:,1)),conf);

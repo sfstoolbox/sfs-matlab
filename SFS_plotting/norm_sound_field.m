@@ -85,5 +85,5 @@ elseif strcmp('max',method)
     P = P/max(abs(P(:)));
 else
     error(['%s: conf.plot.normalisation has to be ''auto'', ''center'' or ', ...
-          ['''max''.',upper(mfilename));
+           '''max''.'],upper(mfilename));
 end

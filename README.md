@@ -311,6 +311,22 @@ You can see that the Toolbox is now projecting all the secondary source position
 into the plane for plotting them. In addition the axis are automatically chosen
 and labeled.
 
+It is also possible to simulate and plot the whole 3D cube, but in this case no
+secondary sources will be added to the plot.
+
+```Matlab
+conf = SFS_config_example;
+conf.dimension = '3D';
+conf.secondary_sources.size = 3;
+conf.secondary_sources.number = 225;
+conf.secondary_sources.geometry = 'sphere';
+conf.resolution = 100;
+sound_field_mono_wfs([-2 2],[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
+%print_png('img/sound_field_wfs_3d_xyz.png');
+```
+
+![Image](doc/img/sound_field_wfs_3d_xyz.png)
+
 In the next plot we use a two dimensional array, 2.5D WFS and a virtual point source
 located at (0 2.5 0) m. The 3D example showed you, that the sound fields are
 automatically plotted if we specify now output arguments. If we specify one, we

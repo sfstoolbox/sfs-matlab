@@ -13,15 +13,15 @@ function varargout = sound_field_imp_plane_wave(X,Y,Z,xs,t,conf)
 %
 %   Output parameters:
 %       p           - Simulated sound field
-%       x           - corresponding x axis / m
-%       y           - corresponding y axis / m
-%       z           - corresponding z axis / m
+%       x           - corresponding x values / m
+%       y           - corresponding y values / m
+%       z           - corresponding z values / m
 %
 %   SOUND_FIELD_IMP_PLANE_WAVE(X,Y,Z,xs,t,conf) simulates a sound
 %   field of a plane wave going in the direction xs at time t.
 %
 %   To plot the result use:
-%   plot_sound_field(p,x,y,z,conf);
+%   plot_sound_field(p,X,Y,Z,conf);
 %   or simple call the function without output argument:
 %   sound_field_imp_plane_wave(X,Y,Z,xs,t,conf)
 %   For plotting you may also consider to display the result in dB, by setting

@@ -21,9 +21,9 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %
 %   Output parameters:
 %       P           - Simulated sound field
-%       x           - corresponding x axis / m
-%       y           - corresponding y axis / m
-%       z           - corresponding z axis / m
+%       x           - corresponding x values / m
+%       y           - corresponding y values / m
+%       z           - corresponding z values / m
 %
 %   SOUND_FIELD_MONO(X,Y,Z,x0,src,D,f,conf) simulates a monochromatic sound
 %   field for the given secondary sources, driven by the corresponding driving

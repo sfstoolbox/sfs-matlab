@@ -18,7 +18,7 @@ function varargout = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf)
 %
 %   Output options:
 %       p           - simulated sound field
-%       x          - corresponding x values / m 
+%       x          - corresponding x values / m
 %       y          - corresponding y values / m
 %       z          - corresponding z values / m
 %       x0          - secondary sources / m

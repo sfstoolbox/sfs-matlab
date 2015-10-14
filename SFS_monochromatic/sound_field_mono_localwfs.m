@@ -18,9 +18,9 @@ function varargout = sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf)
 %
 %   Output parameters:
 %       P           - simulated sound field
-%       x           - corresponding x axis / m
-%       y           - corresponding y axis / m
-%       z           - corresponding z axis / m
+%       x           - corresponding x values / m
+%       y           - corresponding y values / m
+%       z           - corresponding z values / m
 %       x0          - active secondary sources / m
 %
 %   SOUND_FIELD_MONO_WFS(X,Y,Z,xs,src,f,conf) simulates a monochromatic sound
@@ -28,7 +28,7 @@ function varargout = sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf)
 %   synthesis.
 %
 %   To plot the result use:
-%   plot_sound_field(P,x,y,z,x0,conf);
+%   plot_sound_field(P,X,Y,Z,x0,conf);
 %   or simple call the function without output argument:
 %   sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf)
 %

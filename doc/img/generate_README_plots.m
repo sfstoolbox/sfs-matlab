@@ -181,6 +181,7 @@ conf.dimension = '3D';
 conf.secondary_sources.number = 225;
 conf.secondary_sources.geometry = 'sphere';
 conf.resolution = 100;
+conf.plot.usenormalisation = false;
 X = randi([-2000 2000],125000,1)/1000;
 Y = randi([-2000 2000],125000,1)/1000;
 Z = randi([-2000 2000],125000,1)/1000;

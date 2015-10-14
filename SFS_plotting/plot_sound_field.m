@@ -138,6 +138,10 @@ elseif ~dimensions(2)
 elseif ~dimensions(3)
     p.xlabel = 'x / m';
     p.ylabel = 'y / m';
+else
+    p.xlabel = 'x / m';
+    p.ylabel = 'y / m';
+    p.zlabel = 'z / m';
 end
 
 % Normalisation
@@ -235,6 +239,10 @@ switch sum(dimensions)
     set_colorbar(conf);
     % Set the axis to use the same amount of space for the same length (m)
     axis image;
+    % Labels etc. for the plot
+    xlabel(p.xlabel);
+    ylabel(p.ylabel);
+    zlabel(p.zlabel);
 end
 
 % Save as file

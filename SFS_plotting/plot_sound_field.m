@@ -146,6 +146,10 @@ else
     p.zlabel = 'z / m';
 end
 
+% Remove Inf values from sound field
+P(P==Inf) = NaN;
+P(P==-Inf) = NaN;
+
 % Normalisation
 if p.usenormalisation
     P = norm_sound_field(P,conf);
@@ -161,8 +165,6 @@ if p.usedb
     conf.plot.colormap = 'chromajs';
     % Calculate sound pressure level in dB
     P = 20*log10(abs(P));
-    % Remove Inf values
-    P(P==Inf) = NaN;
     if p.usenormalisation
         P = P - max(P(:)); % ensure 0 dB max for dB plots
     end

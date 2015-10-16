@@ -147,8 +147,7 @@ else
 end
 
 % Remove Inf values from sound field
-P(P==Inf) = NaN;
-P(P==-Inf) = NaN;
+P(isinf(P)) = NaN;
 
 % Normalisation
 if p.usenormalisation

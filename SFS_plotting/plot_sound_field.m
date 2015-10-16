@@ -207,7 +207,9 @@ switch sum(dimensions)
   case 2
     % === 2D Plot ====
     if any(is_custom)  % custom grid
-        scatter(x1(:),x2(:),2,limit_colors(P,p.caxis),'filled');
+        point_size = [];
+        if isoctave, point_size = 2; end % fix scatter plot point size for Octave
+        scatter(x1(:),x2(:),point_size,limit_colors(P,p.caxis),'filled');
     else  % regular grid
         imagesc(x1,x2,P,p.caxis);
     end
@@ -232,7 +234,9 @@ switch sum(dimensions)
       [x1,x2,x3] = xyz_grid(X,Y,Z,conf);
     end
     % === 3D Plot ====
-    scatter3(x1(:),x2(:),x3(:),5,limit_colors(P,p.caxis),'filled');
+    point_size = [];
+    if isoctave, point_size = 5; end % fix scatter plot point size for Octave
+    scatter3(x1(:),x2(:),x3(:),point_size,limit_colors(P,p.caxis),'filled');
     % Fix perspective of plot in Matlab (http://bit.ly/1LISaz9)
     set(gcf,'renderer','opengl');
     % Add color bar

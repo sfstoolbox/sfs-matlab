@@ -1,20 +1,19 @@
-function P = norm_sound_field_at_xref(P,x,y,z,conf)
-%NORM_SOUND_FIELD_AT_XREF normalizes the sound field to 1 at xref
+function bool = is_dim_custom(varargin)
+%IS_DIM_CUSTOM returns true for a custom grid, otherwise false
 %
-%   Usage: P = norm_sound_field_at_xref(P,x,y,z,[conf])
+%   Usage: bool = is_grid_custom(x1,x2,...)
 %
-%   Input options:
-%       P       - sound field
-%       x,y,z   - vectors conatining the x-, y- and z-axis values / m
-%       conf    - optional configuration struct (see SFS_config)
+%   Input parameters:
+%       x1,x2,... - axis / m; single value or [xmin,xmax] or nD-array
 %
-%   Output options:
-%       P       - normalized sound field
+%   Output parameters:
+%       bool      - array of logical indicating whether each input is an 
+%                   nD-array
 %
-%   NORM_SOUND_FIELD_AT_XREF(P,x,y,z,conf) normalizes the given sound field P to 1 at
-%   the position conf.xref.
+%   IS_DIM_CUSTOM(x1,x2,..) checks if we have a custom grid by checking if any 
+%   of the given x,y,z values is a nD-array.
 %
-%   See also: norm_sound_field, sound_field_mono
+%   See also: xyz_grid, xyz_axes_selection, plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -49,75 +48,9 @@ function P = norm_sound_field_at_xref(P,x,y,z,conf)
 %*****************************************************************************
 
 
-%% ===== Checking of input parameters ====================================
-nargmin = 4;
-nargmax = 5;
-narginchk(nargmin,nargmax);
-isargnumeric(P);
-isargvector(x,y,z);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
-
-
-%% ===== Configuration ===================================================
-if ~conf.usenormalisation
-    return;
-end
-xref = conf.xref;
-resolution = conf.resolution;
+%% ===== Checking input parameters =======================================
+isargnumeric(varargin{:});
 
 
 %% ===== Computation =====================================================
-% Get our active axis
-[dimensions] = xyz_axes_selection(x,y,z);
-
-% Use the half of the x axis and xref
-if dimensions(1)
-    xidx = find(x>xref(1),1);
-    check_idx(xidx,x,xref(1),'X',resolution);
-end
-if dimensions(2)
-    yidx = find(y>xref(2),1);
-    check_idx(yidx,y,xref(2),'Y',resolution);
-end
-if dimensions(3)
-    zidx = find(z>xref(3),1);
-    check_idx(zidx,z,xref(3),'Z',resolution);
-end
-
-% Scale signal to 1
-if all(dimensions)
-    scale = abs(P(zidx,yidx,xidx));
-elseif dimensions(1) && dimensions(2)
-    scale = abs(P(yidx,xidx));
-elseif dimensions(1) && dimensions(3)
-    scale = abs(P(zidx,xidx));
-elseif dimensions(2) && dimensions(3)
-    scale = abs(P(zidx,yidx));
-elseif dimensions(1)
-    scale = abs(P(xidx));
-elseif dimensions(2)
-    scale = abs(P(yidx));
-elseif dimensions(3)
-    scale = abs(P(zidx));
-else
-    scale = 1;
-end
-P = P/scale;
-
-end % of function
-
-
-%% ===== Subfunctions ====================================================
-function check_idx(idx,x,xref,str,resolution)
-    % abs(x(1)-x(end))/resolution gives us the maximum distance between to samples.
-    % If abs(x(xidx)-xref(1)) is greater this indicates that we are out of our
-    % bounds
-    if isempty(idx) || abs(x(idx)-xref)>2*abs(x(1)-x(end))/resolution
-        error('%s: your used conf.xref is out of your %s boundaries', ...
-            upper(mfilename),str);
-    end
-end
+bool = cellfun(@(x) numel(x)>2, varargin);

@@ -4,9 +4,9 @@ function movie_sound_field_imp_wfs(X,Y,Z,xs,src,outfile,conf)
 %   Usage: movie_sound_field_imp_wfs(X,Y,Z,xs,src,outfile,[conf])
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax] 
-%       Y           - y-axis / m; single value or [ymin,ymax]
-%       Z           - z-axis / m; single value or [zmin,zmax]
+%       X           - x-axis / m; single value or [xmin,xmax] or nD-array 
+%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
+%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       xs          - position of point source / m
 %       src         - sourcetype of the virtual source:
 %                         'pw' - plane wave (xs, ys are the direction of the
@@ -59,7 +59,6 @@ function movie_sound_field_imp_wfs(X,Y,Z,xs,src,outfile,conf)
 nargmin = 6;
 nargmax = 7;
 narginchk(nargmin,nargmax);
-isargvector(X,Y,Z);
 isargxs(xs);
 isargchar(src,outfile);
 if nargin<nargmax
@@ -82,8 +81,8 @@ t = round(linspace(-20,900,10*25));
 rn = sprintf('%04.0f',10000*rand);
 % Disable the empty sound field warning
 warning('off','SFS:check_sound_field');
-conf.plot.useplot = 0;
-conf.usenormalisation = 0;
+conf.plot.useplot = false;
+conf.plot.usenormalisation = false;
 % Simulate the time by different phase values
 for ii = 1:length(t)-1
     % Calculate sound field for the given phase

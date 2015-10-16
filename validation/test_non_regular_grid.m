@@ -1,20 +1,14 @@
-function [x,y,z] = xyz_axes(X,Y,Z,conf)
-%XYZ_AXES returns the x-, y-, and z-axis for the listening area
+function boolean = test_non_regular_grid()
+%TEST_IMPULSE_RESPONSES tests time behavior of WFS and local WFS
 %
-%   Usage: [x,y,z] = xyz_aex(X,Y,Z,[conf])
-%
-%   Input parameters:
-%       X        - x-axis / m; single value or [xmin,xmax]
-%       Y        - y-axis / m; single value or [ymin,ymax]
-%       Z        - z-axis / m; single value or [zmin,zmax]
-%       conf     - optional configuration struct (see SFS_config)
+%   Usage: boolean = test_impulse_responses()
 %
 %   Output parameters:
-%       x,y,z    - x-, y-, z-axis / m
+%       booelan - true or false
 %
-%   XYZ_AXES(X,Y,Z,conf) creates the x-, y-, and -z-axis for the listening area.
-%
-%   See also: xyz_grid, xyz_axes_selection
+%   TEST_IMPULSE_RESPONSES() compares the time-frequency response of
+%   WFS and local WFS by calculating impulse responses, their frequency
+%   spectrum, and spatial-temporal sound field.
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -49,24 +43,53 @@ function [x,y,z] = xyz_axes(X,Y,Z,conf)
 %*****************************************************************************
 
 
-%% ===== Checking input parameters =======================================
-nargmin = 3;
-nargmax = 4;
-narginchk(nargmin,nargmax);
-[X,Y,Z] = axis_vector(X,Y,Z);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+%% ===== Configuration ===================================================
+boolean = false;
+%% Parameters
+conf = SFS_config_example;
+conf.showprogress = true;
+conf.resolution = 400;
+conf.plot.useplot = true;
+conf.plot.loudspeakers = true;
+conf.plot.realloudspeakers = false;
+conf.plot.usedb = false;
+conf.tapwinlen = 0.3;
+% config for array
+conf.dimension = '2.5D';
+conf.secondary_sources.geometry = 'circular';
+conf.secondary_sources.number = 56;
+conf.secondary_sources.size = 3;
+conf.secondary_sources.center = [0, 0, 0];
+conf.driving_functions = 'default';
+conf.xref = [0,0,0];
+% listening area, virtual source
+xs = [0.0, 2.5, 0];  % propagation direction of plane wave
+src = 'ps';
+f = 1000;
+tau = 190;
 
-
-% ===== Configuration ====================================================
-resolution = conf.resolution;
-
+conf.usenormalisation = true;
 
 %% ===== Computation =====================================================
-% Creating x-, y-, and z-axis
-x=linspace(X(1),X(2),resolution)';
-y=linspace(Y(1),Y(2),resolution)';
-z=linspace(Z(1),Z(2),resolution)';
+% regular grid
+Xreg = [-1.5 1.5];
+Yreg = [-1, 1.55];
+Zreg = 0;
+
+% non regular grid
+alpha = 2*pi / 360 * (0:360-1);
+r = linspace(0, conf.secondary_sources.size/2, 50);
+[alpha, r] = ndgrid(alpha,r);
+
+Xnon  = r.*cos(alpha);
+Ynon  = r.*sin(alpha);
+Znon = 0;
+
+% sound fields
+sound_field_mono_wfs(Xreg,Yreg,Zreg, xs, src, tau, conf);
+sound_field_mono_wfs(Xnon,Ynon,Znon, xs, src, tau, conf);
+
+sound_field_imp_wfs(Xreg,Yreg,Zreg, xs, src, f, conf);
+sound_field_imp_wfs(Xnon,Ynon,Znon, xs, src, f, conf);
+
+boolean = true;

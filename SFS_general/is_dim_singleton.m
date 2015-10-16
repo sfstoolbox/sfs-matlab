@@ -1,14 +1,19 @@
-function boolean = test_impulse_responses()
-%TEST_IMPULSE_RESPONSES tests time behavior of WFS and local WFS
+function bool = is_dim_singleton(varargin)
+%IS_DIM_SINGLETON returns true for a singleton dimension
 %
-%   Usage: boolean = test_impulse_responses()
+%   Usage: bool = is_dim_singleton(x1,x2,...)
+%
+%   Input parameters:
+%       x1,x2,... - axis / m; single value or [xmin,xmax] or nD-array
 %
 %   Output parameters:
-%       booelan - true or false
+%       bool      - array of logical indicating whether each input is a
+%                   singleton dimension
 %
-%   TEST_IMPULSE_RESPONSES() compares the time-frequency response of
-%   WFS and local WFS by calculating impulse responses, their frequency
-%   spectrum, and spatial-temporal sound field.
+%   IS_DIM_SINGLETON(x1,x2,..) checks if we have a singleton dimension for any
+%   of the given x,y,z values.
+%
+%   See also: is_dim_custom, xyz_axes_selection, plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -43,69 +48,9 @@ function boolean = test_impulse_responses()
 %*****************************************************************************
 
 
-%% ===== Configuration ===================================================
-boolean = false;
-%% Parameters
-conf = SFS_config_example;
-conf.showprogress = true;
-conf.resolution = 400;
-conf.plot.useplot = true;
-conf.plot.loudspeakers = true;
-conf.plot.realloudspeakers = false;
-conf.plot.usedb = true;
-conf.tapwinlen = 0.3;
-% config for virtual array
-conf.localsfs.method = 'wfs';
-conf.localsfs.wfs = conf.wfs;
-conf.localsfs.usetapwin = true;
-conf.localsfs.tapwinlen = 0.3;
-conf.localsfs.vss.size = 0.6;
-conf.localsfs.vss.center = [-1, 0, 0];
-conf.localsfs.vss.geometry = 'circular';
-conf.localsfs.vss.number = 56;
-conf.localsfs.vss.consider_target_field = true;
-conf.localsfs.vss.consider_secondary_sources = true;
-% config for real array
-conf.dimension = '2.5D';
-conf.secondary_sources.geometry = 'circular';
-conf.secondary_sources.number = 56;
-conf.secondary_sources.size = 3;
-conf.secondary_sources.center = [0, 0, 0];
-conf.driving_functions = 'default';
-conf.xref = conf.localsfs.vss.center;
-% impulse response
-conf.ir.usehcomp = false;
-% listening area, virtual source
-xs = [0.0, 2.5, 0];  % propagation direction of plane wave
-src = 'ps';
-X = [-1.5 1.5];
-Y = [-1, 1.55];
-Z = 0;
+%% ===== Checking input parameters =======================================
+isargnumeric(varargin{:});
 
 
 %% ===== Computation =====================================================
-%% temporal impulse responses
-irs = dummy_irs(conf.N,conf);
-
-% === WFS ===
-% calculate impulse response
-s_wfs = ir_wfs(conf.xref,pi/2,xs,src,irs,conf);
-% plot frequency response
-[S_wfs, ~, f_wfs] = easyfft(s_wfs(:,1)./max(abs(s_wfs(:,1))), conf);
-% plot spatio-temporal sound field
-sound_field_imp_wfs(X,Y,Z, xs, src, 190, conf);
-
-% === Local WFS ===
-conf.tapwinlen = 1.0;
-% calculate prefilter
-[conf.wfs.hpreflow, conf.wfs.hprefhigh] = ...
-  localwfs_findhpref(conf.xref, pi/2, xs, src, conf);
-conf.localsfs.wfs = conf.wfs;
-% calculate impulse response
-s_lwfs = ir_localwfs(conf.xref,pi/2,xs,src,irs,conf);
-% plot frequency response
-[S_lwfs, ~, f_lwfs] = easyfft(s_lwfs(:,1)./max(abs(s_lwfs(:,1))), conf);
-% plot spatio-temporal sound field
-sound_field_imp_localwfs(X,Y,Z, xs, src, 360, conf);
-
-boolean = true;
+bool = cellfun(@(x) numel(x) <= 2 && x(1) == x(end), varargin);

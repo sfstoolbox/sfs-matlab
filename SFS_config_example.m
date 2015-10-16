@@ -157,8 +157,6 @@ conf.resolution = 300; % / samples
 % Phase of omega of sound field (change this value to create monochromatic sound
 % fields with different phases, for example this can be useful to create a movie)
 conf.phase = 0; % / rad
-% normalize the simulated sound field?
-conf.usenormalisation = true; % boolean
 
 
 % ===== Secondary Sources ================================================
@@ -315,6 +313,13 @@ conf.ir.brsangles = 0:1:359; % / degree
 %% ===== Plotting ========================================================
 % Plot the results (sound fields etc.) directly
 conf.plot.useplot = false; % boolean
+% Normalize the sound field for plotting
+conf.plot.usenormalisation = true; % boolean
+% Normalisation method. Available methods are:
+%   'auto'      - 'center' if center of sound field > 0.3, otherwise 'max'
+%   'center'    - center of sound field == 1
+%   'max'       - max of sound field == 1
+conf.plot.normalisation = 'auto'; % string
 % Plot mode (uses the GraphDefaults function). Avaiable modes are:
 %   'monitor'   - displays the plot on the monitor
 %   'paper'     - eps output in conf.plot.outfile

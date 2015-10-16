@@ -53,6 +53,6 @@ end
 %% ===== Checking for equal size =========================================
 for ii = 1:nargin-1
     if ~isequal(size(varargin{ii}),size(x1))
-        error('%s and %s have not the same size',inputname(1),inputname(2));
+        error('%s and %s have not the same size',inputname(1),inputname(ii+1));
     end
 end

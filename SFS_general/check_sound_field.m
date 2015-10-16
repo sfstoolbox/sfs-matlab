@@ -50,7 +50,7 @@ function check_sound_field(P,t)
 nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-isargmatrix(P);
+isargnumeric(P);
 isargscalar(t);
 
 

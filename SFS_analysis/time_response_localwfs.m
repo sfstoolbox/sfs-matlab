@@ -76,9 +76,6 @@ fs = conf.fs;
 showprogress = conf.showprogress;
 % Disable progress bar for the sound field function
 conf.showprogress = 0;
-% Disable normalisation, otherwise the amplitude will always the same for all
-% time steps
-conf.usenormalisation = 0;
 % Disable plotting, otherwise the sound_field_imp fails
 conf.plot.useplot = 0;
 

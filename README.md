@@ -25,12 +25,13 @@ support](https://github.com/sfstoolbox/sfs/releases/tag/1.2.0).
 **[Installation](#installation)**  
 **[Requirements](#requirements)**  
 **[Usage](#usage)**  
-  [Secondary Sources](#secondary-sources)  
-  [Simulate Monochromatic Sound Fields](#simulate-monochromatic-sound-fields)  
-  [Simulate Time Snapshots of Sound Fields](#simulate-time-snapshots-of-sound-fields)  
-  [Make Binaural Simulations of Your Systems](#make-binaural-simulations-of-your-systems)  
+  [Secondary sources](#secondary-sources)  
+  [Simulate monochromatic sound fields](#simulate-monochromatic-sound-fields)  
+  [Simulate time snapshots of sound fields](#simulate-time-snapshots-of-sound-fields)  
+  [Custom grid for sound field simulations](#custom-grid-for-sound-field-simulations)  
+  [Make binaural simulations of your systems](#make-binaural-simulations-of-your-systems)  
   [Small helper functions](#small-helper-functions)  
-  [Plotting with Matlab or gnuplot](#plotting-with-matlab-or-gnuplot)  
+  [Plotting with Matlab/Octave or gnuplot](#plotting-with-matlaboctave-or-gnuplot)  
 **[Credits and License](#credits-and-license)**
 
 
@@ -67,7 +68,7 @@ After setting up the Toolbox and can made one of the magic following things with
 Usage
 -----
 
-### Secondary Sources
+### Secondary sources
 
 The Toolbox comes with a function which can generate different common shapes of loudspeaker arrays for you.
 At the moment linear, circular, box shaped and spherical arrays are included out
@@ -81,7 +82,7 @@ conf = SFS_config_example;
 conf.secondary_sources.size = 3;
 ```
 
-#### Linear Array
+#### Linear array
 
 ```Matlab
 conf = SFS_config_example;
@@ -92,12 +93,12 @@ figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 1]);
-%print_png('img/secondary_sources_linear.png');
+%print_png('doc/img/secondary_sources_linear.png');
 ```
 
 ![Image](doc/img/secondary_sources_linear.png)
 
-#### Circular Array
+#### Circular array
 
 ```Matlab
 conf = SFS_config_example;
@@ -108,12 +109,12 @@ figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
-%print_png('img/secondary_sources_circle.png');
+%print_png('doc/img/secondary_sources_circle.png');
 ```
 
 ![Image](doc/img/secondary_sources_circle.png)
 
-#### Box Shaped Array
+#### Box shaped array
 
 ```Matlab
 conf = SFS_config_example;
@@ -124,12 +125,12 @@ figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
-%print_png('img/secondary_sources_box.png');
+%print_png('doc/img/secondary_sources_box.png');
 ```
 
 ![Image](doc/img/secondary_sources_box.png)
 
-#### Box Shaped Array with Rounded Edges
+#### Box shaped array with rounded edges
 
 <code>conf.secondary_sources.edge_radius</code> defines the bending radius of
 the corners. It can be chosen in a range between <code>0.0</code> and the half
@@ -148,12 +149,12 @@ figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
-print_png('img/secondary_sources_rounded-box.png');
+print_png('doc/img/secondary_sources_rounded-box.png');
 ```
 
 ![Image](doc/img/secondary_sources_rounded-box.png)
 
-#### Spherical Array
+#### Spherical array
 
 For a spherical array you need a grid to place the secondary sources on the
 sphere. At the moment we provide grids with the Toolbox, that can be find here:
@@ -178,12 +179,12 @@ figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
-%print_png('img/secondary_sources_sphere.png');
+%print_png('doc/img/secondary_sources_sphere.png');
 ```
 
 ![Image](doc/img/secondary_sources_sphere.png)
 
-#### Arbitrary Shaped Arrays
+#### Arbitrary shaped arrays
 
 You can create arbitrarily shaped arrays by setting
 <code>conf.secondary_sources.geometry</code> to 'custom' and define the values
@@ -236,13 +237,13 @@ figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2.5 2.5]);
-%print_png('img/secondary_sources_arbitrary.png');
+%print_png('doc/img/secondary_sources_arbitrary.png');
 ```
 
 ![Image](doc/img/secondary_sources_arbitrary.png)
 
 
-#### Plot Loudspeaker Symbols
+#### Plot loudspeaker symbols
 
 For two dimensional setups you can plot the secondary sources with loudspeaker
 symbols, for example the following will replot the last array.
@@ -253,13 +254,13 @@ figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2.5 2.5]);
-%print_png('img/secondary_sources_arbitrary_realloudspeakers.png');
+%print_png('doc/img/secondary_sources_arbitrary_realloudspeakers.png');
 ```
 
 ![Image](doc/img/secondary_sources_arbitrary_realloudspeakers.png)
 
 
-### Simulate Monochromatic Sound Fields
+### Simulate monochromatic sound fields
 
 With the files in <code>SFS_monochromatic</code> you can simulate a
 monochromatic sound field in a specified area for different techniques like WFS
@@ -267,7 +268,11 @@ and NFC-HOA. The area can be a 3D cube, a 2D plane, a line or only one point.
 This depends on the specification of <code>X,Y,Z</code>. For example
 <code>[-2 2],[-2 2],[-2 2]</code> will be a 3D cube;
 <code>[-2 2],0,[-2 2]</code> the xz-plane; <code>[-2 2],0,0</code> a line along
-the x-axis; <code>3,2,1</code> a single point.
+the x-axis; <code>3,2,1</code> a single point. If you present a range like `[-2
+2]` the Toolbox will create automatically a regular grid from this ranging from
+-2 to 2 with `conf.resolution` steps in between. Alternatively you could provide
+a custom grid by providing a matrix instead of the `[min max]` range for all
+active axes. We will show two examples later on.
 
 For all 2.5D functions the configuration <code>conf.xref</code> is important as
 it defines the point for which the amplitude is corrected in the sound field.
@@ -275,6 +280,7 @@ The default entry is
 ```Matlab
 conf.xref = [0 0 0];
 ```
+Make sure, that this point is inside your listening area.
 
 #### Wave Field Synthesis
 
@@ -289,11 +295,11 @@ conf.secondary_sources.number = 225;
 conf.secondary_sources.geometry = 'sphere';
 % [P,x,y,z,x0,win] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
 sound_field_mono_wfs([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
-%print_png('img/sound_field_wfs_3d_xy.png');
+%print_png('doc/img/sound_field_wfs_3d_xy.png');
 sound_field_mono_wfs([-2 2],0,[-2 2],[0 -1 0],'pw',800,conf);
-%print_png('img/sound_field_wfs_3d_xz.png');
+%print_png('doc/img/sound_field_wfs_3d_xz.png');
 sound_field_mono_wfs(0,[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
-%print_png('img/sound_field_wfs_3d_yz.png');
+%print_png('doc/img/sound_field_wfs_3d_yz.png');
 ```
 
 ![Image](doc/img/sound_field_wfs_3d_xy.png)
@@ -302,10 +308,26 @@ sound_field_mono_wfs(0,[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
 
 ![Image](doc/img/sound_field_wfs_3d_yz.png)
 
-
 You can see that the Toolbox is now projecting all the secondary source positions
 into the plane for plotting them. In addition the axis are automatically chosen
 and labeled.
+
+It is also possible to simulate and plot the whole 3D cube, but in this case no
+secondary sources will be added to the plot.
+
+```Matlab
+conf = SFS_config_example;
+conf.dimension = '3D';
+conf.secondary_sources.size = 3;
+conf.secondary_sources.number = 225;
+conf.secondary_sources.geometry = 'sphere';
+conf.resolution = 100;
+sound_field_mono_wfs([-2 2],[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
+%print_png('doc/img/sound_field_wfs_3d_xyz.png');
+```
+
+![Image](doc/img/sound_field_wfs_3d_xyz.png)
+
 
 In the next plot we use a two dimensional array, 2.5D WFS and a virtual point source
 located at (0 2.5 0) m. The 3D example showed you, that the sound fields are
@@ -317,9 +339,10 @@ have to explicitly say if we want also plot the results, by
 conf = SFS_config_example;
 conf.dimension = '2.5D';
 conf.plot.useplot = true;
+conf.plot.normalisation = 'center';
 % [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
 [P,x,y,z,x0] = sound_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf);
-%print_png('img/sound_field_wfs_25d.png');
+%print_png('doc/img/sound_field_wfs_25d.png');
 ```
 
 ![Image](doc/img/sound_field_wfs_25d.png)
@@ -337,7 +360,7 @@ x0_all = secondary_source_positions(conf);
 x0_all(:,7) = zeros(1,size(x0_all,1));
 x0_all(idx,7) = x0(:,7);
 plot_sound_field(P,x,y,z,x0_all,conf);
-%print_png('img/sound_field_wfs_25d_with_all_sources.png');
+%print_png('doc/img/sound_field_wfs_25d_with_all_sources.png');
 ```
 
 ![Image](doc/img/sound_field_wfs_25d_with_all_sources.png)
@@ -353,7 +376,7 @@ conf = SFS_config_example;
 conf.dimension = '2.5D';
 % sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf);
 sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
-%print_png('img/sound_field_nfchoa_25d.png');
+%print_png('doc/img/sound_field_nfchoa_25d.png');
 ```
 
 ![Image](doc/img/sound_field_nfchoa_25d.png)
@@ -387,7 +410,7 @@ conf.localsfs.vss.number = 56;
 % sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf);
 sound_field_mono_localwfs([-1 1],[-1 1],0,[1.0 -1.0 0],'pw',7000,conf);
 axis([-1.1 1.1 -1.1 1.1]);
-%print_png('img/sound_field_localwfs_2d.png');
+%print_png('doc/img/sound_field_localwfs_2d.png');
 ```
 
 ![Image](doc/img/sound_field_localwfs_2d.png)
@@ -402,15 +425,16 @@ can for example easily simulate a stereophonic setup.
 
 ```Matlab
 conf = SFS_config_example;
+conf.plot.normalisation = 'center';
 x0 = [-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1];
 % [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 sound_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800,conf)
-%print_png('img/sound_field_stereo.png');
+%print_png('doc/img/sound_field_stereo.png');
 ```
 ![Image](doc/img/sound_field_stereo.png)
 
 
-### Simulate Time Snapshots of Sound Fields
+### Simulate time snapshots of sound fields
 
 With the files in <code>SFS_time_domain</code> you can simulate snapshots in
 time of an impulse originating from your WFS or NFC-HOA system.
@@ -424,7 +448,7 @@ conf.dimension = '2.5D';
 conf.plot.useplot = true;
 % sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
 [p,x,y,z,x0] = sound_field_imp_nfchoa([-2 2],[-2 2],0,[0 2 0],'ps',200,conf);
-%print_png('img/sound_field_imp_nfchoa_25d.png');
+%print_png('doc/img/sound_field_imp_nfchoa_25d.png');
 ```
 
 ![Image](doc/img/sound_field_imp_nfchoa_25d.png)
@@ -439,7 +463,7 @@ You could change the color
 ```Matlab
 conf.plot.usedb = true;
 plot_sound_field(p,x,y,z,x0,conf);
-%print_png('img/sound_field_imp_nfchoa_25d_dB.png');
+%print_png('doc/img/sound_field_imp_nfchoa_25d_dB.png');
 ```
 
 ![Image](doc/img/sound_field_imp_nfchoa_25d_dB.png)
@@ -451,7 +475,38 @@ command.
 conf.plot.colormap = 'jet'; % Matlab rainbow color map
 ```
 
-### Make Binaural Simulations of Your Systems
+### Custom grid for sound field simulations
+
+As stated earlier you can provide the sound field simulation functions a custom
+grid instead of the `[min max]` ranges. Again, you can provide it for one
+dimension, two dimensions, or all three dimensions.
+
+```Matlab
+conf = SFS_config_example;
+conf.dimension = '3D';
+conf.secondary_sources.number = 225;
+conf.secondary_sources.geometry = 'sphere';
+conf.resolution = 100;
+conf.plot.normalisation = 'center';
+X = randi([-2000 2000],125000,1)/1000;
+Y = randi([-2000 2000],125000,1)/1000;
+Z = randi([-2000 2000],125000,1)/1000;
+sound_field_mono_wfs(X,Y,Z,[0 -1 0],'pw',800,conf);
+%print_png('doc/img/sound_field_wfs_3d_xyz_custom_grid.png');
+conf.plot.usedb = true;
+conf.dimension = '2.5D';
+conf.secondary_sources.number = 64;
+conf.secondary_sources.geometry = 'circle';
+sound_field_imp_nfchoa(X,Y,0,[0 2 0],'ps',200,conf);
+%print_png('doc/img/sound_field_imp_nfchoa_25d_dB_custom_grid.png');
+```
+
+![Image](doc/img/sound_field_wfs_3d_xyz_custom_grid.png)
+
+![Image](doc/img/sound_field_imp_nfchoa_25d_dB_custom_grid.png)
+
+
+### Make binaural simulations of your systems
 
 If you have a set of head-related transfer functions (HRTFs) you can simulate
 the ear signals reaching a listener sitting at a given point in the listening
@@ -532,7 +587,7 @@ set(gca,'XTick',[10 100 250 1000 5000 20000]);
 legend('w/o pre-filter','w pre-filter');
 xlabel('frequency / Hz');
 ylabel('magnitude / dB');
-%print_png('img/impulse_response_wfs_25d.png');
+%print_png('doc/img/impulse_response_wfs_25d.png');
 ```
 
 ![Image](doc/img/impulse_response_wfs_25d.png)
@@ -543,8 +598,8 @@ frequency range will be affected.
 
 ```Matlab
 freq_response_wfs([0 0 0],[0 2.5 0],'ps',conf);
-axis([10 20000 -20 20]);
-%print_png('img/impulse_response_wfs_25d_mono.png');
+axis([10 20000 -40 0]);
+%print_png('doc/img/impulse_response_wfs_25d_mono.png');
 ```
 
 ![Image](doc/img/impulse_response_wfs_25d_mono.png)
@@ -580,7 +635,7 @@ create noise signal <code>noise()</code>, rotation matrix
 <code>sphbesselj()</code> <code>sphbessely()</code>.
 
 
-### Plotting with Matlab or gnuplot
+### Plotting with Matlab/Octave or gnuplot
 
 The Toolbox provides you with a variety of functions for plotting your simulated
 sound fields <code>plot_sound_field()</code> and adding loudspeaker symbols to the
@@ -593,7 +648,7 @@ which includes the Matlab/Octave code to generate the data and the gnuplot
 script for plotting it.
 
 
-Credits and License
+Credits and license
 -------------------
 
 This is the source distribution of Sound Field Synthesis Toolbox (SFS) licensed

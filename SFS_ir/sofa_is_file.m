@@ -1,20 +1,19 @@
 function boolean = sofa_is_file(sofa)
-%SOFA_CHECK returns 1 for a sofa file, 0 for a sofa struct or an error otherwise
+%SOFA_IS_FILE returns 1 for a sofa file, 0 for a sofa struct or an error otherwise
 %
-%   Usage: number = sofa_check(sofa)
+%   Usage: boolean = sofa_is_file(sofa)
 %
 %   Input parameters:
 %       sofa    - sofa struct or file name
 %
 %   Output parameters:
-%       number  - 1: sofa is a file
-%                 0: sofa is a struct
+%       boolean - true:  sofa is a file
+%                 false: sofa is a struct
 %
-%   SOFA_CHECK(sofa) checks if the given sofa is a file or a struct. In the
-%   first case a 1 is returned, in the second case a 0. If none of both is true
-%   an error will be thrown.
+%   SOFA_IS_FILE(sofa) checks if the given sofa variable is a file or a struct.
+%   If both are false an error will be thrown.
 %
-%   See also: sofa_get_header, sofa_get_data
+%   See also: sofa_get_header, sofa_get_data_fir
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -50,17 +49,18 @@ function boolean = sofa_is_file(sofa)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
-nargmax = 1;
-narginchk(nargmin,nargmax)
+% No checking for speedup
+%nargmin = 1;
+%nargmax = 1;
+%narginchk(nargmin,nargmax)
 
 
 %% ===== Main ===========================================================
-if ~isstruct(sofa) && exist(sofa,'file')
-    boolean = true;
-elseif isstruct(sofa) && isfield(sofa,'GLOBAL_Conventions') && ...
-       strcmp('SOFA',sofa.GLOBAL_Conventions)
+if isstruct(sofa) && isfield(sofa,'GLOBAL_Conventions') && ...
+        strcmp('SOFA',sofa.GLOBAL_Conventions)
     boolean = false;
+elseif ~isstruct(sofa) && exist(sofa,'file')
+    boolean = true;
 else
     error('%s: sofa has to be a file or a SOFA struct.',upper(mfilename));
 end

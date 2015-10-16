@@ -1,7 +1,7 @@
-function ir = sofa_get_data_fir(sofa,idx)
+function ir = sofa_get_data_fir(sofa,idx,header)
 %SOFA_GET_DATA_FIR returns impulse responses from a SOFA file or struct
 %
-%   Usage: ir = sofa_get_data_fir(sofa,[idx])
+%   Usage: ir = sofa_get_data_fir(sofa,[idx,[header]])
 %
 %   Input parameters:
 %       sofa    - impulse response data set (SOFA struct/file)
@@ -11,13 +11,16 @@ function ir = sofa_get_data_fir(sofa,idx)
 %                 responses for the corresponding index positions will be
 %                 returned.
 %                 If no index is specified all data will be returned.
+%       header  - header of the sofa file. This will speed things up, as the
+%                 header has not to be extracted from the sofa file. This is
+%                 especially useful if you call this function inside a loop
 %
 %   Output parameters:
 %       ir      - impulse response (M,2,N), where
 %                   M ... number of impulse responses
 %                   N ... samples
 %
-%   SOFA_GET_DATA_FIR(sofa,idx) returns impulse response of the given
+%   SOFA_GET_DATA_FIR(sofa,idx,header) returns impulse response of the given
 %   SOFA file or struct, specified by idx. If no idx is specified all data
 %   contained in sofa is returned.
 %   For the struct the SOFA file has to loaded before with SOFAload().
@@ -60,12 +63,13 @@ function ir = sofa_get_data_fir(sofa,idx)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
-nargmax = 2;
+nargmax = 3;
 narginchk(nargmin,nargmax)
 if nargin==nargmax-1
+    header = [];
+elseif nargin==nargmax-2
+    header = [];
     idx = [];
-else
-    isargvector(idx);
 end
 
 
@@ -76,8 +80,10 @@ if length(idx)==0
     end
     ir = sofa.Data.IR;
 else
-    header = sofa_get_header(sofa);
     if sofa_is_file(sofa)
+        if isempty(header)
+            header = sofa_get_header(sofa);
+        end
         ir = zeros(length(idx),2,header.API.N);
         for ii=1:length(idx)
             tmp = SOFAload(sofa,[idx(ii) 1]);

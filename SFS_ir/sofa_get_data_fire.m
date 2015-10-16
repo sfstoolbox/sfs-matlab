@@ -1,7 +1,7 @@
-function ir = sofa_get_data_fire(sofa,idxM,idxE)
+function ir = sofa_get_data_fire(sofa,idxM,idxE,header)
 %SOFA_GET_DATA_FIRE returns impulse responses from a SOFA file or struct
 %
-%   Usage: ir = sofa_get_data_fire(sofa,[idxM],[idxE])
+%   Usage: ir = sofa_get_data_fire(sofa,[idxM,[idxE,[header]]])
 %
 %   Input parameters:
 %       sofa    - impulse response data set (SOFA struct/file)
@@ -14,6 +14,9 @@ function ir = sofa_get_data_fire(sofa,idxM,idxE)
 %                 If no index is specified all measurements will be returned.
 %       idxE    - index of the emitter for which the single impulse
 %                 responses should be returned. The rest is identical to idxM.
+%       header  - header of the sofa file. This will speed things up, as the
+%                 header has not to be extracted from the sofa file. This is
+%                 especially useful if you call this function inside a loop
 %
 %   Output parameters:
 %       ir      - impulse response (M,2,E,N), where
@@ -21,9 +24,9 @@ function ir = sofa_get_data_fire(sofa,idxM,idxE)
 %                   E ... number of emitters (loudspeakers)
 %                   N ... samples
 %
-%   SOFA_GET_DATA_FIRE(sofa,idxM,idxE) returns impulse response of the given
-%   SOFA file or struct, specified by idxM and idxE, where idxM defines the
-%   measurements and idxE the emitters for which impulse responses should be
+%   SOFA_GET_DATA_FIRE(sofa,idxM,idxE,header) returns impulse response of the
+%   given SOFA file or struct, specified by idxM and idxE, where idxM defines
+%   the measurements and idxE the emitters for which impulse responses should be
 %   returned. If no index is specified all data contained in sofa is returned.
 %   For the struct the SOFA file has to loaded before with SOFAload().
 %   For a description of the SOFA file format see: http://sofaconventions.org
@@ -65,11 +68,15 @@ function ir = sofa_get_data_fire(sofa,idxM,idxE)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
-nargmax = 3;
+nargmax = 4;
 narginchk(nargmin,nargmax)
 if nargin==nargmax-1
+    header = [];
+if nargin==nargmax-2
+    header = [];
     idxE = ':';
-elseif nargin==nargmax-2
+elseif nargin==nargmax-3
+    header = [];
     idxE = ':';
     idxM = ':';
 end
@@ -77,7 +84,9 @@ end
 
 %% ===== Computation ====================================================
 if sofa_is_file(sofa)
-    header = sofa_get_header(sofa);
+    if isempty(header)
+        header = sofa_get_header(sofa);
+    end
     if isnumeric(idxE) && isnumeric(idxM)
         ir = zeros(length(idxM),header.API.R,length(idxE),header.API.N);
         for ii=1:length(idxM)

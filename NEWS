@@ -15,6 +15,7 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
       delayline()
     - add heuristic to find a good local wave field synthesis pre-filter
     - loudspeaker geometry can now be read from a SOFA file
+    - speedup ir_generic() by introducing get_ir_loop()
 
 1.2.0 (2. June 2015)
 

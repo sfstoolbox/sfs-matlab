@@ -75,17 +75,32 @@ phi = correct_azimuth(phi);
 
 
 %% ===== BRIR ===========================================================
+warning('off','SFS:irs_intpol');
+warning('off','SOFA:upgrade');
+
 % Initial values
 ir_generic = zeros(N,2);
 
+% Get information about given SOFA data set.
+% Doing this outside the loop together with using get_ir_loop() speeds up
+% things by a large factor. If you use get_ir() instead you don't have to do
+% this.
+sofa_header = sofa_get_header(sofa);
+header.convention = sofa_header.GLOBAL_SOFAConventions;
+header.X = sofa_get_listener_position(sofa_header,'cartesian');
+header.x0 = sofa_get_secondary_sources(sofa_header,'spherical');
+[header.phi,header.theta] = sofa_get_head_orientations(sofa_header);
+header.API.N = sofa_header.API.N;
+header.API.R = sofa_header.API.N;
+header.API.E = sofa_header.API.N;
+
 % Create a BRIR for every single loudspeaker
-warning('off','SFS:irs_intpol');
 for ii=1:size(x0,1)
 
     % === Get the desired impulse response.
     % If needed interpolate the given impulse response set and weight, delay the
     % impulse for the correct distance
-    ir = get_ir(sofa,X,[phi 0],x0(ii,1:3),'cartesian',conf);
+    ir = get_ir_loop(sofa,header,X,[phi 0],x0(ii,1:3),'cartesian',conf);
 
     % === Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay ===
     % Also applying the weights of the secondary sources including integration
@@ -93,8 +108,10 @@ for ii=1:size(x0,1)
     ir_generic = ir_generic + fix_length(convolution(ir,d(:,ii)),N).*x0(ii,7);
 
 end
-warning('on','SFS:irs_intpol');
 
 
 %% ===== Headphone compensation =========================================
 ir = compensate_headphone(ir_generic,conf);
+
+warning('on','SFS:irs_intpol');
+warning('on','SOFA:upgrade');

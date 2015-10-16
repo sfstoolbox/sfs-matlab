@@ -104,9 +104,10 @@ print_png('secondary_sources_arbitrary_realloudspeakers.png');
 %% ===== Monochromatic sound fields ======================================
 % === stereo setup ===
 conf = SFS_config_example;
+conf.plot.normalisation = 'center';
 x0 = [-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1];
 % [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
-sound_field_mono([-2 2],[-1 3],0,x0,'ps',[5 5],800,conf)
+sound_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800,conf)
 print_png('sound_field_stereo.png');
 
 % === WFS 3D ===
@@ -122,15 +123,16 @@ sound_field_mono_wfs([-2 2],0,[-2 2],[0 -1 0],'pw',800,conf);
 print_png('sound_field_wfs_3d_xz.png');
 sound_field_mono_wfs(0,[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
 print_png('sound_field_wfs_3d_yz.png');
-%conf.resolution = 100;
-%sound_field_mono_wfs([-2 2],[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
-%print_png('sound_field_wfs_3d_xyz.png');
+conf.resolution = 100;
+sound_field_mono_wfs([-2 2],[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
+print_png('sound_field_wfs_3d_xyz.png');
 
-
+% === WFS 2.5D ===
 % simulating 2.5D WFS with circular array and a point source
 conf = SFS_config_example;
 conf.dimension = '2.5D';
-conf.plot.useplot = 1;
+conf.plot.useplot = true;
+conf.plot.normalisation = 'center';
 % [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
 [P,x,y,z,x0] = sound_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf);
 print_png('sound_field_wfs_25d.png');
@@ -181,7 +183,7 @@ conf.dimension = '3D';
 conf.secondary_sources.number = 225;
 conf.secondary_sources.geometry = 'sphere';
 conf.resolution = 100;
-conf.plot.usenormalisation = false;
+conf.plot.normalisation = 'center';
 X = randi([-2000 2000],125000,1)/1000;
 Y = randi([-2000 2000],125000,1)/1000;
 Z = randi([-2000 2000],125000,1)/1000;
@@ -221,7 +223,7 @@ conf = SFS_config_example;
 figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 semilogx(f,20*log10(a),'-r');
-axis([10 20000 -20 20]);
+axis([10 20000 -40 0]);
 set(gca,'XTick',[10 100 250 1000 5000 20000]);
 legend('w pre-filter');
 xlabel('frequency / Hz');

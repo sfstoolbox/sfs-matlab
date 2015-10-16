@@ -339,6 +339,7 @@ have to explicitly say if we want also plot the results, by
 conf = SFS_config_example;
 conf.dimension = '2.5D';
 conf.plot.useplot = true;
+conf.plot.normalisation = 'center';
 % [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
 [P,x,y,z,x0] = sound_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf);
 %print_png('doc/img/sound_field_wfs_25d.png');
@@ -424,6 +425,7 @@ can for example easily simulate a stereophonic setup.
 
 ```Matlab
 conf = SFS_config_example;
+conf.plot.normalisation = 'center';
 x0 = [-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1];
 % [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 sound_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800,conf)
@@ -485,6 +487,7 @@ conf.dimension = '3D';
 conf.secondary_sources.number = 225;
 conf.secondary_sources.geometry = 'sphere';
 conf.resolution = 100;
+conf.plot.normalisation = 'center';
 X = randi([-2000 2000],125000,1)/1000;
 Y = randi([-2000 2000],125000,1)/1000;
 Z = randi([-2000 2000],125000,1)/1000;
@@ -595,7 +598,7 @@ frequency range will be affected.
 
 ```Matlab
 freq_response_wfs([0 0 0],[0 2.5 0],'ps',conf);
-axis([10 20000 -20 20]);
+axis([10 20000 -40 0]);
 %print_png('doc/img/impulse_response_wfs_25d_mono.png');
 ```
 

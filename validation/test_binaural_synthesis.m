@@ -4,7 +4,7 @@ function test_binaural_synthesis()
 %
 %   Usage: test_binaural_synthesis()
 %
-%   TEST_BINAURAL_SYNTHESIS() tests the ir_wfs_25d function for different
+%   TEST_BINAURAL_SYNTHESIS() tests the ir_wfs function for different
 %   loudspeaker arrays and source models.
 
 %*****************************************************************************
@@ -72,14 +72,15 @@ conf.showprogress = false;
 %% ===== Main ============================================================
 % check if HRTF data set is available, download otherwise
 basepath = get_sfs_path();
-hrtf_file = [basepath '/data/HRTFs/QU_KEMAR_anechoic_3m.mat'];
+hrtf_file = [basepath '/data/HRTFs/QU_KEMAR_anechoic_3m.sofa'];
 if ~exist(hrtf_file,'file')
-    url = ['https://dev.qu.tu-berlin.de/projects/measurements/repository/', ...
-        'raw/2010-11-kemar-anechoic/mat/QU_KEMAR_anechoic_3m.mat'];
+    disp('Download');
+    url = ['https://github.com/sfstoolbox/data/blob/master/', ...
+           'HRTFs/QU_KEMAR_anechoic_3m.sofa?raw=true'];
     download_file(url,hrtf_file);
 end
 % load HRTF data set
-hrtf = read_irs(hrtf_file,conf);
+hrtf = SOFAload(hrtf_file);
 
 
 %% ===== WFS 2.5D ========================================================

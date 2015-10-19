@@ -60,20 +60,25 @@ narginchk(nargmin,nargmax);
 %
 % - Misc
 % - Audio
-% - Simulations
+% - Sound Field Synthesis (SFS)
+%   * Dimensionality
+%   * Driving functions
+%   * Impulse responses
+%   * 2.5D
+%   * Tapering
+% - Sound Field Simulations
 % - Secondary Sources
+% - Wave Field Synthesis (WFS)
+%   * Pre-equalization
+% - Spectral Division Method (SDM)
+% - Near-Field Compensated Hirger Order Ambisonics (NFC-HOA)
+% - Local Sound Field Synthesis
 % - Binaural Reproduction
 %   * Headphone compensation
-%   * HRIR/BRIR
-%   * Auralization
-% - WFS
-%   * Pre-equalization
-%   * Tapering
-%   * Virtual Sources
-% - SDM
-% - HOA
+%   * Auralisation
+%   * SoundScape Renderer
 % - Plotting
-%   * Gnuplot
+% - References
 %
 
 
@@ -290,7 +295,7 @@ conf.ir.usehcomp = false; % boolean
 % Headphone compensation file for left and right ear.
 conf.ir.hcompfile = 'data/headphone_compensation/QU_KEMAR_AKGK601_hcomp.wav'; % string
 %
-% === Auralisation ===
+% === Auralization ===
 % These files are used for the auralization of impulse responses by the
 % auralize_ir() function.
 % NOTE: you have to provide them by yourself!

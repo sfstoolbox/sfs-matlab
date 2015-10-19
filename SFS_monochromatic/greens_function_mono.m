@@ -91,11 +91,13 @@ if strcmp('ps',src)
             sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
 
 elseif strcmp('dps',src)
-    % Source model for a dipole point source: derivation of 3D Green's function.
+    % Source model for a dipole point source: derivative of 3D Green's function.
     %
     %  d                1   / iw       1    \   (x-xs) ns
     % ---- G(x-xs,w) = --- | ----- + ------- | ----------- e^(-i w/c |x-xs|)
     % d ns             4pi  \  c     |x-xs| /   |x-xs|^2
+    %
+    % see Wierstorf et al. (2015), eq.(#S:dps)
     %
     % r = |x-xs|
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);

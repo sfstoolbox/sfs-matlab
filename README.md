@@ -579,13 +579,31 @@ conf.secondary_sources.size = 3;
 conf.secondary_sources.number = 56;
 conf.secondary_sources.geometry = 'circle';
 conf.dimension = '2.5D';
-conf.ir.usehcomp = false;
 hrtf = SOFAload('QU_KEMAR_anechoic_3m.sofa');
 % ir = ir_wfs(X,phi,xs,src,hrtf,conf);
 ir = ir_wfs([0 0 0],pi/2,[0 3 0],'ps',hrtf,conf);
 cello = wavread('anechoic_cello.wav');
 sig = auralize_ir(ir,cello,1,conf);
 ```
+
+If you want to use binaural simulations in listening experiments, you should
+not only have the HRTF data set, but also a corresponding headphone compensation
+filter, which was recorded with the same dummy head as the HRTFs and the
+headphones you are going to use in your test. For the HRTFs we used in the last
+example and the AKG K601 headphones you can download
+[QU_KEMAR_AKGK601_hcomp.wav](https://raw.githubusercontent.com/sfstoolbox/data/master/headphone_compensation/QU_KEMAR_AKGK601_hcomp.wav).
+If you want to redo the last simulation with headphone compensation, just add
+the following lines before calling `ir_wfs()`.
+
+```Matlab
+conf.ir.usehcomp = true;
+conf.ir.hcompfile = 'QU_KEMAR_AKGK601_hcomp.wav';
+conf.N = 4096;
+```
+
+The last setting ensures that your impulse response will be long enough for
+convolution with the compensation filter.
+
 
 #### Binaural simulation of a real setup
 

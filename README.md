@@ -603,7 +603,7 @@ conf = SFS_config_example;
 brir = 'BRIR_NoAbsorbers_ArrayCentre_Emitters1to64.sofa';
 conf.secondary_sources.geometry = 'custom';
 conf.secondary_sources.x0 = brir;
-ir = ir_wfs([0 0 0],0,[0 3 0],'ps',brir,conf);
+ir = ir_wfs([0 0 0],0,[3 0 0],'ps',brir,conf);
 cello = wavread('anechoic_cello.wav');
 sig = auralize_ir(ir,cello,1,conf);
 ```

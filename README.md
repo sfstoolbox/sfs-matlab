@@ -14,9 +14,9 @@ underlying mathematics you should have a look at its PDF documentation [Theory
 of Sound Field
 Synthesis](https://github.com/sfstoolbox/sfs-documentation/releases/latest).
 
-**Attention:** the master branch incorporates already
+**Attention:** the SFS Toolbox now incorporates
 [SOFA](http://sofaconventions.org/) as file format for HRTFs which replaces the
-old irs file format formerly used by the SFS Toolbox. If you still need this
+old irs file format formerly used by the Toolbox. If you still need this
 you should download [the latest version with irs file
 support](https://github.com/sfstoolbox/sfs/releases/tag/1.2.0).
 
@@ -63,7 +63,14 @@ you will need the following additional packages from
 * audio (e.g. for wavwrite)
 * signal (e.g. for firls)
 
-After setting up the Toolbox and can made one of the magic following things with it:
+**Impulse responses**
+The Toolbox uses the [SOFA](http://sofaconventions.org/) file format for
+handling impulse response data sets like HRTFs. If you want to use this
+functionality you also have to install the [SOFA API for
+Matlab/Octave](https://github.com/sofacoustics/API_MO), which you can add to
+your paths by executing `SOFAstart`.
+
+After setting up the Toolbox you can made one of the magic following things with it.
 
 Usage
 -----
@@ -270,9 +277,9 @@ This depends on the specification of <code>X,Y,Z</code>. For example
 <code>[-2 2],0,[-2 2]</code> the xz-plane; <code>[-2 2],0,0</code> a line along
 the x-axis; <code>3,2,1</code> a single point. If you present a range like `[-2
 2]` the Toolbox will create automatically a regular grid from this ranging from
--2 to 2 with `conf.resolution` steps in between. Alternatively you could provide
-a custom grid by providing a matrix instead of the `[min max]` range for all
-active axes. We will show two examples later on.
+-2 to 2 with `conf.resolution` steps in between. Alternatively you could apply
+a [custom grid](#custom-grid-for-sound-field-simulations) by providing a matrix
+instead of the `[min max]` range for all active axes.
 
 For all 2.5D functions the configuration <code>conf.xref</code> is important as
 it defines the point for which the amplitude is corrected in the sound field.
@@ -329,10 +336,10 @@ sound_field_mono_wfs([-2 2],[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
 ![Image](doc/img/sound_field_wfs_3d_xyz.png)
 
 
-In the next plot we use a two dimensional array, 2.5D WFS and a virtual point source
-located at (0 2.5 0) m. The 3D example showed you, that the sound fields are
-automatically plotted if we specify now output arguments. If we specify one, we
-have to explicitly say if we want also plot the results, by
+In the next plot we use a two dimensional array, 2.5D WFS and a virtual point
+source located at (0 2.5 0) m. The 3D example showed you, that the sound fields
+are automatically plotted if we specify now output arguments. If we specify one,
+we have to explicitly say if we want also plot the results, by
 <code>conf.plot.useplot = true;</code>.
 
 ```Matlab
@@ -347,12 +354,12 @@ conf.plot.normalisation = 'center';
 
 ![Image](doc/img/sound_field_wfs_25d.png)
 
-If you want to plot the whole array and not only the active secondary sources,
-you can do this by adding these commands. First we store all sources in an extra
-variable <code>x0_all</code>, then we get the active ones <code>x0</code> and
-the corresponding indices of these active ones in <code>x0_all</code>.
-Afterwards we set all sources in <code>x0_all</code> to zero, which is inactive
-and only the active ones to <code>x0(:,7)</code>.
+If you want to plot the whole loudspeaker array and not only the active
+secondary sources, you can do this by adding these commands. First we store all
+sources in an extra variable <code>x0_all</code>, then we get the active ones
+<code>x0</code> and the corresponding indices of these active ones in
+<code>x0_all</code>.  Afterwards we set all sources in <code>x0_all</code> to
+zero, which is inactive and only the active ones to <code>x0(:,7)</code>.
 
 ```Matlab
 x0_all = secondary_source_positions(conf);
@@ -384,17 +391,16 @@ sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
 
 #### Local Wave Field Synthesis
 
-In Near-Field Compensated Higher Order Ambisonics aliasing frequency in a small
-array inside the listening area can be increased by limiting the used order. A
-similar outcome can be achoieved in Wave Field Synthesis by applying so called
-local Wave Field Synthesis. In this case the original loudspeaker array is
-driven by Wave Field Synthesis to create a virtual loudspeaker array consisting
-of focused sources which can then be used to create the desired sound field in a
-small area.
-The settings are the same as for Wave Field Synthesis, but a new struct
-<code>conf.localsfs</code> has to be filled out, which for example provides the
-settings for the desired position and form of the local area with higher
-aliasing frequency.
+In NFC-HOA the aliasing frequency in a small region inside the listening area
+can be increased by limiting the used order. A similar outcome can be achieved
+in WFS by applying so called local Wave Field Synthesis. In this case the
+original loudspeaker array is driven by WFS to create a virtual loudspeaker
+array consisting of focused sources which can then be used to create the desired
+sound field in a small area. The settings are the same as for WFS, but a new
+struct <code>conf.localsfs</code> has to be filled out, which for example
+provides the settings for the desired position and form of the local region with
+higher aliasing frequency, have a look into `SFS_config_example.m` for all
+possible settings.
 
 ```Matlab
 conf = SFS_config_example;
@@ -421,7 +427,9 @@ axis([-1.1 1.1 -1.1 1.1]);
 The Toolbox includes not only WFS and NFC-HOA, but also some generic sound field
 functions that are doing only the integration of the driving signals of the
 single secondary sources to the resulting sound field. With these function you
-can for example easily simulate a stereophonic setup.
+can for example easily simulate a stereophonic setup. In this example we set the
+`conf.plot.normalisation = 'center';` configuration manually as the amplitude of
+the sound field is too low for the default `'auto'` setting to work.
 
 ```Matlab
 conf = SFS_config_example;
@@ -458,7 +466,6 @@ true;</code>. In this case the default color map is changed and a color bar
 is plotted in the figure. For none dB plots no color bar is shown in the plots.
 In these cases the color coding goes always from -1 to 1, with clipping of
 larger values.
-You could change the color
 
 ```Matlab
 conf.plot.usedb = true;
@@ -510,18 +517,17 @@ sound_field_imp_nfchoa(X,Y,0,[0 2 0],'ps',200,conf);
 
 If you have a set of head-related transfer functions (HRTFs) you can simulate
 the ear signals reaching a listener sitting at a given point in the listening
-area for a specified WFS or NFC-HOA system.
-You can even download the example [QU_KEMAR_anechoic_3m.sofa](https://github.com/sfstoolbox/data/raw/master/HRTFs/QU_KEMAR_anechoic_3m.sofa)
+area for a specified WFS or NFC-HOA system.  You can even download the example
+[QU_KEMAR_anechoic_3m.sofa](https://github.com/sfstoolbox/data/raw/master/HRTFs/QU_KEMAR_anechoic_3m.sofa)
 HRTF set, which will just work with the Toolbox and is used in the examples
 below.
 
-In order to easily use different HRTF sets the toolbox uses the
-[SOFA file format](http://sofaconventions.org). In order to use it you have
-to install the SOFA API for
-Matlab/Octave from https://github.com/sofacoustics/API_MO and run `SOFAstart` before
-you can use it inside the SFS Toolbox.
-If you are looking for different HRTFs, a large set of different impulse
-responses is now available in these format, see for example:
+In order to easily use different HRTF sets the toolbox uses the [SOFA file
+format](http://sofaconventions.org). In order to use it you have to install the
+SOFA API for Matlab/Octave from https://github.com/sofacoustics/API_MO and run
+`SOFAstart` before you can use it inside the SFS Toolbox.  If you are looking
+for different HRTFs, a large set of different impulse responses is now available
+in these format, see for example:
 http://www.sofaconventions.org/mediawiki/index.php/Files.
 
 The files dealing with the binaural simulations are in the folder
@@ -529,11 +535,12 @@ The files dealing with the binaural simulations are in the folder
 <code>SFS_ir</code>. If you want to extrapolate your HRTFs to plane waves you
 may also want to have a look in <code>SFS_HRTF_extrapolation</code>.
 
-For example the following code will load our HRTF data set for a distance of 3m, then
-a single impulse response for an angle of 30° is chosen from the set. If the
-desired angle of 30° is not available, a linear interpolation between the next
-two available angles will be applied. Afterwards a noise signal is created and convolved
-with the impulse response by the <code>auralize_ir()</code> function.
+For example the following code will load our HRTF data set for a distance of 3m,
+then a single impulse response for an angle of 30° is chosen from the set. If
+the desired angle of 30° is not available, a linear interpolation between the
+next two available angles will be applied. Afterwards a noise signal is created
+and convolved with the impulse response by the <code>auralize_ir()</code>
+function.
 
 ```Matlab
 conf = SFS_config_example;
@@ -561,12 +568,14 @@ nsig = randn(44100,1);
 sig = auralize_ir(ir,nsig,1,conf);
 ```
 
+#### Frequency response of your spatial audio system
+
 Binaural simulations are also a nice way to investigate the frequency response
 of your reproduction system. The following code will investigate the influence
-of the pre-equalization filter in WFS on the frequency response.
-For the red line the pre-filter is used and its upper frequency is set to the
-expected aliasing frequency of the system (above these frequency the spectrum
-becomes very noise as you can see in the figure).
+of the pre-equalization filter in WFS on the frequency response.  For the red
+line the pre-filter is used and its upper frequency is set to the expected
+aliasing frequency of the system (above these frequency the spectrum becomes
+very noise as you can see in the figure).
 
 ```Matlab
 conf = SFS_config_example;
@@ -638,11 +647,11 @@ create noise signal <code>noise()</code>, rotation matrix
 ### Plotting with Matlab/Octave or gnuplot
 
 The Toolbox provides you with a variety of functions for plotting your simulated
-sound fields <code>plot_sound_field()</code> and adding loudspeaker symbols to the
-figure <code>draw_loudspeakers</code>.
-If you have gnuplot installed, you can use the functions <code>gp_save_matrix.m</code>
-and <code>gp_save_loudspeakers.m</code> to save your data in a way that it can
-be used with gnuplot. An example use case can be found [at this plot of a plane
+sound fields <code>plot_sound_field()</code> and adding loudspeaker symbols to
+the figure <code>draw_loudspeakers</code>.  If you have gnuplot installed, you
+can use the functions <code>gp_save_matrix.m</code> and
+<code>gp_save_loudspeakers.m</code> to save your data in a way that it can be
+used with gnuplot. An example use case can be found [at this plot of a plane
 wave](https://github.com/hagenw/phd-thesis/tree/master/02_theory_of_sound_field_synthesis/fig2_04)
 which includes the Matlab/Octave code to generate the data and the gnuplot
 script for plotting it.
@@ -660,7 +669,9 @@ Website: http://github.com/sfstoolbox/sfs
 If you have questions, bug reports or feature requests, please use the [Issue
 Section on the website](https://github.com/sfstoolbox/sfs/issues) to report them.
 
-If you use the Toolbox for your publications please cite our AES Convention e-Brief:
+If you use the Toolbox for your publications please cite our AES Convention
+e-Brief and/or the DOI you will find for the [official
+releases](https://github.com/sfstoolbox/sfs/releases):  
 H. Wierstorf, S. Spors - Sound Field Synthesis Toolbox.
 In the Proceedings of *132nd Convention of the
 Audio Engineering Society*, 2012

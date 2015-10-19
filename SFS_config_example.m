@@ -182,6 +182,8 @@ conf.secondary_sources.corner_radius = 0.0; % / m
 % Vector containing custom secondary source positions and directions.
 % This is used if geometry = 'custom' is specified.
 % conf.secondary_sources.x0 = [x0; y0; z0; nx0; ny0; nz0; weight];
+% Or it could also be a SOFA struct or file name, in this case the positions are
+% extracted from the provided SOFA file.
 conf.secondary_sources.x0 = []; % / m
 % Grid for the spherical array. Note, that you have to download and install the
 % spherical grids from an additiona source. For available grids see:

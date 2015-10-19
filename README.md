@@ -517,21 +517,22 @@ sound_field_imp_nfchoa(X,Y,0,[0 2 0],'ps',200,conf);
 
 If you have a set of head-related transfer functions (HRTFs) or binaural room
 impulse responses (BRIRs) you can simulate the ear signals reaching a listener
-sitting at a given point in the listening area for a specified WFS or
-NFC-HOA system.
+sitting at a given point in the listening area for different spatial audio
+systems.
 
-In order to easily use different HRTF or BRIR sets the toolbox uses the [SOFA file
+In order to easily use different HRTF or BRIR sets the Toolbox uses the [SOFA file
 format](http://sofaconventions.org). In order to use it you have to install the
-SOFA API for Matlab/Octave from https://github.com/sofacoustics/API_MO and run
+[SOFA API for Matlab/Octave](https://github.com/sofacoustics/API_MO) and run
 `SOFAstart` before you can use it inside the SFS Toolbox.  If you are looking
-for different HRTFs and BRIRs, a large set of different impulse responses is now
-available in these format, see for example:
+for different HRTFs and BRIRs, a large set of different impulse responses is
+available:
 http://www.sofaconventions.org/mediawiki/index.php/Files.
 
 The files dealing with the binaural simulations are in the folder
 <code>SFS_binaural_synthesis</code>. Files dealing with HRTFs and BRIRs are in
 the folder <code>SFS_ir</code>. If you want to extrapolate your HRTFs to plane
-waves you may also want to have a look in <code>SFS_HRTF_extrapolation</code>.
+waves you may also want to have a look in the folder
+<code>SFS_HRTF_extrapolation</code>.
 
 In the following we present some examples of binaural simulations. For their
 auralization an anechoic recording of a cello is used, which can be downloaded
@@ -557,7 +558,7 @@ The following example will load the HRTF data set and
 extracts a single impulse response for an angle of 30° from it. If
 the desired angle of 30° is not available, a linear interpolation between the
 next two available angles will be applied. Afterwards the impulse response will
-be convolved with the cello recording the <code>auralize_ir()</code>
+be convolved with the cello recording by the <code>auralize_ir()</code>
 function.
 
 ```Matlab
@@ -592,18 +593,17 @@ sig = auralize_ir(ir,cello,1,conf);
 
 Besides simulating arbitrary loudspeaker configurations in an anechoic space,
 you can also do binaural simulations of real loudspeaker setups. In the
-following example we use binaural room impulse responses (BRIRs) from the
-64-channel loudspeaker array of the University Rostock as shown in the panorama
-photo above. The BRIRs and additional information on the recordings are
-available for download, see
+following example we use BRIRs from the 64-channel loudspeaker array of the
+University Rostock as shown in the panorama photo above. The BRIRs and
+additional information on the recordings are available for download, see
 [doi:10.14279/depositonce-87.2](http://dx.doi.org/10.14279/depositonce-87.2).
 
 ```Matlab
 conf = SFS_config_example;
-hrtf = 'BRIR_NoAbsorbers_ArrayCentre_Emitters1to64.sofa';
+brir = 'BRIR_NoAbsorbers_ArrayCentre_Emitters1to64.sofa';
 conf.secondary_sources.geometry = 'custom';
-conf.secondary_sources.x0 = hrtf;
-ir = ir_wfs([0 0 0],0,[0 3 0],'ps',hrtf,conf);
+conf.secondary_sources.x0 = brir;
+ir = ir_wfs([0 0 0],0,[0 3 0],'ps',brir,conf);
 cello = wavread('anechoic_cello.wav');
 sig = auralize_ir(ir,cello,1,conf);
 ```
@@ -612,8 +612,8 @@ In this case, we don't load the BRIRs into the memory with `SOFAload()` as the
 file is too large. Instead, we make use of the ability that SOFA can request
 single impulse responses from the file by just passing the file name to the
 `ir_wfs()` function. Note, that the head orientation is chosen to be `0` instead
-of `pi/2` as for the HRTF examples as the coordinate system of the BRIR
-measurement has a different orientation.
+of `pi/2` as in the HRTF examples due to a difference in the orientation of
+the coordinate system of the BRIR measurement.
 
 
 #### Frequency response of your spatial audio system
@@ -629,11 +629,11 @@ very noise as you can see in the figure).
 conf = SFS_config_example;
 conf.ir.usehcomp = false;
 conf.wfs.usehpre = false;
-irs = dummy_irs(conf);
-[ir1,x0] = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
+hrtf = dummy_irs(conf);
+[ir1,x0] = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',hrtf,conf);
 conf.wfs.usehpre = true;
 conf.wfs.hprefhigh = aliasing_frequency(x0,conf);
-ir2 = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
+ir2 = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',hrtf,conf);
 [a1,p,f] = easyfft(norm_signal(ir1(:,1)),conf);
 a2 = easyfft(norm_signal(ir2(:,1)),conf);
 figure;
@@ -674,7 +674,7 @@ All functions regarding the SSR are stored in <code>SFS_ssr</code>.
 
 ```Matlab
 conf = SFS_config_example;
-brs = ssr_brs_wfs(X,phi,xs,src,irs,conf);
+brs = ssr_brs_wfs(X,phi,xs,src,hrtf,conf);
 wavwrite(brs,fs,16,'brs_set_for_SSR.wav');
 ```
 

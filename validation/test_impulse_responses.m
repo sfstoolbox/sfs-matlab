@@ -78,8 +78,8 @@ conf.ir.usehcomp = false;
 % listening area, virtual source
 xs = [0.0, 2.5, 0];  % propagation direction of plane wave
 src = 'ps';
-X = [-1.5 1.5];
-Y = [-1, 1.55];
+X = [-1.55 1.55];
+Y = [-1.55, 1.55];
 Z = 0;
 
 

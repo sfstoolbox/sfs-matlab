@@ -86,10 +86,12 @@ Ynon  = r.*sin(alpha);
 Znon = 0;
 
 % sound fields
-sound_field_mono_wfs(Xreg,Yreg,Zreg, xs, src, tau, conf);
-sound_field_mono_wfs(Xnon,Ynon,Znon, xs, src, tau, conf);
+conf.plot.normalisation = 'center';
+sound_field_mono_wfs(Xreg,Yreg,Zreg, xs, src, f, conf);
+sound_field_mono_wfs(Xnon,Ynon,Znon, xs, src, f, conf);
 
-sound_field_imp_wfs(Xreg,Yreg,Zreg, xs, src, f, conf);
-sound_field_imp_wfs(Xnon,Ynon,Znon, xs, src, f, conf);
+conf.plot.normalisation = 'max';
+sound_field_imp_wfs(Xreg,Yreg,Zreg, xs, src, tau, conf);
+sound_field_imp_wfs(Xnon,Ynon,Znon, xs, src, tau, conf);
 
 boolean = true;

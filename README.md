@@ -568,6 +568,25 @@ nsig = randn(44100,1);
 sig = auralize_ir(ir,nsig,1,conf);
 ```
 
+#### Binaural simulation of a real setup
+
+![Image](doc/img/university_rostock_loudspeaker_array.jpg)
+
+Besides simulating arbitrary loudspeaker configurations in an anechoic space,
+you can also do binaural simulations of real loudspeaker setups. In the
+following example we use binaural room impulse responses (BRIRs) from the
+64-channel loudspeaker array of the University Rostock. The BRIRs and additional
+information on the recordings are available for download, see
+[doi:10.14279/depositonce-87.2](http://dx.doi.org/10.14279/depositonce-87.2).
+
+```Matlab
+conf = SFS_config_example;
+hrtf = 'BRIR_NoAbsorbers_ArrayCentre_Emitters1to64.sofa';
+conf.secondary_sources.geometry = 'custom';
+conf.secondary_sources.x0 = hrtf;
+ir = ir_wfs([0 0 0],0,[0 3 0],'ps',hrtf,conf);
+```
+
 #### Frequency response of your spatial audio system
 
 Binaural simulations are also a nice way to investigate the frequency response

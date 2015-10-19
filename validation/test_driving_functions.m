@@ -61,7 +61,7 @@ conf.secondary_sources.size = 3;
 f = 1000;
 t = 200;
 conf.plot.useplot = false;
-conf.plot.usenormalisation = false;
+conf.plot.usenormalisation = true;
 conf.driving_functions = 'default';
 % test scenarios
 scenarios = { ...
@@ -138,6 +138,7 @@ for ii=1:size(scenarios)
         try
             [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
             if modus
+                conf.plot.normalisation = 'center';
                 plot_sound_field(P,X,Y,Z,x0,conf);
                 title_str = sprintf('WFS %s %s array, %s, mono-frequent', ...
                     conf.dimension,conf.secondary_sources.geometry,src);
@@ -152,6 +153,7 @@ for ii=1:size(scenarios)
         try
             [p,x,y,z,x0] = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf);
             if modus
+                conf.plot.normalisation = 'max';
                 plot_sound_field(p,X,Y,Z,x0,conf);
                 title_str = sprintf('WFS %s %s array, %s, impulse response', ...
                     conf.dimension,conf.secondary_sources.geometry,src);
@@ -169,6 +171,7 @@ for ii=1:size(scenarios)
         try
             [P,x,y,z,x0] = sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf);
             if modus
+                conf.plot.normalisation = 'center';
                 plot_sound_field(P,X,Y,Z,x0,conf);
                 title_str = sprintf('NFC-HOA %s %s array, %s, mono-frequent', ...
                     conf.dimension,conf.secondary_sources.geometry,src);
@@ -183,6 +186,7 @@ for ii=1:size(scenarios)
         try
             [p,x,y,z,x0] = sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf);
             if modus
+                conf.plot.normalisation = 'max';
                 plot_sound_field(p,X,Y,Z,x0,conf);
                 title_str = sprintf('NFC-HOA %s %s array, %s, impulse response', ...
                     conf.dimension,conf.secondary_sources.geometry,src);

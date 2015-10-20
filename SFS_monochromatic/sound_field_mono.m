@@ -134,7 +134,7 @@ for ii = 1:size(x0,1)
     % This is the model for the secondary sources we apply.
     % The exact function is given by the dimensionality of the problem, e.g. a
     % point source for 3D
-    G = greens_function_mono(xx,yy,zz,x0(ii,1:3),src,f,conf);
+    G = greens_function_mono(xx,yy,zz,x0(ii,1:6),src,f,conf);
 
     % ====================================================================
     % Integration

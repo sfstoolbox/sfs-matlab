@@ -615,6 +615,8 @@ following example we use BRIRs from the 64-channel loudspeaker array of the
 University Rostock as shown in the panorama photo above. The BRIRs and
 additional information on the recordings are available for download, see
 [doi:10.14279/depositonce-87.2](http://dx.doi.org/10.14279/depositonce-87.2).
+For such a measurement the SOFA file format has the advantage to be able to
+include all loudspeakers and head orientations in just one file.
 
 ```Matlab
 conf = SFS_config_example;

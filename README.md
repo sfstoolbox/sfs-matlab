@@ -648,9 +648,9 @@ create noise signal <code>noise()</code>, rotation matrix
 
 The Toolbox provides you with a variety of functions for plotting your simulated
 sound fields <code>plot_sound_field()</code> and adding loudspeaker symbols to
-the figure <code>draw_loudspeakers</code>.  If you have gnuplot installed, you
-can use the functions <code>gp_save_matrix.m</code> and
-<code>gp_save_loudspeakers.m</code> to save your data in a way that it can be
+the figure <code>draw_loudspeakers()</code>.  If you have gnuplot installed, you
+can use the functions <code>gp_save_matrix()</code> and
+<code>gp_save_loudspeakers()</code> to save your data in a way that it can be
 used with gnuplot. An example use case can be found [at this plot of a plane
 wave](https://github.com/hagenw/phd-thesis/tree/master/02_theory_of_sound_field_synthesis/fig2_04)
 which includes the Matlab/Octave code to generate the data and the gnuplot

@@ -515,39 +515,58 @@ sound_field_imp_nfchoa(X,Y,0,[0 2 0],'ps',200,conf);
 
 ### Make binaural simulations of your systems
 
-If you have a set of head-related transfer functions (HRTFs) you can simulate
-the ear signals reaching a listener sitting at a given point in the listening
-area for a specified WFS or NFC-HOA system.  You can even download the example
-[QU_KEMAR_anechoic_3m.sofa](https://github.com/sfstoolbox/data/raw/master/HRTFs/QU_KEMAR_anechoic_3m.sofa)
-HRTF set, which will just work with the Toolbox and is used in the examples
-below.
+If you have a set of head-related transfer functions (HRTFs) or binaural room
+impulse responses (BRIRs) you can simulate the ear signals reaching a listener
+sitting at a given point in the listening area for different spatial audio
+systems.
 
-In order to easily use different HRTF sets the toolbox uses the [SOFA file
+In order to easily use different HRTF or BRIR sets the Toolbox uses the [SOFA file
 format](http://sofaconventions.org). In order to use it you have to install the
-SOFA API for Matlab/Octave from https://github.com/sofacoustics/API_MO and run
+[SOFA API for Matlab/Octave](https://github.com/sofacoustics/API_MO) and run
 `SOFAstart` before you can use it inside the SFS Toolbox.  If you are looking
-for different HRTFs, a large set of different impulse responses is now available
-in these format, see for example:
+for different HRTFs and BRIRs, a large set of different impulse responses is
+available:
 http://www.sofaconventions.org/mediawiki/index.php/Files.
 
 The files dealing with the binaural simulations are in the folder
-<code>SFS_binaural_synthesis</code>. Files dealing with HRTFs are in the folder
-<code>SFS_ir</code>. If you want to extrapolate your HRTFs to plane waves you
-may also want to have a look in <code>SFS_HRTF_extrapolation</code>.
+<code>SFS_binaural_synthesis</code>. Files dealing with HRTFs and BRIRs are in
+the folder <code>SFS_ir</code>. If you want to extrapolate your HRTFs to plane
+waves you may also want to have a look in the folder
+<code>SFS_HRTF_extrapolation</code>.
 
-For example the following code will load our HRTF data set for a distance of 3m,
-then a single impulse response for an angle of 30° is chosen from the set. If
+In the following we present some examples of binaural simulations. For their
+auralization an anechoic recording of a cello is used, which can be downloaded
+from
+[anechoic_cello.wav](https://dev.qu.tu-berlin.de/projects/twoears-database/repository/revisions/master/raw/stimuli/anechoic/instruments/anechoic_cello.wav).
+
+
+#### Binaural simulation of arbitrary loudspeaker arrays
+
+![Image](doc/img/tu_berlin_hrtf.jpg)
+
+If you use an HRTF data set, it has the advantage that it was recorded in
+anechoic conditions and the only parameter that matters is the relative position
+of the loudspeaker to the head during the measurement. This advantage can be
+used to create every possible loudspeaker array you can imagine, given that the
+relative locations of all loudspeakers are available in the HRTF data set.  The
+above picture shows an example of a HRTF measurement. You can download the
+corresponding
+[QU_KEMAR_anechoic_3m.sofa](https://github.com/sfstoolbox/data/raw/master/HRTFs/QU_KEMAR_anechoic_3m.sofa)
+HRTF set, which we can directly use with the Toolbox.
+
+The following example will load the HRTF data set and
+extracts a single impulse response for an angle of 30° from it. If
 the desired angle of 30° is not available, a linear interpolation between the
-next two available angles will be applied. Afterwards a noise signal is created
-and convolved with the impulse response by the <code>auralize_ir()</code>
+next two available angles will be applied. Afterwards the impulse response will
+be convolved with the cello recording by the <code>auralize_ir()</code>
 function.
 
 ```Matlab
 conf = SFS_config_example;
 hrtf = SOFAload('QU_KEMAR_anechoic_3m.sofa');
 ir = get_ir(hrtf,[0 0 0],[0 0],[rad(30) 0 3],'spherical',conf);
-nsig = randn(44100,1);
-sig = auralize_ir(ir,nsig,1,conf);
+cello = wavread('anechoic_cello.wav');
+sig = auralize_ir(ir,cello,1,conf);
 sound(sig,conf.fs);
 ```
 
@@ -560,13 +579,62 @@ conf.secondary_sources.size = 3;
 conf.secondary_sources.number = 56;
 conf.secondary_sources.geometry = 'circle';
 conf.dimension = '2.5D';
-conf.ir.usehcomp = false;
 hrtf = SOFAload('QU_KEMAR_anechoic_3m.sofa');
 % ir = ir_wfs(X,phi,xs,src,hrtf,conf);
 ir = ir_wfs([0 0 0],pi/2,[0 3 0],'ps',hrtf,conf);
-nsig = randn(44100,1);
-sig = auralize_ir(ir,nsig,1,conf);
+cello = wavread('anechoic_cello.wav');
+sig = auralize_ir(ir,cello,1,conf);
 ```
+
+If you want to use binaural simulations in listening experiments, you should
+not only have the HRTF data set, but also a corresponding headphone compensation
+filter, which was recorded with the same dummy head as the HRTFs and the
+headphones you are going to use in your test. For the HRTFs we used in the last
+example and the AKG K601 headphones you can download
+[QU_KEMAR_AKGK601_hcomp.wav](https://raw.githubusercontent.com/sfstoolbox/data/master/headphone_compensation/QU_KEMAR_AKGK601_hcomp.wav).
+If you want to redo the last simulation with headphone compensation, just add
+the following lines before calling `ir_wfs()`.
+
+```Matlab
+conf.ir.usehcomp = true;
+conf.ir.hcompfile = 'QU_KEMAR_AKGK601_hcomp.wav';
+conf.N = 4096;
+```
+
+The last setting ensures that your impulse response will be long enough for
+convolution with the compensation filter.
+
+
+#### Binaural simulation of a real setup
+
+![Image](doc/img/university_rostock_loudspeaker_array.jpg)
+
+Besides simulating arbitrary loudspeaker configurations in an anechoic space,
+you can also do binaural simulations of real loudspeaker setups. In the
+following example we use BRIRs from the 64-channel loudspeaker array of the
+University Rostock as shown in the panorama photo above. The BRIRs and
+additional information on the recordings are available for download, see
+[doi:10.14279/depositonce-87.2](http://dx.doi.org/10.14279/depositonce-87.2).
+For such a measurement the SOFA file format has the advantage to be able to
+include all loudspeakers and head orientations in just one file.
+
+```Matlab
+conf = SFS_config_example;
+brir = 'BRIR_NoAbsorbers_ArrayCentre_Emitters1to64.sofa';
+conf.secondary_sources.geometry = 'custom';
+conf.secondary_sources.x0 = brir;
+ir = ir_wfs([0 0 0],0,[3 0 0],'ps',brir,conf);
+cello = wavread('anechoic_cello.wav');
+sig = auralize_ir(ir,cello,1,conf);
+```
+
+In this case, we don't load the BRIRs into the memory with `SOFAload()` as the
+file is too large. Instead, we make use of the ability that SOFA can request
+single impulse responses from the file by just passing the file name to the
+`ir_wfs()` function. Note, that the head orientation is chosen to be `0` instead
+of `pi/2` as in the HRTF examples due to a difference in the orientation of
+the coordinate system of the BRIR measurement.
+
 
 #### Frequency response of your spatial audio system
 
@@ -581,11 +649,11 @@ very noise as you can see in the figure).
 conf = SFS_config_example;
 conf.ir.usehcomp = false;
 conf.wfs.usehpre = false;
-irs = dummy_irs(conf);
-[ir1,x0] = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
+hrtf = dummy_irs(conf);
+[ir1,x0] = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',hrtf,conf);
 conf.wfs.usehpre = true;
 conf.wfs.hprefhigh = aliasing_frequency(x0,conf);
-ir2 = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
+ir2 = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',hrtf,conf);
 [a1,p,f] = easyfft(norm_signal(ir1(:,1)),conf);
 a2 = easyfft(norm_signal(ir2(:,1)),conf);
 figure;
@@ -626,7 +694,7 @@ All functions regarding the SSR are stored in <code>SFS_ssr</code>.
 
 ```Matlab
 conf = SFS_config_example;
-brs = ssr_brs_wfs(X,phi,xs,src,irs,conf);
+brs = ssr_brs_wfs(X,phi,xs,src,hrtf,conf);
 wavwrite(brs,fs,16,'brs_set_for_SSR.wav');
 ```
 

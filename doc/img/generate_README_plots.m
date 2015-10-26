@@ -102,14 +102,6 @@ axis([-2 2 -2.5 2.5]);
 print_png('secondary_sources_arbitrary_realloudspeakers.png');
 
 %% ===== Monochromatic sound fields ======================================
-% === stereo setup ===
-conf = SFS_config_example;
-conf.plot.normalisation = 'center';
-x0 = [-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1];
-% [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
-sound_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800,conf)
-print_png('sound_field_stereo.png');
-
 % === WFS 3D ===
 conf = SFS_config_example;
 conf.dimension = '3D';
@@ -150,7 +142,7 @@ conf.dimension = '2.5D';
 sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
 print_png('sound_field_nfchoa_25d.png');
 
-% 2D local WFS with box shaped array and circular virtual array
+% === 2D local WFS with box shaped array and circular virtual array ===
 conf = SFS_config_example;
 conf.resolution = 1000;
 conf.dimension = '2D';
@@ -165,7 +157,15 @@ sound_field_mono_localwfs([-1 1],[-1 1],0,[1.0 -1.0 0],'pw',7000,conf);
 axis([-1.1 1.1 -1.1 1.1]);
 print_png('sound_field_localwfs_2d.png');
 
-% --- spatio-temporal snapshots of the sound field ---
+% === stereo setup ===
+conf = SFS_config_example;
+conf.plot.normalisation = 'center';
+x0 = [-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1];
+% [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
+sound_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800,conf)
+print_png('sound_field_stereo.png');
+
+%% ===== spatio-temporal snapshots of the sound field ====================
 conf = SFS_config_example;
 conf.dimension = '2.5D';
 conf.plot.useplot = true;
@@ -173,11 +173,11 @@ conf.plot.useplot = true;
 [p,x,y,z,x0] = sound_field_imp_nfchoa([-2 2],[-2 2],0,[0 2 0],'ps',200,conf);
 print_png('sound_field_imp_nfchoa_25d.png');
 conf.plot.usedb = true;
-plot_sound_field(p,x,y,z,x0,conf);
+plot_sound_field(p,[-2 2],[-2 2],0,x0,conf);
 print_png('sound_field_imp_nfchoa_25d_dB.png');
 
 
-% --- custom grids ---
+%% ===== custom grids ====================================================
 conf = SFS_config_example;
 conf.dimension = '3D';
 conf.secondary_sources.number = 225;
@@ -197,7 +197,7 @@ sound_field_imp_nfchoa(X,Y,0,[0 2 0],'ps',200,conf);
 print_png('sound_field_imp_nfchoa_25d_dB_custom_grid.png');
 
 
-% --- impulse response of the system ---
+%% ===== impulse response of the system ==================================
 conf = SFS_config_example;
 conf.ir.usehcomp = 0;
 conf.wfs.usehpre = 0;

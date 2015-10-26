@@ -620,7 +620,7 @@ include all loudspeakers and head orientations in just one file.
 
 ```Matlab
 conf = SFS_config_example;
-brir = 'BRIR_NoAbsorbers_ArrayCentre_Emitters1to64.sofa';
+brir = 'BRIR_AllAbsorbers_ArrayCentre_Emitters1to64.sofa';
 conf.secondary_sources.geometry = 'custom';
 conf.secondary_sources.x0 = brir;
 conf.N = 44100;

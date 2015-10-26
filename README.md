@@ -156,7 +156,7 @@ figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
-print_png('doc/img/secondary_sources_rounded-box.png');
+%print_png('doc/img/secondary_sources_rounded-box.png');
 ```
 
 ![Image](doc/img/secondary_sources_rounded-box.png)

@@ -173,7 +173,7 @@ conf.plot.useplot = true;
 [p,x,y,z,x0] = sound_field_imp_nfchoa([-2 2],[-2 2],0,[0 2 0],'ps',200,conf);
 print_png('sound_field_imp_nfchoa_25d.png');
 conf.plot.usedb = true;
-plot_sound_field(p,x,y,z,x0,conf);
+plot_sound_field(p,[-2 2],[-2 2],0,x0,conf);
 print_png('sound_field_imp_nfchoa_25d_dB.png');
 
 

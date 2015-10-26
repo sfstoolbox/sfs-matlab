@@ -469,7 +469,7 @@ larger values.
 
 ```Matlab
 conf.plot.usedb = true;
-plot_sound_field(p,x,y,z,x0,conf);
+plot_sound_field(p,[-2 2],[-2 2],0,x0,conf);
 %print_png('doc/img/sound_field_imp_nfchoa_25d_dB.png');
 ```
 

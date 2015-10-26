@@ -177,7 +177,7 @@ plot_sound_field(p,[-2 2],[-2 2],0,x0,conf);
 print_png('sound_field_imp_nfchoa_25d_dB.png');
 
 
-% --- custom grids ---
+%% ===== custom grids ====================================================
 conf = SFS_config_example;
 conf.dimension = '3D';
 conf.secondary_sources.number = 225;
@@ -197,7 +197,7 @@ sound_field_imp_nfchoa(X,Y,0,[0 2 0],'ps',200,conf);
 print_png('sound_field_imp_nfchoa_25d_dB_custom_grid.png');
 
 
-% --- impulse response of the system ---
+%% ===== impulse response of the system ==================================
 conf = SFS_config_example;
 conf.ir.usehcomp = 0;
 conf.wfs.usehpre = 0;

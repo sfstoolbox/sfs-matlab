@@ -633,11 +633,11 @@ In this case, we don't load the BRIRs into the memory with `SOFAload()` as the
 file is too large. Instead, we make use of the ability that SOFA can request
 single impulse responses from the file by just passing the file name to the
 `ir_wfs()` function. In addition, we have to set `conf.N` to a reasonable large
-value as this is the length of the impulse response `ir_wfs()` will return,
-which has to be larger as for the anechoic case as it should now include the
-room reflections. Note, that the head orientation is chosen to be `0` instead
-of `pi/2` as in the HRTF examples due to a difference in the orientation of
-the coordinate system of the BRIR measurement.
+value as this determines the length of the impulse response `ir_wfs()` will
+return, which has to be larger as for the anechoic case as it should now include
+the room reflections. Note, that the head orientation is chosen to be `0`
+instead of `pi/2` as in the HRTF examples due to a difference in the orientation
+of the coordinate system of the BRIR measurement.
 
 
 #### Frequency response of your spatial audio system

@@ -2,7 +2,7 @@ function varargout = time_response_wfs(X,xs,src,conf)
 %TIME_RESPONSE_WFS simulates the time response for WFS at the given
 %listener position
 %
-%   Usage: [s,t] = time_response_wfs(X,xs,src,[conf])
+%   Usage: [s,t] = time_response_wfs(X,xs,src,conf)
 %
 %   Input parameters:
 %       X           - listener position / m
@@ -11,7 +11,7 @@ function varargout = time_response_wfs(X,xs,src,conf)
 %                         'pw' -plane wave
 %                         'ps' - point source
 %                         'fs' - focused source
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       s           - simulated time response
@@ -57,15 +57,12 @@ function varargout = time_response_wfs(X,xs,src,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargposition(X);
 isargxs(xs);
 isargchar(src);
-if nargin<nargmax
-    conf = SFS_config;
-end
 isargstruct(conf);
 
 

@@ -1,7 +1,7 @@
 function varargout = sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
 %SOUND_FIELD_IMP_NFCHOA returns the sound field in time domain for NFC-HOA
 %
-%   Usage: [p,x,y,z,x0] = sound_field_imp_nfchoa(X,Y,Z,xs,src,t,[conf])
+%   Usage: [p,x,y,z,x0] = sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
 %
 %   Input options:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -13,7 +13,7 @@ function varargout = sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
 %                                plane wave in this case)
 %                         'ps' - point source
 %       t           - time point t / samples
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output options:
 %       p           - simulated sound field
@@ -70,17 +70,13 @@ function varargout = sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
+nargmin = 7;
 nargmax = 7;
 narginchk(nargmin,nargmax);
 isargxs(xs);
 isargchar(src);
 isargscalar(t);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

@@ -47,7 +47,7 @@ function boolean = test_localwfs()
 %% ===== Configuration ===================================================
 boolean = false;
 % Parameters
-conf = SFS_config_example;
+conf = SFS_config;
 conf.plot.useplot = false;
 conf.plot.normalisation = 'center';
 conf.showprogress = true;

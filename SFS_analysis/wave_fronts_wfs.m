@@ -2,7 +2,7 @@ function varargout = wave_fronts_wfs(X,phi,xs,src,gnuplot,conf)
 %WAVE_FRONTS_WFS returns direction, amplitude and time of the single wave
 %   fronts for WFS
 %
-%   Usage: [alpha,a,t] = wave_fronts_wfs(X,phi,xs,src,[gnuplot],[conf])
+%   Usage: [alpha,a,t] = wave_fronts_wfs(X,phi,xs,src,[gnuplot],conf)
 %
 %   Input parameters:
 %       X,phi   - listener position and direction / m, rad
@@ -14,15 +14,15 @@ function varargout = wave_fronts_wfs(X,phi,xs,src,gnuplot,conf)
 %       gnuplot - boolean indicator if the data should be stored in to output
 %                 files, called direction_nls*.txt for later plotting with
 %                 gnuplot, default: false
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       alpha   - angle of incident for every echo / rad
 %       a       - amplitudes of the echos
 %       t       - time of the wave fronts / s
 %
-%   WAVE_FRONTS_WFS(X,phi,xs,src) calculates the direction of the single wave
-%   fronts (due to aliasing artifacts) arriving from the loudspeakers for a
+%   WAVE_FRONTS_WFS(X,phi,xs,src,conf) calculates the direction of the single
+%   wave fronts (due to aliasing artifacts) arriving from the loudspeakers for a
 %   WFS array at the given listener position X for the given virtual source
 %   xs.
 %
@@ -66,21 +66,14 @@ function varargout = wave_fronts_wfs(X,phi,xs,src,gnuplot,conf)
 
 
 %% ===== Checking of input parameters ====================================
-nargmin = 4;
+nargmin = 5;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargposition(X);
 isargxs(xs),
 isargscalar(phi);
-if nargin==nargmax-1
-    if isstruct(gnuplot)
-        conf = gnuplot;
-        gnuplot = false;
-    else
-        conf = SFS_config;
-    end
-elseif nargin==nargmax-2
-    conf = SFS_config;
+if nargin<nargmax
+    conf = gnuplot;
     gnuplot = false;
 end
 isargstruct(conf);

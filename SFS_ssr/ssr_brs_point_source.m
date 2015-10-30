@@ -2,14 +2,14 @@ function brs = ssr_brs_point_source(X,phi,xs,irs,conf)
 %SSR_BRS_POINT_SOURCE generates a binaural room scanning (BRS) set for use with
 %the SoundScape Renderer
 %
-%   Usage: brs = ssr_brs_point_source(X,phi,xs,irs,[conf])
+%   Usage: brs = ssr_brs_point_source(X,phi,xs,irs,conf)
 %
 %   Input parameters:
 %       X       - listener position / m
 %       phi     - listener direction [head orientation] / rad
 %       xs      - source position / m
 %       irs     - IR data set for the second sources
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       brs     - conf.N x 2*nangles matrix containing all impulse responses (2
@@ -57,15 +57,12 @@ function brs = ssr_brs_point_source(X,phi,xs,irs,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
+nargmin = 5;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargposition(X);
 isargxs(xs);
 isargscalar(phi);
-if nargin<nargmax
-    conf = SFS_config;
-end
 isargstruct(conf);
 
 

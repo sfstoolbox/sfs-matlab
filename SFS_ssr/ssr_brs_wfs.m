@@ -2,7 +2,7 @@ function brs = ssr_brs_wfs(X,phi,xs,src,irs,conf)
 %SSR_BRS_WFS generates a binaural room scanning (BRS) set for use with the
 %SoundScape Renderer
 %
-%   Usage: brs = ssr_brs_wfs(X,phi,xs,src,irs,[conf])
+%   Usage: brs = ssr_brs_wfs(X,phi,xs,src,irs,conf)
 %
 %   Input parameters:
 %       X       - listener position / m
@@ -12,7 +12,7 @@ function brs = ssr_brs_wfs(X,phi,xs,src,irs,conf)
 %                              'ps' - point source
 %                              'fs' - focused source
 %       irs     - IR data set for the second sources
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       brs     - conf.N x 2*nangles matrix containing all impulse responses (2
@@ -59,15 +59,12 @@ function brs = ssr_brs_wfs(X,phi,xs,src,irs,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
+nargmin = 6;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargposition(X);
 isargxs(xs);
 isargscalar(phi);
-if nargin<nargmax
-    conf = SFS_config;
-end
 isargstruct(conf);
 
 

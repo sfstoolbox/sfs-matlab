@@ -1,7 +1,7 @@
 function [ir,x0] = ir_wfs(X,phi,xs,src,irs,conf)
 %IR_WFS generates a binaural simulation of WFS
 %
-%   Usage: [ir,x0] = ir_wfs(X,phi,xs,src,irs,[conf])
+%   Usage: [ir,x0] = ir_wfs(X,phi,xs,src,irs,conf)
 %
 %   Input parameters:
 %       X       - listener position / m
@@ -12,7 +12,7 @@ function [ir,x0] = ir_wfs(X,phi,xs,src,irs,conf)
 %                              'ps' - point source
 %                              'fs' - focused source
 %       irs     - IR data set for the secondary sources
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ir      - impulse response for the desired WFS array (nx2 matrix)
@@ -58,17 +58,15 @@ function [ir,x0] = ir_wfs(X,phi,xs,src,irs,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
+nargmin = 6;
 nargmax = 6;
 narginchk(nargmin,nargmax);
-if nargin<nargmax
-    conf = SFS_config;
-end
 if conf.debug
     isargposition(X);
     isargxs(xs);
     isargscalar(phi);
     isargchar(src);
+    isargstruct(conf);
 end
 
 

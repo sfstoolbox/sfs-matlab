@@ -1,17 +1,17 @@
 function P = norm_sound_field(P,conf)
 %NORM_SOUND_FIELD normalizes the sound field
 %
-%   Usage: P = norm_sound_field(P,[conf])
+%   Usage: P = norm_sound_field(P,conf)
 %
 %   Input options:
 %       P       - sound field
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output options:
 %       P       - normalized sound field
 %
-%   NORM_SOUND_FIELD(P) normalizes the given sound field P. This depends on the
-%   conf.plot.normalisation setting. It can be one of the following:
+%   NORM_SOUND_FIELD(P,conf) normalizes the given sound field P. This depends on
+%   the conf.plot.normalisation setting. It can be one of the following:
 %       'auto'   - if the given absolute sound field value at the center is
 %                  > 0.3 it uses automatically 'center', otherwise it uses 'max'
 %       'center' - normalises to center of sound field == 1
@@ -53,12 +53,9 @@ function P = norm_sound_field(P,conf)
 
 
 %% ===== Checking of input parameters ====================================
-nargmin = 1;
+nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-if nargin==nargmax-1
-    conf = SFS_config;
-end
 isargnumeric(P);
 isargstruct(conf);
 

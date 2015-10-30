@@ -1,7 +1,7 @@
-function varargout = sound_field_imp_line_source(X,Y,Z,xs,varargin)
+function varargout = sound_field_imp_line_source(X,Y,Z,xs,t,conf)
 %SOUND_FIELD_IMP_LINE_SOURCE simulates a sound field for a line source
 %
-%   Usage: [p,x,y,z] = sound_field_imp_line_source(X,Y,Z,xs,t,[conf])
+%   Usage: [p,x,y,z] = sound_field_imp_line_source(X,Y,Z,xs,t,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -9,7 +9,7 @@ function varargout = sound_field_imp_line_source(X,Y,Z,xs,varargin)
 %       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       xs          - position of line source / m
 %       t           - time / samples
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       p           - Simulated sound field
@@ -64,11 +64,11 @@ function varargout = sound_field_imp_line_source(X,Y,Z,xs,varargin)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
+nargmin = 6;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargxs(xs);
 
 
 %% ===== Computation ====================================================
-[varargout{1:nargout}] = sound_field_imp(X,Y,Z,[xs 0 -1 0 1],'ls',1,varargin{:});
+[varargout{1:nargout}] = sound_field_imp(X,Y,Z,[xs 0 -1 0 1],'ls',1,t,conf);

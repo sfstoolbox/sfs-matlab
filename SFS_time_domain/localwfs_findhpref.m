@@ -1,4 +1,20 @@
-function [hpreflow, hprefhigh] = localwfs_findhpref(X, phi, xs, src, conf)
+function [hpreflow,hprefhigh] = localwfs_findhpref(X,phi,xs,src,conf)
+%LOCALWFS_FINDHPREF
+%
+%   Usage: [hpreflow, hprefhigh] = localwfs_findhpref(X,phi,xs,src,conf)
+%
+%   Input parameters:
+%       X       - listener position / m
+%       phi     - listener direction [head orientation] / rad
+%                 0 means the head is oriented towards the x-axis.
+%       xs      - virtual source position / m
+%       src     - source type: ...
+%       conf    - configuration struct (see SFS_config)
+%
+%   Output parameters:
+%       hpreflow    -
+%       hprefhigh   -
+%       
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -33,36 +49,35 @@ function [hpreflow, hprefhigh] = localwfs_findhpref(X, phi, xs, src, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
+nargmin = 5;
 nargmax = 5;
 narginchk(nargmin,nargmax);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
-
 if conf.debug
     isargposition(X);
     isargxs(xs);
     isargscalar(phi);
     isargchar(src);
+    isargstruct(conf);
 end
+
 
 %% ===== Configuration ==================================================
 conf.plot.useplot = false;  % disable plotting in easyfft
 conf.ir.usehcomp = false;
 conf.wfs.usehpre = false;     % no prefilter
 conf.localsfs.wfs = conf.wfs;
+
+
 %% ===== Variables ======================================================
 N = conf.N;
-irs = dummy_irs(N, conf);   % Impulse responses
+irs = dummy_irs(N,conf);    % Impulse responses
 fs = conf.fs;               % Sampling rate
 dimension = conf.dimension; % dimensionality
 
+
 %% ===== Computation ====================================================
 % Compute impulse response/amplitude spectrum without prefilter
-ir = ir_localwfs(X, phi, xs, src, irs, conf);
+ir = ir_localwfs(X,phi,xs,src,irs,conf);
 [H,~,f]=easyfft(ir(:,1),conf);
 
 H = H./H(1);  % Normalize amplitude spectrum with H(f=0Hz)

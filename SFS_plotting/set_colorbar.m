@@ -1,13 +1,13 @@
 function set_colorbar(conf)
 %SET_COLORBAR draws a color bar to the plot
 %
-%   Usage: set_colorbar([conf])
+%   Usage: set_colorbar(conf)
 %
 %   Input options:
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
-%   SET_COLORBAR() drwas a color bar on the figure and sets the map to the color
-%   specified in conf.plot.colormap.
+%   SET_COLORBAR(conf) draws a color bar on the figure and sets the map to the
+%   color specified in conf.plot.colormap.
 %
 %   See also: plot_sound_field, set_colormap
 
@@ -45,14 +45,10 @@ function set_colorbar(conf)
 
 
 %% ===== Checking of input parameter =====================================
-nargmin = 0;
+nargmin = 1;
 nargmax = 1;
 narginchk(nargmin,nargmax);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ===================================================

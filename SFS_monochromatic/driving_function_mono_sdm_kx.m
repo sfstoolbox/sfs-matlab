@@ -2,7 +2,7 @@ function D = driving_function_mono_sdm_kx(kx,xs,src,f,conf)
 %DRIVING_FUNCTION_MONO_SDM_KX returns the driving signal D for SDM in the kx
 %domain
 %
-%   Usage: D = driving_function_mono_sdm_kx(kx,xs,src,f,[conf])
+%   Usage: D = driving_function_mono_sdm_kx(kx,xs,src,f,conf)
 %
 %   Input parameters:
 %       kx          - kx dimension [nx1]
@@ -14,7 +14,7 @@ function D = driving_function_mono_sdm_kx(kx,xs,src,f,conf)
 %                         'ps' - point source
 %                         'fs' - focused source
 %       f           - frequency of the monochromatic source / Hz
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
@@ -60,18 +60,14 @@ function D = driving_function_mono_sdm_kx(kx,xs,src,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
+nargmin = 5;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargvector(kx);
 isargxs(xs);
 isargpositivescalar(f);
 isargchar(src);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Computation ====================================================

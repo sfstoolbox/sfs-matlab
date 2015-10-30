@@ -1,14 +1,14 @@
 function plot_sound_field(P,X,Y,Z,x0,conf)
 %PLOT_SOUND_FIELD plot the given sound field
 %
-%   Usage: plot_sound_field(P,X,Y,Z,[x0],[conf])
+%   Usage: plot_sound_field(P,X,Y,Z,[x0],conf)
 %
 %   Input parameters:
 %       P           - matrix containing the sound field in the format P = P(y,x)
 %       x,y,z       - vectors for the x-, y- and z-axis
 %       x0          - matrix containing the secondary source positions to plot.
 %                     Default: plot no secondary sources
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   PLOT_SOUND_FIELD(P,X,Y,Z,x0,conf) plots the sound field P in dependence
 %   of the axes that are non-singleton. You have to provide the axes in the same
@@ -53,19 +53,12 @@ function plot_sound_field(P,X,Y,Z,x0,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
+nargmin = 5;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargnumeric(X,Y,Z,P);
-if nargin==nargmax-1
-    if isstruct(x0)
-        conf = x0;
-        x0 = [];
-    else
-        conf = SFS_config;
-    end
-elseif nargin==nargmax-2
-    conf = SFS_config;
+if nargin<nargmax
+    conf = x0;
     x0 = [];
 end
 if isempty(x0)

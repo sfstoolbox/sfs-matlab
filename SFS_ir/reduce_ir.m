@@ -1,13 +1,13 @@
 function short_ir = reduce_ir(ir,fs,nsamples,conf)
 %REDUCE_IR resamples and shortens a IR
 %
-%   Usage: ir = reduce_ir(ir,fs,nsamples,[conf])
+%   Usage: ir = reduce_ir(ir,fs,nsamples,conf)
 %
 %   Input parameters:
 %       ir          - two channel impulse response signal
 %       fs          - sampling rate of the target impulse response / Hz
 %       nsamples    - length of the target impulse response
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output paramteres:
 %       ir          - two channel impulse response signal
@@ -51,7 +51,7 @@ function short_ir = reduce_ir(ir,fs,nsamples,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargpositivescalar(fs,nsamples);
@@ -59,11 +59,7 @@ if ~isnumeric(ir) || size(ir,2)~=2
     error('%s: ir has to be an impulse response with samples x 2 size.', ...
         upper(mfilename));
 end
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

@@ -46,7 +46,7 @@ function boolean = test_impulse_responses()
 %% ===== Configuration ===================================================
 boolean = false;
 %% Parameters
-conf = SFS_config_example;
+conf = SFS_config;
 conf.showprogress = true;
 conf.resolution = 400;
 conf.plot.useplot = true;

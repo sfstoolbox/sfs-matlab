@@ -1,17 +1,17 @@
 function sofa_pw = extrapolate_farfield_hrtfset(sofa,conf)
 %EXTRAPOLATE_FARFIELD_HRTFSET far-field extrapolation of a given HRTF dataset
 %
-%   Usage: sofa = extrapolate_farfield_hrtfset(sofa,[conf])
+%   Usage: sofa = extrapolate_farfield_hrtfset(sofa,conf)
 %
 %   Input parameters:
 %       sofa    - IR data set for the virtual secondary sources
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       sofa    - IR data set extra polated to conation plane wave IRs
 %
-%   EXTRAPOLATE_FARFIELD_HRTFSET(SOFA) generates a far-field extrapolated set of
-%   impulse responses, using the given irs set. Far-field means that the
+%   EXTRAPOLATE_FARFIELD_HRTFSET(SOFA,conf) generates a far-field extrapolated
+%   set of impulse responses, using the given irs set. Far-field means that the
 %   resulting impulse responses are plane waves. The extrapolation is done via
 %   WFS.
 %
@@ -56,15 +56,10 @@ function sofa_pw = extrapolate_farfield_hrtfset(sofa,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
+nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
-isargstruct(sofa);
+isargstruct(sofa,conf);
 
 
 %% ===== Configuration ===================================================

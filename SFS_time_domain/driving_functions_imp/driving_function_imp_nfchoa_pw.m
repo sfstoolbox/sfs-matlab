@@ -2,12 +2,12 @@ function sos = driving_function_imp_nfchoa_pw(N,R,conf)
 %DRIVING_FUNCTION_IMP_NFCHOA_PW calculates the second-order section
 %representation for a virtual plane wave in NFC-HOA
 %
-%   Usage: sos = driving_function_imp_nfchoa_pw(N,R,[conf]);
+%   Usage: sos = driving_function_imp_nfchoa_pw(N,R,conf)
 %
 %   Input parameters:
 %       N       - order of spherical hankel function
 %       R       - radius of secondary source array / m
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       sos     - second-order section representation
@@ -57,15 +57,11 @@ function sos = driving_function_imp_nfchoa_pw(N,R,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
+nargmin = 3;
 nargmax = 3;
 narginchk(nargmin,nargmax);
 isargpositivescalar(N,R);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

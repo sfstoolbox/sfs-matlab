@@ -49,7 +49,7 @@ narginchk(nargmin,nargmax);
 
 
 %% ===== Configuration ===================================================
-conf = SFS_config_example;
+conf = SFS_config;
 xs = [0 -1 0];
 src = 'pw';
 f = 1000;

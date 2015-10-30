@@ -1,19 +1,19 @@
 function sig =  bandpass(sig,flow,fhigh,conf)
 %BANDPASS filters a signal by a bandpass
 %
-%   Usage: sig = bandpass(sig,flow,fhigh,[conf])
+%   Usage: sig = bandpass(sig,flow,fhigh,conf)
 %
 %   Input parameters:
 %       sig    - input signal (matrix)
 %       flow   - start frequency of bandpass
 %       fhigh  - stop frequency of bandpass
-%       conf   - optional configuration struct (see SFS_config)
+%       conf   - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       sig    - filtered signal
 %
-%   BANDPASS(sig,flow,fhigh) filters the given signal with a bandpass filter
-%   with cutoff frequencies of flow and fhigh.
+%   BANDPASS(sig,flow,fhigh,conf) filters the given signal with a bandpass
+%   filter with cutoff frequencies of flow and fhigh.
 %
 %   See also: sound_field_imp_wfs
 
@@ -51,16 +51,12 @@ function sig =  bandpass(sig,flow,fhigh,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargmatrix(sig);
 isargpositivescalar(flow,fhigh);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

@@ -55,17 +55,13 @@ function D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
+nargmin = 5;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargvector(Dv);
 isargpositivescalar(f);
 isargsecondarysource(x0,xv);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

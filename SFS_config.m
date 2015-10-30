@@ -75,7 +75,6 @@ narginchk(nargmin,nargmax);
 % - Local Sound Field Synthesis
 % - Binaural Reproduction
 %   * Headphone compensation
-%   * Auralisation
 %   * SoundScape Renderer
 % - Plotting
 % - References
@@ -296,16 +295,6 @@ conf.ir.useinterpolation = true; % boolean
 conf.ir.usehcomp = false; % boolean
 % Headphone compensation file for left and right ear.
 conf.ir.hcompfile = 'data/headphone_compensation/QU_KEMAR_AKGK601_hcomp.wav'; % string
-%
-% === Auralization ===
-% These files are used for the auralization of impulse responses by the
-% auralize_ir() function.
-% NOTE: you have to provide them by yourself!
-conf.ir.speechfile = ''; % string
-conf.ir.cellofile = ''; % string
-conf.ir.castanetsfile = ''; % string
-conf.ir.noisefile = ''; % string
-conf.ir.pinknoisefile = ''; % string
 %
 % === SoundScape Renderer ===
 % To use a dynamic binaural simulation together with the SoundScape Renderer

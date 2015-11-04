@@ -17,9 +17,9 @@ conf.resolution = 200;
 ns = [0, -1, 0];  % propagation direction of plane wave
 xs = [0,  3.0, 0];  % position of line source
 
-xrange = [-2 2];
-yrange = [-2 2];
-zrange = 0;
+X = [-2 2];
+Y = [-2 2];
+Z = 0;
 
 f = 1000;
 
@@ -47,10 +47,10 @@ Alsm_re = RRm*Alsm;
 %% Sound Fields
 % Evaluate spherical basis functions on regular grid
 [Jm, H2m, Ym] = ...
-  circbasis_mono_grid(xrange,yrange,zrange,Nce,f,xq,conf);
+  circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf);
 %
 [Jm_t, H2m_t, Ym_t] = ...
-  circbasis_mono_grid(xrange,yrange,zrange,Nce,f,xq+xt,conf);
+  circbasis_mono_grid(X,Y,Z,Nce,f,xq+xt,conf);
 % compute fields for expansion at xq
 Ppwm = sound_field_mono_circbasis(Apwm, Jm, Ym);
 Plsm = sound_field_mono_circbasis(Alsm, Jm, Ym);
@@ -61,23 +61,22 @@ Plsm_t = sound_field_mono_circbasis(Alsm_t, Jm_t, Ym_t);
 Ppwm_re = sound_field_mono_circbasis(Apwm_re, Jm, Ym_t);
 Plsm_re = sound_field_mono_circbasis(Alsm_re, Jm, Ym_t);
 % plot
-[~,~,~,x1,y1,z1] = xyz_grid(xrange,yrange,zrange,conf);
 
-plot_sound_field(Ppwm ,x1,y1,z1, [], conf);
+plot_sound_field(Ppwm ,X, Y, Z, [], conf);
 plot_scatterer(xq,rt);
 title('plane wave');
-plot_sound_field(Ppwm_t ,x1,y1,z1, [], conf);
+plot_sound_field(Ppwm_t ,X, Y, Z, [], conf);
 plot_scatterer(xq,rt);
 title('plane wave (shifted expansion)');
-plot_sound_field(Ppwm_re ,x1,y1,z1, [], conf);
+plot_sound_field(Ppwm_re ,X, Y, Z, [], conf);
 plot_scatterer(xq,rt);
 title('plane wave (re-expansion)');
-plot_sound_field(Plsm ,x1,y1,z1, [], conf);
+plot_sound_field(Plsm ,X, Y, Z, [], conf);
 plot_scatterer(xq,rt);
 title('line source');
-plot_sound_field(Plsm_t,x1,y1,z1, [], conf);
+plot_sound_field(Plsm_t,X, Y, Z, [], conf);
 plot_scatterer(xq,rt);
 title('line source (shifted expansion)');
-plot_sound_field(Plsm_re ,x1,y1,z1, [], conf);
+plot_sound_field(Plsm_re ,X, Y, Z, [], conf);
 plot_scatterer(xq,rt);
 title('line source (reexpansion)');

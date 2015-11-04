@@ -1,8 +1,8 @@
-function [jn, h2n, Ynm, x, y, z] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf)
+function [jn, h2n, Ynm] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf)
 %SPHBASIS_MONO_GRID(X,Y,Z,f,xq,conf) evaluates spherical basis functions for 
 %given grid in cartesian coordinates
 %
-%   Usage: [jn, h2n, Ynm, x, y, z] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf)
+%   Usage: [jn, h2n, Ynm] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -17,9 +17,6 @@ function [jn, h2n, Ynm, x, y, z] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf)
 %       jn          - cell array of spherical bessel functions
 %       h2n         - cell array of spherical hankel functions of 2nd kind
 %       Ynm         - cell array of spherical harmonics
-%       x           - corresponding x axis / m
-%       y           - corresponding y axis / m
-%       z           - corresponding z axis / m
 %
 %   SPHBASIS_MONO_GRID(X,Y,Z,Nse,f,xq,conf) computes spherical basis functions
 %   for given grid in cartesian coordinates. This is a wrapper function for
@@ -109,14 +106,7 @@ end
 isargposition(xq);
 
 %% ===== Computation ====================================================
-if customGrid
-  % just copy everything
-  xx = X; yy = Y; zz = Z;
-  x = X;   y = Y;  z = Z;
-else
-  % Create a x-y-grid
-  [xx, yy, zz, x, y, z] = xyz_grid(X, Y, Z, conf);
-end
+[xx, yy, zz] = xyz_grid(X, Y, Z, conf);
 
 k = 2*pi*f/conf.c;  % wavenumber
 

@@ -15,11 +15,9 @@ conf.plot.useplot = false;
 conf.usenormalisation = true;
 conf.resolution = 300;
 
-xrange = [-2 2];
-yrange = [-4 0];
-zrange = 0;
-
-[~,~,~,x1,y1,z1] = xyz_grid(xrange,yrange,zrange,conf);
+X = [-2 2];
+Y = [-4 0];
+Z = 0;
 
 % secondary sources
 conf.secondary_sources.geometry = 'linear';
@@ -97,15 +95,15 @@ Dpw = driving_function_mono_wfs_sphexp(x0(:,1:3),x0(:,4:6), Apwnm,'R',f,xq,conf)
 Dps = driving_function_mono_wfs_sphexp(x0(:,1:3),x0(:,4:6), Apsnm,'R',f,xq,conf);
 Dls = driving_function_mono_wfs_sphexp(x0(:,1:3),x0(:,4:6), Alsnm,'R',f,xq,conf);
 % compute fields
-Ppw = sound_field_mono(xrange,yrange,zrange,x0,'ps',Dpw,f,conf);
-Pps = sound_field_mono(xrange,yrange,zrange,x0,'ps',Dps,f,conf);
-Pls = sound_field_mono(xrange,yrange,zrange,x0,'ps',Dls,f,conf);
+Ppw = sound_field_mono(X,Y,Z,x0,'ps',Dpw,f,conf);
+Pps = sound_field_mono(X,Y,Z,x0,'ps',Dps,f,conf);
+Pls = sound_field_mono(X,Y,Z,x0,'ps',Dls,f,conf);
 % plot
-plot_sound_field(Ppw, x1,y1,z1, [], conf);
+plot_sound_field(Ppw, X, Y, Z, [], conf);
 title('2.5D WFS with spherical expansion (spatial domain): plane wave');
-plot_sound_field(Pps, x1,y1,z1, [], conf);
+plot_sound_field(Pps, X, Y, Z, [], conf);
 title('2.5D WFS with spherical expansion (spatial domain): point source');
-plot_sound_field(Pls, x1,y1,z1, [], conf);
+plot_sound_field(Pls, X, Y, Z, [], conf);
 title('2.5D WFS with spherical expansion (spatial domain): line source');
 
 %% generic WFS in spatial domain using circular Expansion Coefficients
@@ -117,12 +115,12 @@ x0 = secondary_source_positions(conf);
 Dpw = driving_function_mono_wfs_circexp(x0(:,1:3),x0(:,4:6), Apwm,'R',f,xq,conf);
 Dls = driving_function_mono_wfs_circexp(x0(:,1:3),x0(:,4:6), Alsm,'R',f,xq,conf);
 % compute fields
-Ppw = sound_field_mono(xrange,yrange,zrange,x0,'ls',Dpw,f,conf);
-Pls = sound_field_mono(xrange,yrange,zrange,x0,'ls',Dls,f,conf);
+Ppw = sound_field_mono(X,Y,Z,x0,'ls',Dpw,f,conf);
+Pls = sound_field_mono(X,Y,Z,x0,'ls',Dls,f,conf);
 % plot
-plot_sound_field(Ppw, x1,y1,z1, [], conf);
+plot_sound_field(Ppw, X, Y, Z, [], conf);
 title('2D WFS with circular expansion (spatial domain): plane wave');
-plot_sound_field(Pls, x1,y1,z1, [], conf);
+plot_sound_field(Pls, X, Y, Z, [], conf);
 title('2D WFS with circular expansion (spatial domain): line source');
 
 %% LWFS in spatial domain using virtual Spherical Scatterer and time reversal
@@ -135,15 +133,15 @@ Dpw = driving_function_mono_wfs_sphexp(x0(:,1:3),x0(:,4:6), Bpwnm,'S',f,xq,conf)
 Dps = driving_function_mono_wfs_sphexp(x0(:,1:3),x0(:,4:6), Bpsnm,'S',f,xq,conf);
 Dls = driving_function_mono_wfs_sphexp(x0(:,1:3),x0(:,4:6), Blsnm,'S',f,xq,conf);
 % compute fields
-Ppw = sound_field_mono(xrange,yrange,zrange,x0,'ps',conj(Dpw),f,conf);
-Pps = sound_field_mono(xrange,yrange,zrange,x0,'ps',conj(Dps),f,conf);
-Pls = sound_field_mono(xrange,yrange,zrange,x0,'ps',conj(Dls),f,conf);
+Ppw = sound_field_mono(X,Y,Z,x0,'ps',conj(Dpw),f,conf);
+Pps = sound_field_mono(X,Y,Z,x0,'ps',conj(Dps),f,conf);
+Pls = sound_field_mono(X,Y,Z,x0,'ps',conj(Dls),f,conf);
 % plot
-plot_sound_field(Ppw, x1,y1,z1, [], conf);
+plot_sound_field(Ppw, X, Y, Z, [], conf);
 title('2.5D local WFS with spherical expansion (spatial domain): plane wave');
-plot_sound_field(Pps, x1,y1,z1, [], conf);
+plot_sound_field(Pps, X, Y, Z, [], conf);
 title('2.5D local WFS with spherical expansion (spatial domain): point source');
-plot_sound_field(Pls, x1,y1,z1, [], conf);
+plot_sound_field(Pls, X, Y, Z, [], conf);
 title('2.5D local WFS with spherical expansion (spatial domain): line source');
 
 %% LWFS in spatial domain using virtual Spherical Scatterer and time reversal
@@ -155,10 +153,10 @@ x0 = secondary_source_positions(conf);
 Dpw = driving_function_mono_wfs_circexp(x0(:,1:3),x0(:,4:6),Bpwm,'S',f,xq,conf);
 Dls = driving_function_mono_wfs_circexp(x0(:,1:3),x0(:,4:6),Blsm,'S',f,xq,conf);
 % compute fields
-Ppw = sound_field_mono(xrange,yrange,zrange,x0,'ls',conj(Dpw),f,conf);
-Pls = sound_field_mono(xrange,yrange,zrange,x0,'ls',conj(Dls),f,conf);
+Ppw = sound_field_mono(X,Y,Z,x0,'ls',conj(Dpw),f,conf);
+Pls = sound_field_mono(X,Y,Z,x0,'ls',conj(Dls),f,conf);
 % plot
-plot_sound_field(Ppw, x1,y1,z1, [], conf);
+plot_sound_field(Ppw, X, Y, Z, [], conf);
 title('2D local WFS with circular expansion (spatial domain): plane wave');
-plot_sound_field(Pls, x1,y1,z1, [], conf);
+plot_sound_field(Pls, X, Y, Z, [], conf);
 title('2D local WFS with circular expansion (spatial domain): line source');

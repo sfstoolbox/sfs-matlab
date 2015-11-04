@@ -1,8 +1,8 @@
-function [jn, h2n, Ynm, x, y, z] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf)
+function [jn, h2n, Ynm] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf)
 %CIRCBASIS_MONO_GRID evaluate spherical basis functions for given grid in 
 %cartesian coordinates
 %
-%   Usage: [jn, h2n, Ynm, x, y, z] = circbasis_mono_grid(X,Y,Z,f,xq,conf)
+%   Usage: [jn, h2n, Ynm] = circbasis_mono_grid(X,Y,Z,f,xq,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -17,9 +17,6 @@ function [jn, h2n, Ynm, x, y, z] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf)
 %       jn          - cell array of cylindrical bessel functions
 %       h2n         - cell array of cylindrical hankel functions of 2nd kind
 %       Ynm         - cell array of cylindrical harmonics
-%       x           - corresponding x axis / m
-%       y           - corresponding y axis / m
-%       z           - corresponding z axis / m
 %
 %   CIRCBASIS_MONO_GRID(X,Y,Z,f,xq,conf) computes circular basis functions
 %   for given grid in cartesian coordinates. This is a wrapper function for
@@ -108,14 +105,8 @@ end
 isargposition(xq);
 
 %% ===== Computation ====================================================
-if customGrid
-  % just copy everything
-  xx = X; yy = Y;
-  x = X;   y = Y;  z = Z;
-else
-  % Create a x-y-grid
-  [xx,yy,~,x,y,z] = xyz_grid(X,Y,Z,conf);
-end
+% Create a x-y-grid
+[xx,yy] = xyz_grid(X,Y,Z,conf);
 
 k = 2*pi*f/conf.c;  % wavenumber
 

@@ -14,9 +14,9 @@ conf.plot.useplot = false;
 conf.usenormalisation = true;
 conf.resolution = 200;
 
-xrange = [-2 2];
-yrange = [-2 2];
-zrange = 0;
+X = [-2 2];
+Y = [-2 2];
+Z = 0;
 
 f = 1000;
 ns = [0, -1, 0];  % propagation direction of plane wave
@@ -38,7 +38,7 @@ xq = conf.secondary_sources.center;  % expansion center
 conf.xref = xq;  % reference position
 
 %% Spherical Basis Functions
-[jn, ~, Ynm] = sphbasis_mono_grid(xrange,yrange,zrange,max(Ncet,Nse),f,xq,conf);
+[jn, ~, Ynm] = sphbasis_mono_grid(X,Y,Z,max(Ncet,Nse),f,xq,conf);
 
 %% Spherical Expansion Coefficients
 % regular spherical expansion at xq
@@ -81,37 +81,36 @@ Dpw_shift_trunc = driving_function_mono_nfchoa_sphexp(x0(:,1:3), Apwnm_shift_tru
 Dps_shift_trunc = driving_function_mono_nfchoa_sphexp(x0(:,1:3), Apsnm_shift_trunc, f, conf);
 Dls_shift_trunc = driving_function_mono_nfchoa_sphexp(x0(:,1:3), Alsnm_shift_trunc, f, conf);
 % compute fields
-Ppw = sound_field_mono(xrange,yrange,zrange,x0,'ps',Dpw,f,conf);
-Pps = sound_field_mono(xrange,yrange,zrange,x0,'ps',Dps,f,conf);
-Pls = sound_field_mono(xrange,yrange,zrange,x0,'ls',Dls,f,conf);
+Ppw = sound_field_mono(X,Y,Z,x0,'ps',Dpw,f,conf);
+Pps = sound_field_mono(X,Y,Z,x0,'ps',Dps,f,conf);
+Pls = sound_field_mono(X,Y,Z,x0,'ls',Dls,f,conf);
 % compute fields from shifted driving functions
-Ppw_shift = sound_field_mono(xrange,yrange,zrange,x0,'ps',Dpw_shift,f,conf);
-Pps_shift = sound_field_mono(xrange,yrange,zrange,x0,'ps',Dps_shift,f,conf);
-Pls_shift = sound_field_mono(xrange,yrange,zrange,x0,'ls',Dls_shift,f,conf);
+Ppw_shift = sound_field_mono(X,Y,Z,x0,'ps',Dpw_shift,f,conf);
+Pps_shift = sound_field_mono(X,Y,Z,x0,'ps',Dps_shift,f,conf);
+Pls_shift = sound_field_mono(X,Y,Z,x0,'ls',Dls_shift,f,conf);
 % compute fields from shifted + bandlimited driving functions
-Ppw_shift_trunc = sound_field_mono(xrange,yrange,zrange,x0,'ps',Dpw_shift_trunc,f,conf);
-Pps_shift_trunc = sound_field_mono(xrange,yrange,zrange,x0,'ps',Dps_shift_trunc,f,conf);
-Pls_shift_trunc = sound_field_mono(xrange,yrange,zrange,x0,'ls',Dls_shift_trunc,f,conf);
+Ppw_shift_trunc = sound_field_mono(X,Y,Z,x0,'ps',Dpw_shift_trunc,f,conf);
+Pps_shift_trunc = sound_field_mono(X,Y,Z,x0,'ps',Dps_shift_trunc,f,conf);
+Pls_shift_trunc = sound_field_mono(X,Y,Z,x0,'ls',Dls_shift_trunc,f,conf);
 % plot
-[~,~,~,x,y,z] = xyz_grid(xrange,yrange,zrange,conf);
 
-plot_sound_field(Ppw, x,y,z, [], conf);
+plot_sound_field(Ppw, X, Y, Z, [], conf);
 title('2.5D NFCHOA (spatial domain): plane wave');
-plot_sound_field(Pps, x,y,z, [], conf);
+plot_sound_field(Pps, X, Y, Z, [], conf);
 title('2.5D NFCHOA (spatial domain): point source');
-plot_sound_field(Pls, x,y,z, [], conf);
+plot_sound_field(Pls, X, Y, Z, [], conf);
 title('2.5D NFCHOA (spatial domain): line source');
-plot_sound_field(Ppw_shift, x,y,z, [], conf);
+plot_sound_field(Ppw_shift, X, Y, Z, [], conf);
 title('2.5D NFCHOA (spatial domain): plane wave (shifted expansion)');
-plot_sound_field(Pps_shift, x,y,z, [], conf);
+plot_sound_field(Pps_shift, X, Y, Z, [], conf);
 title('2.5D NFCHOA (spatial domain): point source (shifted expansion)');
-plot_sound_field(Pls_shift, x,y,z, [], conf);
+plot_sound_field(Pls_shift, X, Y, Z, [], conf);
 title('2.5D NFCHOA (spatial domain): line source (shifted expansion)');
-plot_sound_field(Ppw_shift_trunc, x,y,z, [], conf);
+plot_sound_field(Ppw_shift_trunc, X, Y, Z, [], conf);
 title('2.5D NFCHOA (spatial domain): plane wave (shifted + truncated expansion)');
-plot_sound_field(Pps_shift_trunc, x,y,z, [], conf);
+plot_sound_field(Pps_shift_trunc, X, Y, Z, [], conf);
 title('2.5D NFCHOA (spatial domain): point source (shifted + truncated expansion)');
-plot_sound_field(Pls_shift_trunc, x,y,z, [], conf);
+plot_sound_field(Pls_shift_trunc, X, Y, Z, [], conf);
 title('2.5D NFCHOA (spatial domain): line source (shifted + truncated expansion)');
 
 %% generic 2.5D NFCHOA in spherical harmonics domain
@@ -153,25 +152,24 @@ Ppw_shift_trunc = sound_field_mono_sphbasis(Ppwnm_shift_trunc, jn, Ynm);
 Pps_shift_trunc = sound_field_mono_sphbasis(Ppsnm_shift_trunc, jn, Ynm);
 Pls_shift_trunc = sound_field_mono_sphbasis(Plsnm_shift_trunc, jn, Ynm);
 % plot
-[~,~,~,x,y,z] = xyz_grid(xrange,yrange,zrange,conf);
 
-plot_sound_field(Ppw, x,y,z, [], conf);
+plot_sound_field(Ppw, X, Y, Z, [], conf);
 title('2.5D NFCHOA (sht domain): plane wave');
-plot_sound_field(Pps, x,y,z, [], conf);
+plot_sound_field(Pps, X, Y, Z, [], conf);
 title('2.5D NFCHOA (sht domain): point source');
-plot_sound_field(Pls, x,y,z, [], conf);
+plot_sound_field(Pls, X, Y, Z, [], conf);
 title('2.5D NFCHOA (sht domain): line source');
-plot_sound_field(Ppw_shift, x,y,z, [], conf);
+plot_sound_field(Ppw_shift, X, Y, Z, [], conf);
 title('2.5D NFCHOA (spatial domain): plane wave (shifted expansion)');
-plot_sound_field(Pps_shift, x,y,z, [], conf);
+plot_sound_field(Pps_shift, X, Y, Z, [], conf);
 title('2.5D NFCHOA (spatial domain): point source (shifted expansion)');
-plot_sound_field(Pls_shift, x,y,z, [], conf);
+plot_sound_field(Pls_shift, X, Y, Z, [], conf);
 title('2.5D NFCHOA (spatial domain): line source (shifted expansion)');
-plot_sound_field(Ppw_shift_trunc, x,y,z, [], conf);
+plot_sound_field(Ppw_shift_trunc, X, Y, Z, [], conf);
 title('2.5D NFCHOA (spatial domain): plane wave (shifted + truncated expansion)');
-plot_sound_field(Pps_shift_trunc, x,y,z, [], conf);
+plot_sound_field(Pps_shift_trunc, X, Y, Z, [], conf);
 title('2.5D NFCHOA (spatial domain): point source (shifted + truncated expansion)');
-plot_sound_field(Pls_shift_trunc, x,y,z, [], conf);
+plot_sound_field(Pls_shift_trunc, X, Y, Z, [], conf);
 title('2.5D NFCHOA (spatial domain): line source (shifted + truncated expansion)');
 
 %% generic 3D NFCHOA in spherical harmonics domain
@@ -189,11 +187,10 @@ Ppw = sound_field_mono_sphbasis(Ppwnm, jn, Ynm);
 Pps = sound_field_mono_sphbasis(Ppsnm, jn, Ynm);
 Pls = sound_field_mono_sphbasis(Plsnm, jn, Ynm);
 % plot
-[~,~,~,x,y,z] = xyz_grid(xrange,yrange,zrange,conf);
 
-plot_sound_field(Ppw, x,y,z, [], conf);
+plot_sound_field(Ppw, X, Y, Z, [], conf);
 title('3D NFCHOA (sht domain): plane wave');
-plot_sound_field(Pps, x,y,z, [], conf);
+plot_sound_field(Pps, X, Y, Z, [], conf);
 title('3D NFCHOA (sht domain): point source');
-plot_sound_field(Pls, x,y,z, [], conf);
+plot_sound_field(Pls, X, Y, Z, [], conf);
 title('3D NFCHOA (sht domain): line source');

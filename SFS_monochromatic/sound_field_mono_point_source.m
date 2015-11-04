@@ -4,22 +4,26 @@ function varargout = sound_field_mono_point_source(X,Y,Z,xs,varargin)
 %   Usage: [P,x,y,z] = sound_field_mono_point_source(X,Y,Z,xs,f,[conf])
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax]
-%       Y           - y-axis / m; single value or [ymin,ymax]
-%       Z           - z-axis / m; single value or [zmin,zmax]
+%       X           - x-axis / m; single value or [xmin,xmax] or nD-array
+%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
+%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       xs          - position of point source / m
 %       f           - monochromatic frequency / Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - Simulated wave field
-%       x           - corresponding x axis / m
-%       y           - corresponding y axis / m
-%       z           - corresponding z axis / m
+%       x           - corresponding x values / m
+%       y           - corresponding y values / m
+%       z           - corresponding z values / m
 %
-%   SOUND_FIELD_MONO_POINT_SOURCE(X,Y,Z,xs,f,conf) simulates a sound
+%   SOUND_FIELD_MONO_POINT_SOURCE(X,Y,Z,xs,f,conf) simulates a monochromatic sound
 %   field of a point source positioned at xs.
-%   To plot the result use plot_sound_field(P,x,y,z).
+%
+%   To plot the result use:
+%   plot_sound_field(P,X,Y,Z,conf);
+%   or simple call the function without output argument:
+%   sound_field_mono_point_source(X,Y,Z,xs,f,conf)
 %
 %   See also: sound_field_mono, plot_sound_field, sound_field_imp_point_source
 

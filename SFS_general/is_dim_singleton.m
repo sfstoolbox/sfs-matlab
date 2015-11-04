@@ -1,19 +1,19 @@
-function x0 = secondary_source_amplitudecorrection(x0)
-%SECONDARY_SOURCE_AMPLITUDECORRECTION corrects amplitude of secondary sources
+function bool = is_dim_singleton(varargin)
+%IS_DIM_SINGLETON returns true for a singleton dimension
 %
-%   Usage: x0 = secondary_source_amplitudecorrection(x0)
+%   Usage: bool = is_dim_singleton(x1,x2,...)
 %
 %   Input parameters:
-%       x0          - secondary sources [n 7] / m
+%       x1,x2,... - axis / m; single value or [xmin,xmax] or nD-array
 %
-%   Output options:
-%       x0          - secondary sources / m, containing the applied amplitude
-%                     correction in its weights in x0(:,7)
+%   Output parameters:
+%       bool      - array of logical indicating whether each input is a
+%                   singleton dimension
 %
-%   SECONDARY_SOURCE_AMPLITUDECORRECTION(x0)
-%   FIXME: add comment
+%   IS_DIM_SINGLETON(x1,x2,..) checks if we have a singleton dimension for any
+%   of the given x,y,z values.
 %
-%   See also: driving_function_mono_localwfs, driving_function_imp_localwfs
+%   See also: is_dim_custom, xyz_axes_selection, plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -48,24 +48,9 @@ function x0 = secondary_source_amplitudecorrection(x0)
 %*****************************************************************************
 
 
-%% ===== Checking of input  parameters ==================================
-nargmin = 1;
-nargmax = 1;
-narginchk(nargmin,nargmax),
-isargsecondarysource(x0);
+%% ===== Checking input parameters =======================================
+isargnumeric(varargin{:});
 
 
-%% ===== Calculation ====================================================
-if size(x0,1) < 3
-  % Nothing to normalize, if array is to small
-  return;
-end
-
-xd = vector_norm(x0(2:end,1:3) - x0(1:end-1,1:3),2);
-xd = xd./sum(xd,1);
-
-x0(1,7) = xd(1);
-x0(2:end-1,7) = xd(1:end-1) + xd(2:end);
-x0(end,7) = xd(end);
-
-x0(:,7) = x0(:,7)./2;
+%% ===== Computation =====================================================
+bool = cellfun(@(x) numel(x) <= 2 && x(1) == x(end), varargin);

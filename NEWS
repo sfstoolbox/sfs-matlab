@@ -1,10 +1,26 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
-2.0.0 ()
+2.0.0 (26. October 2015)
 
     - add support for SOFA
     - add SOFA convention SimpleFreeFieldHRIR
     - add SOFA convention MultiSpeakerBRIR
+    - calculate integration weights (x0(:,7)) of secondary sources based on their
+      distances to their neighbours
+    - add rounded-box as new loudspeaker array geometry
+    - fix bugs in local sound field synthesis time domain implementation
+    - speedup local sound field synthesis processing by fewer calls to
+      delayline()
+    - add heuristic to find a good local wave field synthesis pre-filter
+    - loudspeaker geometry can now be read from a SOFA file
+    - now custom grids can be used during sound field simulations
+    - add 3D plot routine
+    - change plot_sound_field(P,x,y,z) to plot_sound_field(P,X,Y,Z)
+    - normalization of sound field now only happens in plot_sound_field(); this
+      comes with the new config option conf.plot.normalisation
+    - remove interaural_level_difference() and interaural_time_difference()
+    - change default config setting conf.ir.usehcomp to false
+    - lots of small bug fixes
 
 1.2.0 (2. June 2015)
 

@@ -81,16 +81,18 @@ end
 %conf.secondary_sources.x0;
 % Array type
 geometry = conf.secondary_sources.geometry;
-% Center of the array
-X0 = conf.secondary_sources.center;
-% Number of secondary sources
-nls = conf.secondary_sources.number;
-% Diameter/length of array
-L = conf.secondary_sources.size;
+if ~strcmp('custom',geometry)
+    % Center of the array
+    X0 = conf.secondary_sources.center;
+    % Number of secondary sources
+    nls = conf.secondary_sources.number;
+    x0 = zeros(nls,7);
+    % Diameter/length of array
+    L = conf.secondary_sources.size;
+end
 
 
 %% ===== Main ============================================================
-x0 = zeros(nls,7);
 if strcmp('line',geometry) || strcmp('linear',geometry)
     % === Linear array ===
     %
@@ -111,8 +113,8 @@ if strcmp('line',geometry) || strcmp('linear',geometry)
     x0(:,3) = X0(3) * ones(nls,1);
     % Direction of the secondary sources pointing to the -y direction
     x0(:,4:6) = direction_vector(x0(:,1:3),x0(:,1:3)+repmat([0 -1 0],nls,1));
-    % Equal weights for all sources
-    x0(:,7) = ones(nls,1);
+    % Weight each secondary source by the inter-loudspeaker distance
+    x0(:,7) = L./(nls-1);
 elseif strcmp('circle',geometry) || strcmp('circular',geometry)
     % === Circular array ===
     %
@@ -136,18 +138,13 @@ elseif strcmp('circle',geometry) || strcmp('circular',geometry)
     %                    x
     %                    |
     %
-    % Azimuth angles
-    phi = linspace(0,(2-2/nls)*pi,nls)'; % 0..2pi
-    %phi = linspace(pi/2,(5/2-2/nls)*pi,nls)'; % pi/2..5/2pi, Room Pinta
-    % Elevation angles
-    theta = zeros(nls,1);
-    % Positions of the secondary sources
-    [cx,cy,cz] = sph2cart(phi,theta,L/2);
-    x0(:,1:3) = [cx,cy,cz] + repmat(X0,nls,1);
-    % Direction of the secondary sources
-    x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1).*ones(nls,3));  
-    % Equal weights for all sources
-    x0(:,7) = ones(nls,1);
+    % 'circle' is special case of 'rounded-box' with fully rounded corners
+    t = (0:nls-1)/nls;
+    [x0(:,1:3), x0(:,4:6), x0(:,7)] = rounded_box(t,1.0);  % 1.0 for circle
+    % Scale unit circle and shift center to X0
+    x0(:,1:3) = bsxfun(@plus, x0(:,1:3).*L/2, X0);
+    % Scale weights
+    x0(:,7) = x0(:,7).*L/2;
 elseif strcmp('box',geometry)
     % === Boxed loudspeaker array ===
     %
@@ -173,6 +170,9 @@ elseif strcmp('box',geometry)
     %        x   x   x   x   x   x   x
     %                    |
     %
+    % 'box' is special case of 'rounded-box' where there is no rounding
+    % and the sources in the corners are skipped
+    %
     % Number of secondary sources per linear array
     % ensures that nls/4 is always an integer.
     if rem(nls,4)~=0
@@ -183,33 +183,29 @@ elseif strcmp('box',geometry)
     end
     % Distance between secondary sources
     dx0 = L/(nbox-1);
-    % Position and direction of the loudspeakers
-    % Top
-    x0(1:nbox,1) = X0(1) + linspace(-L/2,L/2,nbox)';
-    x0(1:nbox,2) = X0(2) + ones(nbox,1) * L/2 + dx0;
-    x0(1:nbox,3) = X0(3) + zeros(nbox,1);
-    x0(1:nbox,4:6) = direction_vector(x0(1:nbox,1:3), ...
-        x0(1:nbox,1:3)+repmat([0 -1 0],nbox,1));
-    % Right
-    x0(nbox+1:2*nbox,1) = X0(1) + ones(nbox,1) * L/2 + dx0;
-    x0(nbox+1:2*nbox,2) = X0(2) + linspace(L/2,-L/2,nbox)';
-    x0(nbox+1:2*nbox,3) = X0(3) + zeros(nbox,1);
-    x0(nbox+1:2*nbox,4:6) = direction_vector(x0(nbox+1:2*nbox,1:3), ...
-        x0(nbox+1:2*nbox,1:3)+repmat([-1 0 0],nbox,1));
-    % Bottom
-    x0(2*nbox+1:3*nbox,1) = X0(1) + linspace(L/2,-L/2,nbox)';
-    x0(2*nbox+1:3*nbox,2) = X0(2) - ones(nbox,1) * L/2 - dx0;
-    x0(2*nbox+1:3*nbox,3) = X0(3) + zeros(nbox,1);
-    x0(2*nbox+1:3*nbox,4:6) = direction_vector(x0(2*nbox+1:3*nbox,1:3), ...
-        x0(2*nbox+1:3*nbox,1:3)+repmat([0 1 0],nbox,1));
-    % Left
-    x0(3*nbox+1:nls,1) = X0(1) - ones(nbox,1) * L/2 - dx0;
-    x0(3*nbox+1:nls,2) = X0(2) + linspace(-L/2,L/2,nbox)';
-    x0(3*nbox+1:nls,3) = X0(3) + zeros(nbox,1);
-    x0(3*nbox+1:nls,4:6) = direction_vector(x0(3*nbox+1:nls,1:3), ...
-        x0(3*nbox+1:nls,1:3)+repmat([1 0 0],nbox,1));
-    % Equal weights for all sources
-    x0(:,7) = ones(nls,1);
+    % Length of one edge of the rectangular bounding box
+    Lbound = L + 2*dx0;
+    % Index t for the positions on the boundary
+    t = linspace(-L/2,L/2,nbox)./Lbound;  % this skips the corners
+    t = [t, t+1, t+2, t+3]*0.25;  % repeat and shift to get all 4 edges
+    % 'box' is special case of 'rounded-box' where there is no rounding
+    [x0(:,1:3), x0(:,4:6), x0(:,7)] = rounded_box(t,0.0);  % 0.0 for square
+    % Scale "unit" box and shift center to X0
+    x0(:,1:3) = bsxfun(@plus, x0(:,1:3).*Lbound/2, X0);
+    % Scale integration weights
+    x0(:,7) = x0(:,7).*Lbound/2;
+    % Correct weights of loudspeakers near corners
+    corners = [1,nbox,nbox+1,2*nbox,2*nbox+1,3*nbox,3*nbox+1,4*nbox];
+    x0(corners,7) = (1 + sqrt(2)) *dx0/2;  % instead of 3/2 * dx0
+elseif strcmp('rounded-box', geometry)
+    % Ratio for rounding the edges
+    ratio = 2*conf.secondary_sources.corner_radius./L;
+    t = (0:nls-1)/nls;
+    [x0(:,1:3), x0(:,4:6), x0(:,7)] = rounded_box(t, ratio);
+    % Scale "unit" rounded-box and shift center to X0
+    x0(:,1:3) = bsxfun(@plus, x0(:,1:3).*L/2, X0);
+    % Scale integration weights
+    x0(:,7) = x0(:,7).*L/2;
 elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)
     % Get spherical grid + weights
     [points,weights] = get_spherical_grid(nls,conf);
@@ -217,8 +213,8 @@ elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)
     x0(:,1:3) = L/2 * points + repmat(X0,nls,1);
     % Secondary source directions
     x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1));
-    % Secondary source weights
-    x0(:,7) = weights;
+    % Secondary source weights + distance scaling
+    x0(:,7) = weights .* L^2/4;
     % Add integration weights (because we integrate over a sphere) to the grid
     % weights
     [~,theta] = cart2sph(x0(:,1),x0(:,2),x0(:,3)); % get elevation

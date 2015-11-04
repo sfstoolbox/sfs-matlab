@@ -69,7 +69,6 @@ if conf.debug
     isargscalar(phi);
     isargpositivescalar(L);
     isargchar(src);
-    check_irs(irs);
 end
 
 

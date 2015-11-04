@@ -49,6 +49,7 @@ boolean = false;
 % Parameters
 conf = SFS_config_example;
 conf.plot.useplot = false;
+conf.plot.normalisation = 'center';
 conf.showprogress = true;
 conf.resolution = 1000;
 conf.plot.loudspeakers = true;

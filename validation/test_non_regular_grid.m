@@ -1,20 +1,14 @@
-function P = norm_sound_field_at_xref(P,x,y,z,conf)
-%NORM_SOUND_FIELD_AT_XREF normalizes the sound field to 1 at xref
+function boolean = test_non_regular_grid()
+%TEST_IMPULSE_RESPONSES tests time behavior of WFS and local WFS
 %
-%   Usage: P = norm_sound_field_at_xref(P,x,y,z,[conf])
+%   Usage: boolean = test_impulse_responses()
 %
-%   Input options:
-%       P       - sound field
-%       x,y,z   - vectors conatining the x-, y- and z-axis values / m
-%       conf    - optional configuration struct (see SFS_config)
+%   Output parameters:
+%       booelan - true or false
 %
-%   Output options:
-%       P       - normalized sound field
-%
-%   NORM_SOUND_FIELD_AT_XREF(P,x,y,z,conf) normalizes the given sound field P to 1 at
-%   the position conf.xref.
-%
-%   See also: norm_sound_field, sound_field_mono
+%   TEST_IMPULSE_RESPONSES() compares the time-frequency response of
+%   WFS and local WFS by calculating impulse responses, their frequency
+%   spectrum, and spatial-temporal sound field.
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -49,75 +43,55 @@ function P = norm_sound_field_at_xref(P,x,y,z,conf)
 %*****************************************************************************
 
 
-%% ===== Checking of input parameters ====================================
-nargmin = 4;
-nargmax = 5;
-narginchk(nargmin,nargmax);
-isargnumeric(P);
-isargvector(x,y,z);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
-
-
 %% ===== Configuration ===================================================
-if ~conf.usenormalisation
-    return;
-end
-xref = conf.xref;
-resolution = conf.resolution;
+boolean = false;
+%% Parameters
+conf = SFS_config_example;
+conf.showprogress = true;
+conf.resolution = 400;
+conf.plot.useplot = true;
+conf.plot.loudspeakers = true;
+conf.plot.realloudspeakers = false;
+conf.plot.usedb = false;
+conf.tapwinlen = 0.3;
+% config for array
+conf.dimension = '2.5D';
+conf.secondary_sources.geometry = 'circular';
+conf.secondary_sources.number = 56;
+conf.secondary_sources.size = 3;
+conf.secondary_sources.center = [0, 0, 0];
+conf.driving_functions = 'default';
+conf.xref = [0,0,0];
+% listening area, virtual source
+xs = [0.0, 2.5, 0];  % propagation direction of plane wave
+src = 'ps';
+f = 1000;
+tau = 190;
 
+conf.usenormalisation = true;
 
 %% ===== Computation =====================================================
-% Get our active axis
-[dimensions] = xyz_axes_selection(x,y,z);
+% regular grid
+Xreg = [-1.5 1.5];
+Yreg = [-1, 1.55];
+Zreg = 0;
 
-% Use the half of the x axis and xref
-if dimensions(1)
-    xidx = find(x>xref(1),1);
-    check_idx(xidx,x,xref(1),'X',resolution);
-end
-if dimensions(2)
-    yidx = find(y>xref(2),1);
-    check_idx(yidx,y,xref(2),'Y',resolution);
-end
-if dimensions(3)
-    zidx = find(z>xref(3),1);
-    check_idx(zidx,z,xref(3),'Z',resolution);
-end
+% non regular grid
+alpha = 2*pi / 360 * (0:360-1);
+r = linspace(0, conf.secondary_sources.size/2, 50);
+[alpha, r] = ndgrid(alpha,r);
 
-% Scale signal to 1
-if all(dimensions)
-    scale = abs(P(zidx,yidx,xidx));
-elseif dimensions(1) && dimensions(2)
-    scale = abs(P(yidx,xidx));
-elseif dimensions(1) && dimensions(3)
-    scale = abs(P(zidx,xidx));
-elseif dimensions(2) && dimensions(3)
-    scale = abs(P(zidx,yidx));
-elseif dimensions(1)
-    scale = abs(P(xidx));
-elseif dimensions(2)
-    scale = abs(P(yidx));
-elseif dimensions(3)
-    scale = abs(P(zidx));
-else
-    scale = 1;
-end
-P = P/scale;
+Xnon  = r.*cos(alpha);
+Ynon  = r.*sin(alpha);
+Znon = 0;
 
-end % of function
+% sound fields
+conf.plot.normalisation = 'center';
+sound_field_mono_wfs(Xreg,Yreg,Zreg, xs, src, f, conf);
+sound_field_mono_wfs(Xnon,Ynon,Znon, xs, src, f, conf);
 
+conf.plot.normalisation = 'max';
+sound_field_imp_wfs(Xreg,Yreg,Zreg, xs, src, tau, conf);
+sound_field_imp_wfs(Xnon,Ynon,Znon, xs, src, tau, conf);
 
-%% ===== Subfunctions ====================================================
-function check_idx(idx,x,xref,str,resolution)
-    % abs(x(1)-x(end))/resolution gives us the maximum distance between to samples.
-    % If abs(x(xidx)-xref(1)) is greater this indicates that we are out of our
-    % bounds
-    if isempty(idx) || abs(x(idx)-xref)>2*abs(x(1)-x(end))/resolution
-        error('%s: your used conf.xref is out of your %s boundaries', ...
-            upper(mfilename),str);
-    end
-end
+boolean = true;

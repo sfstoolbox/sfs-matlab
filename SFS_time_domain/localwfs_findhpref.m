@@ -1,23 +1,4 @@
-function ild = interaural_level_difference(insigleft,insigright)
-%INTERAURAL_LEVEL_DIFFERENCE Extract the ILD between the two given signals
-%
-%   Usage: ild = interaural_level_difference(insigleft,insigright)
-%
-%   Input parameters:
-%       insigleft   - left ear signal. This can also be a matrix containing
-%                     left signals for different frequency bands
-%       insigright  - the same as insigleft, but for the right ear
-%
-%   Output parameters:
-%       ild         - ILD for the given signals. A single value for two
-%                     given signals or a vector with values for every
-%                     frequency band / dB
-%
-%   INTERAURAL_LEVEL_DIFFERENCE(insigleft,insigright) extractes the ILD
-%   between the left and right signal(s) by subtracting the dB value of
-%   the left signal(s) from the dB value of the right signal(s).
-%
-%   See also: interaural_time_difference
+function [hpreflow, hprefhigh] = localwfs_findhpref(X, phi, xs, src, conf)
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -51,17 +32,77 @@ function ild = interaural_level_difference(insigleft,insigright)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
-
-%% ===== Checking of input parameters ====================================
-nargmin = 2;
-nargmax = 2;
+%% ===== Checking of input  parameters ==================================
+nargmin = 4;
+nargmax = 5;
 narginchk(nargmin,nargmax);
-isargmatrix(insigleft,insigright);
-if size(insigright)~=size(insigright)
-    error('%s: insigleft and insigright have to be the same size!', ...
-        upper(mfilename));
+if nargin<nargmax
+    conf = SFS_config;
+else
+    isargstruct(conf);
 end
 
+if conf.debug
+    isargposition(X);
+    isargxs(xs);
+    isargscalar(phi);
+    isargchar(src);
+end
 
-%% ===== Computation =====================================================
-ild = db(rms(insigright(:,:)))-db(rms(insigleft(:,:)));
+%% ===== Configuration ==================================================
+conf.plot.useplot = false;  % disable plotting in easyfft
+conf.ir.usehcomp = false;
+conf.wfs.usehpre = false;     % no prefilter
+conf.localsfs.wfs = conf.wfs;
+%% ===== Variables ======================================================
+N = conf.N;
+irs = dummy_irs(N, conf);   % Impulse responses
+fs = conf.fs;               % Sampling rate
+dimension = conf.dimension; % dimensionality
+
+%% ===== Computation ====================================================
+% Compute impulse response/amplitude spectrum without prefilter
+ir = ir_localwfs(X, phi, xs, src, irs, conf);
+[H,~,f]=easyfft(ir(:,1),conf);
+
+H = H./H(1);  % Normalize amplitude spectrum with H(f=0Hz)
+
+% Model of local WFS spectrum without prefilter:
+%   ^
+% 1_| ______flow        
+%   |       \          
+%   |        \   
+%   |         \_______
+%   |          fhigh
+%   -------------------------> f
+
+if strcmp('2.5D',dimension)  
+    % Expected slope: 6dB per frequency-doubling
+    % Find 6dB cut-off frequency
+    flowidx = find(H <= 1/2, 1, 'first');
+    hpreflow = f(flowidx)/2;
+
+elseif strcmp('3D',dimension) || strcmp('2D',dimension)
+    % Expected slope: 12dB per frequency-doubling
+    % Find 12dB cut-off frequency 
+    flowidx = find(H <= 1/4, 1, 'first');
+    hpreflow = f(flowidx)/4;  
+    
+else
+    error('%s: %s is not a valid conf.dimension entry',upper(mfilename));
+end
+
+% approximated slope beginning at hpreflow
+Hslope = hpreflow./f(flowidx:end);
+% mean of H(f) evaluated from f to fs/2
+Hmean = cumsum(H(end:-1:flowidx));  % cumulative sum
+Hmean = Hmean./(1:length(Hmean)).';  % cumulative mean
+Hmean = fliplr(Hmean);
+% fhighidx is the frequency where both functions intersect the first time
+fhighidx = flowidx - 1 + find( Hslope <= Hmean, 1, 'first');
+
+if isempty(fhighidx)
+  hprefhigh = fs/2;
+else
+  hprefhigh = f(fhighidx);
+end 

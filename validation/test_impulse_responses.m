@@ -53,47 +53,59 @@ conf.plot.useplot = true;
 conf.plot.loudspeakers = true;
 conf.plot.realloudspeakers = false;
 conf.plot.usedb = true;
-conf.tapwinlen = 1.0;
+conf.tapwinlen = 0.3;
 % config for virtual array
 conf.localsfs.method = 'wfs';
 conf.localsfs.wfs = conf.wfs;
 conf.localsfs.usetapwin = true;
 conf.localsfs.tapwinlen = 0.3;
-conf.localsfs.vss.size = 1.0;
-conf.localsfs.vss.center = [0, 0.5, 0];
-conf.localsfs.vss.geometry = 'linear';
+conf.localsfs.vss.size = 0.6;
+conf.localsfs.vss.center = [-1, 0, 0];
+conf.localsfs.vss.geometry = 'circular';
 conf.localsfs.vss.number = 56;
 conf.localsfs.vss.consider_target_field = true;
 conf.localsfs.vss.consider_secondary_sources = true;
 % config for real array
 conf.dimension = '2.5D';
-conf.secondary_sources.geometry = 'linear';
+conf.secondary_sources.geometry = 'circular';
 conf.secondary_sources.number = 56;
 conf.secondary_sources.size = 3;
-conf.secondary_sources.center = [0, 1.5, 0];
+conf.secondary_sources.center = [0, 0, 0];
 conf.driving_functions = 'default';
 conf.xref = conf.localsfs.vss.center;
 % impulse response
 conf.ir.usehcomp = false;
 % listening area, virtual source
-xs = [0.0, -1.0, 0];  % propagation direction of plane wave
-src = 'pw';
-X = [-1.5 1.5];
-Y = [-1, 1.55];
+xs = [0.0, 2.5, 0];  % propagation direction of plane wave
+src = 'ps';
+X = [-1.55 1.55];
+Y = [-1.55, 1.55];
 Z = 0;
 
 
 %% ===== Computation =====================================================
 %% temporal impulse responses
-irs = dummy_irs;
-% calculate impulse response for WFS and local WFS
-s_lwfs = ir_localwfs(conf.xref,pi/2,xs,src,irs,conf);
+irs = dummy_irs(conf.N,conf);
+
+% === WFS ===
+% calculate impulse response
 s_wfs = ir_wfs(conf.xref,pi/2,xs,src,irs,conf);
 % plot frequency response
-[S_lwfs, ~, f_lwfs] = easyfft(s_lwfs(:,1)./max(abs(s_lwfs(:,1))), conf);
 [S_wfs, ~, f_wfs] = easyfft(s_wfs(:,1)./max(abs(s_wfs(:,1))), conf);
 % plot spatio-temporal sound field
-sound_field_imp_localwfs(X,Y,Z, xs, src, 400, conf);
 sound_field_imp_wfs(X,Y,Z, xs, src, 190, conf);
+
+% === Local WFS ===
+conf.tapwinlen = 1.0;
+% calculate prefilter
+[conf.wfs.hpreflow, conf.wfs.hprefhigh] = ...
+  localwfs_findhpref(conf.xref, pi/2, xs, src, conf);
+conf.localsfs.wfs = conf.wfs;
+% calculate impulse response
+s_lwfs = ir_localwfs(conf.xref,pi/2,xs,src,irs,conf);
+% plot frequency response
+[S_lwfs, ~, f_lwfs] = easyfft(s_lwfs(:,1)./max(abs(s_lwfs(:,1))), conf);
+% plot spatio-temporal sound field
+sound_field_imp_localwfs(X,Y,Z, xs, src, 360, conf);
 
 boolean = true;

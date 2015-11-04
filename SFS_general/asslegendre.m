@@ -60,7 +60,7 @@ isargscalar(m)
 isargnumeric(arg)
 if n<abs(m)
     warning( 'Absolute value of order m must be less than or equal to the degree n.' ); 
-    Ynm = zeros(size(alpha));
+    Lnm = zeros(size(alpha));
     return;
 end
 

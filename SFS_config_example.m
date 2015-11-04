@@ -60,20 +60,25 @@ narginchk(nargmin,nargmax);
 %
 % - Misc
 % - Audio
-% - Simulations
+% - Sound Field Synthesis (SFS)
+%   * Dimensionality
+%   * Driving functions
+%   * Impulse responses
+%   * 2.5D
+%   * Tapering
+% - Sound Field Simulations
 % - Secondary Sources
+% - Wave Field Synthesis (WFS)
+%   * Pre-equalization
+% - Spectral Division Method (SDM)
+% - Near-Field Compensated Hirger Order Ambisonics (NFC-HOA)
+% - Local Sound Field Synthesis
 % - Binaural Reproduction
 %   * Headphone compensation
-%   * HRIR/BRIR
-%   * Auralization
-% - WFS
-%   * Pre-equalization
-%   * Tapering
-%   * Virtual Sources
-% - SDM
-% - HOA
+%   * Auralisation
+%   * SoundScape Renderer
 % - Plotting
-%   * Gnuplot
+% - References
 %
 
 
@@ -157,8 +162,6 @@ conf.resolution = 300; % / samples
 % Phase of omega of sound field (change this value to create monochromatic sound
 % fields with different phases, for example this can be useful to create a movie)
 conf.phase = 0; % / rad
-% normalize the simulated sound field?
-conf.usenormalisation = true; % boolean
 
 
 % ===== Secondary Sources ================================================
@@ -171,11 +174,16 @@ conf.secondary_sources.size = 3; % / m
 % Center of array, X0
 conf.secondary_sources.center = [0 0 0]; % / m
 % Array geometry
-% Possible values are: 'line', 'box', 'circle', 'sphere', 'custom'
+% Possible values are: 'line', 'box', 'rounded-box', 'circle', 'sphere', 'custom'
 conf.secondary_sources.geometry = 'circle'; % string
+% exclusive for 'rounded-box' array geometry. Defines the bending radius for
+% the corners of the smoothed box
+conf.secondary_sources.corner_radius = 0.0; % / m
 % Vector containing custom secondary source positions and directions.
 % This is used if geometry = 'custom' is specified.
 % conf.secondary_sources.x0 = [x0; y0; z0; nx0; ny0; nz0; weight];
+% Or it could also be a SOFA struct or file name, in this case the positions are
+% extracted from the provided SOFA file.
 conf.secondary_sources.x0 = []; % / m
 % Grid for the spherical array. Note, that you have to download and install the
 % spherical grids from an additiona source. For available grids see:
@@ -285,11 +293,11 @@ conf.ir.useinterpolation = true; % boolean
 %
 % === Headphone compensation ===
 % Headphone compensation
-conf.ir.usehcomp = true; % boolean
+conf.ir.usehcomp = false; % boolean
 % Headphone compensation file for left and right ear.
 conf.ir.hcompfile = 'data/headphone_compensation/QU_KEMAR_AKGK601_hcomp.wav'; % string
 %
-% === Auralisation ===
+% === Auralization ===
 % These files are used for the auralization of impulse responses by the
 % auralize_ir() function.
 % NOTE: you have to provide them by yourself!
@@ -312,6 +320,13 @@ conf.ir.brsangles = 0:1:359; % / degree
 %% ===== Plotting ========================================================
 % Plot the results (sound fields etc.) directly
 conf.plot.useplot = false; % boolean
+% Normalize the sound field for plotting
+conf.plot.usenormalisation = true; % boolean
+% Normalisation method. Available methods are:
+%   'auto'      - 'center' if center of sound field > 0.3, otherwise 'max'
+%   'center'    - center of sound field == 1
+%   'max'       - max of sound field == 1
+conf.plot.normalisation = 'auto'; % string
 % Plot mode (uses the GraphDefaults function). Avaiable modes are:
 %   'monitor'   - displays the plot on the monitor
 %   'paper'     - eps output in conf.plot.outfile

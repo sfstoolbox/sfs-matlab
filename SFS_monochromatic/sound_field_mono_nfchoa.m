@@ -4,9 +4,9 @@ function varargout = sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf)
 %   Usage: [P,x,y,z,x0] = sound_field_mono_nfchoa(X,Y,Z,xs,src,f,[conf])
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax]
-%       Y           - y-axis / m; single value or [ymin,ymax]
-%       Z           - z-axis / m; single value or [zmin,zmax]
+%       X           - x-axis / m; single value or [xmin,xmax] or nD-array
+%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
+%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       xs          - position of point source / m
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
@@ -17,16 +17,19 @@ function varargout = sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf)
 %
 %   Output parameters:
 %       P           - Simulated sound field
-%       x           - corresponding x axis / m
-%       y           - corresponding y axis / m
-%       z           - corresponding z axis / m
+%       x           - corresponding x values / m
+%       y           - corresponding y values / m
+%       z           - corresponding z values / m
 %       x0          - secondary sources / m
 %
-%   SOUND_FIELD_MONO_NFCHOA(X,Y,Z,xs,src,f,conf) simulates a sound
-%   field of the given source type (src) using a NFC-HOA driving
-%   function in the frequency domain. This means by calculating the integral for
-%   P with a summation.
-%   To plot the result use plot_sound_field(P,x,y,z,x0).
+%   SOUND_FIELD_MONO_NFCHOA(X,Y,Z,xs,src,f,conf) simulates a monochromatic sound
+%   field of the given source type (src) synthesized with near-field compensated
+%   higher order Ambisonics.
+%
+%   To plot the result use:
+%   plot_sound_field(P,X,Y,Z,x0,conf);
+%   or simple call the function without output argument:
+%   sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf)
 %
 %   See also: plot_sound_field, sound_field_imp_nfchoa
 
@@ -67,7 +70,6 @@ function varargout = sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf)
 nargmin = 6;
 nargmax = 7;
 narginchk(nargmin,nargmax);
-isargvector(X,Y,Z);
 isargxs(xs);
 isargpositivescalar(f);
 isargchar(src);

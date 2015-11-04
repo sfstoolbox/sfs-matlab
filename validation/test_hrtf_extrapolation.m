@@ -68,6 +68,8 @@ if strcmp('QU_KEMAR',hrtf_set)
     conf.usetapwin = true;
     conf.tapwinlen = 0.3;
     conf.secondary_sources.geometry = 'circle';
+    conf.secondary_sources.center = [0 0 0];
+    conf.secondary_sources.size = 3;
     conf.wfs.usehpre = true;
     conf.wfs.hpretype = 'FIR';
     conf.driving_functions = 'default';
@@ -85,29 +87,32 @@ if strcmp('QU_KEMAR',hrtf_set)
         download_file(url,hrtf_file);
     end
     % load HRTF data set
-    sofa = SOFAload(hrtf_file,conf);
+    sofa = SOFAload(hrtf_file);
     x0 = SOFAcalculateAPV(sofa);
     % do the extrapolation
     sofa_pw = extrapolate_farfield_hrtfset(sofa,conf);
-    x0_pw = SOFAcalculateAPV(sofa_pw);
     % plot the original HRTF data set
     figure;
-    imagesc(x0(:,1),1:size(irs.left,1),irs.left);
+    imagesc(x0(:,1),1:size(sofa.Data.IR,3),squeeze(sofa.Data.IR(:,1,:))');
     title('QU KEMAR anechoic 3m');
     xlabel('phi / deg');
     % plot the interplated HRTF data set
     figure;
-    imagesc(deg(irs_pw.apparent_azimuth),1:size(irs_pw.left,1),irs_pw.left);
+    imagesc(x0(:,1),1:size(sofa_pw.Data.IR,3),squeeze(sofa_pw.Data.IR(:,1,:))');
     title('QU KEMAR anechoic extrapolated');
     xlabel('phi / deg');
     % ILD of both HRTF sets
-    ild1 = interaural_level_difference(irs.left,irs.right);
-    ild2 = interaural_level_difference(irs_pw.left,irs_pw.right);
+    ild1 = db(rms(squeeze(sofa.Data.IR(:,1,:))')) - ...
+           db(rms(squeeze(sofa.Data.IR(:,2,:))'));
+    ild2 = db(rms(squeeze(sofa_pw.Data.IR(:,1,:))')) - ...
+           db(rms(squeeze(sofa_pw.Data.IR(:,2,:))'));
     figure;
-    plot(deg(irs.apparent_azimuth),ild1,'-b', ...
-         deg(irs.apparent_azimuth),ild2,'-r');
+    plot(x0(:,1),ild1,'-b', ...
+         x0(:,1),ild2,'-r');
     legend('original','extrapolated');
     title('Interaural Level Differences');
+    xlabel('phi / deg');
+    ylabel('Amplitude difference / dB');
 elseif strcmp('FABIAN_3D',hrtf_set)
     error(['%s: the FABIAN 3D data set is not publicly available at the ' ...
     'moment.'],upper(mfilename));
@@ -131,28 +136,31 @@ elseif strcmp('FABIAN_3D',hrtf_set)
     conf.ir.useoriglength = false;
     conf.showprogress = true;
     addirspath(conf);
-    hrtf_file = 'FABIAN_3d_anechoic.mat';
-    % load HRTF data set
-    irs = read_irs(hrtf_file,conf);
+    hrtf_file = 'FABIAN_3d_anechoic.sofa';
     % do the extrapolation
-    irs_pw = extrapolate_farfield_hrtfset(irs,conf);
-    %save FABIAN_3D_extrapolated.mat irs_pw
+    irs_pw = extrapolate_farfield_hrtfset(hrtf_file,conf);
+    %save FABIAN_3D_extrapolated.sofa irs_pw
     % plot the original HRTF data set
     figure;
-    imagesc(deg(irs.apparent_azimuth),1:size(irs.left,1),irs.left);
+    imagesc(x0(:,1),1:size(sofa.Data.IR,3),squeeze(sofa.Data.IR(:,1,:))');
     title('SEACEN FABIAN anechoic 1.7m');
     xlabel('phi / deg');
     % plot the interplated HRTF data set
     figure;
-    imagesc(deg(irs_pw.apparent_azimuth),1:size(irs_pw.left,1),irs_pw.left);
+    imagesc(x0(:,1),1:size(sofa_pw.Data.IR,3),squeeze(sofa.Data_pw.IR(:,1,:))');
     title('SEACEN FABIAN anechoic extrapolated');
     xlabel('phi / deg');
     % ILD of both HRTF sets
-    ild1 = interaural_level_difference(irs.left,irs.right);
-    ild2 = interaural_level_difference(irs_pw.left,irs_pw.right);
+    % ILD of both HRTF sets
+    ild1 = db(rms(squeeze(sofa.Data.IR(:,1,:))')) - ...
+           db(rms(squeeze(sofa.Data.IR(:,2,:))'));
+    ild2 = db(rms(squeeze(sofa_pw.Data.IR(:,1,:))')) - ...
+           db(rms(squeeze(sofa_pw.Data.IR(:,2,:))'));
     figure;
-    plot(deg(irs.apparent_azimuth),ild1,'-b', ...
-         deg(irs.apparent_azimuth),ild2,'-r');
+    plot(x0(:,1),ild1,'-b', ...
+         x0(:,1),ild2,'-r');
     legend('original','extrapolated');
     title('Interaural Level Differences');
+    xlabel('phi / deg');
+    ylabel('Amplitude difference / dB');
 end

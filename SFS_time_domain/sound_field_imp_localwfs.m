@@ -4,9 +4,9 @@ function varargout = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
 %   Usage: [p,x,y,z,x0] = sound_field_imp_localwfs(X,Y,Z,xs,src,t,[conf])
 %
 %   Input options:
-%       X           - x-axis / m; single value or [xmin,xmax]
-%       Y           - y-axis / m; single value or [ymin,ymax]
-%       Z           - z-axis / m; single value or [zmin,zmax]
+%       X           - x-axis / m; single value or [xmin,xmax] or nD-array
+%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
+%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       xs          - position of point source / m
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs, ys are the direction of the
@@ -17,18 +17,22 @@ function varargout = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
 %
 %   Output options:
 %       p           - simulated sound field
-%       x           - corresponding x axis / m
-%       y           - corresponding y axis / m
-%       z           - corresponding z axis / m
+%       x           - corresponding x values / m
+%       y           - corresponding y values / m
+%       z           - corresponding z values / m
 %       x0          - secondary sources / m
 %
 %   SOUND_FIELD_IMP_LOCALWFS(X,Y,Z,xs,src,t,conf) simulates a sound field of the
-%   given source type (src) using a LOCALWFS driving function with a delay line at
-%   the time t.
+%   given source type (src) synthesized with local wave field synthesis at the
+%   time t.
 %
 %   To plot the result use:
-%   conf.plot.usedb = 1;
-%   plot_sound_field(p,x,y,z,x0,win,conf);
+%   plot_sound_field(p,X,Y,Z,x0,conf);
+%   or simple call the function without output argument:
+%   sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
+%   For plotting you may also consider to display the result in dB, by setting
+%   the following configuration option before:
+%   conf.plot.usedB = true;
 %
 %   See also: driving_function_imp_localwfs, sound_field_mono_localwfs
 
@@ -68,7 +72,7 @@ function varargout = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
 nargmin = 6;
 nargmax = 7;
 narginchk(nargmin,nargmax);
-isargvector(X,Y,Z);
+isargnumeric(X,Y,Z);
 isargxs(xs);
 isargchar(src);
 isargscalar(t);
@@ -91,10 +95,8 @@ useplot = conf.plot.useplot;
 %% ===== Computation =====================================================
 % Get secondary sources
 x0 = secondary_source_positions(conf);
-x0 = secondary_source_selection(x0,xs,src);
-x0 = secondary_source_tapering(x0,conf);
 % Get driving signals
-[d, ~, xv] = driving_function_imp_localwfs(x0,xs,src,conf);
+[d, x0, xv] = driving_function_imp_localwfs(x0,xs,src,conf);
 % Fix the time to account for sample offset of the pre-equalization filter
 switch (conf.wfs.usehpre + conf.localsfs.wfs.usehpre)
   case 1
@@ -112,8 +114,7 @@ if nargout==5, varargout{5}=x0; end
 % === Plotting ===
 if nargout==0 || useplot
   hold on
-    [~,~,~,x,y,z] = xyz_grid(X,Y,Z,conf);
-    dimensions = xyz_axes_selection(x,y,z);
+    dimensions = xyz_axes_selection(X,Y,Z);
     draw_loudspeakers(xv, dimensions, conf);
   hold off
 end

@@ -83,7 +83,7 @@ warning('off','SFS:irs_intpol');
 for ii=1:size(x0,1)
 
     % === Get the desired impulse response.
-    % If needed interpolate the given impusle response set and weight, delay the
+    % If needed interpolate the given impulse response set and weight, delay the
     % impulse for the correct distance
     ir = get_ir(sofa,X,[phi 0],x0(ii,1:3),'cartesian',conf);
 

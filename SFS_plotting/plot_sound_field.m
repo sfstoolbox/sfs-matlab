@@ -273,7 +273,7 @@ function P = limit_colors(P,caxis)
     % First apply the caxis values
     P = min(caxis(2),max(caxis(1),P(:)));
     % Transform to [0...64] and transform to integer
-    P = fix(number_of_colors/range(P(:)) .* (P+abs(min(P(:)))));
+    P = fix(number_of_colors/abs(max(P(:))-min(P(:))) .* (P+abs(min(P(:)))));
     % Transform back to [caxis(1)...caxis(2)]
     P = abs(caxis(2)-caxis(1))/number_of_colors .* P + caxis(1);
 end

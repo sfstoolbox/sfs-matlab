@@ -151,8 +151,8 @@ elseif strcmp('3D',dimension)
         %                   _N_  _n_           (2)
         %               1   \    \    i^(m-n) Hm(w/c r)     -m
         % D(phi0,w) = ----- /__  /__  -------------------- Yn(pi/2,alpha) ...
-        %            2r0^2  n=0  m=-n  w/c   (2)
-        %                                   h|m|(w/c r0)
+        %            2r0^2  n=0  m=-n  w/c     (2)
+        %                                     hn(w/c r0)
         %               m
         %            x Yn(beta0,alpha0)
         %

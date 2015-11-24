@@ -61,7 +61,7 @@ isargposition(X);
 isargscalar(phi);
 isargsecondarysource(x0);
 isargmatrix(d);
-isargstruct(config);
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

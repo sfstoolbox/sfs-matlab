@@ -18,15 +18,20 @@ function D = driving_function_mono_nfchoa_ls(x0,xs,f,N,conf)
 %   signals for the given secondary sources, the virtual line source position
 %   and the frequency f.
 %
+%   References:
+%       N. Hahn, S. Spors (2015) - "Sound Field Synthesis of Virtual Cylindrical
+%       Waves Using Circular and Spherical Loudspeaker Arrays", in Proc. of
+%       138th AES Convention, Paper 9324
+%
 %   See also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_ls
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -67,10 +72,23 @@ xref = conf.xref;
 c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
+X0 = conf.secondary_sources.center;
 
 
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
+
+% secondary source positions
+x00 = bsxfun(@minus,x0,X0);
+[phi0,rho0,z0] = cart2pol(x00(:,1),x00(:,2),x00(:,3));
+[alpha0,beta0,r0] = cart2sph(x00(:,1),x00(:,2),x00(:,3));
+% line source position
+[phi,rho,z] = cart2pol(xs(:,1),xs(:,2),xs(:,3));
+[alpha,beta,r] = cart2sph(xs(:,1),xs(:,2),xs(:,3));
+% wave number
+omega = 2*pi*f;
+% initialize empty driving signal
+D = zeros(size(x0,1),1);
 
 if strcmp('2D',dimension)
 
@@ -78,7 +96,18 @@ if strcmp('2D',dimension)
 
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        to_be_implemented;
+        % 2D line source, (no reference yet)
+        %
+        %                      _N_       (2)
+        %                1     \        Hm(w/c rho)
+        % D(phi0,w) = -------- /__     ------------ e^(i m (phi0-phi))
+        %             2pi rho0 m=-N      (2)
+        %                               Hm(w/c rho0)
+        %
+        for m=-N:N
+            D = D + (1/2/pi./rho0) .* besselh(m,2,omega/c*rho) ./ ...
+                besselh(m,2,omega/c*rho0) .* exp(1i*m*(phi0-phi));
+        end
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2D line source.'],upper(mfilename),driving_functions);
@@ -93,7 +122,18 @@ elseif strcmp('2.5D',dimension)
     xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        to_be_implemented;
+        % 2.5D line source, after Hahn(2015) Eq.(23)
+        %
+        %                   _N_              (2)
+        %               1   \     i^(m-|m|) Hm(w/c r)
+        % D(phi0,w) = ----- /__   -------------------- e^(im(phi0-phi))
+        %              2r0  m=-N    w/c    (2)
+        %                                 h|m|(w/c r0)
+        %
+        for m=-N:N
+        D = D + 1/2./r0 * 1i^(m-abs(m)) .* besselh(m,2,omega/c*rho) ...
+            ./ (omega/c*sphbesselh(abs(m),2,omega/c*r0)) .* exp(1i*m*(phi0-phi));
+        end
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D line source.'],upper(mfilename),driving_functions);
@@ -106,7 +146,26 @@ elseif strcmp('3D',dimension)
 
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        to_be_implemented;
+        % 3D line source, after Hahn(2015) Eq.(20)
+        %
+        %                   _N_  _n_           (2)
+        %               1   \    \    i^(m-n) Hm(w/c r)     -m
+        % D(phi0,w) = ----- /__  /__  -------------------- Yn(pi/2,alpha) ...
+        %            2r0^2  n=0  m=-n  w/c   (2)
+        %                                   h|m|(w/c r0)
+        %               m
+        %            x Yn(beta0,alpha0)
+        %
+        for n=-N:N
+            for m=-n:n
+                D = D + (1/2/r0)*(1i)^(m-n)*besselh(m,2,omega/c*rho) ...
+                    *conj(sphharmonics(n,m,0,alpha)) ...
+                    ./(omega/c*sphbesselh(n,2,omega/c*r0)) ...
+                    .* sphharmonics(n,m,beta0,alpha0);
+                % *sqrt(1i*omega/c); % equalization (optional)
+            end
+        end
+
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 3D line source.'],upper(mfilename),driving_functions);

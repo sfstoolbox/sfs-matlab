@@ -1,6 +1,6 @@
 function D = driving_function_mono_wfs_circexp(x0,n0,Pm,mode,f,xq,conf)
-%computes the time reversed wfs driving functions for a sound field expressed 
-%by singular cylindrical expansion coefficients.
+%computes the wfs driving functions for a sound field expressed by cylindrical 
+%expansion coefficients.
 %
 %   Usage: D = driving_function_mono_wfs_circexp(x0,n0,Pm,mode,f,xq,conf)
 %
@@ -132,20 +132,25 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
   
   if (strcmp('default',driving_functions))    
     % --- SFS Toolbox ------------------------------------------------
-    % D using a line source
-    % 
-    %             d    
-    % D(x0, w) = --- conj(-Ps(x0,w))
-    %            d n
-    % with singular cylindrical expansion of the sound field:
+    %                d    
+    % D(x0, w) = -2 --- P(x0,w)
+    %               d n
+    % with cylindrical expansion of the sound field:
     %           \~~    oo       
-    % Ps(x,w) =  >        B  S (x-xq) 
+    % P(x,w) =  >        B   F (x-xq) 
     %           /__ n=-oo  n  n
+    %
+    % where F = {R,S}.
+    %
+    % regular cylindrical basis functions:
+    % 
+    % R  (x) = J (kr)  . exp(j n phi))
+    %  n        n       
     % singular cylindrical basis functions
     %          (2) 
     % S (x) = H   (kr) . exp(j n phi)
-    %  n       n               
-    
+    %  n       n
+ 
     for n=-Nce:Nce
       l = l + 1;      
       cn_prime = k.*circbasis_derived(n,kr0);
@@ -154,11 +159,11 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
       Gradr   = Gradr   +       ( Pm(l).*cn_prime.*Yn  );
       Gradphi = Gradphi + 1./r0.*( Pm(l).*cn.*1j.*n.*Yn );
     end
-    % directional gradient + time reversion (conjugate complex)
-    D = Sn0r.*Gradr + Sn0phi.*Gradphi + Sn0z.*Gradz;
+    % directional gradient
+    D = -2*( Sn0r.*Gradr + Sn0phi.*Gradphi + Sn0z.*Gradz );
   else
     error(['%s: %s, this type of driving function is not implemented ', ...
-      'for a 2D/3D line source.'],upper(mfilename),driving_functions);
+      'for 2D/3D.'],upper(mfilename),driving_functions);
   end  
 else
   error('%s: the dimension %s is unknown.',upper(mfilename),dimension);

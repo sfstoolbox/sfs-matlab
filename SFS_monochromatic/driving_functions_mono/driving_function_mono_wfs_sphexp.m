@@ -2,7 +2,7 @@ function D = driving_function_mono_wfs_sphexp(x0,n0,Pnm,mode,f,xq,conf)
 %computes the wfs driving functions for a sound field expressed by spherical 
 %expansion coefficients.
 %
-%   Usage: D = driving_function_mono_wfs_sphexp(x0,n0,Bl,mode,f,xq,conf)
+%   Usage: D = driving_function_mono_wfs_sphexp(x0,n0,Pnm,mode,f,xq,conf)
 %
 %   Input parameters:
 %       x0          - position of the secondary sources / m [nx3]
@@ -16,7 +16,7 @@ function D = driving_function_mono_wfs_sphexp(x0,n0,Pnm,mode,f,xq,conf)
 %   Output parameters:
 %       D           - driving function signal [nx1]
 %
-%   DRIVING_FUNCTION_MONO_WFS_SPHEXP(x0,n0,Bl,mode,f,xq,conf)
+%   DRIVING_FUNCTION_MONO_WFS_SPHEXP(x0,n0,Pnm,mode,f,xq,conf)
 %
 %   see also: driving_function_mono_wfs_cylexp
 %
@@ -79,6 +79,7 @@ end
 
 %% ===== Configuration ==================================================
 c = conf.c;
+dimension = conf.dimension;
 driving_functions = conf.driving_functions;
 
 %% ===== Variables ======================================================
@@ -133,42 +134,47 @@ end
 % indexing the expansion coefficients
 l = 0;
 
-if (strcmp('default',driving_functions))
-  % --- SFS Toolbox ------------------------------------------------
-  %
-  %             d    
-  % D(x0, w) = ---- Ps(x0,w)
-  %            d n0
-  % with regular/singular spherical expansion of the sound field:
-  %          \~~   N \~~   n   m  m
-  % P(x,w) =  >       >       B  F (x-xq) 
-  %          /__ n=0 /__ m=-n  n  n
-  %
-  % where F = {R,S}.
-  %
-  % regular spherical basis functions:
-  %  m                  m
-  % R  (x) = j (kr)  . Y  (theta, phi)
-  %  n        n         n     
-  % singular spherical basis functions:
-  %  m        (2)         m
-  % S  (x) = h   (kr)  . Y  (theta, phi)
-  %  n        n           n    
+if strcmp('2D',dimension) || strcmp('3D',dimension)
 
-  for n=0:Nse
-    cn_prime = k.*sphbasis_derived(n,kr);
-    cn = sphbasis(n, kr);
-    for m=-n:n
-      l = l + 1;
-      Ynm = sphharmonics(n,m, theta0, phi0);
-      Gradr   = Gradr   +       ( Pnm(l).*cn_prime.*Ynm);
-      Gradphi = Gradphi + 1./r0.*( Pnm(l).*cn.*1j.*m.*Ynm );
-      %Gradtheta = 0;  TODO
+  if (strcmp('default',driving_functions))
+    % --- SFS Toolbox ------------------------------------------------
+    %
+    %                 d    
+    % D(x0, w) = -2 ------ P(x0,w)
+    %                d n0
+    % with regular/singular spherical expansion of the sound field:
+    %          \~~   N \~~   n   m  m
+    % P(x,w) =  >       >       B  F (x-xq) 
+    %          /__ n=0 /__ m=-n  n  n
+    %
+    % where F = {R,S}.
+    %
+    % regular spherical basis functions:
+    %  m                  m
+    % R  (x) = j (kr)  . Y  (theta, phi)
+    %  n        n         n     
+    % singular spherical basis functions:
+    %  m        (2)         m
+    % S  (x) = h   (kr)  . Y  (theta, phi)
+    %  n        n           n    
+
+    for n=0:Nse
+      cn_prime = k.*sphbasis_derived(n,kr);
+      cn = sphbasis(n, kr);
+      for m=-n:n
+        l = l + 1;
+        Ynm = sphharmonics(n,m, theta0, phi0);
+        Gradr   = Gradr   +       ( Pnm(l).*cn_prime.*Ynm);
+        Gradphi = Gradphi + 1./r0.*( Pnm(l).*cn.*1j.*m.*Ynm );
+        %Gradtheta = 0;  TODO
+      end
     end
+    % directional gradient
+    D = -2*( Sn0r.*Gradr + Sn0phi.*Gradphi + Sn0theta.*Gradtheta );
+  else
+    error(['%s: %s, this type of driving function is not implemented ', ...
+      'for 2D/3D'],upper(mfilename),driving_functions);
   end
-  % directional gradient
-  D = Sn0r.*Gradr + Sn0phi.*Gradphi + Sn0theta.*Gradtheta;
 else
-  error(['%s: %s, this type of driving function is not implemented ', ...
-    'for a 2.5D point source.'],upper(mfilename),driving_functions);
+  error('%s: the dimension %s is unknown.',upper(mfilename),dimension);
 end

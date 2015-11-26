@@ -7,7 +7,7 @@ SFS_start;
 %% Parameters
 conf = SFS_config_example;
 conf.showprogress = true;
-conf.dimension = '2.5D';
+conf.dimension = '2D';
 
 % plotting
 conf.plot.usedb = false;
@@ -86,7 +86,7 @@ Bpwm_t = circexp_mono_scatter(Apwm_t_rev, rt, sigma, f, conf);
 Blsm_t = circexp_mono_scatter(Alsm_t_rev, rt, sigma, f, conf);
 
 %% generic WFS in spatial domain using Spherical Expansion Coefficients
-conf.dimension = '2.5D';
+conf.dimension = '2D';
 % loudspeakers (TODO: implicit selection of loudspeakers in driving
 % function)
 x0 = secondary_source_positions(conf);
@@ -124,7 +124,7 @@ plot_sound_field(Pls, X, Y, Z, [], conf);
 title('2D WFS with circular expansion (spatial domain): line source');
 
 %% LWFS in spatial domain using virtual Spherical Scatterer and time reversal
-conf.dimension = '2.5D';
+conf.dimension = '2D';
 % loudspeakers (TODO: implicit selection of loudspeakers in driving
 % function)
 x0 = secondary_source_positions(conf);

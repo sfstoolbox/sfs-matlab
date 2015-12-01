@@ -161,7 +161,9 @@ if p.usedb
         P(:) = eps;
     end
     % Change default colormap to chromajs
-    conf.plot.colormap = 'viridis';
+    if strcmp('default',p.colormap)
+        conf.plot.colormap = 'chromajs';
+    end
     % Calculate sound pressure level in dB
     P = 20*log10(abs(P));
     if p.usenormalisation

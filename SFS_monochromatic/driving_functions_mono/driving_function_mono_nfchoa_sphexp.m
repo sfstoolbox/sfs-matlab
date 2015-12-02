@@ -142,7 +142,18 @@ elseif strcmp('2.5D',dimension)
     % --- Xref ~= Xc ----------------------------------------------------
     %
     % if the reference position is not in the middle of the array, things
-    % get a 'little' more complicated 
+    % get a 'little' more complicated
+    %
+    %                              __
+    %                             \     m             m
+    %                       __    /__  P  j (k rref) Y (pi/2, 0)
+    %               1      \      n=|m| n  n          n
+    % D(phi0,w) = ------   /__    ------------------------------ e^(i m phi0)
+    %             2pi r0  m=-N..N  __
+    %                             \     m             m
+    %                             /__  G  j (k rref) Y (pi/2, 0)
+    %                             n=|m| n  n          n
+    %
     
     hn = zeros(size(x0,1),1,Nse+1);
     jn = hn;
@@ -171,7 +182,7 @@ elseif strcmp('2.5D',dimension)
     end
   end
   
-  D = D/N0;  % normalization due to angular sampling  
+  D = D./(2*pi*r0);  % normalization due to size of circular array 
   
 elseif strcmp('3D',dimension)
   % === 3-Dimensional ==================================================

@@ -3,7 +3,7 @@ function SFS_start()
 %
 %   Usage: SFS_start;
 %
-%   SFS_START starts the Sound Field Synthesis Toolbox (SFS). 
+%   SFS_START starts the Sound Field Synthesis Toolbox (SFS).
 %   This function must be run first in order to add the path's to Matlab.
 %
 %   See also: SFS_config, SFS_version
@@ -96,6 +96,7 @@ end
 
 %% ===== Banner ==========================================================
 if(printbanner)
-    printf('SFS %1.1f successfully initialized.\n',SFS_version);
+    printf(['Sound Field Synthesis Toolbox %1.1f successfully ', ...
+            'initialized.\n'],SFS_version);
 end
 

@@ -1,12 +1,12 @@
 function varargout = sound_field_mono_sdm(X,Y,Z,xs,src,f,conf)
-%SOUND_FIELD_MONO_SDM simulates a sound field for WFS
+%SOUND_FIELD_MONO_SDM simulates a sound field for SDM
 %
 %   Usage: [P,x,y,z,x0] = sound_field_mono_sdm(X,Y,Z,xs,src,f,[conf])
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax]
-%       Y           - y-axis / m; single value or [ymin,ymax]
-%       Z           - z-axis / m; single value or [zmin,zmax]
+%       X           - x-axis / m; single value or [xmin,xmax] or nD-array
+%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
+%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       xs          - position of virtual source / m
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
@@ -18,17 +18,21 @@ function varargout = sound_field_mono_sdm(X,Y,Z,xs,src,f,conf)
 %
 %   Output parameters:
 %       P           - simulated sound field
-%       x           - corresponding x axis / m
-%       y           - corresponding y axis / m
-%       z           - corresponding z axis / m
+%       x           - corresponding x values / m
+%       y           - corresponding y values / m
+%       z           - corresponding z values / m
 %       x0          - active secondary sources / m
 %
-%   SOUND_FIELD_MONO_SDM(X,Y,Z,xs,src,f,conf) simulates a sound field for the
-%   given source type (src) using SDM driving functions in the temporal domain.
-%   This means by calculating the integral for P with a summation.
-%   To plot the result use plot_sound_field(P,x,y,z,x0,win).
+%   SOUND_FIELD_MONO_SDM(X,Y,Z,xs,src,f,conf) simulates a monochromatic sound
+%   field for the given source type (src) synthesized with the spectral devision
+%   method (SDM).
 %
-%   See also: plot_sound_field, sound_field_imp_wfs, driving_function_mono_wfs
+%   To plot the result use:
+%   plot_sound_field(P,X,Y,Z,x0,conf);
+%   or simple call the function without output argument:
+%   sound_field_mono_sdm(X,Y,Z,xs,src,f,conf)
+%
+%   See also: plot_sound_field, sound_field_mono_sdm_kx
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -67,7 +71,6 @@ function varargout = sound_field_mono_sdm(X,Y,Z,xs,src,f,conf)
 nargmin = 6;
 nargmax = 7;
 narginchk(nargmin,nargmax);
-isargvector(X,Y,Z);
 isargxs(xs);
 isargpositivescalar(f);
 isargchar(src);

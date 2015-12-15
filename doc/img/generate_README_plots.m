@@ -102,13 +102,6 @@ axis([-2 2 -2.5 2.5]);
 print_png('secondary_sources_arbitrary_realloudspeakers.png');
 
 %% ===== Monochromatic sound fields ======================================
-% === stereo setup ===
-conf = SFS_config_example;
-x0 = [-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1];
-% [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
-sound_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800,conf)
-print_png('sound_field_stereo.png');
-
 % === WFS 3D ===
 conf = SFS_config_example;
 conf.dimension = '3D';
@@ -122,12 +115,16 @@ sound_field_mono_wfs([-2 2],0,[-2 2],[0 -1 0],'pw',800,conf);
 print_png('sound_field_wfs_3d_xz.png');
 sound_field_mono_wfs(0,[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
 print_png('sound_field_wfs_3d_yz.png');
+conf.resolution = 100;
+sound_field_mono_wfs([-2 2],[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
+print_png('sound_field_wfs_3d_xyz.png');
 
-
+% === WFS 2.5D ===
 % simulating 2.5D WFS with circular array and a point source
 conf = SFS_config_example;
 conf.dimension = '2.5D';
-conf.plot.useplot = 1;
+conf.plot.useplot = true;
+conf.plot.normalisation = 'center';
 % [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
 [P,x,y,z,x0] = sound_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf);
 print_png('sound_field_wfs_25d.png');
@@ -136,7 +133,7 @@ x0_all = secondary_source_positions(conf);
 [~,idx] = secondary_source_selection(x0,[0 2.5 0],'ps');
 x0_all(:,7) = zeros(1,size(x0_all,1));
 x0_all(idx,7) = x0(:,7);
-plot_sound_field(P,x,y,z,x0_all,conf);
+plot_sound_field(P,[-2 2],[-2 2],0,x0_all,conf);
 print_png('sound_field_wfs_25d_with_all_sources.png');
 % simulating 2.5D NFCHOA with circular array and a plane wave
 conf = SFS_config_example;
@@ -145,7 +142,7 @@ conf.dimension = '2.5D';
 sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
 print_png('sound_field_nfchoa_25d.png');
 
-% 2D local WFS with box shaped array and circular virtual array
+% === 2D local WFS with box shaped array and circular virtual array ===
 conf = SFS_config_example;
 conf.resolution = 1000;
 conf.dimension = '2D';
@@ -160,7 +157,15 @@ sound_field_mono_localwfs([-1 1],[-1 1],0,[1.0 -1.0 0],'pw',7000,conf);
 axis([-1.1 1.1 -1.1 1.1]);
 print_png('sound_field_localwfs_2d.png');
 
-% --- spatio-temporal snapshots of the sound field ---
+% === stereo setup ===
+conf = SFS_config_example;
+conf.plot.normalisation = 'center';
+x0 = [-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1];
+% [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
+sound_field_mono([-2 2],[-1 3],0,x0,'ps',[1 1],800,conf)
+print_png('sound_field_stereo.png');
+
+%% ===== spatio-temporal snapshots of the sound field ====================
 conf = SFS_config_example;
 conf.dimension = '2.5D';
 conf.plot.useplot = true;
@@ -168,18 +173,38 @@ conf.plot.useplot = true;
 [p,x,y,z,x0] = sound_field_imp_nfchoa([-2 2],[-2 2],0,[0 2 0],'ps',200,conf);
 print_png('sound_field_imp_nfchoa_25d.png');
 conf.plot.usedb = true;
-plot_sound_field(p,x,y,z,x0,conf);
+plot_sound_field(p,[-2 2],[-2 2],0,x0,conf);
 print_png('sound_field_imp_nfchoa_25d_dB.png');
 
 
-% --- impulse response of the system ---
+%% ===== custom grids ====================================================
+conf = SFS_config_example;
+conf.dimension = '3D';
+conf.secondary_sources.number = 225;
+conf.secondary_sources.geometry = 'sphere';
+conf.resolution = 100;
+conf.plot.normalisation = 'center';
+X = randi([-2000 2000],125000,1)/1000;
+Y = randi([-2000 2000],125000,1)/1000;
+Z = randi([-2000 2000],125000,1)/1000;
+sound_field_mono_wfs(X,Y,Z,[0 -1 0],'pw',800,conf);
+print_png('sound_field_wfs_3d_xyz_custom_grid.png');
+conf.plot.usedb = true;
+conf.dimension = '2.5D';
+conf.secondary_sources.number = 64;
+conf.secondary_sources.geometry = 'circle';
+sound_field_imp_nfchoa(X,Y,0,[0 2 0],'ps',200,conf);
+print_png('sound_field_imp_nfchoa_25d_dB_custom_grid.png');
+
+
+%% ===== impulse response of the system ==================================
 conf = SFS_config_example;
 conf.ir.usehcomp = 0;
 conf.wfs.usehpre = 0;
-irs = dummy_irs;
+irs = dummy_irs(conf);
 [ir1,x0] = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
 conf.wfs.usehpre = 1;
-conf.wfs.hprefhigh = aliasing_frequency(x0);
+conf.wfs.hprefhigh = aliasing_frequency(x0,conf);
 ir2 = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
 [a1,p,f] = easyfft(norm_signal(ir1(:,1)),conf);
 a2 = easyfft(norm_signal(ir2(:,1)),conf);
@@ -198,9 +223,10 @@ conf = SFS_config_example;
 figure;
 figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
 semilogx(f,20*log10(a),'-r');
-axis([10 20000 -20 20]);
+axis([10 20000 -40 0]);
 set(gca,'XTick',[10 100 250 1000 5000 20000]);
 legend('w pre-filter');
 xlabel('frequency / Hz');
 ylabel('magnitude / dB');
 print_png('impulse_response_wfs_25d_mono.png');
+

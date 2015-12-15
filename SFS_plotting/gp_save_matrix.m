@@ -5,13 +5,15 @@ function gp_save_matrix(file,x,y,M)
 %
 %   Input parameters:
 %       file    - filename of the data file
-%       x       - x axis values
-%       y       - y axis values
+%       x       - x axis values (vector or matrix)
+%       y       - y axis values (vector or matrix)
 %       M       - matrix data size(M)=y,x
 %
 %   GP_SAVE_MATRIX(file,x,y,M) saves the values of x,y and M in a binary matrix
 %   format useable by Gnuplot, see
 %   http://www.gnuplotting.org/manpage-gnuplot-4-6/#x1-372000III for details.
+%   If x,y are provided as matrices as, for example, they are returned by any
+%   sound_field_*() function, x(1,:) and y(:,1) will be used.
 %
 %   See also: gp_save
 
@@ -53,12 +55,15 @@ nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargchar(file);
-isargvector(x,y);
+isargnumeric(x,y);
 isargmatrix(M);
 
 
 %% ===== Computation =====================================================
-
+% Gnuplot can not handle arbritrary grids, so we extract the first row and first
+% column instead
+if is_dim_custom(x), x = x(1,:); end
+if is_dim_custom(y), y = y(:,1); end
 % Check if the data has the right format
 [ly,lx] = size(M);
 if lx~=length(x) || ly~=length(y)

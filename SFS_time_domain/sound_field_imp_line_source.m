@@ -1,25 +1,32 @@
 function varargout = sound_field_imp_line_source(X,Y,Z,xs,varargin)
 %SOUND_FIELD_IMP_LINE_SOURCE simulates a sound field for a line source
 %
-%   Usage: [P,x,y,z] = sound_field_imp_line_source(X,Y,Z,xs,t,[conf])
+%   Usage: [p,x,y,z] = sound_field_imp_line_source(X,Y,Z,xs,t,[conf])
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax]
-%       Y           - y-axis / m; single value or [ymin,ymax]
-%       Z           - z-axis / m; single value or [zmin,zmax]
+%       X           - x-axis / m; single value or [xmin,xmax] or nD-array
+%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
+%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       xs          - position of line source / m
 %       t           - time / samples
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       P           - Simulated sound field
-%       x           - corresponding x axis / m
-%       y           - corresponding y axis / m
-%       z           - corresponding z axis / m
+%       p           - Simulated sound field
+%       x           - corresponding x values / m
+%       y           - corresponding y values / m
+%       z           - corresponding z values / m
 %
 %   SOUND_FIELD_IMP_LINE_SOURCE(X,Y,Z,xs,t,conf) simulates a sound
-%   field of a line source positioned at xs.
-%   To plot the result use plot_sound_field(P,x,y,z).
+%   field of a line source positioned at xs at time t.
+%
+%   To plot the result use:
+%   plot_sound_field(p,X,Y,Z,conf);
+%   or simple call the function without output argument:
+%   sound_field_imp_line_source(X,Y,Z,xs,t,conf)
+%   For plotting you may also consider to display the result in dB, by setting
+%   the following configuration option before:
+%   conf.plot.usedB = true;
 %
 %   See also: sound_field_imp, plot_sound_field, sound_field_mono_line_source
 

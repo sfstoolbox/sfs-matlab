@@ -1,23 +1,19 @@
-function ild = interaural_level_difference(insigleft,insigright)
-%INTERAURAL_LEVEL_DIFFERENCE Extract the ILD between the two given signals
+function bool = is_dim_singleton(varargin)
+%IS_DIM_SINGLETON returns true for a singleton dimension
 %
-%   Usage: ild = interaural_level_difference(insigleft,insigright)
+%   Usage: bool = is_dim_singleton(x1,x2,...)
 %
 %   Input parameters:
-%       insigleft   - left ear signal. This can also be a matrix containing
-%                     left signals for different frequency bands
-%       insigright  - the same as insigleft, but for the right ear
+%       x1,x2,... - axis / m; single value or [xmin,xmax] or nD-array
 %
 %   Output parameters:
-%       ild         - ILD for the given signals. A single value for two
-%                     given signals or a vector with values for every
-%                     frequency band / dB
+%       bool      - array of logical indicating whether each input is a
+%                   singleton dimension
 %
-%   INTERAURAL_LEVEL_DIFFERENCE(insigleft,insigright) extractes the ILD
-%   between the left and right signal(s) by subtracting the dB value of
-%   the left signal(s) from the dB value of the right signal(s).
+%   IS_DIM_SINGLETON(x1,x2,..) checks if we have a singleton dimension for any
+%   of the given x,y,z values.
 %
-%   See also: interaural_time_difference
+%   See also: is_dim_custom, xyz_axes_selection, plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -52,16 +48,9 @@ function ild = interaural_level_difference(insigleft,insigright)
 %*****************************************************************************
 
 
-%% ===== Checking of input parameters ====================================
-nargmin = 2;
-nargmax = 2;
-narginchk(nargmin,nargmax);
-isargmatrix(insigleft,insigright);
-if size(insigright)~=size(insigright)
-    error('%s: insigleft and insigright have to be the same size!', ...
-        upper(mfilename));
-end
+%% ===== Checking input parameters =======================================
+isargnumeric(varargin{:});
 
 
 %% ===== Computation =====================================================
-ild = db(rms(insigright(:,:)))-db(rms(insigleft(:,:)));
+bool = cellfun(@(x) numel(x) <= 2 && x(1) == x(end), varargin);

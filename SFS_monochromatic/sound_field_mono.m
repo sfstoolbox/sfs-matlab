@@ -5,9 +5,9 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %   Usage: [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,[conf])
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax]
-%       Y           - y-axis / m; single value or [ymin,ymax]
-%       Z           - z-axis / m; single value or [zmin,zmax]
+%       X           - x-axis / m; single value or [xmin,xmax] or nD-array
+%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
+%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       x0          - secondary sources [n x 6] / m
 %       src         - source model for the secondary sources. This describes the
 %                     Green's function, that is used for the modeling of the
@@ -21,25 +21,39 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %
 %   Output parameters:
 %       P           - Simulated sound field
-%       x           - corresponding x axis / m
-%       y           - corresponding y axis / m
-%       z           - corresponding z axis / m
+%       x           - corresponding x values / m
+%       y           - corresponding y values / m
+%       z           - corresponding z values / m
 %
-%   SOUND_FIELD_MONO(X,Y,Z,x0,src,D,f,conf) simulates a sound field
-%   for the given secondary sources, driven by the corresponding driving
+%   SOUND_FIELD_MONO(X,Y,Z,x0,src,D,f,conf) simulates a monochromatic sound
+%   field for the given secondary sources, driven by the corresponding driving
 %   signals. The given source model src is applied by the corresponding Green's
 %   function for the secondary sources. The simulation is done for one
 %   frequency in the frequency domain, by calculating the integral for P with a
 %   summation.
+%   For the input of X,Y,Z (DIM as a wildcard) :
+%     * if DIM is given as single value, the respective dimension is
+%     squeezed, so that dimensionality of the simulated sound field P is
+%     decreased by one.
+%     * if DIM is given as [dimmin, dimmax], a linear grid for the
+%     respective dimension with a resolution defined in conf.resolution is
+%     established
+%     * if DIM is given as n-dimensional array, the other dimensions have
+%     to be given as n-dimensional arrays of the same size or as a single value.
+%     Each triple of X,Y,Z is interpreted as an evaluation point in an
+%     customized grid.
 %
-%   To plot the result use plot_sound_field(P,x,y,z).
+%   To plot the result use:
+%   plot_sound_field(P,X,Y,Z,conf);
+%   or simple call the function without output argument:
+%   sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %
 %   References:
 %       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
 %       "Theory of Sound Field Synthesis"
 %       G. Williams (1999) - "Fourier Acoustics", Academic Press
 %
-%   See also: plot_sound_field, sound_field_mono_wfs_25d
+%   See also: plot_sound_field, sound_field_imp
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -78,7 +92,8 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 nargmin = 7;
 nargmax = 8;
 narginchk(nargmin,nargmax);
-isargvector(X,Y,Z,D);
+isargnumeric(X,Y,Z);
+isargvector(D);
 isargsecondarysource(x0);
 isargpositivescalar(f);
 isargchar(src);
@@ -101,13 +116,13 @@ showprogress = conf.showprogress;
 
 
 %% ===== Computation ====================================================
-% Create a x-y-grid
-[xx,yy,zz,x,y,z] = xyz_grid(X,Y,Z,conf);
-% Check what are the active axes to create an empty sound field with the correct
-% size
-[~,x1,x2,x3]  = xyz_axes_selection(x,y,z);
+% Create a x-y-z-grid
+[xx,yy,zz] = xyz_grid(X,Y,Z,conf);
+[~,x1]  = xyz_axes_selection(xx,yy,zz); % get first non-singleton axis
+
 % Initialize empty sound field
-P = squeeze(zeros(length(x3),length(x2),length(x1)));
+P = zeros(size(x1));
+
 % Integration over secondary source positions
 for ii = 1:size(x0,1)
 
@@ -119,7 +134,7 @@ for ii = 1:size(x0,1)
     % This is the model for the secondary sources we apply.
     % The exact function is given by the dimensionality of the problem, e.g. a
     % point source for 3D
-    G = greens_function_mono(xx,yy,zz,x0(ii,1:3),src,f,conf);
+    G = greens_function_mono(xx,yy,zz,x0(ii,1:6),src,f,conf);
 
     % ====================================================================
     % Integration
@@ -135,16 +150,13 @@ for ii = 1:size(x0,1)
 
 end
 
-% === Scale signal (at xref) ===
-P = norm_sound_field_at_xref(P,x,y,z,conf);
-
 % return parameter
 if nargout>0, varargout{1}=P; end
-if nargout>1, varargout{2}=x; end
-if nargout>2, varargout{3}=y; end
-if nargout>3, varargout{4}=z; end
+if nargout>1, varargout{2}=xx; end
+if nargout>2, varargout{3}=yy; end
+if nargout>3, varargout{4}=zz; end
 
 % ===== Plotting =========================================================
-if nargout==0 || useplot
-    plot_sound_field(P,x,y,z,x0,conf);
+if (nargout==0 || useplot)
+    plot_sound_field(P,X,Y,Z,x0,conf);
 end

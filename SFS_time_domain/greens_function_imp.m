@@ -94,6 +94,17 @@ if strcmp('ps',src)
     g = 1./(4*pi.*r);
     t = (r/c)*fs-t;
 
+elseif strcmp('dps',src)
+    % Source model for a dipole point source: derivative of 3D Green's function.
+    %
+    %                 1   / -1 / iw \      1    \  (x-xs)ns
+    % g(x-xs,ns,t) = --- | F  | ---- | + ------  | --------- delta(t - |x-xs|/c)
+    %                4pi  \    \ c  /    |x-xs| /  |x-xs|^2
+    %
+    % see Wierstorf et al. (2015), eq.(#s:dps)
+    %
+    to_be_implemented(mfilename);
+
 elseif strcmp('ls',src)
     % Source model for a line source: 2D Green's function.
     %                          ___

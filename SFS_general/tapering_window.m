@@ -121,9 +121,6 @@ end
 
 % Ensure the window will be a column vector
 win = column_vector(win);
-% normalize window to make sure that each sample is (on average) weighted
-% with 1
-win = win.*length(win)./sum(win);
 
 end
 

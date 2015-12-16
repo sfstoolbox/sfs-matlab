@@ -86,8 +86,8 @@ if strcmp('equally_spaced_points',spherical_grid)
         error('%s: number has to be a squared number.',upper(mfilename));
     end
     file = [basepath '/data/spherical_grids/equally_spaced_points/' filename];
-    url = ['https://dev.qu.tu-berlin.de/projects/data/repository/revisions/' ...
-        'master/raw/spherical_grids/equally_spaced_points/' filename];
+    url = ['https://raw.githubusercontent.com/sfstoolbox/data/master/' ...
+           'spherical_grids/equally_spaced_points/' filename];
     % Download file if not present
     if ~exist(file,'file')
         download_file(url,file);
@@ -102,8 +102,8 @@ elseif strcmp('fabian',spherical_grid)
             upper(mfilename));
     end
     file = [basepath '/data/spherical_grids/fabian/' filename];
-    url = ['https://dev.qu.tu-berlin.de/projects/data/repository/revisions/' ...
-        'master/raw/spherical_grids/fabian/' filename];
+    url = ['https://raw.githubusercontent.com/sfstoolbox/data/master/' ...
+           'spherical_grids/fabian/' filename];
     % Download file if not present
     if ~exist(file,'file')
         download_file(url,file);

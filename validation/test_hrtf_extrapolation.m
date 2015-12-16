@@ -82,8 +82,8 @@ if strcmp('QU_KEMAR',hrtf_set)
     basepath = get_sfs_path();
     hrtf_file = [basepath '/data/HRTFs/QU_KEMAR_anechoic_3m.sofa'];
     if ~exist(hrtf_file,'file')
-        url = ['https://dev.qu.tu-berlin.de/projects/measurements/repository/', ...
-            'raw/2010-11-kemar-anechoic/mat/QU_KEMAR_anechoic_3m.sofa'];
+        url = ['https://raw.githubusercontent.com/sfstoolbox/data/master/', ...
+               'HRTFs/QU_KEMAR_anechoic_3m.sofa'];
         download_file(url,hrtf_file);
     end
     % load HRTF data set

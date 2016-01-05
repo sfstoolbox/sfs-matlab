@@ -82,6 +82,12 @@ X = [-1.55 1.55];
 Y = [-1.55, 1.55];
 Z = 0;
 
+% just to test the new delayline implementation
+conf.fracdelay.pre.method = 'none';
+conf.fracdelay.pre.resample.method = 'matlab';
+conf.fracdelay.pre.resample.factor = 50;
+conf.fracdelay.filter = 'lagrange';
+conf.fracdelay.length = 1;
 
 %% ===== Computation =====================================================
 %% temporal impulse responses
@@ -95,17 +101,17 @@ s_wfs = ir_wfs(conf.xref,pi/2,xs,src,irs,conf);
 % plot spatio-temporal sound field
 sound_field_imp_wfs(X,Y,Z, xs, src, 190, conf);
 
-% === Local WFS ===
-conf.tapwinlen = 1.0;
-% calculate prefilter
-[conf.wfs.hpreflow, conf.wfs.hprefhigh] = ...
-  localwfs_findhpref(conf.xref, pi/2, xs, src, conf);
-conf.localsfs.wfs = conf.wfs;
-% calculate impulse response
-s_lwfs = ir_localwfs(conf.xref,pi/2,xs,src,irs,conf);
-% plot frequency response
-[S_lwfs, ~, f_lwfs] = easyfft(s_lwfs(:,1)./max(abs(s_lwfs(:,1))), conf);
-% plot spatio-temporal sound field
-sound_field_imp_localwfs(X,Y,Z, xs, src, 360, conf);
+% % === Local WFS ===
+% conf.tapwinlen = 1.0;
+% % calculate prefilter
+% [conf.wfs.hpreflow, conf.wfs.hprefhigh] = ...
+%   localwfs_findhpref(conf.xref, pi/2, xs, src, conf);
+% conf.localsfs.wfs = conf.wfs;
+% % calculate impulse response
+% s_lwfs = ir_localwfs(conf.xref,pi/2,xs,src,irs,conf);
+% % plot frequency response
+% [S_lwfs, ~, f_lwfs] = easyfft(s_lwfs(:,1)./max(abs(s_lwfs(:,1))), conf);
+% % plot spatio-temporal sound field
+% sound_field_imp_localwfs(X,Y,Z, xs, src, 360, conf);
 
 boolean = true;

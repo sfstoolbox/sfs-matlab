@@ -749,13 +749,13 @@ Audio Engineering Society*, 2012
 [ [pdf](http://audio.qu.tu-berlin.de/wp-content/uploads/publications/2012/wierstorf2012_SFS_toolbox_AES.pdf) ]
 [ [bibtex](doc/aes132_paper.bib) ]
 
-Copyright (c) 2010-2015
+Copyright (c) 2010-2016
 Quality & Usability Lab, together with
 Assessment of IP-based Applications
 Telekom Innovation Laboratories, TU Berlin
 Ernst-Reuter-Platz 7, 10587 Berlin, Germany
 
-Copyright (c) 2013-2015
+Copyright (c) 2013-2016
 Institut fuer Nachrichtentechnik
 Universitaet Rostock
 Richard-Wagner-Strasse 31, 18119 Rostock

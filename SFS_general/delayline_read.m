@@ -104,18 +104,24 @@ switch fracdelay.pre.method
     fdt = dt - idt;
   case 'farrow'
     % === Farrow-Structre ==============================================
-    samples = samples/Nh;
+    % number of parallel filters, i.e. order of polynomial - 1
+    Nfilter = fracdelay.pre.farrow.Npol+1;
+    samples = samples/Nfilter;
     tmp = zeros(samples, channels);
     for cdx=1:channels
-      for sdx=1:samples
-        tmp(sdx, cdx) = polyval( delayline((sdx-1)*Nh+1:sdx*Nh, cdx), fdt(cdx));
-      end
+	  % shorter, faster way of matlab's polyval
+      d_vec = fdt(cdx).^(Nfilter-1:-1:0);
+      tmp(:, cdx) = ...
+        d_vec*reshape( delayline(:, cdx), [Nfilter, samples] );
     end
     delayline = tmp;
   case 'none'
   otherwise
     disp('Delayline: Unknown Pre-Processing method for delay line');
 end
+
+% 0.0 delay is critical for some algorithms, TODO: handle this differently
+fdt( fdt == 0 ) = 1E-6;  
 
 % There is no post processing State if the Farrow Structure
 if ~strcmp( fracdelay.pre.method, 'farrow' )
@@ -134,7 +140,7 @@ if ~strcmp( fracdelay.pre.method, 'farrow' )
     case 'least_squares'
       % ==== Least Squares Interpolation Filter ============================
       for cdx=1:channels
-        h(:,cdx) = general_least_squares(Nh,fdt,0.90);
+        h(:,cdx) = general_least_squares(Nh,fdt(cdx),0.90);
       end
     otherwise
       disp('Delayline: Unknown Pre-Processing method for delay line');

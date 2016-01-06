@@ -95,22 +95,62 @@ switch fracdelay.pre.method
     end
   case 'farrow'
     % === Farrow-Structure ==============================================
-    Nh = fracdelay.length;  % number of filter coefficients (length of filter)    
-    switch fracdelay.filter
-      case 'lagrange'
-        % ==== Lagrange Polynomial Interpolator ==============================
-        NFilter = Nh;  % number of parallel filters
-        % each row is a polynom in d, each column is a filter
-        c = lagrange_polynoms(0:(Nh-1));
+    % Based on the assumption, that each coefficient h(n) of the the fractional
+    % delay as a polynomial in d, i.e.
+    %            _
+    %           \  NPol 
+    % h_d(n) ~=  >      c_m(n) d^m
+    %           /_ m=0
+    %
+    % For some Filter design methods, e.g. Lagrange Interpolators, this
+    % perfectly possible. For other, a uniform grid of test delays d_q is 
+    % used to fit the polynomials to the desired coefficienth(n) find a set 
+    % polynomial which approximates each coefficients of the desired filter.
+    % This structure allows to perform the convolution independently from the 
+    % delay and reuse the results of the filter for different delays.
+    %                          _
+    %                          \  NPol 
+    % y(n) = h_d(n) * x(n) ~=   >      ( c_m(n)*x(n) ) d^m
+    %                          /_ m=0
+
+    % number of filter coefficients (length of filter)
+    Nh = fracdelay.length;  
+    % number of parallel filters, i.e. order of polynomial - 1
+    Nfilter = fracdelay.pre.farrow.Npol+1;
+    
+    if strcmp(fracdelay.filter, 'lagrange')
+      % ==== Lagrange Polynomial Interpolator ===============================
+      if Nfilter ~= Nh
+        error( ['%s: fracdelay.lenght != fracdelay.pre.farrow.Npol+1 for', ...
+          ' farrow structure with lagrange filter'], upper(mfilename) );
+      end
+      % each row is a polynom in d, each column is a filter
+      c = lagrange_polynoms(0:(Nh-1));      
+    else     
+      d = (0:(Nfilter-1))./Nfilter;  % uniform grid of delays to fit polynomials
+      d(1) = d(1)+1E-5; % prevent some issues with d=0.0;
+      h = zeros(Nh, Nfilter); % prototype filters;
+      switch fracdelay.filter
+       case 'least_squares'
+        % ==== General Least Squares Method =================================
+        for hdx=1:Nfilter
+          h(:,hdx) = general_least_squares(Nh,d(hdx),0.90);
+        end
       otherwise
         disp('Delayline: Filter not implemented in farrow structure');
+      end
+      % fit polynomials using least squares approximation
+      c = zeros(Nh,Nfilter);
+      for ndx=1:Nh
+        c(ndx,:) = polyfit(d,h(ndx,:),Nfilter-1);
+      end      
     end
-    delayline = zeros(NFilter*samples, channels);
+    delayline = zeros(Nfilter*samples, channels);
     % store output of each parallel filter as interleaved data
-    for ndx=1:NFilter
-      delayline(ndx:NFilter:end, :) = filter(c(:,ndx), 1, sig, [], 1);
+    for ndx=1:Nfilter
+      delayline(ndx:Nfilter:end, :) = filter(c(:,ndx), 1, sig, [], 1);
     end
-    rfactor = NFilter;
+    rfactor = Nfilter;
   case 'none'
     delayline = sig;
   otherwise

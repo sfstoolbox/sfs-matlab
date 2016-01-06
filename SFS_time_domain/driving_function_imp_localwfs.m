@@ -192,7 +192,10 @@ switch method
     tau0 = tau0 - min(tau0(selector));     
     % Shift and weight prototype driving function
     pulse = repmat( [pulse; zeros(N-length(pulse),1)] , 1, sum(selector(:)) );
-    pulse = delayline(pulse, tau0(selector)*fs, w0(selector), conf);
+    % write data into delayline
+    delayline = delayline_write(pulse, conf);
+    % read data 
+    pulse = delayline_read(delayline, tau0(selector)*fs, w0(selector), conf);
     % Compose impulse responses
     d = zeros(N, N0);
     kdx = 1;

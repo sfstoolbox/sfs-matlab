@@ -100,6 +100,8 @@ if abs(delay)>size(ir,3)
     error(['%s: your impulse response is to short for a desired ', ...
         'delay of %.1f samples.'],upper(mfilename),delay);
 end
+% write ir data into delayline
+delayline = delayline_write(ir, conf);
 % Apply delay and weighting
-ir = delayline(ir,[delay+zero_padding; delay+zero_padding], ...
-               [weight; weight],conf);
+ir = delayline_read(delayline,[delay+zero_padding; delay+zero_padding], ...
+  [weight; weight],conf);

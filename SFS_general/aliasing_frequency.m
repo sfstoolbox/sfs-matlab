@@ -2,11 +2,11 @@ function [fal,dx0] = aliasing_frequency(x0,conf)
 %ALIASING_FREQUENCY returns the aliasing frequency for the given secondary
 %sources
 %
-%   Usage: [fal,dx0] = aliasing_frequency([x0],[conf])
+%   Usage: [fal,dx0] = aliasing_frequency([x0],conf)
 %
 %   Input options:
 %       x0      - secondary sources / m
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output options:
 %       fal     - aliasing frequency / Hz
@@ -63,19 +63,14 @@ function [fal,dx0] = aliasing_frequency(x0,conf)
 
 
 %% ===== Checking of input parameters ====================================
-nargmin = 0;
+nargmin = 1;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-if nargin==nargmax-1
-    if isstruct(x0)
-        conf = x0;
-        x0 = [];
-    else
-        conf = SFS_config;
-    end
-elseif nargin==nargmax-2
-    conf = SFS_config;
+if nargin<nargmax
+    conf = x0;
+    x0 = [];
 end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

@@ -1,9 +1,9 @@
 function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 %GREENS_FUNCTION_IMP returns a Green's function in the time domain
 %
-%   Usage: [g,t] = greens_function_imp(x,y,z,xs,src,t,[conf])
+%   Usage: [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 %
-%   Input options:
+%   Input parameters:
 %       x       - x points / m
 %       y       - y points / m
 %       z       - z points / m
@@ -13,18 +13,18 @@ function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 %                   'ls' - line source
 %                   'pw' - plane wave
 %       t       - time / samples
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       g       - Green's function evaluated at the points x,y,z
 %       t       - Correspondiong time values with integrated time
 %                 shift / samples
 %
-%   GREENS_FUNCTION_IMP(x,y,z,xs,src,t) calculates the Green's function for the
-%   given source model located at xs for the given points x,y,z. Note, that the
-%   delta function for the time t is returned as an extra argument. If you want
-%   the value of the Green's function only to this specific time you should have
-%   a look at sound_field_imp() and apply the folowing command:
+%   GREENS_FUNCTION_IMP(x,y,z,xs,src,t,conf) calculates the Green's function for
+%   the given source model located at xs for the given points x,y,z. Note, that
+%   the delta function for the time t is returned as an extra argument. If you
+%   want the value of the Green's function only to this specific time you should
+%   have a look at sound_field_imp() and apply the folowing command:
 %   [p,x,y,z] = sound_field_imp(X,Y,Z,[xs 0 -1 0],src,1,t,conf);
 %
 %   References:
@@ -68,10 +68,6 @@ function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 
 %% ===== Checking of input  parameters ==================================
 % disabled checking for performance reasons
-nargmax = 7;
-if nargin<nargmax
-    conf = SFS_config;
-end
 
 
 %% ===== Configuration ===================================================

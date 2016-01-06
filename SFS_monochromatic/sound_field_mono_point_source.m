@@ -1,7 +1,7 @@
-function varargout = sound_field_mono_point_source(X,Y,Z,xs,varargin)
+function varargout = sound_field_mono_point_source(X,Y,Z,xs,f,conf)
 %SOUND_FIELD_MONO_POINT_SOURCE simulates a sound field for a point source
 %
-%   Usage: [P,x,y,z] = sound_field_mono_point_source(X,Y,Z,xs,f,[conf])
+%   Usage: [P,x,y,z] = sound_field_mono_point_source(X,Y,Z,xs,f,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -9,7 +9,7 @@ function varargout = sound_field_mono_point_source(X,Y,Z,xs,varargin)
 %       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       xs          - position of point source / m
 %       f           - monochromatic frequency / Hz
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - Simulated wave field
@@ -61,11 +61,11 @@ function varargout = sound_field_mono_point_source(X,Y,Z,xs,varargin)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
+nargmin = 6;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargxs(xs);
 
 
 %% ===== Computation ====================================================
-[varargout{1:nargout}] = sound_field_mono(X,Y,Z,[xs 0 -1 0 1],'ps',1,varargin{:});
+[varargout{1:nargout}] = sound_field_mono(X,Y,Z,[xs 0 -1 0 1],'ps',1,f,conf);

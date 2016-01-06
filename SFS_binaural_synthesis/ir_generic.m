@@ -1,7 +1,7 @@
 function ir = ir_generic(X,phi,x0,d,sofa,conf)
 %IR_GENERIC Generate a IR
 %
-%   Usage: ir = ir_generic(X,phi,x0,d,sofa,[conf])
+%   Usage: ir = ir_generic(X,phi,x0,d,sofa,conf)
 %
 %   Input parameters:
 %       X       - listener position / m
@@ -10,7 +10,7 @@ function ir = ir_generic(X,phi,x0,d,sofa,conf)
 %       x0      - secondary sources [n x 7] / m
 %       d       - driving signals [m x n]
 %       sofa    - impulse response data set for the secondary sources
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ir      - Impulse response for the desired driving functions (nx2 matrix)
@@ -54,16 +54,14 @@ function ir = ir_generic(X,phi,x0,d,sofa,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
+nargmin = 6;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargposition(X);
 isargscalar(phi);
 isargsecondarysource(x0);
 isargmatrix(d);
-if nargin==nargmax-1
-    conf = SFS_config;
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

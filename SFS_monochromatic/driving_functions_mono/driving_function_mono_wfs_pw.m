@@ -2,14 +2,14 @@ function D = driving_function_mono_wfs_pw(x0,nx0,nk,f,conf)
 %DRIVING_FUNCTION_MONO_WFS_PW returns the driving signal D for a plane wave in
 %WFS
 %
-%   Usage: D = driving_function_mono_wfs_pw(x0,nx0,nk,f,[conf])
+%   Usage: D = driving_function_mono_wfs_pw(x0,nx0,nk,f,conf)
 %
 %   Input parameters:
 %       x0          - position of the secondary sources / m [nx3]
 %       nx0         - directions of the secondary sources / m [nx3]
 %       nk          - direction of plane wave / m [nx3]
 %       f           - frequency of the monochromatic source / Hz
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
@@ -58,16 +58,12 @@ function D = driving_function_mono_wfs_pw(x0,nx0,nk,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
+nargmin = 5;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargmatrix(x0,nx0,nk);
 isargpositivescalar(f);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

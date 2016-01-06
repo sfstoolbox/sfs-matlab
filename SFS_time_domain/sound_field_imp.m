@@ -1,7 +1,7 @@
 function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 %SOUND_FIELD_IMP returns the sound field in time domain
 %
-%   Usage: [p,x,y,z] = sound_field_imp(X,Y,Z,x0,src,d,t,[conf])
+%   Usage: [p,x,y,z] = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 %
 %   Input options:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -14,7 +14,7 @@ function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 %                       'pw' - plane wave
 %       d           - driving function of secondary sources
 %       t           - time / samples
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output options:
 %       p           - simulated sound field
@@ -77,18 +77,14 @@ function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 7;
+nargmin = 8;
 nargmax = 8;
 narginchk(nargmin,nargmax);
 isargnumeric(X,Y,Z);
 isargmatrix(x0,d);
 isargchar(src);
 isargscalar(t);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 if size(x0,1)~=size(d,2)
     error(['%s: The number of secondary sources (%i) and driving ', ...
         'signals (%i) does not correspond.'], ...

@@ -1,7 +1,7 @@
 function varargout = sound_field_imp_plane_wave(X,Y,Z,xs,t,conf)
 %SOUND_FIELD_IMP_PLANE_WAVE simulates a sound field of a plane wave
 %
-%   Usage: [p,x,y,z] = sound_field_imp_plane_wave(X,Y,Z,xs,t,[conf])
+%   Usage: [p,x,y,z] = sound_field_imp_plane_wave(X,Y,Z,xs,t,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -9,7 +9,7 @@ function varargout = sound_field_imp_plane_wave(X,Y,Z,xs,t,conf)
 %       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       xs          - direction of the plane wave / m
 %       t           - time / samples
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       p           - Simulated sound field
@@ -64,15 +64,11 @@ function varargout = sound_field_imp_plane_wave(X,Y,Z,xs,t,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
+nargmin = 6;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargxs(xs);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Computation ====================================================

@@ -2,7 +2,7 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %SOUND_FIELD_MONO simulates a monofrequent sound field for the given driving
 %signals and secondary sources
 %
-%   Usage: [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,[conf])
+%   Usage: [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -17,7 +17,7 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %                       'pw' - plane wave
 %       D           - driving signals for the secondary sources [m x n]
 %       f           - monochromatic frequency / Hz
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - Simulated sound field
@@ -89,7 +89,7 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 7;
+nargmin = 8;
 nargmax = 8;
 narginchk(nargmin,nargmax);
 isargnumeric(X,Y,Z);
@@ -97,11 +97,7 @@ isargvector(D);
 isargsecondarysource(x0);
 isargpositivescalar(f);
 isargchar(src);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 if size(x0,1)~=length(D)
     error(['%s: The number of secondary sources (%i) and driving ', ...
         'signals (%i) does not correspond.'], ...

@@ -2,13 +2,13 @@ function [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs,conf)
 %DRIVING_FUNCTION_IMP_WFS_PS calculates the WFS weighting and delaying for a
 %point source as source model
 %
-%   Usage: [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs,[conf]);
+%   Usage: [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs,conf)
 %
 %   Input parameters:
 %       x0      - position  of secondary sources (m) [nx3]
 %       nx0     - direction of secondary sources [nx3]
 %       xs      - position of point source [nx3]
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       delay   - delay of the driving function (s)
@@ -57,15 +57,11 @@ function [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargmatrix(x0,nx0,xs);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

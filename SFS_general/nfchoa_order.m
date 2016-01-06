@@ -2,17 +2,17 @@ function M = nfchoa_order(nls,conf)
 %NFCHOA_ORDER returns the maximum order for the spherical harmonics for the
 %given number of secondary sources
 %
-%   Usage: M = nfchoa_order(nls,[conf])
+%   Usage: M = nfchoa_order(nls,conf)
 %
 %   Input parameters:
 %       nls     - number of secondary sources
 %
 %   Output parameters:
 %       M       - spherical harmonics order
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
-%   NFCHOA_ORDER(nls) returns the maximum order of spherical harmonics for the
-%   given number of secondary sources in order to avoid spectral repetitions
+%   NFCHOA_ORDER(nls,conf) returns the maximum order of spherical harmonics for
+%   the given number of secondary sources in order to avoid spectral repetitions
 %   (spatial aliasing) of the dirving signals. The order is
 %
 %        / nls/2,       even nls
@@ -64,12 +64,9 @@ function M = nfchoa_order(nls,conf)
 
 
 %% ===== Checking input parameters =======================================
-nargmin = 1;
+nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-if nargin==nargmax-1
-    conf = SFS_config;
-end
 isargpositivescalar(nls);
 isargstruct(conf);
 

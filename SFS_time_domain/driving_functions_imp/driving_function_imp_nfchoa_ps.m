@@ -2,13 +2,13 @@ function sos = driving_function_imp_nfchoa_ps(N,R,r,conf)
 %DRIVING_FUNCTION_IMP_NFCHOA_PS calculates the second-order section
 %representation for a virtual point source in NFC-HOA
 %
-%   Usage: sos = driving_function_imp_nfchoa_ps(N,R,r,[conf]);
+%   Usage: sos = driving_function_imp_nfchoa_ps(N,R,r,conf)
 %
 %   Input parameters:
 %       N       - order of spherical hankel function
 %       R       - radius of secondary source array / m
 %       r       - distance of point source from array center / m
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       sos     - second-order section representation
@@ -58,15 +58,11 @@ function sos = driving_function_imp_nfchoa_ps(N,R,r,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargpositivescalar(N,R,r);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

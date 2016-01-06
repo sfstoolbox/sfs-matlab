@@ -1,7 +1,7 @@
 function outsig = auralize_ir(ir,content,usenorm,conf)
 %AURALIZE_IR auralizes an impulse response with an audio file/signal
 %
-%   Usage: outsig = auralize_ir(ir,[[[content],normalize],conf])
+%   Usage: outsig = auralize_ir(ir,content,[normalize],conf)
 %
 %   Input parameters:
 %       ir        - impulse response (IR). Also an binaural room scanning
@@ -10,22 +10,14 @@ function outsig = auralize_ir(ir,content,usenorm,conf)
 %       content   - content file or signal vector to be used for auralisation
 %                   (mono, if it contains more than one channel, only the
 %                   first will be used).
-%                   Also predefined content can be used by applying the
-%                   one of the following strings:
-%                   'speech', 'noise', 'pinknoise', 'cello', 'castanets'.
-%                   Then these contents will be used to auralise the IR.
-%                   The corresponding content files are specified in
-%                   SFS_config.
 %       normalize - normalize the signal (1 or 0), default: 1
-%       conf      - optional configuration struct (see SFS_config)
+%       conf      - configuration struct (see SFS_config)
 %
-%   AURALIZE_IR(ir,content,normalize) convolves the first two channels of the
-%   given IR with the given content and returns the resulting outsig. If
-%   instead of an explicite content file or vector only a string containig
-%   'speech', 'noise', 'pinknoise', 'cello' or 'castanets' is given, the
-%   corresponding content file as specified in conf is used.
+%   AURALIZE_IR(ir,content,normalize,conf) convolves the first two channels of
+%   the given IR with the given content and returns the resulting outsig. The
+%   content can be specified in the form of an explicite content file or vector.
 %
-%   See also: auralize_ir_file, ir_wfs, ir_generic, ir_point_source
+%   See also: ir_wfs, ir_generic, ir_point_source
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -61,16 +53,13 @@ function outsig = auralize_ir(ir,content,usenorm,conf)
 
 
 %% ===== Checking of input parameters and configuration =================
-nargmin = 2;
+nargmin = 3;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargmatrix(ir);
-
-if nargin<3
+if nargin<nargmax
+    conf = usenorm;
     usenorm = 1;
-    conf = SFS_config;
-elseif nargin<nargmax
-    conf = SFS_config;
 end
 isargscalar(usenorm);
 isargstruct(conf);
@@ -79,31 +68,15 @@ isargstruct(conf);
 %% ===== Configuration ==================================================
 % Sampling rate
 fs = conf.fs;
-% Auralisation files are used directly in the code below in order to made these
-% settings not neccessary
 
 
 %% ===== Get the right content ==========================================
 if isnumeric(content)
     contentfs = conf.fs;
-else
-    if strcmp(content,'castanets')
-        contentfile = conf.ir.castanetsfile;
-    elseif strcmp(content,'speech')
-        contentfile = conf.ir.speechfile;
-    elseif strcmp(content,'cello')
-        contentfile = conf.ir.cellofile;
-    elseif strcmp(content,'noise')
-        contentfile = conf.ir.noisefile;
-    elseif strcmp(content,'pinknoise')
-        contentfile = conf.ir.pinknoisefile;
-    elseif ~exist(content,'file')
-        error('%s: %s file was not found.',upper(mfilename),content);
-    else
-        contentfile = content;
-    end
-    % Read the content file
+elseif ~exist(content,'file')
     [content,contentfs] = wavread(contentfile);
+else
+    error('%s: %s file was not found.',upper(mfilename),content);
 end
 
 

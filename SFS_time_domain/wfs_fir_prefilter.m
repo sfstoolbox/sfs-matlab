@@ -1,10 +1,10 @@
 function hpre = wfs_fir_prefilter(conf)
 %WFS_FIR_PREFILTER creates a pre-equalization filter for WFS
 %
-%   Usage: hpre = wfs_fir_prefilter([conf])
+%   Usage: hpre = wfs_fir_prefilter(conf)
 %
 %   Input parameters:
-%       conf - optional configuration struct (see SFS_config)
+%       conf - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       hpre - pre-equalization filter
@@ -54,14 +54,10 @@ function hpre = wfs_fir_prefilter(conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 0;
+nargmin = 1;
 nargmax = 1;
 narginchk(nargmin,nargmax);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

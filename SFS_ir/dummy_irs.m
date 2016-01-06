@@ -1,16 +1,16 @@
 function sofa = dummy_irs(nsamples,conf)
 % DUMMY_IRS creates a dummy dirac pulse impulse response set
 %
-%   Usage: irs = dummy_irs([nsamples],[conf])
+%   Usage: irs = dummy_irs([nsamples],conf)
 %
 %   Input parameters:
 %       nsamples  - length of impulse response in samples, default: 1024
-%       conf      - optional configuration struct (see SFS_config)
+%       conf      - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       sofa      - sofa struct
 %
-%   DUMMY_IRS(nsamples) creates a dummy impulse response data set (Dirac
+%   DUMMY_IRS(nsamples,conf) creates a dummy impulse response data set (Dirac
 %   impulse) to check processing without real impulse responses. It returns only
 %   one Dirac impulse, which is then applied for all direction if you for
 %   example use it together with ir_wfs().
@@ -51,24 +51,15 @@ function sofa = dummy_irs(nsamples,conf)
 
 
 %% ===== Checking input parameters =======================================
-nargmin = 0;
+nargmin = 1;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-if nargin==2
-    isargpositivescalar(nsamples);
-    isargstruct(conf);
-elseif nargin==1
-    if isstruct(nsamples)
-        conf = nsamples;
-        nsamples = 1024;
-    else
-        conf = SFS_config;
-        isargpositivescalar(nsamples);
-    end
-else
+if nargin<nargmax
+    conf = nsamples;
     nsamples = 1024;
-    conf = SFS_config;
 end
+isargpositivescalar(nsamples);
+isargstruct(conf);
 
 
 %% ===== Configuration ===================================================

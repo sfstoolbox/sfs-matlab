@@ -39,10 +39,9 @@ Installation
 ------------
 
 Download the Toolbox and add the main path of the Toolbox to your Matlab/Octave
-path. After that copy <code>SFS_config_example.m</code> to
-<code>SFS_config.m</code> and change it to your needs. For an easy beginning you
-can just use the default settings by leaving everything as it is.
-Then start the Toolbox with <code>SFS_start</code> which will add all needed
+path. After that have a look at <code>SFS_config.m</code> and change it to your needs.
+For an easy beginning you can just use the default settings by leaving everything as it
+is. Then start the Toolbox with <code>SFS_start</code> which will add all needed
 subpathes.
 
 
@@ -85,14 +84,14 @@ Before showing the different geometries, we start with some common settings. Fir
 and set the array size/diameter to 3m.
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 conf.secondary_sources.size = 3;
 ```
 
 #### Linear array
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 conf.secondary_sources.geometry = 'line'; % or 'linear'
 conf.secondary_sources.number = 21;
 x0 = secondary_source_positions(conf);
@@ -108,7 +107,7 @@ axis([-2 2 -2 1]);
 #### Circular array
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 conf.secondary_sources.geometry = 'circle'; % or 'circular'
 conf.secondary_sources.number = 56;
 x0 = secondary_source_positions(conf);
@@ -124,7 +123,7 @@ axis([-2 2 -2 2]);
 #### Box shaped array
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 conf.secondary_sources.geometry = 'box';
 conf.secondary_sources.number = 84;
 x0 = secondary_source_positions(conf);
@@ -147,7 +146,7 @@ square box behaves it little bit different than the Box Shaped Array
 since loudspeakers might also be place directly in the corners of the box.
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 conf.secondary_sources.geometry = 'rounded-box';
 conf.secondary_sources.number = 84;
 conf.secondary_sources.corner_radius = 0.3;
@@ -176,7 +175,7 @@ download the whole [data repository](http://github.com/sfstoolbox/data) to the
 <code>data</code> folder.
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 conf.secondary_sources.size = 3;
 conf.secondary_sources.geometry = 'sphere'; % or 'spherical'
 conf.secondary_sources.grid = 'equally_spaced_points';
@@ -205,7 +204,7 @@ the sound field from the given driving signals and secondary sources. For WFS
 the <code>r^2 cos(theta)</code> weights for integration on a sphere.
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 % create a stadium like shape by combining two half circles with two linear
 % arrays
 % first getting a full circle with 56 loudspeakers
@@ -295,7 +294,7 @@ The following will simulate the field of a virtual plane wave with a frequency
 of 800 Hz going into the direction of (0 -1 0) synthesized with 3D WFS.
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 conf.dimension = '3D';
 conf.secondary_sources.size = 3;
 conf.secondary_sources.number = 225;
@@ -323,7 +322,7 @@ It is also possible to simulate and plot the whole 3D cube, but in this case no
 secondary sources will be added to the plot.
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 conf.dimension = '3D';
 conf.secondary_sources.size = 3;
 conf.secondary_sources.number = 225;
@@ -343,7 +342,7 @@ we have to explicitly say if we want also plot the results, by
 <code>conf.plot.useplot = true;</code>.
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 conf.dimension = '2.5D';
 conf.plot.useplot = true;
 conf.plot.normalisation = 'center';
@@ -379,7 +378,7 @@ In the following we will simulate the field of a virtual plane wave with a frequ
 of 800 Hz traveling into the direction (0 -1 0), synthesized with 2.5D NFC-HOA.
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 conf.dimension = '2.5D';
 % sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf);
 sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
@@ -399,11 +398,11 @@ array consisting of focused sources which can then be used to create the desired
 sound field in a small area. The settings are the same as for WFS, but a new
 struct <code>conf.localsfs</code> has to be filled out, which for example
 provides the settings for the desired position and form of the local region with
-higher aliasing frequency, have a look into `SFS_config_example.m` for all
+higher aliasing frequency, have a look into `SFS_config.m` for all
 possible settings.
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 conf.resolution = 1000;
 conf.dimension = '2D';
 conf.secondary_sources.geometry = 'box';
@@ -432,7 +431,7 @@ can for example easily simulate a stereophonic setup. In this example we set the
 the sound field is too low for the default `'auto'` setting to work.
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 conf.plot.normalisation = 'center';
 x0 = [-1 2 0 0 -1 0 1;1 2 0 0 -1 0 1];
 % [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
@@ -451,7 +450,7 @@ In the following we will create a snapshot in time after 200 samples for a broad
 virtual point source placed at (0 2 0) m for 2.5D NFC-HOA.
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 conf.dimension = '2.5D';
 conf.plot.useplot = true;
 % sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
@@ -489,7 +488,7 @@ grid instead of the `[min max]` ranges. Again, you can provide it for one
 dimension, two dimensions, or all three dimensions.
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 conf.dimension = '3D';
 conf.secondary_sources.number = 225;
 conf.secondary_sources.geometry = 'sphere';
@@ -562,7 +561,7 @@ be convolved with the cello recording by the <code>auralize_ir()</code>
 function.
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 hrtf = SOFAload('QU_KEMAR_anechoic_3m.sofa');
 ir = get_ir(hrtf,[0 0 0],[0 0],[rad(30) 0 3],'spherical',conf);
 cello = wavread('anechoic_cello.wav');
@@ -574,7 +573,7 @@ To simulate the same source as a virtual point source synthesized by WFS and a
 circular array with a diameter of 3 m, you have to do the following.
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 conf.secondary_sources.size = 3;
 conf.secondary_sources.number = 56;
 conf.secondary_sources.geometry = 'circle';
@@ -619,7 +618,7 @@ For such a measurement the SOFA file format has the advantage to be able to
 include all loudspeakers and head orientations in just one file.
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 brir = 'BRIR_AllAbsorbers_ArrayCentre_Emitters1to64.sofa';
 conf.secondary_sources.geometry = 'custom';
 conf.secondary_sources.x0 = brir;
@@ -650,7 +649,7 @@ aliasing frequency of the system (above these frequency the spectrum becomes
 very noise as you can see in the figure).
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 conf.ir.usehcomp = false;
 conf.wfs.usehpre = false;
 hrtf = dummy_irs(conf);
@@ -697,7 +696,7 @@ responses used by the SoundScape Renderer.
 All functions regarding the SSR are stored in <code>SFS_ssr</code>.
 
 ```Matlab
-conf = SFS_config_example;
+conf = SFS_config;
 brs = ssr_brs_wfs(X,phi,xs,src,hrtf,conf);
 wavwrite(brs,fs,16,'brs_set_for_SSR.wav');
 ```

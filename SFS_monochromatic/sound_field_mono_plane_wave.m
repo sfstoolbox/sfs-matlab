@@ -1,7 +1,7 @@
 function varargout = sound_field_mono_plane_wave(X,Y,Z,xs,f,conf)
 %SOUND_FIELD_MONO_PLANE_WAVE simulates a sound field of a plane wave
 %
-%   Usage: [P,x,y,z] = sound_field_mono_plane_wave(X,Y,Z,xs,f,[conf])
+%   Usage: [P,x,y,z] = sound_field_mono_plane_wave(X,Y,Z,xs,f,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -9,7 +9,7 @@ function varargout = sound_field_mono_plane_wave(X,Y,Z,xs,f,conf)
 %       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       xs          - direction of the plane wave
 %       f           - monochromatic frequency / Hz
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - Simulated sound field
@@ -61,15 +61,11 @@ function varargout = sound_field_mono_plane_wave(X,Y,Z,xs,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
+nargmin = 6;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargxs(xs);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Computation ====================================================

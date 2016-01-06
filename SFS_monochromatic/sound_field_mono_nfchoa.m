@@ -1,7 +1,7 @@
 function varargout = sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf)
 %SOUND_FIELD_MONO_NFCHOA simulates a sound field for NFC-HOA
 %
-%   Usage: [P,x,y,z,x0] = sound_field_mono_nfchoa(X,Y,Z,xs,src,f,[conf])
+%   Usage: [P,x,y,z,x0] = sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -13,7 +13,7 @@ function varargout = sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf)
 %                                plane wave in this case)
 %                         'ps' - point source
 %       f           - monochromatic frequency / Hz
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - Simulated sound field
@@ -67,17 +67,13 @@ function varargout = sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
+nargmin = 7;
 nargmax = 7;
 narginchk(nargmin,nargmax);
 isargxs(xs);
 isargpositivescalar(f);
 isargchar(src);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

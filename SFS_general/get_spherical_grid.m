@@ -1,18 +1,18 @@
 function [points,weights] = get_spherical_grid(number,conf)
 %GET_SPHERICAL_GRID returns grid points and weights
 %
-%   Usage: [points,weights] = get_spherical_grid(number,[conf])
+%   Usage: [points,weights] = get_spherical_grid(number,conf)
 %
 %   Input parameters:
 %       number  - number of grid points
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       points  - grid points
 %       weights - integration weights for the grid points
 %
-%   GET_SPHERICAL_GRID(number) returns the points and weights for a grid on a
-%   sphere. The type of grid is specified by conf.secondary_sources.grid.
+%   GET_SPHERICAL_GRID(number,conf) returns the points and weights for a grid on
+%   a sphere. The type of grid is specified by conf.secondary_sources.grid.
 %   For available grids, have a look at http://github.com/sfstoolbox/data.
 %   It expects the grid files at SFS_basepath/data/spherical_grids. If the
 %   desired file is not available on the hard disk, the function tries to
@@ -60,15 +60,11 @@ function [points,weights] = get_spherical_grid(number,conf)
 
 
 %% ===== Checking input parameters =======================================
-nargmin = 1;
+nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
 isargpositivescalar(number);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ===================================================

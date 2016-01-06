@@ -14,7 +14,7 @@ function xv = virtual_secondary_source_positions(x0,xs,src,conf)
 %                              plane wave in this case)
 %                       'ps' - point source
 %                       'fs' - focused source (not supported, yet)
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output options:
 %       xv          - virtual secondary source positions, directions and
@@ -67,7 +67,7 @@ function xv = virtual_secondary_source_positions(x0,xs,src,conf)
 
 
 %% ===== Checking of input  parameters ===================================
-nargmin = 3;
+nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargxs(xs);
@@ -75,11 +75,7 @@ if ~isempty(x0)
   isargsecondarysource(x0);
 end
 isargchar(src);
-if nargin<nargmax
-  conf = SFS_config;
-else
-  isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ===================================================

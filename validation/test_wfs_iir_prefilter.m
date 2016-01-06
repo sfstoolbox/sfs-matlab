@@ -46,7 +46,7 @@ function boolean = test_wfs_iir_prefilter()
 
 %% ===== Configuration ===================================================
 boolean = false;
-conf = SFS_config_example;
+conf = SFS_config;
 
 
 %% ===== Calculation =====================================================

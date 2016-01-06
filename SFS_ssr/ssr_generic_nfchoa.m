@@ -2,14 +2,14 @@ function ir = ssr_generic_nfchoa(xs,src,conf)
 %SSR_GENERIC_NFCHOA generate an impulse response for the generic renderer of the
 %SoundScape Renderer
 %
-%   Usage: ir = ssr_generic_nfchoa(xs,src,[conf])
+%   Usage: ir = ssr_generic_nfchoa(xs,src,conf)
 %
 %   Input parameters:
 %       xs      - virtual source position / m
 %       src     - source type: 'pw' -plane wave
 %                              'ps' - point source
 %                              'fs' - focused source
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ir      - impulse response for the desired loudspeaker array
@@ -59,14 +59,11 @@ function ir = ssr_generic_nfchoa(xs,src,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
+nargmin = 3;
 nargmax = 3;
 narginchk(nargmin,nargmax);
 isargxs(xs);
 isargchar(src);
-if nargin<nargmax
-    conf = SFS_config;
-end
 isargstruct(conf);
 
 

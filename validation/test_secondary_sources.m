@@ -55,7 +55,7 @@ narginchk(nargmin,nargmax);
 
 
 %% ===== Main ============================================================
-conf = SFS_config_example;
+conf = SFS_config;
 conf.secondary_sources.size = 4;
 boolean = true;
 % reference values

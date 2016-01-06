@@ -15,7 +15,7 @@ function [d, x0, xv] = driving_function_imp_localwfs(x0,xs,src,conf)
 %                         'fs' - focused source
 %
 %       f           - frequency of the monochromatic source / Hz
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
@@ -64,17 +64,13 @@ function [d, x0, xv] = driving_function_imp_localwfs(x0,xs,src,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargsecondarysource(x0);
 isargxs(xs);
 isargchar(src);
-if nargin<nargmax
-  conf = SFS_config;
-else
-  isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
@@ -90,6 +86,7 @@ method = conf.localsfs.method;
 
 N = conf.N;
 fs = conf.fs;
+
 
 %% ===== Computation ====================================================
 if strcmp('fs',src)

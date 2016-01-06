@@ -1,7 +1,7 @@
 function movie_sound_field_mono_wfs(X,Y,Z,xs,src,f,outfile,conf)
 %MOVIE_SOUND_FIELD_MONO_WFS generates movie a WFS sound field
 %
-%   Usage: movie_sound_field_mono_wfs(X,Y,Z,xs,src,f,outfile,[conf])
+%   Usage: movie_sound_field_mono_wfs(X,Y,Z,xs,src,f,outfile,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax]
@@ -15,7 +15,7 @@ function movie_sound_field_mono_wfs(X,Y,Z,xs,src,f,outfile,conf)
 %                         'fs' - focused source
 %       f           - monochromatic frequency / Hz
 %       outfile     - name for the movie file
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   MOVIE_SOUND_FIELD_MONO_WFS(X,Y,Z,xs,src,f,L,outfile,conf) generates a
 %   movie of simulations of a sound field of the given source positioned at xs
@@ -57,18 +57,14 @@ function movie_sound_field_mono_wfs(X,Y,Z,xs,src,f,outfile,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 7;
+nargmin = 8;
 nargmax = 8;
 narginchk(nargmin,nargmax);
 isargvector(X,Y,Z);
 isargxs(xs);
 isargpositivescalar(f);
 isargchar(src,outfile);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

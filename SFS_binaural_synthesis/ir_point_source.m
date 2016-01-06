@@ -1,14 +1,14 @@
 function ir = ir_point_source(X,phi,xs,irs,conf)
 %IR_POINT_SOURCE generates a binaural simulation of a point source
 %
-%   Usage: ir = ir_point_source(X,phi,xs,irs,[conf])
+%   Usage: ir = ir_point_source(X,phi,xs,irs,conf)
 %
 %   Input parameters:
 %       X       - listener position / m
 %       phi     - listener direction [head orientation] / rad
 %       xs      - source position / m
 %       irs     - IR data set for the second sources
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ir      - Impulse response (nx2 matrix)
@@ -54,17 +54,13 @@ function ir = ir_point_source(X,phi,xs,irs,conf)
 
 
 %% ===== Checking of input parameters ====================================
-nargmin = 4;
+nargmin = 5;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargposition(X);
 isargxs(xs);
 isargscalar(phi);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Computation =====================================================

@@ -64,7 +64,7 @@ function sig = delayline_read(delayline,dt,weight,conf)
 
 %% ===== Configuration ==================================================
 fracdelay = conf.fracdelay;
-Nh = fracdelay.length;  % length fractional delay filter
+Norder = fracdelay.order;  % order of fractional delay filter
 
 %% ===== Computation =====================================================
 % Check if the impulse response is given in SOFA conventions [M C N], or in
@@ -84,8 +84,8 @@ else
   reshaped = false;
 end
 % If only single valued time delay and weight is given, create vectors
-if channels>1 && length(dt)==1, dt=repmat(dt,[1 channels]); end
-if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
+if channels>1 && length(dt)==1, dt=repmat(dt,[channels 1]); end
+if channels>1 && length(weight)==1, weight=repmat(weight,[channels 1]); end
 
 %% ===== Fractional Delay ================================================
 
@@ -120,36 +120,46 @@ switch fracdelay.pre.method
     disp('Delayline: Unknown Pre-Processing method for delay line');
 end
 
-% 0.0 delay is critical for some algorithms, TODO: handle this differently
-fdt( fdt == 0 ) = 1E-6;  
-
 % There is no post processing stage if the Farrow Structure used
 if ~strcmp( fracdelay.pre.method, 'farrow' )
   % === Post Processing ====================================================
-  h = zeros(Nh, channels);  % fractional delay filter
+  if ~strcmp( fracdelay.filter, 'zoh' )
+    b = zeros(Norder+1, channels);  % numerator of fractional delay filter
+  end
+  a = ones(1, channels);  % denominator of fractional delay filter
   switch fracdelay.filter
     case 'zoh'
       % === Zero-Order-Hold (Integer Delays) ===============================
       idt = ceil(dt);  % round up to next integer delay
       fdt = 0.0;  % 
-      h = ones(1, channels);
+      b = ones(1, channels);
     case 'lagrange'
       % ==== Lagrange Polynomial Interpolator ==============================
-      c = lagrange_polynoms(0:(Nh-1));  %
-      for sdx=1:Nh
-        h(sdx,:) = polyval(c(sdx,:),fdt);
+      c = lagrange_polynoms(0:Norder);  %
+      for sdx=1:Norder+1
+        b(sdx,:) = polyval(c(sdx,:),fdt);
       end
+    case 'thiran'
+      % ==== Thiran's Allpass Filter for Maximally Flat Group Delay ========
+      a = [a; zeros(Norder, channels)];
+      for kdx=1:Norder
+        a(kdx+1,:) = (-1).^kdx * ...
+          factorial(Norder)/(factorial(kdx)*factorial(Norder-kdx)) * ...
+          prod( bsxfun(@plus, dt, 0:Norder)./bsxfun(@plus, dt, kdx:kdx+Norder), 2 );        
+      end
+      b = a(end:-1:1,:);
     case 'least_squares'
       % ==== Least Squares Interpolation Filter ============================
       for cdx=1:channels
-        h(:,cdx) = general_least_squares(Nh,fdt(cdx),0.90);
+        b(:,cdx) = general_least_squares(Norder+1,fdt(cdx),0.90);
       end
     otherwise
-      disp('Delayline: Unknown Pre-Processing method for delay line');
+      error('%s: \"%s\" is an unknown fractional delay filter', ...
+        upper(mfilename), fracdelay.filter);
   end
   
   for cdx=1:channels
-    delayline(:,cdx) = filter(h(:,cdx),1,delayline(:,cdx));
+    delayline(:,cdx) = filter(b(:,cdx),a(:,cdx),delayline(:,cdx));
   end  
 end
 

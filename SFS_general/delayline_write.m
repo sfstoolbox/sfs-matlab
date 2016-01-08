@@ -114,34 +114,35 @@ switch fracdelay.pre.method
     %                          /_ m=0
 
     % number of filter coefficients (length of filter)
-    Nh = fracdelay.length;  
-    % number of parallel filters, i.e. order of polynomial - 1
+    Norder = fracdelay.order;  
+    % number of parallel filters, i.e. order of polynomial + 1
     Nfilter = fracdelay.pre.farrow.Npol+1;
     
     if strcmp(fracdelay.filter, 'lagrange')
       % ==== Lagrange Polynomial Interpolator ===============================
-      if Nfilter ~= Nh
-        error( ['%s: fracdelay.lenght != fracdelay.pre.farrow.Npol+1 for', ...
-          ' farrow structure with lagrange filter'], upper(mfilename) );
+      if Nfilter ~= Norder+1
+        error( ['%s: order of lagrange filter has be to equal to the number', ...
+          ' of parallel filters of farrow structure'] ...
+          , upper(mfilename));
       end
       % each row is a polynom in d, each column is a filter
-      c = lagrange_polynoms(0:(Nh-1));      
+      c = lagrange_polynoms(0:Norder);      
     else     
       d = (0:(Nfilter-1))./Nfilter;  % uniform grid of delays to fit polynomials
       d(1) = d(1)+1E-5; % prevent some issues with d=0.0;
-      h = zeros(Nh, Nfilter); % prototype filters;
+      h = zeros(Norder+1, Nfilter); % prototype filters;
       switch fracdelay.filter
        case 'least_squares'
         % ==== General Least Squares Method =================================
         for hdx=1:Nfilter
-          h(:,hdx) = general_least_squares(Nh,d(hdx),0.90);
+          h(:,hdx) = general_least_squares(Norder+1,d(hdx),0.90);
         end
       otherwise
         disp('Delayline: Filter not implemented in farrow structure');
       end
       % fit polynomials using least squares approximation
-      c = zeros(Nh,Nfilter);
-      for ndx=1:Nh
+      c = zeros(Norder+1,Nfilter);
+      for ndx=1:Norder+1
         c(ndx,:) = polyfit(d,h(ndx,:),Nfilter-1);
       end      
     end

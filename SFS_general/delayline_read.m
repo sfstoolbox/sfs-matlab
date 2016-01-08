@@ -123,13 +123,15 @@ end
 % 0.0 delay is critical for some algorithms, TODO: handle this differently
 fdt( fdt == 0 ) = 1E-6;  
 
-% There is no post processing State if the Farrow Structure
+% There is no post processing stage if the Farrow Structure used
 if ~strcmp( fracdelay.pre.method, 'farrow' )
   % === Post Processing ====================================================
   h = zeros(Nh, channels);  % fractional delay filter
   switch fracdelay.filter
     case 'zoh'
       % === Zero-Order-Hold (Integer Delays) ===============================
+      idt = ceil(dt);  % round up to next integer delay
+      fdt = 0.0;  % 
       h = ones(1, channels);
     case 'lagrange'
       % ==== Lagrange Polynomial Interpolator ==============================

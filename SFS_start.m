@@ -42,7 +42,7 @@ function SFS_start()
 
 
 %% ===== Configuration ===================================================
-printbanner = false;
+printbanner = true;
 
 
 %% ===== Adding Path's ===================================================
@@ -96,7 +96,9 @@ end
 
 %% ===== Banner ==========================================================
 if(printbanner)
-    printf(['Sound Field Synthesis Toolbox %1.1f successfully ', ...
-            'initialized.\n'],SFS_version);
+    fprintf(['       ▄▄\n', ...
+             ' ▄█▀▀ █▄ ▄█▀▀\n', ...
+             ' ▄▄█▀ █  ▄▄█▀  Sound Field Synthesis Toolbox %s\n\n'], ...
+             SFS_version);
 end
 

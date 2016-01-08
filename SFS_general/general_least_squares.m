@@ -65,25 +65,25 @@ function h = general_least_squares(samples,fractional_delay,passband_edge)
 N = samples-1;                   % filter order
 M = N/2;                         % middle value
 if (M-round(M))==0
-  D = fractional_delay + M;    % integer part closest to middle
+    D = fractional_delay + M;    % integer part closest to middle
 else
-  D = fractional_delay + M-0.5;
+    D = fractional_delay + M-0.5;
 end
 
 cT = zeros(N+1,1);
 p1 = cT;
 cT(1)=passband_edge;
 if round(D)==D
-  p1(1) = passband_edge;
+    p1(1) = passband_edge;
 else
-  % matlab's sinc(x) equals sin(pi*x)./(pi*x)
-  p1(1) = passband_edge*sinc(D*passband_edge);
+    % matlab's sinc(x) equals sin(pi*x)./(pi*x)
+    p1(1) = passband_edge * sinc(D*passband_edge);
 end
 for k=1:N  % compute the elements of the Toeplitz matrix (vector)
-  k1 = k+1;
-  kD = k-D;
-  cT(k1) = passband_edge*sinc( k*passband_edge );
-  p1(k1) = passband_edge*sinc( kD*passband_edge );
+    k1 = k+1;
+    kD = k-D;
+    cT(k1) = passband_edge * sinc(k*passband_edge);
+    p1(k1) = passband_edge * sinc(kD*passband_edge);
 end
 P = toeplitz(cT);
 h = P\p1;

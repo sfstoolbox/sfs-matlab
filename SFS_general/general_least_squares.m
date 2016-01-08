@@ -76,13 +76,14 @@ cT(1)=passband_edge;
 if round(D)==D
     p1(1) = passband_edge;
 else
-  p1(1) = ( sin(D*passband_edge*pi) )/(D*pi);
+    % matlab's sinc(x) equals sin(pi*x)./(pi*x)
+    p1(1) = passband_edge * sinc(D*passband_edge);
 end
-for k=1:N           % compute the elements of the Toeplitz matrix (vector)
-  k1 = k+1;
-  kD = k-D;
-  cT(k1) = ( sin(k*passband_edge*pi) )/(k*pi);
-  p1(k1) = ( sin(kD*passband_edge*pi) )/(kD*pi);
+for k=1:N  % compute the elements of the Toeplitz matrix (vector)
+    k1 = k+1;
+    kD = k-D;
+    cT(k1) = passband_edge * sinc(k*passband_edge);
+    p1(k1) = passband_edge * sinc(kD*passband_edge);
 end
 P = toeplitz(cT);
 h = P\p1;

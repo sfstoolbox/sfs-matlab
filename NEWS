@@ -4,6 +4,7 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
     - make conf struct mandatory
     - add new start message
+    - fix handling of 0 in least squares fractional delays
 
 2.0.0 (26. October 2015)
 

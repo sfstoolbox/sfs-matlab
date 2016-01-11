@@ -15,7 +15,7 @@ function M = nfchoa_order(nls,conf)
 %   the given number of secondary sources in order to avoid spectral repetitions
 %   (spatial aliasing) of the dirving signals. The order is
 %
-%        / nls/2,       even nls
+%        / nls/2 - 1,   even nls
 %   M = <
 %        \ (nls-1)/2    odd nls
 %
@@ -86,7 +86,7 @@ if strcmp('2D',dimension) || strcmp('2.5D',dimension)
     if isodd(nls)
         M = (nls-1)/2;
     else
-        M = nls/2;
+        M = nls/2 - 1;
     end
 elseif strcmp('3D',dimension)
     % Ahrens (2012), p. 125

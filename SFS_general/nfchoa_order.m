@@ -2,20 +2,20 @@ function M = nfchoa_order(nls,conf)
 %NFCHOA_ORDER returns the maximum order for the spherical harmonics for the
 %given number of secondary sources
 %
-%   Usage: M = nfchoa_order(nls,[conf])
+%   Usage: M = nfchoa_order(nls,conf)
 %
 %   Input parameters:
 %       nls     - number of secondary sources
 %
 %   Output parameters:
 %       M       - spherical harmonics order
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
-%   NFCHOA_ORDER(nls) returns the maximum order of spherical harmonics for the
-%   given number of secondary sources in order to avoid spectral repetitions
+%   NFCHOA_ORDER(nls,conf) returns the maximum order of spherical harmonics for
+%   the given number of secondary sources in order to avoid spectral repetitions
 %   (spatial aliasing) of the dirving signals. The order is
 %
-%        / nls/2,       even nls
+%        / nls/2 - 1,   even nls
 %   M = <
 %        \ (nls-1)/2    odd nls
 %
@@ -31,12 +31,12 @@ function M = nfchoa_order(nls,conf)
 %   See also: driving_function_imp_nfchoa, driving_function_mono_nfchoa
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -64,12 +64,9 @@ function M = nfchoa_order(nls,conf)
 
 
 %% ===== Checking input parameters =======================================
-nargmin = 1;
+nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-if nargin==nargmax-1
-    conf = SFS_config;
-end
 isargpositivescalar(nls);
 isargstruct(conf);
 
@@ -89,7 +86,7 @@ if strcmp('2D',dimension) || strcmp('2.5D',dimension)
     if isodd(nls)
         M = (nls-1)/2;
     else
-        M = nls/2;
+        M = nls/2 - 1;
     end
 elseif strcmp('3D',dimension)
     % Ahrens (2012), p. 125

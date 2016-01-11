@@ -1,29 +1,29 @@
 function sig =  bandpass(sig,flow,fhigh,conf)
 %BANDPASS filters a signal by a bandpass
 %
-%   Usage: sig = bandpass(sig,flow,fhigh,[conf])
+%   Usage: sig = bandpass(sig,flow,fhigh,conf)
 %
 %   Input parameters:
 %       sig    - input signal (matrix)
 %       flow   - start frequency of bandpass
 %       fhigh  - stop frequency of bandpass
-%       conf   - optional configuration struct (see SFS_config)
+%       conf   - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       sig    - filtered signal
 %
-%   BANDPASS(sig,flow,fhigh) filters the given signal with a bandpass filter
-%   with cutoff frequencies of flow and fhigh.
+%   BANDPASS(sig,flow,fhigh,conf) filters the given signal with a bandpass
+%   filter with cutoff frequencies of flow and fhigh.
 %
 %   See also: sound_field_imp_wfs
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -51,16 +51,12 @@ function sig =  bandpass(sig,flow,fhigh,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargmatrix(sig);
 isargpositivescalar(flow,fhigh);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

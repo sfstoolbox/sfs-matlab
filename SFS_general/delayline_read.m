@@ -153,7 +153,7 @@ if ~strcmp( fracdelay.pre.method, 'farrow' )
       for kdx=1:Norder
         a(kdx+1,:) = (-1).^kdx * ...
           factorial(Norder)/(factorial(kdx)*factorial(Norder-kdx)) * ...
-          prod( bsxfun(@plus, dt, 0:Norder)./bsxfun(@plus, dt, kdx:kdx+Norder), 2 );        
+          prod( bsxfun(@plus, fdt, 0:Norder)./bsxfun(@plus, fdt, kdx:kdx+Norder), 2 );        
       end
       b = a(end:-1:1,:);
     case 'least_squares'

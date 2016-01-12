@@ -94,14 +94,11 @@ end
 x0_tmp = x0;
 nx0 = x0(:,4:6);
 x0 = x0(:,1:3);
-% Make the size of the xs position the same as the number of secondary sources
-% in order to allow x0-xs
-xs = repmat(xs,size(x0,1),1);
 
 if strcmp('pw',src)
     % === Plane wave ===
     % direction of the plane wave
-    nk = bsxfun(@rdivide,xs,vector_norm(xs,2));
+    nk = xs;  % the length of the vector is not relavant for the selection
     % Secondary source selection
     %
     %      / 1, if nk nx0 > 0
@@ -110,8 +107,8 @@ if strcmp('pw',src)
     %
     % see Wierstorf et al. (2015), eq.(#wfs:pw:selection)
     %
-    % Direction of plane wave (nxs) is set above
-    idx = (( vector_product(nk,nx0,2)>=eps ));
+    % Direction of plane wave (nk) is set above
+    idx = nx0*nk(:) >=eps;
     x0 = x0_tmp(idx,:);
 
 elseif strcmp('ps',src) || strcmp('ls',src)
@@ -125,7 +122,7 @@ elseif strcmp('ps',src) || strcmp('ls',src)
     % see Wierstorf et al. (2015), eq.(#wfs:ps:selection) and
     % eq.(#wfs:ls:selection)
     %
-    idx = (( vector_product(x0-xs,nx0,2)>=eps ));
+    idx = sum(nx0.*x0,2) - nx0*xs.' >=eps;
     x0 = x0_tmp(idx,:);
 
 elseif strcmp('fs',src)
@@ -139,17 +136,18 @@ elseif strcmp('fs',src)
     %
     % see Wierstorf et al. (2015), eq.(#wfs:fs:selection)
     %
-    nxs = xs(:,4:6);
-    xs = xs(:,1:3);
-    idx = (( vector_product(nxs,xs-x0,2)>=eps ));
+    nxs = xs(4:6);  % vector for orientation of focused source
+    xs = xs(1:3);  % vector for position of focused source
+    idx = xs*nxs(:) - x0*nxs(:) >=eps;
     x0 = x0_tmp(idx,:);
 elseif strcmp('vss', src)
     % === Virtual secondary sources ===
     % Multiple focussed source selection
     selector = false(size(x0_tmp,1),1);
     for xi=xs'
-      [~, xdx] = secondary_source_selection(x0_tmp, xi(1:6)', 'fs');
-      selector(xdx) = true;
+      % ~selector tests only the x0, which have not been selected before
+      selector(~selector) = ...
+        xi(1:3).'*xi(4:6) - x0(~selector,:)*xi(4:6) >= eps;
     end
     x0 = x0_tmp(selector,:);
 else

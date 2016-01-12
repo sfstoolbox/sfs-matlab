@@ -1,33 +1,41 @@
 function sig = delayline_read(delayline,dt,weight,conf)
-%DELAYLINE implements a (fractional) delay line with weights
+%DELAYLINE_READ reads delayed and weighted signal from delayline
 %
 %   Usage: sig = delayline_read(sig,dt,weight,[conf])
 %
 %   Input parameter:
-%       sig     - input signal (vector), can be in the form of [N C], or
-%                 [M C N], where
-%                     N ... samples
+%       delayline - delayline structure obtained from delayline_write, can be 
+%                   in the form of [N C], or [M C N], where
+%                     N ... samples (may be resampled or interleaved)
 %                     C ... channels (most probably 2)
 %                     M ... number of measurements
-%                 If the input is [M C N], the length of dt and weight has to be
-%                 1 or M*C. In the last case the first M entries in dt are
-%                 applied to the first channel and so on.
-%       dt      - delay / samples
-%       weight  - amplitude weighting factor
-%       conf    - configuration struct (see SFS_config).
-%                 Used settings are:
-%                     conf.usefracdelay;
-%                     conf.fracdelay_method; (only if conf.usefracdelay==true)
+%                   If the input is [M C N], the length of dt and weight has 
+%                   to be 1 or M*C. In the last case the first M entries in dt 
+%                   are applied to the first channel and so on.
+%       dt        - delay / samples
+%       weight    - amplitude weighting factor
+%       conf      - configuration struct (see SFS_config).
+%                   Used settings are:
+%                     conf.fracdelay.order
+%                     conf.fracdelay.filter
+%                     conf.fracdelay.pre.method
+%
+%                     (only if conf.fracdelay.pre.method=='resample')
+%                     conf.fracdelay.pre.resample.factor
+%                   
+%                     (only if conf.fracdelay.pre.method=='farrow')
+%                     fracdelay.pre.farrow.Npol
 %
 %   Output parameter:
 %       sig     - delayed signal
 %
-%   DELAYLINE(sig,dt,weight,conf) implementes a delayline, that delays the given
-%   signal by dt samples and applies an amplitude weighting factor. The delay is
-%   implemented as integer delay or fractional delay filter, see description of
-%   conf input parameter.
+%   DELAYLINE_READ(delayline,dt,weight,conf) implements the post-processing
+%   stage of a (fractional) delayline, that amplies a delay dt and a weight to
+%   the signal. The signal is given as the delayline structure obtained from
+%   delayline_write. The delay is implemented as fractional delay filter. For
+%   integer delays set conf.fracdelay.filter='zoh' for "Zero-Order Hold".
 %
-%   See also: get_ir, driving_function_imp_wfs
+%   See also: get_ir, driving_function_imp_wfs, delayline_write
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -104,12 +112,12 @@ switch fracdelay.pre.method
     fdt = dt - idt;
   case 'farrow'
     % === Farrow-Structre ==============================================
-    % number of parallel filters, i.e. order of polynomial - 1
+    % number of parallel filters, i.e. order of polynomial + 1
     Nfilter = fracdelay.pre.farrow.Npol+1;
     samples = samples/Nfilter;
     tmp = zeros(samples, channels);
     for cdx=1:channels
-	  % shorter, faster way of matlab's polyval
+      % shorter, faster way of matlab's polyval
       d_vec = fdt(cdx).^(Nfilter-1:-1:0);
       tmp(:, cdx) = ...
         d_vec*reshape( delayline(:, cdx), [Nfilter, samples] );

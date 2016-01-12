@@ -1,7 +1,7 @@
 function delayline = delayline_write(sig,conf)
-%DELAYLINE implements a (fractional) delay line with weights
+%DELAYLINE_WRITE writes data into a (fractional) delay line
 %
-%   Usage: sig = delayline_write(sig,[conf])
+%   Usage: sig = delayline_write(sig,conf)
 %
 %   Input parameter:
 %       sig     - input signal (vector), can be in the form of [N C], or
@@ -9,23 +9,28 @@ function delayline = delayline_write(sig,conf)
 %                     N ... samples
 %                     C ... channels (most probably 2)
 %                     M ... number of measurements
-%                 If the input is [M C N], the length of dt and weight has to be
-%                 1 or M*C. In the last case the first M entries in dt are
-%                 applied to the first channel and so on.
 %       conf    - configuration struct (see SFS_config).
 %                 Used settings are:
-%                     conf.usefracdelay;
-%                     conf.fracdelay_method; (only if conf.usefracdelay==true)
+%                   conf.fracdelay.pre.method;
+%                   
+%                   (only if conf.fracdelay.pre.method=='resample')
+%                   conf.fracdelay.pre.resample.method
+%                   conf.fracdelay.pre.resample.factor
+%                   
+%                   (only if conf.fracdelay.pre.method=='farrow')
+%                   conf.fracdelay.order;
+%                   fracdelay.pre.farrow.Npol
 %
 %   Output parameter:
-%       sig     - data stream representing the delayline
+%       delayline - data structure representing the delayline
 %
-%   DELAYLINE(sig,dt,weight,conf) implementes a delayline, that delays the given
-%   signal by dt samples and applies an amplitude weighting factor. The delay is
-%   implemented as integer delay or fractional delay filter, see description of
-%   conf input parameter.
+%   DELAYLINE_WRITE(sig,conf) implements the pre-processing stage of a 
+%   fractional delay line for a given signal. This processing stage generates
+%   a data structure which is indepedent of the actual delays applied to the 
+%   signal. The data structure may than be used as an input to delayline_read
+%   in order to extract multiple delayed versions of the signal.
 %
-%   See also: get_ir, driving_function_imp_wfs
+%   See also: get_ir, driving_function_imp_wfs, delayline_read
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
@@ -58,7 +63,6 @@ function delayline = delayline_write(sig,conf)
 %                                                                            *
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
-
 
 %% ===== Configuration ==================================================
 fracdelay = conf.fracdelay;
@@ -95,8 +99,8 @@ switch fracdelay.pre.method
     end
   case 'farrow'
     % === Farrow-Structure ==============================================
-    % Based on the assumption, that each coefficient h(n) of the the fractional
-    % delay as a polynomial in d, i.e.
+    % Based on the assumption, that each coefficient h(n) of the fractional
+    % delay filter can be expressed as a polynomial in d (frac. delay), i.e.
     %            _
     %           \  NPol 
     % h_d(n) ~=  >      c_m(n) d^m
@@ -104,14 +108,18 @@ switch fracdelay.pre.method
     %
     % For some Filter design methods, e.g. Lagrange Interpolators, this
     % perfectly possible. For other, a uniform grid of test delays d_q is 
-    % used to fit the polynomials to the desired coefficienth(n) find a set 
-    % polynomial which approximates each coefficients of the desired filter.
+    % used to fit the polynomials to the desired coefficient(n) find a set 
+    % polynomial which approximates each coefficient of the desired filter.
     % This structure allows to perform the convolution independently from the 
     % delay and reuse the results of the filter for different delays.
     %                          _
     %                          \  NPol 
     % y(n) = h_d(n) * x(n) ~=   >      ( c_m(n)*x(n) ) d^m
     %                          /_ m=0
+    %
+    % The above representation shows that the convolution of the input signal x
+    % can be performed by first convolving c_m and x and incorporating the delay
+    % d afterwards.
 
     % number of filter coefficients (length of filter)
     Norder = fracdelay.order;  

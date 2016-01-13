@@ -134,7 +134,7 @@ switch fracdelay.pre.method
           , upper(mfilename));
       end
       % each row is a polynom in d, each column is a filter
-      c = lagrange_polynomials(0:Norder);      
+      c = lagrange_polynomials(((1-Norder)/2:(1+Norder)/2));      
     else     
       d = (0:(Nfilter-1))./Nfilter;  % uniform grid of delays to fit polynomials
       d(1) = d(1)+1E-5; % prevent some issues with d=0.0;

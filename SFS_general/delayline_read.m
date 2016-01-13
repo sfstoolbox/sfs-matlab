@@ -143,7 +143,7 @@ if ~strcmp( fracdelay.pre.method, 'farrow' )
       b = ones(1, channels);
     case 'lagrange'
       % ==== Lagrange Polynomial Interpolator ==============================
-      c = lagrange_polynoms(0:Norder);  %
+      c = lagrange_polynomials(0:Norder);  %
       for sdx=1:Norder+1
         b(sdx,:) = polyval(c(sdx,:),fdt);
       end

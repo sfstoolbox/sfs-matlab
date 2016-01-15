@@ -109,7 +109,6 @@ if strcmp('pw',src)
     %
     % Direction of plane wave (nk) is set above
     idx = nx0*nk(:) >=eps;
-    x0 = x0_tmp(idx,:);
 
 elseif strcmp('ps',src) || strcmp('ls',src)
     % === Point source ===
@@ -123,7 +122,6 @@ elseif strcmp('ps',src) || strcmp('ls',src)
     % eq.(#wfs:ls:selection)
     %
     idx = sum(nx0.*x0,2) - nx0*xs.' >=eps;
-    x0 = x0_tmp(idx,:);
 
 elseif strcmp('fs',src)
     % === Focused source ===
@@ -139,20 +137,21 @@ elseif strcmp('fs',src)
     nxs = xs(4:6);  % vector for orientation of focused source
     xs = xs(1:3);  % vector for position of focused source
     idx = xs*nxs(:) - x0*nxs(:) >=eps;
-    x0 = x0_tmp(idx,:);
+
 elseif strcmp('vss', src)
     % === Virtual secondary sources ===
     % Multiple focussed source selection
-    selector = false(size(x0_tmp,1),1);
+    idx = false(size(x0_tmp,1),1);
     for xi=xs'
-      % ~selector tests only the x0, which have not been selected before
-      selector(~selector) = ...
-        xi(1:3).'*xi(4:6) - x0(~selector,:)*xi(4:6) >= eps;
+      % ~idx tests only the x0, which have not been selected before
+      idx(~idx) = ...
+        xi(1:3).'*xi(4:6) - x0(~idx,:)*xi(4:6) >= eps;
     end
-    x0 = x0_tmp(selector,:);
 else
     error('%s: %s is not a supported source type!',upper(mfilename),src);
 end
+
+x0 = x0_tmp(idx,:);
 
 if size(x0,1)==0
     warning('%s: 0 secondary sources were selected.',upper(mfilename));

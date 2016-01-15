@@ -1,23 +1,15 @@
-function [pi, L] = lagrange_polynomials(xi, yi)
-%LAGRANGE_POLYNOMIALS compute lagrange polynomials based on sampling positions
+function [b, a] = thiran_filter(Norder, fdt)
+%THIRAN_FILTER computes Thiran's IIR allpass for Maximally Flat Group Delay
 %
-%   Usage: [li, [L]] = lagrange_polynomials(xi, [yi])
+%   Usage: [b, a] = lagrange_filter(Norder, fdt)
 %
 %   Input parameter:
-%     xi - row vector sampling positions x_i with i = 0, ..., N
-%     yi - optional row vector of values of sampling positions y_i = f(x_i)
+%     Norder - order of filter
+%     fdt    - vector of fractional delays -0.5 <= fdt < 0.5
 %
 %   Output parameter:
-%     pi  - matrix of lagrange polynomials p_i(x) with i = 0, ..., N
-%           p_i(x) = (x - x_0)/(x_i - x_0) * ... * (x - x_i-1) /(x_i - x_i-1) *
-%                    (x - x_i+1) /(x_i - x_i+1) ... (x - x_N)/(x_i - x_N)
-%                  = c_{i,N} x^N + c_{i, N-1} x^(N-1) + ... + c_{i, 0} x^(0)
-%           each row of pi stores the coefficients c_{i,k} with k = N, ..., 0 
-%     L   - optional interpolation polynomial L(x)
-%           L(x) = y_0 * p_0(x) + y_1 * p_1(x) + ... + y_N * p_N(x)
-%
-%   LAGRANGE_POLYNOMIALS computes N interpolation polynomials, each of N-th
-%   order, based on N sampling positions.
+%     b   - numerator polynomial of H(z) / [Norder+1 x Nfdt]
+%     a   - denominator polynomial of H(z) / [Norder+1 x Nfdt]
 %
 %   See also: delayline_read, delayline_write
 
@@ -55,32 +47,18 @@ function [pi, L] = lagrange_polynomials(xi, yi)
 
 %% ===== Computation =====================================================
 
-% number elements in x_i determines degree of the lagrange polynoms
-N = length(xi);  
+% shift fractional delay in order to optimize performance
+fdt = fdt(:);  % ensure column vector
+Nfdt = numel(fdt);
 
-% each row contains [1 x_i] which is equivalent to m_i(x) = (x - x_i)
-mi = [ones(N,1), -xi'];
-
-% l(x) = m_0(x) * m_1(x) ... * m_N(x) = (x - x_0) * (x - x_1) * ... * (x - x_N)
-l = 1;
-for idx=1:N
-  % convolution of coefficients means multiplication of polynoms
-  l = conv(l,mi(idx,:));  
+% denomimator polynomial of H(z)
+a = [ones(1,Nfdt); zeros(Norder, Nfdt)];
+for kdx=1:Norder
+  a(kdx+1,:) = (-1).^kdx * ...
+    factorial(Norder)/(factorial(kdx)*factorial(Norder-kdx)) * ...
+    prod( bsxfun(@plus, fdt, 0:Norder)./bsxfun(@plus, fdt, kdx:kdx+Norder), 2 );        
 end
+% numerator polynomial of H(z)
+b = a(end:-1:1,:);
 
-pi = zeros(N,N);
-for idx=1:N
-  % nom_i(x) = l(x) / m_i(x) 
-  %          = (x - x_0) * ... * (x - x_{i-1}) * (x - x_{i+1}) * ... * (x - x_N)  
-  nominator = deconv(l,mi(idx,:));
-  % denom_i = nom_i(x_i) evaluated with "polyval"
-  denominator = polyval(nominator,xi(idx));  
-  % l_i(x) = nom_i(x) / denom_i;
-  pi(idx,:) = nominator./denominator;
-end
-
-% optional computation of interpolation polynom L(x)
-% L(x) = y_0 * l_0(x) + y_1 * l_1(x) + ... + y_N * l_N(x)
-if nargin == 2 && nargout == 2
-  L = yi * pi;  % row vector * matrix = row vector
 end

@@ -97,67 +97,43 @@ if channels>1 && length(weight)==1, weight=repmat(weight,[channels 1]); end
 
 %% ===== Fractional Delay ================================================
 
-rfactor = 1.0;  % ratio of signal length and delayline length
-idt = floor(dt);  % integer part of delays
-fdt = dt - idt;  % fractional part of delays
-
-% Stuff depending on the pre processing method
-switch fracdelay.pre.method
-  case 'resample'
-    % === Resample =====================================================
-    % Assuming a resampled delay line
-    rfactor = fracdelay.pre.resample.factor;
-    dt = rfactor.*dt;
-    idt = floor(dt);
-    fdt = dt - idt;
-  case 'farrow'
-    % === Farrow-Structre ==============================================
-    % number of parallel filters, i.e. order of polynomial + 1
-    Nfilter = fracdelay.pre.farrow.Npol+1;
-    samples = samples/Nfilter;
-    tmp = zeros(samples, channels);
-    for cdx=1:channels
-      % shorter, faster way of matlab's polyval
-      d_vec = fdt(cdx).^(Nfilter-1:-1:0);
-      tmp(:, cdx) = ...
-        d_vec*reshape( delayline(:, cdx), [Nfilter, samples] );
-    end
-    delayline = tmp;
-  case 'none'
-  otherwise
-    disp('Delayline: Unknown Pre-Processing method for delay line');
+% check if signal/delayline was resampled
+if strcmp(fracdelay.pre.method, 'resample') 
+  rfactor = fracdelay.pre.resample.factor;  % Assuming a resampled delay line
+else
+  rfactor = 1.0;  % ratio of signal length and delayline length
 end
+dt = rfactor.*dt;  % resampled delays 
 
-% There is no post processing stage if the Farrow Structure used
-if ~strcmp( fracdelay.pre.method, 'farrow' )
+if strcmp( fracdelay.pre.method, 'farrow')  
+  to_be_implemented(mfilename);
+else  % There is no post processing stage if the Farrow Structure used
   % === Post Processing ====================================================
-  if ~strcmp( fracdelay.filter, 'zoh' )
-    b = zeros(Norder+1, channels);  % numerator of fractional delay filter
-  end
   a = ones(1, channels);  % denominator of fractional delay filter
   switch fracdelay.filter
     case 'zoh'
       % === Zero-Order-Hold (Integer Delays) ===============================
       idt = ceil(dt);  % round up to next integer delay
-      fdt = 0.0;  % 
       b = ones(1, channels);
     case 'lagrange'
       % ==== Lagrange Polynomial Interpolator ==============================
-      c = lagrange_polynomials(((1-Norder)/2:(1+Norder)/2));  %
-      for sdx=1:Norder+1
-        b(sdx,:) = polyval(c(sdx,:),fdt);
+      if mod(Norder,2) == 0
+        idt = round(dt);  % round delay for even order
+      else
+        idt = floor(dt);  % floor delay for odd order
       end
+      fdt = dt - idt;  % fractional part of delays
+      b = lagrange_filter(Norder, fdt);
     case 'thiran'
       % ==== Thiran's Allpass Filter for Maximally Flat Group Delay ========
-      a = [a; zeros(Norder, channels)];
-      for kdx=1:Norder
-        a(kdx+1,:) = (-1).^kdx * ...
-          factorial(Norder)/(factorial(kdx)*factorial(Norder-kdx)) * ...
-          prod( bsxfun(@plus, fdt, 0:Norder)./bsxfun(@plus, fdt, kdx:kdx+Norder), 2 );        
-      end
-      b = a(end:-1:1,:);
+      idt = round(dt);  % integer part of delays
+      fdt = dt - idt;  % fractional part of delays
+      [b, a] = thiran_filter(Norder, fdt);
     case 'least_squares'
       % ==== Least Squares Interpolation Filter ============================
+      idt = floor(dt);  % integer part of delays
+      fdt = dt - idt;  % fractional part of delays
+      b = zeros(Norder+1, channels);
       for cdx=1:channels
         b(:,cdx) = general_least_squares(Norder+1,fdt(cdx),0.90);
       end

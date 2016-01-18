@@ -171,15 +171,15 @@ elseif strcmp('2.5D',dimension)
       % Verheijen (1997), eq. (A.14) 
       %
       g0 = sqrt( vector_norm(xref-x0,2) ./ (vector_norm(x0-xref,2) - r ) );
-      %                        ___
-      %                 g0    |-iw  (xs-x0) nx0
-      % D_2.5D(x0,w) = ---  _ |--- ------------- e^(i w/c |x0-xs|)
-      %                2pi   \| c  |x0-xs|^(3/2)
+      %                       ___     ___
+      %                      | 1     |-iw  (xs-x0) nx0
+      % D_2.5D(x0,w) = g0  _ |---  _ |--- ------------- e^(i w/c |x0-xs|)
+      %                     \|2pi   \| c  |x0-xs|^(3/2)
       %
       % Verheijen (1997), eq. (A.14)
       %
       % Driving signal
-      D = g0/(2*pi) * sqrt( -1i*omega/c ) .* ...
+      D = g0/sqrt(2*pi) * sqrt( -1i*omega/c ) .* ...
         vector_product(xs-x0,nx0,2) ./ r.^(3/2) .* exp(+1i*omega/c.*r);
       %
     case {'reference_line', 'delft1988'}
@@ -198,17 +198,17 @@ elseif strcmp('2.5D',dimension)
       % see Start (1997), eq. (3.16)        %
       %
       g0 = sqrt( dref ./ (dref - ds) );
-      %                        ___
-      %                 g0    |-iw  (xs-x0) nx0
-      % D_2.5D(x0,w) = ---  _ |--- ------------- e^(i w/c |x0-xs|)
-      %                2pi   \| c  |x0-xs|^(3/2)
+      %                       ___     ___
+      %                      | 1     |-iw  (xs-x0) nx0
+      % D_2.5D(x0,w) = g0  _ |---  _ |--- ------------- e^(i w/c |x0-xs|)
+      %                     \|2pi   \| c  |x0-xs|^(3/2)
       %
       % see Verheijen (1997), eq. (2.29b)
       %
       % r = |x0-xs|
       r = vector_norm(x0-xs,2);
       % Driving signal
-      D = g0./(2*pi) .* sqrt( -1i*omega/c ) .*  ...
+      D = g0./sqrt(2*pi) .* sqrt( -1i*omega/c ) .*  ...
         vector_product(xs-x0,nx0,2) ./ r.^(3/2) .* exp(+1i*omega/c.*r);
       %      
     case 'legacy'

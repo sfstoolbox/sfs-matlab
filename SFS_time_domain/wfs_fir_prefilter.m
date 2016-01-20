@@ -67,11 +67,9 @@ flow = conf.wfs.hpreflow;   % Lower frequency limit of preequalization
                             % filter (= frequency when subwoofer is active)
 fhigh = conf.wfs.hprefhigh; % Upper frequency limit of preequalization
                             % filter (= aliasing frequency of system)
-
+Nfilt=conf.wfs.hpreFIRorder;% Number of coefficients for filter
 
 %% ===== Variables ======================================================
-% Number of coefficients for filter
-Nfilt=128;
 % Frequency axis
 f = linspace(0,fs/2,fs/10);
 % Find indices for frequencies in f smaller and nearest to fhigh and flow
@@ -115,5 +113,3 @@ H(1:idxflow) = H(idxflow)*ones(1,idxflow);
 % Compute filter
 hpre = firls(Nfilt,2*f/fs,H);
 
-% Truncate length to power of 2
-hpre = hpre(1:end-1);

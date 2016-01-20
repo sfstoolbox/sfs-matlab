@@ -218,6 +218,8 @@ conf.wfs.hprefhigh = 1200; % / Hz
 conf.wfs.hpreBandwidth_in_Oct = 2; % / octaves
 % desired IIR filter order
 conf.wfs.hpreIIRorder = 4; % integer
+% desired FIR filter order, results in N+1 taps
+conf.wfs.hpreFIRorder = 128; % even integer
 
 
 %% ===== Spectral Division Method (SDM) ==================================

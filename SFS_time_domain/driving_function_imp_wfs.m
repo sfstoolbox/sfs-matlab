@@ -72,7 +72,8 @@ isargstruct(conf);
 %% ===== Configuration ==================================================
 fs = conf.fs;
 N = conf.N;
-
+c = conf.c;
+removedelay = conf.wfs.removedelay;
 
 %% ===== Computation =====================================================
 % Calculate pre-equalization filter if required
@@ -111,9 +112,23 @@ else
     error('%s: %s is not a known source type.',upper(mfilename),src);
 end
 
-% Remove delay offset, in order to begin always at t=0 with the first wave front
-% at any secondary source
-delay = delay-min(delay);
+if removedelay
+    % Remove delay offset, in order to begin always at t=0 with the first wave front
+    % at any secondary source
+    delay = delay-min(delay);
+else
+    if strcmp('pw',src)
+        % Find the maximum predelay for all possible plane wave directions.
+        % Add to ensure causality at every secondary source
+        diameter = secondary_source_maximum_distance(x0);
+        maximum_predelay = diameter/2*c;
+        delay = delay + maximum_predelay;
+    elseif strcmp('fs',src)
+        to_be_implemented(mfilename);
+    end
+    % Nothing to be done for point and line sources, because their delay is
+    % always positive.
+end
 % Append zeros at the end of the driving function. This is necessary, because
 % the delayline function cuts into the end of the driving signals in order to
 % delay them. NOTE: this can be changed by the conf.N setting

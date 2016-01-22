@@ -61,13 +61,13 @@ isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
-fs = conf.fs;               % Sampling rate
-dimension = conf.dimension; % dimensionality
-flow = conf.wfs.hpreflow;   % Lower frequency limit of preequalization
-                            % filter (= frequency when subwoofer is active)
-fhigh = conf.wfs.hprefhigh; % Upper frequency limit of preequalization
-                            % filter (= aliasing frequency of system)
-Nfilt=conf.wfs.hpreFIRorder;% Number of coefficients for filter
+fs = conf.fs;                  % Sampling rate
+dimension = conf.dimension;    % dimensionality
+flow = conf.wfs.hpreflow;      % Lower frequency limit of preequalization
+                               % filter (= frequency when subwoofer is active)
+fhigh = conf.wfs.hprefhigh;    % Upper frequency limit of preequalization
+                               % filter (= aliasing frequency of system)
+Nfilt = conf.wfs.hpreFIRorder; % Number of coefficients for filter
 
 %% ===== Variables ======================================================
 % Frequency axis

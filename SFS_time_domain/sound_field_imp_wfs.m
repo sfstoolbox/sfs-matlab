@@ -98,9 +98,8 @@ x0 = secondary_source_tapering(x0,conf);
 d = driving_function_imp_wfs(x0,xs,src,conf);
 % Fix the time to account for sample offset of FIR pre-equalization filter
 if usehpre && strcmp(hpretype,'FIR')
-    % add a time offset due to the linear phase filter,
-    % (ceiling ensures correct offset for erroneously odd order, see firls)
-    t = t + ceil(hpreFIRorder/2);
+    % add a time offset due to the linear phase filter
+    t = t + hpreFIRorder/2;
 end
 % Calculate sound field
 [varargout{1:min(nargout,4)}] = ...

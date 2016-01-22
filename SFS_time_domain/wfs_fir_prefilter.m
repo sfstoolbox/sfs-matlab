@@ -68,7 +68,10 @@ flow = conf.wfs.hpreflow;      % Lower frequency limit of preequalization
 fhigh = conf.wfs.hprefhigh;    % Upper frequency limit of preequalization
                                % filter (= aliasing frequency of system)
 Nfilt = conf.wfs.hpreFIRorder; % Number of coefficients for filter
-
+if isodd(Nfilt)
+    error(['%s: conf.wfs.hpreFIRorder == %i is not a valid filter order. ', ...
+        'Must be an even integer.'],upper(mfilename),Nfilt);
+end
 %% ===== Variables ======================================================
 % Frequency axis
 f = linspace(0,fs/2,fs/10);
@@ -105,7 +108,7 @@ elseif strcmp('3D',dimension) || strcmp('2D',dimension)
     %
     H(idxflow:idxfhigh) = f(idxflow:idxfhigh)./fhigh;
 else
-    error('%s: %s is not a valid conf.dimension entry',upper(mfilename));
+    error('%s: %s is not a valid conf.dimension entry',upper(mfilename),dimension);
 end
 % Set the response for idxf < idxflow to the value at idxflow
 H(1:idxflow) = H(idxflow)*ones(1,idxflow);

@@ -6,6 +6,8 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
     - add new start message
     - fix handling of 0 in least squares fractional delays
     - fix NFC-HOA order for even loudspeaker numbers to N/2-1
+    - add conf.wfs.hpreFIRorder as new config option (was hard coded to 128
+      before)
 
 2.0.0 (26. October 2015)
 

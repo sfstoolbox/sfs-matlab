@@ -118,7 +118,5 @@ delay = delay-min(delay);
 % the delayline function cuts into the end of the driving signals in order to
 % delay them. NOTE: this can be changed by the conf.N setting
 d_proto = repmat([row_vector(pulse) zeros(1,N-length(pulse))]',1,size(x0,1));
-% write data into delayline
-delayline = delayline_write(d_proto, conf);
 % Shift and weight prototype driving function
-d = delayline_read(delayline,delay*fs,weight,conf);
+d = delayline(d_proto,delay*fs,weight,conf);

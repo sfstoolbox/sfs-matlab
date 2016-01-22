@@ -7,13 +7,12 @@ function boolean = test_secondary_source_selection(modus)
 %   Input parameters:
 %       modus   - 0: numerical (quiet)
 %                 1: numerical (verbose)
-%                 2: visual
 %
 %   Output parameters:
 %       booelan - true or false
 %
-%   TEST_SECONDARY_SELECTION(modus) checks if the secondary source selection
-%   needed for Wave Field Syntesis is implemented correctly in
+%   TEST_SECONDARY_SOURCE_SELECTION(modus) checks if the secondary source
+%   selection needed for Wave Field Syntesis is implemented correctly in
 %   secondary_source_selection().
 
 %*****************************************************************************

@@ -18,7 +18,7 @@ function m = magma(n)
 %   For example, to reset the colormap of the current figure:
 %             colormap(magma)
 %
-%   See also: generate_colormap, chromjs, plot_sound_field
+%   See also: generate_colormap, yellowred, moreland, plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2015 Quality & Usability Lab, together with             *

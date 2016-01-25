@@ -21,7 +21,7 @@ function m = moreland(n)
 %
 %   Original written by Lewis Marshall
 %
-%   See also: generate_colormap, chromjs, plot_sound_field
+%   See also: generate_colormap, yellowred, plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2016 Quality & Usability Lab, together with             *

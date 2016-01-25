@@ -1,29 +1,29 @@
 function draw_loudspeakers(x0,dimensions,conf)
 %DRAW_LOUDSPEAKERS draws loudspeaker symbols or "o" at the given positions
 %
-%   Usage: draw_loudspeakers(x0,[dimensions],[conf])
+%   Usage: draw_loudspeakers(x0,[dimensions],conf)
 %
 %   Input options:
 %       x0          - positions and directions of the loudspeakers / m
 %       dimensions  - dimension defining the plane in which the loudspeaker
 %                     symbol should be plotted. For example [1 1 0] corresponds
 %                     to the xy-plane. Default: [1 1 0]
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
-%   DRAW_LOUDSPEAKERS(x0,dimensions) draws loudspeaker symbols or filled points
-%   at the given secondary source positions. This can be controlled by the
-%   conf.plot.realloudspeakers setting. The loudspeaker symbols are pointing in
-%   their given direction.
+%   DRAW_LOUDSPEAKERS(x0,dimensions,conf) draws loudspeaker symbols or filled
+%   points at the given secondary source positions. This can be controlled by
+%   the conf.plot.realloudspeakers setting. The loudspeaker symbols are pointing
+%   in their given direction.
 %
 %   See also: plot_sound_field
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -51,20 +51,13 @@ function draw_loudspeakers(x0,dimensions,conf)
 
 
 %% ===== Checking of input parameter =====================================
-nargmin = 1;
+nargmin = 2;
 nargmax = 3;
 narginchk(nargmin,nargmax);
 isargsecondarysource(x0)
 nls = size(x0,1);
-if nargin==nargmax-1
-    if isstruct(dimensions)
-        conf = dimensions;
-        dimensions = [1 1 0];
-    else
-        conf = SFS_config;
-    end
-elseif nargin==nargmax-2
-    conf = SFS_config;
+if nargin<nargmax
+    conf = dimensions;
     dimensions = [1 1 0];
 end
 

@@ -2,12 +2,12 @@ function sos = driving_function_imp_nfchoa_pw(N,R,conf)
 %DRIVING_FUNCTION_IMP_NFCHOA_PW calculates the second-order section
 %representation for a virtual plane wave in NFC-HOA
 %
-%   Usage: sos = driving_function_imp_nfchoa_pw(N,R,[conf]);
+%   Usage: sos = driving_function_imp_nfchoa_pw(N,R,conf)
 %
 %   Input parameters:
 %       N       - order of spherical hankel function
 %       R       - radius of secondary source array / m
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       sos     - second-order section representation
@@ -24,12 +24,12 @@ function sos = driving_function_imp_nfchoa_pw(N,R,conf)
 %   See also: sound_field_imp, sound_field_imp_nfchoa, driving_function_imp_nfchoa
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -57,15 +57,11 @@ function sos = driving_function_imp_nfchoa_pw(N,R,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
+nargmin = 3;
 nargmax = 3;
 narginchk(nargmin,nargmax);
 isargpositivescalar(N,R);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

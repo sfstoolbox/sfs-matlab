@@ -1,7 +1,7 @@
 function varargout = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf)
 %SOUND_FIELD_IMP_WFS returns the sound field in time domain of an impulse
 %
-%   Usage: [p,x,y,z,x0] = sound_field_imp_wfs(X,Y,Z,xs,src,t,[conf])
+%   Usage: [p,x,y,z,x0] = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf)
 %
 %   Input options:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -14,7 +14,7 @@ function varargout = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf)
 %                         'ps' - point source
 %                         'fs' - focused source
 %       t           - time point t of the sound field / samples
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output options:
 %       p           - simulated sound field
@@ -37,12 +37,12 @@ function varargout = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf)
 %   See also: driving_function_imp_wfs, sound_field_imp, sound_field_mono_wfs
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -70,17 +70,13 @@ function varargout = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
+nargmin = 7;
 nargmax = 7;
 narginchk(nargmin,nargmax);
 isargxs(xs);
 isargchar(src);
 isargscalar(t);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
@@ -90,7 +86,8 @@ else
     greens_function = 'ps';
 end
 usehpre = conf.wfs.usehpre;
-
+hpretype = conf.wfs.hpretype;
+hpreFIRorder = conf.wfs.hpreFIRorder;
 
 %% ===== Computation =====================================================
 % Get secondary sources
@@ -99,11 +96,10 @@ x0 = secondary_source_selection(x0,xs,src);
 x0 = secondary_source_tapering(x0,conf);
 % Get driving signals
 d = driving_function_imp_wfs(x0,xs,src,conf);
-% Fix the time to account for sample offset of the pre-equalization filter
-if usehpre
-    % add a time offset due to the filter (the filter has 128 coefficients,
-    % hence the offset is 64 samples)
-    t = t + 64;
+% Fix the time to account for sample offset of FIR pre-equalization filter
+if usehpre && strcmp(hpretype,'FIR')
+    % add a time offset due to the linear phase filter
+    t = t + hpreFIRorder/2;
 end
 % Calculate sound field
 [varargout{1:min(nargout,4)}] = ...

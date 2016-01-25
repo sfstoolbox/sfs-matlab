@@ -1,7 +1,7 @@
 function movie_sound_field_imp_wfs(X,Y,Z,xs,src,outfile,conf)
 %MOVIE_SOUND_FIELD_IMP_WFS generates movie a WFS sound field
 %
-%   Usage: movie_sound_field_imp_wfs(X,Y,Z,xs,src,outfile,[conf])
+%   Usage: movie_sound_field_imp_wfs(X,Y,Z,xs,src,outfile,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array 
@@ -14,7 +14,7 @@ function movie_sound_field_imp_wfs(X,Y,Z,xs,src,outfile,conf)
 %                         'ps' - point source
 %                         'fs' - focused source
 %       outfile     - name for the movie file
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   MOVIE_SOUND_FIELD_IMP_WFS(X,Y,Z,xs,src,outfile,conf) generates a movie of
 %   simulations of a sound field of the given source positioned at xs
@@ -23,12 +23,12 @@ function movie_sound_field_imp_wfs(X,Y,Z,xs,src,outfile,conf)
 %   See also: sound_field_imp_wfs, plot_sound_field, generate_movie
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -56,16 +56,12 @@ function movie_sound_field_imp_wfs(X,Y,Z,xs,src,outfile,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
+nargmin = 7;
 nargmax = 7;
 narginchk(nargmin,nargmax);
 isargxs(xs);
 isargchar(src,outfile);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

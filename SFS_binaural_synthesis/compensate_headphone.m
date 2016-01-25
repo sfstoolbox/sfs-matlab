@@ -1,11 +1,11 @@
 function ir = compensate_headphone(ir,conf)
 %COMPENSATE_HEADPHONE applies a headphone compensation to the IR
 %
-%   Usage: ir = compensate_headphone(ir,[conf])
+%   Usage: ir = compensate_headphone(ir,conf)
 %
 %   Input parameters:
 %       ir      - Impulse response to which the compensation should be applied
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output:
 %       ir      - Impulse response which is compensated for the given headphone
@@ -18,12 +18,12 @@ function ir = compensate_headphone(ir,conf)
 %   See also: ir_wfs, ir_point_source, ir_generic
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -51,15 +51,11 @@ function ir = compensate_headphone(ir,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
+nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
 isargmatrix(ir);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ===================================================

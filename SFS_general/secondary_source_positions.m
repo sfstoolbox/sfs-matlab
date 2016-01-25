@@ -2,10 +2,10 @@ function x0 = secondary_source_positions(conf)
 %SECONDARY_SOURCE_POSITIONS generates the positions, directions, and weights of
 %   the secondary sources
 %
-%   Usage: x0 = secondary_source_positions([conf])
+%   Usage: x0 = secondary_source_positions(conf)
 %
 %   Input options:
-%       conf   - optional configuration struct (see SFS_config)
+%       conf   - configuration struct (see SFS_config)
 %
 %   Output options:
 %       x0     - secondary source positions, directions and weights
@@ -29,12 +29,12 @@ function x0 = secondary_source_positions(conf)
 % See also: secondary_source_selection, secondary_source_tapering
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -66,14 +66,10 @@ function x0 = secondary_source_positions(conf)
 
 
 %% ===== Checking of input  parameters ===================================
-nargmin = 0;
+nargmin = 1;
 nargmax = 1;
 narginchk(nargmin,nargmax);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ===================================================

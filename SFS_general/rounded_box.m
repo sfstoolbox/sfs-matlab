@@ -1,8 +1,8 @@
-function [x0, n0, w0] = rounded_box(t, ratio)
+function [x0,n0,w0] = rounded_box(t,ratio)
 %ROUNDED_BOX computes position and direction vectors in 3D given a parameter 
 %   indicating the position on the boundary of a box with rounded corners.
 %
-%   Usage: [x0, n0, w0] = rounded_box(t, ratio)
+%   Usage: [x0,n0,w0] = rounded_box(t,ratio)
 %
 %   Input options:
 %       t      - parameter indicating position on the boundary [1 x n]
@@ -38,12 +38,12 @@ function [x0, n0, w0] = rounded_box(t, ratio)
 % See also: secondary_source_positions
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *

@@ -2,14 +2,14 @@ function ir = ssr_generic_wfs(xs,src,conf)
 %SSR_GENRIC_WFS generates an impulse response for the generic renderer of the
 %SoundScape Renderer
 %
-%   Usage: ir = ssr_generic_wfs(xs,src,[conf])
+%   Usage: ir = ssr_generic_wfs(xs,src,conf)
 %
 %   Input parameters:
 %       xs      - virtual source position / m
 %       src     - source type: 'pw' -plane wave
 %                              'ps' - point source
 %                              'fs' - focused source
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ir      - impulse response for the desired loudspeaker array
@@ -25,12 +25,12 @@ function ir = ssr_generic_wfs(xs,src,conf)
 % See also: generic_nfchoa, brs_wfs, driving_function_imp_wfs
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -58,14 +58,11 @@ function ir = ssr_generic_wfs(xs,src,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
+nargmin = 3;
 nargmax = 3;
 narginchk(nargmin,nargmax);
 isargxs(xs);
 isargchar(src);
-if nargin<nargmax
-    conf = SFS_config;
-end
 isargstruct(conf);
 
 

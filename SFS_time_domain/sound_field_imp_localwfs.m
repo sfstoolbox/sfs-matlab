@@ -1,7 +1,7 @@
 function varargout = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
 %SOUND_FIELD_IMP_LOCALWFS returns the sound field in time domain of an impulse
 %
-%   Usage: [p,x,y,z,x0] = sound_field_imp_localwfs(X,Y,Z,xs,src,t,[conf])
+%   Usage: [p,x,y,z,x0] = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
 %
 %   Input options:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -13,7 +13,7 @@ function varargout = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
 %                                plane wave in this case)
 %                         'ps' - point source
 %       t           - time point t of the sound field / samples
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output options:
 %       p           - simulated sound field
@@ -37,12 +37,12 @@ function varargout = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
 %   See also: driving_function_imp_localwfs, sound_field_mono_localwfs
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -69,18 +69,14 @@ function varargout = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
+nargmin = 7;
 nargmax = 7;
 narginchk(nargmin,nargmax);
 isargnumeric(X,Y,Z);
 isargxs(xs);
 isargchar(src);
 isargscalar(t);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
@@ -91,18 +87,24 @@ else
 end
 useplot = conf.plot.useplot;
 
+compensate_wfs_fir_delay = ...
+    (conf.wfs.usehpre && strcmp(conf.wfs.hpretype,'FIR'));
+compensate_local_wfs_fir_delay = ...
+    (conf.localsfs.wfs.usehpre && strcmp(conf.localsfs.wfs.hpretype,'FIR'));
 
 %% ===== Computation =====================================================
 % Get secondary sources
 x0 = secondary_source_positions(conf);
 % Get driving signals
 [d, x0, xv] = driving_function_imp_localwfs(x0,xs,src,conf);
-% Fix the time to account for sample offset of the pre-equalization filter
-switch (conf.wfs.usehpre + conf.localsfs.wfs.usehpre)
-  case 1
-    t = t + 64;
-  case 2
-    t = t + 127;
+% Fix the time to account for sample offset of FIR pre-equalization filters
+if (compensate_wfs_fir_delay && compensate_local_wfs_fir_delay)
+    t = t + conf.wfs.hpreFIRorder/2 + ...
+        conf.localsfs.wfs.hpreFIRorder/2 - 1;
+elseif compensate_wfs_fir_delay
+    t = t + conf.wfs.hpreFIRorder/2;
+elseif compensate_local_wfs_fir_delay
+    t = t + conf.local.wfs.hpreFIRorder/2;
 end
 % Calculate sound field
 [varargout{1:min(nargout,4)}] = ...

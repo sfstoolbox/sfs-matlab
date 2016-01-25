@@ -1,7 +1,7 @@
 function [ir_new,x0_new] = interpolate_ir(ir,x0,xs,conf)
 %INTERPOLATE_IR interpolates three given IRs for the given angle
 %
-%   Usage: ir = interpolate_ir(ir,x0,xs)
+%   Usage: [ir,x0] = interpolate_ir(ir,x0,xs,conf)
 %
 %   Input parameters:
 %       ir      - matrix containing impulse responses in the form [M C N], where
@@ -11,28 +11,28 @@ function [ir_new,x0_new] = interpolate_ir(ir,x0,xs,conf)
 %       x0      - matrix containing positions of single impulse
 %                 responses [2 M] / (rad, rad)
 %       xs      - desired position after interpolation [2 1] / (rad, rad)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ir      - impulse response for the given position [1 C N]
 %       x0      - position corresponding to the returned impulse response
 %
-%   INTERPOLATE_IR(ir,x0,xs)
-%   interpolates the two to three given impulse responses from ir with their
-%   corresponding angles x0 for the given angles xs and returns an interpolated
-%   impulse response.
-%   Note that the given parameter are not checked if they have all the correct
+%   INTERPOLATE_IR(ir,x0,xs,conf) interpolates the two to three given impulse
+%   responses from ir with their corresponding angles x0 for the given angles
+%   xs and returns an interpolated impulse response.
+%   Note, that the given parameter are not checked if they have all the correct
 %   dimensions in order to save computational time, because this function could
 %   be called quiet often.
 %
 %   See also: get_ir, interpolation
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *

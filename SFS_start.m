@@ -9,12 +9,12 @@ function SFS_start()
 %   See also: SFS_config, SFS_version
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -42,7 +42,7 @@ function SFS_start()
 
 
 %% ===== Configuration ===================================================
-printbanner = false;
+printbanner = true;
 
 
 %% ===== Adding Path's ===================================================
@@ -96,7 +96,20 @@ end
 
 %% ===== Banner ==========================================================
 if(printbanner)
-    printf(['Sound Field Synthesis Toolbox %1.1f successfully ', ...
-            'initialized.\n'],SFS_version);
+    % TODO: test if the banner also works under Mac
+    if isunix
+        banner = sprintf( ...
+            ['       ▄▄\n', ...
+             ' ▄█▀▀ █▄ ▄█▀▀  Sound Field Synthesis Toolbox %s\n', ...
+             ' ▄▄█▀ █  ▄▄█▀  https://github.com/sfstoolbox/sfs\n\n'], ...
+            SFS_version);
+    else
+        banner = sprintf( ...
+            ['\n', ...
+             ' Sound Field Synthesis Toolbox %s\n', ...
+             ' https://github.com/sfstoolbox/sfs\n\n'], ...
+            SFS_version);
+    end
+    fprintf(banner);
 end
 

@@ -1,7 +1,7 @@
 function G = greens_function_mono(x,y,z,xs,src,f,conf)
 %GREENS_FUNCTION_MONO returns a Green's function in the frequency domain
 %
-%   Usage: G = greens_function_mono(x,y,z,xs,src,f,[conf])
+%   Usage: G = greens_function_mono(x,y,z,xs,src,f,conf)
 %
 %   Input options:
 %       x,y,z   - x,y,z points for which the Green's function should be
@@ -13,14 +13,14 @@ function G = greens_function_mono(x,y,z,xs,src,f,conf)
 %                   'pw'  - plane wave
 %                   'dps' - dipole point source
 %       f       - frequency of the source / Hz
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       G       - Green's function evaluated at the points x,y,z
 %
-%   GREENS_FUNCTION_MONO(x,y,z,xs,src,f) calculates the Green's function for the
-%   given source model located at xs for the given points x,y and the frequency
-%   f.
+%   GREENS_FUNCTION_MONO(x,y,z,xs,src,f,conf) calculates the Green's function
+%   for the given source model located at xs for the given points x,y and the
+%   frequency f.
 %
 %   References:
 %       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
@@ -29,12 +29,12 @@ function G = greens_function_mono(x,y,z,xs,src,f,conf)
 %   See also: sound_field_mono
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -63,10 +63,6 @@ function G = greens_function_mono(x,y,z,xs,src,f,conf)
 
 %% ===== Checking of input  parameters ==================================
 % Disabled checking for performance reasons
-nargmax = 7;
-if nargin<nargmax
-    conf = SFS_config;
-end
 
 
 %% ===== Configuration ==================================================

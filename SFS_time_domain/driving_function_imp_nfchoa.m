@@ -1,7 +1,7 @@
 function [d] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %DRIVING_FUNCTION_IMP_NFCHOA calculates the NFC-HOA driving function
 %
-%   Usage: [d] = driving_function_imp_nfchoa(x0,xs,src,[conf]);
+%   Usage: [d] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %
 %   Input parameters:
 %       x0      - position  and direction of secondary sources / m
@@ -10,7 +10,7 @@ function [d] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %                     'pw' - plane wave (xs, ys are the direction of the
 %                            plane wave in this case)
 %                     'ps' - point source
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       d  - matrix of driving signals
@@ -22,12 +22,12 @@ function [d] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %   See also: driving_function_imp_nfchoa_ps, sound_field_imp_nfchoa
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -55,17 +55,13 @@ function [d] = driving_function_imp_nfchoa(x0,xs,src,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargsecondarysource(x0)
 isargxs(xs);
 isargchar(src);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

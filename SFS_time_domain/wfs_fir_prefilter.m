@@ -1,10 +1,10 @@
 function hpre = wfs_fir_prefilter(conf)
 %WFS_FIR_PREFILTER creates a pre-equalization filter for WFS
 %
-%   Usage: hpre = wfs_fir_prefilter([conf])
+%   Usage: hpre = wfs_fir_prefilter(conf)
 %
 %   Input parameters:
-%       conf - optional configuration struct (see SFS_config)
+%       conf - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       hpre - pre-equalization filter
@@ -20,12 +20,12 @@ function hpre = wfs_fir_prefilter(conf)
 %   See also: wfs_preequalization, wfs_iir_prefilter, sound_field_imp_wfs, ir_wfs
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -54,28 +54,25 @@ function hpre = wfs_fir_prefilter(conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 0;
+nargmin = 1;
 nargmax = 1;
 narginchk(nargmin,nargmax);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
-fs = conf.fs;               % Sampling rate
-dimension = conf.dimension; % dimensionality
-flow = conf.wfs.hpreflow;   % Lower frequency limit of preequalization
-                            % filter (= frequency when subwoofer is active)
-fhigh = conf.wfs.hprefhigh; % Upper frequency limit of preequalization
-                            % filter (= aliasing frequency of system)
-
-
+fs = conf.fs;                  % Sampling rate
+dimension = conf.dimension;    % dimensionality
+flow = conf.wfs.hpreflow;      % Lower frequency limit of preequalization
+                               % filter (= frequency when subwoofer is active)
+fhigh = conf.wfs.hprefhigh;    % Upper frequency limit of preequalization
+                               % filter (= aliasing frequency of system)
+Nfilt = conf.wfs.hpreFIRorder; % Number of coefficients for filter
+if isodd(Nfilt)
+    error(['%s: conf.wfs.hpreFIRorder == %i is not a valid filter order. ', ...
+        'Must be an even integer.'],upper(mfilename),Nfilt);
+end
 %% ===== Variables ======================================================
-% Number of coefficients for filter
-Nfilt=128;
 % Frequency axis
 f = linspace(0,fs/2,fs/10);
 % Find indices for frequencies in f smaller and nearest to fhigh and flow
@@ -111,7 +108,7 @@ elseif strcmp('3D',dimension) || strcmp('2D',dimension)
     %
     H(idxflow:idxfhigh) = f(idxflow:idxfhigh)./fhigh;
 else
-    error('%s: %s is not a valid conf.dimension entry',upper(mfilename));
+    error('%s: %s is not a valid conf.dimension entry',upper(mfilename),dimension);
 end
 % Set the response for idxf < idxflow to the value at idxflow
 H(1:idxflow) = H(idxflow)*ones(1,idxflow);
@@ -119,5 +116,3 @@ H(1:idxflow) = H(idxflow)*ones(1,idxflow);
 % Compute filter
 hpre = firls(Nfilt,2*f/fs,H);
 
-% Truncate length to power of 2
-hpre = hpre(1:end-1);

@@ -2,7 +2,7 @@ function varargout = time_response_nfchoa(X,xs,src,conf)
 %TIME_RESPONSE_NFCHOA simulates the time response for NFC-HOA at the given
 %listener position
 %
-%   Usage: [s,t] = time_response_nfchoa(X,xs,src,[conf])
+%   Usage: [s,t] = time_response_nfchoa(X,xs,src,conf)
 %
 %   Input parameters:
 %       X           - listener position / m
@@ -11,7 +11,7 @@ function varargout = time_response_nfchoa(X,xs,src,conf)
 %                         'pw' -plane wave
 %                         'ps' - point source
 %                         'fs' - focused source
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       s           - simulated time response
@@ -24,12 +24,12 @@ function varargout = time_response_nfchoa(X,xs,src,conf)
 %   See also: sound_field_imp_nfchoa, freq_response_nfchoa, time_response_wfs
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -57,15 +57,12 @@ function varargout = time_response_nfchoa(X,xs,src,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargposition(X);
 isargxs(xs);
 isargchar(src);
-if nargin<nargmax
-    conf = SFS_config;
-end
 isargstruct(conf);
 
 

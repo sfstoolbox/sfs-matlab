@@ -1,11 +1,11 @@
-function x0 = secondary_source_tapering(x0,varargin)
+function x0 = secondary_source_tapering(x0,conf)
 %SECONDARY_SOURCE_TAPERING applies a tapering window to the secondary sources
 %
 %   Usage: x0 = secondary_source_tapering(x0,conf)
 %
 %   Input options:
 %       x0          - secondary sources / m
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output options:
 %       x0          - secondary sources / m, containing the applied tapering
@@ -18,12 +18,12 @@ function x0 = secondary_source_tapering(x0,varargin)
 %   See also: secondary_source_positions, tapering_window
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -51,11 +51,11 @@ function x0 = secondary_source_tapering(x0,varargin)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
+nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
 
 
 %% ===== Calculation ====================================================
 % Apply tapering window to secondary sources
-x0(:,7) = x0(:,7) .* tapering_window(x0,varargin{:});
+x0(:,7) = x0(:,7) .* tapering_window(x0,conf);

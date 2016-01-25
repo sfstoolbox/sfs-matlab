@@ -22,12 +22,12 @@ function h = general_least_squares(samples,fractional_delay,passband_edge)
 % This code is based on hgls2() from Timo Laakso
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -76,13 +76,14 @@ cT(1)=passband_edge;
 if round(D)==D
     p1(1) = passband_edge;
 else
-  p1(1) = ( sin(D*passband_edge*pi) )/(D*pi);
+    % matlab's sinc(x) equals sin(pi*x)./(pi*x)
+    p1(1) = passband_edge * sinc(D*passband_edge);
 end
-for k=1:N           % compute the elements of the Toeplitz matrix (vector)
-  k1 = k+1;
-  kD = k-D;
-  cT(k1) = ( sin(k*passband_edge*pi) )/(k*pi);
-  p1(k1) = ( sin(kD*passband_edge*pi) )/(kD*pi);
+for k=1:N  % compute the elements of the Toeplitz matrix (vector)
+    k1 = k+1;
+    kD = k-D;
+    cT(k1) = passband_edge * sinc(k*passband_edge);
+    p1(k1) = passband_edge * sinc(kD*passband_edge);
 end
 P = toeplitz(cT);
 h = P\p1;

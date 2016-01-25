@@ -27,12 +27,12 @@ function [points,weights] = get_spherical_grid(number,conf)
 %       weights_for_points_on_a_sphere_rectangle
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -82,8 +82,8 @@ if strcmp('equally_spaced_points',spherical_grid)
         error('%s: number has to be a squared number.',upper(mfilename));
     end
     file = [basepath '/data/spherical_grids/equally_spaced_points/' filename];
-    url = ['https://dev.qu.tu-berlin.de/projects/data/repository/revisions/' ...
-        'master/raw/spherical_grids/equally_spaced_points/' filename];
+    url = ['https://raw.githubusercontent.com/sfstoolbox/data/master/' ...
+           'spherical_grids/equally_spaced_points/' filename];
     % Download file if not present
     if ~exist(file,'file')
         download_file(url,file);
@@ -98,8 +98,8 @@ elseif strcmp('fabian',spherical_grid)
             upper(mfilename));
     end
     file = [basepath '/data/spherical_grids/fabian/' filename];
-    url = ['https://dev.qu.tu-berlin.de/projects/data/repository/revisions/' ...
-        'master/raw/spherical_grids/fabian/' filename];
+    url = ['https://raw.githubusercontent.com/sfstoolbox/data/master/' ...
+           'spherical_grids/fabian/' filename];
     % Download file if not present
     if ~exist(file,'file')
         download_file(url,file);

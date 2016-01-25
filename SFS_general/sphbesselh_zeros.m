@@ -16,12 +16,12 @@ function [z,p] = sphbesselh_zeros(order)
 %   See also: sphbesselh, driving_function_imp_nfchoa
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -79,8 +79,8 @@ else
     % http://github.com/sfstoolbox/data/tree/master/sphbesselh_zeros
     filename = sprintf('sphbesselh_zeros_order%04.0f.mat',order);
     file = sprintf('%s/data/sphbesselh_zeros/%s',get_sfs_path(),filename);
-    url = ['https://dev.qu.tu-berlin.de/projects/data/repository/revisions/master/' ...
-        'raw/sphbesselh_zeros/' filename];
+    url = ['https://raw.githubusercontent.com/sfstoolbox/data/master/' ...
+           'sphbesselh_zeros/' filename];
     % Download file if not present
     if ~exist(file,'file')
         download_file(url,file);

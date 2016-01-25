@@ -71,21 +71,21 @@ isargsecondarysource(x0);
 isargchar(src);
 
 if strcmp('vss', src) && size(xs,2)~=6
-  error(['%s: you have chosen "vss" as source type, then xs has ', ...
-      'to be [nx6] including the direction of each virtual secondary', ...
-      'source.'], upper(mfilename));
-  isargmatrix(xs);
+    error(['%s: you have chosen "vss" as source type, then xs has ', ...
+           'to be [nx6] including the direction of each virtual secondary', ...
+           'source.'], upper(mfilename));
+    isargmatrix(xs);
 elseif ~strcmp('vss', src)
-  isargxs(xs);
+    isargxs(xs);
 end
 
 if strcmp('fs',src) && size(xs,2)~=6
     error(['%s: you have chosen "fs" as source type, then xs has ', ...
-        'to be [1x6] including the direction of the focused source.'], ...
+           'to be [1x6] including the direction of the focused source.'], ...
         upper(mfilename));
 elseif ~strcmp('fs',src) &&  ~strcmp('vss',src) && size(xs,2)~=3
-    error(['%s: for all source types beside "fs" and "vss", the size of xs ', ...
-        'has to be [1x3].'],upper(mfilename));
+    error(['%s: for all source types beside "fs" and "vss", the size of ', ...
+           'xs has to be [1x3].'],upper(mfilename));
 end
 
 
@@ -94,14 +94,11 @@ end
 x0_tmp = x0;
 nx0 = x0(:,4:6);
 x0 = x0(:,1:3);
-% Make the size of the xs position the same as the number of secondary sources
-% in order to allow x0-xs
-xs = repmat(xs,size(x0,1),1);
 
 if strcmp('pw',src)
     % === Plane wave ===
     % direction of the plane wave
-    nk = bsxfun(@rdivide,xs,vector_norm(xs,2));
+    nk = xs;  % the length of the vector is not relavant for the selection
     % Secondary source selection
     %
     %      / 1, if nk nx0 > 0
@@ -110,9 +107,8 @@ if strcmp('pw',src)
     %
     % see Wierstorf et al. (2015), eq.(#wfs:pw:selection)
     %
-    % Direction of plane wave (nxs) is set above
-    idx = (( vector_product(nk,nx0,2)>=eps ));
-    x0 = x0_tmp(idx,:);
+    % Direction of plane wave (nk) is set above
+    idx = nx0*nk(:) >=eps;
 
 elseif strcmp('ps',src) || strcmp('ls',src)
     % === Point source ===
@@ -125,8 +121,7 @@ elseif strcmp('ps',src) || strcmp('ls',src)
     % see Wierstorf et al. (2015), eq.(#wfs:ps:selection) and
     % eq.(#wfs:ls:selection)
     %
-    idx = (( vector_product(x0-xs,nx0,2)>=eps ));
-    x0 = x0_tmp(idx,:);
+    idx = sum(nx0.*x0,2) - nx0*xs.' >=eps;
 
 elseif strcmp('fs',src)
     % === Focused source ===
@@ -139,22 +134,23 @@ elseif strcmp('fs',src)
     %
     % see Wierstorf et al. (2015), eq.(#wfs:fs:selection)
     %
-    nxs = xs(:,4:6);
-    xs = xs(:,1:3);
-    idx = (( vector_product(nxs,xs-x0,2)>=eps ));
-    x0 = x0_tmp(idx,:);
+    nxs = xs(4:6);  % vector for orientation of focused source
+    xs = xs(1:3);  % vector for position of focused source
+    idx = xs*nxs(:) - x0*nxs(:) >=eps;
+
 elseif strcmp('vss', src)
     % === Virtual secondary sources ===
     % Multiple focussed source selection
-    selector = false(size(x0_tmp,1),1);
+    idx = false(size(x0_tmp,1),1);
     for xi=xs'
-      [~, xdx] = secondary_source_selection(x0_tmp, xi(1:6)', 'fs');
-      selector(xdx) = true;
+        % ~idx tests only the x0, which have not been selected before
+        idx(~idx) = xi(1:3).'*xi(4:6) - x0(~idx,:)*xi(4:6) >= eps;
     end
-    x0 = x0_tmp(selector,:);
 else
     error('%s: %s is not a supported source type!',upper(mfilename),src);
 end
+
+x0 = x0_tmp(idx,:);
 
 if size(x0,1)==0
     warning('%s: 0 secondary sources were selected.',upper(mfilename));

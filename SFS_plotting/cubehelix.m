@@ -30,7 +30,7 @@ function map = cubehelix(nlev,start,rots,hue,gamma)
 %
 %   Original written by Dave Green and Philip Graff
 %
-%   See also: chromajs, moreland, plot_sound_field
+%   See also: yellowred, moreland, plot_sound_field
 
 %*****************************************************************************
 % Copyright (c) 2010-2016 Quality & Usability Lab, together with             *

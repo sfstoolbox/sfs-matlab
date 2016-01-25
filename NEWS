@@ -9,6 +9,7 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
     - add conf.wfs.hpreFIRorder as new config option (was hard coded to 128
       before)
     - speed up secondary source selection for WFS
+    - rename chromajs colormap to yellowred
 
 2.0.0 (26. October 2015)
 

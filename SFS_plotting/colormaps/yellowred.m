@@ -1,7 +1,7 @@
-function map = chromajs(n)
+function map = yellowred(n)
 %CHROMAJS returns a divergent lightyellow-red color map
 %
-%   Usage: map = chromajs([n])
+%   Usage: map = yellowred([n])
 %
 %   Input parameters:
 %       n   - optional length of colormap (default uses the figure default
@@ -10,12 +10,12 @@ function map = chromajs(n)
 %   Output parameters:
 %       map - colormap [n 3]
 %
-%   CHROMAJS(N) returns an N-by-3 matrix containing a divergent colormap.
+%   YELLOWRED(N) returns an N-by-3 matrix containing a divergent colormap.
 %   For details on the colormap have a look at:
 %   http://gka.github.io/palettes/#colors=lightyellow,orangered,deeppink,darkred|steps=7|bez=1|coL=1
 %
 %   For example, to reset the colormap of the current figure:
-%             colormap(chromajs)
+%             colormap(yellowred)
 %
 % See also: generate_colormap, moreland, plot_sound_field
 

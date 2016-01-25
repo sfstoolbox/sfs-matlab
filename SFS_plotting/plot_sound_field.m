@@ -153,9 +153,9 @@ if p.usedb
     if max(abs(P(:)))==0
         P(:) = eps;
     end
-    % Change default colormap to chromajs
+    % Change default colormap to yellowred
     if strcmp('default',p.colormap)
-        conf.plot.colormap = 'chromajs';
+        conf.plot.colormap = 'yellowred';
     end
     % Calculate sound pressure level in dB
     P = 20*log10(abs(P));

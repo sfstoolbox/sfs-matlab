@@ -162,7 +162,7 @@ elseif strcmp('3D',dimension)
                     *conj(sphharmonics(n,m,0,alpha)) ...
                     ./(omega/c*sphbesselh(n,2,omega/c*r0)) ...
                     .* sphharmonics(n,m,beta0,alpha0);
-                % *sqrt(1i*omega/c); % equalization (optional)
+                %D = D * sqrt(1i*omega/c); % equalization (optional)
             end
         end
 

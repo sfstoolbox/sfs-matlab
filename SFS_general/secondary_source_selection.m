@@ -71,21 +71,21 @@ isargsecondarysource(x0);
 isargchar(src);
 
 if strcmp('vss', src) && size(xs,2)~=6
-  error(['%s: you have chosen "vss" as source type, then xs has ', ...
-      'to be [nx6] including the direction of each virtual secondary', ...
-      'source.'], upper(mfilename));
-  isargmatrix(xs);
+    error(['%s: you have chosen "vss" as source type, then xs has ', ...
+           'to be [nx6] including the direction of each virtual secondary', ...
+           'source.'], upper(mfilename));
+    isargmatrix(xs);
 elseif ~strcmp('vss', src)
-  isargxs(xs);
+    isargxs(xs);
 end
 
 if strcmp('fs',src) && size(xs,2)~=6
     error(['%s: you have chosen "fs" as source type, then xs has ', ...
-        'to be [1x6] including the direction of the focused source.'], ...
+           'to be [1x6] including the direction of the focused source.'], ...
         upper(mfilename));
 elseif ~strcmp('fs',src) &&  ~strcmp('vss',src) && size(xs,2)~=3
-    error(['%s: for all source types beside "fs" and "vss", the size of xs ', ...
-        'has to be [1x3].'],upper(mfilename));
+    error(['%s: for all source types beside "fs" and "vss", the size of ', ...
+           'xs has to be [1x3].'],upper(mfilename));
 end
 
 
@@ -143,9 +143,8 @@ elseif strcmp('vss', src)
     % Multiple focussed source selection
     idx = false(size(x0_tmp,1),1);
     for xi=xs'
-      % ~idx tests only the x0, which have not been selected before
-      idx(~idx) = ...
-        xi(1:3).'*xi(4:6) - x0(~idx,:)*xi(4:6) >= eps;
+        % ~idx tests only the x0, which have not been selected before
+        idx(~idx) = xi(1:3).'*xi(4:6) - x0(~idx,:)*xi(4:6) >= eps;
     end
 else
     error('%s: %s is not a supported source type!',upper(mfilename),src);

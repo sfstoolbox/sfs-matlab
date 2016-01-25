@@ -80,14 +80,7 @@ order = nfchoa_order(nls,conf);
 
 % Correct position of source for off-center arrays
 xs(1:3) = xs(1:3)-X0;
-% If-request as a workaround for the right direction of the sound field
-if strcmpi(src,'pw')
-    [theta_src, r_src] = cart2pol(-xs(1),xs(2));
-elseif strcmpi(src,'ps')
-    [theta_src, r_src] = cart2pol(xs(1),-xs(2));
-else
-    [theta_src, r_src] = cart2pol(xs(1),xs(2));
-end
+[theta_src, r_src] = cart2pol(xs(1),xs(2));
 
 % Compute impulse responses of modal filters
 dm = zeros(order+1,N);
@@ -121,7 +114,7 @@ end
 % Compute input signal for IFFT
 d = zeros(2*order+1,N);
 for n=-order:order
-    d(n+order+1,:) = dm(abs(n)+1,:) .* exp(1i*n*theta_src);
+    d(n+order+1,:) = dm(abs(n)+1,:) .* exp(-1i*n*theta_src);
 end
 
 if(iseven(nls))

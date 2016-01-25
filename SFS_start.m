@@ -65,6 +65,7 @@ if exist('addpath')
     addpath([basepath,'/SFS_monochromatic']);
     addpath([basepath,'/SFS_monochromatic/driving_functions_mono']);
     addpath([basepath,'/SFS_plotting']);
+    addpath([basepath,'/SFS_plotting/colormaps']);
     addpath([basepath,'/SFS_ssr']);
     addpath([basepath,'/SFS_time_domain']);
     addpath([basepath,'/SFS_time_domain/driving_functions_imp']);
@@ -83,6 +84,7 @@ else
     path(path,[basepath,'/SFS_monochromatic']);
     path(path,[basepath,'/SFS_monochromatic/driving_functions_mono']);
     path(path,[basepath,'/SFS_plotting']);
+    path(path,[basepath,'/SFS_plotting/colormaps']);
     path(path,[basepath,'/SFS_ssr']);
     path(path,[basepath,'/SFS_time_domain']);
     path(path,[basepath,'/SFS_time_domain/driving_functions_imp']);

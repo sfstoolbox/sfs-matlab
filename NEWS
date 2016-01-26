@@ -10,6 +10,7 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
       before)
     - speed up secondary source selection for WFS
     - rename chromajs colormap to yellowred
+    - fix tapering_window() for non-continuous secondary sources
 
 2.0.0 (26. October 2015)
 

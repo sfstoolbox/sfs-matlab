@@ -1,18 +1,21 @@
-function [diam] = secondary_source_maximum_distance(x0)
+function [diam,center] = secondary_source_maximum_distance(x0)
 %SECONDARY_SOURCE_MAXIMUM_DISTANCE calculates the maximum distance 
-% between the secondary sources
-% (i.e. the diameter of the SSD in Euklidian norm)
+% between the secondary sources (the diameter) and the center of the 
+% smallest ball that contains the array.
+% 
 %
-%   Usage: diam = secondary_source_maximum_distance(x0)
+%   Usage: [diam,center] = secondary_source_maximum_distance(x0)
 %
 %   Input parameters:
-%       x0          - secondary sources / m
+%       x0          - secondary sources / m [nx7]
 %
 %   Output parameters:
 %       diam        - diameter of secondary source distribution / m
-%
+%       center      - center of the ball containing SSD / m [1x3]   
+%   
 %   SECONDARAY_SOURCE_MAXIMUM_DISTANCE(x0) calculates the maximum
-%   Euklidian distance between the given secondary sources. 
+%   Euklidian distance between the given secondary sources. Additionaly,
+%   the center of the encompassing is returned.
 %
 %   See also: driving_function_imp_wfs
 
@@ -57,9 +60,11 @@ isargsecondarysource(x0);
 
 
 %% ===== Calculation ====================================================
-% find the source with largest distance from origin
-[~,idx] = max(vector_norm(x0(:,1:3),2));
-% find the maximum distace to that source
-diam = max(vector_norm(x0(:,1:3) - ...
-    repmat(x0(idx,1:3),[size(x0,1),1]),2));
+% find source1 :=  source with largest distance from origin
+[~,idx1] = max(vector_norm(x0(:,1:3),2));
+% find source2 := source with maximum distace to source1
+[diam,idx2] = max(vector_norm(x0(:,1:3) - ...
+    repmat(x0(idx1,1:3),[size(x0,1),1]),2));
+% center is half-way between source1 and source2
+center = x0(idx1,1:3) +  0.5 * (x0(idx2,1:3) - x0(idx1,1:3));
 end

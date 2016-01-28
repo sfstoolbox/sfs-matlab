@@ -117,17 +117,23 @@ if removedelay
     % at any secondary source
     delay = delay-min(delay);
 else
-    if strcmp('pw',src)
-        % Find the maximum predelay for all possible plane wave directions.
-        % Add to ensure causality at every secondary source
-        diameter = secondary_source_maximum_distance(x0);
-        maximum_predelay = diameter/2*c;
-        delay = delay + maximum_predelay;
-    elseif strcmp('fs',src)
-        to_be_implemented(mfilename);
+    % delay to ensure causality at all sec. sources
+    [diameter,center] = secondary_source_maximum_distance(x0);
+    t0 = diameter/c;
+    if (ceil((max(delay)+t0)*fs) - 1 ) > N
+        % is a lot more likely to happen.
+        warning('conf.N = %i is too short for requested source.',N);
     end
-    % Nothing to be done for point and line sources, because their delay is
-    % always positive.
+    if strcmp('fs',src)
+        % reject focused source that's too far away
+        % (this will only happen for unbounded listening arrays.)
+        if norm(xs(1:3) - center,2) > diameter/2;
+            error(['%s: Using ''config.wfs.removedelay == 0'', ', ...
+                'focused source positions are restricted to the ball ', ...
+                'spanned by the array diameter.'],upper(mfilename));
+        end
+    end
+    delay = delay + t0;
 end
 % Append zeros at the end of the driving function. This is necessary, because
 % the delayline function cuts into the end of the driving signals in order to

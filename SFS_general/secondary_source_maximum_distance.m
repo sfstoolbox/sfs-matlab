@@ -55,9 +55,7 @@ function [diam,center] = secondary_source_maximum_distance(x0)
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
 nargmax = 1;
-narginchk(nargmin,nargmax),
-isargsecondarysource(x0);
-
+narginchk(nargmin,nargmax);
 
 %% ===== Calculation ====================================================
 % find source1 :=  source with largest distance from origin

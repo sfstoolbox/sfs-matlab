@@ -1,21 +1,23 @@
-function D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf)
+function D = driving_function_mono_wfs_ls(x0,nx0,xs,nxs,f,conf)
 %DRIVING_FUNCTION_MONO_WFS_LS returns the driving signal D for a line source in
 %WFS
 %
-%   Usage: D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf)
+%   Usage: D = driving_function_mono_wfs_ls(x0,nx0,xs,nxs,f,conf)
 %
 %   Input parameters:
 %       x0          - position of the secondary sources / m [nx3]
 %       nx0         - directions of the secondary sources / m [nx3]
 %       xs          - position of virtual line source / m [nx3]
+%       nxs         - orientation of virtual line source [nx3]
 %       f           - frequency of the monochromatic source / Hz
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
 %
-%   DRIVING_FUNCTION_MONO_WFS_LS(x0,xs,f,src,conf) returns WFS driving signals
-%   for the given secondary sources, the virtual line source position and the
+%   DRIVING_FUNCTION_MONO_WFS_LS(x0,nx0,xs,nxs,f,src,conf) returns WFS driving
+%   signals for the given secondary sources, the virtual line source position,
+%   its orientation nxs, which is parallel to the line source, and the
 %   frequency f.
 %
 %   References:
@@ -58,10 +60,10 @@ function D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 5;
+nargmin = 6;
+nargmax = 6;
 narginchk(nargmin,nargmax);
-isargmatrix(x0,nx0,xs);
+isargmatrix(x0,nx0,xs,nxs);
 isargpositivescalar(f);
 isargstruct(conf);
 
@@ -80,9 +82,9 @@ driving_functions = conf.driving_functions;
 omega = 2*pi*f;
 
 
-if strcmp('2D',dimension) || strcmp('3D',dimension)
+if strcmp('2D',dimension)
 
-    % === 2- or 3-Dimensional ============================================
+    % === 2-Dimensional ==================================================
 
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
@@ -145,6 +147,35 @@ elseif strcmp('2.5D',dimension)
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D line source.'],upper(mfilename),driving_functions);
+    end
+
+elseif strcmp('3D',dimension)
+
+    % === 3-Dimensional ==================================================
+
+    if strcmp('default',driving_functions)
+        % --- SFS Toolbox ------------------------------------------------
+        % D using a line source
+        %
+        %              iw (x0-xs) nx0   (2)/ w         \
+        % D(x0,w) =  - -- -----------  H1  | - |x0-xs| |
+        %              2c   |x0-xs|        \ c         /
+        %
+        % see Wierstorf et al. (2015), eq.(#D:wfs:ls)
+        %
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        % Driving signal
+        D = -1i*omega/(2*c) .* vector_product(x0-xs,nx0,2) ./ r .* ...
+            besselh(1,2,omega/c.*r);
+        %
+    elseif strcmp('delft1988',driving_functions)
+        % --- Delft 1988 -------------------------------------------------
+        to_be_implemented;
+        %
+    else
+        error(['%s: %s, this type of driving function is not implemented ', ...
+            'for a line source.'],upper(mfilename),driving_functions);
     end
 
 else

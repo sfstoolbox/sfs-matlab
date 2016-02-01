@@ -78,12 +78,11 @@ if strcmp('vss', src) && size(xs,2)~=6
 elseif ~strcmp('vss', src)
     isargxs(xs);
 end
-
 if strcmp('fs',src) && size(xs,2)~=6
     error(['%s: you have chosen "fs" as source type, then xs has ', ...
            'to be [1x6] including the direction of the focused source.'], ...
         upper(mfilename));
-elseif ~strcmp('fs',src) &&  ~strcmp('vss',src) && size(xs,2)~=3
+elseif ~strcmp('fs',src) && ~strcmp('vss',src) && ~strcmp('ls',src) && size(xs,2)~=3
     error(['%s: for all source types beside "fs" and "vss", the size of ', ...
            'xs has to be [1x3].'],upper(mfilename));
 end
@@ -121,7 +120,7 @@ elseif strcmp('ps',src) || strcmp('ls',src)
     % see Wierstorf et al. (2015), eq.(#wfs:ps:selection) and
     % eq.(#wfs:ls:selection)
     %
-    idx = sum(nx0.*x0,2) - nx0*xs.' >=eps;
+    idx = sum(nx0.*x0,2) - nx0*xs(1:3).' >=eps;
 
 elseif strcmp('fs',src)
     % === Focused source ===

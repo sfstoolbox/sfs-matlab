@@ -2,7 +2,6 @@ function [diam,center] = secondary_source_maximum_distance(x0)
 %SECONDARY_SOURCE_MAXIMUM_DISTANCE calculates the maximum distance 
 % between the secondary sources (the diameter) and the center of the 
 % smallest ball that contains the array.
-% 
 %
 %   Usage: [diam,center] = secondary_source_maximum_distance(x0)
 %
@@ -57,12 +56,13 @@ nargmin = 1;
 nargmax = 1;
 narginchk(nargmin,nargmax);
 
+
 %% ===== Calculation ====================================================
-% find source1 :=  source with largest distance from origin
+% Find source1 :=  source with largest distance from origin
 [~,idx1] = max(vector_norm(x0(:,1:3),2));
-% find source2 := source with maximum distace to source1
+% Find source2 := source with maximum distace to source1
 [diam,idx2] = max(vector_norm(x0(:,1:3) - ...
     repmat(x0(idx1,1:3),[size(x0,1),1]),2));
-% center is half-way between source1 and source2
+% Center is half-way between source1 and source2
 center = x0(idx1,1:3) +  0.5 * (x0(idx2,1:3) - x0(idx1,1:3));
 end

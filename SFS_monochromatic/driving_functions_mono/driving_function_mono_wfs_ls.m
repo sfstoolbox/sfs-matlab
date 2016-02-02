@@ -157,16 +157,27 @@ elseif strcmp('3D',dimension)
         % --- SFS Toolbox ------------------------------------------------
         % D using a line source
         %
-        %              iw (x0-xs) nx0   (2)/ w         \
-        % D(x0,w) =  - -- -----------  H1  | - |x0-xs| |
-        %              2c   |x0-xs|        \ c         /
+        %              iw   v nx0    (2)/ w     \
+        % D(x0,w) =  - -- --------  H1  | - |v| | ,
+        %              2c   |v|         \ c     /
+        %
+        % where v = x0-xs - <x0-xs,nxs > nxs,
+        % and |nxs| = 1.
         %
         % see Wierstorf et al. (2015), eq.(#D:wfs:ls)
+        % TODO: refered equation is for 2D, 3D case is AFAIK not documented yet.
         %
-        % r = |x0-xs|
-        r = vector_norm(x0-xs,2);
+        % r = |v|
+        if 1
+            nxs = nxs./repmat(vector_norm(nxs,2),[1,3]);
+            v = x0 - xs - repmat(vector_product(x0-xs,nxs,2),[1,3]) .* nxs;
+        else % IMHO less ugly?
+            nxs = nxs(1,:) / norm(nxs(1,:),2);
+            v = (x0 - xs)*(eye(3) - nxs'*nxs);
+        end
+        r = vector_norm(v,2);
         % Driving signal
-        D = -1i*omega/(2*c) .* vector_product(x0-xs,nx0,2) ./ r .* ...
+        D = -1i*omega/(2*c) .* vector_product(v,nx0,2) ./ r .* ...
             besselh(1,2,omega/c.*r);
         %
     elseif strcmp('delft1988',driving_functions)

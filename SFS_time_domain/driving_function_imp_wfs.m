@@ -75,6 +75,7 @@ N = conf.N;
 c = conf.c;
 removedelay = conf.wfs.removedelay;
 
+
 %% ===== Computation =====================================================
 % Calculate pre-equalization filter if required
 pulse = wfs_preequalization(dirac_imp(),conf);
@@ -117,15 +118,15 @@ if removedelay
     % at any secondary source
     delay = delay-min(delay);
 else
-    % delay to ensure causality at all sec. sources
+    % Delay to ensure causality at all secondary sources
     [diameter,center] = secondary_source_maximum_distance(x0);
     t0 = diameter/c;
     if (ceil((max(delay)+t0)*fs) - 1 ) > N
-        % is a lot more likely to happen.
+        % This is a lot more likely to happen.
         warning('conf.N = %i is too short for requested source.',N);
     end
     if strcmp('fs',src)
-        % reject focused source that's too far away
+        % Reject focused source that's too far away
         % (this will only happen for unbounded listening arrays.)
         if norm(xs(1:3) - center,2) > diameter/2;
             error(['%s: Using ''config.wfs.removedelay == 0'', ', ...

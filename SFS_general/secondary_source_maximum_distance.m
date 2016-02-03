@@ -16,7 +16,7 @@ function [diam,center] = secondary_source_maximum_distance(conf)
 %   Euklidian distance between the given secondary sources. Additionaly,
 %   the center of the encompassing is returned.
 %
-%   See also: driving_function_imp_wfs
+%   See also: driving_function_imp_wfs, secondary_source_positions
 
 %*****************************************************************************
 % Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
@@ -63,8 +63,16 @@ geometry = conf.secondary_sources.geometry;
 
 
 %% ===== Calculation ====================================================
-if ~strcmp('custom',geometry)
+if strcmp('line',geometry) || strcmp('circle',geometry) ...
+        || strcmp('sphere',geometry)
     diam = conf.secondary_sources.size;
+    center = conf.secondary_sources.center;
+elseif strcmp('box',geometry)
+    dx0 = conf.secondary_sources.size/(conf.secondary_sources.number/4-1);
+    diam = (conf.secondary_sources.size+dx0)*sqrt(2);
+    center = conf.secondary_sources.center;
+elseif strcmp('rounded-box',geometry)
+    diam = (conf.secondary_sources.size)*sqrt(2);
     center = conf.secondary_sources.center;
 else
     x0 = conf.secondary_sources.x0;

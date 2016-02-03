@@ -83,8 +83,8 @@ if strcmp('fs',src) && size(xs,2)~=6
            'to be [1x6] including the direction of the focused source.'], ...
         upper(mfilename));
 elseif ~strcmp('fs',src) && ~strcmp('vss',src) && ~strcmp('ls',src) && size(xs,2)~=3
-    error(['%s: for all source types beside "fs" and "vss", the size of ', ...
-           'xs has to be [1x3].'],upper(mfilename));
+    error(['%s: for all source types beside "fs", "ls" and "vss", ', ...
+           'the size of xs has to be [1x3].'],upper(mfilename));
 end
 
 
@@ -121,6 +121,7 @@ elseif strcmp('ps',src)
     % eq.(#wfs:ls:selection)
     %
     idx = sum(nx0.*x0,2) - nx0*xs(1:3).' >=eps;
+
 elseif strcmp('ls',src)
     % === Line source ===
     % Secondary source selection
@@ -131,13 +132,13 @@ elseif strcmp('ls',src)
     %
     % where v = x0-xs - <x0-xs,nxs > nxs,
     % and |nxs| = 1.
-    
     %
     % see Wierstorf et al. (2015), eq.(#wfs:ps:selection) and
     % eq.(#wfs:ls:selection)
     %
-    idx = sum(nx0.*x0,2) - nx0*xs(1:3).' >=eps;
-
+    nxs = xs(4:6) / norm(xs(4:6),2);
+    v = (x0 - repmat(xs(1:3),[size(x0,1),1]))*(eye(3) - nxs'*nxs);
+    idx = (vector_product(v,nx0,2) > 0);
 
 elseif strcmp('fs',src)
     % === Focused source ===

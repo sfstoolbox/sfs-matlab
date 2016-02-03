@@ -109,7 +109,7 @@ if strcmp('pw',src)
     % Direction of plane wave (nk) is set above
     idx = nx0*nk(:) >=eps;
 
-elseif strcmp('ps',src) || strcmp('ls',src)
+elseif strcmp('ps',src)
     % === Point source ===
     % Secondary source selection
     %
@@ -121,6 +121,23 @@ elseif strcmp('ps',src) || strcmp('ls',src)
     % eq.(#wfs:ls:selection)
     %
     idx = sum(nx0.*x0,2) - nx0*xs(1:3).' >=eps;
+elseif strcmp('ls',src)
+    % === Line source ===
+    % Secondary source selection
+    %
+    %      / 1, if v nx0 > 0
+    % a = <
+    %      \ 0, else
+    %
+    % where v = x0-xs - <x0-xs,nxs > nxs,
+    % and |nxs| = 1.
+    
+    %
+    % see Wierstorf et al. (2015), eq.(#wfs:ps:selection) and
+    % eq.(#wfs:ls:selection)
+    %
+    idx = sum(nx0.*x0,2) - nx0*xs(1:3).' >=eps;
+
 
 elseif strcmp('fs',src)
     % === Focused source ===

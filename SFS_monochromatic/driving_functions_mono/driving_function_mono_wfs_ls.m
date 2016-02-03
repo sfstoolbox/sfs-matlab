@@ -74,6 +74,27 @@ c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
 
+% Check for wrong virtual line source direction for 2D and 2.5D case
+if (strcmp('2D',dimension) ||  strcmp('2.5D',dimension))
+    xs(:,3) = 0;
+    if any(abs(nxs(1,[1,2])') > eps)
+    % Virtual line source not in z-direction,
+    % Sanity check of secondary sources:
+    all(abs(diff(x0(:,3))) < eps)
+        if all(abs(diff(x0(:,3))) < eps) && all(abs(nx0(:,3)) < eps)
+            % Okay, proper 2D array in a plane with constant z,
+            % Virtual source orientation can be safely fixed.
+            warning('%s-WFS restricts virtual line sources to z-direction.',dimension);
+            nxs(:,[1,2]) = 0;
+        else
+            % Neither array nor virtual source are adequate for 2D. 
+            % Cannot be fixed consistently with secondary source selection.
+            error(['%s: Neither virtual source nor loudspeaker array ',...
+            'seem appropriate for %s-WFS.'],upper(mfilename),dimension);
+        end
+    end
+end
+
 
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
@@ -167,14 +188,10 @@ elseif strcmp('3D',dimension)
         % see Wierstorf et al. (2015), eq.(#D:wfs:ls)
         % TODO: refered equation is for 2D, 3D case is AFAIK not documented yet.
         %
+        % v = (I - nxs'nxs)(x0-xs)
         % r = |v|
-        if 1
-            nxs = nxs./repmat(vector_norm(nxs,2),[1,3]);
-            v = x0 - xs - repmat(vector_product(x0-xs,nxs,2),[1,3]) .* nxs;
-        else % IMHO less ugly?
-            nxs = nxs(1,:) / norm(nxs(1,:),2);
-            v = (x0 - xs)*(eye(3) - nxs'*nxs);
-        end
+        nxs = nxs(1,:) / norm(nxs(1,:),2);
+        v = (x0 - xs)*(eye(3) - nxs'*nxs);
         r = vector_norm(v,2);
         % Driving signal
         D = -1i*omega/(2*c) .* vector_product(v,nx0,2) ./ r .* ...

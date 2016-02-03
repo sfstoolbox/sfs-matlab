@@ -1,18 +1,18 @@
-function [diam,center] = secondary_source_maximum_distance(x0)
-%SECONDARY_SOURCE_MAXIMUM_DISTANCE calculates the maximum distance 
-% between the secondary sources (the diameter) and the center of the 
+function [diam,center] = secondary_source_maximum_distance(conf)
+%SECONDARY_SOURCE_MAXIMUM_DISTANCE calculates the maximum distance
+% between the secondary sources (the diameter) and the center of the
 % smallest ball that contains the array.
 %
-%   Usage: [diam,center] = secondary_source_maximum_distance(x0)
+%   Usage: [diam,center] = secondary_source_maximum_distance(conf)
 %
 %   Input parameters:
-%       x0          - secondary sources / m [nx7]
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       diam        - diameter of secondary source distribution / m
-%       center      - center of the ball containing SSD / m [1x3]   
-%   
-%   SECONDARAY_SOURCE_MAXIMUM_DISTANCE(x0) calculates the maximum
+%       center      - center of the ball containing SSD / m [1x3]
+%
+%   SECONDARAY_SOURCE_MAXIMUM_DISTANCE(conf) calculates the maximum
 %   Euklidian distance between the given secondary sources. Additionaly,
 %   the center of the encompassing is returned.
 %
@@ -55,14 +55,24 @@ function [diam,center] = secondary_source_maximum_distance(x0)
 nargmin = 1;
 nargmax = 1;
 narginchk(nargmin,nargmax);
+isargstruct(conf);
+
+
+%% ===== Configuration ==================================================
+geometry = conf.secondary_sources.geometry;
 
 
 %% ===== Calculation ====================================================
-% Find source1 :=  source with largest distance from origin
-[~,idx1] = max(vector_norm(x0(:,1:3),2));
-% Find source2 := source with maximum distace to source1
-[diam,idx2] = max(vector_norm(x0(:,1:3) - ...
-    repmat(x0(idx1,1:3),[size(x0,1),1]),2));
-% Center is half-way between source1 and source2
-center = x0(idx1,1:3) +  0.5 * (x0(idx2,1:3) - x0(idx1,1:3));
+if ~strcmp('custom',geometry)
+    diam = conf.secondary_sources.size;
+    center = conf.secondary_sources.center;
+else
+    x0 = conf.secondary_sources.x0;
+    % Find source1 :=  source with largest distance from origin
+    [~,idx1] = max(vector_norm(x0(:,1:3),2));
+    % Find source2 := source with maximum distace to source1
+    [diam,idx2] = max(vector_norm(x0(:,1:3) - ...
+        repmat(x0(idx1,1:3),[size(x0,1),1]),2));
+    % Center is half-way between source1 and source2
+    center = x0(idx1,1:3) +  0.5 * (x0(idx2,1:3) - x0(idx1,1:3));
 end

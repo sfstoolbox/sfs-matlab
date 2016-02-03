@@ -84,8 +84,6 @@ x0_linear = [
     ];
 % FIXME: is this the desired behavior, that we don't find the actual diameter of
 % the circle, but only the largest distance bewteen two of its points?
-%diam_circle_ref = 4;
-%center_circle_ref = 0;
 diam_circle_ref = 3.99876557777522;
 center_circle_ref = [-0.0488700000000000 0.0098799999999999 0.0000000000000000];
 x0_circle = [
@@ -246,11 +244,15 @@ x0_box = [
 %% ===== Test secondary_source_maximum_diamter() =========================
 % Calculate current values
 % Linear array
-[diam_linear,center_linear] = secondary_source_maximum_distance(x0_linear);
+conf.secondary_sources.geometry = 'custom';
+conf.secondary_sources.x0 = x0_linear;
+[diam_linear,center_linear] = secondary_source_maximum_distance(conf);
 % Circular array
-[diam_circle,center_circle] = secondary_source_maximum_distance(x0_circle);
+conf.secondary_sources.x0 = x0_circle;
+[diam_circle,center_circle] = secondary_source_maximum_distance(conf);
 % Box form array
-[diam_box,center_box] = secondary_source_maximum_distance(x0_box);
+conf.secondary_sources.x0 = x0_box;
+[diam_box,center_box] = secondary_source_maximum_distance(conf);
 
 if modus==0
     % Numerical mode (quiet)

@@ -63,6 +63,7 @@ conf.wfs.removedelay = false;
 conf.secondary_sources.size = 3;
 conf.plot.useplot = false;
 conf.plot.usenormalisation = true;
+conf.plot.usedb = true;
 conf.driving_functions = 'default';
 % test scenarios
 scenarios = { ...

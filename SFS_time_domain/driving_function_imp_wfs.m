@@ -119,7 +119,7 @@ if removedelay
     delay = delay-min(delay);
 else
     % Delay to ensure causality at all secondary sources
-    [diameter,center] = secondary_source_maximum_distance(conf);
+    [diameter,center] = secondary_source_diameter(conf);
     t0 = diameter/c;
     if (ceil((max(delay)+t0)*fs) - 1 ) > N
         % This is a lot more likely to happen.

@@ -1,8 +1,8 @@
-function boolean = test_secondary_source_maximum_distance(modus)
-%TEST_SECONDARY_SOURCE_MAXIMUM_DISTANCE tests the correctness of the function
-%secondary_source_maximum_distance()
+function boolean = test_secondary_source_diameter(modus)
+%TEST_SECONDARY_SOURCE_DIAMETER tests the correctness of the function
+%secondary_source_diameter()
 %
-%   Usage: boolean = test_secondary_source_maximum_distance(modus)
+%   Usage: boolean = test_secondary_source_diameter(modus)
 %
 %   Input parameters:
 %       modus   - 0: numerical (quiet)
@@ -12,7 +12,7 @@ function boolean = test_secondary_source_maximum_distance(modus)
 %   Output parameters:
 %       booelan - true or false
 %
-%   TEST_SECONDARY_SOURCE_MAXIMUM_DISTANCE(modus) checks if the function, that
+%   TEST_SECONDARY_SOURCE_DIAMTERE(modus) checks if the function, that
 %   calculates the secondary source diameter and center is working correctly.
 
 %*****************************************************************************
@@ -82,8 +82,6 @@ x0_linear = [
     1.8000         0         0         0    -1.0000         0        0.2
     2.0000         0         0         0    -1.0000         0        0.2
     ];
-% FIXME: is this the desired behavior, that we don't find the actual diameter of
-% the circle, but only the largest distance bewteen two of its points?
 diam_circle_ref = 3.99876557777522;
 center_circle_ref = [-0.0488700000000000 0.0098799999999999 0.0000000000000000];
 x0_circle = [
@@ -151,7 +149,7 @@ x0_circle = [
    1.96034  -0.39629   0.00000  -0.98017   0.19815   0.00000   0.1995
    1.99006  -0.19914   0.00000  -0.99503   0.09957   0.00000   0.1995
    ];
-diam_box_ref = 5.94642749892740;
+diam_box_ref = 5.946427498927402;
 center_box_ref = 0;
 x0_box = [
     2.2000   -2.0000         0   -1.0000         0         0    0.2414
@@ -241,18 +239,18 @@ x0_box = [
     ];
 
 
-%% ===== Test secondary_source_maximum_diamter() =========================
+%% ===== Test secondary_source_diamter() =================================
 % Calculate current values
 % Linear array
 conf.secondary_sources.geometry = 'custom';
 conf.secondary_sources.x0 = x0_linear;
-[diam_linear,center_linear] = secondary_source_maximum_distance(conf);
+[diam_linear,center_linear] = secondary_source_diameter(conf);
 % Circular array
 conf.secondary_sources.x0 = x0_circle;
-[diam_circle,center_circle] = secondary_source_maximum_distance(conf);
+[diam_circle,center_circle] = secondary_source_diameter(conf);
 % Box form array
 conf.secondary_sources.x0 = x0_box;
-[diam_box,center_box] = secondary_source_maximum_distance(conf);
+[diam_box,center_box] = secondary_source_diameter(conf);
 
 if modus==0
     % Numerical mode (quiet)

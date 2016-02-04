@@ -65,8 +65,9 @@ geometry = conf.secondary_sources.geometry;
 
 
 %% ===== Calculation ====================================================
-if strcmp('line',geometry) || strcmp('circle',geometry) ...
-        || strcmp('sphere',geometry)
+if strcmp('line',geometry)   || strcmp('linear',geometry)    || ...
+   strcmp('circle',geometry) || strcmp('circular',geometry)  || ...
+   strcmp('sphere',geometry) || strcmp('spherical',geometry)
     diam = conf.secondary_sources.size;
     center = conf.secondary_sources.center;
 elseif strcmp('box',geometry)

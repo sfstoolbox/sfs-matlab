@@ -1,9 +1,9 @@
-function [diam,center] = secondary_source_maximum_distance(conf)
-%SECONDARY_SOURCE_MAXIMUM_DISTANCE calculates the maximum distance
+function [diam,center] = secondary_source_diameter(conf)
+%SECONDARY_SOURCE_DIAMETER calculates the maximum distance
 % between the secondary sources (the diameter) and the center of the
 % smallest ball that contains the array.
 %
-%   Usage: [diam,center] = secondary_source_maximum_distance(conf)
+%   Usage: [diam,center] = secondary_source_diameter(conf)
 %
 %   Input parameters:
 %       conf    - configuration struct (see SFS_config)
@@ -12,9 +12,11 @@ function [diam,center] = secondary_source_maximum_distance(conf)
 %       diam        - diameter of secondary source distribution / m
 %       center      - center of the ball containing SSD / m [1x3]
 %
-%   SECONDARAY_SOURCE_MAXIMUM_DISTANCE(conf) calculates the maximum
+%   SECONDARAY_SOURCE_DIAMETER(conf) calculates the maximum
 %   Euklidian distance between the given secondary sources. Additionaly,
-%   the center of the encompassing is returned.
+%   the center of the encompassing is returned. If one of the predefined
+%   secondary source distributions 'linear', 'circular', or 'spherical' is used,
+%   the returned diameter is equal to conf.secondary_sources.size.
 %
 %   See also: driving_function_imp_wfs, secondary_source_positions
 

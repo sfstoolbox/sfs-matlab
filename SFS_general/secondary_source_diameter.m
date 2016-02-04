@@ -14,9 +14,11 @@ function [diam,center] = secondary_source_diameter(conf)
 %
 %   SECONDARAY_SOURCE_DIAMETER(conf) calculates the maximum
 %   Euklidian distance between the given secondary sources. Additionaly,
-%   the center of the encompassing is returned. If one of the predefined
+%   the center of the encompassing ball is returned. If one of the predefined
 %   secondary source distributions 'linear', 'circular', or 'spherical' is used,
 %   the returned diameter is equal to conf.secondary_sources.size.
+%   If 'box' or 'rounded-box' is used, the diameter of the bounding box
+%   is returned.
 %
 %   See also: driving_function_imp_wfs, secondary_source_positions
 
@@ -79,6 +81,10 @@ elseif strcmp('rounded-box',geometry)
     center = conf.secondary_sources.center;
 else
     x0 = conf.secondary_sources.x0;
+    if isempty(x0)
+        error(['%s: conf.secondary_sources.x0 must contain the secondary ',...
+            'sources when using geometry %s.'],upper(mfilename),geometry);
+    end
     % Find source1 :=  source with largest distance from origin
     [~,idx1] = max(vector_norm(x0(:,1:3),2));
     % Find source2 := source with maximum distace to source1

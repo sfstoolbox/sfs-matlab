@@ -1,19 +1,21 @@
-function ir = wfs_preequalization(ir,conf)
+function [ir,delay] = wfs_preequalization(ir,conf)
 %WFS_PREEQUALIZATION applies a pre-equalization filter for WFS
 %
 %   Usage: ir = wfs_preequalization(ir,conf)
 %
 %   Input parameters:
-%       ir      - IR to which the pre-equalization filter should be applied
+%       ir      - signal to which the pre-equalization filter should be applied
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       ir      - IR with applied pre-equalization
+%       ir      - signal with applied pre-equalization
+%       delay   - additional delay added by pre-equalization
+%
 %
 %   WFS_PREEQUALIZATION(ir,conf) applies the pre-equalization filter for
 %   Wave Field Synthesis to the given impulse response.
 %
-%   See also: wfs_fir_prefilter, wfs_iir_prefilter, ir_wfs
+%   See also: wfs_fir_prefilter, wfs_iir_prefilter, driving_function_imp_wfs
 
 %*****************************************************************************
 % Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
@@ -58,11 +60,13 @@ isargstruct(conf);
 
 %% ===== Configuration ==================================================
 usehpre = conf.wfs.usehpre;
+fs = conf.fs;
 
 
 %% ===== Computation =====================================================
 % Check if we should procide
 if ~usehpre
+    delay = 0;
     return;
 end
 % Store original length
@@ -73,11 +77,15 @@ if strcmp('FIR',conf.wfs.hpretype)
     hpre = wfs_fir_prefilter(conf);
     % Apply filter
     ir = convolution(hpre,ir);
+    % Delay in s added by filter
+    delay = conf.wfs.hpreFIRorder/2 / fs;
 elseif strcmp('IIR',conf.wfs.hpretype)
     % Get IIR filter
     hpre = wfs_iir_prefilter(conf);
     % Apply filter
     ir = filter(hpre.b,hpre.a,ir,2);
+    % Delay in s added by filter
+    delay = conf.wfs.hpreIIRorder/2 / fs;
 else
     error('%s: %s is an unknown filter type.',upper(mfilename),hpretype);
 end

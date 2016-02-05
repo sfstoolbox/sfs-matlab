@@ -78,7 +78,7 @@ removedelay = conf.wfs.removedelay;
 
 %% ===== Computation =====================================================
 % Calculate pre-equalization filter if required
-pulse = wfs_preequalization(dirac_imp(),conf);
+[pulse,prefilter_delay] = wfs_preequalization(dirac_imp(),conf);
 
 % Secondary source positions and directions
 nx0 = x0(:,4:6);
@@ -134,7 +134,8 @@ else
                 'spanned by the array diameter.'],upper(mfilename));
         end
     end
-    delay = delay + t0;
+    % Ensure virtual source start activity at t=0
+    delay = delay + t0 + prefilter_delay;
 end
 % Append zeros at the end of the driving function. This is necessary, because
 % the delayline function cuts into the end of the driving signals in order to

@@ -97,7 +97,7 @@ for ii=1:size(scenarios)
 
     % get current dimension
     conf.dimension = scenarios{ii,2};
-   
+
     % get listening area
     switch scenarios{ii,3}
         case 'linear'
@@ -127,11 +127,18 @@ for ii=1:size(scenarios)
     end
 
     conf.secondary_sources.geometry = scenarios{ii,3};
-    t0 = secondary_source_diameter(conf)/conf.c; % max. travel time
-    total_delay = round(t0*conf.fs) + conf.wfs.hpreFIRorder/2;
-    t = total_delay + 30;        % some samples more to see the point source
+    t = scenarios{ii,5};
     src = scenarios{ii,4};
     xs = scenarios{ii,5};
+    % Adjust time for different source types (t=0 corresponds to first activity
+    % of virtual source).
+    if strcmp('ps',src) || strcmp('ls',src)
+        t = 2 / conf.c * conf.fs;   % time for traveling 2 m
+    elseif strcmp('fs',src)
+        t = 0.5 / conf.c * conf.fs; % time for traveling 0.5 m
+    else
+        t = 0;
+    end
 
     % ===== WFS ==========================================================
     % spatio-temporal impulse response
@@ -149,5 +156,5 @@ for ii=1:size(scenarios)
             upper(mfilename),conf.secondary_sources.geometry,conf.dimension,src);
         lasterr
     end
-    
+
 end

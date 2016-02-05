@@ -80,16 +80,21 @@ if strcmp('FIR',conf.wfs.hpretype)
     % Delay in s added by filter
     delay = conf.wfs.hpreFIRorder/2 / fs;
 elseif strcmp('IIR',conf.wfs.hpretype)
+    if len_ir == 1
+        % Happens when called from driving_function_imp_wfs()
+        % Zeropadding to length conf.N
+       ir = [ir; zeros(conf.N-1,size(ir,2))];
+    end
     % Get IIR filter
     hpre = wfs_iir_prefilter(conf);
     % Apply filter
-    ir = filter(hpre.b,hpre.a,ir,2);
-    % Delay in s added by filter
-    delay = conf.wfs.hpreIIRorder/2 / fs;
+    ir = sosfilt(hpre.sos,ir,1);
+    % IIR is minimum phase, so no proper delay introduced
+    delay = 0;
 else
     error('%s: %s is an unknown filter type.',upper(mfilename),hpretype);
 end
 % Correct length of ir
-if len_ir>length(hpre)+1
+if strcmp('FIR',conf.wfs.hpretype) && (len_ir>length(hpre)+1)
     ir = ir(1:len_ir,:);
 end

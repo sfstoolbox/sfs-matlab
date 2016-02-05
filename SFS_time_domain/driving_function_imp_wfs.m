@@ -72,6 +72,8 @@ isargstruct(conf);
 %% ===== Configuration ==================================================
 fs = conf.fs;
 N = conf.N;
+c = conf.c;
+removedelay = conf.wfs.removedelay;
 
 
 %% ===== Computation =====================================================
@@ -111,9 +113,29 @@ else
     error('%s: %s is not a known source type.',upper(mfilename),src);
 end
 
-% Remove delay offset, in order to begin always at t=0 with the first wave front
-% at any secondary source
-delay = delay-min(delay);
+if removedelay
+    % Remove delay offset, in order to begin always at t=0 with the first wave front
+    % at any secondary source
+    delay = delay-min(delay);
+else
+    % Delay to ensure causality at all secondary sources
+    [diameter,center] = secondary_source_diameter(conf);
+    t0 = diameter/c;
+    if (ceil((max(delay)+t0)*fs) - 1 ) > N
+        % This is a lot more likely to happen.
+        warning('conf.N = %i is too short for requested source.',N);
+    end
+    if strcmp('fs',src)
+        % Reject focused source that's too far away
+        % (this will only happen for unbounded listening arrays.)
+        if norm(xs(1:3) - center,2) > diameter/2;
+            error(['%s: Using ''config.wfs.removedelay == 0'', ', ...
+                'focused source positions are restricted to the ball ', ...
+                'spanned by the array diameter.'],upper(mfilename));
+        end
+    end
+    delay = delay + t0;
+end
 % Append zeros at the end of the driving function. This is necessary, because
 % the delayline function cuts into the end of the driving signals in order to
 % delay them. NOTE: this can be changed by the conf.N setting

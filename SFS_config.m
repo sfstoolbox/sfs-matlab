@@ -220,6 +220,13 @@ conf.wfs.hpreBandwidth_in_Oct = 2; % / octaves
 conf.wfs.hpreIIRorder = 4; % integer
 % desired FIR filter order, results in N+1 taps
 conf.wfs.hpreFIRorder = 128; % even integer
+%
+% === Time Domain Implementation ===
+% Remove the leading delay in WFS-time domain driving function.
+% If this is set to true, the first active secondary source will be start to
+% emit sound at t = 1.
+% (convenient behaviour for a single virtual source)
+conf.wfs.removedelay = true; % boolean
 
 
 %% ===== Spectral Division Method (SDM) ==================================

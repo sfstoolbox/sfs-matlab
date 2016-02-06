@@ -74,24 +74,13 @@ c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
 
-% Check for wrong virtual line source direction for 2D and 2.5D case
+% 2D and 2.5D: Restrict line source to z-direction
 if (strcmp('2D',dimension) ||  strcmp('2.5D',dimension))
     xs(:,3) = 0;
     if any(abs(nxs(1,[1,2])') > eps)
-    % Virtual line source not in z-direction,
-    % Sanity check of secondary sources:
-    all(abs(diff(x0(:,3))) < eps)
-        if all(abs(diff(x0(:,3))) < eps) && all(abs(nx0(:,3)) < eps)
-            % Okay, proper 2D array in a plane with constant z,
-            % Virtual source orientation can be safely fixed.
-            warning('%s-WFS restricts virtual line sources to z-direction.',dimension);
-            nxs(:,[1,2]) = 0;
-        else
-            % Neither array nor virtual source are adequate for 2D. 
-            % Cannot be fixed consistently with secondary source selection.
-            error(['%s: Neither virtual source nor loudspeaker array ',...
-            'seem appropriate for %s-WFS.'],upper(mfilename),dimension);
-        end
+        warning(['%s-WFS ignores x and y components of virtual '...
+        'line source orientation.'],dimension);
+        nxs(:,[1,2]) = 0;
     end
 end
 

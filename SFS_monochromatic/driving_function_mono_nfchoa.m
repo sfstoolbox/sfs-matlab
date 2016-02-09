@@ -7,9 +7,11 @@ function D = driving_function_mono_nfchoa(x0,xs,src,f,conf)
 %       x0          - position and direction of the secondary source / m [nx6]
 %       xs          - position of virtual source or direction of plane
 %                     wave / m [1x3]
+%                     OR position and orientation of a line source [1x6]
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
+%                         'ls' - line source
 %                         'ps' - point source
 %                         'fs' - focused source
 %       f           - frequency of the monochromatic source / Hz
@@ -78,6 +80,10 @@ x0 = x0(:,1:3);
 % Get maximum order of spherical harmonics
 N = nfchoa_order(size(x0,1),conf);
 
+% Source direction for ls
+if length(xs)>3
+    nxs = repmat(xs(4:6),[size(x0,1) 1]);
+end
 % Source position
 xs = repmat(xs(1:3),[size(x0,1) 1]);
 
@@ -97,7 +103,7 @@ elseif strcmp('ps',src)
 elseif strcmp('ls',src)
     % === Line source ====================================================
     % Driving signal
-    D = driving_function_mono_nfchoa_ls(x0,xs,f,N,conf);
+    D = driving_function_mono_nfchoa_ls(x0,xs,nxs,f,N,conf);
 
 elseif strcmp('fs',src)
     % === Focused source =================================================

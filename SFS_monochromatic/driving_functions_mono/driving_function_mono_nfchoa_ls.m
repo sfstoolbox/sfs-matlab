@@ -1,4 +1,4 @@
-function D = driving_function_mono_nfchoa_ls(x0,xs,f,N,conf)
+function D = driving_function_mono_nfchoa_ls(x0,xs,nxs,f,N,conf)
 %DRIVING_FUNCTION_MONO_NFCHOA_LS returns the driving signal D for a line source
 %in NFCHOA
 %
@@ -7,6 +7,7 @@ function D = driving_function_mono_nfchoa_ls(x0,xs,f,N,conf)
 %   Input parameters:
 %       x0          - position of the secondary sources / m [nx3]
 %       xs          - position of virtual line source / m [nx3]
+%       nxs         - orientation of virtual line source / [nx3]
 %       f           - frequency of the monochromatic source / Hz
 %       N           - maximum order of spherical harmonics
 %       conf        - configuration struct (see SFS_config)
@@ -59,8 +60,8 @@ function D = driving_function_mono_nfchoa_ls(x0,xs,f,N,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 5;
+nargmin = 6;
+nargmax = 6;
 narginchk(nargmin,nargmax);
 isargmatrix(x0,xs);
 isargpositivescalar(f,N);
@@ -78,13 +79,22 @@ X0 = conf.secondary_sources.center;
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
+% rotation matrix
+[alphan,betan,~] = cart2sph(nxs(1,1),nxs(1,2),nxs(1,3));
+R = rotation_matrix(alphan,3,'counterclockwise') ...
+    * rotation_matrix(betan-pi/2,2,'counterclockwise');
+
 % secondary source positions
 x00 = bsxfun(@minus,x0,X0);
+x00 = x00*R;
 [phi0,rho0,z0] = cart2pol(x00(:,1),x00(:,2),x00(:,3));
 [alpha0,beta0,r0] = cart2sph(x00(:,1),x00(:,2),x00(:,3));
+
 % line source position
+xs = xs*R;
 [phi,rho,z] = cart2pol(xs(:,1),xs(:,2),xs(:,3));
 [alpha,beta,r] = cart2sph(xs(:,1),xs(:,2),xs(:,3));
+
 % wave number
 omega = 2*pi*f;
 % initialize empty driving signal
@@ -158,8 +168,8 @@ elseif strcmp('3D',dimension)
         %
         for n=-N:N
             for m=-n:n
-                D = D + (1/2/r0)*(1i)^(m-n)*besselh(m,2,omega/c*rho) ...
-                    *conj(sphharmonics(n,m,0,alpha)) ...
+                D = D + (1/2./r0)*(1i)^(m-n).*besselh(m,2,omega/c*rho) ...
+                    .*conj(sphharmonics(n,m,0,alpha)) ...
                     ./(omega/c*sphbesselh(n,2,omega/c*r0)) ...
                     .* sphharmonics(n,m,beta0,alpha0);
                 %D = D * sqrt(1i*omega/c); % equalization (optional)

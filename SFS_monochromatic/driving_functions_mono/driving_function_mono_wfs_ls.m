@@ -1,21 +1,23 @@
-function D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf)
+function D = driving_function_mono_wfs_ls(x0,nx0,xs,nxs,f,conf)
 %DRIVING_FUNCTION_MONO_WFS_LS returns the driving signal D for a line source in
 %WFS
 %
-%   Usage: D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf)
+%   Usage: D = driving_function_mono_wfs_ls(x0,nx0,xs,nxs,f,conf)
 %
 %   Input parameters:
 %       x0          - position of the secondary sources / m [nx3]
 %       nx0         - directions of the secondary sources / m [nx3]
 %       xs          - position of virtual line source / m [nx3]
+%       nxs         - orientation of virtual line source [nx3]
 %       f           - frequency of the monochromatic source / Hz
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
 %
-%   DRIVING_FUNCTION_MONO_WFS_LS(x0,xs,f,src,conf) returns WFS driving signals
-%   for the given secondary sources, the virtual line source position and the
+%   DRIVING_FUNCTION_MONO_WFS_LS(x0,nx0,xs,nxs,f,src,conf) returns WFS driving
+%   signals for the given secondary sources, the virtual line source position,
+%   its orientation nxs, which is parallel to the line source, and the
 %   frequency f.
 %
 %   References:
@@ -58,10 +60,10 @@ function D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 5;
+nargmin = 6;
+nargmax = 6;
 narginchk(nargmin,nargmax);
-isargmatrix(x0,nx0,xs);
+isargmatrix(x0,nx0,xs,nxs);
 isargpositivescalar(f);
 isargstruct(conf);
 
@@ -72,6 +74,16 @@ c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
 
+% 2D and 2.5D: Restrict line source to z-direction
+if (strcmp('2D',dimension) ||  strcmp('2.5D',dimension))
+    xs(:,3) = 0;
+    if any(abs(nxs(1,[1,2])') > eps)
+        warning(['%s-WFS ignores x and y components of virtual '...
+        'line source orientation.'],dimension);
+        nxs(:,[1,2]) = 0;
+    end
+end
+
 
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
@@ -80,9 +92,9 @@ driving_functions = conf.driving_functions;
 omega = 2*pi*f;
 
 
-if strcmp('2D',dimension) || strcmp('3D',dimension)
+if strcmp('2D',dimension)
 
-    % === 2- or 3-Dimensional ============================================
+    % === 2-Dimensional ==================================================
 
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
@@ -145,6 +157,42 @@ elseif strcmp('2.5D',dimension)
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D line source.'],upper(mfilename),driving_functions);
+    end
+
+elseif strcmp('3D',dimension)
+
+    % === 3-Dimensional ==================================================
+
+    if strcmp('default',driving_functions)
+        % --- SFS Toolbox ------------------------------------------------
+        % D using a line source
+        %
+        %              iw   v nx0    (2)/ w     \
+        % D(x0,w) =  - -- --------  H1  | - |v| | ,
+        %              2c   |v|         \ c     /
+        %
+        % where v = x0-xs - <x0-xs,nxs > nxs,
+        % and |nxs| = 1.
+        %
+        % see Wierstorf et al. (2015), eq.(#D:wfs:ls)
+        % TODO: refered equation is for 2D, 3D case is AFAIK not documented yet.
+        %
+        % v = (I - nxs'nxs)(x0-xs)
+        % r = |v|
+        nxs = nxs(1,:) / norm(nxs(1,:),2);
+        v = (x0 - xs)*(eye(3) - nxs'*nxs);
+        r = vector_norm(v,2);
+        % Driving signal
+        D = -1i*omega/(2*c) .* vector_product(v,nx0,2) ./ r .* ...
+            besselh(1,2,omega/c.*r);
+        %
+    elseif strcmp('delft1988',driving_functions)
+        % --- Delft 1988 -------------------------------------------------
+        to_be_implemented;
+        %
+    else
+        error(['%s: %s, this type of driving function is not implemented ', ...
+            'for a line source.'],upper(mfilename),driving_functions);
     end
 
 else

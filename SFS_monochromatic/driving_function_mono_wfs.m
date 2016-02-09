@@ -76,6 +76,10 @@ isargstruct(conf);
 nx0 = x0(:,4:6);
 x0 = x0(:,1:3);
 
+% Source direction for ls
+if length(xs)>3
+    nxs = repmat(xs(4:6),[size(x0,1) 1]);
+end
 % Source position
 xs = repmat(xs(1:3),[size(x0,1) 1]);
 
@@ -83,7 +87,7 @@ xs = repmat(xs(1:3),[size(x0,1) 1]);
 if strcmp('pw',src)
     % === Plane wave =====================================================
     % Direction of plane wave
-    nk = bsxfun(@rdivide,xs,vector_norm(xs,2));
+    nk = bsxfun(@rdivide,xs,vector_norm(xs(:,1:3),2));
     % Driving signal
     D = driving_function_mono_wfs_pw(x0,nx0,nk,f,conf);
 
@@ -95,7 +99,7 @@ elseif strcmp('ps',src)
 elseif strcmp('ls',src)
     % === Line source ====================================================
     % Driving signal
-    D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf);
+    D = driving_function_mono_wfs_ls(x0,nx0,xs,nxs,f,conf);
 
 elseif strcmp('fs',src)
     % === Focused source =================================================

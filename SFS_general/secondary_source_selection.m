@@ -78,14 +78,13 @@ if strcmp('vss', src) && size(xs,2)~=6
 elseif ~strcmp('vss', src)
     isargxs(xs);
 end
-
 if strcmp('fs',src) && size(xs,2)~=6
     error(['%s: you have chosen "fs" as source type, then xs has ', ...
            'to be [1x6] including the direction of the focused source.'], ...
         upper(mfilename));
-elseif ~strcmp('fs',src) &&  ~strcmp('vss',src) && size(xs,2)~=3
-    error(['%s: for all source types beside "fs" and "vss", the size of ', ...
-           'xs has to be [1x3].'],upper(mfilename));
+elseif ~strcmp('fs',src) && ~strcmp('vss',src) && ~strcmp('ls',src) && size(xs,2)~=3
+    error(['%s: for all source types beside "fs", "ls" and "vss", ', ...
+           'the size of xs has to be [1x3].'],upper(mfilename));
 end
 
 
@@ -110,7 +109,7 @@ if strcmp('pw',src)
     % Direction of plane wave (nk) is set above
     idx = nx0*nk(:) >=eps;
 
-elseif strcmp('ps',src) || strcmp('ls',src)
+elseif strcmp('ps',src)
     % === Point source ===
     % Secondary source selection
     %
@@ -121,7 +120,25 @@ elseif strcmp('ps',src) || strcmp('ls',src)
     % see Wierstorf et al. (2015), eq.(#wfs:ps:selection) and
     % eq.(#wfs:ls:selection)
     %
-    idx = sum(nx0.*x0,2) - nx0*xs.' >=eps;
+    idx = sum(nx0.*x0,2) - nx0*xs(1:3).' >=eps;
+
+elseif strcmp('ls',src)
+    % === Line source ===
+    % Secondary source selection
+    %
+    %      / 1, if v nx0 > 0
+    % a = <
+    %      \ 0, else
+    %
+    % where v = x0-xs - <x0-xs,nxs > nxs,
+    % and |nxs| = 1.
+    %
+    % see Wierstorf et al. (2015), eq.(#wfs:ps:selection) and
+    % eq.(#wfs:ls:selection)
+    %
+    nxs = xs(4:6) / norm(xs(4:6),2);
+    v = (x0 - repmat(xs(1:3),[size(x0,1),1]))*(eye(3) - nxs'*nxs);
+    idx = (vector_product(v,nx0,2) > 0);
 
 elseif strcmp('fs',src)
     % === Focused source ===

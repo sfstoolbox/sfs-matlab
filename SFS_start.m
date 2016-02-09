@@ -3,18 +3,18 @@ function SFS_start()
 %
 %   Usage: SFS_start;
 %
-%   SFS_START starts the Sound Field Synthesis Toolbox (SFS). 
+%   SFS_START starts the Sound Field Synthesis Toolbox (SFS).
 %   This function must be run first in order to add the path's to Matlab.
 %
 %   See also: SFS_config, SFS_version
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -42,7 +42,7 @@ function SFS_start()
 
 
 %% ===== Configuration ===================================================
-printbanner = false;
+printbanner = true;
 
 
 %% ===== Adding Path's ===================================================
@@ -100,6 +100,20 @@ end
 
 %% ===== Banner ==========================================================
 if(printbanner)
-    printf('SFS %1.1f successfully initialized.\n',SFS_version);
+    % TODO: test if the banner also works under Mac
+    if isunix
+        banner = sprintf( ...
+            ['       ▄▄\n', ...
+             ' ▄█▀▀ █▄ ▄█▀▀  Sound Field Synthesis Toolbox %s\n', ...
+             ' ▄▄█▀ █  ▄▄█▀  https://github.com/sfstoolbox/sfs\n\n'], ...
+            SFS_version);
+    else
+        banner = sprintf( ...
+            ['\n', ...
+             ' Sound Field Synthesis Toolbox %s\n', ...
+             ' https://github.com/sfstoolbox/sfs\n\n'], ...
+            SFS_version);
+    end
+    fprintf(banner);
 end
 

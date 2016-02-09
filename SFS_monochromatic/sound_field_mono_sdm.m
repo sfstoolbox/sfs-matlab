@@ -1,7 +1,7 @@
 function varargout = sound_field_mono_sdm(X,Y,Z,xs,src,f,conf)
 %SOUND_FIELD_MONO_SDM simulates a sound field for SDM
 %
-%   Usage: [P,x,y,z,x0] = sound_field_mono_sdm(X,Y,Z,xs,src,f,[conf])
+%   Usage: [P,x,y,z,x0] = sound_field_mono_sdm(X,Y,Z,xs,src,f,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -14,7 +14,7 @@ function varargout = sound_field_mono_sdm(X,Y,Z,xs,src,f,conf)
 %                         'ps' - point source
 %                         'fs' - focused source
 %       f           - monochromatic frequency / Hz
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - simulated sound field
@@ -35,12 +35,12 @@ function varargout = sound_field_mono_sdm(X,Y,Z,xs,src,f,conf)
 %   See also: plot_sound_field, sound_field_mono_sdm_kx
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -68,17 +68,13 @@ function varargout = sound_field_mono_sdm(X,Y,Z,xs,src,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
+nargmin = 7;
 nargmax = 7;
 narginchk(nargmin,nargmax);
 isargxs(xs);
 isargpositivescalar(f);
 isargchar(src);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

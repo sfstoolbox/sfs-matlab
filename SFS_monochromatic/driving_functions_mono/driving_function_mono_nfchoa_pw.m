@@ -2,14 +2,14 @@ function D = driving_function_mono_nfchoa_pw(x0,nk,f,N,conf)
 %DRIVING_FUNCTION_MONO_NFCHOA_PW returns the driving signal D for a plane wave
 %in NFCHOA
 %
-%   Usage: D = driving_function_mono_nfchoa_pw(x0,nk,f,N,[conf])
+%   Usage: D = driving_function_mono_nfchoa_pw(x0,nk,f,N,conf)
 %
 %   Input parameters:
 %       x0          - position of the secondary sources / m [nx3]
 %       nk          - direction of virtual plane wave / m [nx3]
 %       f           - frequency of the monochromatic source / Hz
 %       N           - maximum order of spherical harmonics
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
@@ -25,12 +25,12 @@ function D = driving_function_mono_nfchoa_pw(x0,nk,f,N,conf)
 %   See also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_pw
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -58,16 +58,12 @@ function D = driving_function_mono_nfchoa_pw(x0,nk,f,N,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
+nargmin = 5;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargmatrix(x0,nk);
 isargpositivescalar(f,N);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

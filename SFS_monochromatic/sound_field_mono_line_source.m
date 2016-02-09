@@ -1,7 +1,7 @@
-function varargout = sound_field_mono_line_source(X,Y,Z,xs,varargin)
+function varargout = sound_field_mono_line_source(X,Y,Z,xs,f,conf)
 %SOUND_FIELD_MONO_LINE_SOURCE simulates a sound field for a line source
 %
-%   Usage: [P,x,y,z] = sound_field_mono_line_source(X,Y,Z,xs,f,[conf])
+%   Usage: [P,x,y,z] = sound_field_mono_line_source(X,Y,Z,xs,f,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -9,7 +9,7 @@ function varargout = sound_field_mono_line_source(X,Y,Z,xs,varargin)
 %       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       xs          - position of line source / m
 %       f           - monochromatic frequency / Hz
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - Simulated sound field
@@ -28,12 +28,12 @@ function varargout = sound_field_mono_line_source(X,Y,Z,xs,varargin)
 %   See also: sound_field_mono, plot_sound_field, sound_field_imp_point_source
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -61,11 +61,11 @@ function varargout = sound_field_mono_line_source(X,Y,Z,xs,varargin)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
+nargmin = 6;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargxs(xs);
 
 
 %% ===== Computation ====================================================
-[varargout{1:nargout}] = sound_field_mono(X,Y,Z,[xs 0 -1 0 1],'ls',1,varargin{:});
+[varargout{1:nargout}] = sound_field_mono(X,Y,Z,[xs 0 -1 0 1],'ls',1,f,conf);

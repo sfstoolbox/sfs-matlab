@@ -1,27 +1,27 @@
 function [b,a] = bilinear_transform(sos,conf)
 %BILINEAR_TRANSFORM returns the second-order section as filter coefficients
 %
-%   Usage: [b,a] = bilinear_transform(sos,[conf])
+%   Usage: [b,a] = bilinear_transform(sos,conf)
 %
 %   Input parameters:
 %       sos     - second-order section representation
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       b,a     - filter coefficients as cells
 %
-%   BILINEAR_TRANSFORM(sos) transforms the second-order section representation
-%   of a system to time discrete filter coefficients.
+%   BILINEAR_TRANSFORM(sos,conf) transforms the second-order section
+%   representation of a system to time discrete filter coefficients.
 %
 %   See also: driving_function_imp_nfchoa, zp2sos
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -49,15 +49,11 @@ function [b,a] = bilinear_transform(sos,conf)
 
 
 %% ===== Checking input parameters =======================================
-nargmin = 1;
+nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
 isargmatrix(sos);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ===================================================

@@ -1,5 +1,12 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
+2.1.0 ()
+
+    - make conf struct mandatory
+    - add new start message
+    - fix handling of 0 in least squares fractional delays
+    - fix NFC-HOA order for even loudspeaker numbers to N/2-1
+
 2.0.0 (26. October 2015)
 
     - add support for SOFA

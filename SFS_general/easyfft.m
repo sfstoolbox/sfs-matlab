@@ -2,11 +2,11 @@ function varargout = easyfft(sig,conf)
 %EASYFFT calculates the FFT of a signal and returns the corresponding frequency
 %   axis
 %
-%   Usage: [amplitude,phase,f] = easyfft(sig,[conf])
+%   Usage: [amplitude,phase,f] = easyfft(sig,conf)
 %
 %   Input parameters:
 %       sig         - one channel audio waveform
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       amplitude   - amplitude spectrum of the input signal
@@ -14,19 +14,19 @@ function varargout = easyfft(sig,conf)
 %       f           - corresponding frequency axis for the amplitude
 %                     spectrum (=> plot(f,amplitude) / Hz
 %
-%   EASYFFT(sig) calculates the amplitude and phase of the sig spectrum by using
-%   the fast Fourier transformation. In addition to the amplitude and phase, the
-%   corresponding frequency axis for a plot is returned.
+%   EASYFFT(sig,conf) calculates the amplitude and phase of the sig spectrum by
+%   using the fast Fourier transformation. In addition to the amplitude and
+%   phase, the corresponding frequency axis for a plot is returned.
 %
 %   See also: easyifft, fft
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -54,15 +54,11 @@ function varargout = easyfft(sig,conf)
 
 
 %% ===== Check input arguments ===========================================
-nargmin = 1;
+nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
 sig = column_vector(sig);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ===================================================

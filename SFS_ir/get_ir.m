@@ -1,7 +1,7 @@
 function [ir,x0] = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %GET_IR returns an impulse response for the given apparent angle
 %
-%   Usage: ir = get_ir(sofa,X,head_orientation,xs,[coordinate_system],[conf])
+%   Usage: ir = get_ir(sofa,X,head_orientation,xs,[coordinate_system],conf)
 %
 %   Input parameters:
 %       sofa              - impulse response data set (sofa struct/file)
@@ -20,8 +20,8 @@ function [ir,x0] = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %                                           [x y z] / m
 %                             'spherical' - spherical system with
 %                                           [phi theta r] / (rad, rad, m)
-%       conf              - optional configuration struct (see SFS_config),
-%                           which will be passed to:
+%       conf              - configuration struct (see SFS_config), which will
+%                           be passed to:
 %                             interpolate_ir
 %                             ir_correct_distance (only for SimpleFreeFieldHRIR)
 %
@@ -29,10 +29,10 @@ function [ir,x0] = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %       ir      - impulse response for the given position (length of IR x 2)
 %       x0      - position corresponding to the returned impulse response
 %
-%   GET_IR(sofa,X,head_orientation,xs) returns a single impulse response from
-%   the given SOFA file or struct. The impulse response is determined by the
-%   position X and head orientation head_orientation of the listener, and the
-%   position xs of the desired point source.
+%   GET_IR(sofa,X,head_orientation,xs,conf) returns a single impulse response
+%   from the given SOFA file or struct. The impulse response is determined by
+%   the position X and head orientation head_orientation of the listener, and
+%   the position xs of the desired point source.
 %   For the SOFA convention SimpleFreeFieldHRIR the desired distance between
 %   the point source and listener is achieved by delaying and weighting the
 %   impulse response. Distances larger than 10m are ignored and set constantly
@@ -57,12 +57,12 @@ function [ir,x0] = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %             intpolate_ir, ir_correct_distance
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -90,19 +90,12 @@ function [ir,x0] = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
+nargmin = 5;
 nargmax = 6;
 narginchk(nargmin,nargmax)
-if nargin==nargmax-1
-    if isstruct(coordinate_system)
-        conf = coordinate_system;
-        coordinate_system = 'cartesian';
-    else
-        conf = SFS_config;
-    end
-elseif nargin==nargmax-2
+if nargin<nargmax
+    conf = coordinate_system;
     coordinate_system = 'cartesian';
-    conf = SFS_config;
 end
 if length(head_orientation)==1
     head_orientation = [head_orientation 0]; % [azimuth elevation]

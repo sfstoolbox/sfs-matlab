@@ -1,10 +1,10 @@
 function hpre = wfs_iir_prefilter(conf)
 %WFS_IIR_PREFILTER creates a minimum-phase IIR pre-equalization filter for WFS
 %
-%   Usage: hpre = wfs_iir_prefilter([conf])
+%   Usage: hpre = wfs_iir_prefilter(conf)
 %
 %   Input parameters:
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %       must at least include:
 %           conf.fs = 44100;           - sampling frequency / Hz
@@ -50,12 +50,12 @@ function hpre = wfs_iir_prefilter(conf)
 
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -84,19 +84,10 @@ function hpre = wfs_iir_prefilter(conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 0;
+nargmin = 1;
 nargmax = 1;
 narginchk(nargmin,nargmax);
-if nargin<nargmax
-    %apply a default, this refers to eq. (3) in [Sch13]
-    conf.fs = 44100;
-    conf.wfs.hpreflow = 125;
-    conf.wfs.hprefhigh = 2000;
-    conf.wfs.hpreBandwidth_in_Oct = 2;
-    conf.wfs.hpreIIRorder = 1;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 % This function is not working in Octave at the moment.
 if isoctave
     error(['%s: Not available under Octave, please use ', ...

@@ -2,13 +2,13 @@ function D = driving_function_mono_sdm_pw(x0,nk,f,conf)
 %DRIVING_FUNCTION_MONO_SDM_PW returns the driving signal D for a plane wave in
 %SDM
 %
-%   Usage: D = driving_function_mono_sdm_pw(x0,nk,f,[conf])
+%   Usage: D = driving_function_mono_sdm_pw(x0,nk,f,conf)
 %
 %   Input parameters:
 %       x0          - position of the secondary sources / m [nx3]
 %       nk          - direction of plane wave / m [nx3]
 %       f           - frequency of the monochromatic source / Hz
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
@@ -27,12 +27,12 @@ function D = driving_function_mono_sdm_pw(x0,nk,f,conf)
 %   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -60,16 +60,12 @@ function D = driving_function_mono_sdm_pw(x0,nk,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargmatrix(x0,nk);
 isargpositivescalar(f);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

@@ -2,13 +2,13 @@ function [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs,conf)
 %DRIVING_FUNCTION_IMP_WFS_FS calculates the WFS weighting and delaying for a
 %focused source as source model
 %
-%   Usage: [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs,[conf]);
+%   Usage: [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs,conf)
 %
 %   Input parameters:
 %       x0      - position  of secondary sources (m) [nx3]
 %       nx0     - direction of secondary sources [nx3]
 %       xs      - position of focused source [nx3]
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       delay   - delay of the driving function (s)
@@ -24,12 +24,12 @@ function [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs,conf)
 %   See also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_fs
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -57,15 +57,11 @@ function [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargmatrix(x0,nx0,xs);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================

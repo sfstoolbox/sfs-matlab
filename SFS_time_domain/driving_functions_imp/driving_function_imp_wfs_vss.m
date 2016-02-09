@@ -10,7 +10,7 @@ function d = driving_function_imp_wfs_vss(x0,xv,dv,conf)
 %       xv          - position, direction, and weights of the virtual secondary
 %                     sources / m [mx7]
 %       dv          - driving signals of virtual secondary sources [Sxm]
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       d           - driving function signal [Sxn]
@@ -22,12 +22,12 @@ function d = driving_function_imp_wfs_vss(x0,xv,dv,conf)
 %   See also: driving_function_imp_localwfs, driving_function_mono_wfs_vss
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -54,20 +54,18 @@ function d = driving_function_imp_wfs_vss(x0,xv,dv,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargmatrix(dv);
 isargsecondarysource(x0,xv);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
+
 
 %% ===== Configuration ==================================================
 fs = conf.fs;
 N = conf.N;
+
 
 %% ===== Computation ====================================================
 % Apply wfs preequalization filter on each driving signal of the vss'

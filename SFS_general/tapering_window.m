@@ -1,11 +1,11 @@
 function win = tapering_window(x0,conf)
 %TAPWIN generate a tapering window for a loudspeaker array
 %
-%   Usage: win = tapering_window(x0,[conf])
+%   Usage: win = tapering_window(x0,conf)
 %
 %   Input parameters:
 %       x0          - secondary sources / m
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       win     - tapering window (nlsx1)
@@ -20,12 +20,12 @@ function win = tapering_window(x0,conf)
 %   See also: secondary_source_position, sound_field_mono_wfs, hann
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -53,13 +53,10 @@ function win = tapering_window(x0,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
+nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
 isargsecondarysource(x0);
-if nargin==nargmax-1
-    conf = SFS_config;
-end
 isargstruct(conf);
 
 

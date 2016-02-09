@@ -75,7 +75,9 @@ driving_functions = conf.driving_functions;
 
 Xc = conf.secondary_sources.center;
 r0 = conf.secondary_sources.size / 2;
-rref = norm( conf.xref - Xc );  % reference radius
+xref = conf.xref - Xc;
+rref = norm( xref );  % reference radius
+thetaref = asin( norm(xref(3))/rref);  % reference elevation angle
 
 %% ===== Variables ======================================================
 Nse = sqrt(size(Pnm,1))-1;
@@ -144,7 +146,7 @@ if strcmp('2.5D',dimension)
             (-1).^(m) .* ...
             sqrt( (2*n+1) ./ (4*pi) ) .* ...
             sqrt( factorial(n-abs(m)) ./ factorial(n+abs(m)) ) .* ...
-            asslegendre(n,abs(m),0);
+            asslegendre(n,abs(m), thetaref);
 
           v = sphexp_index(m,n);
         

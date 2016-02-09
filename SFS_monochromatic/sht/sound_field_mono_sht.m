@@ -10,7 +10,7 @@ function [P, x, y, z] = sound_field_mono_sht(X,Y,Z,Dnm,f,conf)
 %       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       Dnm         - spherical harmonics transform of nfchoa driving function
 %       f           - frequency in Hz
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - resulting soundfield
@@ -52,81 +52,37 @@ function [P, x, y, z] = sound_field_mono_sht(X,Y,Z,Dnm,f,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
+nargmin = 6;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargvector(Dnm);
 isargsquaredinteger(length(Dnm));
 isargnumeric(X,Y,Z);
-
-% unique index encoding which dimension is an nd-array
-customGrid = (numel(X) > 2) + 2*(numel(Y) > 2) + 4*(numel(Z) > 2);
-switch customGrid
-  case 1
-    isargscalar(Y,Z);
-  case 2
-    isargscalar(X,Z);
-  case 3
-    isargequalsize(X,Y); isargscalar(Z);
-  case 4
-    isargscalar(X,Y);
-  case 5
-    isargequalsize(X,Z); isargscalar(Y);
-  case 6
-    isargequalsize(Y,Z); isargscalar(X);
-  case 7
-    isargequalsize(X,Y,Z);
-  otherwise
-    isargvector(X,Y,Z);
-end
-
 isargpositivescalar(f);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
 
 %% ===== Configuration ==================================================
 Xc = conf.secondary_sources.center;
 r0 = conf.secondary_sources.size / 2;
 
 %% ===== Computation ====================================================
-if customGrid
-  switch customGrid
-    case 1
-      Y = repmat(Y, size(X));
-      Z = repmat(Z, size(X));
-    case 2
-      X = repmat(X, size(Y));
-      Z = repmat(Z, size(Y));
-    case 3
-      Z = repmat(Z, size(Y));
-    case 4
-      X = repmat(X, size(Z));
-      Y = repmat(Y, size(Z));
-    case 5
-      Y = repmat(Y, size(Z));
-    case 6
-      X = repmat(X, size(Z));      
-  end
-  x = X;   y = Y;  z = Z;
-else
-  [X,Y,Z,x,y,z] = xyz_grid(X,Y,Z,conf);
-end
+[x,y,z] = xyz_grid(X,Y,Z,conf);
 % find coordinates, which are inside and outside the loudspeaker array
-select = sqrt((X(:)-Xc(1)).^2 + (Y(:)-Xc(2)).^2 + (Z(:)-Xc(3)).^2) <= r0;
+select = sqrt((x(:)-Xc(1)).^2 + (y(:)-Xc(2)).^2 + (z(:)-Xc(3)).^2) <= r0;
 
-P = zeros(size(X));
+if (numel(x) == 1) x = repmat(x, size(select)); end
+if (numel(y) == 1) y = repmat(y, size(select)); end
+if (numel(z) == 1) z = repmat(z, size(select)); end
+
+P = zeros(size(x));
 
 if any(select(:))
   Pnm = sphexp_mono_nfchoa_sht(Dnm,'R',f,conf);
-  P(select) = sound_field_mono_sphexp(X(select),Y(select),Z(select), Pnm, ...
-    'R', f, Xc,conf);
+  P(select) = sound_field_mono_sphexp(x(select), y(select), z(select), ...
+    Pnm, 'R', f, Xc,conf);
 end
 if any(~select(:))
   Pnm = sphexp_mono_nfchoa_sht(Dnm,'S',f,conf);
-  P(~select) = sound_field_mono_sphexp(X(~select),Y(~select),Z(~select), ...
+  P(~select) = sound_field_mono_sphexp(x(~select), y(~select), z(~select), ...
     Pnm, 'S', f, Xc,conf);
 end
 

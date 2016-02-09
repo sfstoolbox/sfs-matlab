@@ -1,4 +1,4 @@
-function [jn, h2n, Ynm] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf)
+function [jn, h2n, Ynm, x, y, z] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf)
 %SPHBASIS_MONO_GRID(X,Y,Z,f,xq,conf) evaluates spherical basis functions for 
 %given grid in cartesian coordinates
 %
@@ -10,8 +10,8 @@ function [jn, h2n, Ynm] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf)
 %       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       Nse         - maximum order of spherical basis functions
 %       f           - frequency in Hz
-%       xq          - optional center of coordinate system
-%       conf        - optional configuration struct (see SFS_config)
+%       xq          - center of coordinate system
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       jn          - cell array of spherical bessel functions
@@ -68,56 +68,26 @@ function [jn, h2n, Ynm] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
+nargmin = 7;
 nargmax = 7;
 narginchk(nargmin,nargmax);
 
 isargnumeric(X,Y,Z);
-% unique index encoding which dimension is an nd-array
-customGrid = (numel(X) > 2) + 2*(numel(Y) > 2) + 4*(numel(Z) > 2);
-switch customGrid
-  case 1
-    isargscalar(Y,Z);
-  case 2
-    isargscalar(X,Z);
-  case 3
-    isargequalsize(X,Y); isargscalar(Z);
-  case 4
-    isargscalar(X,Y);
-  case 5
-    isargequalsize(X,Z); isargscalar(Y);
-  case 6
-    isargequalsize(Y,Z); isargscalar(X);
-  case 7
-    isargequalsize(X,Y,Z);
-  otherwise
-    isargvector(X,Y,Z);
-end
-
-isargpositivescalar(f,Nse);
-if nargin<nargmax
-  conf = SFS_config;
-else
-  isargstruct(conf);
-end
-if nargin == nargmin
-  xq = [0, 0, 0];
-end
-isargposition(xq);
+isargpositivescalar(Nse,f);
+isargcoord(xq);
 
 %% ===== Computation ====================================================
-[xx, yy, zz] = xyz_grid(X, Y, Z, conf);
+[x,y,z] = xyz_grid(X, Y, Z, conf);
 
 k = 2*pi*f/conf.c;  % wavenumber
 
 % shift coordinates to expansion coordinate
-xx = xx - xq(1);
-yy = yy - xq(2);
-zz = zz - xq(3);
-
+x = x - xq(1);
+y = y - xq(2);
+z = z - xq(3);
 % coordinate transformation
-r = sqrt(xx.^2 + yy.^2 + zz.^2);
-phi = atan2(yy, xx);
-theta = asin(zz./r);
+r = sqrt(x.^2 + y.^2 + z.^2);
+phi = atan2(y, x);
+theta = asin(z./r);
 
 [jn, h2n, Ynm] = sphbasis_mono(r, theta, phi, Nse, k, conf);

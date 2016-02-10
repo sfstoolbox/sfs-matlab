@@ -103,12 +103,9 @@ for n=1:order+1
     else
         error('%s: %s is not a known source type.',upper(mfilename),src);
     end
-
-    % Apply them by a bilinear transform and filtering
-    [b,a] = bilinear_transform(sos,conf);
-    for ii=1:length(b)
-        dm(n,:) = filter(b{ii},a{ii},dm(n,:));
-    end
+    
+    % filtering
+    dm(n,:) = sosfilt(sos,dm(n,:));
 end
 
 % Compute input signal for IFFT

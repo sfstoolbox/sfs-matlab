@@ -6,11 +6,12 @@ function D = driving_function_mono_wfs(x0,xs,src,f,conf)
 %   Input parameters:
 %       x0          - position and direction of the secondary source / m [nx6]
 %       xs          - position of virtual source or direction of plane
-%                     wave / m [1x3]
+%                     wave / m [1x3] or [1x6]
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
+%                         'ls' - line source
 %                         'fs' - focused source
 %       f           - frequency of the monochromatic source / Hz
 %       conf        - configuration struct (see SFS_config)
@@ -76,12 +77,8 @@ isargstruct(conf);
 nx0 = x0(:,4:6);
 x0 = x0(:,1:3);
 
-% Source direction for ls
-if length(xs)>3
-    nxs = repmat(xs(4:6),[size(x0,1) 1]);
-end
-% Source position
-xs = repmat(xs(1:3),[size(x0,1) 1]);
+% Source position/direction/orientation
+xs = repmat(xs,[size(x0,1) 1]);
 
 % Get driving signals
 if strcmp('pw',src)
@@ -99,7 +96,7 @@ elseif strcmp('ps',src)
 elseif strcmp('ls',src)
     % === Line source ====================================================
     % Driving signal
-    D = driving_function_mono_wfs_ls(x0,nx0,xs,nxs,f,conf);
+    D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf);
 
 elseif strcmp('fs',src)
     % === Focused source =================================================

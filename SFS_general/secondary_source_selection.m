@@ -11,6 +11,7 @@ function [x0,idx] = secondary_source_selection(x0,xs,src)
 %                       'pw'  - plane wave (xs is the direction of the
 %                               plane wave in this case)
 %                       'ps'  - point source
+%                       'ls'  - line source
 %                       'fs'  - focused source
 %                       'vss' - distribution of focused sources for local WFS
 %
@@ -136,7 +137,13 @@ elseif strcmp('ls',src)
     % see Wierstorf et al. (2015), eq.(#wfs:ps:selection) and
     % eq.(#wfs:ls:selection)
     %
-    nxs = xs(4:6) / norm(xs(4:6),2);
+    %FIXME: The following is not used, as it would require conf
+    %[xs,nxs] = get_position_and_orientation_ls(xs,conf);
+    if size(xs,2)~=6
+        nxs = [0 0 1];
+    else
+        nxs = xs(4:6) / norm(xs(4:6),2);
+    end
     v = (x0 - repmat(xs(1:3),[size(x0,1),1]))*(eye(3) - nxs'*nxs);
     idx = (vector_product(v,nx0,2) > 0);
 

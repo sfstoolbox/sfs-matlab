@@ -1,4 +1,4 @@
-function D = driving_function_mono_wfs_ls(x0,nx0,xs,nxs,f,conf)
+function D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf)
 %DRIVING_FUNCTION_MONO_WFS_LS returns the driving signal D for a line source in
 %WFS
 %
@@ -6,19 +6,18 @@ function D = driving_function_mono_wfs_ls(x0,nx0,xs,nxs,f,conf)
 %
 %   Input parameters:
 %       x0          - position of the secondary sources / m [nx3]
-%       nx0         - directions of the secondary sources / m [nx3]
-%       xs          - position of virtual line source / m [nx3]
-%       nxs         - orientation of virtual line source [nx3]
+%       xs          - position and orientation of virtual line source / m [nx3]
+%                     or [nx6]
 %       f           - frequency of the monochromatic source / Hz
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
 %
-%   DRIVING_FUNCTION_MONO_WFS_LS(x0,nx0,xs,nxs,f,src,conf) returns WFS driving
+%   DRIVING_FUNCTION_MONO_WFS_LS(x0,nx0,xs,f,src,conf) returns WFS driving
 %   signals for the given secondary sources, the virtual line source position,
-%   its orientation nxs, which is parallel to the line source, and the
-%   frequency f.
+%   its orientation xs(:,4:6), which is parallel to the line source, and the
+%   frequency f. If no explicit orientation is given [0 0 1] is assumed.
 %
 %   References:
 %       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
@@ -60,10 +59,10 @@ function D = driving_function_mono_wfs_ls(x0,nx0,xs,nxs,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 6;
+nargmin = 5;
+nargmax = 5;
 narginchk(nargmin,nargmax);
-isargmatrix(x0,nx0,xs,nxs);
+isargmatrix(x0,nx0,xs);
 isargpositivescalar(f);
 isargstruct(conf);
 
@@ -74,24 +73,12 @@ c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
 
-% Handling of line source orientation
-if (strcmp('2D',dimension) ||  strcmp('2.5D',dimension))
-    % Ignore orientation for 2D and 2.5D
-    if size(xs,2)>3
-        warning('%s: %s-WFS ignores virtual line source orientation.', ...
-            upper(mfilename),dimension);
-        xs = xs(:,1:3);
-    end
-    xs(:,3) = 0;
-end
-
 
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
-% Frequency
 omega = 2*pi*f;
-
+[xs,nxs] = get_position_and_orientation_ls(xs,conf);
 
 if strcmp('2D',dimension)
 
@@ -180,7 +167,7 @@ elseif strcmp('3D',dimension)
         %
         % v = (I - nxs'nxs)(x0-xs)
         % r = |v|
-        nxs = nxs(1,:) / norm(nxs(1,:),2);
+        nxs = nxs(1,:);
         v = (x0 - xs)*(eye(3) - nxs'*nxs);
         r = vector_norm(v,2);
         % Driving signal

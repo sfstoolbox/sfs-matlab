@@ -79,21 +79,12 @@ X0 = conf.secondary_sources.center;
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
-% rotation matrix
-[alphan,betan,~] = cart2sph(nxs(1,1),nxs(1,2),nxs(1,3));
-R = rotation_matrix(alphan,3,'counterclockwise') ...
-    * rotation_matrix(betan-pi/2,2,'counterclockwise');
-
 % secondary source positions
 x00 = bsxfun(@minus,x0,X0);
-x00 = x00*R;
-[phi0,rho0,z0] = cart2pol(x00(:,1),x00(:,2),x00(:,3));
-[alpha0,beta0,r0] = cart2sph(x00(:,1),x00(:,2),x00(:,3));
+[phi0,rho0,~] = cart2pol(x00(:,1),x00(:,2),x00(:,3)); 
 
 % line source position
-xs = xs*R;
-[phi,rho,z] = cart2pol(xs(:,1),xs(:,2),xs(:,3));
-[alpha,beta,r] = cart2sph(xs(:,1),xs(:,2),xs(:,3));
+[phi,rho,~] = cart2pol(xs(:,1),xs(:,2),xs(:,3));
 
 % wave number
 omega = 2*pi*f;
@@ -129,7 +120,7 @@ elseif strcmp('2.5D',dimension)
     % === 2.5-Dimensional ================================================
 
     % Reference point
-    xref = repmat(xref,[size(x0,1) 1]);
+%     xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D line source, after Hahn(2015) Eq.(23)
@@ -141,8 +132,8 @@ elseif strcmp('2.5D',dimension)
         %                                 h|m|(w/c r0)
         %
         for m=-N:N
-        D = D + 1/2./r0 * 1i^(m-abs(m)) .* besselh(m,2,omega/c*rho) ...
-            ./ (omega/c*sphbesselh(abs(m),2,omega/c*r0)) .* exp(1i*m*(phi0-phi));
+        D = D + 1/2./rho0 * 1i^(m-abs(m)) .* besselh(m,2,omega/c*rho) ...
+            ./ (omega/c*sphbesselh(abs(m),2,omega/c*rho0)) .* exp(1i*m*(phi0-phi));
         end
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
@@ -153,6 +144,15 @@ elseif strcmp('2.5D',dimension)
 elseif strcmp('3D',dimension)
 
     % === 3-Dimensional ==================================================
+    % rotating xs and x00 by (-alphan,pi/2-betan)
+    [alphan,betan,~] = cart2sph(nxs(1,1),nxs(1,2),nxs(1,3));
+    R = rotation_matrix(alphan,3,'counterclockwise') ...
+        * rotation_matrix(betan-pi/2,2,'counterclockwise');
+    x00 = x00*R;
+    xs = xs*R;
+    [alpha0,beta0,r0] = cart2sph(x00(:,1),x00(:,2),x00(:,3));
+    [alpha,~,~] = cart2sph(xs(:,1),xs(:,2),xs(:,3));
+
 
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------

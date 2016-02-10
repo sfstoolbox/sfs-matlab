@@ -10,8 +10,9 @@ function [EF, EFm] = sphexp_mono_translation(t, mode, Nse, f, conf)
 %                     'RR' for regular-to-regular reexpansion
 %                     'SR' for singular-to-regular reexpansion
 %                     'SS' for singular-to-singular reexpansion
+%       Nse         - maximum order of spherical basis functions
 %       f           - frequency [1 x Nf] / Hz
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       EF          - spherical re-expansion coefficients for t
@@ -42,12 +43,12 @@ function [EF, EFm] = sphexp_mono_translation(t, mode, Nse, f, conf)
 %   see also: sphexp_mono_ps, sphexp_mono_pw
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -74,18 +75,14 @@ function [EF, EFm] = sphexp_mono_translation(t, mode, Nse, f, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
+nargmin = 5;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargposition(t);
 isargchar(mode);
 isargpositivescalar(Nse);
 isargvector(f);
-if nargin<nargmax
-  conf = SFS_config;
-else
-  isargstruct(conf);
-end
+isargstruct(conf);
 
 %% ===== Configuration ==================================================
 showprogress = conf.showprogress;
@@ -264,6 +261,4 @@ for n=0:Nse
     [v, w] = sphexp_index(s,l,m,n);
     EFm(v,w,:) = (-1).^(l+n)*sphexp_access(EF,s,l,m,n);
   end
-end
-
 end

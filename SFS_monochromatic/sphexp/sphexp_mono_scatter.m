@@ -11,8 +11,8 @@ function Bnm = sphexp_mono_scatter(Anm, R, sigma, f, conf)
 %       f           - frequency / Hz [Nf x 1] or [1 x Nf]
 %
 %   Output parameters:
-%       Bnm         - singular spherical expansion coefficients of
-%                     scattered field
+%       Bnm         - singular spherical expansion coefficients of scattered
+%                     field
 %
 %   SPHEXP_MONO_SCATTER(Anm, R, sigma, f, conf) computes the singular spherical
 %   expansion coefficients of a field resulting from a scattering of an incident
@@ -55,12 +55,12 @@ function Bnm = sphexp_mono_scatter(Anm, R, sigma, f, conf)
 %   see also: sphexp_mono_ps, sphexp_mono_pw, sphexp_mono_timereverse
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -87,7 +87,7 @@ function Bnm = sphexp_mono_scatter(Anm, R, sigma, f, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
+nargmin = 5;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargvector(Anm);
@@ -96,11 +96,7 @@ isargsquaredinteger(L);
 isargscalar(sigma);
 isargpositivescalar(R);
 isargvector(f);
-if nargin<nargmax
-  conf = SFS_config;
-else
-  isargstruct(conf);
-end
+isargstruct(conf);
 
 %% ===== Configuration ==================================================
 c = conf.c;
@@ -126,6 +122,3 @@ for n=0:(sqrt(L) - 1)
   v = sphexp_index(-n:n,n);
   Bnm(v,:) = T(n).*Anm(v,:);
 end
-
-end
-

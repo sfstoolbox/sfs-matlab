@@ -2,7 +2,7 @@ function [P, x, y, z] = sound_field_mono_sphexp(X,Y,Z,ABnm,mode,f,xq,conf)
 %SOUND_FIELD_MONO_SPHEXPR simulates a sound field given with regular/singular
 %spherical expansion coefficients
 %
-%   Usage: [P, x, y, z] = sound_field_mono_sphexp(X,Y,Z,Al,f,x0,conf)
+%   Usage: [P, x, y, z] = sound_field_mono_sphexp(X,Y,Z,ABnm,mode,f,xq,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -11,8 +11,8 @@ function [P, x, y, z] = sound_field_mono_sphexp(X,Y,Z,ABnm,mode,f,xq,conf)
 %       ABnm        - regular/singular spherical expansion coefficients
 %       mode        - 'R' for regular, 'S' for singular
 %       f           - frequency in Hz
-%       xq          - optional expansion center coordinates, default: [0, 0, 0]
-%       conf        - optional configuration struct (see SFS_config)
+%       xq          - expansion center coordinates, default: [0, 0, 0]
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - resulting soundfield
@@ -22,12 +22,12 @@ function [P, x, y, z] = sound_field_mono_sphexp(X,Y,Z,ABnm,mode,f,xq,conf)
 %   see also: sphbasis_mono_grid, sound_field_mono_sphbasis
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -54,23 +54,15 @@ function [P, x, y, z] = sound_field_mono_sphexp(X,Y,Z,ABnm,mode,f,xq,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
+nargmin = 8;
 nargmax = 8;
 narginchk(nargmin,nargmax);
 isargvector(ABnm);
 isargsquaredinteger(length(ABnm));
 isargnumeric(X,Y,Z);
 isargpositivescalar(f);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
-if nargin == nargmin
-  xq = [0, 0, 0];
-else
-  isargposition(xq); 
-end
+isargposition(xq); 
+isargstruct(conf);
 
 %% ===== Variables ======================================================
 Nse = sqrt(length(ABnm)) - 1;
@@ -85,5 +77,3 @@ else
 end
 
 P = sound_field_mono_sphbasis(ABnm,fn,Ynm);
-
-end

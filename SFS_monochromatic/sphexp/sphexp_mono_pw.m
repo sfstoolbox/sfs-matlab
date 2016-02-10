@@ -42,12 +42,12 @@ function Anm = sphexp_mono_pw(npw, Nse, f, xq, conf)
 %   see also: sphexp_mono_ls sphexp_mono_ps
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -74,22 +74,14 @@ function Anm = sphexp_mono_pw(npw, Nse, f, xq, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 5;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargposition(npw);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
+isargposition(xq);
 isargpositivescalar(Nse);
 isargvector(f);
-if nargin == nargmin
-  xq = [0,0,0];
-else
-  isargposition(xq);
-end
 
 %% ===== Configuration ==================================================
 c = conf.c;
@@ -117,6 +109,3 @@ for n=0:Nse
     Anm(v,:) = cn.*conj(Ynm).*phase;
   end
 end
-
-end
-

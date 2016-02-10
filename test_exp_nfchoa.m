@@ -5,7 +5,7 @@ clear variables;
 SFS_start;
 
 %% Parameters
-conf = SFS_config_example;
+conf = SFS_config;
 conf.showprogress = true;
 
 % plotting
@@ -128,17 +128,17 @@ Dpwnm_shift_trunc = driving_function_mono_nfchoa_sht_sphexp(Apwnm_shift_trunc, f
 Dpsnm_shift_trunc = driving_function_mono_nfchoa_sht_sphexp(Apsnm_shift_trunc, f, conf);
 Dlsnm_shift_trunc = driving_function_mono_nfchoa_sht_sphexp(Alsnm_shift_trunc, f, conf);
 % compute spherical expansion of reproduced sound field
-Ppwnm = sphexp_mono_nfchoa_sht(Dpwnm,'R',f,conf);
-Ppsnm = sphexp_mono_nfchoa_sht(Dpsnm,'R',f,conf);
-Plsnm = sphexp_mono_nfchoa_sht(Dlsnm,'R',f,conf);
+Ppwnm = sphexp_mono_sht(Dpwnm,'R',f,conf);
+Ppsnm = sphexp_mono_sht(Dpsnm,'R',f,conf);
+Plsnm = sphexp_mono_sht(Dlsnm,'R',f,conf);
 % compute spherical expansion of reproduced sound field from shifted driving functions
-Ppwnm_shift = sphexp_mono_nfchoa_sht(Dpwnm_shift,'R',f,conf);
-Ppsnm_shift = sphexp_mono_nfchoa_sht(Dpsnm_shift,'R',f,conf);
-Plsnm_shift = sphexp_mono_nfchoa_sht(Dlsnm_shift,'R',f,conf);
+Ppwnm_shift = sphexp_mono_sht(Dpwnm_shift,'R',f,conf);
+Ppsnm_shift = sphexp_mono_sht(Dpsnm_shift,'R',f,conf);
+Plsnm_shift = sphexp_mono_sht(Dlsnm_shift,'R',f,conf);
 % compute spherical expansion of reproduced sound field from shifted and truncated driving functions
-Ppwnm_shift_trunc = sphexp_mono_nfchoa_sht(Dpwnm_shift_trunc,'R',f,conf);
-Ppsnm_shift_trunc = sphexp_mono_nfchoa_sht(Dpsnm_shift_trunc,'R',f,conf);
-Plsnm_shift_trunc = sphexp_mono_nfchoa_sht(Dlsnm_shift_trunc,'R',f,conf);
+Ppwnm_shift_trunc = sphexp_mono_sht(Dpwnm_shift_trunc,'R',f,conf);
+Ppsnm_shift_trunc = sphexp_mono_sht(Dpsnm_shift_trunc,'R',f,conf);
+Plsnm_shift_trunc = sphexp_mono_sht(Dlsnm_shift_trunc,'R',f,conf);
 % compute fields
 Ppw = sound_field_mono_sphbasis(Ppwnm, jn, Ynm);
 Pps = sound_field_mono_sphbasis(Ppsnm, jn, Ynm);
@@ -179,9 +179,9 @@ Dpwnm = driving_function_mono_nfchoa_sht_sphexp(Apwnm_3D,f,conf);
 Dpsnm = driving_function_mono_nfchoa_sht_sphexp(Apsnm_3D,f,conf);
 Dlsnm = driving_function_mono_nfchoa_sht_sphexp(Alsnm_3D,f,conf);
 % compute spherical expansion of reproduced sound field
-Ppwnm = sphexp_mono_nfchoa_sht(Dpwnm,'R',f,conf);
-Ppsnm = sphexp_mono_nfchoa_sht(Dpsnm,'R',f,conf);
-Plsnm = sphexp_mono_nfchoa_sht(Dlsnm,'R',f,conf);
+Ppwnm = sphexp_mono_sht(Dpwnm,'R',f,conf);
+Ppsnm = sphexp_mono_sht(Dpsnm,'R',f,conf);
+Plsnm = sphexp_mono_sht(Dlsnm,'R',f,conf);
 % compute fields
 Ppw = sound_field_mono_sphbasis(Ppwnm, jn, Ynm);
 Pps = sound_field_mono_sphbasis(Ppsnm, jn, Ynm);

@@ -1,6 +1,6 @@
 function P = sound_field_mono_sphbasis(ABnm, jh2n, Ynm)
-%SOUND_FIELD_MONO_SPHBASIS simulates a sound field with spherical basis 
-%functions
+%SOUND_FIELD_MONO_SPHBASIS simulates a sound field expressed with spherical
+%basis functions
 %
 %   Usage: P = sound_field_mono_sphbasis(AB, jh2n, Ynm)
 %
@@ -8,7 +8,6 @@ function P = sound_field_mono_sphbasis(ABnm, jh2n, Ynm)
 %       ABnm        - regular/singular spherical expansion coefficients
 %       jh2n        - cell array of spherical bessel/hankel(2nd kind) functions
 %       Ynm         - cell array of spherical harmonics
-%       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - resulting soundfield
@@ -18,12 +17,12 @@ function P = sound_field_mono_sphbasis(ABnm, jh2n, Ynm)
 %   see also: sphbasis_mono_grid sound_field_mono_sphexp
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *

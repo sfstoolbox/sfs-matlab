@@ -7,8 +7,9 @@ function Anm = sphexp_truncate(Pnm, N, M, Mshift)
 %   Input parameters:
 %       Pnm         - 1D array of spherical expansion coefficients [n x Nf]
 %       N           - maximum degree of spherical expansion
-%       M           - maximum order of spherical expansion
-%       Mshift      - shift for asymmetric trunction with respect to order
+%       M           - maximum order of spherical expansion, default: N
+%       Mshift      - shift for asymmetric trunction with respect to order,
+%                     default: 0                    
 %
 %   Output parameters:
 %       Anm         - 1D array of bandlimited spherical expansion
@@ -20,12 +21,12 @@ function Anm = sphexp_truncate(Pnm, N, M, Mshift)
 %   see also: sphexp_truncation_order
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -79,4 +80,3 @@ for m=max(-M+Mshift,-Nse):min(M+Mshift,Nse)
 end
 
 end
-

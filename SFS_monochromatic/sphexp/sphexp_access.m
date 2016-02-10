@@ -22,12 +22,12 @@ function a = sphexp_access(Anm, m1, n1, m2, n2)
 %   see also: sphexp_access
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -53,7 +53,7 @@ function a = sphexp_access(Anm, m1, n1, m2, n2)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
-%% ===== Checking of input  parameters ==================================
+%% ===== Checking of input parameters ===================================
 L1 = length(m1);
 if nargin < 3
   n1 = abs(m1);

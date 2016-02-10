@@ -1,8 +1,8 @@
-function Pnm = sphexp_mono_nfchoa_sht(Dnm, mode, f, conf)
+function Pnm = sphexp_mono_sht(Dnm, mode, f, conf)
 %SPHEXP_MONO_NFCHOA_SHT yields spherical expansion coefficients of a sound field
 %resulting from of a driving function given as a spherical harmonics transform
 %
-%   Usage: Pnm = sphexp_mono_nfchoa_sht(Dnm, mode, f, conf)
+%   Usage: Pnm = sphexp_mono_sht(Dnm, mode, f, conf)
 %
 %   Input parameters:
 %       Dnm         - spherical harmonics transform of nfchoa driving function
@@ -14,15 +14,15 @@ function Pnm = sphexp_mono_nfchoa_sht(Dnm, mode, f, conf)
 %       Pnm         - spherical expansion coefficients of a sound field
 %                     reproduced by nfchoa driving function
 %
-%   SPHEXP_MONO_NFCHOA_SHT(Dnm, mode, f, conf)
+%   SPHEXP_MONO_SHT(Dnm, mode, f, conf)
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -49,7 +49,7 @@ function Pnm = sphexp_mono_nfchoa_sht(Dnm, mode, f, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargmatrix(Dnm);
@@ -59,11 +59,7 @@ isargchar(mode);
 if ~strcmp('R', mode) && ~strcmp('S', mode)
   error('%s: unknown mode (%s)!', upper(mfilename), mode);
 end
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 %% ===== Configuration ==================================================
 r0 = conf.secondary_sources.size / 2;

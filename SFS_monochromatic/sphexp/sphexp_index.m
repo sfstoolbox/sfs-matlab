@@ -11,8 +11,8 @@ function [l1, l2] = sphexp_index(m1, n1, m2, n2)
 %       n2          - degree of 2st dimension (optional, default = |m2|)
 %
 %   Output parameters:
-%       l1          - regular Spherical Expansion Coefficients
-%       l2          - regular Spherical Expansion Coefficients
+%       l1          - index for 1st dimension
+%       l2          - index for 2st dimension
 %
 %   SPHEXP_INDEX(m1, n1, m2, n2) computes one/two indices for accessing
 %   1D/2D arrays of spherical expansion coefficients
@@ -22,12 +22,12 @@ function [l1, l2] = sphexp_index(m1, n1, m2, n2)
 %   see also: sphexp_access
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -65,6 +65,5 @@ if nargin < 4
 end
 
 %% ===== Computation ====================================================
-
 l1 = (n1 + 1).^2 - (n1 - m1);
 l2 = (n2 + 1).^2 - (n2 - m2);

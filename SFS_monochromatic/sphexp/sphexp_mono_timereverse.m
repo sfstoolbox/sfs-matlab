@@ -11,12 +11,12 @@ function ABnm = sphexp_mono_timereverse(ABnm)
 %                       sound field
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -56,6 +56,3 @@ for n=0:(sqrt(L)-1)
   v = sphexp_index(-n:n,n);
   ABnm(v) = conj(sphexp_access(ABnm,n:-1:-n,n));
 end
-
-end
-

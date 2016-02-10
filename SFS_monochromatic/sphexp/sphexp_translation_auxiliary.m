@@ -6,7 +6,7 @@ function [a, b] = sphexp_translation_auxiliary(Nse,conf)
 %
 %   Input parameters:
 %       Nse         - maximum degree of the auxiliary functions (optional)
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       a           - auxiliary coefficients for the calculation of tesseral
@@ -55,12 +55,12 @@ function [a, b] = sphexp_translation_auxiliary(Nse,conf)
 %   see also: sphexp_mono_translation
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -87,15 +87,11 @@ function [a, b] = sphexp_translation_auxiliary(Nse,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
+nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
 isargpositivescalar(Nse);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 %% ===== Configuration ==================================================
 showprogress = conf.showprogress;

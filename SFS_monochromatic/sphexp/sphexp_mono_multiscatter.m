@@ -19,12 +19,12 @@ function B = sphexp_mono_multiscatter(A, xq, R, sigma, f, conf)
 %   SPHEXP_MONO_MULTISCATTER(A, xq, R, sigma, f, conf)
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -51,17 +51,13 @@ function B = sphexp_mono_multiscatter(A, xq, R, sigma, f, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
+nargmin = 6;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargpositivescalar(f);
 isargvector(R, sigma);
 isargmatrix(A, xq);
-if nargin<nargmax
-  conf = SFS_config;
-else
-  isargstruct(conf);
-end
+isargstruct(conf);
 
 L = size(A,1);
 isargsquaredinteger(L);

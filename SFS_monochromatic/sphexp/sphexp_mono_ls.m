@@ -1,5 +1,5 @@
 function Anm = sphexp_mono_ls(xs, mode, Nse, f, xq, conf)
-%SPHEXP_MONO_LS compute the regular/singular spherical expansion of line source
+%SPHEXP_MONO_LS computes the regular/singular spherical expansion of line source
 %
 %   Usage: Anm = sphexp_mono_ls(xs, mode, Nse, f, xq, conf)
 %
@@ -14,19 +14,19 @@ function Anm = sphexp_mono_ls(xs, mode, Nse, f, xq, conf)
 %   Output parameters:
 %       Al          - regular Spherical Expansion Coefficients
 %
-%   SPHEXP_MONO_LS(xs, mode, f, Nse, xq, conf) computes the regular/singular 
+%   SPHEXP_MONO_LS(xs, mode, Nse, f, xq, conf) computes the regular/singular 
 %   spherical expansion coefficients for a point source at xs. The expansion 
 %   will be done around the expansion coordinate xq.
 %
 %   see also: sphexp_mono_ps sphexp_mono_pw sphexp_convert_circexp
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -53,21 +53,13 @@ function Anm = sphexp_mono_ls(xs, mode, Nse, f, xq, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
+nargmin = 6;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargposition(xs);
 isargpositivescalar(f, Nse);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
-if nargin == nargmin
-    xq = [0,0,0];
-else
-  isargposition(xq);
-end
+isargposition(xq);
+isargstruct(conf);
 
 %% ===== Computation ====================================================
 % select suitable basis function

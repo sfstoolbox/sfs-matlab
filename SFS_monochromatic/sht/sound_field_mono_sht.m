@@ -20,12 +20,12 @@ function [P, x, y, z] = sound_field_mono_sht(X,Y,Z,Dnm,f,conf)
 %   see also: sphbasis_mono_grid, sound_field_mono_sphexp
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -76,12 +76,12 @@ if (numel(z) == 1) z = repmat(z, size(select)); end
 P = zeros(size(x));
 
 if any(select(:))
-  Pnm = sphexp_mono_nfchoa_sht(Dnm,'R',f,conf);
+  Pnm = sphexp_mono_sht(Dnm,'R',f,conf);
   P(select) = sound_field_mono_sphexp(x(select), y(select), z(select), ...
     Pnm, 'R', f, Xc,conf);
 end
 if any(~select(:))
-  Pnm = sphexp_mono_nfchoa_sht(Dnm,'S',f,conf);
+  Pnm = sphexp_mono_sht(Dnm,'S',f,conf);
   P(~select) = sound_field_mono_sphexp(x(~select), y(~select), z(~select), ...
     Pnm, 'S', f, Xc,conf);
 end

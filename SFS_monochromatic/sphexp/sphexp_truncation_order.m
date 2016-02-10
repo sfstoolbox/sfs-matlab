@@ -8,7 +8,7 @@ function Nse = sphexp_truncation_order(r, f, nmse, conf)
 %       r           - max 3D distance from expansion center / m
 %       f           - frequency / Hz
 %       nmse        - maximum bound for normalized mean squared error
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       Nse         - maximum order for spherical expansion
@@ -29,12 +29,12 @@ function Nse = sphexp_truncation_order(r, f, nmse, conf)
 %   see also: sphexp_truncation
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -61,15 +61,11 @@ function Nse = sphexp_truncation_order(r, f, nmse, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargpositivescalar(f,r,nmse);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 %% ===== Configuration ==================================================
 c = conf.c;
@@ -79,6 +75,3 @@ c = conf.c;
 lambda = c/f;  % wave length
 delta = max(0, ceil(log(0.67848/nmse)));  % nmse dependent term
 Nse = ceil(pi*r*exp(1)/lambda) + delta;
-
-end
-

@@ -1,4 +1,4 @@
-function D = driving_function_mono_nfchoa_ls(x0,xs,nxs,f,N,conf)
+function D = driving_function_mono_nfchoa_ls(x0,xs,f,N,conf)
 %DRIVING_FUNCTION_MONO_NFCHOA_LS returns the driving signal D for a line source
 %in NFCHOA
 %
@@ -6,8 +6,8 @@ function D = driving_function_mono_nfchoa_ls(x0,xs,nxs,f,N,conf)
 %
 %   Input parameters:
 %       x0          - position of the secondary sources / m [nx3]
-%       xs          - position of virtual line source / m [nx3]
-%       nxs         - orientation of virtual line source / [nx3]
+%       xs          - position and orientation of virtual line source / m [nx3]
+%                     or [nx6]
 %       f           - frequency of the monochromatic source / Hz
 %       N           - maximum order of spherical harmonics
 %       conf        - configuration struct (see SFS_config)
@@ -60,8 +60,8 @@ function D = driving_function_mono_nfchoa_ls(x0,xs,nxs,f,N,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 6;
+nargmin = 5;
+nargmax = 5;
 narginchk(nargmin,nargmax);
 isargmatrix(x0,xs);
 isargpositivescalar(f,N);
@@ -78,6 +78,7 @@ X0 = conf.secondary_sources.center;
 
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
+[xs,nxs] = get_position_and_orientation_ls(xs,conf);
 
 % secondary source positions
 x00 = bsxfun(@minus,x0,X0);

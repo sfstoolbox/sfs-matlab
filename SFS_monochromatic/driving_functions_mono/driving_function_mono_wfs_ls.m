@@ -74,14 +74,15 @@ c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
 
-% 2D and 2.5D: Restrict line source to z-direction
+% Handling of line source orientation
 if (strcmp('2D',dimension) ||  strcmp('2.5D',dimension))
-    xs(:,3) = 0;
-    if any(abs(nxs(1,[1,2])') > eps)
-        warning(['%s-WFS ignores x and y components of virtual '...
-        'line source orientation.'],dimension);
-        nxs(:,[1,2]) = 0;
+    % Ignore orientation for 2D and 2.5D
+    if size(xs,2)>3
+        warning('%s: %s-WFS ignores virtual line source orientation.', ...
+            upper(mfilename),dimension);
+        xs = xs(:,1:3);
     end
+    xs(:,3) = 0;
 end
 
 

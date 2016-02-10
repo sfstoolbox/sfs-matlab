@@ -17,8 +17,8 @@ function [Jn, H2n, Yn]  = circbasis_mono(r, phi, Nce, k, conf)
 %   CIRCBASIS_MONO(r, phi, Nce, k, conf) computes cylindrical basis functions
 %   for the given arguments r and phi. r and phi can be of arbitrary (but same)
 %   size. Output will be stored in cell arrays (one cell entry for each order)
-%   of length 2*Nce+1 . Each cell array entry contains a 
-%   matrix of the same size as r and phi.
+%   of length 2*Nce+1 . Each cell array entry contains a matrix of the same
+%   size as r and phi.
 %
 %   References:
 %       Williams (1999) - "Fourier Acoustics", ACADEMIC PRESS
@@ -26,12 +26,12 @@ function [Jn, H2n, Yn]  = circbasis_mono(r, phi, Nce, k, conf)
 %   see also: cylbasis_mono_XYZgrid besselj besselh
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -58,17 +58,12 @@ function [Jn, H2n, Yn]  = circbasis_mono(r, phi, Nce, k, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
+nargmin = 5;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargequalsize(r,phi);
 isargscalar(k);
 isargpositivescalar(Nce);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
 
 %% ===== Configuration ==================================================
 showprogress = conf.showprogress;

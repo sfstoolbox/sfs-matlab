@@ -1,7 +1,7 @@
 function Pm = circexp_mono_timereverse(Pm)
 %CIRCEXP_MONO_TIMEREVERSE computes coefficients of a time reversed sound field
 %
-%   Usage: Bnm = circexp_mono_timereverse(Pnm, conf)
+%   Usage: Bnm = circexp_mono_timereverse(Pm)
 %
 %   Input parameters:
 %       Pm          - circular expansion coefficients [n x Nf]
@@ -12,12 +12,12 @@ function Pm = circexp_mono_timereverse(Pm)
 %   CIRCEXP_MONO_TIMEREVERSE(Pm)
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -49,12 +49,12 @@ nargmax = 1;
 narginchk(nargmin,nargmax);
 isargmatrix(Pm);
 if mod(size(Pm, 1)-1, 2) ~= 0
-  error('Number of row of %s has be to odd', inputname(Pm));
+  error('%s: Number of rows of %s has be to odd', upper(mfilename), ...
+    inputname(Pm));
 end
 
 %% ===== Computation ====================================================
 Nce = (size(Pm,1)-1) / 2;
-
 Pm = conj(Pm(end:-1:1,:)).*(-1).^(-Nce:Nce).';
 
 end

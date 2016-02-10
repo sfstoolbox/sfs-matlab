@@ -6,12 +6,12 @@ function Am = circexp_mono_pw(npw, Nce, f, xq, conf)
 %   Input parameters:
 %       nk          - propagation direction of plane wave 
 %       Nce         - maximum order of circular basis functions
-%       f           - frequency / Hz [1 x m] or [m x 1]
-%       xq          - optional expansion center
-%       conf        - optional configuration struct (see SFS_config)
+%       f           - frequency / Hz [1 x Nf] or [Nf x 1]
+%       xq          - expansion center
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       Am          - regular cylindrical Expansion Coefficients
+%       Am          - regular cylindrical expansion coefficients [2*Nce+1 x Nf]
 %
 %   CIRCEXP_MONO_PW(npw, Nce, f, xq, conf) computes the regular circular
 %   expansion coefficients for a plane wave. The expansion will be done a
@@ -30,12 +30,12 @@ function Am = circexp_mono_pw(npw, Nce, f, xq, conf)
 %   see also: circexp_mono_ls circexp_mono_scatter
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -62,19 +62,11 @@ function Am = circexp_mono_pw(npw, Nce, f, xq, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 5;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargposition(npw);
-isargpositivescalar(f);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
-if nargin == nargmin
-  xq = [0, 0, 0];
-end
+isargvector(f);
 isargposition(xq);
 
 %% ===== Configuration ==================================================
@@ -83,7 +75,6 @@ c = conf.c;
 %% ===== Variables ======================================================
 % convert nk into cylindrical coordinates
 phi = atan2(npw(2),npw(1));
-
 % delay of plane wave to reference point
 npw = npw./vector_norm(npw,2);
 delay = 2*pi*row_vector(f)/c*(npw*xq.');

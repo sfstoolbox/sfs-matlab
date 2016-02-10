@@ -2,7 +2,7 @@ function [jn, h2n, Ynm] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf)
 %CIRCBASIS_MONO_GRID evaluate spherical basis functions for given grid in 
 %cartesian coordinates
 %
-%   Usage: [jn, h2n, Ynm] = circbasis_mono_grid(X,Y,Z,f,xq,conf)
+%   Usage: [jn, h2n, Ynm] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -10,8 +10,8 @@ function [jn, h2n, Ynm] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf)
 %       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       Nce         - maximum order of circular basis functions
 %       f           - frequency in Hz
-%       xq          - optional center of coordinate system
-%       conf        - optional configuration struct (see SFS_config)
+%       xq          - center of coordinate system
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       jn          - cell array of cylindrical bessel functions
@@ -36,12 +36,12 @@ function [jn, h2n, Ynm] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf)
 %   see also: circbasis_mono
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -68,44 +68,15 @@ function [jn, h2n, Ynm] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
+nargmin = 7;
 nargmax = 7;
 narginchk(nargmin,nargmax);
 
 isargnumeric(X,Y,Z);
-% unique index encoding which dimension is an nd-array
-customGrid = (numel(X) > 2) + 2*(numel(Y) > 2) + 4*(numel(Z) > 2);
-switch customGrid
-  case 1
-    isargscalar(Y,Z);
-  case 2
-    isargscalar(X,Z);
-  case 3
-    isargequalsize(X,Y); isargscalar(Z);
-  case 4
-    isargscalar(X,Y);
-  case 5
-    isargequalsize(X,Z); isargscalar(Y);
-  case 6
-    isargequalsize(Y,Z); isargscalar(X);
-  case 7
-    isargequalsize(X,Y,Z);
-  otherwise
-    isargvector(X,Y,Z);
-end
 isargpositivescalar(f,Nce);
-if nargin<nargmax
-  conf = SFS_config;
-else
-  isargstruct(conf);
-end
-if nargin == nargmin
-  xq = [0, 0, 0];
-end
 isargposition(xq);
 
 %% ===== Computation ====================================================
-% Create a x-y-grid
 [xx,yy] = xyz_grid(X,Y,Z,conf);
 
 k = 2*pi*f/conf.c;  % wavenumber
@@ -113,11 +84,8 @@ k = 2*pi*f/conf.c;  % wavenumber
 % shift coordinates to expansion coordinate
 xx = xx-xq(1);
 yy = yy-xq(2);
-
 % coordinate transformation
 r = sqrt(xx.^2 + yy.^2);
 phi = atan2(yy,xx);
 
 [jn, h2n, Ynm] = circbasis_mono(r, phi, Nce, k, conf);
-
-end

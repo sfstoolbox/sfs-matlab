@@ -5,7 +5,7 @@ function [EF, EFm] = circexp_mono_translation(xt, mode, Nce, f, conf)
 %   Usage: [EF, EFm] = circexp_mono_translation(xt, mode, Nce, f, conf)
 %
 %   Input parameters:
-%       xt           - translatory shift [1x3] / m                    
+%       xt          - translatory shift [1x3] / m                    
 %       mode        - 'RS' for regular-to-singular reexpansion
 %                     'RR' for regular-to-regular reexpansion
 %                     'SR' for singular-to-regular reexpansion
@@ -24,21 +24,21 @@ function [EF, EFm] = circexp_mono_translation(xt, mode, Nce, f, conf)
 %
 %              \~~ inf
 %  E (x + t) =  >         (E|F)   (xt) F (x)
-%   n          /__ l=-inf      l,n     l
+%   n          /__ l=-inf      l,n      l
 %
 %  where {E,F} = {R,S}. R denotes the regular circular basis function, while
 %  S symbolizes the singular circular basis function. Note that (S|S) and 
-%  (S|R) are respectively equivalent to (R|R) and (R|S).
+%  (S|R) are equivalent to (R|R) and (R|S), respectively.
 %
 %  see also: circexp_mono_ps, circexp_mono_pw
  
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -65,17 +65,12 @@ function [EF, EFm] = circexp_mono_translation(xt, mode, Nce, f, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
+nargmin = 5;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargposition(xt);
 isargchar(mode);
 isargpositivescalar(Nce,f);
-if nargin<nargmax
-  conf = SFS_config;
-else
-  isargstruct(conf);
-end
 
 %% ===== Configuration ==================================================
 c = conf.c;

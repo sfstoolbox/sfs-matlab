@@ -7,12 +7,12 @@ function ABm = circexp_mono_ls(xs, mode, Nce, f, xq, conf)
 %       xs          - position of line source
 %       mode        - 'R' for regular, 'S' for singular
 %       Nce         - maximum order of circular basis functions
-%       f           - frequency / Hz [1 x m] or [m x 1]
+%       f           - frequency / Hz [1 x Nf] or [Nf x 1]
 %       xq          - optional expansion center / m [1 x 3]
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       ABm         - regular cylindrical Expansion Coefficients
+%       ABm         - regular cylindrical expansion coefficients [2*Nce+1 x Nf]
 %
 %   CIRCEXP_MONO_LS(xs, mode, Nce, f, xq, conf) computes the regular circular
 %   expansion coefficients for a line source. The expansion will be done 
@@ -35,18 +35,18 @@ function ABm = circexp_mono_ls(xs, mode, Nce, f, xq, conf)
 %
 %   with the expansion coefficients):
 %    m   -i           
-%   A  = ---  R (x -x ) 
+%   B  = ---  R (x -x ) 
 %    n    4    n  s  q
 %
 %   see also: circexp_mono_pw circexp_mono_scatter
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -73,23 +73,14 @@ function ABm = circexp_mono_ls(xs, mode, Nce, f, xq, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
+nargmin = 6;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargposition(xs);
 isargchar(mode);
 isargpositivescalar(Nce);
 isargvector(f);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
-if nargin == nargmin
-    xq = [0,0,0];
-else
-  isargposition(xq);
-end
+isargposition(xq);
 
 %% ===== Configuration ==================================================
 c = conf.c;

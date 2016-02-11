@@ -99,7 +99,11 @@ elseif strcmp('2.5D',dimension)
         % 2.5D for a plane wave as source model
 
         % --- bilinear transformation ------------------------------------
-        [Z,P] = bilinear(p,z*c/R,1,fs);
+        if isoctave
+            [Z,P] = bilinear(p,z*c/R,1,1/fs);
+        else
+            [Z,P] = bilinear(p,z*c/R,1,fs);
+        end
         sos = zp2sos(Z,P,1,'up','none');
         % normalize the response at fs/2 to 0 dB
         for ii=1:size(sos,1)

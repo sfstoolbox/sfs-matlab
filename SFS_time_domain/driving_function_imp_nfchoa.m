@@ -76,8 +76,13 @@ X0 = conf.secondary_sources.center;
 pulse = dirac_imp();
 % Radius of array
 R = norm(x0(1,1:3)-X0);
-% Get maximum order of spherical harmonics
-order = nfchoa_order(nls,conf);
+% Ambisonics order
+if isempty(conf.nfchoa.order)
+    % Get maximum order of spherical harmonics
+    order = nfchoa_order(nls,conf);
+else
+    order = conf.nfchoa.order;
+end
 
 % Correct position of source for off-center arrays
 xs(1:3) = xs(1:3)-X0;
@@ -111,50 +116,92 @@ for n=2:order+1
     end
 end
 
+% (3) DFT-II
+if(0)
+d = zeros(2*order+1,N);
+for n=-order:order
+    d(n+order+1,:) = dm(abs(n)+1,:) * exp(-1i*n*theta_src);
+end
+end
+    
+
+% (1) direct computation
+if(1)
+d = zeros(N,nls);
+for n=1:nls
+    phin = 2*pi/nls*(n-1);
+    dtemp = zeros(1,N);
+    for m=-order:order
+        dtemp = dtemp + dm(abs(m)+1,:) .* exp(1i*m*(phin-theta_src));
+    end
+    d(:,n) = 1/(2*order+1)*transpose(dtemp);
+end
+end
+% d = real(d);
+
+% (2) DFT
+if(0)
 % Compute input signal for IFFT
 d = zeros(2*order+1,N);
 for n=-order:order
     d(n+order+1,:) = dm(abs(n)+1,:) .* exp(-1i*n*theta_src);
 end
-
-if(iseven(nls))
-   d = d(2:end,:);
+d = circshift(d,[order+1,0]);
+dfull = zeros(N,nls);
+dfull(:,1:order+1) = transpose(d(1:order+1,:));
+dfull(:,end-order+1:end) = transpose(d(order+2:end,:));
+d = (2*order+1) * ifft(dfull,[],2);
 end
 
+
+
+% (0) original
+% Compute input signal for IFFT
+if(0)
+d = zeros(2*order+1,N);
+for n=-order:order
+    d(n+order+1,:) = dm(abs(n)+1,:) .* exp(-1i*n*theta_src);
+end
+ 
+if(iseven(nls))
+%    d = d(2:end,:);
+   d = [zeros(1,size(d,2));d]; % zeros at M+1 th order
+end
 % Spatial IFFT
 d = circshift(d,[order+1 0]);
 d = (2*order+1)*ifft(d,[],1);
 d = real(d');
+end
 
 % Subsample d if we have fewer secondary sources than the applied order
-if size(d,2)>nls
-    % Check if we have a multiple of the order
-    if mod(size(d,2),nls)~=0
-        conf_tmp = conf;
-        conf_tmp.nfchoa.order = [];
-        error(['%s: the given number of driving signals (%i) cannot ', ...
-            'be subsampled to %i secondary sources. Choose a NFC-HOA ', ...
-            'order that is a multiple of %i.'], ...
-            upper(mfilename),size(d,2),nls,nfchoa_order(nls,conf_tmp));
-    end
-    % Subsample d
-    ratio = size(d,2)/nls;
-    d = d(:,1:ratio:end);
-% Subsample the secondary sources if we have fewer driving signals than
-% secondary sources
-elseif size(d,2)<nls
-    % Check if we have a multiple of the secondary sources
-    if mod(nls,size(d,2))~=0
-        conf_tmp = conf;
-        conf_tmp.nfchoa.order = [];
-         error(['%s: the given number of secondary sources (%i) cannot ', ...
-            'be subsampled to %i driving signals. Choose a NFC-HOA ', ...
-            'order that is a multiple of %i.'], ...
-            upper(mfilename),nls,size(d,2),nfchoa_order(size(d,2),conf));
-    end
-    % Subsample x0
-    ratio = nls/size(d,2);
-    d_new = zeros(N,nls);
-    d_new(:,1:ratio:end) = d;
-    d = d_new;
-end
+% if size(d,2)>nls
+%     % Check if we have a multiple of the order
+%     if mod(size(d,2),nls)~=0
+%         conf_tmp = conf;
+%         conf_tmp.nfchoa.order = [];
+%         error(['%s: the given number of driving signals (%i) cannot ', ...
+%             'be subsampled to %i secondary sources. Choose a NFC-HOA ', ...
+%             'order that is a multiple of %i.'], ...
+%             upper(mfilename),size(d,2),nls,nfchoa_order(nls,conf_tmp));
+%     end
+%     % Subsample d
+%     ratio = size(d,2)/nls;
+%     d = d(:,1:ratio:end);
+% % Subsample the secondary sources if we have fewer driving signals than
+% % secondary sources
+% elseif size(d,2)<nls
+%     % Check if we have a multiple of the secondary sources
+%     if mod(nls,size(d,2))~=0
+%         conf_tmp = conf;
+%         conf_tmp.nfchoa.order = [];
+%          error(['%s: the given number of secondary sources (%i) cannot ', ...
+%             'be subsampled to %i driving signals. Choose a NFC-HOA ', ...
+%             'order that is a multiple of %i.'], ...
+%             upper(mfilename),nls,size(d,2),nfchoa_order(size(d,2),conf));
+%     end
+%     % Subsample x0
+%     ratio = nls/size(d,2);
+%     d_new = zeros(N,nls);
+%     d_new(:,1:ratio:end) = d;
+%     d = d_new;
+% end

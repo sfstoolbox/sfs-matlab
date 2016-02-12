@@ -10,7 +10,7 @@ function Dnm = driving_function_mono_wfs_sht_sphexp(Pnm, mode, f, conf)
 %                     sound field
 %       mode        - 'R' for regular expansion, 'S' for singular expansion
 %       f           - frequency / Hz
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       Dnm         - regular spherical harmonics transform of driving
@@ -19,12 +19,12 @@ function Dnm = driving_function_mono_wfs_sht_sphexp(Pnm, mode, f, conf)
 %   DRIVING_FUNCTION_MONO_WFS_SHT_SPHEXP(Pnm, mode, f, conf)
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -51,17 +51,13 @@ function Dnm = driving_function_mono_wfs_sht_sphexp(Pnm, mode, f, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargmatrix(Pnm);
 isargvector(f);
 isargchar(mode);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 %% ===== Configuration ==================================================
 c = conf.c;

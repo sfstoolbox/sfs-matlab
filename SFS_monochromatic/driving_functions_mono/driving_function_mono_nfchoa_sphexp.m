@@ -8,7 +8,7 @@ function D = driving_function_mono_nfchoa_sphexp(x0, Pnm,f,conf)
 %       x0          - position of the secondary sources / m [nx3]
 %       Pnm         - regular spherical expansion coefficients of sound field
 %       f           - frequency in Hz
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
@@ -20,12 +20,12 @@ function D = driving_function_mono_nfchoa_sphexp(x0, Pnm,f,conf)
 %   see also: driving_function_mono_wfs_sphexp
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -52,17 +52,13 @@ function D = driving_function_mono_nfchoa_sphexp(x0, Pnm,f,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargmatrix(x0);
 isargvector(Pnm);
 isargpositivescalar(f);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 if mod(sqrt(size(Pnm, 1)),1) ~= 0
   error(['%s: number of columns of Pnm (%s) is not the square of an', ...
     'integer.'], upper(mfilename), sqrt(size(Pnm, 1)));
@@ -72,8 +68,9 @@ end
 c = conf.c;
 dimension = conf.dimension;
 Xc = conf.secondary_sources.center;
-N0 = conf.secondary_sources.number;
 xref = conf.xref - Xc;
+rref = norm( xref );  % reference radius
+thetaref = asin( xref(3)./rref);  % reference elevation angle
 
 %% ===== Variables ======================================================
 Nse = sqrt(size(Pnm, 1))-1;
@@ -171,7 +168,7 @@ elseif strcmp('2.5D',dimension)
           (-1).^(m) .* ...
           sqrt( (2*n+1) ./ (4*pi) ) .* ...
           sqrt( factorial(n-abs(m)) ./ factorial(n+abs(m)) ) .* ...
-          asslegendre(n,abs(m),0);       
+          asslegendre(n,abs(m), sin(thetaref));       
         
         Pm = Pm + sphexp_access(Pnm, m, n) .* factor;
         

@@ -8,7 +8,7 @@ function Dnm = driving_function_mono_nfchoa_sht_pw(npw, Nse, f, conf)
 %       npw         - unit vector propagation direction of plane wave
 %       Nse         - maximum order of spherical basis functions
 %       f           - frequency [m x 1] or [1 x m] / Hz
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       Dnm         - regular spherical harmonics transform of driving
@@ -21,12 +21,12 @@ function Dnm = driving_function_mono_nfchoa_sht_pw(npw, Nse, f, conf)
 %   see also: sphexp_mono_pw driving_function_mono_nfchoa_sht_sphexp
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -53,23 +53,18 @@ function Dnm = driving_function_mono_nfchoa_sht_pw(npw, Nse, f, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 3;
+nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargposition(npw);
 isargpositivescalar(Nse);
 isargvector(f);
-if nargin<nargmax
-  conf = SFS_config;
-else
-  isargstruct(conf);
-end
+isargstruct(conf);
 
 %% ===== Configuration ==================================================
 X0 = conf.secondary_sources.center;
 
 %% ===== Computation ====================================================
-
 % Calculate spherical expansion coefficients of point source
 Pnm = sphexp_mono_pw(npw, Nse, f, X0, conf);
 % Calculate spherical harmonics driving function

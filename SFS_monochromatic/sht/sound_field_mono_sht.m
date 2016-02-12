@@ -59,6 +59,7 @@ isargvector(Dnm);
 isargsquaredinteger(length(Dnm));
 isargnumeric(X,Y,Z);
 isargpositivescalar(f);
+isargstruct(conf);
 
 %% ===== Configuration ==================================================
 Xc = conf.secondary_sources.center;

@@ -10,8 +10,8 @@ function D = driving_function_mono_wfs_circexp(x0,n0,Pm,mode,f,xq,conf)
 %       Pm          - circular expansion coefficients of sound field
 %       mode        - 'R' for regular expansion, 'S' for singular expansion
 %       f           - frequency / Hz
-%       xq          - optional expansion center coordinates, default: [0, 0, 0]
-%       conf        - optional configuration struct (see SFS_config)
+%       xq          - expansion center coordinates / m [1x3]
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
@@ -27,12 +27,12 @@ function D = driving_function_mono_wfs_circexp(x0,n0,Pm,mode,f,xq,conf)
 %       Equation in three Dimensions", ELSEVIER
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -59,19 +59,12 @@ function D = driving_function_mono_wfs_circexp(x0,n0,Pm,mode,f,xq,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
+nargmin = 7;
 nargmax = 7;
 narginchk(nargmin,nargmax);
 isargmatrix(x0,n0);
 isargpositivescalar(f);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
-if nargin == nargmin
-  xq = [0, 0, 0];
-end
+isargstruct(conf);
 isargposition(xq);
 
 %% ===== Configuration ==================================================

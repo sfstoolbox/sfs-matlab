@@ -9,7 +9,7 @@ function Dnm = driving_function_mono_nfchoa_sht_sphexp(Pnm, f, conf)
 %       Pnm         - regular spherical expansion coefficients of virtual
 %                     sound field [nxm]
 %       f           - frequency in Hz [m x 1] or [1 x m]
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       Dnm         - regular spherical harmonics transform of driving
@@ -20,12 +20,12 @@ function Dnm = driving_function_mono_nfchoa_sht_sphexp(Pnm, f, conf)
 %   expressed by regular spherical expansion coefficients and the frequency f.
 
 %*****************************************************************************
-% Copyright (c) 2010-2014 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2014 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -52,17 +52,13 @@ function Dnm = driving_function_mono_nfchoa_sht_sphexp(Pnm, f, conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 2;
+nargmin = 3;
 nargmax = 3;
 narginchk(nargmin,nargmax);
 isargmatrix(Pnm);
 isargsquaredinteger(size(Pnm,1));
 isargvector(f);
-if nargin<nargmax
-  conf = SFS_config;
-else
-  isargstruct(conf);
-end
+isargstruct(conf);
 if size(Pnm,2) ~= length(f)
   error( '%s:number of rows in %s have to match length of %s', ...
     upper(mfilename), inputname(1), inputname(2) );
@@ -77,7 +73,7 @@ Xc = conf.secondary_sources.center;
 r0 = conf.secondary_sources.size / 2;
 xref = conf.xref - Xc;
 rref = norm( xref );  % reference radius
-thetaref = asin( norm(xref(3))/rref);  % reference elevation angle
+thetaref = asin( xref(3)./rref);  % reference elevation angle
 
 %% ===== Variables ======================================================
 Nse = sqrt(size(Pnm,1))-1;
@@ -146,7 +142,7 @@ if strcmp('2.5D',dimension)
             (-1).^(m) .* ...
             sqrt( (2*n+1) ./ (4*pi) ) .* ...
             sqrt( factorial(n-abs(m)) ./ factorial(n+abs(m)) ) .* ...
-            asslegendre(n,abs(m), thetaref);
+            asslegendre(n,abs(m), sin(thetaref));
 
           v = sphexp_index(m,n);
         

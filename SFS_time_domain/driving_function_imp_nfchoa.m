@@ -70,12 +70,12 @@ nls = size(x0,1);
 N = conf.N;
 X0 = conf.secondary_sources.center;
 
-
 %% ===== Computation =====================================================
 % Generate stimulus pusle
 pulse = dirac_imp();
 % Radius of array
-R = norm(x0(1,1:3)-X0);
+R = norm(x0(1,1:3)-X0); 
+R = conf.secondary_sources.size/2;
 % Ambisonics order
 if isempty(conf.nfchoa.order)
     % Get maximum order of spherical harmonics
@@ -116,92 +116,42 @@ for n=2:order+1
     end
 end
 
-% (3) DFT-II
-if(0)
-d = zeros(2*order+1,N);
-for n=-order:order
-    d(n+order+1,:) = dm(abs(n)+1,:) * exp(-1i*n*theta_src);
-end
-end
-    
+% -------------------------------------------------------------------------
+%                      ___
+%                1     \
+% D(phi0,w) = -------  /__     Hm(w) e^(im(phi0-phi_src))
+%             2 pi r0  m=-M..M
+%
+% see Spors et al. (2011), eq.(4) and (5)
+%--------------------------------------------------------------------------
 
-% (1) direct computation
-if(1)
-d = zeros(N,nls);
-for n=1:nls
-    phin = 2*pi/nls*(n-1);
-    dtemp = zeros(1,N);
-    for m=-order:order
-        dtemp = dtemp + dm(abs(m)+1,:) .* exp(1i*m*(phin-theta_src));
+% Compute input signal for IFFT
+dM = zeros(2*order+1,N);
+for n=-order:order
+    dM(n+order+1,:) = dm(abs(n)+1,:) * exp(-1i*n*theta_src);
+end
+% spatial IFFT
+d = zeros(nls,N);
+for l=1:N
+    d(:,l) = sum(buffer(dM(:,l),nls),2);
+end
+d = circshift(d,[-order,0]);
+d = ifft(transpose(d),[],2);
+d = 1/pi/R*nls*real(d);
+
+% -------------------------------------------------------------------------
+% The following is the direct implementation of the spatial IDFT which
+% takes longer time for higher orders.
+% 
+if(0)
+    d = zeros(N,nls);
+    for n=1:nls
+        phin = 2*pi/nls*(n-1); % first phi0 always 0 ??
+        dtemp = zeros(1,N);
+        for m=-order:order
+            dtemp = dtemp + dm(abs(m)+1,:) .* exp(1i*m*(phin-theta_src));
+        end
+        d(:,n) = transpose(dtemp);
     end
-    d(:,n) = 1/(2*order+1)*transpose(dtemp);
+    d = 1/pi/R*real(d);
 end
-end
-% d = real(d);
-
-% (2) DFT
-if(0)
-% Compute input signal for IFFT
-d = zeros(2*order+1,N);
-for n=-order:order
-    d(n+order+1,:) = dm(abs(n)+1,:) .* exp(-1i*n*theta_src);
-end
-d = circshift(d,[order+1,0]);
-dfull = zeros(N,nls);
-dfull(:,1:order+1) = transpose(d(1:order+1,:));
-dfull(:,end-order+1:end) = transpose(d(order+2:end,:));
-d = (2*order+1) * ifft(dfull,[],2);
-end
-
-
-
-% (0) original
-% Compute input signal for IFFT
-if(0)
-d = zeros(2*order+1,N);
-for n=-order:order
-    d(n+order+1,:) = dm(abs(n)+1,:) .* exp(-1i*n*theta_src);
-end
- 
-if(iseven(nls))
-%    d = d(2:end,:);
-   d = [zeros(1,size(d,2));d]; % zeros at M+1 th order
-end
-% Spatial IFFT
-d = circshift(d,[order+1 0]);
-d = (2*order+1)*ifft(d,[],1);
-d = real(d');
-end
-
-% Subsample d if we have fewer secondary sources than the applied order
-% if size(d,2)>nls
-%     % Check if we have a multiple of the order
-%     if mod(size(d,2),nls)~=0
-%         conf_tmp = conf;
-%         conf_tmp.nfchoa.order = [];
-%         error(['%s: the given number of driving signals (%i) cannot ', ...
-%             'be subsampled to %i secondary sources. Choose a NFC-HOA ', ...
-%             'order that is a multiple of %i.'], ...
-%             upper(mfilename),size(d,2),nls,nfchoa_order(nls,conf_tmp));
-%     end
-%     % Subsample d
-%     ratio = size(d,2)/nls;
-%     d = d(:,1:ratio:end);
-% % Subsample the secondary sources if we have fewer driving signals than
-% % secondary sources
-% elseif size(d,2)<nls
-%     % Check if we have a multiple of the secondary sources
-%     if mod(nls,size(d,2))~=0
-%         conf_tmp = conf;
-%         conf_tmp.nfchoa.order = [];
-%          error(['%s: the given number of secondary sources (%i) cannot ', ...
-%             'be subsampled to %i driving signals. Choose a NFC-HOA ', ...
-%             'order that is a multiple of %i.'], ...
-%             upper(mfilename),nls,size(d,2),nfchoa_order(size(d,2),conf));
-%     end
-%     % Subsample x0
-%     ratio = nls/size(d,2);
-%     d_new = zeros(N,nls);
-%     d_new(:,1:ratio:end) = d;
-%     d = d_new;
-% end

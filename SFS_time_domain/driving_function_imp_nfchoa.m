@@ -75,7 +75,6 @@ X0 = conf.secondary_sources.center;
 pulse = dirac_imp();
 % Radius of array
 R = norm(x0(1,1:3)-X0); 
-R = conf.secondary_sources.size/2;
 % Ambisonics order
 if isempty(conf.nfchoa.order)
     % Get maximum order of spherical harmonics

@@ -137,7 +137,12 @@ elseif strcmp('ls',src)
     % see Wierstorf et al. (2015), eq.(#wfs:ps:selection) and
     % eq.(#wfs:ls:selection)
     %
-    %FIXME: The following is not used, as it would require conf
+    %NOTE: We don't check if we are in a 2D or 3D scenario and use xs(4:6)
+    % whenever it is present. This can only provide problems if you use the
+    % 2D or 2.5D case together with x0(:,6) ~= 0.
+    % If you want to avoid this from happening, you have to add conf as a
+    % parameter to this function and use the following code instead of the
+    % if-esle-statement:
     %[xs,nxs] = get_position_and_orientation_ls(xs,conf);
     if size(xs,2)~=6
         nxs = [0 0 1];

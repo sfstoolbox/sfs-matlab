@@ -91,6 +91,9 @@ else
   [samples, channels] = size(sig);
   reshaped = false;
 end
+% If only single valued time delay and weight is given, create vectors
+if channels>1 && length(dt)==1, dt=repmat(dt,[1 channels]); end
+if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
 
 rfactor = 1.0;  % ratio of signal length and delayline length
 switch fracdelay.pre.method

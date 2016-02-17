@@ -64,11 +64,12 @@ isargstruct(conf);
 %% ===== Configuration ==================================================
 Xc = conf.secondary_sources.center;
 r0 = conf.secondary_sources.size / 2;
+useplot = conf.plot.useplot;
 
 %% ===== Computation ====================================================
 [x,y,z] = xyz_grid(X,Y,Z,conf);
 % find coordinates, which are inside and outside the loudspeaker array
-select = sqrt((x(:)-Xc(1)).^2 + (y(:)-Xc(2)).^2 + (z(:)-Xc(3)).^2) <= r0;
+select = sqrt((x-Xc(1)).^2 + (y-Xc(2)).^2 + (z-Xc(3)).^2) <= r0;
 
 if (numel(x) == 1) x = repmat(x, size(select)); end
 if (numel(y) == 1) y = repmat(y, size(select)); end
@@ -81,10 +82,29 @@ if any(select(:))
   P(select) = sound_field_mono_sphexp(x(select), y(select), z(select), ...
     Pnm, 'R', f, Xc,conf);
 end
+  
 if any(~select(:))
   Pnm = sphexp_mono_sht(Dnm,'S',f,conf);
-  P(~select) = sound_field_mono_sphexp(x(~select), y(~select), z(~select), ...
-    Pnm, 'S', f, Xc,conf);
+  if sum( ~select(:) ) == 2
+    % this handle cases, where x(~select) would only contain 2 entries, which
+    % would be interpreted as a range by the sound_field_... function
+    xtmp = x(~select);
+    ytmp = y(~select);
+    ztmp = z(~select);
+    Ptmp(1) = sound_field_mono_sphexp(xtmp(1), ytmp(1), ztmp(1), ...
+      Pnm, 'S', f, Xc,conf);
+    Ptmp(2) = sound_field_mono_sphexp(xtmp(2), ytmp(2), ztmp(2), ...
+      Pnm, 'S', f, Xc,conf);
+    P(~select) = [Ptmp(1); Ptmp(2)];
+  else
+    P(~select) = sound_field_mono_sphexp(x(~select), y(~select), z(~select), ...
+      Pnm, 'S', f, Xc,conf);
+  end
+end
+
+%% ===== Plotting =======================================================
+if (nargout==0 || useplot)
+    plot_sound_field(P,X,Y,Z,[],conf);
 end
 
 end

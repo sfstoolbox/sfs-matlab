@@ -11,6 +11,7 @@ function [x0,idx] = secondary_source_selection(x0,xs,src)
 %                       'pw'  - plane wave (xs is the direction of the
 %                               plane wave in this case)
 %                       'ps'  - point source
+%                       'ls'  - line source
 %                       'fs'  - focused source
 %                       'vss' - distribution of focused sources for local WFS
 %
@@ -78,14 +79,13 @@ if strcmp('vss', src) && size(xs,2)~=6
 elseif ~strcmp('vss', src)
     isargxs(xs);
 end
-
 if strcmp('fs',src) && size(xs,2)~=6
     error(['%s: you have chosen "fs" as source type, then xs has ', ...
            'to be [1x6] including the direction of the focused source.'], ...
         upper(mfilename));
-elseif ~strcmp('fs',src) &&  ~strcmp('vss',src) && size(xs,2)~=3
-    error(['%s: for all source types beside "fs" and "vss", the size of ', ...
-           'xs has to be [1x3].'],upper(mfilename));
+elseif ~strcmp('fs',src) && ~strcmp('vss',src) && ~strcmp('ls',src) && size(xs,2)~=3
+    error(['%s: for all source types beside "fs", "ls" and "vss", ', ...
+           'the size of xs has to be [1x3].'],upper(mfilename));
 end
 
 
@@ -110,7 +110,7 @@ if strcmp('pw',src)
     % Direction of plane wave (nk) is set above
     idx = nx0*nk(:) >=eps;
 
-elseif strcmp('ps',src) || strcmp('ls',src)
+elseif strcmp('ps',src)
     % === Point source ===
     % Secondary source selection
     %
@@ -121,7 +121,36 @@ elseif strcmp('ps',src) || strcmp('ls',src)
     % see Wierstorf et al. (2015), eq.(#wfs:ps:selection) and
     % eq.(#wfs:ls:selection)
     %
-    idx = sum(nx0.*x0,2) - nx0*xs.' >=eps;
+    idx = sum(nx0.*x0,2) - nx0*xs(1:3).' >=eps;
+
+elseif strcmp('ls',src)
+    % === Line source ===
+    % Secondary source selection
+    %
+    %      / 1, if v nx0 > 0
+    % a = <
+    %      \ 0, else
+    %
+    % where v = x0-xs - <x0-xs,nxs > nxs,
+    % and |nxs| = 1.
+    %
+    % see Wierstorf et al. (2015), eq.(#wfs:ps:selection) and
+    % eq.(#wfs:ls:selection)
+    %
+    %NOTE: We don't check if we are in a 2D or 3D scenario and use xs(4:6)
+    % whenever it is present. This can only provide problems if you use the
+    % 2D or 2.5D case together with x0(:,6) ~= 0.
+    % If you want to avoid this from happening, you have to add conf as a
+    % parameter to this function and use the following code instead of the
+    % if-esle-statement:
+    %[xs,nxs] = get_position_and_orientation_ls(xs,conf);
+    if size(xs,2)~=6
+        nxs = [0 0 1];
+    else
+        nxs = xs(4:6) / norm(xs(4:6),2);
+    end
+    v = (x0 - repmat(xs(1:3),[size(x0,1),1]))*(eye(3) - nxs'*nxs);
+    idx = (vector_product(v,nx0,2) > 0);
 
 elseif strcmp('fs',src)
     % === Focused source ===

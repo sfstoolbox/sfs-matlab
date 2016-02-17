@@ -67,6 +67,9 @@ narginchk(nargmin,nargmax);
 isargmatrix(x0,nx0,xs);
 isargpositivescalar(f);
 isargstruct(conf);
+if size(xs,2)~=3
+    error('%s: size(xs,2) has to be 3 and not %i.',upper(mfilename),size(xs,2));
+end
 
 
 %% ===== Configuration ==================================================

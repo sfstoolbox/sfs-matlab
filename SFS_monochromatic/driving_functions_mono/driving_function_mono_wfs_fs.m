@@ -67,6 +67,9 @@ narginchk(nargmin,nargmax);
 isargmatrix(x0,nx0,xs);
 isargpositivescalar(f);
 isargstruct(conf);
+if size(xs,2)~=3
+    error('%s: size(xs,2) has to be 3 and not %i.',upper(mfilename),size(xs,2));
+end
 
 
 %% ===== Configuration ==================================================
@@ -98,6 +101,8 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % see Wierstorf et al. (2015), eq.(#D:wfs:fs)
         %
         % r = |x0-xs|
+        size(x0)
+        size(xs)
         r = vector_norm(x0-xs,2);
         % Driving signal
         D = 1/(2*pi) * 1i*omega/c .* ...

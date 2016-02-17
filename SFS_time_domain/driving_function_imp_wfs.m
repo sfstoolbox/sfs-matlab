@@ -91,25 +91,22 @@ xs = repmat(xs(1:3),[size(x0,1) 1]);
 
 % Get the delay and weighting factors
 if strcmp('pw',src)
-    % === Plane wave =====================================================
+    % === Plane wave ===
     % Direction of plane wave
     nk = bsxfun(@rdivide,xs,vector_norm(xs(:,1:3),2));
     % Delay and amplitude weight
     [delay,weight] = driving_function_imp_wfs_pw(x0,nx0,nk,conf);
 
 elseif strcmp('ps',src)
-    % === Point source ===================================================
-    % Delay and amplitude weight
+    % === Point source ===
     [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs(:,1:3),conf);
 
 elseif strcmp('ls',src)
-    % === Line source ====================================================
-    % Delay and amplitude weight
+    % === Line source ===
     [delay,weight] = driving_function_imp_wfs_ls(x0,nx0,xs,conf);
 
 elseif strcmp('fs',src)
-    % === Focused source =================================================
-    % Delay and amplitude weight
+    % === Focused source ===
     [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs(:,1:3),conf);
 else
     error('%s: %s is not a known source type.',upper(mfilename),src);

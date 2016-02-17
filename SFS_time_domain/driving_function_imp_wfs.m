@@ -1,24 +1,26 @@
-function [d,delay,weight] = driving_function_imp_wfs(x0,xs,src,conf)
+function [d,delay,weight,delay_offset] = driving_function_imp_wfs(x0,xs,src,conf)
 %DRIVING_FUNCTION_IMP_WFS_25D calculates the WFS weighting and delaying
 %
 %   Usage: [d,delay,weight] = driving_function_imp_wfs(x0,xs,src,conf)
 %
 %   Input parameters:
-%       x0      - positions and directions of secondary sources / m [nx6]
-%       xs      - position of virtual source or direction of plane wave / m
-%                 [1x3]
-%       src     - source type of the virtual source
-%                     'pw' - plane wave (xs, ys are the direction of the
-%                            plane wave in this case)
-%                     'ps' - point source
-%                     'ls' - line source
-%                     'fs' - focused source
-%       conf    - configuration struct (see SFS_config)
+%       x0              - positions and directions of secondary
+%                         sources / m [nx6]
+%       xs              - position of virtual source or direction of
+%                         plane wave / m [1x3]
+%       src             - source type of the virtual source
+%                           'pw' - plane wave (xs, ys are the direction of the
+%                                  plane wave in this case)
+%                           'ps' - point source
+%                           'ls' - line source
+%                           'fs' - focused source
+%       conf            - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       d       - driving signals [mxn]
-%       delay   - delay of the driving function / s [nx1]
-%       weight  - weight (amplitude) of the driving function [nx1]
+%       d               - driving signals [mxn]
+%       delay           - delay of the driving function / s [nx1]
+%       weight          - weight (amplitude) of the driving function [nx1]
+%       delay_offset    - additional added delay, so you can correct it
 %
 %   DRIVING_FUNCTION_IMP_WFS(x0,xs,src,conf) returns the driving signals and
 %   weighting and delay parameters of the WFS driving function for the given
@@ -78,7 +80,7 @@ removedelay = conf.wfs.removedelay;
 
 %% ===== Computation =====================================================
 % Calculate pre-equalization filter if required
-pulse = wfs_preequalization(dirac_imp(),conf);
+[pulse,prefilter_delay] = wfs_preequalization(dirac_imp(),conf);
 
 % Secondary source positions and directions
 nx0 = x0(:,4:6);
@@ -114,11 +116,13 @@ else
 end
 
 if removedelay
-    % Remove delay offset, in order to begin always at t=0 with the first wave front
-    % at any secondary source
-    delay = delay-min(delay);
+    % Set minimum delay to 0, in order to begin always at t=0 with the first
+    % wave front at any secondary source
+    delay = delay - min(delay);
+    % Return extra offset due to prefilter
+    delay_offset = prefilter_delay;
 else
-    % Delay to ensure causality at all secondary sources
+    % Add extra delay to ensure causality at all secondary sources (delay>0)
     [diameter,center] = secondary_source_diameter(conf);
     t0 = diameter/c;
     if (ceil((max(delay)+t0)*fs) - 1 ) > N
@@ -135,6 +139,9 @@ else
         end
     end
     delay = delay + t0;
+    % Return extra added delay. This is can be used to ensure that the virtual
+    % source always starts at t = 0.
+    delay_offset = t0 + prefilter_delay;
 end
 % Append zeros at the end of the driving function. This is necessary, because
 % the delayline function cuts into the end of the driving signals in order to

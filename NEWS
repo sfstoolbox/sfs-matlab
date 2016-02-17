@@ -14,6 +14,7 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
     - remove cubehelix colormap as it is part of Octave
     - add conf.wfs.removedelay option with is useful, if you have more than one
       virtual source
+    - virtual line sources are now available for monochromatic WFS and NFC-HOA
 
 2.0.0 (26. October 2015)
 

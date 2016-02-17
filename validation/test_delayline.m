@@ -48,14 +48,6 @@ dt=[-5 -2.5 0 2.5 5];
 %dt=1*[0 0.01 0.02 0.03 0.04 0.05 0.06 0.07 0.08 0.09 0.1];
 %dt=linspace(0,2,200);
 % Parameters for delayline
-conf.usefracdelay = true;
-fracdelay_methods = { ...
-    'least_squares'; ...
-    'resample'; ...
-    'interp1'; ...
-};
-
-conf.fracdelay_method = 'interp1';
 
 % Length of input signal
 L=256;
@@ -67,19 +59,33 @@ wpi2=wpi(2:L);
 insig = zeros(L,1);
 insig(L/2) = 1;
 
+conf.fracdelay.filter = 'zoh';  % string
+% order of fractional delay filter (only for Lagrange, Least-Squares & Thiran)
+conf.fracdelay.order = 4;  % / 1
+% delay independent preprocessing methods:
+% 'none'      - do nothing
+% 'resample'  - oversample input signal
+% 'farrow'    - use the Farrow structure (to be implemented)
+conf.fracdelay.pre.method = 'none';  % string
+% oversample factor >= 1 (only for conf.fracdelay.pre.method == 'resample')
+conf.fracdelay.pre.resample.factor = 4;  % / 1
+conf.fracdelay.pre.resample.method = 'pm';
+conf.fracdelay.pre.resample.order = 128;
 
 %% ===== Computation and Plotting ========================================
-for method = fracdelay_methods'
-    conf.fracdelay_method = method{:};
+for preprocessing = {'none', 'resample'}  
+  conf.fracdelay.pre.method = preprocessing{:};  
+  for filter = {'lagrange', 'thiran', 'least_squares', 'zoh'}    
+    conf.fracdelay.filter = filter{:};
 
     % --- Computation ---
     % Test all given delays
     for n=1:length(dt)
-        outsig(:,n) = delayline(insig,dt(n),1,conf);
-        H(:,n) = freqz(outsig(:,n),1,wpi);
-        magresp(:,n) = abs(H(:,n));
-        uwphase(:,n)=-unwrap(angle(H(:,n)));
-        phasdel(:,n) = uwphase(2:L,n)./wpi2';
+      outsig(:,n) = delayline(insig,dt(n),1,conf);
+      H(:,n) = freqz(outsig(:,n),1,wpi);
+      magresp(:,n) = abs(H(:,n));
+      uwphase(:,n)=-unwrap(angle(H(:,n)));
+      phasdel(:,n) = uwphase(2:L,n)./wpi2';
     end
 
     % --- Plotting ---
@@ -89,22 +95,24 @@ for method = fracdelay_methods'
     % Phase delay
     figure;
     plot(wpi2/pi,phasdel-(L/2)+1);
-    title([method{:},' - phase delay']);
+    title(['pre: ', preprocessing{:}, ', filter: ', filter{:},' - phase delay']);
     ylabel('phase delay');
     xlabel('normalized frequency');
+    legend(num2str(dt.'));
     grid on;
     % Magnitude response
     figure;
     plot(wpi/pi,magresp);
-    title([method{:},' - magnitude response']);
+    title(['pre: ', preprocessing{:}, ', filter: ', filter{:},' - magnitude response']);
     ylabel('magnitude');
     xlabel('normalized frequency');
+    legend(num2str(dt.'));
     grid on;
     % Impluse response
     figure;
     %plot(t(L/2-10:L/2+10),outsig(L/2-10:L/2+10,:));
     imagesc(dt,t(L/2-50:L/2+50),db(abs(outsig(L/2-50:L/2+50,:))));
-    title([method{:},' - impulse response']);
+    title(['pre: ', preprocessing{:}, ', filter: ', filter{:},' - impulse response']);
     caxis([-100 10]);
     ylabel('samples');
     xlabel('delay');
@@ -112,5 +120,5 @@ for method = fracdelay_methods'
     turn_imagesc;
     colorbar;
     grid on;
-
+  end
 end

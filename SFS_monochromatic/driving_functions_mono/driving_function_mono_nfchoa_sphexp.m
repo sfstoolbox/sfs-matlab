@@ -5,9 +5,10 @@ function D = driving_function_mono_nfchoa_sphexp(x0, Pnm,f,conf)
 %   Usage: D = driving_function_mono_nfchoa_sphexp(x0,Pnm,f,conf)
 %
 %   Input parameters:
-%       x0          - position of the secondary sources / m [nx3]
+%       x0          - position of the secondary sources / m [N0x3]
 %       Pnm         - regular spherical expansion coefficients of sound field
-%       f           - frequency in Hz
+%                     [N x Nf]
+%       f           - frequency / Hz [Nf x 1] or [1 x Nf]
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -55,9 +56,9 @@ function D = driving_function_mono_nfchoa_sphexp(x0, Pnm,f,conf)
 nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
-isargmatrix(x0);
-isargvector(Pnm);
-isargpositivescalar(f);
+isargsecondarysource(x0);
+isargmatrix(Pnm);
+isargvector(f);
 isargstruct(conf);
 if mod(sqrt(size(Pnm, 1)),1) ~= 0
   error(['%s: number of columns of Pnm (%s) is not the square of an', ...
@@ -83,16 +84,16 @@ x00 = bsxfun(@minus,x0(:,1:3),Xc);
 [phi0, ~,r0] = cart2sph(x00(:,1),x00(:,2),x00(:,3));
 
 % frequency depended stuff
-omega = 2*pi*f;
-k = omega/c;
-kr0 = k.*r0;
+omega = 2*pi*row_vector(f);  % [1 x Nf]
+k = omega./c;  % [1 x Nf]
+kr0 = r0 * k;  % [N0 x Nf]
 
 % reference radius
 [~, ~, rref] = cart2sph(xref(1),xref(2),xref(3));
-krref = k.*rref;
+krref = k.*rref;  % [1 x Nf]
 
 % initialize empty driving signal
-D = zeros(size(x0,1),1);
+D = zeros(size(kr0));  % [N0 x Nf]
 
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
@@ -130,11 +131,12 @@ elseif strcmp('2.5D',dimension)
     %    n               n         n
 
     for m=-Nse:Nse
-      D = D + sphexp_access(Pnm, m) ./ ...
-        (sphbesselh(abs(m),2,kr0) .* sphharmonics(abs(m),-m, 0, 0) ) ...
-        .* exp(1i.*m.*phi0);      
+      v = sphexp_index(m);
+      D = D + bsxfun(@times, Pnm(v,:), exp(1i.*m.*phi0)) ./ ...
+        ( sphbesselh(abs(m),2,kr0) .* sphharmonics(abs(m),-m, 0, 0) );      
     end
-    D = D./(-1i*k);  % factor from expansion of 3D free field Green's Function
+    % factor from expansion of 3D free field Green's Function
+    D = bsxfun(@rdivide, D, -1i*k);  
   else
     % --- Xref ~= Xc ----------------------------------------------------
     %
@@ -143,17 +145,17 @@ elseif strcmp('2.5D',dimension)
     %
     %                              __
     %                             \     m             m
-    %                       __    /__  P  j (k rref) Y (pi/2, 0)
+    %                       __    /__  P  j (k rref) Y (thetaref, 0)
     %               1      \      n=|m| n  n          n
-    % D(phi0,w) = ------   /__    ------------------------------ e^(i m phi0)
+    % D(phi0,w) = ------   /__    --------------------------------- e^(i m phi0)
     %             2pi r0  m=-N..N  __
     %                             \     m             m
-    %                             /__  G  j (k rref) Y (pi/2, 0)
+    %                             /__  G  j (k rref) Y (thetaref, 0)
     %                             n=|m| n  n          n
     %
     
-    hn = zeros(size(x0,1),1,Nse+1);
-    jn = hn;
+    hn = zeros(size(x0,1),length(omega),Nse+1);
+    jn = zeros(1,length(omega),Nse+1);
     for n=0:Nse
     	hn(:,:,n+1) = sphbesselh(n,2,kr0);
       jn(:,:,n+1) = sphbesselj(n,krref);
@@ -162,24 +164,26 @@ elseif strcmp('2.5D',dimension)
     for m=-Nse:Nse
       Pm = 0;
       Gm = 0;
-      % for theta=0 the legendre polynom is zero if n+m is odd
-      for n=abs(m):2:Nse  
+      for n=abs(m):Nse  
         factor = jn(:,:,n+1) .* ...
           (-1).^(m) .* ...
           sqrt( (2*n+1) ./ (4*pi) ) .* ...
           sqrt( factorial(n-abs(m)) ./ factorial(n+abs(m)) ) .* ...
-          asslegendre(n,abs(m), sin(thetaref));       
+          asslegendre(n,abs(m), sin(thetaref));  % [1 x Nf]      
         
-        Pm = Pm + sphexp_access(Pnm, m, n) .* factor;
+        v = sphexp_index(m, n);
         
-        Gm = Gm + (-1i*k) .* hn(:,:,n+1) .* sphharmonics(n, -m, 0, 0) .* factor;
+        Pm = Pm + Pnm(v,:) .* factor;  % [1 x Nf]
+        
+        Gm = Gm + sphharmonics(n, -m, 0, 0) .* ...
+          bsxfun(@times, hn(:,:,n+1), (-1i*k).*factor);  % [N0 x Nf]
       end
       
-      D = D + Pm ./ Gm .* exp(1i.*m.*phi0);    
+      D = D + (exp(1i.*m.*phi0) * Pm) ./ Gm;  % [N0 x Nf]   
     end
   end
-  
-  D = D./(2*pi*r0);  % normalization due to size of circular array 
+  % normalization due to size of circular array
+  D = bsxfun(@rdivide, D, 2*pi*r0);
   
 elseif strcmp('3D',dimension)
   % === 3-Dimensional ==================================================

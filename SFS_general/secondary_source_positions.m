@@ -202,6 +202,34 @@ elseif strcmp('rounded-box', geometry)
     x0(:,1:3) = bsxfun(@plus, x0(:,1:3).*L/2, X0);
     % Scale integration weights
     x0(:,7) = x0(:,7).*L/2;
+elseif strcmp('edge', geometry)
+    alpha = conf.secondary_sources.alpha;
+    if numel(alpha) == 1;
+      alpha = [0, alpha];
+    end
+    
+    nfloor = floor(nls/2);
+    nceil = ceil(nls/2);
+    
+    t = (1:nfloor)*L/nfloor;
+    
+    x0(1:nfloor,1) = t.*cos(alpha(1));
+    x0(1:nfloor,2) = t.*sin(alpha(1));
+    x0(1:nfloor,4) = sin(alpha(1));
+    x0(1:nfloor,5) = -cos(alpha(1));
+   
+    if nfloor ~= nceil
+      x0(nfloor+1,4) = -cos(0.5*alpha(1)+0.5*alpha(2));
+      x0(nfloor+1,5) = -sin(0.5*alpha(1)+0.5*alpha(2));
+    end
+    
+    x0(nceil+1:end,1) = t.*cos(alpha(2));
+    x0(nceil+1:end,2) = t.*sin(alpha(2));
+    x0(nceil+1:end,4) = -sin(alpha(2));
+    x0(nceil+1:end,5) = cos(alpha(2));
+
+    % Scale integration weights
+    x0(:,7) = L./nfloor;
 elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)
     % Get spherical grid + weights
     [points,weights] = get_spherical_grid(nls,conf);

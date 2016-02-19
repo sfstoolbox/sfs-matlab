@@ -5,7 +5,7 @@ clear variables;
 SFS_start;
 
 %% Parameters
-conf = SFS_config_example;
+conf = SFS_config;
 conf.showprogress = true;
 conf.dimension = '2D';
 

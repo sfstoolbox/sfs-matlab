@@ -1,7 +1,8 @@
-function boolean = test_driving_functions(modus)
-%TEST_DRIVING_FUNCTIONS tests the correctness of the driving functions
+function boolean = test_driving_functions_imp_with_delay(modus)
+%TEST_DRIVING_FUNCTIONS_IMP_WITH_DELAY tests the correctness of the time-domain
+%driving functions, in the case of conf.wfs.removedelay=false
 %
-%   Usage: boolean = test_driving_functions(modus)
+%   Usage: boolean = test_driving_functions_imp_with_delay(modus)
 %
 %   Input parameters:
 %       modus   - 0: numerical
@@ -10,9 +11,10 @@ function boolean = test_driving_functions(modus)
 %   Output parameters:
 %       booelan - true or false
 %
-%   TEST_DRIVING_FUNCTIONS(MODUS) checks if the functions, that calculates
-%   the driving functions working correctly. Therefore different sound
-%   fields are simulated.
+%   TEST_DRIVING_FUNCTIONS_IMP_WITH_DELAY(MODUS) checks if the functions,
+%   that calculates the WFS driving functions in time-domain work correctly
+%   for the setting conf.wfs.removedelay = false.
+%   Therefore different sound fields are simulated.
 
 %*****************************************************************************
 % Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
@@ -57,17 +59,16 @@ narginchk(nargmin,nargmax);
 
 %% ===== Configuration ===================================================
 conf = SFS_config;
+conf.wfs.removedelay = false;
 conf.secondary_sources.size = 3;
-f = 1000;
-t = 200;
 conf.plot.useplot = false;
 conf.plot.usenormalisation = true;
+conf.plot.usedb = true;
 conf.driving_functions = 'default';
 % test scenarios
 scenarios = { ...
     'WFS', '2D',   'linear',   'pw', [ 0.5 -1.0  0.0]; ...
     'WFS', '2D',   'linear',   'ls', [ 0.0  1.0  0.0]; ...
-    'WFS', '2D',   'linear',   'ps', [ 0.0  1.0  0.0]; ...
     'WFS', '2D',   'linear',   'fs', [ 0.0 -1.0  0.0  0.0 -1.0  0.0]; ...
     'WFS', '2D',   'circular', 'pw', [ 0.5  0.5  0.0]; ...
     'WFS', '2D',   'circular', 'ls', [ 0.0  2.5  0.0]; ...
@@ -79,26 +80,16 @@ scenarios = { ...
     'WFS', '2D',   'box',      'fs', [ 0.5  0.5  0.0  -1.0  -1.0  0.0]; ...
     'WFS', '2.5D', 'linear',   'pw', [ 0.5 -1.0  0.0]; ...
     'WFS', '2.5D', 'linear',   'ps', [ 0.0  1.0  0.0]; ...
-    'WFS', '2.5D', 'linear',   'ls', [ 0.0  1.0  0.0]; ...
     'WFS', '2.5D', 'linear',   'fs', [ 0.0 -1.0  0.0  0.0 -1.0  0.0]; ...
     'WFS', '2.5D', 'circular', 'pw', [ 0.5  0.5  0.0]; ...
-    'WFS', '2.5D', 'circular', 'ls', [ 0.0  2.5  0.0]; ...
     'WFS', '2.5D', 'circular', 'ps', [ 0.0  2.5  0.0]; ...
     'WFS', '2.5D', 'circular', 'fs', [ 0.0  0.5  0.0  0.0 -1.0  0.0]; ...
     'WFS', '2.5D', 'box',      'pw', [ 0.5  1.0  0.0]; ...
-    'WFS', '2.5D', 'box',      'ls', [ 2.0  2.0  0.0]; ...
     'WFS', '2.5D', 'box',      'ps', [ 2.0  2.0  0.0]; ...
     'WFS', '2.5D', 'box',      'fs', [ 0.5  0.5  0.0 -1.0  -1.0  0.0]; ...
-    'HOA', '2.5D', 'circular', 'pw', [ 0.5  0.5  0.0]; ...
-    'HOA', '2.5D', 'circular', 'ls', [ 0.0  2.5  0.0]; ...
-    'HOA', '2.5D', 'circular', 'ps', [ 0.0  2.5  0.0]; ...
-    'WFS', '3D',   'sphere',   'pw', [ 0.0 -1.0  0.0]; ...
-    'WFS', '3D',   'sphere',   'ls', [ 0.0  2.5  0.0  0.0  1.0  1.0]; ...
     'WFS', '3D',   'sphere',   'ps', [ 0.0  2.5  0.0]; ...
+    'WFS', '3D',   'sphere',   'pw', [ 0.0 -1.0  0.0]; ...
     'WFS', '3D',   'sphere',   'fs', [ 0.0  0.5  0.0  0.0 -1.0  0.0]; ...
-    'HOA', '3D',   'sphere',   'pw', [ 0.0 -1.0  0.0]; ...
-    'HOA', '3D',   'sphere',   'ls', [ 0.0  2.5  0.0  0.0  1.0  1.0]; ...
-    'HOA', '3D',   'sphere',   'ps', [ 0.0  2.5  0.0]; ...
 };
 
 % Start testing
@@ -136,73 +127,34 @@ for ii=1:size(scenarios)
     end
 
     conf.secondary_sources.geometry = scenarios{ii,3};
+    t = scenarios{ii,5};
     src = scenarios{ii,4};
     xs = scenarios{ii,5};
+    % Adjust time for different source types (t=0 corresponds to first activity
+    % of virtual source).
+    if strcmp('ps',src) || strcmp('ls',src)
+        t = 2 / conf.c * conf.fs;   % time for traveling 2 m
+    elseif strcmp('fs',src)
+        t = 0.5 / conf.c * conf.fs; % time for traveling 0.5 m
+    else
+        t = 0;
+    end
 
     % ===== WFS ==========================================================
-    if strcmp('WFS',scenarios{ii,1})
-        % mono-frequent
-        try
-            [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
-            if modus
-                conf.plot.normalisation = 'center';
-                plot_sound_field(P,X,Y,Z,x0,conf);
-                title_str = sprintf('WFS %s %s array, %s, mono-frequent', ...
-                    conf.dimension,conf.secondary_sources.geometry,src);
-                title(title_str);
-            end
-        catch
-            warning('%s: WFS mono-frequent %s array %s %s gives the following error message.', ...
-                upper(mfilename),conf.secondary_sources.geometry,conf.dimension,src);
-            lasterr
+    % spatio-temporal impulse response
+    try
+        [p,x,y,z,x0] = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf);
+        if modus
+            conf.plot.normalisation = 'max';
+            plot_sound_field(p,X,Y,Z,x0,conf);
+            title_str = sprintf('WFS %s %s array, %s, impulse response', ...
+                conf.dimension,conf.secondary_sources.geometry,src);
+            title(title_str);
         end
-        % spatio-temporal impulse response
-        try
-            [p,x,y,z,x0] = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf);
-            if modus
-                conf.plot.normalisation = 'max';
-                plot_sound_field(p,X,Y,Z,x0,conf);
-                title_str = sprintf('WFS %s %s array, %s, impulse response', ...
-                    conf.dimension,conf.secondary_sources.geometry,src);
-                title(title_str);
-            end
-        catch
-            warning('%s: WFS impulse response %s array %s %s gives the following error message.', ...
-                upper(mfilename),conf.secondary_sources.geometry,conf.dimension,src);
-            lasterr
-        end
-    
-    % ===== NFC-HOA ======================================================
-    elseif strcmp('HOA',scenarios{ii,1})
-        % mono-frequent
-        try
-            [P,x,y,z,x0] = sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf);
-            if modus
-                conf.plot.normalisation = 'center';
-                plot_sound_field(P,X,Y,Z,x0,conf);
-                title_str = sprintf('NFC-HOA %s %s array, %s, mono-frequent', ...
-                    conf.dimension,conf.secondary_sources.geometry,src);
-                title(title_str);
-            end
-        catch
-            warning('%s: NFC-HOA mono-frequent %s array %s %s gives the following error message.', ...
-                upper(mfilename),conf.secondary_sources.geometry,conf.dimension,src);
-            lasterr
-        end
-        % spatio-temporal impulse response
-        try
-            [p,x,y,z,x0] = sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf);
-            if modus
-                conf.plot.normalisation = 'max';
-                plot_sound_field(p,X,Y,Z,x0,conf);
-                title_str = sprintf('NFC-HOA %s %s array, %s, impulse response', ...
-                    conf.dimension,conf.secondary_sources.geometry,src);
-                title(title_str);
-            end
-        catch
-            warning('%s: NFC-HOA impulse response %s array %s %s gives the following error message.', ...
-                upper(mfilename),conf.secondary_sources.geometry,conf.dimension,src);
-            lasterr
-        end
+    catch
+        warning('%s: WFS impulse response %s array %s %s gives the following error message.', ...
+            upper(mfilename),conf.secondary_sources.geometry,conf.dimension,src);
+        lasterr
     end
+
 end

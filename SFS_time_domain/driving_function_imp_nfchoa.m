@@ -80,14 +80,7 @@ order = nfchoa_order(nls,conf);
 
 % Correct position of source for off-center arrays
 xs(1:3) = xs(1:3)-X0;
-% If-request as a workaround for the right direction of the sound field
-if strcmpi(src,'pw')
-    [theta_src, r_src] = cart2pol(-xs(1),xs(2));
-elseif strcmpi(src,'ps')
-    [theta_src, r_src] = cart2pol(xs(1),-xs(2));
-else
-    [theta_src, r_src] = cart2pol(xs(1),xs(2));
-end
+[theta_src, r_src] = cart2pol(xs(1),xs(2));
 
 % Compute impulse responses of modal filters
 dm = zeros(order+1,N);
@@ -121,7 +114,7 @@ end
 % Compute input signal for IFFT
 d = zeros(2*order+1,N);
 for n=-order:order
-    d(n+order+1,:) = dm(abs(n)+1,:) .* exp(1i*n*theta_src);
+    d(n+order+1,:) = dm(abs(n)+1,:) .* exp(-1i*n*theta_src);
 end
 
 if(iseven(nls))
@@ -139,7 +132,7 @@ if size(d,2)>nls
     if mod(size(d,2),nls)~=0
         conf_tmp = conf;
         conf_tmp.nfchoa.order = [];
-        error(['%s: the given number of driving signals (%i) can not ', ...
+        error(['%s: the given number of driving signals (%i) cannot ', ...
             'be subsampled to %i secondary sources. Choose a NFC-HOA ', ...
             'order that is a multiple of %i.'], ...
             upper(mfilename),size(d,2),nls,nfchoa_order(nls,conf_tmp));
@@ -154,10 +147,10 @@ elseif size(d,2)<nls
     if mod(nls,size(d,2))~=0
         conf_tmp = conf;
         conf_tmp.nfchoa.order = [];
-         error(['%s: the given number of secondary sources (%i) can not ', ...
+         error(['%s: the given number of secondary sources (%i) cannot ', ...
             'be subsampled to %i driving signals. Choose a NFC-HOA ', ...
             'order that is a multiple of %i.'], ...
-            upper(mfilename),nls,size(d,2),nfchoa_order(size(d,2)));
+            upper(mfilename),nls,size(d,2),nfchoa_order(size(d,2),conf));
     end
     % Subsample x0
     ratio = nls/size(d,2);

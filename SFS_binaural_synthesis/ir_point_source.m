@@ -1,19 +1,19 @@
-function ir = ir_point_source(X,phi,xs,irs,conf)
+function ir = ir_point_source(X,phi,xs,sofa,conf)
 %IR_POINT_SOURCE generates a binaural simulation of a point source
 %
-%   Usage: ir = ir_point_source(X,phi,xs,irs,conf)
+%   Usage: ir = ir_point_source(X,phi,xs,sofa,conf)
 %
 %   Input parameters:
 %       X       - listener position / m
 %       phi     - listener direction [head orientation] / rad
 %       xs      - source position / m
-%       irs     - IR data set for the second sources
+%       sofa    - impulse response data set (sofa struct/file)
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ir      - Impulse response (nx2 matrix)
 %
-%   IR_POINT_SOURCE(X,phi,xs,irs,conf) calculates a impulse response for a
+%   IR_POINT_SOURCE(X,phi,xs,sofa,conf) calculates a impulse response for a
 %   single loudspeaker at position xs and a listener located at X, looking
 %   into direction phi. Whereby at phi = 0 the listener is looking in the
 %   direction of the x-axis.
@@ -64,4 +64,4 @@ isargstruct(conf);
 
 
 %% ===== Computation =====================================================
-ir = ir_generic(X,phi,[xs 0 -1 0 1],1,irs,conf);
+ir = ir_generic(X,phi,[xs 0 -1 0 1],1,sofa,conf);

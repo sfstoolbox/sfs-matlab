@@ -1,29 +1,21 @@
-function m = generate_colormap(table,n)
-%GENERATE_COLORMAP creates a Matlab colormap from the given table
+function boolean = test_colormaps()
+%TEST_COLORMAPS does sound field plots with different colormaps
 %
-%   usage: m = generate_colormap(table,n)
-%
-%   Input parameters:
-%       table - matrix containing the color values as columns [r g b]. The
-%               single colors go from 0 to 255
-%       n     - size of the colormap
+%   Usage: boolean = test_colormaps()
 %
 %   Output parameters:
-%       m     - colormap
+%       booelan - true or false
 %
-%   GENERATE_COLORMAP(table,n) returns an n-by-3 matrix containing a colormap.
-%   The color values are specified in table, which will be interpolated to the
-%   desired number of entries n.
-%
-% See also: moreland, yellowred
+%   TEST_COLORMAPS() creates plots for monochromatic and time-domain sound field in dB
+%   with different colormaps.
 
 %*****************************************************************************
-% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -50,17 +42,55 @@ function m = generate_colormap(table,n)
 %*****************************************************************************
 
 
-%% ===== Checking input parameters =======================================
-nargmin = 2;
-nargmax = 2;
+%% ===== Checking of input  parameters ===================================
+nargmin = 0;
+nargmax = 0;
 narginchk(nargmin,nargmax);
+boolean = false;
 
+%% ===== Configuration ===================================================
+conf = SFS_config;
+xs = [0 -1 0];
+src = 'pw';
+f = 1000;
+t = 300;
+X = [-2 2];
+Y = [-2 2];
+Z = 0;
 
-%% ===== Computation =====================================================
-m = zeros(n,3);
-for ii=1:n
-    for jj=1:3
-        m(ii,jj)=interp1(linspace(1,n,size(table,1)),table(:,jj),ii);
-    end
+%% ===== Monochromatic plots =============================================
+conf.plot.normalisation = 'center';
+conf.plot.usedb = true;
+
+color_maps = { ...
+    'yellowred'; ...
+    'gray'; ...
+    };
+color_maps_reversed = { ...
+    'magma'; ...
+    'cubehelix'; ...
+    'inferno'; ...
+    'bone'; ...
+    };
+
+[P,~,~,~,x0] = sound_field_mono_wfs([-2 2],[-2 2],0,xs,src,f,conf);
+p = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf);
+
+for ii=1:length(color_maps)
+    conf.plot.colormap = color_maps{ii};
+    plot_sound_field(P,X,Y,Z,x0,conf)
+    title(sprintf('Monochromatic, %s',color_maps{ii}))
+    plot_sound_field(p,X,Y,Z,x0,conf)
+    title(sprintf('Time-domain, %s',color_maps{ii}))
 end
-m=m/256;
+for ii=1:length(color_maps_reversed)
+    conf.plot.colormap = color_maps_reversed{ii};
+    plot_sound_field(P,X,Y,Z,x0,conf)
+    colormap(flipud(colormap))
+    title(sprintf('Monochromatic, %s reversed',color_maps_reversed{ii}))
+    plot_sound_field(p,X,Y,Z,x0,conf)
+    colormap(flipud(colormap))
+    title(sprintf('Time-domain, %s reversed',color_maps_reversed{ii}))
+end
+
+boolean = true;

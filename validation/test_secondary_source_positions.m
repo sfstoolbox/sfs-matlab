@@ -1,8 +1,8 @@
-function boolean = test_secondary_sources(modus)
-%TEST_SECONDARY_SOURCES tests the correctness of the secondary source
-%functions
+function boolean = test_secondary_source_positions(modus)
+%TEST_SECONDARY_SOURCE_POSITIONS tests the correctness of the function
+%secondary_source_positions()
 %
-%   Usage: boolean = test_secondary_sources(modus)
+%   Usage: boolean = test_secondary_source_positions(modus)
 %
 %   Input parameters:
 %       modus   - 0: numerical (quiet)
@@ -12,8 +12,9 @@ function boolean = test_secondary_sources(modus)
 %   Output parameters:
 %       booelan - true or false
 %
-%   TEST_SECONDARY_SOURCES(modus) checks if the functions, that calculates
-%   the secondary source positions and directions are working correctly.
+%   TEST_SECONDARY_SOURCE_POSITIONS(modus) checks if the function, that
+%   calculates the secondary source positions and directions is working
+%   correctly.
 
 %*****************************************************************************
 % Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
@@ -234,6 +235,8 @@ x0_box_ref = [
     2.0000   -2.2000         0         0    1.0000         0    0.2414
     ];
 
+
+%% ===== Test secondary source positions =================================
 % Calculate current values
 % linear array
 conf.secondary_sources.geometry = 'linear';

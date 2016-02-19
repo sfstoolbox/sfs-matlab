@@ -1,24 +1,26 @@
-function ir = ir_generic(X,phi,x0,d,sofa,conf)
-%IR_GENERIC Generate a IR
+function [diam,center] = secondary_source_diameter(conf)
+%SECONDARY_SOURCE_DIAMETER calculates the maximum distance
+% between the secondary sources (the diameter) and the center of the
+% smallest ball that contains the array.
 %
-%   Usage: ir = ir_generic(X,phi,x0,d,sofa,conf)
+%   Usage: [diam,center] = secondary_source_diameter(conf)
 %
 %   Input parameters:
-%       X       - listener position / m
-%       phi     - listener direction [head orientation] / rad
-%                 0 means the head is oriented towards the x-axis.
-%       x0      - secondary sources [n x 7] / m
-%       d       - driving signals [m x n]
-%       sofa    - impulse response data set for the secondary sources
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       ir      - Impulse response for the desired driving functions (nx2 matrix)
+%       diam        - diameter of secondary source distribution / m
+%       center      - center of the ball containing SSD / m [1x3]
 %
-%   IR_GENERIC(X,phi,x0,d,sofa,conf) calculates a binaural room impulse
-%   response for the given secondary sources and driving signals.
+%   SECONDARAY_SOURCE_DIAMETER(conf) calculates the maximum
+%   Euklidian distance between the given secondary sources. Additionaly,
+%   the center of the encompassing ball is returned. If one of the predefined
+%   secondary source distributions 'linear', 'circular', or 'spherical' is used,
+%   the returned diameter is equal to conf.secondary_sources.size.
+%   If 'box' or 'rounded-box' is used, the diameter of the bounding box
+%   is returned.
 %
-%   See also: ir_wfs, ir_nfchoa, ir_point_source, auralize_ir
+%   See also: driving_function_imp_wfs, secondary_source_positions
 
 %*****************************************************************************
 % Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
@@ -54,49 +56,40 @@ function ir = ir_generic(X,phi,x0,d,sofa,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 6;
+nargmin = 1;
+nargmax = 1;
 narginchk(nargmin,nargmax);
-isargposition(X);
-isargscalar(phi);
-isargsecondarysource(x0);
-isargmatrix(d);
 isargstruct(conf);
-if size(x0,1)~=size(d,2)
-    error(['%s: The number of secondary sources (%i) and driving ', ...
-        'signals (%i) does not correspond.'], ...
-        upper(mfilename),size(x0,1),size(d,2));
-end
+
 
 %% ===== Configuration ==================================================
-N = conf.N; % target length of BRS impulse responses
+geometry = conf.secondary_sources.geometry;
 
 
-%% ===== Variables ======================================================
-phi = correct_azimuth(phi);
-
-
-%% ===== BRIR ===========================================================
-% Initial values
-ir_generic = zeros(N,2);
-
-% Create a BRIR for every single loudspeaker
-warning('off','SFS:irs_intpol');
-for ii=1:size(x0,1)
-
-    % === Get the desired impulse response.
-    % If needed interpolate the given impulse response set and weight, delay the
-    % impulse for the correct distance
-    ir = get_ir(sofa,X,[phi 0],x0(ii,1:3),'cartesian',conf);
-
-    % === Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay ===
-    % Also applying the weights of the secondary sources including integration
-    % weights or tapering windows etc.
-    ir_generic = ir_generic + fix_length(convolution(ir,d(:,ii)),N).*x0(ii,7);
-
+%% ===== Calculation ====================================================
+if strcmp('line',geometry)   || strcmp('linear',geometry)    || ...
+   strcmp('circle',geometry) || strcmp('circular',geometry)  || ...
+   strcmp('sphere',geometry) || strcmp('spherical',geometry)
+    diam = conf.secondary_sources.size;
+    center = conf.secondary_sources.center;
+elseif strcmp('box',geometry)
+    dx0 = conf.secondary_sources.size/(conf.secondary_sources.number/4-1);
+    diam = (conf.secondary_sources.size+dx0)*sqrt(2);
+    center = conf.secondary_sources.center;
+elseif strcmp('rounded-box',geometry)
+    diam = (conf.secondary_sources.size)*sqrt(2);
+    center = conf.secondary_sources.center;
+else
+    x0 = conf.secondary_sources.x0;
+    if isempty(x0)
+        error(['%s: conf.secondary_sources.x0 must contain the secondary ',...
+            'sources when using geometry %s.'],upper(mfilename),geometry);
+    end
+    % Find source1 :=  source with largest distance from origin
+    [~,idx1] = max(vector_norm(x0(:,1:3),2));
+    % Find source2 := source with maximum distace to source1
+    [diam,idx2] = max(vector_norm(x0(:,1:3) - ...
+        repmat(x0(idx1,1:3),[size(x0,1),1]),2));
+    % Center is half-way between source1 and source2
+    center = x0(idx1,1:3) +  0.5 * (x0(idx2,1:3) - x0(idx1,1:3));
 end
-warning('on','SFS:irs_intpol');
-
-
-%% ===== Headphone compensation =========================================
-ir = compensate_headphone(ir_generic,conf);

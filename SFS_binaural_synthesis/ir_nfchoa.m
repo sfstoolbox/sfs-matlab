@@ -1,7 +1,7 @@
-function [ir,x0] = ir_nfchoa(X,phi,xs,src,irs,conf)
+function [ir,x0] = ir_nfchoa(X,phi,xs,src,sofa,conf)
 %IR_NFCHOA generates a binaural simulation of NFCHOA
 %
-%   Usage: [ir,x0] = ir_nfchoa(X,phi,xs,src,irs,conf)
+%   Usage: [ir,x0] = ir_nfchoa(X,phi,xs,src,sofa,conf)
 %
 %   Input parameters:
 %       X       - listener position / m
@@ -10,14 +10,14 @@ function [ir,x0] = ir_nfchoa(X,phi,xs,src,irs,conf)
 %       xs      - virtual source position [ys > Y0 => focused source] / m
 %       src     - source type: 'pw' -plane wave
 %                              'ps' - point source
-%       irs     - IR data set for the secondary sources
-%       conf    - configuration struct (see SFS_config) 
+%       sofa    - impulse response data set for the secondary sources
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ir      - impulse response for the desired HOA synthesis (nx2 matrix)
 %       x0      - secondary sources
 %
-%   IR_NFCHOA(X,phi,xs,src,L,irs,conf) calculates a binaural room impulse
+%   IR_NFCHOA(X,phi,xs,src,L,sofa,conf) calculates a binaural room impulse
 %   response for a virtual source at xs for a virtual NFCHOA array and a
 %   listener located at X.
 %
@@ -79,4 +79,4 @@ x0 = secondary_source_positions(conf);
 % Calculate driving function
 d = driving_function_imp_nfchoa(x0,xs,src,conf);
 % Generate the impulse response for NFCHOA
-ir = ir_generic(X,phi,x0,d,irs,conf);
+ir = ir_generic(X,phi,x0,d,sofa,conf);

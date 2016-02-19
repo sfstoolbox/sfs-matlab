@@ -62,7 +62,11 @@ isargscalar(phi);
 isargsecondarysource(x0);
 isargmatrix(d);
 isargstruct(conf);
-
+if size(x0,1)~=size(d,2)
+    error(['%s: The number of secondary sources (%i) and driving ', ...
+        'signals (%i) does not correspond.'], ...
+        upper(mfilename),size(x0,1),size(d,2));
+end
 
 %% ===== Configuration ==================================================
 N = conf.N; % target length of BRS impulse responses

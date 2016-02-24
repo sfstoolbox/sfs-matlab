@@ -83,9 +83,8 @@ xs(1:3) = xs(1:3)-X0;
 [theta_src, r_src] = cart2pol(xs(1),xs(2));
 
 % Compute impulse responses of modal filters
-dm = zeros(order+1,N);
-for n=1:order+1
-    dm(n,:) = [pulse zeros(1,N-length(pulse))];
+dm = [repmat(pulse,[order+1 1]) zeros(order+1,N-length(pulse))];
+for n=2:order+1
 
     % Get the second-order sections for the different virtual sources
     if strcmp('pw',src)

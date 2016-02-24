@@ -1,4 +1,4 @@
-function [d] = driving_function_imp_nfchoa(x0,xs,src,conf)
+function [d,dm] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %DRIVING_FUNCTION_IMP_NFCHOA calculates the NFC-HOA driving function
 %
 %   Usage: [d] = driving_function_imp_nfchoa(x0,xs,src,conf)
@@ -14,6 +14,7 @@ function [d] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %
 %   Output parameters:
 %       d  - matrix of driving signals
+%       dm - matrix of driving funtion in spherical/circular domain
 %
 %   DRIVING_FUNCTION_IMP_NFCHOA(x0,xs,src,conf) returns the
 %   driving function of NFC-HOA for the given source type and position,

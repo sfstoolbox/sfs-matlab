@@ -1,9 +1,13 @@
-function SFS_start()
+function SFS_start(printbanner)
 %SFS_START Start the Sound Field Synthesis Toolbox
 %
-%   Usage: SFS_start;
+%   Usage: SFS_start(printbanner)
 %
-%   SFS_START starts the Sound Field Synthesis Toolbox (SFS).
+%   Input parameters:
+%       printbanner - 0: print nothing (default)
+%                     1: print version and web page link
+%
+%   SFS_START(verbosity) starts the Sound Field Synthesis Toolbox (SFS).
 %   This function must be run first in order to add the path's to Matlab.
 %
 %   See also: SFS_config, SFS_version
@@ -41,8 +45,13 @@ function SFS_start()
 %*****************************************************************************
 
 
-%% ===== Configuration ===================================================
-printbanner = true;
+%% ===== Checking of input  parameters ===================================
+nargmin = 0;
+nargmax = 1;
+narginchk(nargmin,nargmax);
+if nargin==0
+    printbanner = false;
+end
 
 
 %% ===== Adding Path's ===================================================
@@ -98,8 +107,7 @@ end
 
 %% ===== Banner ==========================================================
 if(printbanner)
-    % TODO: test if the banner also works under Mac
-    if isunix
+    if ~usejava('desktop') % Looks only nice in console
         banner = sprintf( ...
             ['       ▄▄\n', ...
              ' ▄█▀▀ █▄ ▄█▀▀  Sound Field Synthesis Toolbox %s\n', ...

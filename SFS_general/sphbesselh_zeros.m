@@ -10,8 +10,9 @@ function [z,p] = sphbesselh_zeros(order)
 %       z       - zeros/roots fo the Bessel function
 %       p       - roots of the Bessel function
 %
-%   SPHBESSELH_ZEROS(order) finds zeros and roots for a spherical hankel functin
-%   of the specified order.
+%   SPHBESSELH_ZEROS(order) finds zeros and roots for a spherical hankel function
+%   of the specified order. Due to numerical problems, the order is limited up
+%   to 85.
 %
 %   See also: sphbesselh, driving_function_imp_nfchoa
 
@@ -70,27 +71,21 @@ if order<86
     A(2) = 1;
     p = roots(A);
 else
-    % --- use pre-computed ---
-    % For orders greater than 85 Matlab/Octave is not able to compute the zeros,
-    % because the factorial function returns Inf. We solved this by using the
-    % Multiprecission Toolbox from http://www.advanpix.com and the code given at
-    % the end of this function. With the Toolbox we were able to compute the
-    % zeros up to an order of ... and stored the resulting zeros at
-    % http://github.com/sfstoolbox/data/tree/master/sphbesselh_zeros
-    filename = sprintf('sphbesselh_zeros_order%04.0f.mat',order);
-    file = sprintf('%s/data/sphbesselh_zeros/%s',get_sfs_path(),filename);
-    url = ['https://raw.githubusercontent.com/sfstoolbox/data/master/' ...
-           'sphbesselh_zeros/' filename];
-    % Download file if not present
-    if ~exist(file,'file')
-        download_file(url,file);
-    end
-    load(file);
+    error(['%s: for NFC-HOA orders higher than 85 we have at the moment ', ...
+           'no stable numerical method to caclulate the driving signals.'], ...
+          upper(mfilename));
 end
 return
 
 
 %% ===== Computation with Multiprecission Toolbox ========================
+% For the Multiprecission Toolbox, see: http://www.advanpix.com
+% Unfortunately it turned out, that the obtained zeros with this method have
+% some systematic errors, see
+% https://github.com/sfstoolbox/sfs/issues/57#issuecomment-183791477
+% The following code was used to calculate the zeros with the Multiprecission
+% Toolbox. The results are stored at
+% https://github.com/sfstoolbox/data/tree/master/sphbesselh_zeros
 B = mp(zeros(1,order+2));
 A = B;
 for n=mp(0:order)

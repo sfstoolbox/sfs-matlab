@@ -58,18 +58,16 @@ isargpositivescalar(order);
 
 %% ===== Main ============================================================
 if order<86
-    % --- Compute ---
+    % Formula for nominator (source?)
     B = zeros(1,order+2);
-    A = B;
     for n=0:order
         B(n+1) = factorial(2*order-n)/(factorial(order-n)*factorial(n)*2^(order-n));
     end
     B = B(end:-1:1);
-    % Find zeros/roots
+    % Zeros
     z = roots(B);
-    % Find roots
-    A(2) = 1;
-    p = roots(A);
+    % Poles (are always zero)
+    p = zeros(order,1);
 else
     error(['%s: for orders higher than 85 no stable numerical ', ...
            'method is available at the moment to caclulate the zeros.'], ...

@@ -91,4 +91,4 @@ end
 
 select = (-sin(phi0+phishift).*x0(:,4) + cos(phi0+phishift).*x0(:,5)) > 0;
 D(select) = -D(select);
-D = D*4*pi/alpha/besselh(0,krs);
+D = -j*D*pi/alpha;

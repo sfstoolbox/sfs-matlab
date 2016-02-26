@@ -1,35 +1,25 @@
 function [z,p] = sphhankel_laplace(order)
 
-hankel = struct(...
-  'zeros',[],...
-  'poles',[],...
-  'scale',[],...
-  'delay',[],...
-  'nominator',[],...
-  'denominator',[]);
-
-hankel = repmat(hankel,order+1,1);
+B = cell(order+1,1);
+z = cell(order+1,1);
+p = cell(order+1,1);
 for n=0:order
-  % nominator
-  hankel(n+1).nominator = zeros(1, n+1);
+  % Recursion formula for nominator
+  B{n+1} = zeros(1,n+1);
   for k=0:n-1
-    hankel(n+1).nominator(k+1) = ...
-      ((2*n-k-1)*(2*n - k))/(2*(n-k))*hankel(n).nominator(k+1);
+      B{n+1}(k+1) = ((2*n-k-1)*(2*n-k)) / (2*(n-k)) * B{n}(k+1);
   end
-  hankel(n+1).nominator(n+1) = 1;
+  B{n+1}(n+1) = 1;
 end
 
 for n=0:order
-  % flip nominator polynoms
-  hankel(n+1).nominator = hankel(n+1).nominator(end:-1:1);
-  % zeros
-  hankel(n+1).zeros = roots(hankel(n+1).nominator);
-  % denominator
-  hankel(n+1).denominator = zeros(1, n+2);
-  hankel(n+1).denominator(1) = 1;
-  % poles
-  hankel(n+1).poles = roots(hankel(n+1).denominator);
+  % Flip nominator polynoms
+  B{n+1} = B{n+1}(end:-1:1);
+  % Zeros
+  z{n+1} = roots(B{n+1});
+  % Poles (are always zero)
+  p{n+1} = zeros(order,1);
 end
 
-z = hankel(order).zeros;
-p = hankel(order).poles;
+z = z{order+1};
+p = p{order+1};

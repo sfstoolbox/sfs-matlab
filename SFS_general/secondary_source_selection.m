@@ -121,7 +121,7 @@ elseif strcmp('ps',src)
     % see Wierstorf et al. (2015), eq.(#wfs:ps:selection) and
     % eq.(#wfs:ls:selection)
     %
-    idx = sum(nx0.*x0,2) - nx0*xs(1:3).' >=eps;
+    idx = sum(nx0.*x0,2) - nx0*xs(1:3).' >=0;
 
 elseif strcmp('ls',src)
     % === Line source ===

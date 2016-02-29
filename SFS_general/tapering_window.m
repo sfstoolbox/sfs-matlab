@@ -97,9 +97,9 @@ if usetapwin && nls>2 && ...
     % If we have any edges in our array apply a tapering window for every array
     % part, consisting of two edges
     if ~isempty(edges)
-        edges = sort(edges);
-        if edges(1)==1
+        if edges(end)==1
             % First and last entry of secondary source is an edge
+            edges = circshift(edges,1,1);
             start_idx = 1;
         else
             % First and last entry of secondary source is not an edge

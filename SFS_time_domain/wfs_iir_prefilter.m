@@ -91,7 +91,13 @@ isargstruct(conf);
 % This function is not working in Octave at the moment.
 if isoctave
     error(['%s: Not available under Octave, please use ', ...
-        'conf.wfs.hpretype="FIR"'],upper(mfilename));
+           'conf.wfs.hpretype="FIR"'],upper(mfilename));
+else
+    v = ver;
+    if ~any(strcmp('DSP System Toolbox', {v.Name}))
+        error(['%s: The DSP System Toolbox is required for IIR filter, ', ...
+               'please use conf.wfs.hpretype="FIR"'],upper(mfilename));
+    end
 end
 
 

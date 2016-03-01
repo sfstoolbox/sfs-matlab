@@ -106,7 +106,7 @@ if usetapwin && nls>2 && ...
             part_nls = edges(1) + nls-edges(end)+1;
             part_win = part_hann_win(part_nls,tapwinlen);
             win(1:edges(1)) = part_win(end-edges(1)+1:end);
-            win(edges(end):end) = part_win(1:end-edges(end)+1);
+            win(edges(end):end) = part_win(1:end-edges(1));
             start_idx = 2;
         end
         % Generate tapwin for every array part within the x0 vector

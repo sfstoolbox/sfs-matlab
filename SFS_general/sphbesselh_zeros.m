@@ -10,8 +10,9 @@ function [z,p] = sphbesselh_zeros(order)
 %       z       - zeros/roots fo the Bessel function
 %       p       - roots of the Bessel function
 %
-%   SPHBESSELH_ZEROS(order) finds zeros and roots for a spherical hankel functin
-%   of the specified order.
+%   SPHBESSELH_ZEROS(order) finds zeros and roots for a spherical hankel function
+%   of the specified order. Due to numerical problems, the order is limited up
+%   to 85.
 %
 %   See also: sphbesselh, driving_function_imp_nfchoa
 
@@ -55,42 +56,68 @@ narginchk(nargmin,nargmax);
 isargpositivescalar(order);
 
 
+%% ===== Configuration ===================================================
+% Method for calculating zeros
+% See https://github.com/sfstoolbox/sfs/issues/57 for a discussion
+method = 1;
+
+
 %% ===== Main ============================================================
 if order<86
-    % --- Compute ---
-    B = zeros(1,order+2);
-    A = B;
-    for n=0:order
-        B(n+1) = factorial(2*order-n)/(factorial(order-n)*factorial(n)*2^(order-n));
+    if method==1
+        % Method 1 after FIXME
+        % Formula for nominator (source?)
+        B = zeros(1,order+2);
+        for n=0:order
+            B(n+1) = factorial(2*order-n)/(factorial(order-n)*factorial(n)*2^(order-n));
+        end
+        B = B(end:-1:1);
+        % Zeros
+        z = roots(B);
+        % Poles (are always zero)
+        p = zeros(order,1);
+    elseif method==2
+        % Method 2 after Pomberger 2008, p. 43
+        B = cell(order+1,1);
+        z = cell(order+1,1);
+        p = cell(order+1,1);
+        for n=0:order
+          % Recursion formula for nominator
+          B{n+1} = zeros(1,n+1);
+          for k=0:n-1
+              B{n+1}(k+1) = ((2*n-k-1)*(2*n-k)) / (2*(n-k)) * B{n}(k+1);
+          end
+          B{n+1}(n+1) = 1;
+        end
+        for n=0:order
+          % Flip nominator polynoms
+          B{n+1} = B{n+1}(end:-1:1);
+          % Zeros
+          z{n+1} = roots(B{n+1});
+          % Poles (are always zero)
+          p{n+1} = zeros(order,1);
+        end
+        z = z{order+1};
+        p = p{order+1};
+    else
+        error('%s: method has to be 1 or 2.',upper(mfilename));
     end
-    B = B(end:-1:1);
-    % Find zeros/roots
-    z = roots(B);
-    % Find roots
-    A(2) = 1;
-    p = roots(A);
 else
-    % --- use pre-computed ---
-    % For orders greater than 85 Matlab/Octave is not able to compute the zeros,
-    % because the factorial function returns Inf. We solved this by using the
-    % Multiprecission Toolbox from http://www.advanpix.com and the code given at
-    % the end of this function. With the Toolbox we were able to compute the
-    % zeros up to an order of ... and stored the resulting zeros at
-    % http://github.com/sfstoolbox/data/tree/master/sphbesselh_zeros
-    filename = sprintf('sphbesselh_zeros_order%04.0f.mat',order);
-    file = sprintf('%s/data/sphbesselh_zeros/%s',get_sfs_path(),filename);
-    url = ['https://raw.githubusercontent.com/sfstoolbox/data/master/' ...
-           'sphbesselh_zeros/' filename];
-    % Download file if not present
-    if ~exist(file,'file')
-        download_file(url,file);
-    end
-    load(file);
+    error(['%s: for orders higher than 85 no stable numerical ', ...
+           'method is available at the moment to caclulate the zeros.'], ...
+          upper(mfilename));
 end
 return
 
 
 %% ===== Computation with Multiprecission Toolbox ========================
+% For the Multiprecission Toolbox, see: http://www.advanpix.com
+% Unfortunately it turned out, that the obtained zeros with this method have
+% some systematic errors, see
+% https://github.com/sfstoolbox/sfs/issues/57#issuecomment-183791477
+% The following code was used to calculate the zeros with the Multiprecission
+% Toolbox. The results are stored at
+% https://github.com/sfstoolbox/data/tree/master/sphbesselh_zeros
 B = mp(zeros(1,order+2));
 A = B;
 for n=mp(0:order)

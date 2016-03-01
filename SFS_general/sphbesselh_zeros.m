@@ -56,18 +56,52 @@ narginchk(nargmin,nargmax);
 isargpositivescalar(order);
 
 
+%% ===== Configuration ===================================================
+% Method for calculating zeros
+% See https://github.com/sfstoolbox/sfs/issues/57 for a discussion
+method = 1;
+
+
 %% ===== Main ============================================================
 if order<86
-    % Formula for nominator (source?)
-    B = zeros(1,order+2);
-    for n=0:order
-        B(n+1) = factorial(2*order-n)/(factorial(order-n)*factorial(n)*2^(order-n));
+    if method==1
+        % Method 1 after FIXME
+        % Formula for nominator (source?)
+        B = zeros(1,order+2);
+        for n=0:order
+            B(n+1) = factorial(2*order-n)/(factorial(order-n)*factorial(n)*2^(order-n));
+        end
+        B = B(end:-1:1);
+        % Zeros
+        z = roots(B);
+        % Poles (are always zero)
+        p = zeros(order,1);
+    elseif method==2
+        % Method 2 after Pomberger 2008, p. 43
+        B = cell(order+1,1);
+        z = cell(order+1,1);
+        p = cell(order+1,1);
+        for n=0:order
+          % Recursion formula for nominator
+          B{n+1} = zeros(1,n+1);
+          for k=0:n-1
+              B{n+1}(k+1) = ((2*n-k-1)*(2*n-k)) / (2*(n-k)) * B{n}(k+1);
+          end
+          B{n+1}(n+1) = 1;
+        end
+        for n=0:order
+          % Flip nominator polynoms
+          B{n+1} = B{n+1}(end:-1:1);
+          % Zeros
+          z{n+1} = roots(B{n+1});
+          % Poles (are always zero)
+          p{n+1} = zeros(order,1);
+        end
+        z = z{order+1};
+        p = p{order+1};
+    else
+        error('%s: method has to be 1 or 2.',upper(mfilename));
     end
-    B = B(end:-1:1);
-    % Zeros
-    z = roots(B);
-    % Poles (are always zero)
-    p = zeros(order,1);
 else
     error(['%s: for orders higher than 85 no stable numerical ', ...
            'method is available at the moment to caclulate the zeros.'], ...

@@ -108,7 +108,7 @@ if strcmp('pw',src)
     % see Wierstorf et al. (2015), eq.(#wfs:pw:selection)
     %
     % Direction of plane wave (nk) is set above
-    idx = nx0*nk(:) >=eps;
+    idx = nx0*nk(:) >= eps;
 
 elseif strcmp('ps',src)
     % === Point source ===
@@ -121,7 +121,7 @@ elseif strcmp('ps',src)
     % see Wierstorf et al. (2015), eq.(#wfs:ps:selection) and
     % eq.(#wfs:ls:selection)
     %
-    idx = sum(nx0.*x0,2) - nx0*xs(1:3).' >=0;
+    idx = sum(nx0.*x0,2) - nx0*xs(1:3).' >= -2*eps;
 
 elseif strcmp('ls',src)
     % === Line source ===
@@ -150,7 +150,7 @@ elseif strcmp('ls',src)
         nxs = xs(4:6) / norm(xs(4:6),2);
     end
     v = (x0 - repmat(xs(1:3),[size(x0,1),1]))*(eye(3) - nxs'*nxs);
-    idx = (vector_product(v,nx0,2) > 0);
+    idx = (vector_product(v,nx0,2) >= -2*eps);
 
 elseif strcmp('fs',src)
     % === Focused source ===
@@ -165,7 +165,7 @@ elseif strcmp('fs',src)
     %
     nxs = xs(4:6);  % vector for orientation of focused source
     xs = xs(1:3);  % vector for position of focused source
-    idx = xs*nxs(:) - x0*nxs(:) >=eps;
+    idx = xs*nxs(:) - x0*nxs(:) >= eps;
 
 elseif strcmp('vss', src)
     % === Virtual secondary sources ===

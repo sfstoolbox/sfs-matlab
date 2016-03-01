@@ -72,8 +72,7 @@ driving_functions = conf.driving_functions;
 
 %% ===== Computation =====================================================
 % Find spherical hankel function zeros
-%[z,p] = sphbesselh_zeros(N);
-[z,p] = sphhankel_laplace(N);
+[z,p] = sphbesselh_zeros(N);
 
 % Get the delay and weighting factors
 if strcmp('2D',dimension)

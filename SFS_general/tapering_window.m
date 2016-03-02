@@ -99,7 +99,7 @@ if usetapwin && nls>2 && ...
     if ~isempty(edges)
         if edges(end)==1
             % First and last entry of secondary source is an edge
-            edges = circshift(edges,1,1);
+            edges = circshift(edges,[1,0]);
             start_idx = 1;
         else
             % First and last entry of secondary source is not an edge

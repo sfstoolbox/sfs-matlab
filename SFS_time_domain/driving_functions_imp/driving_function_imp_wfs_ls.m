@@ -7,7 +7,8 @@ function [delay,weight] = driving_function_imp_wfs_ls(x0,nx0,xs,conf)
 %   Input parameters:
 %       x0      - position  of secondary sources (m) [nx3]
 %       nx0     - direction of secondary sources [nx3]
-%       xs      - position of line source [nx3]
+%        xs     - position and orientation of virtual line source / m [nx3]
+%                 or [nx6]
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -15,7 +16,8 @@ function [delay,weight] = driving_function_imp_wfs_ls(x0,nx0,xs,conf)
 %       weight  - weight (amplitude) of the driving function
 %
 %   DRIVING_FUNCTION_IMP_WFS_LS(x0,nx0,xs,conf) returns delays and weights for
-%   the WFS driving function for a line source as source model.
+%   the WFS driving function for a line source as source model. If no
+%   explicit line source orientation xs(:,4:6) is given [0 0 1] is assumed.
 %
 %   References:
 %       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
@@ -75,9 +77,12 @@ driving_functions = conf.driving_functions;
 
 %% ===== Computation =====================================================
 % Get the delay and weighting factors
-if strcmp('2D',dimension) || strcmp('3D',dimension)
 
-    % === 2- or 3-Dimensional ============================================
+[xs,nxs] = get_position_and_orientation_ls(xs,conf);
+
+if strcmp('2D',dimension)
+
+    % === 2-Dimensional ==================================================
 
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
@@ -112,6 +117,36 @@ elseif strcmp('2.5D',dimension)
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D point source.'],upper(mfilename),driving_functions);
+    end
+
+
+elseif strcmp('3D',dimension)
+
+    % === 3-Dimensional ==================================================
+
+    if strcmp('default',driving_functions)
+        % --- SFS Toolbox ------------------------------------------------
+        % d using a line source as source model
+        %                     ___
+        %                    | 1   v nx0
+        % d(x0,t) = h(t) * - |--- ------------- delta(t-|v|/c)
+        %                   \|2pi |v|^(3/2)
+        %
+        % where v = x0-xs - <x0-xs,nxs > nxs,
+        % and |nxs| = 1.
+        %
+        % see Wierstorf et al. (2015) eq.(#d:wfs:ls)
+        %
+        % v = (I - nxs'nxs)(x0-xs)
+        % r = |v|
+        nxs = nxs(1,:);
+        v = (x0 - xs)*(eye(3) - nxs'*nxs);
+        r = vector_norm(v,2);
+        delay = 1/c .* r;
+        weight = 1/(2*pi) .* vector_product(v,nx0,2) ./ r.^(3/2);
+    else
+        error(['%s: %s, this type of driving function is not implemented', ...
+            'for a line source.'],upper(mfilename),driving_functions);
     end
 
 else

@@ -1,7 +1,7 @@
 function boolean = test_plot()
-%TEST_PLOT tests the correctness of plot_sound_field()
+%TEST_PLOT tests the correctness of test_plot()
 %
-%   Usage: boolean = test_driving_functions()
+%   Usage: boolean = test_plot()
 %
 %   Output parameters:
 %       booelan - true or false

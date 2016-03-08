@@ -75,7 +75,7 @@ isargstruct(conf);
 fs = conf.fs;
 N = conf.N;
 c = conf.c;
-removedelay = conf.wfs.removedelay;
+t0 = conf.wfs.t0;
 
 
 %% ===== Computation =====================================================
@@ -112,13 +112,13 @@ else
     error('%s: %s is not a known source type.',upper(mfilename),src);
 end
 
-if removedelay
-    % Set minimum delay to 0, in order to begin always at t=0 with the first
+if strcmp('system',t0)
+    % Set minimum delay to 0, in order to begin always at t=1 with the first
     % wave front at any secondary source
     delay = delay - min(delay);
     % Return extra offset due to prefilter
     delay_offset = prefilter_delay;
-else
+elseif strcmp('source',t0)
     % Add extra delay to ensure causality at all secondary sources (delay>0)
     [diameter,center] = secondary_source_diameter(conf);
     t0 = diameter/c;
@@ -139,6 +139,9 @@ else
     % Return extra added delay. This is can be used to ensure that the virtual
     % source always starts at t = 0.
     delay_offset = t0 + prefilter_delay;
+else
+    error('%s: t0 needs to be "system" or "source" and not "%s".', ...
+          upper(mfilename),t0);
 end
 % Append zeros at the end of the driving function. This is necessary, because
 % the delayline function cuts into the end of the driving signals in order to

@@ -222,11 +222,17 @@ conf.wfs.hpreIIRorder = 4; % integer
 conf.wfs.hpreFIRorder = 128; % even integer
 %
 % === Time Domain Implementation ===
-% Remove the leading delay in WFS-time domain driving function.
-% If this is set to true, the first active secondary source will be start to
-% emit sound at t = 1.
-% (convenient behaviour for a single virtual source)
-conf.wfs.removedelay = true; % boolean
+% Adjust the starting time in WFS-time domain driving functions.
+% This can be set to
+%   'system'   - the first secondary source will be active at t=1
+%   'source'   - the virtual source will be active at t=1
+% Setting it to 'system' is most convenient when simulating single sources as
+% you will always see activity in the sound field for t>0. Setting it to
+% 'source' helps you to simulate different sources as you can time align them
+% easily. Note, that for virtual sources outside of the array this can mean you
+% will see no activity inside the listening area until the time has passed, that
+% the virtual source needs from its position until the nearest secondary source.
+conf.wfs.t0 = 'system'; % string
 
 
 %% ===== Spectral Division Method (SDM) ==================================

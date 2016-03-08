@@ -7,7 +7,6 @@ function boolean = test_secondary_source_diameter(modus)
 %   Input parameters:
 %       modus   - 0: numerical (quiet)
 %                 1: numerical (verbose)
-%                 2: visual
 %
 %   Output parameters:
 %       booelan - true or false

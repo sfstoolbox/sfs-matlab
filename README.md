@@ -481,6 +481,32 @@ command.
 conf.plot.colormap = 'jet'; % Matlab rainbow color map
 ```
 
+If you want to simulate more than one virtual source, it is a good idea to set
+the starting time of your simulation to start with the activity of your virtual
+source and not the secondary sources, which is the default behavior.
+
+```Matlab
+conf.plot.useplot = false;
+conf.wfs.removedelay = false;
+t_40cm = round(0.4/conf.c*conf.fs); % in samples
+[p_ps,~,~,~,x0_ps] = ...
+    sound_field_imp_wfs([-2 2],[-2 2],0,[1.9 0 0],'ps',20+t_40cm,conf);
+[p_pw,~,~,~,x0_pw] = ...
+    sound_field_imp_wfs([-2 2],[-2 2],0,[1 -2 0],'pw',20-t_40cm,conf);
+[p_fs,~,~,~,x0_fs] = ...
+    sound_field_imp_wfs([-2 2],[-2 2],0,[0 -1 0 0 1 0],'fs',20,conf);
+plot_sound_field(p_ps+p_pw+p_fs,[-2 2],[-2 2],0,[x0_ps; x0_pw; x0_fs],conf)
+hold;
+scatter(0,0,'kx');   % origin of plane wave
+scatter(1.9,0,'ko'); % point source
+scatter(0,-1,'ko');  % focused source
+hold off;
+%print_png('sound_field_imp_multiple_sources_dB.png');
+```
+
+![Image](doc/img/sound_field_imp_multiple_sources_dB.png)
+
+
 ### Custom grid for sound field simulations
 
 As stated earlier you can provide the sound field simulation functions a custom

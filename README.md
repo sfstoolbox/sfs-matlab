@@ -484,11 +484,11 @@ conf.plot.colormap = 'jet'; % Matlab rainbow color map
 If you want to simulate more than one virtual source, it is a good idea to set
 the starting time of your simulation to start with the activity of your virtual
 source and not the secondary sources, which is the default behavior. You can
-change this by setting `conf.wfs.removedelay = false`.
+change this by setting `conf.wfs.t0 = 'source'`.
 
 ```Matlab
 conf.plot.useplot = false;
-conf.wfs.removedelay = false;
+conf.wfs.t0 = 'source';
 t_40cm = round(0.4/conf.c*conf.fs); % in samples
 [p_ps,~,~,~,x0_ps] = ...
     sound_field_imp_wfs([-2 2],[-2 2],0,[1.9 0 0],'ps',20+t_40cm,conf);

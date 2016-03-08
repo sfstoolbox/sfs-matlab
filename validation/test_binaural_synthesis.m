@@ -47,6 +47,7 @@ narginchk(nargmin,nargmax);
 
 
 %% ===== Settings ========================================================
+conf = SFS_config;
 conf.c = 343;
 conf.fs = 44100;
 conf.secondary_sources.x0 = [];

@@ -56,6 +56,7 @@ narginchk(nargmin,nargmax);
 
 
 %% ===== Configuration ===================================================
+conf = SFS_config;
 if strcmp('QU_KEMAR',hrtf_set)
     % QU KEMAR horizontal HRTFs
     disp('Extrapolate QU KEMAR anechoic 3m ...');

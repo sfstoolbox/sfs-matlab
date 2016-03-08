@@ -483,7 +483,8 @@ conf.plot.colormap = 'jet'; % Matlab rainbow color map
 
 If you want to simulate more than one virtual source, it is a good idea to set
 the starting time of your simulation to start with the activity of your virtual
-source and not the secondary sources, which is the default behavior.
+source and not the secondary sources, which is the default behavior. You can
+change this by setting `conf.wfs.removedelay = false`.
 
 ```Matlab
 conf.plot.useplot = false;

@@ -278,19 +278,13 @@ conf.localsfs.vss.consider_secondary_sources = true;
 % Settings regarding all the stuff with impulse responses from the SFS_ir and
 % SFS_binaural_synthesis folders
 %
-% Directory containing HRTF data bases, you want to use. Note, that also all
-% subdirectories will be added to the path. This is not done automatically, but
-% by calling addirspath;
-% If you have more than one path, seperate them by :
-conf.ir.path = '~/git/sfs/data/HRTFs:~/svn/ir_databases:~/svn/measurements'; % string
-%
 % If we load an HRTF data set we are most likely interested to modify its
 % existing length, to enable a delaying of the impulse responses without
 % problems. If these value is set to "false", zeros are padded at the
 % beginning of all HRTFs corresponding to the maximum distance of the whole
 % set. In addition the overall length of the impulse responses is set to
-% conf.N. This is applied directly if you load a HRTF set with read_irs().
-% Only set this to true if you really know what you are doing.
+% conf.N.
+% Only set this to "true" if you really know what you are doing.
 conf.ir.useoriglength = false; % boolean
 %
 % Use interpolation to get the desired HRTF for binaural simulation. If this is

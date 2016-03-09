@@ -224,14 +224,17 @@ conf.wfs.hpreFIRorder = 128; % even integer
 % === Time Domain Implementation ===
 % Adjust the starting time in WFS-time domain driving functions.
 % This can be set to
-%   'system'   - the first secondary source will be active at t=1
-%   'source'   - the virtual source will be active at t=1
+%   'system'   - the first secondary source will be active at t=0
+%   'source'   - the virtual source will be active at t=0
 % Setting it to 'system' is most convenient when simulating single sources as
 % you will always see activity in the sound field for t>0. Setting it to
 % 'source' helps you to simulate different sources as you can time align them
 % easily. Note, that for virtual sources outside of the array this can mean you
 % will see no activity inside the listening area until the time has passed, that
 % the virtual source needs from its position until the nearest secondary source.
+% (Also note, using 'source' for systems with unbounded listening areas, (e.g.
+% linear arrays), focussed virtual sources may not be placed arbitrarily
+% far from the secondary sources.)
 conf.wfs.t0 = 'system'; % string
 
 

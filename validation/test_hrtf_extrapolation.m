@@ -136,7 +136,6 @@ elseif strcmp('FABIAN_3D',hrtf_set)
     conf.ir.useinterpolation = true;
     conf.ir.useoriglength = false;
     conf.showprogress = true;
-    addirspath(conf);
     hrtf_file = 'FABIAN_3d_anechoic.sofa';
     % do the extrapolation
     irs_pw = extrapolate_farfield_hrtfset(hrtf_file,conf);

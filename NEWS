@@ -1,6 +1,6 @@
 Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
-2.1.0 ()
+2.1.0 (10. March 2016)
 
     - make conf struct mandatory
     - add new start message

@@ -25,6 +25,7 @@ function G = greens_function_mono(x,y,z,xs,src,f,conf)
 %   References:
 %       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
 %       "Theory of Sound Field Synthesis"
+%       J. Ahrens (2012) - "Analytic Methods of Sound Field Synthesis"
 %
 %   See also: sound_field_mono
 
@@ -102,6 +103,36 @@ elseif strcmp('dps',src)
     %
     G = 1/(4*pi) .* (1i*omega/c + 1./r) .* scalar./r.^2 .* exp(-1i*omega/c.*r);
 
+elseif strcmp('mps',src)
+    % Source model for a uniformly moving point source: retarded 3D Green's 
+    % function.
+    %
+    %                 1   e^(+-i w/c R)
+    % G(x-xs,vs,w) = --- --------------
+    %                4pi      R_1
+    %
+    % vs = v * ns   % velocity vector
+    % M = v/c  % Mach number
+    % xparallel = (x-xs)*ns  % component in direction of movement
+    % R_1 = sqrt( M^2*xorth.^2 + (1-M^2)*|x-xs|.^2 )
+    % R = (M*xorth + R1)./(1-M*2);
+    %    
+    % see: Ahrens (2012), eq.(5.60)
+    %
+    v = norm(xs(4:6));  % velocity of sound source
+    nxs = xs(4:6)./v;  % direction of movement
+    xs = xs(1:3);  % 
+    M = v/c;  % 
+    % shift coordinates
+    x = x-xs(1);
+    y = y-xs(2);
+    z = z-xs(3);
+    % component of x in direciton  of movement: scalar = x*nxs  
+    xparallel = nxs(1).*x + nxs(2).*y  + nxs(3).*z;
+    
+    R1 = sqrt( M^2.*xparallel.^2 + (1-M^2)*(x.^2 + y.^2 + z.^2) );
+    Rplus = (M*xparallel + R1)./(1-M*2);  
+    G = 1/(4*pi) * exp(-1i*omega/c.*Rplus)./R1;
 elseif strcmp('ls',src)
     % Source model for a line source: 2D Green's function.
     %

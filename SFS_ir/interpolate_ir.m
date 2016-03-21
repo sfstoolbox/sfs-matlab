@@ -91,8 +91,8 @@ else
              'and (%.1f,%.1f) deg.'], ...
             deg(x0(1,1)), deg(x0(2,1)), ...
             deg(x0(1,2)), deg(x0(2,2)));
-        ir_new(1,1,:) = interpolation(squeeze(ir(1:2,1,:))',x0(1:2,:),xs);
-        ir_new(1,2,:) = interpolation(squeeze(ir(1:2,2,:))',x0(1:2,:),xs);
+        ir_new(1,1,:) = interpolation(squeeze(ir(1:2,1,:))',x0(:,1:2),xs);
+        ir_new(1,2,:) = interpolation(squeeze(ir(1:2,2,:))',x0(:,1:2),xs);
     else
         % --- 2D interpolation ---
         warning('SFS:irs_intpol3D',...
@@ -101,7 +101,7 @@ else
             deg(x0(1,1)), deg(x0(2,1)), ...
             deg(x0(1,2)), deg(x0(2,2)), ...
             deg(x0(1,3)), deg(x0(2,3)));
-        ir_new(1,1,:) = interpolation(squeeze(ir(1:3,1,:))',x0(1:3,:),xs);
-        ir_new(1,2,:) = interpolation(squeeze(ir(1:3,2,:))',x0(1:3,:),xs);
+        ir_new(1,1,:) = interpolation(squeeze(ir(1:3,1,:))',x0(:,1:3),xs);
+        ir_new(1,2,:) = interpolation(squeeze(ir(1:3,2,:))',x0(:,1:3),xs);
     end
 end

@@ -5,12 +5,12 @@ function B = interpolation(A,X,x)
 %
 %   Input parameters:
 %       A       - matrix containing data as rows in the form [N M], where
-%                     M ... number of points X (2 or 3)
 %                     N ... samples of data A
+%                     M ... number of points X (2 or 3)
 %       X       - matrix containing positions b as columns, at which A(X) is
 %                 given [D M]
-%                     M ... number of points X (2 or 3)
 %                     D ... dimension of space (1 or 2)
+%                     M ... number of points X (2 or 3)
 %       x       - desired point at which A should be interpolated [D 1]
 %
 %   Output parameters:

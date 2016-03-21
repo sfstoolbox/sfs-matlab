@@ -87,8 +87,9 @@ elseif size(A,2)==3
     if any(w<0)
         error('%s: one of your interpolation weights is <0.',upper(mfilename));
     end
+    w
     % Calculate desired B with linear combination w(ii)
-    B = w(1)*A(:,1) + w(2)*A(:,2) + w(3)*A(:,3);
+    B = (w(1)*A(:,1) + w(2)*A(:,2) + w(3)*A(:,3)) / sum(w);
 else
     error('%s: size(A,2) has to be 2 or 3.',upper(mfilename));
 end

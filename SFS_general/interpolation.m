@@ -12,6 +12,7 @@ function B = interpolation(A,X,x)
 %                     D ... dimension of space (1 or 2)
 %                     M ... number of points X (2 or 3)
 %       x       - desired point at which A should be interpolated [D 1]
+%                     D ... dimension of space (1 or 2)
 %
 %   Output parameters:
 %       B       - interpolated data at point x [N 1]

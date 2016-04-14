@@ -69,11 +69,12 @@ geometry = conf.secondary_sources.geometry;
 %% ===== Calculation =====================================================
 % Number of secondary sources
 nls = size(x0,1);
+% Standard window with equal weights
+win = ones(1,nls);
 % FIXME: at the moment the tapering window is not working for spherical arrays,
-% because we are not able to find the edges of the array.
+% see https://github.com/sfstoolbox/sfs/issues/21
 if usetapwin && nls>2 && ...
-   ~(strcmp('sphere',geometry)||strcmp('spherical',geometry))
-    win = ones(1,nls);
+   ~(strcmp('sphere',geometry) || strcmp('spherical',geometry))
     % Get the mean distance between secondary sources and the smallest distance
     % to neighbour source for every secondary source. Due to long computing time
     % for really large secondary source numbers, the distance is approximated by
@@ -82,7 +83,7 @@ if usetapwin && nls>2 && ...
     dx0 = secondary_source_distance(x0,1);
     % Use only positions
     x0 = x0(:,1:3);
-    % Find the edges of the array
+    % === Find the edges of the array ===
     edges = [];
     for ii=1:nls-1
         if norm(x0(ii,:)-x0(ii+1,:))>2*dx0
@@ -92,28 +93,28 @@ if usetapwin && nls>2 && ...
     if norm(x0(end,:)-x0(1,:))>2*dx0
         edges = [edges; nls; 1];
     end
+    % === Apply tapering window at all edges ===
     % If we have any edges in our array apply a tapering window for every array
     % part, consisting of two edges
     if ~isempty(edges)
-        % Generate tapwin for every array part within the x0 vector
-        for ii=2:length(edges)-2
-            part_nls = edges(ii+1)-edges(ii)+1;
-            win(edges(ii):edges(ii+1)) = part_hann_win(part_nls,tapwinlen);
-        end
-        % Generate tapwin for every array part consisting of the first and the
-        % last edge within the x0 vector
-        if edges(1)==nls
-            win = part_hann_win(nls,tapwinlen);
+        if edges(end)==1
+            % First and last entry of secondary source is an edge
+            edges = circshift(edges,[1,0]);
+            start_idx = 1;
         else
+            % First and last entry of secondary source is not an edge
             part_nls = edges(1) + nls-edges(end)+1;
             part_win = part_hann_win(part_nls,tapwinlen);
             win(1:edges(1)) = part_win(end-edges(1)+1:end);
-            win(edges(end):end) = part_win(1:end-edges(end)+1);
+            win(edges(end):end) = part_win(1:end-edges(1));
+            start_idx = 2;
+        end
+        % Generate tapwin for every array part within the x0 vector
+        for ii=start_idx:2:length(edges)-1
+            part_nls = edges(ii+1)-edges(ii)+1;
+            win(edges(ii):edges(ii+1)) = part_hann_win(part_nls,tapwinlen);
         end
     end
-else
-    % If you want to use no tapering window:
-    win = ones(1,nls);
 end
 
 % Ensure the window will be a column vector

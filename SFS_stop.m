@@ -68,6 +68,7 @@ if exist('rmpath')
     rmpath([basepath,'/SFS_monochromatic']);
     rmpath([basepath,'/SFS_monochromatic/driving_functions_mono']);
     rmpath([basepath,'/SFS_plotting']);
+    rmpath([basepath,'/SFS_plotting/colormaps']);
     rmpath([basepath,'/SFS_ssr']);
     rmpath([basepath,'/SFS_time_domain']);
     rmpath([basepath,'/SFS_time_domain/driving_functions_imp']);

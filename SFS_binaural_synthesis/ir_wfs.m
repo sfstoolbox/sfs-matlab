@@ -1,7 +1,7 @@
-function [ir,x0] = ir_wfs(X,phi,xs,src,irs,conf)
+function [ir,x0] = ir_wfs(X,phi,xs,src,sofa,conf)
 %IR_WFS generates a binaural simulation of WFS
 %
-%   Usage: [ir,x0] = ir_wfs(X,phi,xs,src,irs,conf)
+%   Usage: [ir,x0] = ir_wfs(X,phi,xs,src,sofa,conf)
 %
 %   Input parameters:
 %       X       - listener position / m
@@ -11,14 +11,14 @@ function [ir,x0] = ir_wfs(X,phi,xs,src,irs,conf)
 %       src     - source type: 'pw' -plane wave
 %                              'ps' - point source
 %                              'fs' - focused source
-%       irs     - IR data set for the secondary sources
+%       sofa    - impulse response data set for the secondary sources
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ir      - impulse response for the desired WFS array (nx2 matrix)
 %       x0      - secondary sources / m
 %
-%   IR_WFS(X,phi,xs,src,irs,conf) calculates a binaural room impulse
+%   IR_WFS(X,phi,xs,src,sofa,conf) calculates a binaural room impulse
 %   response for a virtual source at xs for a virtual WFS array and a
 %   listener located at X.
 %
@@ -78,4 +78,4 @@ x0 = secondary_source_tapering(x0,conf);
 % Get driving signals
 d = driving_function_imp_wfs(x0,xs,src,conf);
 % Generate the impulse response for WFS
-ir = ir_generic(X,phi,x0,d,irs,conf);
+ir = ir_generic(X,phi,x0,d,sofa,conf);

@@ -86,6 +86,10 @@ else
     greens_function = 'ps';
 end
 usehpre = conf.wfs.usehpre;
+hpretype = conf.wfs.hpretype;
+hpreFIRorder = conf.wfs.hpreFIRorder;
+c = conf.c;
+fs = conf.fs;
 
 
 %% ===== Computation =====================================================
@@ -94,13 +98,9 @@ x0 = secondary_source_positions(conf);
 x0 = secondary_source_selection(x0,xs,src);
 x0 = secondary_source_tapering(x0,conf);
 % Get driving signals
-d = driving_function_imp_wfs(x0,xs,src,conf);
-% Fix the time to account for sample offset of the pre-equalization filter
-if usehpre
-    % add a time offset due to the filter (the filter has 128 coefficients,
-    % hence the offset is 64 samples)
-    t = t + 64;
-end
+[d,~,~,delay_offset] = driving_function_imp_wfs(x0,xs,src,conf);
+% Ensure virtual source/secondary source activity starts at t = 0
+t = t + delay_offset*fs;
 % Calculate sound field
 [varargout{1:min(nargout,4)}] = ...
     sound_field_imp(X,Y,Z,x0,greens_function,d,t,conf);

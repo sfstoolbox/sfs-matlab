@@ -81,8 +81,9 @@ nargmin = 8;
 nargmax = 8;
 narginchk(nargmin,nargmax);
 isargnumeric(X,Y,Z);
-isargmatrix(x0,d);
+isargsecondarysource(x0);
 isargchar(src);
+isargmatrix(d);
 isargscalar(t);
 isargstruct(conf);
 if size(x0,1)~=size(d,2)

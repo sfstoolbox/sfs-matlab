@@ -15,7 +15,7 @@ function m = generate_colormap(table,n)
 %   The color values are specified in table, which will be interpolated to the
 %   desired number of entries n.
 %
-% See also: moreland, chromajs
+% See also: moreland, yellowred
 
 %*****************************************************************************
 % Copyright (c) 2010-2016 Quality & Usability Lab, together with             *

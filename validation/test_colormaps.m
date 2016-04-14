@@ -1,31 +1,21 @@
-function map = chromajs(n)
-%CHROMAJS returns a divergent lightyellow-red color map
+function boolean = test_colormaps()
+%TEST_COLORMAPS does sound field plots with different colormaps
 %
-%   Usage: map = chromajs([n])
-%
-%   Input parameters:
-%       n   - optional length of colormap (default uses the figure default
-%             length)
+%   Usage: boolean = test_colormaps()
 %
 %   Output parameters:
-%       map - colormap [n 3]
+%       booelan - true or false
 %
-%   CHROMAJS(N) returns an N-by-3 matrix containing a divergent colormap.
-%   For details on the colormap have a look at:
-%   http://gka.github.io/palettes/#colors=lightyellow,orangered,deeppink,darkred|steps=7|bez=1|coL=1
-%
-%   For example, to reset the colormap of the current figure:
-%             colormap(chromajs)
-%
-% See also: generate_colormap, moreland, plot_sound_field
+%   TEST_COLORMAPS() creates plots for monochromatic and time-domain sound field in dB
+%   with different colormaps.
 
 %*****************************************************************************
-% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
+% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
 %                         Telekom Innovation Laboratories, TU Berlin         *
 %                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
 %                                                                            *
-% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
+% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
 %                         Universitaet Rostock                               *
 %                         Richard-Wagner-Strasse 31, 18119 Rostock           *
 %                                                                            *
@@ -52,23 +42,54 @@ function map = chromajs(n)
 %*****************************************************************************
 
 
-%% ===== Checking input parameters =======================================
+%% ===== Checking of input  parameters ===================================
 nargmin = 0;
-nargmax = 1;
+nargmax = 0;
 narginchk(nargmin,nargmax);
-if nargin < nargmax
-    n = size(get(gcf,'colormap'),1);
+boolean = false;
+
+%% ===== Configuration ===================================================
+conf = SFS_config;
+xs = [0 -1 0];
+src = 'pw';
+f = 1000;
+t = 300;
+X = [-2 2];
+Y = [-2 2];
+Z = 0;
+
+%% ===== Monochromatic plots =============================================
+conf.plot.normalisation = 'center';
+conf.plot.usedb = true;
+
+color_maps = { ...
+    'yellowred'; ...
+    'gray'; ...
+    };
+color_maps_reversed = { ...
+    'magma'; ...
+    'inferno'; ...
+    'bone'; ...
+    };
+
+[P,~,~,~,x0] = sound_field_mono_wfs([-2 2],[-2 2],0,xs,src,f,conf);
+p = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf);
+
+for ii=1:length(color_maps)
+    conf.plot.colormap = color_maps{ii};
+    plot_sound_field(P,X,Y,Z,x0,conf)
+    title(sprintf('Monochromatic, %s',color_maps{ii}))
+    plot_sound_field(p,X,Y,Z,x0,conf)
+    title(sprintf('Time-domain, %s',color_maps{ii}))
+end
+for ii=1:length(color_maps_reversed)
+    conf.plot.colormap = color_maps_reversed{ii};
+    plot_sound_field(P,X,Y,Z,x0,conf)
+    colormap(flipud(colormap))
+    title(sprintf('Monochromatic, %s reversed',color_maps_reversed{ii}))
+    plot_sound_field(p,X,Y,Z,x0,conf)
+    colormap(flipud(colormap))
+    title(sprintf('Time-domain, %s reversed',color_maps_reversed{ii}))
 end
 
-
-%% ===== Computation =====================================================
-table = [ 255, 255, 224
-255, 223, 184
-255, 188, 148
-255, 151, 119
-255, 105,  98
-238,  66,  86
-210,  31,  71
-176,   6,  44
-139,   0,   0];
-map = generate_colormap(table,n);
+boolean = true;

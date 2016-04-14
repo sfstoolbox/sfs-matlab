@@ -87,18 +87,24 @@ else
 end
 useplot = conf.plot.useplot;
 
+compensate_wfs_fir_delay = ...
+    (conf.wfs.usehpre && strcmp(conf.wfs.hpretype,'FIR'));
+compensate_local_wfs_fir_delay = ...
+    (conf.localsfs.wfs.usehpre && strcmp(conf.localsfs.wfs.hpretype,'FIR'));
 
 %% ===== Computation =====================================================
 % Get secondary sources
 x0 = secondary_source_positions(conf);
 % Get driving signals
 [d, x0, xv] = driving_function_imp_localwfs(x0,xs,src,conf);
-% Fix the time to account for sample offset of the pre-equalization filter
-switch (conf.wfs.usehpre + conf.localsfs.wfs.usehpre)
-  case 1
-    t = t + 64;
-  case 2
-    t = t + 127;
+% Fix the time to account for sample offset of FIR pre-equalization filters
+if (compensate_wfs_fir_delay && compensate_local_wfs_fir_delay)
+    t = t + conf.wfs.hpreFIRorder/2 + ...
+        conf.localsfs.wfs.hpreFIRorder/2 - 1;
+elseif compensate_wfs_fir_delay
+    t = t + conf.wfs.hpreFIRorder/2;
+elseif compensate_local_wfs_fir_delay
+    t = t + conf.local.wfs.hpreFIRorder/2;
 end
 % Calculate sound field
 [varargout{1:min(nargout,4)}] = ...

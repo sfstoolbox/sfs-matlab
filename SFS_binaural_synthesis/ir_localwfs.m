@@ -1,7 +1,7 @@
-function [ir,x0] = ir_localwfs(X,phi,xs,src,irs,conf)
+function [ir,x0] = ir_localwfs(X,phi,xs,src,sofa,conf)
 %IR_LOCALWFS generates a binaural simulation of local WFS
 %
-%   Usage: [ir,x0] = ir_localwfs(X,phi,xs,src,irs,conf)
+%   Usage: [ir,x0] = ir_localwfs(X,phi,xs,src,sofa,conf)
 %
 %   Input parameters:
 %       X       - listener position / m
@@ -10,14 +10,14 @@ function [ir,x0] = ir_localwfs(X,phi,xs,src,irs,conf)
 %       xs      - virtual source position / m
 %       src     - source type: 'pw' -plane wave
 %                              'ps' - point source
-%       irs     - IR data set for the secondary sources
+%       sofa    - impulse response data set for the secondary sources
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ir      - impulse response for the desired WFS array (nx2 matrix)
 %       x0      - secondary sources / m
 %
-%   IR_LOCALWFS(X,phi,xs,src,irs,conf) calculates a binaural room impulse
+%   IR_LOCALWFS(X,phi,xs,src,sofa,conf) calculates a binaural room impulse
 %   response for a virtual source at xs for a virtual LOCAL WFS array and a
 %   listener located at X.
 %
@@ -75,4 +75,4 @@ x0 = secondary_source_positions(conf);
 % Get driving signals
 [d, x0] = driving_function_imp_localwfs(x0,xs,src,conf);
 % Generate the impulse response for WFS
-ir = ir_generic(X,phi,x0,d,irs,conf);
+ir = ir_generic(X,phi,x0,d,sofa,conf);

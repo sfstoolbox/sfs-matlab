@@ -1,24 +1,26 @@
-function [d,delay,weight] = driving_function_imp_wfs(x0,xs,src,conf)
+function [d,delay,weight,delay_offset] = driving_function_imp_wfs(x0,xs,src,conf)
 %DRIVING_FUNCTION_IMP_WFS_25D calculates the WFS weighting and delaying
 %
 %   Usage: [d,delay,weight] = driving_function_imp_wfs(x0,xs,src,conf)
 %
 %   Input parameters:
-%       x0      - positions and directions of secondary sources / m [nx6]
-%       xs      - position of virtual source or direction of plane wave / m
-%                 [1x3]
-%       src     - source type of the virtual source
-%                     'pw' - plane wave (xs, ys are the direction of the
-%                            plane wave in this case)
-%                     'ps' - point source
-%                     'ls' - line source
-%                     'fs' - focused source
-%       conf    - configuration struct (see SFS_config)
+%       x0              - positions and directions of secondary
+%                         sources / m [nx6]
+%       xs              - position of virtual source or direction of
+%                         plane wave / m [1x3]
+%       src             - source type of the virtual source
+%                           'pw' - plane wave (xs, ys are the direction of the
+%                                  plane wave in this case)
+%                           'ps' - point source
+%                           'ls' - line source
+%                           'fs' - focused source
+%       conf            - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       d       - driving signals [mxn]
-%       delay   - delay of the driving function / s [nx1]
-%       weight  - weight (amplitude) of the driving function [nx1]
+%       d               - driving signals [mxn]
+%       delay           - delay of the driving function / s [nx1]
+%       weight          - weight (amplitude) of the driving function [nx1]
+%       delay_offset    - additional added delay, so you can correct it
 %
 %   DRIVING_FUNCTION_IMP_WFS(x0,xs,src,conf) returns the driving signals and
 %   weighting and delay parameters of the WFS driving function for the given
@@ -72,48 +74,75 @@ isargstruct(conf);
 %% ===== Configuration ==================================================
 fs = conf.fs;
 N = conf.N;
+c = conf.c;
+t0 = conf.wfs.t0;
 
 
 %% ===== Computation =====================================================
 % Calculate pre-equalization filter if required
-pulse = wfs_preequalization(dirac_imp(),conf);
+[pulse,prefilter_delay] = wfs_preequalization(dirac_imp(),conf);
 
 % Secondary source positions and directions
 nx0 = x0(:,4:6);
 x0 = x0(:,1:3);
 
 % Source position
-xs = repmat(xs(1:3),[size(x0,1) 1]);
+xs = repmat(xs,[size(x0,1) 1]);
 
 % Get the delay and weighting factors
 if strcmp('pw',src)
-    % === Plane wave =====================================================
+    % === Plane wave ===
     % Direction of plane wave
-    nk = bsxfun(@rdivide,xs,vector_norm(xs,2));
+    nk = bsxfun(@rdivide,xs,vector_norm(xs(:,1:3),2));
     % Delay and amplitude weight
     [delay,weight] = driving_function_imp_wfs_pw(x0,nx0,nk,conf);
 
 elseif strcmp('ps',src)
-    % === Point source ===================================================
-    % Delay and amplitude weight
-    [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs,conf);
+    % === Point source ===
+    [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs(:,1:3),conf);
 
 elseif strcmp('ls',src)
-    % === Line source ====================================================
-    % Delay and amplitude weight
+    % === Line source ===
     [delay,weight] = driving_function_imp_wfs_ls(x0,nx0,xs,conf);
 
 elseif strcmp('fs',src)
-    % === Focused source =================================================
-    % Delay and amplitude weight
-    [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs,conf);
+    % === Focused source ===
+    [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs(:,1:3),conf);
 else
     error('%s: %s is not a known source type.',upper(mfilename),src);
 end
 
-% Remove delay offset, in order to begin always at t=0 with the first wave front
-% at any secondary source
-delay = delay-min(delay);
+if strcmp('system',t0)
+    % Set minimum delay to 0, in order to begin always at t=1 with the first
+    % wave front at any secondary source
+    delay = delay - min(delay);
+    % Return extra offset due to prefilter
+    delay_offset = prefilter_delay;
+elseif strcmp('source',t0)
+    % Add extra delay to ensure causality at all secondary sources (delay>0)
+    [diameter,center] = secondary_source_diameter(conf);
+    t0 = diameter/c;
+    if (ceil((max(delay)+t0)*fs) - 1 ) > N
+        % This is a lot more likely to happen.
+        warning('conf.N = %i is too short for requested source.',N);
+    end
+    if strcmp('fs',src)
+        % Reject focused source that's too far away
+        % (this will only happen for unbounded listening arrays.)
+        if norm(xs(1:3) - center,2) > diameter/2;
+            error(['%s: Using ''config.wfs.removedelay == 0'', ', ...
+                'focused source positions are restricted to the ball ', ...
+                'spanned by the array diameter.'],upper(mfilename));
+        end
+    end
+    delay = delay + t0;
+    % Return extra added delay. This is can be used to ensure that the virtual
+    % source always starts at t = 0.
+    delay_offset = t0 + prefilter_delay;
+else
+    error('%s: t0 needs to be "system" or "source" and not "%s".', ...
+          upper(mfilename),t0);
+end
 % Append zeros at the end of the driving function. This is necessary, because
 % the delayline function cuts into the end of the driving signals in order to
 % delay them. NOTE: this can be changed by the conf.N setting

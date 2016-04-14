@@ -5,13 +5,14 @@ function B = interpolation(A,X,x)
 %
 %   Input parameters:
 %       A       - matrix containing data as rows in the form [N M], where
-%                     M ... number of points X (2 or 3)
 %                     N ... samples of data A
+%                     M ... number of points X (2 or 3)
 %       X       - matrix containing positions b as columns, at which A(X) is
 %                 given [D M]
-%                     M ... number of points X (2 or 3)
 %                     D ... dimension of space (1 or 2)
+%                     M ... number of points X (2 or 3)
 %       x       - desired point at which A should be interpolated [D 1]
+%                     D ... dimension of space (1 or 2)
 %
 %   Output parameters:
 %       B       - interpolated data at point x [N 1]
@@ -87,7 +88,7 @@ elseif size(A,2)==3
         error('%s: one of your interpolation weights is <0.',upper(mfilename));
     end
     % Calculate desired B with linear combination w(ii)
-    B = w(1)*A(:,1) + w(2)*A(:,2) + w(3)*A(:,3);
+    B = (w(1)*A(:,1) + w(2)*A(:,2) + w(3)*A(:,3)) / sum(w);
 else
     error('%s: size(A,2) has to be 2 or 3.',upper(mfilename));
 end

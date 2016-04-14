@@ -1,11 +1,18 @@
-function test_binaural_synthesis()
-%TEST_BINAURAL_SYNTHESIS tests the correctness of the binaural synthesis
-%functions
+function boolean = test_tapering_window(modus)
+%TEST_TAPERING_WINDOW tests the tapering_window() function for applying tapering
+%to the secondary sources in Wave Field Synthesis
 %
-%   Usage: test_binaural_synthesis()
+%   Usage: boolean = test_tapering_window(modus)
 %
-%   TEST_BINAURAL_SYNTHESIS() tests the ir_wfs function for different
-%   loudspeaker arrays and source models.
+%   Input parameters:
+%       modus   - 0: numerical (quiet)
+%                 1: numerical (verbose)
+%
+%   Output parameters:
+%       booelan - true or false
+%
+%   TEST_TAPERING_WINDOW(modus) checks if the tapering window applied to the
+%   secondary sources in Wave Field Synthesis is working.
 
 %*****************************************************************************
 % Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
@@ -41,103 +48,100 @@ function test_binaural_synthesis()
 
 
 %% ===== Checking of input  parameters ===================================
-nargmin = 0;
-nargmax = 0;
+nargmin = 1;
+nargmax = 1;
 narginchk(nargmin,nargmax);
 
 
-%% ===== Settings ========================================================
-conf = SFS_config;
-conf.c = 343;
-conf.fs = 44100;
-conf.secondary_sources.x0 = [];
-conf.secondary_sources.center = [0 0 0];
-conf.secondary_sources.size = 3;
-conf.ir.useoriglength = false;
-conf.ir.usehcomp = false;
-conf.ir.useinterpolation = true;
-conf.N = 2048;
-conf.dimension = '2.5D';
-conf.driving_functions = 'default';
-conf.usetapwin = true;
-conf.tapwinlen = 0.3;
-conf.wfs.usehpre = true;
-conf.wfs.hpretype = 'FIR';
-conf.wfs.hpreflow = 50;
-conf.wfs.hprefhigh = 1200;
-conf.usefracdelay = false;
-conf.debug = 0;
-conf.showprogress = false;
-
-
 %% ===== Main ============================================================
-% check if HRTF data set is available, download otherwise
-basepath = get_sfs_path();
-hrtf_file = [basepath '/data/HRTFs/QU_KEMAR_anechoic_3m.sofa'];
-if ~exist(hrtf_file,'file')
-    disp('Download');
-    url = ['https://github.com/sfstoolbox/data/blob/master/', ...
-           'HRTFs/QU_KEMAR_anechoic_3m.sofa?raw=true'];
-    download_file(url,hrtf_file);
-end
-% load HRTF data set
-hrtf = SOFAload(hrtf_file);
-
-
-%% ===== WFS 2.5D ========================================================
-% === Linear array ===
+conf = SFS_config;
+conf.secondary_sources.number = 16;
+boolean = true;
+% reference values
+ref_win_linear = [ 
+   0.25000
+   1.00000
+   1.00000
+   1.00000
+   1.00000
+   1.00000
+   1.00000
+   1.00000
+   1.00000
+   1.00000
+   1.00000
+   1.00000
+   1.00000
+   1.00000
+   1.00000
+   0.25000
+];
+ref_win_box = [
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+];
+ref_win_circular1 = [
+   1
+   1
+   1
+   1
+   1
+];
+ref_win_circular2 = [
+   1
+   1
+   1
+   1
+   1
+];
+% Calculate current values
+% linear secondary sources
 conf.secondary_sources.geometry = 'linear';
-conf.secondary_sources.number = 20;
-X = [0 -2 0];
-phi = pi/2;
-conf.xref = X;
-% Plane wave
-src = 'pw';
-xs = [0.5 -1 0];
-ir_wfs(X,phi,xs,src,hrtf,conf);
-% Point source
-src = 'ps';
-xs = [0 1 0];
-ir_wfs(X,phi,xs,src,hrtf,conf);
-% Focused source
-src = 'fs';
-xs = [0 -1 0 0 -1 0];
-ir_wfs(X,phi,xs,src,hrtf,conf);
-
-% === Circular array ===
-conf.secondary_sources.geometry = 'circle';
-conf.secondary_sources.number = 64;
-X = [0 0 0];
-phi = pi/2;
-conf.xref = X;
-% Plane wave
-src = 'pw';
-xs = [0.5 -1 0];
-ir_wfs(X,phi,xs,src,hrtf,conf);
-% Point source
-src = 'ps';
-xs = [0.5 2 0];
-ir_wfs(X,phi,xs,src,hrtf,conf);
-% Focused source
-src = 'fs';
-xs = [0.5 0.5 0 -1 -1 0];
-ir_wfs(X,phi,xs,src,hrtf,conf);
-
-% === Box shaped array ===
+x0 = secondary_source_positions(conf);
+win_linear = tapering_window(x0,conf);
+% box shaped secondary sources
 conf.secondary_sources.geometry = 'box';
-conf.secondary_sources.number = 80;
-X = [0 0 0];
-phi = pi/2;
-conf.xref = X;
-% Plane wave
-src = 'pw';
-xs = [0.5 -1 0];
-ir_wfs(X,phi,xs,src,hrtf,conf);
-% Point source
-src = 'ps';
-xs = [0.5 2 0];
-ir_wfs(X,phi,xs,src,hrtf,conf);
-% Focused source
-src = 'fs';
-xs = [0.5 0.5 0 -1 -1 0];
-ir_wfs(X,phi,xs,src,hrtf,conf);
+x0 = secondary_source_positions(conf);
+x0 = secondary_source_selection(x0,[-1 -1 0],'pw');
+win_box = tapering_window(x0,conf);
+% circular secondary sources
+conf.secondary_sources.geometry = 'circular';
+x0 = secondary_source_positions(conf);
+x01 = secondary_source_selection(x0,[0 2.5 0],'ps');
+win_circular1 = tapering_window(x01,conf);
+x02 = secondary_source_selection(x0,[2.5 0 0],'ps');
+win_circular2 = tapering_window(x02,conf);
+
+if modus==0
+    % Numerical mode (quiet)
+    if sum(abs(ref_win_circular1-win_circular1))>eps || ...
+       sum(abs(ref_win_circular2-win_circular2))>eps || ...
+       sum(abs(ref_win_linear-win_linear))>eps || ...
+       sum(abs(ref_win_box-win_box))>eps
+        boolean = false;
+    end
+elseif modus==1
+    message = 'wrong tapering window for';
+    if sum(abs(ref_win_circular1-win_circular1))>eps || ...
+       sum(abs(ref_win_circular2-win_circular2))>eps
+        error('%s: %s circular secondary sources.', ...
+            upper(mfilename),message);
+    end
+    if sum(abs(ref_win_linear-win_linear))>eps
+        error('%s: %s linear secondary sources.', ...
+            upper(mfilename),message);
+    end
+    if sum(abs(ref_win_box-win_box))>eps
+        error('%s: %s box shaped secondary sources.', ...
+            upper(mfilename),message);
+    end
+else
+    error('%s: modus has to be 0 (numerical quiet), 1 (numerical), ', ...
+          upper(mfilename));
+end

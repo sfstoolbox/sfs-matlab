@@ -72,7 +72,6 @@ function sig = delayline(sig,dt,weight,conf)
 
 %% ===== Configuration ==================================================
 fracdelay = conf.fracdelay;
-Norder = conf.fracdelay.order;
 
 %% ===== Computation =====================================================
 % Check if the impulse response is given in SOFA conventions [M C N], or in
@@ -142,8 +141,6 @@ switch fracdelay.pre.method
     % can be performed by first convolving c_m and x and incorporating the delay
     % d afterwards.
 
-    % number of filter coefficients (length of filter)
-    % Norder = fracdelay.order;  
     % number of parallel filters, i.e. order of polynomial + 1
     % Nfilter = fracdelay.pre.farrow.Npol+1;
     
@@ -151,8 +148,8 @@ switch fracdelay.pre.method
   case 'none'
     buffer = sig;
   otherwise
-    disp('%s: \"%s\" is an unknown pre-processing method for delay line', ...
-      fracdelay.pre.method, upper(mfilename));
+    fprintf('%s: \"%s\" is an unknown pre-processing method for delay line', ...
+      upper(mfilename), fracdelay.pre.method);
 end
 
 %% ===== Fractional Delay ================================================
@@ -172,25 +169,25 @@ else  % There is no post processing stage if the Farrow Structure used
       b = ones(1, channels);
     case 'lagrange'
       % ==== Lagrange Polynomial Interpolator ==============================
-      if mod(Norder,2) == 0
+      if mod(fracdelay.order,2) == 0
         idt = round(dt);  % round delay for even order
       else
         idt = floor(dt);  % floor delay for odd order
       end
       fdt = dt - idt;  % fractional part of delays
-      b = lagrange_filter(Norder, fdt);
+      b = lagrange_filter(fracdelay.order, fdt);
     case 'thiran'
       % ==== Thiran's Allpass Filter for Maximally Flat Group Delay ========
       idt = round(dt);  % integer part of delays
       fdt = dt - idt;  % fractional part of delays
-      [b, a] = thiran_filter(Norder, fdt);
+      [b, a] = thiran_filter(fracdelay.order, fdt);
     case 'least_squares'
       % ==== Least Squares Interpolation Filter ============================
       idt = floor(dt);  % integer part of delays
       fdt = dt - idt;  % fractional part of delays
-      b = zeros(Norder+1, channels);
+      b = zeros(fracdelay.order+1, channels);
       for cdx=1:channels
-        b(:,cdx) = general_least_squares(Norder+1,fdt(cdx),0.90);
+        b(:,cdx) = general_least_squares(fracdelay.order+1,fdt(cdx),0.90);
       end
     otherwise
       error('%s: \"%s\" is an unknown fractional delay filter', ...

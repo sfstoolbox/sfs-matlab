@@ -252,6 +252,17 @@ conf.sdm.withev = true; % boolean
 % returns the highest order for which no aliasing occurs. If you wish to use
 % another order you can set it manually here, otherwise leave it blank
 conf.nfchoa.order = []; % integer
+% additional weighting of the modal coefficients by window function
+conf.nfchoa.wtype = 'rect';  % string
+% window type. Available windows are:
+%   'rect'                     - all coefficients are weighted by 1.0
+%   'kaiser', 'kaiser-bessel'  - Kaiser aka. Kaiser-Bessel window
+conf.nfchoa.wparameter = 0.0;  % float
+% scalar parameter for window, if applicable. Effect for distinct window:
+%   'rect'    - no effect 
+%   'kaiser'  - trade of between main-lobe width and side-lobe levels. 0.0
+%               results in the rectangular window and the smallest main-lobe
+%               width.
 
 
 %% ===== Local Sound Field Synthesis =====================================

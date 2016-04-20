@@ -1,7 +1,7 @@
-function [win, Win] = modal_weighting(order, ndtft, conf)
+function [win, Win, Phi] = modal_weighting(order, ndtft, conf)
 %MODAL_WEIGHTING computes weighting window for modal coefficients
 %
-%   Usage: [win, Win] = modal_weighting(order, ndtft, conf)
+%   Usage: [win, Win, Phi] = modal_weighting(order, ndtft, conf)
 %
 %   Input parameters:
 %       order       - half width of weighting window / 1
@@ -10,7 +10,8 @@ function [win, Win] = modal_weighting(order, ndtft, conf)
 %
 %   Output parameters:
 %       win         - the window w_n in the discrete domain (length = 2*order+1)
-%       Win         - the DTFT of w_n (length = ndtft)
+%       Win         - the inverse DTFT of w_n (length = ndtft)
+%       Phi         - corresponding angle the DTFT of w_n
 %
 %   See also: driving_function_imp_nfchoa, driving_function_mono_nfchoa
 
@@ -78,4 +79,9 @@ win = win./sum(abs(win))*(2*order+1);  % normalise
 % inverse DTFT
 if nargout > 1
   Win = ifft([win(order+1:end),zeros(1,order)], ndtft, 'symmetric');
+end
+% axis corresponding to DTFT
+if nargout > 2
+  Nphi = length(Win);
+  Phi = 0:2*pi/Nphi:2*pi*(1-1/Nphi);
 end

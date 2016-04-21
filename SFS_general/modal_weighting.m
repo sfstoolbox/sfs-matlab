@@ -11,7 +11,7 @@ function [win, Win, Phi] = modal_weighting(order, ndtft, conf)
 %   Output parameters:
 %       win         - the window w_n in the discrete domain (length = 2*order+1)
 %       Win         - the inverse DTFT of w_n (length = ndtft)
-%       Phi         - corresponding angle the DTFT of w_n
+%       Phi         - corresponding angle the inverse DTFT of w_n
 %
 %   See also: driving_function_imp_nfchoa, driving_function_mono_nfchoa
 
@@ -74,13 +74,13 @@ switch wtype
 end
 
 % TODO: check, if normalisation makes sense at all
-win = win./sum(abs(win))*(2*order+1);  % normalise
+% win = win./sum(abs(win))*(2*order+1);  % normalise
 
 % inverse DTFT
 if nargout > 1
   Win = ifft([win(order+1:end),zeros(1,order)], ndtft, 'symmetric');
 end
-% axis corresponding to DTFT
+% axis corresponding to inverse DTFT
 if nargout > 2
   Nphi = length(Win);
   Phi = 0:2*pi/Nphi:2*pi*(1-1/Nphi);

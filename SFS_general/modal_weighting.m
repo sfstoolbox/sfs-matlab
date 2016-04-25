@@ -1,12 +1,13 @@
-function [win, Win, Phi] = modal_weighting(order, ndtft, conf)
+function [win,Win,Phi] = modal_weighting(order,ndtft,conf)
 %MODAL_WEIGHTING computes weighting window for modal coefficients
 %
-%   Usage: [win, Win, Phi] = modal_weighting(order, ndtft, conf)
+%   Usage: [win,Win,Phi] = modal_weighting(order,[ndtft],conf)
 %
 %   Input parameters:
 %       order       - half width of weighting window / 1
 %       ndtft       - number of bins for inverse discrete-time Fourier transform
-%                     (DTFT) / 1 (optional, default(ndtft=[]): 2*order+1)
+%                     (DTFT) / 1 (optional, default: 2*order+1)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       win         - the window w_n in the discrete domain (length = 2*order+1)
@@ -49,39 +50,44 @@ function [win, Win, Phi] = modal_weighting(order, ndtft, conf)
 
 
 %% ===== Checking input parameters =======================================
-nargmin = 3;
+nargmin = 2;
 nargmax = 3;
 narginchk(nargmin,nargmax);
+if nargin==2
+    conf = ndtft;
+    ndtft = [];
+end
+
 
 %% ===== Configuration ===================================================
 wtype = conf.nfchoa.wtype;
 
-%% ===== Computation =====================================================
 
+%% ===== Computation =====================================================
 switch wtype
-  case 'rect'
-    % === Rectangular Window =============================================
-    win = ones(1,2*order+1);    
-  case {'kaiser', 'kaiser-bessel'}
-    % === Kaiser-Bessel window ===========================================
-    % approximation of the slepian window using modified bessel function of
-    % zeroth order
-    beta = conf.nfchoa.wparameter*pi;    
-    win = besseli(0, beta*sqrt(1-((-order:order)./order).^2))./ ...
-      besseli(0,beta);
-  otherwise
-    error('%s: unknown weighting type (%s)!', upper(mfilename), weighting.type);
+    case 'rect'
+        % === Rectangular Window =============================================
+        win = ones(1,2*order+1);
+    case {'kaiser', 'kaiser-bessel'}
+        % === Kaiser-Bessel window ===========================================
+        % Approximation of the slepian window using modified bessel function of
+        % zeroth order
+        beta = conf.nfchoa.wparameter * pi;
+        win = besseli(0,beta*sqrt(1-((-order:order)./order).^2)) ./ ...
+              besseli(0,beta);
+    otherwise
+        error('%s: unknown weighting type (%s)!',upper(mfilename),wtype);
 end
 
 % TODO: check, if normalisation makes sense at all
 % win = win./sum(abs(win))*(2*order+1);  % normalise
 
-% inverse DTFT
+% Inverse DTFT
 if nargout > 1
-  Win = ifft([win(order+1:end),zeros(1,order)], ndtft, 'symmetric');
+    Win = ifft([win(order+1:end),zeros(1,order)],ndtft,'symmetric');
 end
-% axis corresponding to inverse DTFT
+% Axis corresponding to inverse DTFT
 if nargout > 2
-  Nphi = length(Win);
-  Phi = 0:2*pi/Nphi:2*pi*(1-1/Nphi);
+    Nphi = length(Win);
+    Phi = 0:2*pi / Nphi:2*pi*(1-1/Nphi);
 end

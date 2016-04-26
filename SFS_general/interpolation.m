@@ -17,11 +17,8 @@ function B = interpolation(A,X,x)
 %   Output parameters:
 %       B       - interpolated data at point x [N 1]
 %
-%   INTERPOLATION(A,X,x) interpolates the data A given at two or three points X
-%   at the desired position x.
-%   Note that the given parameter are not checked if they have all the correct
-%   dimensions in order to save computational time, because this function could
-%   be called quiet often.
+%   INTERPOLATION(A,X,x) linearly interpolates the data A given at two or three
+%   points X at the desired position x.
 %
 %   See also: interpolate_ir, get_ir
 

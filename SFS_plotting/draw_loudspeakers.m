@@ -78,8 +78,8 @@ elseif ~dimensions(2)
     x0(:,2) = x0(:,3);
 end
 
-% Weightings of the single sources
-win = x0(:,7);
+% Weightings of the single sources (scale maximum to 1)
+win = x0(:,7) / max(x0(:,7));
 
 % Plot only "x" at the loudspeaker positions, use this as default for all cases
 % that are not the x-y-plane

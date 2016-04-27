@@ -13,7 +13,8 @@ function draw_loudspeakers(x0,dimensions,conf)
 %   DRAW_LOUDSPEAKERS(x0,dimensions,conf) draws loudspeaker symbols or filled
 %   points at the given secondary source positions. This can be controlled by
 %   the conf.plot.realloudspeakers setting. The loudspeaker symbols are pointing
-%   in their given direction.
+%   in their given direction and are colored accordingly to their weights,
+%   whereby the weights are scaled to an absolute maximum of 1 before.
 %
 %   See also: plot_sound_field
 
@@ -78,42 +79,41 @@ elseif ~dimensions(2)
     x0(:,2) = x0(:,3);
 end
 
-% Weightings of the single sources (scale maximum to 1)
-win = x0(:,7) / max(x0(:,7));
-
-% Plot only "x" at the loudspeaker positions, use this as default for all cases
+% Plot only "o" at the loudspeaker positions, use this as default for all cases
 % that are not the x-y-plane
 if ~p.realloudspeakers || ~(dimensions(1)&&dimensions(2))
+
     if p.realloudspeakers && ~(dimensions(1)&&dimensions(2))
         warning('%s: Real loudspeaker can only be drawn in the x-y-plane', ...
             upper(mfilename));
     end
-    % plot all secondary sources with the same color + symbol
+    % Plot all secondary sources with the same color + symbol
     plot(x0(:,1),x0(:,2),'o', ...
         'MarkerFaceColor','k', ...
         'MarkerEdgeColor','k', ...
         'MarkerSize',4);
-else
-    % Set fill color for active loudspeakers
-    % Scale the color. sc = 1 => black. sc = 0.5 => gray.
-    sc = 0.6;
-    fc = [(1-sc.*win), ...
-          (1-sc.*win), ...
-          (1-sc.*win)];
 
-    w = p.lssize;
-    h = p.lssize;
+else
+
+    % Weightings of the single loudspeakers (scale maximum to 1)
+    weights = x0(:,7) / max(abs(x0(:,7)));
+    % Set fill color for active loudspeakers
+    % Scale the color: sc = 1 => black, sc = 0.5 => gray.
+    sc = 0.6;
+    fc = [(1-sc.*weights), ...
+          (1-sc.*weights), ...
+          (1-sc.*weights)];
 
     % Plot a real speaker symbol at the desired position
-    % vertex coordinates
-    %v1 = [-h/2 -h/2 0 0 -h/2 ; -w/2 w/2 w/2 -w/2 -w/2];
-    %v2 = [0 h/2 h/2 0 ; -w/6 -w/2 w/2 w/6];
+    % vertex coordinates with height and width after lssize
+    w = p.lssize;
+    h = p.lssize;
     v1 = [-h -h -h/2 -h/2 -h ; -w/2 w/2 w/2 -w/2 -w/2 ; 0 0 0 0 0];
     v2 = [-h/2 0 0 -h/2 ; -w/6 -w/2 w/2 w/6 ; 0 0 0 0 ];
 
     hold on;
 
-    % draw loudspeakers
+    % Draw loudspeakers
     for n=1:nls
 
         % Get the azimuth direction of the secondary sources
@@ -122,23 +122,20 @@ else
         % Rotation matrix (orientation of the speakers)
         % R = [cos(phi(n)) -sin(phi(n));sin(phi(n)) cos(phi(n))];
         R = rotation_matrix(phi);
-
         for k=1:length(v1)
             vr1(:,k) = R * v1(:,k);
         end
-
         for k=1:length(v2)
             vr2(:,k) = R * v2(:,k);
         end
 
-        % shift
+        % Shift
         v01(1,:) = vr1(1,:) + x0(n,1);
         v01(2,:) = vr1(2,:) + x0(n,2);
         v02(1,:) = vr2(1,:) + x0(n,1);
         v02(2,:) = vr2(2,:) + x0(n,2);
 
-
-        % Draw speakers
+        % Draw loudspeakers
         fill(v01(1,:),v01(2,:),fc(n,:));
         fill(v02(1,:),v02(2,:),fc(n,:));
 

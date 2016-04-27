@@ -82,9 +82,6 @@ switch wtype
         error('%s: unknown weighting type (%s)!',upper(mfilename),wtype);
 end
 
-% TODO: check, if normalisation makes sense at all
-% win = win./sum(abs(win))*(2*order+1);  % normalise
-
 % Inverse DTFT
 if nargout > 1
     Win = ifft([win(order+1:end),zeros(1,order)],ndtft,'symmetric');

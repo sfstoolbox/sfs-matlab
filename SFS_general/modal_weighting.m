@@ -53,10 +53,13 @@ function [win,Win,Phi] = modal_weighting(order,ndtft,conf)
 nargmin = 2;
 nargmax = 3;
 narginchk(nargmin,nargmax);
-if nargin==2
+isargpositivescalar(order);
+if nargin<nargmax
     conf = ndtft;
-    ndtft = [];
+    ndtft = 2*order + 1;
 end
+isargpositivescalar(ndtft);
+isargstruct(conf);
 
 
 %% ===== Configuration ===================================================
@@ -66,12 +69,12 @@ wtype = conf.nfchoa.wtype;
 %% ===== Computation =====================================================
 switch wtype
     case 'rect'
-        % === Rectangular Window =============================================
+        % === Rectangular Window =========================================
         win = ones(1,2*order+1);
     case {'kaiser', 'kaiser-bessel'}
-        % === Kaiser-Bessel window ===========================================
-        % Approximation of the slepian window using modified bessel function of
-        % zeroth order
+        % === Kaiser-Bessel window =======================================
+        % Approximation of the slepian window using modified bessel
+        % function of zeroth order
         beta = conf.nfchoa.wparameter * pi;
         win = besseli(0,beta*sqrt(1-((-order:order)./order).^2)) ./ ...
               besseli(0,beta);

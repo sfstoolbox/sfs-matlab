@@ -14,6 +14,12 @@ function [win,Win,Phi] = modal_weighting(order,ndtft,conf)
 %       Win         - the inverse DTFT of w_n (length = ndtft)
 %       Phi         - corresponding angle the inverse DTFT of w_n
 %
+%   References:
+%   		Kaiser, J., & Schafer, R. (1980) - "On the use of the I0-sinh window
+%       for spectrum analysis", IEEE Transactions on Acoustics, Speech, and
+%       Signal Processing
+%       Van Trees, H. L. (2004) - "Optimum Array Processing", John Wiley & Sons.
+%
 %   See also: driving_function_imp_nfchoa, driving_function_mono_nfchoa
 
 %*****************************************************************************

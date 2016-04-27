@@ -14,10 +14,15 @@ function [win,Win,Phi] = modal_weighting(order,ndtft,conf)
 %       Win         - the inverse DTFT of w_n (length = ndtft)
 %       Phi         - corresponding angle the inverse DTFT of w_n
 %
+%   MODAL_WEIGHTING(order,ndtft,conf) calculates a weighting window for the
+%   modal band limitation applied in NFC-HOA. The window type is configured in
+%   conf.nfchoa.wtype and its default setting is a simple rectangular window.
+%   The other possibility is to use a Kaiser-Bessel window.
+%
 %   References:
-%   		Kaiser, J., & Schafer, R. (1980) - "On the use of the I0-sinh window
-%       for spectrum analysis", IEEE Transactions on Acoustics, Speech, and
-%       Signal Processing
+%   	Kaiser, J., & Schafer, R. (1980) - "On the use of the I0-sinh window
+%           for spectrum analysis", IEEE Transactions on Acoustics, Speech, and
+%           Signal Processing
 %       Van Trees, H. L. (2004) - "Optimum Array Processing", John Wiley & Sons.
 %
 %   See also: driving_function_imp_nfchoa, driving_function_mono_nfchoa
@@ -89,11 +94,11 @@ switch wtype
 end
 
 % Inverse DTFT
-if nargout > 1
+if nargout>1
     Win = ifft([win(order+1:end),zeros(1,order)],ndtft,'symmetric');
 end
 % Axis corresponding to inverse DTFT
-if nargout > 2
+if nargout>2
     Nphi = length(Win);
     Phi = 0:2*pi / Nphi:2*pi*(1-1/Nphi);
 end

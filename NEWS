@@ -2,6 +2,7 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
 
 2.2.0 ()
     - fix impulse response interpolation for three points
+    - add the ability to apply modal weighting window to NFC-HOA in time domain
 
 2.1.0 (10. March 2016)
 

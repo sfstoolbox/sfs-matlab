@@ -1,5 +1,5 @@
 function win = tapering_window(x0,conf)
-%TAPWIN generate a tapering window for a loudspeaker array
+%TAPERING_WINDOW generate a tapering window for a loudspeaker array
 %
 %   Usage: win = tapering_window(x0,conf)
 %
@@ -8,14 +8,13 @@ function win = tapering_window(x0,conf)
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       win     - tapering window (nlsx1)
+%       win     - tapering window [nlsx1]
 %
-%   TAPERING_WINDOW(xo,conf) generates a tapering window for a secondary source
+%   TAPERING_WINDOW(x0,conf) generates a tapering window for a secondary source
 %   distribution given by x0. The window is created from a squared Hann window.
+%   The strength of the tapering is controlled by the conf.tapwinlen setting.
 %   If the secondary source distribution has some gaps, every joint part gets
 %   its own tapering.
-%   The mean distance of the secondary sources is calculated within this
-%   function in order to identify edges of the array.
 %
 %   See also: secondary_source_position, sound_field_mono_wfs, hann
 

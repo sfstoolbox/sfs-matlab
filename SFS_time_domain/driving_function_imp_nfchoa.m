@@ -124,12 +124,15 @@ end
 % see Spors et al. (2011), eq.(4) and (5)
 %--------------------------------------------------------------------------
 
+% Weighting function
+wm = modal_weighting(order,conf);
+
 % Compute input signal for IFFT
 dM = zeros(2*order+1,N);
 for n=-order:order
-    dM(n+order+1,:) = dm(abs(n)+1,:) * exp(-1i*n*theta_src);
+    dM(n+order+1,:) = wm(n+order+1) * dm(abs(n)+1,:) * exp(-1i*n*theta_src);
 end
-% spatial IFFT
+% Spatial IFFT
 d = zeros(nls,N);
 for l=1:N
     d(:,l) = sum(buffer(dM(:,l),nls),2);
@@ -141,7 +144,6 @@ d = 1/pi/R*nls*real(d);
 % -------------------------------------------------------------------------
 % The following is the direct implementation of the spatial IDFT which
 % takes longer time for higher orders.
-% 
 if(0)
     d = zeros(N,nls);
     for n=1:nls

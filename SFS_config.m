@@ -259,10 +259,10 @@ conf.nfchoa.wtype = 'rect';  % string
 %   'kaiser', 'kaiser-bessel'  - Kaiser aka. Kaiser-Bessel window
 conf.nfchoa.wparameter = 0.0;  % float
 % scalar parameter for window, if applicable. Effect for distinct window:
-%   'rect'    - no effect 
-%   'kaiser'  - trade of between main-lobe width and side-lobe levels. 0.0
-%               results in the rectangular window and the smallest main-lobe
-%               width.
+%   'rect'    - no effect
+%   'kaiser'  - [0,inf]. trade-off between main-lobe width and side-lobe levels.
+%               0.0 results in the rectangular window and the smallest main-lobe
+%               width. infinity results in a dirac impulse.
 
 
 %% ===== Local Sound Field Synthesis =====================================
@@ -281,13 +281,13 @@ conf.localsfs.vss.geometry = 'circular';
 conf.localsfs.vss.number = 56;
 conf.localsfs.vss.grid = 'equally_spaced_points';
 %
-% linear vss distribution: rotate the distribution orthogonal to the progation 
+% linear vss distribution: rotate the distribution orthogonal to the progation
 % direction of the desired sound source
 % circular vss distribution: truncate the distribution to a circular arc
 % which satisfies the secondary source selection criterions ( source normal
 % aligns with propagation directions of desired sound source )
 conf.localsfs.vss.consider_target_field = true;
-% 
+%
 % vss distribution is further truncated if parts of it cannot be correctly
 % reproduced, because they lie outside the area which is surrounded by the real
 % loudspeakers (secondary sources)

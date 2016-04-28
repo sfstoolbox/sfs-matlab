@@ -246,19 +246,19 @@ conf.sdm.withev = true; % boolean
 
 
 %% ===== Near-Field Compensated Higher Order Ambisonics (NFC-HOA) ========
-% Settings for NFCF-HOA, see Ahrens (2012) fro an introduction
+% Settings for NFCF-HOA, see Ahrens (2012) for an introduction
 %
-% normally the order of NFC-HOA is set by the nfchoa_order() function which
+% Normally the order of NFC-HOA is set by the nfchoa_order() function which
 % returns the highest order for which no aliasing occurs. If you wish to use
 % another order you can set it manually here, otherwise leave it blank
 conf.nfchoa.order = []; % integer
-% additional weighting of the modal coefficients by window function
+% Additional weighting of the modal coefficients by window function
 conf.nfchoa.wtype = 'rect';  % string
-% window type. Available windows are:
+% Window type. Available windows are:
 %   'rect'                     - all coefficients are weighted by 1.0
 %   'kaiser', 'kaiser-bessel'  - Kaiser aka. Kaiser-Bessel window
 conf.nfchoa.wparameter = 0.0;  % float
-% scalar parameter for window, if applicable. Effect for distinct window:
+% Scalar parameter for window, if applicable. Effect for distinct window:
 %   'rect'    - no effect
 %   'kaiser'  - [0,inf]. trade-off between main-lobe width and side-lobe levels.
 %               0.0 results in the rectangular window and the smallest main-lobe

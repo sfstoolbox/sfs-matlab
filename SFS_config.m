@@ -253,11 +253,11 @@ conf.sdm.withev = true; % boolean
 % another order you can set it manually here, otherwise leave it blank
 conf.nfchoa.order = []; % integer
 % Additional weighting of the modal coefficients by window function
-conf.nfchoa.wtype = 'rect';  % string
+conf.nfchoa.modal_window = 'rect';  % string
 % Window type. Available windows are:
 %   'rect'                     - all coefficients are weighted by 1.0
 %   'kaiser', 'kaiser-bessel'  - Kaiser aka. Kaiser-Bessel window
-conf.nfchoa.wparameter = 0.0;  % float
+conf.nfchoa.modal_window_parameter = 0.0;  % float
 % Scalar parameter for window, if applicable. Effect for distinct window:
 %   'rect'    - no effect
 %   'kaiser'  - [0,inf]. trade-off between main-lobe width and side-lobe levels.

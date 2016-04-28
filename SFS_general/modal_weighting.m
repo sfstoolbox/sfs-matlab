@@ -16,8 +16,8 @@ function [win,Win,Phi] = modal_weighting(order,ndtft,conf)
 %
 %   MODAL_WEIGHTING(order,ndtft,conf) calculates a weighting window for the
 %   modal band limitation applied in NFC-HOA. The window type is configured in
-%   conf.nfchoa.wtype and its default setting is a simple rectangular window.
-%   The other possibility is to use a Kaiser-Bessel window.
+%   conf.nfchoa.modal_window. Its default setting is a simple rectangular
+%   window, for other options have a look into SFS_config.
 %
 %   References:
 %   	Kaiser, J., & Schafer, R. (1980) - "On the use of the I0-sinh window
@@ -74,7 +74,7 @@ isargstruct(conf);
 
 
 %% ===== Configuration ===================================================
-wtype = conf.nfchoa.wtype;
+wtype = conf.nfchoa.modal_window;
 
 
 %% ===== Computation =====================================================
@@ -86,7 +86,7 @@ switch wtype
         % === Kaiser-Bessel window =======================================
         % Approximation of the slepian window using modified bessel
         % function of zeroth order
-        beta = conf.nfchoa.wparameter * pi;
+        beta = conf.nfchoa.modal_window_parameter * pi;
         win = besseli(0,beta*sqrt(1-((-order:order)./order).^2)) ./ ...
               besseli(0,beta);
     otherwise

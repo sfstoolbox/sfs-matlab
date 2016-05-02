@@ -1,19 +1,17 @@
-function n = direction_vector(x1,x2)
-%DIRECTION_VECTOR returns a unit vector pointing from x1 to x2
+function directions = direction_vector(x1,x2)
+%DIRECTION_VECTOR return unit vector(s) pointing from x1 to x2
 %
 %   Usage: n = direction_vector(x1,x2)
 %
 %   Input parameters:
-%       x1  - starting point
-%       x2  - ending point
+%       x1  - starting point(s) [1xn] or [mxn]
+%       x2  - ending point(s)   [1xn] or [mxn]
 %
 %   Output parameters:
-%       n   - unit vector pointing in the direction from x1 to x2
+%       n   - unit vector(s) pointing in the direction(s) from x1 to x2
 %
-%   DIRECTION_VECTOR(x1,x2) calculates the unit vector pointing from the
-%   n-dimensional point x1 to the n-dimensional point x2. The vectors x1
-%   and x2 can each be stored in a matrix containing m different direction
-%   vectors.
+%   DIRECTION_VECTOR(x1,x2) calculates the unit vectors pointing from
+%   n-dimensional points x1 to the n-dimensional points x2.
 %
 %   See also: secondary_source_positions
 
@@ -54,13 +52,28 @@ function n = direction_vector(x1,x2)
 nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-if size(x1)~=size(x2)
-    error('%s: x1 and x2 had to have the same size.',upper(mfilename));
+if size(x1,2)~=size(x2,2)
+    error('%s: x1 and x2 need to have the same dimension.',upper(mfilename));
+end
+if size(x1,1)~=size(x2,1) && ~(size(x1,1)==1 | size(x2,1)==1)
+    error(['%s: x1 and x2 need to have the same size, or one needs to ', ...
+           'be a vector.'],upper(mfilename));
 end
 
 
 %% ==== Main =============================================================
-n = zeros(size(x1));
+% Made both matrices the same size
+m1 = size(x1,1);
+m2 = size(x2,1);
+m = max(m1,m2);
+n = size(x1,2);
+if m1>m2
+    x2 = repmat(x2,[m 1]);
+elseif m2>m1
+    x1 = repmat(x1,[m 1]);
+end
+% Calculate direction vectors
+directions = zeros([m n]);
 for ii=1:size(x1,1)
-    n(ii,:) = (x2(ii,:)-x1(ii,:)) / norm(x2(ii,:)-x1(ii,:));
+    directions(ii,:) = (x2(ii,:)-x1(ii,:)) / norm(x2(ii,:)-x1(ii,:));
 end

@@ -131,7 +131,7 @@ elseif strcmp('mps',src)
     xparallel = nxs(1).*x + nxs(2).*y  + nxs(3).*z;
     
     R1 = sqrt( M^2.*xparallel.^2 + (1-M^2)*(x.^2 + y.^2 + z.^2) );
-    Rplus = (M*xparallel + R1)./(1-M*2);  
+    Rplus = (M*xparallel + R1)./(1-M.^2);  
     G = 1/(4*pi) * exp(-1i*omega/c.*Rplus)./R1;
 elseif strcmp('ls',src)
     % Source model for a line source: 2D Green's function.

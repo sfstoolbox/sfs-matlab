@@ -758,11 +758,11 @@ script for plotting it.
 Credits and license
 -------------------
 
-This is the source distribution of Sound Field Synthesis Toolbox (SFS) licensed
-under the GPLv3+. Please consult the file COPYING for more information about
+This is the source distribution of the SFS Toolbox (SFS) is licensed
+under MIT. Please consult the file LICENSE for more information about
 this license.
 
-Website: http://github.com/sfstoolbox/sfs
+Website: http://sfstoolbox.org
 
 If you have questions, bug reports or feature requests, please use the [Issue
 Section on the website](https://github.com/sfstoolbox/sfs/issues) to report them.
@@ -776,13 +776,4 @@ Audio Engineering Society*, 2012
 [ [pdf](http://audio.qu.tu-berlin.de/wp-content/uploads/publications/2012/wierstorf2012_SFS_toolbox_AES.pdf) ]
 [ [bibtex](doc/aes132_paper.bib) ]
 
-Copyright (c) 2010-2016
-Quality & Usability Lab, together with
-Assessment of IP-based Applications
-Telekom Innovation Laboratories, TU Berlin
-Ernst-Reuter-Platz 7, 10587 Berlin, Germany
-
-Copyright (c) 2013-2016
-Institut fuer Nachrichtentechnik
-Universitaet Rostock
-Richard-Wagner-Strasse 31, 18119 Rostock
+Copyright (c) 2010-2016 SFS Toolbox Team

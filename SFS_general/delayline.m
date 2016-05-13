@@ -110,9 +110,9 @@ switch fracdelay.pre.method
                 f = [0.0 0.9/rfactor 1/rfactor 1.0];
                 b = firpm(fracdelay.pre.resample.order,f,a);
 
-                sig = reshape(sig, 1, channels*samples);
+                sig = reshape(sig,1,channels*samples);
                 sig = [sig; zeros(rfactor-1,channels*samples)];
-                sig = reshape(sig, rfactor*samples, channels);
+                sig = reshape(sig,rfactor*samples,channels);
                 
                 sig = filter(b,1,sig,[],1);
             otherwise
@@ -150,7 +150,7 @@ switch fracdelay.pre.method
         % Nothing to be done
     otherwise
         fprintf(['%s: \"%s\" is an unknown pre-processing method for delay', ...
-            'line'], upper(mfilename), fracdelay.pre.method);
+            'line'],upper(mfilename),fracdelay.pre.method);
 end
 
 %% ===== Fractional Delay ================================================
@@ -158,16 +158,16 @@ end
 dt = rfactor.*dt;  % resampled delays
 samples = rfactor.*samples;  % length of resampled signals
 
-if strcmp( fracdelay.pre.method, 'farrow')
+if strcmp(fracdelay.pre.method,'farrow')
     to_be_implemented(mfilename);
 else  % There is no post processing stage if the Farrow Structure used
     % === Post Processing ================================================
-    a = ones(1, channels);  % denominator of fractional delay filter
+    a = ones(1,channels);  % denominator of fractional delay filter
     switch fracdelay.filter
         case 'zoh'
             % === Zero-Order-Hold (Integer Delays) =======================
             idt = ceil(dt);  % round up to next integer delay
-            b = ones(1, channels);
+            b = ones(1,channels);
         case 'lagrange'
             % ==== Lagrange Polynomial Interpolator ======================
             if mod(fracdelay.order,2) == 0
@@ -192,7 +192,7 @@ else  % There is no post processing stage if the Farrow Structure used
             end
         otherwise
             error('%s: \"%s\" is an unknown fractional delay filter', ...
-                upper(mfilename), fracdelay.filter);
+                upper(mfilename),fracdelay.filter);
     end
     
     for ii=1:channels
@@ -202,7 +202,7 @@ end
 
 %% ===== Integer Delay ===================================================
 % Handling of too long delay values (returns vector of zeros)
-idt(abs(idt) > samples) = samples;
+idt(abs(idt)>samples) = samples;
 
 % Handle positive or negative delays
 for ii=1:channels

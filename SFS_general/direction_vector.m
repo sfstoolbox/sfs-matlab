@@ -1,52 +1,47 @@
-function n = direction_vector(x1,x2)
-%DIRECTION_VECTOR returns a unit vector pointing from x1 to x2
+function directions = direction_vector(x1,x2)
+%DIRECTION_VECTOR return unit vector(s) pointing from x1 to x2
 %
 %   Usage: n = direction_vector(x1,x2)
 %
 %   Input parameters:
-%       x1  - starting point
-%       x2  - ending point
+%       x1  - starting point(s) [1xn] or [mxn]
+%       x2  - ending point(s)   [1xn] or [mxn]
 %
 %   Output parameters:
-%       n   - unit vector pointing in the direction from x1 to x2
+%       n   - unit vector(s) pointing in the direction(s) from x1 to x2
 %
-%   DIRECTION_VECTOR(x1,x2) calculates the unit vector pointing from the
-%   n-dimensional point x1 to the n-dimensional point x2. The vectors x1
-%   and x2 can each be stored in a matrix containing m different direction
-%   vectors.
+%   DIRECTION_VECTOR(x1,x2) calculates the unit vectors pointing from
+%   n-dimensional points x1 to the n-dimensional points x2.
 %
 %   See also: secondary_source_positions
 
 %*****************************************************************************
-% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Team                                   *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
@@ -54,13 +49,28 @@ function n = direction_vector(x1,x2)
 nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-if size(x1)~=size(x2)
-    error('%s: x1 and x2 had to have the same size.',upper(mfilename));
+if size(x1,2)~=size(x2,2)
+    error('%s: x1 and x2 need to have the same dimension.',upper(mfilename));
+end
+if size(x1,1)~=size(x2,1) && ~(size(x1,1)==1 | size(x2,1)==1)
+    error(['%s: x1 and x2 need to have the same size, or one needs to ', ...
+           'be a vector.'],upper(mfilename));
 end
 
 
 %% ==== Main =============================================================
-n = zeros(size(x1));
+% Made both matrices the same size
+m1 = size(x1,1);
+m2 = size(x2,1);
+m = max(m1,m2);
+n = size(x1,2);
+if m1>m2
+    x2 = repmat(x2,[m 1]);
+elseif m2>m1
+    x1 = repmat(x1,[m 1]);
+end
+% Calculate direction vectors
+directions = zeros([m n]);
 for ii=1:size(x1,1)
-    n(ii,:) = (x2(ii,:)-x1(ii,:)) / norm(x2(ii,:)-x1(ii,:));
+    directions(ii,:) = (x2(ii,:)-x1(ii,:)) / norm(x2(ii,:)-x1(ii,:));
 end

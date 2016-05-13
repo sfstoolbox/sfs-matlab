@@ -1,21 +1,31 @@
-function [xx,yy,zz] = xyz_grid(X,Y,Z,conf)
-%XYZ_GRID returns a xyz-grid for the listening area
+function [win,Win,Phi] = modal_weighting(order,ndtft,conf)
+%MODAL_WEIGHTING computes weighting window for modal coefficients
 %
-%   Usage: [xx,yy,zz] = xyz_grid(X,Y,Z,conf)
+%   Usage: [win,Win,Phi] = modal_weighting(order,[ndtft],conf)
 %
 %   Input parameters:
-%       X        - x-axis / m; single value or [xmin,xmax]
-%       Y        - y-axis / m; single value or [ymin,ymax]
-%       Z        - z-axis / m; single value or [zmin,zmax]
-%       conf     - configuration struct (see SFS_config)
+%       order       - half width of weighting window / 1
+%       ndtft       - number of bins for inverse discrete-time Fourier transform
+%                     (DTFT) / 1 (optional, default: 2*order+1)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       xx,yy,zz - matrices representing the xyz-grid / m
+%       win         - the window w_n in the discrete domain (length = 2*order+1)
+%       Win         - the inverse DTFT of w_n (length = ndtft)
+%       Phi         - corresponding angle the inverse DTFT of w_n
 %
-%   XYZ_GRID(X,Y,Z,conf) creates a xyz-grid to avoid a loop in the sound field
-%   calculation for the whole listening area.
+%   MODAL_WEIGHTING(order,ndtft,conf) calculates a weighting window for the
+%   modal band limitation applied in NFC-HOA. The window type is configured in
+%   conf.nfchoa.modal_window. Its default setting is a simple rectangular
+%   window, for other options have a look into SFS_config.
 %
-%   See also: xyz_axes_selection, is_dim_custom, sound_field_mono
+%   References:
+%   	Kaiser, J., & Schafer, R. (1980) - "On the use of the I0-sinh window
+%           for spectrum analysis", IEEE Transactions on Acoustics, Speech, and
+%           Signal Processing
+%       Van Trees, H. L. (2004) - "Optimum Array Processing", John Wiley & Sons.
+%
+%   See also: driving_function_imp_nfchoa, driving_function_mono_nfchoa
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -48,37 +58,44 @@ function [xx,yy,zz] = xyz_grid(X,Y,Z,conf)
 
 
 %% ===== Checking input parameters =======================================
-nargmin = 4;
-nargmax = 4;
+nargmin = 2;
+nargmax = 3;
 narginchk(nargmin,nargmax);
-isargnumeric(X,Y,Z);
+isargpositivescalar(order);
+if nargin<nargmax
+    conf = ndtft;
+    ndtft = 2*order + 1;
+end
+isargpositivescalar(ndtft);
 isargstruct(conf);
 
 
-%% ===== Configuration ====================================================
-resolution = conf.resolution;
+%% ===== Configuration ===================================================
+wtype = conf.nfchoa.modal_window;
 
 
 %% ===== Computation =====================================================
-dims = {X,Y,Z};
+switch wtype
+    case 'rect'
+        % === Rectangular Window =========================================
+        win = ones(1,2*order+1);
+    case {'kaiser', 'kaiser-bessel'}
+        % === Kaiser-Bessel window =======================================
+        % Approximation of the slepian window using modified bessel
+        % function of zeroth order
+        beta = conf.nfchoa.modal_window_parameter * pi;
+        win = besseli(0,beta*sqrt(1-((-order:order)./order).^2)) ./ ...
+              besseli(0,beta);
+    otherwise
+        error('%s: unknown weighting type (%s)!',upper(mfilename),wtype);
+end
 
-if any( is_dim_custom(X,Y,Z) )
-  xx = X;
-  yy = Y;
-  zz = Z;
-else
-  % Check which dimensions will be non singleton
-  dimensions = xyz_axes_selection(X,Y,Z);
-  % Create xyz-axes
-  xyz_axes = {X(1),Y(1),Z(1)};
-  % create regular grid in each non-singleton dimension
-  xyz_axes(dimensions) = cellfun( @(D) linspace(D(1),D(2),resolution).', ...
-    dims(dimensions),'UniformOutput',false );
-  % Create xyz-grid
-  grids = xyz_axes;
-  if sum(dimensions)>=2
-    % create 2D/3D grid
-    [grids{dimensions}] = meshgrid(xyz_axes{dimensions});
-  end
-  [xx,yy,zz] = grids{:};
+% Inverse DTFT
+if nargout>1
+    Win = ifft([win(order+1:end),zeros(1,order)],ndtft,'symmetric');
+end
+% Axis corresponding to inverse DTFT
+if nargout>2
+    Nphi = length(Win);
+    Phi = 0:2*pi / Nphi:2*pi*(1-1/Nphi);
 end

@@ -70,10 +70,13 @@ function sig = delayline(sig,dt,weight,conf)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 %% ===== Configuration ===================================================
 fracdelay = conf.fracdelay;
 
+
 %% ===== Computation =====================================================
+% --- Reshape signals ---
 % Check if the impulse response is given in SOFA conventions [M C N], or in
 % usual [N C] convention, where
 % M ... number of measurements
@@ -90,6 +93,7 @@ else
     [samples, channels] = size(sig);
     reshaped = false;
 end
+
 % If only single valued time delay and weight is given, create vectors
 if channels>1 && length(dt)==1, dt=repmat(dt,[1 channels]); end
 if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
@@ -102,7 +106,7 @@ switch fracdelay.pre.method
         rfactor = fracdelay.pre.resample.factor;
         switch fracdelay.pre.resample.method
             case 'matlab'
-                buffer = resample(sig,rfactor,1);
+                sig = resample(sig,rfactor,1);
             case 'pm'
                 % === Parks-McClellan linear phase FIR filter ===
                 a = [1 1 0 0];
@@ -113,7 +117,7 @@ switch fracdelay.pre.method
                 sig = [sig; zeros(rfactor-1,channels*samples)];
                 sig = reshape(sig, rfactor*samples, channels);
                 
-                buffer = filter(b,1,sig,[],1);
+                sig = filter(b,1,sig,[],1);
             otherwise
                 disp('Delayline: Unknown resample method');
         end
@@ -146,7 +150,7 @@ switch fracdelay.pre.method
         
         to_be_implemented(mfilename);
     case 'none'
-        buffer = sig;
+        % Nothing to be done
     otherwise
         fprintf(['%s: \"%s\" is an unknown pre-processing method for delay', ...
             'line'], upper(mfilename), fracdelay.pre.method);
@@ -175,28 +179,27 @@ else  % There is no post processing stage if the Farrow Structure used
                 idt = floor(dt);  % floor delay for odd order
             end
             fdt = dt - idt;  % fractional part of delays
-            b = lagrange_filter(fracdelay.order, fdt);
+            b = lagrange_filter(fracdelay.order,fdt);
         case 'thiran'
             % ==== Thiran's Allpass Filter for Maximally Flat Group Delay
             idt = round(dt);  % integer part of delays
             fdt = dt - idt;  % fractional part of delays
-            [b, a] = thiran_filter(fracdelay.order, fdt);
+            [b, a] = thiran_filter(fracdelay.order,fdt);
         case 'least_squares'
             % ==== Least Squares Interpolation Filter ====================
             idt = floor(dt);  % integer part of delays
             fdt = dt - idt;  % fractional part of delays
-            b = zeros(fracdelay.order+1, channels);
-            for cdx=1:channels
-                b(:,cdx) = general_least_squares(fracdelay.order+1, ...
-                    fdt(cdx), 0.90);
+            b = zeros(fracdelay.order+1,channels);
+            for ii=1:channels
+                b(:,ii) = general_least_squares(fracdelay.order+1,fdt(ii),0.90);
             end
         otherwise
             error('%s: \"%s\" is an unknown fractional delay filter', ...
                 upper(mfilename), fracdelay.filter);
     end
     
-    for cdx=1:channels
-        buffer(:,cdx) = filter(b(:,cdx),a(:,cdx),buffer(:,cdx));
+    for ii=1:channels
+        sig(:,ii) = filter(b(:,ii),a(:,ii),sig(:,ii));
     end
 end
 
@@ -205,19 +208,17 @@ end
 idt(abs(idt) > samples) = samples;
 
 % Handle positive or negative delays
-for cdx=1:channels
-    if idt(cdx)>=0
-        buffer(:,cdx) = [zeros(idt(cdx),1); ...
-            weight(cdx)*buffer(1:end-idt(cdx),cdx)];
+for ii=1:channels
+    if idt(ii)>=0
+        sig(:,ii) = [zeros(idt(ii),1); weight(ii)*sig(1:end-idt(ii),ii)];
     else
-        buffer(:,cdx) = [weight(cdx)*buffer(-idt(cdx)+1:end,cdx); ...
-            zeros(-idt(cdx),1)];
+        sig(:,ii) = [weight(ii)*sig(-idt(ii)+1:end,ii); zeros(-idt(ii),1)];
     end
 end
-sig = buffer(1:rfactor:samples,:);
+sig = sig(1:rfactor:samples,:);
 
-%%
-% Undo reshaping [N M*C] => [M C N]
+% --- Undo reshape ---
+% [N M*C] => [M C N]
 if reshaped
     sig = reshape(sig',[M C size(sig,1)]);
 end

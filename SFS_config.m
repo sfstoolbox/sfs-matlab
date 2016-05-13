@@ -105,7 +105,7 @@ conf.bandpassflow = 10; % / Hz
 conf.bandpassfhigh = 20000; % / Hz
 % === Delayline ===
 % fractional delay filter type:
-% 'zoh'           - rounding fractional delay to next larger integer delay 
+% 'zoh'           - rounding fractional delay to next larger integer delay
 % 'lagrange'      - lagrange interpolator (FIR Filter)
 % 'least_squares' - least squares FIR interpolation filter
 % 'thiran'        - Thiran's Allpass IIR Filter
@@ -120,10 +120,10 @@ conf.fracdelay.pre.method = 'none';  % string
 % oversample factor >= 1 (only for conf.fracdelay.pre.method == 'resample')
 conf.fracdelay.pre.resample.factor = 1;  % / 1
 % resample method (only for conf.fracdelay.pre.method == 'resample'):
-% 'matlab' - use matlab's resample 
+% 'matlab' - use matlab's resample
 % 'pm'     - use Parks-McClellan-Method to compute resample filter (firpm)
 conf.fracdelay.pre.resample.method = 'pm';
-% order of Parks-McClellan resample filter (only for 
+% order of Parks-McClellan resample filter (only for
 % conf.fracdelay.pre.resample.method=='pm')
 conf.fracdelay.pre.resample.order = 128;
 % order of polynomial, i.e. number-1 of parallel filters in Farrow structure
@@ -292,13 +292,13 @@ conf.localsfs.vss.geometry = 'circular';
 conf.localsfs.vss.number = 56;
 conf.localsfs.vss.grid = 'equally_spaced_points';
 %
-% linear vss distribution: rotate the distribution orthogonal to the progation 
+% linear vss distribution: rotate the distribution orthogonal to the progation
 % direction of the desired sound source
 % circular vss distribution: truncate the distribution to a circular arc
 % which satisfies the secondary source selection criterions ( source normal
 % aligns with propagation directions of desired sound source )
 conf.localsfs.vss.consider_target_field = true;
-% 
+%
 % vss distribution is further truncated if parts of it cannot be correctly
 % reproduced, because they lie outside the area which is surrounded by the real
 % loudspeakers (secondary sources)

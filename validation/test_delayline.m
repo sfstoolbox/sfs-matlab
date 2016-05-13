@@ -52,7 +52,7 @@ dt=[-5 -2.5 0 2.5 5];
 % Length of input signal
 L=256;
 % Create frequency axis
-w = (0:1:(L-1))/L; 
+w = (0:1:(L-1))/L;
 wpi = w*pi;
 wpi2=wpi(2:L);
 % Set up input signal
@@ -73,52 +73,51 @@ conf.fracdelay.pre.resample.method = 'pm';
 conf.fracdelay.pre.resample.order = 128;
 
 %% ===== Computation and Plotting ========================================
-for preprocessing = {'none', 'resample'}  
-  conf.fracdelay.pre.method = preprocessing{:};  
-  for filter = {'lagrange', 'thiran', 'least_squares', 'zoh'}    
-    conf.fracdelay.filter = filter{:};
-
-    % --- Computation ---
-    % Test all given delays
-    for n=1:length(dt)
-      outsig(:,n) = delayline(insig,dt(n),1,conf);
-      H(:,n) = freqz(outsig(:,n),1,wpi);
-      magresp(:,n) = abs(H(:,n));
-      uwphase(:,n)=-unwrap(angle(H(:,n)));
-      phasdel(:,n) = uwphase(2:L,n)./wpi2';
+for preprocessing = {'none', 'resample'}
+    conf.fracdelay.pre.method = preprocessing{:};
+    for filter = {'lagrange', 'thiran', 'least_squares', 'zoh'}
+        conf.fracdelay.filter = filter{:};
+        
+        % --- Computation ---
+        % Test all given delays
+        for n=1:length(dt)
+            outsig(:,n) = delayline(insig,dt(n),1,conf);
+            H(:,n) = freqz(outsig(:,n),1,wpi);
+            magresp(:,n) = abs(H(:,n));
+            uwphase(:,n)=-unwrap(angle(H(:,n)));
+            phasdel(:,n) = uwphase(2:L,n)./wpi2';
+        end
+        
+        % --- Plotting ---
+        % setup legend and axis
+        t=1:L;
+        t=t-L/2;
+        % Phase delay
+        figure;
+        plot(wpi2/pi,phasdel-(L/2)+1);
+        title(['pre: ', preprocessing{:}, ', filter: ', filter{:},' - phase delay']);
+        ylabel('phase delay');
+        xlabel('normalized frequency');
+        legend(num2str(dt.'));
+        grid on;
+        % Magnitude response
+        figure;
+        plot(wpi/pi,magresp);
+        title(['pre: ', preprocessing{:}, ', filter: ', filter{:},' - magnitude response']);
+        ylabel('magnitude');
+        xlabel('normalized frequency');
+        legend(num2str(dt.'));
+        grid on;
+        % Impluse response
+        figure;
+        imagesc(dt,t(L/2-50:L/2+50),db(abs(outsig(L/2-50:L/2+50,:))));
+        title(['pre: ', preprocessing{:}, ', filter: ', filter{:},' - impulse response']);
+        caxis([-100 10]);
+        ylabel('samples');
+        xlabel('delay');
+        set(gca,'XTick',dt)
+        turn_imagesc;
+        colorbar;
+        grid on;
     end
-
-    % --- Plotting ---
-    % setup legend and axis
-    t=1:L;
-    t=t-L/2;
-    % Phase delay
-    figure;
-    plot(wpi2/pi,phasdel-(L/2)+1);
-    title(['pre: ', preprocessing{:}, ', filter: ', filter{:},' - phase delay']);
-    ylabel('phase delay');
-    xlabel('normalized frequency');
-    legend(num2str(dt.'));
-    grid on;
-    % Magnitude response
-    figure;
-    plot(wpi/pi,magresp);
-    title(['pre: ', preprocessing{:}, ', filter: ', filter{:},' - magnitude response']);
-    ylabel('magnitude');
-    xlabel('normalized frequency');
-    legend(num2str(dt.'));
-    grid on;
-    % Impluse response
-    figure;
-    %plot(t(L/2-10:L/2+10),outsig(L/2-10:L/2+10,:));
-    imagesc(dt,t(L/2-50:L/2+50),db(abs(outsig(L/2-50:L/2+50,:))));
-    title(['pre: ', preprocessing{:}, ', filter: ', filter{:},' - impulse response']);
-    caxis([-100 10]);
-    ylabel('samples');
-    xlabel('delay');
-    set(gca,'XTick',dt)
-    turn_imagesc;
-    colorbar;
-    grid on;
-  end
 end

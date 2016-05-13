@@ -15,7 +15,7 @@ function [b, li] = lagrange_filter(Norder, fdt)
 %           l_i(x) = (x - x_0)/(x_i - x_0) * ... * (x - x_i-1) /(x_i - x_i-1) *
 %                    (x - x_i+1) /(x_i - x_i+1) ... (x - x_N)/(x_i - x_N)
 %                  = c_{i,N} x^N + c_{i, N-1} x^(N-1) + ... + c_{i, 0} x^(0)
-%           where x_k = k with k = N, ..., 0. The i-th row of li stores the 
+%           where x_k = k with k = N, ..., 0. The i-th row of li stores the
 %           coefficients c_{i,k}.
 %
 %   See also: delayline_read, delayline_write
@@ -55,42 +55,42 @@ function [b, li] = lagrange_filter(Norder, fdt)
 %% ===== Computation =====================================================
 
 if nargin == 2
-  D = fdt(:).' + floor(Norder/2);
-  
-  % aux = D, (D-1), (D-2),...,(D-N+1),(D-N)
-  aux = bsxfun(@minus, D, (0:Norder).');  
-  
-  % denom = n*(n-1)*...*(n-N+1)*(n-N) = n!*(N-n)!*(-1)^(N-n)
-  denom = factorial(0:Norder);
-  denom = denom.*denom(end:-1:1).*(-1).^(Norder:-1:0);
-  
-  b = zeros(Norder+1, length(D));
-  for ndx=1:Norder+1
-    b(ndx,:) = prod(aux([1:ndx-1,ndx+1:end],:), 1)./denom(ndx);
-  end
+    D = fdt(:).' + floor(Norder/2);
+
+    % aux = D, (D-1), (D-2),...,(D-N+1),(D-N)
+    aux = bsxfun(@minus, D, (0:Norder).');
+    
+    % denom = n*(n-1)*...*(n-N+1)*(n-N) = n!*(N-n)!*(-1)^(N-n)
+    denom = factorial(0:Norder);
+    denom = denom.*denom(end:-1:1).*(-1).^(Norder:-1:0);
+    
+    b = zeros(Norder+1, length(D));
+    for ndx=1:Norder+1
+        b(ndx,:) = prod(aux([1:ndx-1,ndx+1:end],:), 1)./denom(ndx);
+    end
 else
-  b = [];
+    b = [];
 end
 
-if nargout == 2  
-  % each row contains [1 x_i] which is equivalent to m_i(x) = (x - x_i)
-  mi = [ones(Norder,1), -(0:Norder).'];
-  
-  % l(x) = m_0(x) * m_1(x) .. * m_N(x) = (x - x_0) * (x - x_1) * .. * (x - x_N)
-  l = 1;
-  for idx=1:Norder
-    % convolution of coefficients means multiplication of polynoms
-    l = conv(l,mi(idx,:));
-  end
-  
-  li = zeros(Norder,Norder);
-  for idx=1:N
-    % nom_i(x) = l(x) / m_i(x)
-    %          = (x - x_0) * .. * (x - x_{i-1}) * (x - x_{i+1}) * .. * (x - x_N)
-    nominator = deconv(l,mi(idx,:));
-    % denom_i = nom_i(x_i) evaluated with "polyval"
-    denominator = polyval(nominator,xi(idx));
-    % l_i(x) = nom_i(x) / denom_i;
-    li(idx,:) = nominator./denominator;
-  end   
+if nargout == 2
+    % each row contains [1 x_i] which is equivalent to m_i(x) = (x - x_i)
+    mi = [ones(Norder,1), -(0:Norder).'];
+    
+    % l(x) = m_0(x) * m_1(x) .. * m_N(x) = (x - x_0) * (x - x_1) * .. * (x - x_N)
+    l = 1;
+    for idx=1:Norder
+        % convolution of coefficients means multiplication of polynoms
+        l = conv(l,mi(idx,:));
+    end
+
+    li = zeros(Norder,Norder);
+    for idx=1:N
+        % nom_i(x) = l(x) / m_i(x)
+        %          = (x - x_0) * .. * (x - x_{i-1}) * (x - x_{i+1}) * .. * (x - x_N)
+        nominator = deconv(l,mi(idx,:));
+        % denom_i = nom_i(x_i) evaluated with "polyval"
+        denominator = polyval(nominator,xi(idx));
+        % l_i(x) = nom_i(x) / denom_i;
+        li(idx,:) = nominator./denominator;
+    end
 end

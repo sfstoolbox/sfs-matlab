@@ -591,7 +591,7 @@ function.
 conf = SFS_config;
 hrtf = SOFAload('QU_KEMAR_anechoic_3m.sofa');
 ir = get_ir(hrtf,[0 0 0],[0 0],[rad(30) 0 3],'spherical',conf);
-cello = wavread('anechoic_cello.wav');
+cello = audioread('anechoic_cello.wav');
 sig = auralize_ir(ir,cello,1,conf);
 sound(sig,conf.fs);
 ```
@@ -608,7 +608,7 @@ conf.dimension = '2.5D';
 hrtf = SOFAload('QU_KEMAR_anechoic_3m.sofa');
 % ir = ir_wfs(X,phi,xs,src,hrtf,conf);
 ir = ir_wfs([0 0 0],pi/2,[0 3 0],'ps',hrtf,conf);
-cello = wavread('anechoic_cello.wav');
+cello = audioread('anechoic_cello.wav');
 sig = auralize_ir(ir,cello,1,conf);
 ```
 
@@ -651,7 +651,7 @@ conf.secondary_sources.geometry = 'custom';
 conf.secondary_sources.x0 = brir;
 conf.N = 44100;
 ir = ir_wfs([0 0 0],0,[3 0 0],'ps',brir,conf);
-cello = wavread('anechoic_cello.wav');
+cello = audioread('anechoic_cello.wav');
 sig = auralize_ir(ir,cello,1,conf);
 ```
 

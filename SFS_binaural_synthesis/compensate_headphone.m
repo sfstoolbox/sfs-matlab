@@ -63,7 +63,7 @@ usehcomp = conf.ir.usehcomp;
 if(usehcomp)
     lenir = size(ir,1);
     % Read headphone compensation filter
-    hcomp = wavread(conf.ir.hcompfile);
+    hcomp = audioread(conf.ir.hcompfile);
     % Check if the IR has the right length for the filter
     if lenir<length(hcomp)
         warning(['The length of the used IR is shorter than the headphone ', ...

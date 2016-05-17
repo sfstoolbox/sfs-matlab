@@ -59,7 +59,7 @@ directory.
 You need Octave version 3.6 or newer to run the Toolbox. In addition,
 you will need the following additional packages from
 [octave-forge](http://octave.sourceforge.net/):
-* audio (e.g. for wavwrite)
+* audio
 * signal (e.g. for firls)
 
 **Impulse responses**
@@ -725,7 +725,7 @@ All functions regarding the SSR are stored in <code>SFS_ssr</code>.
 ```Matlab
 conf = SFS_config;
 brs = ssr_brs_wfs(X,phi,xs,src,hrtf,conf);
-wavwrite(brs,fs,16,'brs_set_for_SSR.wav');
+save_ssr_brs('brs_set_for_SSR.wav',brs,fs);
 ```
 
 

@@ -1,7 +1,7 @@
-function [D, x0, xv, idx] = driving_function_mono_localwfs(x0,xs,src,f,conf)
+function [D,x0,xv,idx] = driving_function_mono_localwfs(x0,xs,src,f,conf)
 %DRIVING_FUNCTION_MONO_LOCALWFS returns the driving signal D for local WFS
 %
-%   Usage: [D, xv, x0, idx] = driving_function_mono_localwfs(x0,xs,src,f,conf)
+%   Usage: [D,xv,x0,idx] = driving_function_mono_localwfs(x0,xs,src,f,conf)
 %
 %   Input parameters:
 %       x0          - position and direction of the secondary source / m [nx6]
@@ -28,7 +28,7 @@ function [D, x0, xv, idx] = driving_function_mono_localwfs(x0,xs,src,f,conf)
 %
 %   References:
 %       S. Spors (2010) - "Local Sound Field Synthesis by Virtual Secondary
-%                          Sources", 40th AES
+%                          Sources", 40th AES Conference
 %
 %   See also: plot_sound_field, sound_field_mono_wfs
 
@@ -108,6 +108,6 @@ switch method
 end
 
 % Select secondary sources
-[x0, idx] = secondary_source_selection(x0, xv(:,1:6), 'vss');
+[x0,idx] = secondary_source_selection(x0,xv(:,1:6),'vss');
 % Driving functions for real source array
 D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf);

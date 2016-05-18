@@ -66,7 +66,6 @@ driving_functions = conf.driving_functions;
 
 
 %% ===== Computation ====================================================
-% Calculate the driving function in time-frequency domain
 
 if strcmp('2D',dimension)
 

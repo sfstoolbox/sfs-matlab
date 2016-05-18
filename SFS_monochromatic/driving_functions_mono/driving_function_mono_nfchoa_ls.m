@@ -69,14 +69,13 @@ X0 = conf.secondary_sources.center;
 
 
 %% ===== Computation ====================================================
-% Calculate the driving function in time-frequency domain
-[xs,nxs] = get_position_and_orientation_ls(xs,conf);
 
 % Secondary source positions
 x00 = bsxfun(@minus,x0,X0);
 [phi0,r0,~] = cart2pol(x00(:,1),x00(:,2),x00(:,3));
 
 % Line source position
+[xs,nxs] = get_position_and_orientation_ls(xs,conf);
 [phi,r,~] = cart2pol(xs(:,1),xs(:,2),xs(:,3));
 
 % Wave number
@@ -94,11 +93,11 @@ if strcmp('2D',dimension)
         % 2D line source, see
         % http://sfstoolbox.org/doc/latest/math/#equation-D.nfchoa.ls.2D
         %
-        %                    _N_    (2)
-        %                1   \     Hm(w/c r)
-        % D(phi0,w) = ------ /__  ------------ e^(i m (phi0-phi))
-        %             2pi r0 m=-N   (2)
-        %                          Hm(w/c r0)
+        %                     _N_    (2)
+        %                1    \     Hm(w/c r)
+        % D(phi0,w) = ------  /__  ------------ e^(i m (phi0-phi))
+        %             2pi r0  m=-N   (2)
+        %                           Hm(w/c r0)
         %
         for m=-N:N
             D = D + (1/2/pi./r0) .* besselh(m,2,omega/c*r) ...
@@ -119,11 +118,11 @@ elseif strcmp('2.5D',dimension)
         % 2.5D line source, see
         % http://sfstoolbox.org/doc/latest/math/#equation-D.nfchoa.ls.2.5D
         %
-        %                   _N_              (2)
-        %               1   \    i^(m-|m|) Hm(w/c r)
-        % D(phi0,w) = ----- /__  -------------------- e^(im(phi0-phi))
-        %              2r0  m=-N   w/c    (2)
-        %                                 h|m|(w/c r0)
+        %                  _N_             (2)
+        %              1   \    i^(m-|m|) Hm(w/c r)
+        % D(phi0,w) = ---  /__  ------------------- e^(im(phi0-phi))
+        %             2r0  m=-N        (2)
+        %                         w/c h|m|(w/c r0)
         %
         for m=-N:N
             D = D + 1/2./r0 * 1i^(m-abs(m)) .* besselh(m,2,omega/c*r) ...
@@ -154,13 +153,13 @@ elseif strcmp('3D',dimension)
         % 3D line source, see
         % http://sfstoolbox.org/doc/latest/math/#equation-D.nfchoa.ls.3D
         %
-        %                   _N_  _n_           (2)
-        %               1   \    \    i^(m-n) Hm(w/c r)     -m
-        % D(phi0,w) = ----- /__  /__  -------------------- Yn(pi/2,alpha) ...
-        %             2r0^2 n=0  m=-n  w/c     (2)
-        %                                     hn(w/c r0)
-        %               m
-        %            x Yn(beta0,alpha0)
+        %                    _N_  _n_          (2)
+        %               1    \    \   i^(m-n) Hm(w/c r)  -m
+        % D(phi0,w) = -----  /__  /__ ----------------- Yn(pi/2,alpha) ...
+        %             2r0^2  n=0 m=-n       (2)
+        %                              w/c hn(w/c r0)
+        %                m
+        %             x Yn(beta0,alpha0)
         %
         for n=-N:N
             for m=-n:n

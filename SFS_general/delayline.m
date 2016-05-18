@@ -72,29 +72,31 @@ function sig = delayline(sig,dt,weight,conf)
 fracdelay = conf.fracdelay;
 
 
-%% ===== Computation =====================================================
+%% ===== Preparation =====================================================
 % --- Reshape signals ---
-% Check if the impulse response is given in SOFA conventions [M C N], or in
-% usual [N C] convention, where
+% Check if the signal is an impulse response given in SOFA conventions [M C N],
+% or in usual [N C] convention, where
 % M ... number of measurements
 % C ... number of channels
 % N ... number of samples
 if ndims(sig)==3
-    [M, C, samples] = size(sig);
+    [M,C,samples] = size(sig);
     channels = M * C;
     % Reshape [M C N] => [N C*M], this will be redone at the end of the function
     sig = reshape(sig,[channels,samples])';
     reshaped = true;
 else
     % Assume standard format [N C]
-    [samples, channels] = size(sig);
+    [samples,channels] = size(sig);
     reshaped = false;
 end
-
+% --- Expand dt and weight ---
 % If only single valued time delay and weight is given, create vectors
 if channels>1 && length(dt)==1, dt=repmat(dt,[1 channels]); end
 if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
 
+
+%% ===== Pre-method ======================================================
 rfactor = 1.0;  % ratio of signal length and delayline length
 switch fracdelay.pre.method
     case 'resample'
@@ -122,21 +124,21 @@ switch fracdelay.pre.method
         % === Farrow-Structure ===========================================
         % Based on the assumption, that each coefficient h(n) of the fractional
         % delay filter can be expressed as a polynomial in d (frac. delay), i.e.
-        %            _
+        %            __
         %           \  NPol
         % h_d(n) ~=  >      c_m(n) d^m
-        %           /_ m=0
+        %           /__m=0
         %
-        % For some Filter design methods, e.g. Lagrange Interpolators, this
+        % For some Filter design methods, e.g. Lagrange Interpolators, this is
         % perfectly possible. For other, a uniform grid of test delays d_q is
         % used to fit the polynomials to the desired coefficient(n) find a set
         % polynomial which approximates each coefficient of the desired filter.
         % This structure allows to perform the convolution independently from 
         % the delay and reuse the results of the filter for different delays.
-        %                          _
+        %                           __
         %                          \  NPol
         % y(n) = h_d(n) * x(n) ~=   >      ( c_m(n)*x(n) ) d^m
-        %                          /_ m=0
+        %                          /__m=0
         %
         % The above representation shows that the convolution of the input 
         % signal x can be performed by first convolving c_m and x and 
@@ -153,8 +155,8 @@ switch fracdelay.pre.method
             'line'],upper(mfilename),fracdelay.pre.method);
 end
 
-%% ===== Fractional Delay ================================================
 
+%% ===== Fractional Delay ================================================
 dt = rfactor.*dt;  % resampled delays
 samples = rfactor.*samples;  % length of resampled signals
 
@@ -181,7 +183,7 @@ else  % There is no post processing stage if the Farrow Structure used
             % ==== Thiran's Allpass Filter for Maximally Flat Group Delay
             idt = round(dt);  % integer part of delays
             fdt = dt - idt;  % fractional part of delays
-            [b, a] = thiran_filter(fracdelay.order,fdt);
+            [b,a] = thiran_filter(fracdelay.order,fdt);
         case 'least_squares'
             % ==== Least Squares Interpolation Filter ====================
             idt = floor(dt);  % integer part of delays
@@ -200,10 +202,10 @@ else  % There is no post processing stage if the Farrow Structure used
     end
 end
 
-%% ===== Integer Delay ===================================================
+
+%% ===== Integer Delayline ===============================================
 % Handling of too long delay values (returns vector of zeros)
 idt(abs(idt)>samples) = samples;
-
 % Handle positive or negative delays
 for ii=1:channels
     if idt(ii)>=0
@@ -212,8 +214,11 @@ for ii=1:channels
         sig(:,ii) = [weight(ii)*sig(-idt(ii)+1:end,ii); zeros(-idt(ii),1)];
     end
 end
+% Downsample if needed
 sig = sig(1:rfactor:samples,:);
 
+
+%% ===== Postprocessing ==================================================
 % --- Undo reshape ---
 % [N M*C] => [M C N]
 if reshaped

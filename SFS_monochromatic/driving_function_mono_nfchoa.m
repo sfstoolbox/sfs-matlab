@@ -24,7 +24,8 @@ function D = driving_function_mono_nfchoa(x0,xs,src,f,conf)
 %   the given secondary source and desired source type (src) for NFCHOA for the
 %   given frequency.
 %
-%   See also: plot_sound_field, sound_field_mono_nfchoa, driving_function_imp_nfchoa
+%   See also: plot_sound_field, sound_field_mono_nfchoa,
+%             driving_function_imp_nfchoa
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -68,8 +69,6 @@ isargstruct(conf);
 
 
 %% ===== Computation ====================================================
-
-% Calculate the driving function in time-frequency domain
 
 % Secondary source positions
 x0 = x0(:,1:3);

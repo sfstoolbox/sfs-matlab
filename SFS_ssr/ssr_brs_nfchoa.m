@@ -18,11 +18,11 @@ function brs = ssr_brs_nfchoa(X,phi,xs,src,irs,conf)
 %       brs     - conf.N x 2*nangles matrix containing all impulse responses (2
 %                 channels) for every angles of the BRS set
 %
-%   SSR_BRS_NFCHOA(X,phi,xs,src,irs,conf) prepares a BRS set for a virtual source
-%   at position xs for a virtual loudspeaker array driven by nearfield
-%   compensated higher order Ambisonics (NFC-HOA) and the given listener position.
-%   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
-%   http://spatialaudio.net/ssr/
+%   SSR_BRS_NFCHOA(X,phi,xs,src,irs,conf) prepares a BRS set for a virtual
+%   source at position xs for a virtual loudspeaker array driven by
+%   nearfield compensated higher order Ambisonics (NFC-HOA) and the given
+%   listener position. One way to use this BRS set is using the
+%   SoundScapeRenderer (SSR), see http://spatialaudio.net/ssr/
 %
 %   See also: ir_generic, ir_nfchoa, driving_function_imp_nfchoa
 

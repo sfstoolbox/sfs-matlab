@@ -15,10 +15,9 @@ function brs = ssr_brs_point_source(X,phi,xs,irs,conf)
 %       brs     - conf.N x 2*nangles matrix containing all impulse responses (2
 %                 channels) for every angles of the BRS set
 %
-%   SSR_BRS_POINT_SOURCE(X,phi,xs,irs,conf) prepares a BRS set for
-%   a reference source (single point source) for the given listener
-%   position.
-%   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
+%   SSR_BRS_POINT_SOURCE(X,phi,xs,irs,conf) prepares a BRS set for a reference
+%   source (single point source) for the given listener position. One way to use
+%   this BRS set is using the SoundScapeRenderer (SSR), see
 %   http://spatialaudio.net/ssr/
 %
 %   See also: ir_generic, ir_point_source, get_ir

@@ -75,7 +75,7 @@ points = bsxfun(@minus,x0,X0);
 [phi_pw,theta_pw,~] = cart2sph(nk(:,1),nk(:,2),nk(:,3));
 
 % Wavenumber
-w = 2*pi*f;
+omega = 2*pi*f;
 
 % Initialize empty driving signal
 D = zeros(size(x0,1),1);
@@ -96,8 +96,9 @@ if strcmp('2D',dimension)
         %                           Hm(w/c r0)
         %
         for m=-N:N
-            D = D - 2.*1i./(pi.*r0) .* 1i^(-m)./besselh(m,2,w/c.*r0) .* ...
-                exp(1i.*m.*(phi0-phi_pw));
+            D = D - 2.*1i ./ (pi.*r0) ...
+                .* (1i).^(-m) ./ besselh(m,2,omega./c.*r0) ...
+                .* exp(1i.*m.*(phi0-phi_pw));
         end
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
@@ -114,16 +115,17 @@ elseif strcmp('2.5D',dimension)
         % 2.5D plane wave, see
         % http://sfstoolbox.org/doc/latest/math/#equation-D.nfchoa.pw.2.5D
         %
-        %                     _N_
-        %                 2i  \          i^-|m|
-        % D_25D(phi0,w) = --  /__  ------------------ e^(i m (phi0-phi_pw) )
-        %                 r0  m=-N       (2)
-        %                           w/c h|m|(w/c r0)
+        %                       _N_
+        %                   2   \           i^-|m|
+        % D_25D(phi0,w) = - --  /__  -------------------- e^(i m (phi0-phi_pw))
+        %                   r0  m=-N       (2)
+        %                             i w/c h|m|(w/c r0)
         %
         for m=-N:N
-            D = D + 2.*1i./r0 .* 1i.^(-abs(m)) ./ ...
-                ( w/c .* sphbesselh(abs(m),2,w/c.*r0) ) .* ...
-                exp(1i.*m.*(phi0-phi_pw));
+            D = D - 2./r0 ...
+                .* (1i).^(-abs(m)) ...
+                ./ (1i .* w/c .* sphbesselh(abs(m),2,omega./c.*r0)) ...
+                .* exp(1i.*m.*(phi0-phi_pw));
         end
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
@@ -140,19 +142,20 @@ elseif strcmp('3D',dimension)
         % 3D plane wave, see
         % http://sfstoolbox.org/doc/latest/math/#equation-D.nfchoa.pw.3D
         %
-        %                          _N_  _n_         -m
-        %                     4i   \    \   i^(-n) Yn(theta_pw,phi_pw)
-        % D(theta0,phi0,w) = ----  /__  /__ -------------------------- ...
-        %                    r0^2  n=0 m=-n           (2)
-        %                                        w/c hn(w/c r0)
+        %                            _N_  _n_         -m
+        %                      4pi   \    \   i^(-n) Yn(theta_pw,phi_pw)
+        % D(theta0,phi0,w) = - ----  /__  /__ -------------------------- ...
+        %                      r0^2  n=0 m=-n            (2)
+        %                                         i w/c hn(w/c r0)
         %                       m
         %                    x Yn(theta0,phi0)
         %
         for n=0:N
             for m=-n:n
-                D = D + 4.*1i./r0.^2 .* 1i.^(-n).*sphharmonics(n,-m,theta_pw,phi_pw) ./...
-                    ( w./c .* sphbesselh(n,2,w./c.*r0) ) .* ...
-                    sphharmonics(n,m,theta0,phi0);
+                D = D - 4.*pi ./ r0.^2 ...
+                    .* (1i).^(-n).*sphharmonics(n,-m,theta_pw,phi_pw) ...
+                    ./ (1i .* omega./c .* sphbesselh(n,2,omega./c.*r0)) ...
+                    .* sphharmonics(n,m,theta0,phi0);
             end
         end
     else

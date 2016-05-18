@@ -57,6 +57,7 @@ narginchk(nargmin,nargmax);
 %
 % - Misc
 % - Audio
+% - Delayline
 % - Sound Field Synthesis (SFS)
 %   * Dimensionality
 %   * Driving functions
@@ -100,32 +101,36 @@ conf.c = 343; % / m/s
 conf.usebandpass = true; % boolean
 conf.bandpassflow = 10; % / Hz
 conf.bandpassfhigh = 20000; % / Hz
-% === Delayline ===
-% fractional delay filter type:
-% 'zoh'           - rounding fractional delay to next larger integer delay
-% 'lagrange'      - lagrange interpolator (FIR Filter)
-% 'least_squares' - least squares FIR interpolation filter
-% 'thiran'        - Thiran's Allpass IIR Filter
-conf.fracdelay.filter = 'zoh';  % string
-% order of fractional delay filter (only for Lagrange, Least-Squares & Thiran)
-conf.fracdelay.order = 0;  % / 1
-% delay independent preprocessing methods:
-% 'none'      - do nothing
-% 'resample'  - oversample input signal
-% 'farrow'    - use the Farrow structure (to be implemented)
-conf.fracdelay.pre.method = 'none';  % string
-% oversample factor >= 1 (only for conf.fracdelay.pre.method == 'resample')
-conf.fracdelay.pre.resample.factor = 1;  % / 1
-% resample method (only for conf.fracdelay.pre.method == 'resample'):
-% 'matlab' - use matlab's resample
-% 'pm'     - use Parks-McClellan-Method to compute resample filter (firpm)
-conf.fracdelay.pre.resample.method = 'pm';
-% order of Parks-McClellan resample filter (only for
-% conf.fracdelay.pre.resample.method=='pm')
-conf.fracdelay.pre.resample.order = 128;
-% order of polynomial, i.e. number-1 of parallel filters in Farrow structure
-% (only for conf.fracdelay.pre.method == 'farrow');
-conf.fracdelay.pre.farrow.Npol = 0;
+
+
+%% ===== Delayline =======================================================
+% Delaying of time signals. The biggest opart here is how to cope with non
+% integer delay values.
+%
+% Resample signal
+%   'none'   - no resampling (default) 
+%   'matlab' - use matlab's resample() function
+%   'pm'     - use Parks-McClellan-Method to compute resample filter (firpm)
+conf.delayline.resampling = 'none' % / string
+% Oversamplingfactor factor >= 1
+% This should be in the order of (1/stepsize of fractional delays)
+conf.delayline.resamplingfactor = 100; % / 1
+% Order of Parks-McClellan resample filter (only for 'pm')
+conf.delayline.resamplingorder = 128;
+%
+% Delayline filter
+%   'integer'       - round to next larger integer delay (default)
+%   'lagrange'      - lagrange interpolator (FIR Filter)
+%   'least_squares' - least squares FIR interpolation filter
+%   'thiran'        - Thiran's allpass IIR filter
+%   'farrow'        - use the Farrow structure (to be implemented)
+conf.delayline.filter = 'integer';  % string
+% Order of delayline filter (only for Lagrange, Least-Squares & Thiran)
+conf.delayline.filterorder = 0;  % / 1
+% Number of parallel filters in Farrow structure
+% (only for 'farrow');
+conf.delayline.filternumber = 1; % / 1
+
 
 %% ===== Sound Field Synthesis (SFS) =====================================
 % Common sound field synthesis settings

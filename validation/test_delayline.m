@@ -56,24 +56,15 @@ wpi2=wpi(2:L);
 insig = zeros(L,1);
 insig(L/2) = 1;
 
-conf.fracdelay.filter = 'zoh';  % string
-% order of fractional delay filter (only for Lagrange, Least-Squares & Thiran)
-conf.fracdelay.order = 4;  % / 1
-% delay independent preprocessing methods:
-% 'none'      - do nothing
-% 'resample'  - oversample input signal
-% 'farrow'    - use the Farrow structure (to be implemented)
-conf.fracdelay.pre.method = 'none';  % string
-% oversample factor >= 1 (only for conf.fracdelay.pre.method == 'resample')
-conf.fracdelay.pre.resample.factor = 4;  % / 1
-conf.fracdelay.pre.resample.method = 'pm';
-conf.fracdelay.pre.resample.order = 128;
+conf.delayline.filterorder = 4;  % / 1
+conf.delayline.resamplingfactor = 4;  % / 1
+conf.delayline.resamplingorder = 128; % / 1
 
 %% ===== Computation and Plotting ========================================
-for preprocessing = {'none', 'resample'}
-    conf.fracdelay.pre.method = preprocessing{:};
-    for filter = {'lagrange', 'thiran', 'least_squares', 'zoh'}
-        conf.fracdelay.filter = filter{:};
+for resampling = {'none', 'matlab', 'pm'}
+    conf.delayline.resampling = resampling{:};
+    for filter = {'lagrange', 'thiran', 'least_squares', 'integer'}
+        conf.delayline.filter = filter{:};
         
         % --- Computation ---
         % Test all given delays
@@ -92,23 +83,23 @@ for preprocessing = {'none', 'resample'}
         % Phase delay
         figure;
         plot(wpi2/pi,phasdel-(L/2)+1);
-        title(['pre: ', preprocessing{:}, ', filter: ', filter{:},' - phase delay']);
+        title(['resample: ', resampling{:}, ', filter: ', filter{:},' - phase delay']);
         ylabel('phase delay');
         xlabel('normalized frequency');
-        legend(num2str(dt.'));
+        legend(sprintf('%.1f',dt));
         grid on;
         % Magnitude response
         figure;
         plot(wpi/pi,magresp);
-        title(['pre: ', preprocessing{:}, ', filter: ', filter{:},' - magnitude response']);
+        title(['resample: ', resampling{:}, ', filter: ', filter{:},' - magnitude response']);
         ylabel('magnitude');
         xlabel('normalized frequency');
-        legend(num2str(dt.'));
+        legend(sprintf('%.1f',dt));
         grid on;
         % Impluse response
         figure;
         imagesc(dt,t(L/2-50:L/2+50),db(abs(outsig(L/2-50:L/2+50,:))));
-        title(['pre: ', preprocessing{:}, ', filter: ', filter{:},' - impulse response']);
+        title(['resample: ', resampling{:}, ', filter: ', filter{:},' - impulse response']);
         caxis([-100 10]);
         ylabel('samples');
         xlabel('delay');

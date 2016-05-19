@@ -1,17 +1,17 @@
-function [b, a] = thiran_filter(Norder, fdt)
+function [b,a] = thiran_filter(Norder,fdt)
 %THIRAN_FILTER computes Thiran's IIR allpass for Maximally Flat Group Delay
 %
-%   Usage: [b, a] = lagrange_filter(Norder, fdt)
+%   Usage: [b,a] = thiran_filter(order,fdt)
 %
 %   Input parameter:
-%     Norder - order of filter
+%     order  - order of filter
 %     fdt    - vector of fractional delays -0.5 <= fdt < 0.5
 %
 %   Output parameter:
 %     b   - numerator polynomial of H(z) / [Norder+1 x Nfdt]
 %     a   - denominator polynomial of H(z) / [Norder+1 x Nfdt]
 %
-%   See also: delayline_read, delayline_write
+%   See also: delayline, lagrange_filter
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -42,20 +42,19 @@ function [b, a] = thiran_filter(Norder, fdt)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 %% ===== Computation =====================================================
 
-% shift fractional delay in order to optimize performance
+% Shift fractional delay in order to optimize performance
 fdt = fdt(:);  % ensure column vector
 Nfdt = numel(fdt);
 
-% denomimator polynomial of H(z)
-a = [ones(1,Nfdt); zeros(Norder, Nfdt)];
+% Denomimator polynomial of H(z)
+a = [ones(1,Nfdt); zeros(Norder,Nfdt)];
 for kdx=1:Norder
     a(kdx+1,:) = (-1).^kdx * ...
         factorial(Norder)/(factorial(kdx)*factorial(Norder-kdx)) * ...
-        prod( bsxfun(@plus, fdt, 0:Norder)./bsxfun(@plus, fdt, kdx:kdx+Norder), 2 );
+        prod( bsxfun(@plus,fdt,0:Norder)./bsxfun(@plus,fdt,kdx:kdx+Norder), 2 );
 end
-% numerator polynomial of H(z)
+% Numerator polynomial of H(z)
 b = a(end:-1:1,:);
-
-end

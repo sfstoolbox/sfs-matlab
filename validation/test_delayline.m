@@ -77,27 +77,28 @@ for resampling = {'none', 'matlab', 'pm'}
         end
         
         % --- Plotting ---
+        figure;
         % setup legend and axis
         t=1:L;
         t=t-L/2;
         % Phase delay
-        figure;
+        subplot(2,2,1);
         plot(wpi2/pi,phasdel-(L/2)+1);
         title(['resample: ', resampling{:}, ', filter: ', filter{:},' - phase delay']);
         ylabel('phase delay');
         xlabel('normalized frequency');
-        legend(sprintf('%.1f',dt));
+        legend(num2str(dt.','%.1f'));
         grid on;
         % Magnitude response
-        figure;
+        subplot(2,2,2);
         plot(wpi/pi,magresp);
         title(['resample: ', resampling{:}, ', filter: ', filter{:},' - magnitude response']);
         ylabel('magnitude');
         xlabel('normalized frequency');
-        legend(sprintf('%.1f',dt));
+        legend(num2str(dt.','%.1f'));
         grid on;
         % Impluse response
-        figure;
+        subplot(2,2,3);
         imagesc(dt,t(L/2-50:L/2+50),db(abs(outsig(L/2-50:L/2+50,:))));
         title(['resample: ', resampling{:}, ', filter: ', filter{:},' - impulse response']);
         caxis([-100 10]);

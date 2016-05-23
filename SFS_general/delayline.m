@@ -206,7 +206,9 @@ end
 
 %% ===== Postprocessing ==================================================
 % --- Downsampling ---
-sig = sig(1:rfactor:samples,:);
+if rfactor~=1
+  sig = sig(1:rfactor:samples,:);
+end
 % --- Undo reshape ---
 % [N M*C] => [M C N]
 if reshaped

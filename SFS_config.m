@@ -115,7 +115,7 @@ conf.bandpassfhigh = 20000; % / Hz
 %   'none'   - no resampling (default) 
 %   'matlab' - use matlab's resample() function
 %   'pm'     - use Parks-McClellan-Method to compute resample filter (firpm)
-conf.delayline.resampling = 'none' % / string
+conf.delayline.resampling = 'none'; % / string
 % Oversamplingfactor factor >= 1
 % This should be in the order of (1/stepsize of fractional delays)
 conf.delayline.resamplingfactor = 100; % / 1

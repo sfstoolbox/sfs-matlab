@@ -59,7 +59,7 @@ function sig = delayline(sig,dt,weight,conf)
 
 %% ===== Configuration ===================================================
 % Check for old configuration
-if exist('conf.usefracdelay','var')
+if isfield(conf, 'usefracdelay')
     error(['%s: conf.usefracdelay is deprecated, please use conf.delayline', ...
            ' instead. See SFS_config for details.'],upper(mfilename));
 end

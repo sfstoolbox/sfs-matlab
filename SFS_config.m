@@ -104,8 +104,12 @@ conf.bandpassfhigh = 20000; % / Hz
 
 
 %% ===== Delayline =======================================================
-% Delaying of time signals. The biggest opart here is how to cope with non
-% integer delay values.
+% Delaying of time signals. This can be critical as very often the wanted delays
+% are given as fractions of samples. This configuration section handles how
+% those delays should be handled. As the default setting, integer only delays
+% are used by rounding to the next larger integer delay.
+% Beside choosing the actual delayline filter, the signal can also be resampled
+% before delaying.
 %
 % Resample signal
 %   'none'   - no resampling (default) 

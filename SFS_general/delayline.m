@@ -198,7 +198,7 @@ if exist('a','var') && exist('b','var')
         sig(:,ii) = filter(b(:,ii),a(:,ii),sig(:,ii));
     end
 end
-% scale delay offset based on resampling factor
+% Scale delay offset based on resampling factor
 delay_offset = delay_offset ./ rfactor;
 
 

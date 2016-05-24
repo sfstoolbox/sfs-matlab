@@ -198,8 +198,6 @@ if exist('a','var') && exist('b','var')
         sig(:,ii) = filter(b(:,ii),a(:,ii),sig(:,ii));
     end
 end
-% Scale delay offset based on resampling factor
-delay_offset = delay_offset ./ rfactor;
 
 
 %% ===== Integer delayline ===============================================
@@ -218,7 +216,8 @@ end
 %% ===== Postprocessing ==================================================
 % --- Downsampling ---
 if rfactor~=1
-  sig = sig(1:rfactor:samples,:);
+    sig = sig(1:rfactor:samples,:);
+    delay_offset = delay_offset ./ rfactor;
 end
 % --- Undo reshape ---
 % [N M*C] => [M C N]

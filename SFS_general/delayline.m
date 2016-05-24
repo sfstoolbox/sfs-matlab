@@ -90,8 +90,7 @@ end
 % If only single valued time delay and weight is given, create vectors
 if channels>1 && length(dt)==1, dt=repmat(dt,[1 channels]); end
 if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
-% --- Initialise delay offset ---
-delay_offset = 0.0;
+
 
 %% ===== Resampling ======================================================
 % The resampling is applied independently from the actual fractional/integer
@@ -103,12 +102,15 @@ delay_offset = 0.0;
 switch delay.resampling
     case 'none'
         rfactor = 1.0;
+        delay_offset = 0.0;
     case 'matlab'
         rfactor = delay.resamplingfactor;
+        delay_offset = 0.0;
         sig = resample(sig,rfactor,1);
     case 'pm'
         % === Parks-McClellan linear phase FIR filter ===
         rfactor = delay.resamplingfactor;
+        delay_offset = delay.resamplingorder / 2;
         a = [1 1 0 0];
         f = [0.0 0.9/rfactor 1/rfactor 1.0];
         b = firpm(delay.resamplingorder,f,a);
@@ -118,7 +120,6 @@ switch delay.resampling
         sig = reshape(sig,rfactor*samples,channels);
         
         sig = filter(b,1,sig,[],1);
-        delay_offset = delay_offset + delay.resamplingorder / 2;
     otherwise
         error('%s: "%s": unknown resampling method',upper(mfilename), ...
             delay.resampling);

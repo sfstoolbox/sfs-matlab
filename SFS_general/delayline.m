@@ -1,7 +1,7 @@
-function sig = delayline(sig,dt,weight,conf)
+function [sig,delay_offset] = delayline(sig,dt,weight,conf)
 %DELAYLINE implements a (fractional) delay line with weights
 %
-%   Usage: sig = delayline(sig,dt,weight,conf)
+%   Usage: [sig,delay_offset] = delayline(sig,dt,weight,conf)
 %
 %   Input parameter:
 %       sig     - input signal (vector), can be in the form of [N C], or
@@ -17,7 +17,9 @@ function sig = delayline(sig,dt,weight,conf)
 %       conf    - configuration struct (see SFS_config).
 %
 %   Output parameter:
-%       sig     - delayed signal
+%       sig             - delayed signal
+%       delay_offset    - additional delay, added by the fractional delayline
+%                         filters to all channels. For integer delays this is 0.
 %
 %   DELAYLINE(sig,dt,weight,conf) implementes a delayline, that delays the given
 %   signal by dt samples and applies an amplitude weighting factor. The delay is
@@ -100,12 +102,15 @@ if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
 switch delay.resampling
     case 'none'
         rfactor = 1.0;
+        delay_offset = 0.0;
     case 'matlab'
         rfactor = delay.resamplingfactor;
+        delay_offset = 0.0;
         sig = resample(sig,rfactor,1);
     case 'pm'
         % === Parks-McClellan linear phase FIR filter ===
         rfactor = delay.resamplingfactor;
+        delay_offset = delay.resamplingorder / 2;
         a = [1 1 0 0];
         f = [0.0 0.9/rfactor 1/rfactor 1.0];
         b = firpm(delay.resamplingorder,f,a);
@@ -128,6 +133,7 @@ switch delay.filter
     case 'integer'
         % === Integer delays ===
         idt = ceil(dt);  % round up to next integer delay
+        delay_offset = delay_offset + 0;
     case 'lagrange'
         % === Lagrange polynomial interpolator ===
         if iseven(delay.filterorder)
@@ -138,11 +144,13 @@ switch delay.filter
         fdt = dt - idt;  % fractional part of delays
         b = lagrange_filter(delay.filterorder,fdt);
         a = ones(1,channels);
+        delay_offset = delay_offset + delay.filterorder / 2;
     case 'thiran'
         % === Thiran's allpass filter for maximally flat group delay ===
         idt = round(dt);  % integer part of delays
         fdt = dt - idt;  % fractional part of delays
         [b,a] = thiran_filter(delay.filterorder,fdt);
+        delay_offset = delay_offset + delay.filterorder;
     case 'least_squares'
         % ==== Least squares interpolation filter ===
         idt = floor(dt);  % integer part of delays
@@ -152,6 +160,7 @@ switch delay.filter
             b(:,ii) = general_least_squares(delay.filterorder+1,fdt(ii),0.90);
         end
         a = ones(1,channels);
+        delay_offset = delay_offset + delay.filterorder / 2;
     case 'farrow'
         % === Farrow-structure ===
         % Based on the assumption, that each coefficient h(n) of the fractional
@@ -207,7 +216,8 @@ end
 %% ===== Postprocessing ==================================================
 % --- Downsampling ---
 if rfactor~=1
-  sig = sig(1:rfactor:samples,:);
+    sig = sig(1:rfactor:samples,:);
+    delay_offset = delay_offset ./ rfactor;
 end
 % --- Undo reshape ---
 % [N M*C] => [M C N]

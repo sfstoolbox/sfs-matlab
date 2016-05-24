@@ -1,17 +1,18 @@
-function bool = iseven(number)
-%ISEVEN returns true for even integer
+function b = lagrange_filter(Norder,fdt)
+%LAGRANGE_FILTER computes Lagrange interpolation filter for fractional delays
 %
-%   Usage: bool = iseven(number)
+%   Usage: b = lagrange_filter(order,fdt)
 %
-%   Input parameters:
-%       number  - number (or vector/matrix with numbers) to be tested
+%   Input parameter:
+%     order  - order N of Lagrange polynomials
+%     fdt    - vector of fractional delays
+%               0   <= fdt < 1   if order is odd,
+%              -0.5 <= fdt < 0.5 if order is even.
 %
-%   Output parameters:
-%       bool    - true if the number is even, false else
+%   Output parameter:
+%     b   - filter coefficients / [order+1 x Nfdt]
 %
-%   ISEVEN(number) checks if the given number is even.
-%
-%   See also: isodd
+%   See also: delayline, thiran_filter
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -44,8 +45,17 @@ function bool = iseven(number)
 
 
 %% ===== Computation =====================================================
-% Create answer
-bool = false( size(number) );
-% Look for even numbers, use bitget to overcome a mod() bug, see
-% http://bit.ly/1wcNYBI
-bool(bitget(number,1)==0) = true;
+
+D = fdt(:).' + floor(Norder/2);
+
+% aux = D, (D-1), (D-2),...,(D-N+1),(D-N)
+aux = bsxfun(@minus, D, (0:Norder).');
+
+% denom = n*(n-1)*...*(n-N+1)*(n-N) = n!*(N-n)!*(-1)^(N-n)
+denom = factorial(0:Norder);
+denom = denom.*denom(end:-1:1).*(-1).^(Norder:-1:0);
+
+b = zeros(Norder+1, length(D));
+for ndx=1:Norder+1
+    b(ndx,:) = prod(aux([1:ndx-1,ndx+1:end],:), 1)./denom(ndx);
+end

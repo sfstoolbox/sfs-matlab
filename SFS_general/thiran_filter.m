@@ -1,17 +1,17 @@
-function bool = iseven(number)
-%ISEVEN returns true for even integer
+function [b,a] = thiran_filter(Norder,fdt)
+%THIRAN_FILTER computes Thiran's IIR allpass for Maximally Flat Group Delay
 %
-%   Usage: bool = iseven(number)
+%   Usage: [b,a] = thiran_filter(order,fdt)
 %
-%   Input parameters:
-%       number  - number (or vector/matrix with numbers) to be tested
+%   Input parameter:
+%     order  - order of filter
+%     fdt    - vector of fractional delays -0.5 <= fdt < 0.5
 %
-%   Output parameters:
-%       bool    - true if the number is even, false else
+%   Output parameter:
+%     b   - numerator polynomial of H(z) / [Norder+1 x Nfdt]
+%     a   - denominator polynomial of H(z) / [Norder+1 x Nfdt]
 %
-%   ISEVEN(number) checks if the given number is even.
-%
-%   See also: isodd
+%   See also: delayline, lagrange_filter
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -44,8 +44,17 @@ function bool = iseven(number)
 
 
 %% ===== Computation =====================================================
-% Create answer
-bool = false( size(number) );
-% Look for even numbers, use bitget to overcome a mod() bug, see
-% http://bit.ly/1wcNYBI
-bool(bitget(number,1)==0) = true;
+
+% Shift fractional delay in order to optimize performance
+fdt = fdt(:);  % ensure column vector
+Nfdt = numel(fdt);
+
+% Denomimator polynomial of H(z)
+a = [ones(1,Nfdt); zeros(Norder,Nfdt)];
+for kdx=1:Norder
+    a(kdx+1,:) = (-1).^kdx * ...
+        factorial(Norder)/(factorial(kdx)*factorial(Norder-kdx)) * ...
+        prod( bsxfun(@plus,fdt,0:Norder)./bsxfun(@plus,fdt,kdx:kdx+Norder), 2 );
+end
+% Numerator polynomial of H(z)
+b = a(end:-1:1,:);

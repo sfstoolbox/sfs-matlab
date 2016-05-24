@@ -43,13 +43,6 @@ function bool = isodd(number)
 %*****************************************************************************
 
 
-%% ===== Checking input parameters =======================================
-nargmin = 1;
-nargmax = 1;
-narginchk(nargmin,nargmax);
-isargmatrix(number)
-
-
 %% ===== Computation =====================================================
 % Create answer
 bool = false( size(number) );

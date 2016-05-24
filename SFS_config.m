@@ -57,6 +57,7 @@ narginchk(nargmin,nargmax);
 %
 % - Misc
 % - Audio
+% - Delayline
 % - Sound Field Synthesis (SFS)
 %   * Dimensionality
 %   * Driving functions
@@ -96,13 +97,43 @@ conf.showprogress = false; % boolean
 conf.fs = 44100; % / Hz
 % Speed of sound
 conf.c = 343; % / m/s
-% use fractional delays for delay lines
-conf.usefracdelay = false; % boolean
-conf.fracdelay_method = 'resample'; % string
 % Bandpass filter applied in sound_field_imp()
 conf.usebandpass = true; % boolean
 conf.bandpassflow = 10; % / Hz
 conf.bandpassfhigh = 20000; % / Hz
+
+
+%% ===== Delayline =======================================================
+% Delaying of time signals. This can be critical as very often the wanted delays
+% are given as fractions of samples. This configuration section handles how
+% those delays should be handled. As the default setting, integer only delays
+% are used by rounding to the next larger integer delay.
+% Beside choosing the actual delayline filter, the signal can also be resampled
+% before delaying.
+%
+% Resample signal
+%   'none'   - no resampling (default) 
+%   'matlab' - use matlab's resample() function
+%   'pm'     - use Parks-McClellan-Method to compute resample filter (firpm)
+conf.delayline.resampling = 'none'; % / string
+% Oversamplingfactor factor >= 1
+% This should be in the order of (1/stepsize of fractional delays)
+conf.delayline.resamplingfactor = 100; % / 1
+% Order of Parks-McClellan resample filter (only for 'pm')
+conf.delayline.resamplingorder = 128;
+%
+% Delayline filter
+%   'integer'       - round to next larger integer delay (default)
+%   'lagrange'      - lagrange interpolator (FIR Filter)
+%   'least_squares' - least squares FIR interpolation filter
+%   'thiran'        - Thiran's allpass IIR filter
+%   'farrow'        - use the Farrow structure (to be implemented)
+conf.delayline.filter = 'integer';  % string
+% Order of delayline filter (only for Lagrange, Least-Squares & Thiran)
+conf.delayline.filterorder = 0;  % / 1
+% Number of parallel filters in Farrow structure
+% (only for 'farrow');
+conf.delayline.filternumber = 1; % / 1
 
 
 %% ===== Sound Field Synthesis (SFS) =====================================

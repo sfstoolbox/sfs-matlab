@@ -69,7 +69,7 @@ for resampling = {'none', 'matlab', 'pm'}
         % --- Computation ---
         % Test all given delays
         for n=1:length(dt)
-            outsig(:,n) = delayline(insig,dt(n),1,conf);
+            [outsig(:,n), delay_offset] = delayline(insig,dt(n),1,conf);
             H(:,n) = freqz(outsig(:,n),1,wpi);
             magresp(:,n) = abs(H(:,n));
             uwphase(:,n)=-unwrap(angle(H(:,n)));
@@ -83,7 +83,7 @@ for resampling = {'none', 'matlab', 'pm'}
         t=t-L/2;
         % Phase delay
         subplot(2,2,1);
-        plot(wpi2/pi,phasdel-(L/2)+1);
+        plot(wpi2/pi,phasdel-(L/2)+1-delay_offset);
         title(['resample: ', resampling{:}, ', filter: ', filter{:},' - phase delay']);
         ylabel('phase delay');
         xlabel('normalized frequency');

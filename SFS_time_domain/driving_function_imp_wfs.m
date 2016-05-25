@@ -145,4 +145,6 @@ end
 % delay them. NOTE: this can be changed by the conf.N setting
 d_proto = repmat([row_vector(pulse) zeros(1,N-length(pulse))]',1,size(x0,1));
 % Shift and weight prototype driving function
-d = delayline(d_proto,delay*fs,weight,conf);
+[d, delayline_delay] = delayline(d_proto,delay*fs,weight,conf);
+% Add delay offset of delayline
+delay_offset = delay_offset + delayline_delay;

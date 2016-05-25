@@ -6,6 +6,7 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
     - change license to MIT
     - update delayline() config settings
     - add Lagrange and Thiran filters to delayline()
+    - replace wavread and warwrite by audioread and savewav
 
 2.1.0 (10. March 2016)
 

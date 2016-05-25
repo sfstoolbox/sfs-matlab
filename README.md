@@ -34,11 +34,10 @@ Requirements
 ------------
 
 **Matlab**
-You need Matlab version 2011b or newer to run the Toolbox.
-On older version the Toolbox should also work, but you need to add
+You need Matlab version R2011b or newer to run the Toolbox.  On older versions
+the Toolbox should also work, but you need to add
 [narginchk.m](http://gist.github.com/hagenw/5642886) to the
-<code>SFS_helper</code>
-directory.
+<code>SFS_helper</code> directory.
 
 **Octave**
 You need Octave version 3.6 or newer to run the Toolbox. In addition,
@@ -46,6 +45,11 @@ you will need the following additional packages from
 [octave-forge](http://octave.sourceforge.net/):
 * audio
 * signal (e.g. for firls)
+
+**audioread**
+If <code>audioread()</code> is not available in your Matlab or Octave version,
+you can replace it by <code>wavread()</code>. It is used in the two functions
+<code>auralize_ir()</code> and <code>compensate_headphone()</code>.
 
 **Impulse responses**
 The Toolbox uses the [SOFA](http://sofaconventions.org/) file format for

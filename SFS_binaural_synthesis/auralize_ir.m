@@ -71,7 +71,7 @@ fs = conf.fs;
 if isnumeric(content)
     contentfs = conf.fs;
 elseif ~exist(content,'file')
-    [content,contentfs] = wavread(contentfile);
+    [content,contentfs] = audioread(contentfile);
 else
     error('%s: %s file was not found.',upper(mfilename),content);
 end

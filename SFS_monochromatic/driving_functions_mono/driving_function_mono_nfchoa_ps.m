@@ -22,6 +22,8 @@ function D = driving_function_mono_nfchoa_ps(x0,xs,f,N,conf)
 %       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
 %       "Theory of Sound Field Synthesis"
 %       J. Ahrens (2012) - "Analytic Methods of Sound Field Synthesis", Springer
+%       M. A. Poletti (2010) - "Series expansions of rotating two and three 
+%       dimensional sound fields"
 %
 %   See also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_ps
 
@@ -79,7 +81,7 @@ X0 = conf.secondary_sources.center;
 x00 = bsxfun(@minus,x0,X0);
 [phi0,theta0,r0] = cart2sph(x00(:,1),x00(:,2),x00(:,3));
 % Point source
-xs0 = bsxfun(@minus,xs,X0);
+xs0 = bsxfun(@minus,xs(:,1:3),X0);
 [phi,theta,r] = cart2sph(xs0(:,1),xs0(:,2),xs0(:,3));
 % Wavenumber
 omega = 2*pi*f;
@@ -121,6 +123,22 @@ elseif strcmp('2.5D',dimension)
             D = D + 1./(2.*pi.*r0) .* sphbesselh(abs(m),2,omega/c.*r) ./ ...
                 sphbesselh(abs(m),2,omega/c.*r0) .* exp(1i.*m.*(phi0-phi));
         end
+    elseif strcmp('moving',driving_functions)
+        % --- SFS Toolbox ------------------------------------------------
+        % 2.5D point source, moving on the circle with radius r and angular
+        % velocity ws
+        %
+        % see Poletti (2010), eq. 38
+        
+        ws = xs(:,4)./r;  % angular velocity of point source
+        for m=-N:N
+            omega_prime = omega - m*ws;
+   
+            D = D + 1./(2.*pi.*r0) .* ...
+                sphbesselh(abs(m),2,omega_prime/c.*r) ./ ...
+                sphbesselh(abs(m),2,omega_prime/c.*r0) .* ...
+                exp(1i.*m.*(phi0-phi));
+        end        
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D point source.'],upper(mfilename),driving_functions);

@@ -104,7 +104,7 @@ releases page](https://github.com/sfstoolbox/sfs/releases):
 H. Wierstorf, S. Spors - Sound Field Synthesis Toolbox.
 In the Proceedings of *132nd Convention of the
 Audio Engineering Society*, 2012
-[_[pdf](http://www.deutsche-telekom-laboratories.de/~sporssas/publications/2012/Wierstorf_et_al_SFS_toolbox.pdf) ]
+[ [pdf](http://www.deutsche-telekom-laboratories.de/~sporssas/publications/2012/Wierstorf_et_al_SFS_toolbox.pdf) ]
 [ [bibtex](http://sfstoolbox.org/files/aes132_paper.bib) ]
 
 Copyright (c) 2010-2016 SFS Toolbox Developers

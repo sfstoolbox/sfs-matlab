@@ -19,7 +19,7 @@ http://sfstoolbox.org/doc/latest/matlab/
 http://sfstoolbox.org/doc/latest/math/
 
 **License**
-MIT -- see the file `LICENSE` for details.
+MIT -- see the file [`LICENSE`](LICENSE) for details.
 
 
 Installation
@@ -54,11 +54,12 @@ functionality you also have to install the [SOFA API for
 Matlab/Octave](https://github.com/sofacoustics/API_MO), which you can add to
 your paths by executing `SOFAstart`.
 
-After setting up the Toolbox you can made one of the magic following things with it.
-
 
 Getting started
 ---------------
+
+For a detailed description of all available features of the SFS Toolbox, have a
+look at the [**online documentation**](http://sfstoolbox.org/doc/latest/matlab/).
 
 In order to make a simulation of the sound field of a monochromatic point source
 with a frequency of 800 Hz placed at (0,2.5,0) m synthesized by WFS run
@@ -89,10 +90,6 @@ conf = SFS_config;
 conf.fs = 48000;
 ```
 
-For a detailed description of all available features of the SFS Toolbox, have a
-look at the [online documentation](http://sfstoolbox.org/doc/latest/matlab/) at
-the [SFS Toolbox web page](http://sfstoolbox.org).
-
 
 Credits and feedback
 -------------------
@@ -103,6 +100,7 @@ Section](https://github.com/sfstoolbox/sfs/issues) to report them.
 If you use the SFS Toolbox for your publications please cite our AES Convention
 e-Brief and the DOI for the used Toolbox version, you will find at the [official
 releases page](https://github.com/sfstoolbox/sfs/releases):  
+
 H. Wierstorf, S. Spors - Sound Field Synthesis Toolbox.
 In the Proceedings of *132nd Convention of the
 Audio Engineering Society*, 2012

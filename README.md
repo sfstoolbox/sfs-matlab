@@ -725,7 +725,7 @@ All functions regarding the SSR are stored in <code>SFS_ssr</code>.
 ```Matlab
 conf = SFS_config;
 brs = ssr_brs_wfs(X,phi,xs,src,hrtf,conf);
-save_ssr_brs('brs_set_for_SSR.wav',brs,fs);
+savewav(brs,'brs_set_for_SSR.wav',fs);
 ```
 
 

@@ -1,12 +1,12 @@
-function save_ssr_brs(filename,y,fs)
-%SAVE_SSR_BRS saves floating point audio data in a *.wav with 32bit precision
+function savewav(y,filename,fs)
+%SAVEWAV saves floating point audio data in a *.wav with 32bit precision
 %
-%   Usage: save_ssr_brs(filename,y,fs)
+%   Usage: savewav(y,filename,fs)
 %
 %   Input parameters:
+%       y         - audio data in floating point [NFrames x NChannels] 
 %       filename  - name of *.wav file (file extension will NOT be added
 %                   automatically)
-%       y         - audio data in floating point [NFrames x NChannels] 
 %       fs        - sample rate / Hz 
 %
 %   Since wavwrite has been removed in MATLAB 2015b and audiowrite does not

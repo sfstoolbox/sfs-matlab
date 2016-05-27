@@ -88,7 +88,11 @@ if strcmp('pw',src)
 elseif strcmp('ps',src)
     % === Point source ===
     D = driving_function_mono_wfs_ps(x0,nx0,xs(:,1:3),f,conf);
-
+    
+elseif strcmp('mps',src)
+    % === Point source ===
+    D = driving_function_mono_wfs_mps(x0,nx0,xs(:,1:3),xs(:,4:6),f,conf);
+    
 elseif strcmp('ls',src)
     % === Line source ===
     D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf);

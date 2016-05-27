@@ -1,7 +1,7 @@
 function directions = direction_vector(x1,x2)
 %DIRECTION_VECTOR return unit vector(s) pointing from x1 to x2
 %
-%   Usage: n = direction_vector(x1,x2)
+%   Usage: n = direction_vector(x1,[x2])
 %
 %   Input parameters:
 %       x1  - starting point(s) [1xn] or [mxn]
@@ -11,14 +11,15 @@ function directions = direction_vector(x1,x2)
 %       n   - unit vector(s) pointing in the direction(s) from x1 to x2
 %
 %   DIRECTION_VECTOR(x1,x2) calculates the unit vectors pointing from
-%   n-dimensional points x1 to the n-dimensional points x2.
+%   n-dimensional points x1 to the n-dimensional points x2. If only x1 is
+%   provided the direction vectors from zero to x1 are calculated.
 %
 %   See also: secondary_source_positions
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Team                                   *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -46,15 +47,20 @@ function directions = direction_vector(x1,x2)
 
 
 %% ===== Checking of input  parameters ===================================
-nargmin = 2;
+nargmin = 1;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-if size(x1,2)~=size(x2,2)
-    error('%s: x1 and x2 need to have the same dimension.',upper(mfilename));
-end
-if size(x1,1)~=size(x2,1) && ~(size(x1,1)==1 | size(x2,1)==1)
-    error(['%s: x1 and x2 need to have the same size, or one needs to ', ...
-           'be a vector.'],upper(mfilename));
+if nargin==1
+    x2 = x1;
+    x1 = zeros(1,size(x2,2));
+else
+    if size(x1,2)~=size(x2,2)
+        error('%s: x1 and x2 need to have the same dimension.',upper(mfilename));
+    end
+    if size(x1,1)~=size(x2,1) && ~(size(x1,1)==1 | size(x2,1)==1)
+        error(['%s: x1 and x2 need to have the same size, or one needs to ', ...
+               'be a vector.'],upper(mfilename));
+    end
 end
 
 

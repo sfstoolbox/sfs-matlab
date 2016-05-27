@@ -8,14 +8,14 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
 %       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
 %       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
-%       x0          - secondary sources [n x 6] / m
+%       x0          - secondary sources / m [nx7]
 %       src         - source model for the secondary sources. This describes the
 %                     Green's function, that is used for the modeling of the
 %                     sound propagation. Valid models are:
 %                       'ps' - point source
 %                       'ls' - line source
 %                       'pw' - plane wave
-%       D           - driving signals for the secondary sources [m x n]
+%       D           - driving signals for the secondary sources [mxn]
 %       f           - monochromatic frequency / Hz
 %       conf        - configuration struct (see SFS_config)
 %
@@ -58,7 +58,7 @@ function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Team                                   *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *

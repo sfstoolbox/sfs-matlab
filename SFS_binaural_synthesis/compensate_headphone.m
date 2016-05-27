@@ -20,7 +20,7 @@ function ir = compensate_headphone(ir,conf)
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Team                                   *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -63,7 +63,7 @@ usehcomp = conf.ir.usehcomp;
 if(usehcomp)
     lenir = size(ir,1);
     % Read headphone compensation filter
-    hcomp = wavread(conf.ir.hcompfile);
+    hcomp = audioread(conf.ir.hcompfile);
     % Check if the IR has the right length for the filter
     if lenir<length(hcomp)
         warning(['The length of the used IR is shorter than the headphone ', ...

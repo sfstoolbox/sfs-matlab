@@ -16,7 +16,7 @@ function isargsecondarysource(varargin)
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Team                                   *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -54,9 +54,9 @@ for ii = 1:nargin
             'and weights.'], ...
             inputname(ii));
     end
-    if ~all(abs(vector_norm(x0(:,4:6),2)-1)<1e-10)
-        error(['The norm of the direction of %s is not 1. ', ...
-            'You can use the direction_vector function to get ', ...
-            'correct direction values.'],inputname(ii));
-    end
+%     if ~all(abs(vector_norm(x0(:,4:6),2)-1)<1e-10)
+%         error(['The norm of the direction of %s is not 1. ', ...
+%             'You can use the direction_vector function to get ', ...
+%             'correct direction values.'],inputname(ii));
+%     end
 end

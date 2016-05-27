@@ -102,10 +102,10 @@ elseif strcmp('2.5D',dimension)
             % xparallel = (x-xs)*ns  % component in direction of movement
             % R_1 = sqrt( M^2*xparallel.^2 + (1-M^2)*|x-xs|.^2 )
             % R = (M*xparallel + R1)./(1-M*2);
+            %            
+            [tau, R, R1] = retarded_time(x0(:,1)-xs(:,1), x0(:,2)-xs(:,2), ...
+                x0(:,3)-xs(:,3), 0, vs, conf);
             %
-            
-            [tau, R, R1] = retarded_time(x0-xs, 0, vs, conf);
-  
             % 2.5D correction factor
             %         _____________________
             %        |      |xref-x0|

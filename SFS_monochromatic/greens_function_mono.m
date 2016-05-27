@@ -111,25 +111,21 @@ elseif strcmp('mps',src)
     % vs = v * ns   % velocity vector
     % M = v/c  % Mach number
     % xparallel = (x-xs)*ns  % component in direction of movement
-    % R_1 = sqrt( M^2*xorth.^2 + (1-M^2)*|x-xs|.^2 )
-    % R = (M*xorth + R1)./(1-M*2);
+    % R_1 = sqrt( M^2*xparallel.^2 + (1-M^2)*|x-xs|.^2 )
+    % R = (M*xparallel + R1)./(1-M*2);
     %    
     % see: Ahrens (2012), eq.(5.60)
+    %    
+    [~,x1]  = xyz_axes_selection(x,y,z); % get first non-singleton axis
+    % shift and vectorize coordinates
+    x = x(:)-xs(1);
+    y = y(:)-xs(2);
+    z = z(:)-xs(3);
+    % retarded time
+    [tau, ~, R1] = retarded_time(x,y,z,0,xs(4:6),conf);
     %
-    v = norm(xs(4:6));  % velocity of sound source
-    nxs = xs(4:6)./v;  % direction of movement
-    xs = xs(1:3);  % 
-    M = v/c;  % 
-    % shift coordinates
-    x = x-xs(1);
-    y = y-xs(2);
-    z = z-xs(3);
-    % component of x in direciton  of movement: scalar = x*nxs  
-    xparallel = nxs(1).*x + nxs(2).*y  + nxs(3).*z;
-    
-    R1 = sqrt( M^2.*xparallel.^2 + (1-M^2)*(x.^2 + y.^2 + z.^2) );
-    Rplus = (M*xparallel + R1)./(1-M.^2);  
-    G = 1/(4*pi) * exp(-1i*omega/c.*Rplus)./R1;
+    G = zeros(size(x1));
+    G(:) = 1/(4*pi) * exp(-1i*omega.*tau)./R1;
 elseif strcmp('ls',src)
     % Source model for a line source: 2D Green's function.
     %

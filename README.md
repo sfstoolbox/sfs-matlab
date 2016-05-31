@@ -13,10 +13,10 @@ secondary source distributions, or even generate Binaural Room Scanning (BRS)
 stimuli sets in order to simulate WFS with the SoundScape Renderer (SSR).
 
 **Documentation**
-http://sfstoolbox.org/doc/latest/matlab/
+http://sfstoolbox.org/matlab/
 
 **Mathematics**
-http://sfstoolbox.org/doc/latest/math/
+http://sfstoolbox.org/theory/
 
 **License**
 MIT -- see the file [`LICENSE`](LICENSE) for details.
@@ -63,7 +63,7 @@ Getting started
 ---------------
 
 For a detailed description of all available features of the SFS Toolbox, have a
-look at the [**online documentation**](http://sfstoolbox.org/doc/latest/matlab/).
+look at the [**online documentation**](http://sfstoolbox.org/doc/matlab/).
 
 In order to make a simulation of the sound field of a monochromatic point source
 with a frequency of 800 Hz placed at (0,2.5,0) m synthesized by WFS run

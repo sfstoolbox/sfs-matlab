@@ -1,10 +1,10 @@
 function hpre = wfs_fir_prefilter(conf)
 %WFS_FIR_PREFILTER creates a pre-equalization filter for WFS
 %
-%   Usage: hpre = wfs_fir_prefilter([conf])
+%   Usage: hpre = wfs_fir_prefilter(conf)
 %
 %   Input parameters:
-%       conf - optional configuration struct (see SFS_config)
+%       conf - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       hpre - pre-equalization filter
@@ -20,62 +20,56 @@ function hpre = wfs_fir_prefilter(conf)
 %   See also: wfs_preequalization, wfs_iir_prefilter, sound_field_imp_wfs, ir_wfs
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 0;
+nargmin = 1;
 nargmax = 1;
 narginchk(nargmin,nargmax);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
-fs = conf.fs;               % Sampling rate
-dimension = conf.dimension; % dimensionality
-flow = conf.wfs.hpreflow;   % Lower frequency limit of preequalization
-                            % filter (= frequency when subwoofer is active)
-fhigh = conf.wfs.hprefhigh; % Upper frequency limit of preequalization
-                            % filter (= aliasing frequency of system)
-
-
+fs = conf.fs;                  % Sampling rate
+dimension = conf.dimension;    % dimensionality
+flow = conf.wfs.hpreflow;      % Lower frequency limit of preequalization
+                               % filter (= frequency when subwoofer is active)
+fhigh = conf.wfs.hprefhigh;    % Upper frequency limit of preequalization
+                               % filter (= aliasing frequency of system)
+Nfilt = conf.wfs.hpreFIRorder; % Number of coefficients for filter
+if isodd(Nfilt)
+    error(['%s: conf.wfs.hpreFIRorder == %i is not a valid filter order. ', ...
+        'Must be an even integer.'],upper(mfilename),Nfilt);
+end
 %% ===== Variables ======================================================
-% Number of coefficients for filter
-Nfilt=128;
 % Frequency axis
 f = linspace(0,fs/2,fs/10);
 % Find indices for frequencies in f smaller and nearest to fhigh and flow
@@ -111,7 +105,7 @@ elseif strcmp('3D',dimension) || strcmp('2D',dimension)
     %
     H(idxflow:idxfhigh) = f(idxflow:idxfhigh)./fhigh;
 else
-    error('%s: %s is not a valid conf.dimension entry',upper(mfilename));
+    error('%s: %s is not a valid conf.dimension entry',upper(mfilename),dimension);
 end
 % Set the response for idxf < idxflow to the value at idxflow
 H(1:idxflow) = H(idxflow)*ones(1,idxflow);
@@ -119,5 +113,3 @@ H(1:idxflow) = H(idxflow)*ones(1,idxflow);
 % Compute filter
 hpre = firls(Nfilt,2*f/fs,H);
 
-% Truncate length to power of 2
-hpre = hpre(1:end-1);

@@ -1,50 +1,46 @@
-function boolean = test_secondary_sources(modus)
-%TEST_SECONDARY_SOURCES tests the correctness of the secondary source
-%functions
+function boolean = test_secondary_source_diameter(modus)
+%TEST_SECONDARY_SOURCE_DIAMETER tests the correctness of the function
+%secondary_source_diameter()
 %
-%   Usage: boolean = test_secondary_sources(modus)
+%   Usage: boolean = test_secondary_source_diameter(modus)
 %
 %   Input parameters:
 %       modus   - 0: numerical (quiet)
 %                 1: numerical (verbose)
-%                 2: visual
 %
 %   Output parameters:
 %       booelan - true or false
 %
-%   TEST_SECONDARY_SOURCES(modus) checks if the functions, that calculates
-%   the secondary source positions and directions are working correctly.
+%   TEST_SECONDARY_SOURCE_DIAMTERE(modus) checks if the function, that
+%   calculates the secondary source diameter and center is working correctly.
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
@@ -55,11 +51,11 @@ narginchk(nargmin,nargmax);
 
 
 %% ===== Main ============================================================
-conf = SFS_config_example;
-conf.secondary_sources.size = 4;
 boolean = true;
 % reference values
-x0_linear_ref = [
+diam_linear_ref = 4;
+center_linear_ref = 0;
+x0_linear = [
    -2.0000         0         0         0    -1.0000         0        0.2
    -1.8000         0         0         0    -1.0000         0        0.2
    -1.6000         0         0         0    -1.0000         0        0.2
@@ -82,7 +78,9 @@ x0_linear_ref = [
     1.8000         0         0         0    -1.0000         0        0.2
     2.0000         0         0         0    -1.0000         0        0.2
     ];
-x0_circle_ref = [
+diam_circle_ref = 3.99876557777522;
+center_circle_ref = [-0.0488700000000000 0.0098799999999999 0.0000000000000000];
+x0_circle = [
    2.00000   0.00000   0.00000  -1.00000   0.00000   0.00000   0.1995
    1.99006   0.19914   0.00000  -0.99503  -0.09957   0.00000   0.1995
    1.96034   0.39629   0.00000  -0.98017  -0.19815   0.00000   0.1995
@@ -147,7 +145,9 @@ x0_circle_ref = [
    1.96034  -0.39629   0.00000  -0.98017   0.19815   0.00000   0.1995
    1.99006  -0.19914   0.00000  -0.99503   0.09957   0.00000   0.1995
    ];
-x0_box_ref = [
+diam_box_ref = 5.946427498927402;
+center_box_ref = 0;
+x0_box = [
     2.2000   -2.0000         0   -1.0000         0         0    0.2414
     2.2000   -1.8000         0   -1.0000         0         0    0.2000
     2.2000   -1.6000         0   -1.0000         0         0    0.2000
@@ -234,60 +234,45 @@ x0_box_ref = [
     2.0000   -2.2000         0         0    1.0000         0    0.2414
     ];
 
+
+%% ===== Test secondary_source_diamter() =================================
 % Calculate current values
-% linear array
-conf.secondary_sources.geometry = 'linear';
-conf.secondary_sources.number = 21;
-x0_linear = secondary_source_positions(conf);
-% circular array
-conf.secondary_sources.geometry = 'circle';
-conf.secondary_sources.number = 63;
-x0_circle = secondary_source_positions(conf);
-% box form array
-conf.secondary_sources.geometry = 'box';
-conf.secondary_sources.number = 84;
-x0_box = secondary_source_positions(conf);
+% Linear array
+conf.secondary_sources.geometry = 'custom';
+conf.secondary_sources.x0 = x0_linear;
+[diam_linear,center_linear] = secondary_source_diameter(conf);
+% Circular array
+conf.secondary_sources.x0 = x0_circle;
+[diam_circle,center_circle] = secondary_source_diameter(conf);
+% Box form array
+conf.secondary_sources.x0 = x0_box;
+[diam_box,center_box] = secondary_source_diameter(conf);
 
 if modus==0
     % Numerical mode (quiet)
-    if ~all(eq(size(x0_linear),size(x0_linear_ref))) || ...
-            ~all(eq(size(x0_circle),size(x0_circle_ref))) || ...
-            ~all(eq(size(x0_box),size(x0_box_ref))) || ...
-            ~all(abs(x0_linear(:)-x0_linear_ref(:))<1e-4) || ...
-            ~all(abs(x0_circle(:)-x0_circle_ref(:))<1e-4) || ...
-            ~all(abs(x0_box(:)-x0_box_ref(:))<1e-4)
+    if abs(diam_linear-diam_linear_ref)>eps || ...
+       abs(diam_circle-diam_circle_ref)>10e-12 || ...
+       abs(diam_box-diam_box_ref)>10e-12 || ...
+       norm(center_linear-center_linear_ref)>eps || ...
+       norm(center_circle-center_circle_ref)>eps || ...
+       norm(center_box-center_box_ref)>eps
         boolean = false;
     end
 elseif modus==1
-    if ~all(eq(size(x0_linear),size(x0_linear_ref)))
-        error('%s: wrong size of linear array.',upper(mfilename));
-    elseif ~all(abs(x0_linear(:)-x0_linear_ref(:))<1e-4)
-        error('%s: wrong value at linear array.',upper(mfilename));
+    if abs(diam_linear-diam_linear_ref)>eps 
+        error('%s: wrong diameter for linear array.',upper(mfilename));
+    elseif norm(center_linear-center_linear_ref)>eps
+        error('%s: wrong center for linear array.',upper(mfilename));
+    elseif abs(diam_circle-diam_circle_ref)>10e-12
+        error('%s: wrong diameter for circular array.',upper(mfilename));
+    elseif norm(center_circle-center_circle_ref)>eps
+        error('%s: wrong center for circular array.',upper(mfilename));
+    elseif abs(diam_box-diam_box_ref)>10e-12
+        error('%s: wrong diameter for box shaped array.',upper(mfilename));
+    elseif norm(center_box-center_box_ref)>eps
+        error('%s: wrong center for box shaped array.',upper(mfilename));
     end
-    if ~all(eq(size(x0_circle),size(x0_circle_ref)))
-        error('%s: wrong size of circular array.',upper(mfilename));
-    elseif ~all(abs(x0_circle(:)-x0_circle_ref(:))<1e-4)
-        error('%s: wrong value at circular array.',upper(mfilename));
-    end
-    if ~all(eq(size(x0_box),size(x0_box_ref))) 
-        error('%s: wrong size of box shaped array.',upper(mfilename));
-    elseif ~all(abs(x0_box(:)-x0_box_ref(:))<1e-4)
-        error('%s: wrong value at box shaped array.',upper(mfilename));
-    end
-elseif modus==2
-    % Graphical mode
-    close all;
-    % draw results
-    figure
-    title('Linear loudspeaker array');
-    draw_loudspeakers(x0_linear,[1 1 0],conf);
-    figure
-    title('Circular loudspeaker array');
-    draw_loudspeakers(x0_circle,[1 1 0],conf);
-    figure
-    title('Box shape loudspeaker array');
-    draw_loudspeakers(x0_box,[1 1 0],conf);
 else
-    error(['%s: modus has to be 0 (numerical quiet), 1 (numerical), ', ...
-            'or 2 (graphical).'],upper(mfilename));
+    error('%s: modus has to be 0 (numerical quiet) or 1 (numerical).', ...
+            upper(mfilename));
 end

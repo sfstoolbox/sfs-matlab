@@ -2,21 +2,22 @@ function D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf)
 %DRIVING_FUNCTION_MONO_WFS_LS returns the driving signal D for a line source in
 %WFS
 %
-%   Usage: D = driving_function_mono_wfs_ls(x0,nx0,xs,f,[conf])
+%   Usage: D = driving_function_mono_wfs_ls(x0,nx0,xs,nxs,f,conf)
 %
 %   Input parameters:
 %       x0          - position of the secondary sources / m [nx3]
-%       nx0         - directions of the secondary sources / m [nx3]
-%       xs          - position of virtual line source / m [nx3]
+%       xs          - position and orientation of virtual line source / m [nx3]
+%                     or [nx6]
 %       f           - frequency of the monochromatic source / Hz
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
 %
-%   DRIVING_FUNCTION_MONO_WFS_LS(x0,xs,f,src,conf) returns WFS driving signals
-%   for the given secondary sources, the virtual line source position and the
-%   frequency f.
+%   DRIVING_FUNCTION_MONO_WFS_LS(x0,nx0,xs,f,src,conf) returns WFS driving
+%   signals for the given secondary sources, the virtual line source position,
+%   its orientation xs(:,4:6), which is parallel to the line source, and the
+%   frequency f. If no explicit orientation is given [0 0 1] is assumed.
 %
 %   References:
 %       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
@@ -25,49 +26,42 @@ function D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf)
 %   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
+nargmin = 5;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargmatrix(x0,nx0,xs);
 isargpositivescalar(f);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
@@ -80,13 +74,12 @@ driving_functions = conf.driving_functions;
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
-% Frequency
 omega = 2*pi*f;
+[xs,nxs] = get_position_and_orientation_ls(xs,conf);
 
+if strcmp('2D',dimension)
 
-if strcmp('2D',dimension) || strcmp('3D',dimension)
-
-    % === 2- or 3-Dimensional ============================================
+    % === 2-Dimensional ==================================================
 
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
@@ -149,6 +142,42 @@ elseif strcmp('2.5D',dimension)
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D line source.'],upper(mfilename),driving_functions);
+    end
+
+elseif strcmp('3D',dimension)
+
+    % === 3-Dimensional ==================================================
+
+    if strcmp('default',driving_functions)
+        % --- SFS Toolbox ------------------------------------------------
+        % D using a line source
+        %
+        %              iw   v nx0    (2)/ w     \
+        % D(x0,w) =  - -- --------  H1  | - |v| | ,
+        %              2c   |v|         \ c     /
+        %
+        % where v = x0-xs - <x0-xs,nxs > nxs,
+        % and |nxs| = 1.
+        %
+        % see Wierstorf et al. (2015), eq.(#D:wfs:ls)
+        % TODO: refered equation is for 2D, 3D case is AFAIK not documented yet.
+        %
+        % v = (I - nxs'nxs)(x0-xs)
+        % r = |v|
+        nxs = nxs(1,:);
+        v = (x0 - xs)*(eye(3) - nxs'*nxs);
+        r = vector_norm(v,2);
+        % Driving signal
+        D = -1i*omega/(2*c) .* vector_product(v,nx0,2) ./ r .* ...
+            besselh(1,2,omega/c.*r);
+        %
+    elseif strcmp('delft1988',driving_functions)
+        % --- Delft 1988 -------------------------------------------------
+        to_be_implemented;
+        %
+    else
+        error(['%s: %s, this type of driving function is not implemented ', ...
+            'for a line source.'],upper(mfilename),driving_functions);
     end
 
 else

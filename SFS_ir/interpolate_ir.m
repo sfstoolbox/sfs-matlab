@@ -1,7 +1,7 @@
 function [ir_new,x0_new] = interpolate_ir(ir,x0,xs,conf)
 %INTERPOLATE_IR interpolates three given IRs for the given angle
 %
-%   Usage: ir = interpolate_ir(ir,x0,xs)
+%   Usage: [ir,x0] = interpolate_ir(ir,x0,xs,conf)
 %
 %   Input parameters:
 %       ir      - matrix containing impulse responses in the form [M C N], where
@@ -11,51 +11,48 @@ function [ir_new,x0_new] = interpolate_ir(ir,x0,xs,conf)
 %       x0      - matrix containing positions of single impulse
 %                 responses [2 M] / (rad, rad)
 %       xs      - desired position after interpolation [2 1] / (rad, rad)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ir      - impulse response for the given position [1 C N]
 %       x0      - position corresponding to the returned impulse response
 %
-%   INTERPOLATE_IR(ir,x0,xs)
-%   interpolates the two to three given impulse responses from ir with their
-%   corresponding angles x0 for the given angles xs and returns an interpolated
-%   impulse response.
-%   Note that the given parameter are not checked if they have all the correct
+%   INTERPOLATE_IR(ir,x0,xs,conf) interpolates the two to three given impulse
+%   responses from ir with their corresponding angles x0 for the given angles
+%   xs and returns an interpolated impulse response.
+%   Note, that the given parameter are not checked if they have all the correct
 %   dimensions in order to save computational time, because this function could
 %   be called quiet often.
 %
 %   See also: get_ir, interpolation
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
@@ -91,8 +88,8 @@ else
              'and (%.1f,%.1f) deg.'], ...
             deg(x0(1,1)), deg(x0(2,1)), ...
             deg(x0(1,2)), deg(x0(2,2)));
-        ir_new(1,1,:) = interpolation(squeeze(ir(1:2,1,:))',x0(1:2,:),xs);
-        ir_new(1,2,:) = interpolation(squeeze(ir(1:2,2,:))',x0(1:2,:),xs);
+        ir_new(1,1,:) = interpolation(squeeze(ir(1:2,1,:))',x0(:,1:2),xs);
+        ir_new(1,2,:) = interpolation(squeeze(ir(1:2,2,:))',x0(:,1:2),xs);
     else
         % --- 2D interpolation ---
         warning('SFS:irs_intpol3D',...
@@ -101,7 +98,7 @@ else
             deg(x0(1,1)), deg(x0(2,1)), ...
             deg(x0(1,2)), deg(x0(2,2)), ...
             deg(x0(1,3)), deg(x0(2,3)));
-        ir_new(1,1,:) = interpolation(squeeze(ir(1:3,1,:))',x0(1:3,:),xs);
-        ir_new(1,2,:) = interpolation(squeeze(ir(1:3,2,:))',x0(1:3,:),xs);
+        ir_new(1,1,:) = interpolation(squeeze(ir(1:3,1,:))',x0(:,1:3),xs);
+        ir_new(1,2,:) = interpolation(squeeze(ir(1:3,2,:))',x0(:,1:3),xs);
     end
 end

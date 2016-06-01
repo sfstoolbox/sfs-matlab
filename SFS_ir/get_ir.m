@@ -1,7 +1,7 @@
 function [ir,x0] = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %GET_IR returns an impulse response for the given apparent angle
 %
-%   Usage: ir = get_ir(sofa,X,head_orientation,xs,[coordinate_system],[conf])
+%   Usage: ir = get_ir(sofa,X,head_orientation,xs,[coordinate_system],conf)
 %
 %   Input parameters:
 %       sofa              - impulse response data set (sofa struct/file)
@@ -20,8 +20,8 @@ function [ir,x0] = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %                                           [x y z] / m
 %                             'spherical' - spherical system with
 %                                           [phi theta r] / (rad, rad, m)
-%       conf              - optional configuration struct (see SFS_config),
-%                           which will be passed to:
+%       conf              - configuration struct (see SFS_config), which will
+%                           be passed to:
 %                             interpolate_ir
 %                             ir_correct_distance (only for SimpleFreeFieldHRIR)
 %
@@ -29,10 +29,10 @@ function [ir,x0] = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %       ir      - impulse response for the given position (length of IR x 2)
 %       x0      - position corresponding to the returned impulse response
 %
-%   GET_IR(sofa,X,head_orientation,xs) returns a single impulse response from
-%   the given SOFA file or struct. The impulse response is determined by the
-%   position X and head orientation head_orientation of the listener, and the
-%   position xs of the desired point source.
+%   GET_IR(sofa,X,head_orientation,xs,conf) returns a single impulse response
+%   from the given SOFA file or struct. The impulse response is determined by
+%   the position X and head orientation head_orientation of the listener, and
+%   the position xs of the desired point source.
 %   For the SOFA convention SimpleFreeFieldHRIR the desired distance between
 %   the point source and listener is achieved by delaying and weighting the
 %   impulse response. Distances larger than 10m are ignored and set constantly
@@ -57,52 +57,42 @@ function [ir,x0] = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %             intpolate_ir, ir_correct_distance
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
+nargmin = 5;
 nargmax = 6;
 narginchk(nargmin,nargmax)
-if nargin==nargmax-1
-    if isstruct(coordinate_system)
-        conf = coordinate_system;
-        coordinate_system = 'cartesian';
-    else
-        conf = SFS_config;
-    end
-elseif nargin==nargmax-2
+if nargin<nargmax
+    conf = coordinate_system;
     coordinate_system = 'cartesian';
-    conf = SFS_config;
 end
 if length(head_orientation)==1
     head_orientation = [head_orientation 0]; % [azimuth elevation]

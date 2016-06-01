@@ -2,20 +2,20 @@ function M = nfchoa_order(nls,conf)
 %NFCHOA_ORDER returns the maximum order for the spherical harmonics for the
 %given number of secondary sources
 %
-%   Usage: M = nfchoa_order(nls,[conf])
+%   Usage: M = nfchoa_order(nls,conf)
 %
 %   Input parameters:
 %       nls     - number of secondary sources
 %
 %   Output parameters:
 %       M       - spherical harmonics order
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
-%   NFCHOA_ORDER(nls) returns the maximum order of spherical harmonics for the
-%   given number of secondary sources in order to avoid spectral repetitions
+%   NFCHOA_ORDER(nls,conf) returns the maximum order of spherical harmonics for
+%   the given number of secondary sources in order to avoid spectral repetitions
 %   (spatial aliasing) of the dirving signals. The order is
 %
-%        / nls/2,       even nls
+%        / nls/2 - 1,   even nls
 %   M = <
 %        \ (nls-1)/2    odd nls
 %
@@ -31,45 +31,39 @@ function M = nfchoa_order(nls,conf)
 %   See also: driving_function_imp_nfchoa, driving_function_mono_nfchoa
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
 %% ===== Checking input parameters =======================================
-nargmin = 1;
+nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-if nargin==nargmax-1
-    conf = SFS_config;
-end
 isargpositivescalar(nls);
 isargstruct(conf);
 
@@ -89,7 +83,7 @@ if strcmp('2D',dimension) || strcmp('2.5D',dimension)
     if isodd(nls)
         M = (nls-1)/2;
     else
-        M = nls/2;
+        M = nls/2 - 1;
     end
 elseif strcmp('3D',dimension)
     % Ahrens (2012), p. 125

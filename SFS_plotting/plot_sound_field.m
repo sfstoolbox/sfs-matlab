@@ -1,14 +1,14 @@
 function plot_sound_field(P,X,Y,Z,x0,conf)
 %PLOT_SOUND_FIELD plot the given sound field
 %
-%   Usage: plot_sound_field(P,X,Y,Z,[x0],[conf])
+%   Usage: plot_sound_field(P,X,Y,Z,[x0],conf)
 %
 %   Input parameters:
 %       P           - matrix containing the sound field in the format P = P(y,x)
 %       x,y,z       - vectors for the x-, y- and z-axis
 %       x0          - matrix containing the secondary source positions to plot.
 %                     Default: plot no secondary sources
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   PLOT_SOUND_FIELD(P,X,Y,Z,x0,conf) plots the sound field P in dependence
 %   of the axes that are non-singleton. You have to provide the axes in the same
@@ -20,52 +20,42 @@ function plot_sound_field(P,X,Y,Z,x0,conf)
 %   See also: sound_field_mono, sound_field_imp, draw_loudspeakers
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
+nargmin = 5;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargnumeric(X,Y,Z,P);
-if nargin==nargmax-1
-    if isstruct(x0)
-        conf = x0;
-        x0 = [];
-    else
-        conf = SFS_config;
-    end
-elseif nargin==nargmax-2
-    conf = SFS_config;
+if nargin<nargmax
+    conf = x0;
     x0 = [];
 end
 if isempty(x0)
@@ -160,8 +150,10 @@ if p.usedb
     if max(abs(P(:)))==0
         P(:) = eps;
     end
-    % Change default colormap to chromajs
-    conf.plot.colormap = 'chromajs';
+    % Change default colormap to yellowred
+    if strcmp('default',p.colormap)
+        conf.plot.colormap = 'yellowred';
+    end
     % Calculate sound pressure level in dB
     P = 20*log10(abs(P));
     if p.usenormalisation
@@ -273,7 +265,7 @@ function P = limit_colors(P,caxis)
     % First apply the caxis values
     P = min(caxis(2),max(caxis(1),P(:)));
     % Transform to [0...64] and transform to integer
-    P = fix(number_of_colors/range(P(:)) .* (P+abs(min(P(:)))));
+    P = fix(number_of_colors/abs(max(P(:))-min(P(:))) .* (P+abs(min(P(:)))));
     % Transform back to [caxis(1)...caxis(2)]
     P = abs(caxis(2)-caxis(1))/number_of_colors .* P + caxis(1);
 end

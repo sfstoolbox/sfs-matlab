@@ -1,7 +1,7 @@
 function varargout = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
 %SOUND_FIELD_IMP_LOCALWFS returns the sound field in time domain of an impulse
 %
-%   Usage: [p,x,y,z,x0] = sound_field_imp_localwfs(X,Y,Z,xs,src,t,[conf])
+%   Usage: [p,x,y,z,x0] = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
 %
 %   Input options:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -13,7 +13,7 @@ function varargout = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
 %                                plane wave in this case)
 %                         'ps' - point source
 %       t           - time point t of the sound field / samples
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output options:
 %       p           - simulated sound field
@@ -37,50 +37,43 @@ function varargout = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
 %   See also: driving_function_imp_localwfs, sound_field_mono_localwfs
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
+nargmin = 7;
 nargmax = 7;
 narginchk(nargmin,nargmax);
 isargnumeric(X,Y,Z);
 isargxs(xs);
 isargchar(src);
 isargscalar(t);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
@@ -91,18 +84,24 @@ else
 end
 useplot = conf.plot.useplot;
 
+compensate_wfs_fir_delay = ...
+    (conf.wfs.usehpre && strcmp(conf.wfs.hpretype,'FIR'));
+compensate_local_wfs_fir_delay = ...
+    (conf.localsfs.wfs.usehpre && strcmp(conf.localsfs.wfs.hpretype,'FIR'));
 
 %% ===== Computation =====================================================
 % Get secondary sources
 x0 = secondary_source_positions(conf);
 % Get driving signals
 [d, x0, xv] = driving_function_imp_localwfs(x0,xs,src,conf);
-% Fix the time to account for sample offset of the pre-equalization filter
-switch (conf.wfs.usehpre + conf.localsfs.wfs.usehpre)
-  case 1
-    t = t + 64;
-  case 2
-    t = t + 127;
+% Fix the time to account for sample offset of FIR pre-equalization filters
+if (compensate_wfs_fir_delay && compensate_local_wfs_fir_delay)
+    t = t + conf.wfs.hpreFIRorder/2 + ...
+        conf.localsfs.wfs.hpreFIRorder/2 - 1;
+elseif compensate_wfs_fir_delay
+    t = t + conf.wfs.hpreFIRorder/2;
+elseif compensate_local_wfs_fir_delay
+    t = t + conf.local.wfs.hpreFIRorder/2;
 end
 % Calculate sound field
 [varargout{1:min(nargout,4)}] = ...

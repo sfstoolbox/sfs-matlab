@@ -1,5 +1,3 @@
-# Only track the SFS_config_example.m file, not the real configuration
-SFS_config.m
 # omit the directory containing the sample points for a sphere
 MinimumEnergyPointsOnASphere
 # Unwanted binary files

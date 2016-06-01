@@ -19,6 +19,8 @@ from acronyms import rst_epilog # This includes things like |HRTF| etc.
 # TODO: if we need version() we should also add it to sfsdoc
 #import version
 
+github_url = 'http://github.com/sfstoolbox/sfs'
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.

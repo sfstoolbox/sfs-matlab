@@ -68,10 +68,16 @@ author = 'SFS Toolbox Team'
 #
 # The short X.Y version.
 #version = version.get_version()
-version = 'test'
+#version = 'test'
 
 # The full version, including alpha/beta/rc tags.
-release = version
+#release = version
+try:
+    release = check_output(['git', 'describe', '--tags', '--always'])
+    release = release.decode().strip()
+except Exception:
+    release = '<unknown>'
+
 
 html_context = {'versions': [('1.0', '1.0/'), ('latest', 'latest/')],
                 'downloads': [('PDF', '/sfs-toolbox-documentation.pdf')],

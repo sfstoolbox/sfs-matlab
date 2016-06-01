@@ -30,7 +30,7 @@ needs_sphinx = '1.3'
 #extensions = ['sphinx.ext.autodoc','nbsphinx','sphinx.ext.mathjax']
 extensions = [
 	'sphinx.ext.autodoc',
-        'mathjax',
+        'sphinx.ext.mathjax',
 	'sphinx.ext.viewcode',
 ]
 

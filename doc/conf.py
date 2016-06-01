@@ -12,8 +12,12 @@ import sfsdoc
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('./_include'))
 
-from acronyms import rst_epilog # This includes things like |HRTF| etc.
-import version
+# TODO: Acronyms need to handled. Maybe also import them from sfsdoc?
+# Maybe as extension?
+#from acronyms import rst_epilog # This includes things like |HRTF| etc.
+
+# TODO: if we need version() we should also add it to sfsdoc
+#import version
 
 # -- General configuration ------------------------------------------------
 
@@ -63,7 +67,8 @@ author = 'SFS Toolbox Team'
 # built documents.
 #
 # The short X.Y version.
-version = version.get_version()
+#version = version.get_version()
+version = 'test'
 
 # The full version, including alpha/beta/rc tags.
 release = version

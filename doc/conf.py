@@ -4,12 +4,13 @@ import sys
 import os
 import shlex
 import sphinx_rtd_theme
+import sfsdoc
 #import subprocess
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('./_include'))
+#sys.path.insert(0, os.path.abspath('./_include'))
 
 from acronyms import rst_epilog # This includes things like |HRTF| etc.
 import version
@@ -27,8 +28,6 @@ extensions = [
 	'sphinx.ext.autodoc',
         'mathjax',
 	'sphinx.ext.viewcode',
-	'matplotlib.sphinxext.only_directives',
-	'matplotlib.sphinxext.plot_directive',
 ]
 
 # Enable numbering of figures and tables
@@ -42,7 +41,7 @@ plot_formats = ['png']
 plot_rcparams = {'figure.figsize' : [8, 4.5] }
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['./_theme/sfs/static/']
+#templates_path = ['./_theme/sfs/static/']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
@@ -101,7 +100,7 @@ todo_include_todos = False
 html_theme = "sfs"
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = ["./_theme",sphinx_rtd_theme.get_html_theme_path()]
+html_theme_path = [sfsdoc.get_theme_dir(), sphinx_rtd_theme.get_html_theme_path()]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".

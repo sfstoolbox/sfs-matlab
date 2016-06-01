@@ -32,6 +32,7 @@ extensions = [
 	'sphinx.ext.autodoc',
         'sphinx.ext.mathjax',
 	'sphinx.ext.viewcode',
+        'sfsdoc.acronyms',
 ]
 
 # Enable numbering of figures and tables

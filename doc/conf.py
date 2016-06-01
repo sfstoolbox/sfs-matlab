@@ -146,9 +146,9 @@ html_show_sphinx = False
 htmlhelp_basename = 'sfs-doc'
 
 # Appended to every page
-rst_epilog = rst_epilog + """
-.. |SFS Toolbox|     replace:: SFS Tooblox
-"""
+#rst_epilog = rst_epilog + """
+#.. |SFS Toolbox|     replace:: SFS Tooblox
+#"""
 
 # -- Options for LaTeX output ---------------------------------------------
 

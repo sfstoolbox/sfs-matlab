@@ -1,3 +1,9 @@
+.. toctree::
+    :hidden:
+
+    index
+
+
 .. _sec-matlab:
 
 SFS Toolbox for Matlab/Octave

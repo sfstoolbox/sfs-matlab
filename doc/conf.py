@@ -14,7 +14,7 @@ import sfsdoc
 
 # TODO: Acronyms need to handled. Maybe also import them from sfsdoc?
 # Maybe as extension?
-from sfsdoc.acronyms import rst_epilog # This includes things like |HRTF| etc.
+from acronyms import rst_epilog # This includes things like |HRTF| etc.
 
 # TODO: if we need version() we should also add it to sfsdoc
 #import version

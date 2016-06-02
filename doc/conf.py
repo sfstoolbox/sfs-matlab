@@ -19,8 +19,6 @@ from acronyms import rst_epilog # This includes things like |HRTF| etc.
 # TODO: if we need version() we should also add it to sfsdoc
 #import version
 
-github_url = 'http://github.com/sfstoolbox/sfs'
-
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -60,9 +58,9 @@ source_suffix = '.txt'
 master_doc = 'contents'
 
 # General information about the project. (substitutions)
-project = 'SFS Toolbox - Documentation'
-copyright = '2016, SFS Toolbox Team'
-author = 'SFS Toolbox Team'
+project = 'SFS Toolbox - Matlab/Octave Documentation'
+copyright = '2016, SFS Toolbox Developers'
+author = 'SFS Toolbox Developers'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -83,7 +81,8 @@ except Exception:
 
 html_context = {'versions': [('1.0', '1.0/'), ('latest', 'latest/')],
                 'downloads': [('PDF', '/sfs-toolbox-documentation.pdf')],
-                'home_url': 'http://sfstoolbox.org/doc/'}
+                'home_url': 'http://matlab.sfstoolbox.org/',
+                'github_url': 'http://github.com/sfstoolbox/sfs'}
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:

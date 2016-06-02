@@ -54,7 +54,8 @@ except Exception:
     release = '<unknown>'
 
 # Definition of variables that are used by the versions.html theme file
-html_context = {'home_url': 'http://matlab.sfstoolbox.org',
+html_context = {'active_tab': 'matlab',
+                'home_url': 'http://matlab.sfstoolbox.org',
                 'github_url': 'http://github.com/sfstoolbox/sfs'}
 
 # List of patterns, relative to source directory, that match files and

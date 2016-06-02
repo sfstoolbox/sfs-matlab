@@ -37,13 +37,6 @@ extensions = [
 # Enable numbering of figures and tables
 numfig = True
 
-# Plot settings ofr matplot
-plot_include_source = True
-plot_html_show_source_link = False
-plot_html_show_formats = False
-plot_formats = ['png']
-plot_rcparams = {'figure.figsize' : [8, 4.5] }
-
 # Add any paths that contain templates here, relative to this directory.
 #templates_path = ['./_theme/sfs/static/']
 
@@ -79,9 +72,7 @@ except Exception:
     release = '<unknown>'
 
 
-html_context = {'versions': [('1.0', '1.0/'), ('latest', 'latest/')],
-                'downloads': [('PDF', '/sfs-toolbox-documentation.pdf')],
-                'home_url': 'http://matlab.sfstoolbox.org/',
+html_context = {'home_url': 'http://matlab.sfstoolbox.org',
                 'github_url': 'http://github.com/sfstoolbox/sfs'}
 
 # There are two options for replacing |today|: either, you set today to some

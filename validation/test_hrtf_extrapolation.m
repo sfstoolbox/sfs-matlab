@@ -71,8 +71,7 @@ if strcmp('QU_KEMAR',hrtf_set)
     conf.wfs.usehpre = true;
     conf.wfs.hpretype = 'FIR';
     conf.driving_functions = 'default';
-    conf.delayline.resampling = 'matlab';
-    conf.delayline.resamplingfactor = 100;
+    conf.delayline.resampling = 'none';
     conf.delayline.filter = 'integer';
     conf.ir.useinterpolation = true;
     conf.ir.useoriglength = false;

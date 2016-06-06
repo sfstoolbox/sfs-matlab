@@ -3,4 +3,4 @@
 Version History
 ===============
 
-..include: ../NEWS
+.. include:: ../NEWS

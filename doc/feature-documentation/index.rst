@@ -116,17 +116,18 @@ place directly in the corners of the box.
 Spherical array
 ~~~~~~~~~~~~~~~
 
-For a spherical array you need a grid to place the secondary sources on
-the sphere. At the moment we provide grids with the Toolbox, that can be
-found in the `corresponding folder of the data repository
-<http://github.com/sfstoolbox/data/tree/master/spherical_grids>`_. You have
-to specify your desired grid, for example ``conf.secondary_sources.grid =
-'equally_spaced_points'``. The ``secondary_source_positions()`` functions
-will then automatically download the desired grid from that web page and
-stores it under ``<$SFS_MAIN_PATH>/data``. If the download is not
-working (which can happen especially under Matlab and Windows) you
-can alternatively checkout or download the whole `data
-repository <http://github.com/sfstoolbox/data>`_ to the data folder.
+For a spherical array you need a grid to place the secondary sources on the
+sphere. At the moment we provide grids with the Toolbox, that can be found in
+the `corresponding folder of the data repository`_.  You have to specify your
+desired grid, for example ``conf.secondary_sources.grid =
+'equally_spaced_points'``. The ``secondary_source_positions()`` functions will
+then automatically download the desired grid from that web page and stores it
+under ``<$SFS_MAIN_PATH>/data``. If the download is not working (which can
+happen especially under Matlab and Windows) you can alternatively checkout or
+download the whole `data repository`_ to the data folder.
+
+.. _corresponding folder of the data repository: http://github.com/sfstoolbox/data/tree/master/spherical_grids
+.. _data repository: http://github.com/sfstoolbox/data
 
 .. sourcecode:: matlab
 
@@ -158,9 +159,9 @@ rows of the matrix contain the single loudspeakers and the six columns are ``[x
 y z nx ny nz w]``, the position and direction and weight of the single
 loudspeakers. The weight ``w`` is a factor the driving function of this
 particular loudspeaker is multiplied with in a function that calculates the
-sound field from the given driving signals and secondary sources. For |WFS| ``w``
-could include the tapering window, a spherical grid weight, and the :math:`r^2
-\cos(\theta)` weights for integration on a sphere.
+sound field from the given driving signals and secondary sources. For |WFS|
+``w`` could include the tapering window, a spherical grid weight, and the
+:math:`r^2 \cos(\theta)` weights for integration on a sphere.
 
 .. sourcecode:: matlab
 
@@ -235,16 +236,15 @@ array.
 Simulate monochromatic sound fields
 -----------------------------------
 
-With the files in the folder ``SFS_monochromatic`` you can simulate a monochromatic
-sound field in a specified area for different techniques like |WFS| and
-NFC-HOA. The area can be a 3D cube, a 2D plane, a line or only one
-point. This depends on the specification of ``X,Y,Z``. For example ``[-2
-2],[-2 2],[-2 2]`` will be a 3D cube; ``[-2 2],0,[-2 2]`` the xz-plane; ``[-2
-2],0,0`` a line along the x-axis; ``3,2,1`` a single point. If you present a
-range like ``[-2 2]`` the Toolbox will create automatically a regular
-grid from this ranging from -2 to 2 with ``conf.resolution`` steps in
-between. Alternatively you could apply a `custom
-grid <#custom-grid-for-sound-field-simulations>`_ by providing a matrix
+With the files in the folder ``SFS_monochromatic`` you can simulate a
+monochromatic sound field in a specified area for different techniques like
+|WFS| and NFC-HOA. The area can be a 3D cube, a 2D plane, a line or only one
+point. This depends on the specification of ``X,Y,Z``. For example ``[-2 2],[-2
+2],[-2 2]`` will be a 3D cube; ``[-2 2],0,[-2 2]`` the xz-plane; ``[-2 2],0,0``
+a line along the x-axis; ``3,2,1`` a single point. If you present a range like
+``[-2 2]`` the Toolbox will create automatically a regular grid from this
+ranging from -2 to 2 with ``conf.resolution`` steps in between. Alternatively
+you could apply a :ref:`sec-custom-grid <custom grid>` by providing a matrix
 instead of the ``[min max]`` range for all active axes.
 
 For all 2.5D functions the configuration ``conf.xref`` is important as it
@@ -540,6 +540,8 @@ default behavior. You can change this by setting
    at (0,0,0). The point source is placed at (1.9,0,0) m and shown 71 samples
    after its start. The focused source is placed at (0,-1,0) m and shown 20
    samples after its start.
+
+.. _sec-custom-grid:
 
 Custom grid for sound field simulations
 ---------------------------------------

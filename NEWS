@@ -163,9 +163,10 @@
     - fixed direction of plane waves and point sources for NFC-HOA time domain
       simulations
     - changed syntax for wave_field_* and driving_* functions:
-        xs,f,src => xs,src,f
-        xs,L,src => xs,src,L
-        xs,L,f,src => xs,src,f,L
+
+        * xs,f,src => xs,src,f
+        * xs,L,src => xs,src,L
+        * xs,L,f,src => xs,src,f,L
 
 0.2.0 (25 April 2012)
     - first public release (under the GPLv3+ license)

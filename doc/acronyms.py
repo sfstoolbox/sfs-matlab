@@ -9,6 +9,7 @@
 
 rst_epilog = """
 .. |BRIR|            replace:: :abbr:`BRIR (Binaural Room Impulse Response)`
+.. |BRS|             replace:: :abbr:`BRS (Binaural Room Scanning)`
 .. |FFT|             replace:: :abbr:`FFT (Fast Fourier Transform)`
 .. |HOA|             replace:: :abbr:`HOA (Higher Order Ambisonics)`
 .. |HRIR|            replace:: :abbr:`HRIR (Head-Related Impulse Response)`

@@ -5,3 +5,5 @@
     :hidden:
 
     index
+    feature-documentation/index
+    versions

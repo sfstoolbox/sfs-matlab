@@ -1,63 +1,10 @@
-.. _sec-matlab:
+.. _sec-feature-documentation:
 
-SFS Toolbox for Matlab/Octave
-=============================
-
-The SFS Toolbox for Matlab/Octave gives you the possibility to play around with
-sound field synthesis methods like |WFS| or |NFC-HOA|. There are functions to
-simulate monochromatic sound fields for different secondary source (loudspeaker)
-setups, time snapshots of full band impulses emitted by the secondary sources,
-or even generate dynamic binaural simulations of your sound field synthesis
-setup.
-
-This documentation is all about its usage, if you are interested in the
-underlying mathematics you should have a look at `Mathematical fundamentals
-<http://sfstoolbox.org/doc/latest/math/>`_.
-
-Installation
-------------
-
-Download the Toolbox and add the main path of the Toolbox to your Matlab/Octave
-path. After that have a look at ``SFS_config.m`` for the default settings. You
-might change some of those in your scripts.  For an easy beginning you can just
-use the default settings by leaving everything as it is. Then start the Toolbox
-with ``SFS_start`` which will add all needed subpathes.
-
-Requirements
-------------
-
-**Matlab** You need Matlab version 2011b or newer to run the Toolbox. On
-older version the Toolbox should also work, but you need to add
-`narginchk.m <http://gist.github.com/hagenw/5642886>`__ to the
-``SFS_helper`` directory.
-
-**Octave** You need Octave version 3.6 or newer to run the Toolbox. In
-addition, you will need the following additional packages from
-`octave-forge <http://octave.sourceforge.net/>`__:
-
-* audio (e.g. for ``wavwrite``)
-* signal (e.g. for ``firls``)
-
-**Impulse responses** The Toolbox uses the
-`SOFA <http://sofaconventions.org/>`__ file format for handling impulse
-response data sets like  |HRTF|\ s. If you want to use this functionality you
-also have to install the `SOFA API for
-Matlab/Octave <https://github.com/sofacoustics/API_MO>`__, which you can
-add to your paths by executing ``SOFAstart``.
+Feature Documentation
+=====================
 
 After setting up the Toolbox you can made one of the magic following
 things with it.
-
-Backward compatibility
-----------------------
-
-Since version 2.0.0 the SFS Toolbox incorporates `SOFA
-<http://sofaconventions.org/>`__ as file format for |HRTF|\ s which replaces the old
-`irs file format
-<https://dev.qu.tu-berlin.de/projects/measurements/wiki/IRs_file_format>`_
-formerly used by the Toolbox. If you still need this you should download `the
-latest version with irs file support
-<https://github.com/sfstoolbox/sfs/releases/tag/1.2.0>`__.
 
 Secondary sources
 -----------------
@@ -68,7 +15,7 @@ box shaped and spherical arrays are supported.
 
 Before showing the different geometries, we start with some common
 settings. First we get a configuration struct and set the array
-size/diameter to 3m.
+size/diameter to 3 m.
 
 .. sourcecode:: matlab
 
@@ -670,15 +617,16 @@ Binaural simulation of arbitrary loudspeaker arrays
 
    Setup of the |KEMAR| and a loudspeaker during a |HRTF| measurement.
 
-If you use an |HRTF| data set, it has the advantage that it was recorded
-in anechoic conditions and the only parameter that matters is the
-relative position of the loudspeaker to the head during the measurement.
-This advantage can be used to create every possible loudspeaker array
-you can imagine, given that the relative locations of all loudspeakers
-are available in the |HRTF| data set. The above picture shows an example
-of a |HRTF| measurement. You can download the corresponding
-`QU_KEMAR_anechoic_3m.sofa <https://github.com/sfstoolbox/data/raw/master/HRTFs/QU_KEMAR_anechoic_3m.sofa>`_
-|HRTF| set, which we can directly use with the Toolbox.
+If you use an |HRTF| data set, it has the advantage that it was recorded in
+anechoic conditions and the only parameter that matters is the relative position
+of the loudspeaker to the head during the measurement.  This advantage can be
+used to create every possible loudspeaker array you can imagine, given that the
+relative locations of all loudspeakers are available in the |HRTF| data set. The
+above picture shows an example of a |HRTF| measurement. You can download the
+corresponding `QU_KEMAR_anechoic_3m.sofa`_ |HRTF| set, which we can directly use
+with the Toolbox.
+
+.. _QU_KEMAR_anechoic_3m.sofa: https://github.com/sfstoolbox/data/raw/master/HRTFs/QU_KEMAR_anechoic_3m.sofa
 
 The following example will load the |HRTF| data set and extracts a single
 impulse response for an angle of 30° from it. If the desired angle of
@@ -712,15 +660,16 @@ following.
     cello = wavread('anechoic_cello.wav');
     sig = auralize_ir(ir,cello,1,conf);
 
-If you want to use binaural simulations in listening experiments, you
-should not only have the |HRTF| data set, but also a corresponding
-headphone compensation filter, which was recorded with the same dummy
-head as the |HRTF|\ s and the headphones you are going to use in your test.
-For the |HRTF|\ s we used in the last example and the AKG K601 headphones
-you can download
-`QU_KEMAR_AKGK601_hcomp.wav <https://raw.githubusercontent.com/sfstoolbox/data/master/headphone_compensation/QU_KEMAR_AKGK601_hcomp.wav>`_.
-If you want to redo the last simulation with headphone compensation,
-just add the following lines before calling ``ir_wfs()``.
+If you want to use binaural simulations in listening experiments, you should not
+only have the |HRTF| data set, but also a corresponding headphone compensation
+filter, which was recorded with the same dummy head as the |HRTF|\ s and the
+headphones you are going to use in your test.  For the |HRTF|\ s we used in the
+last example and the AKG K601 headphones you can download
+`QU_KEMAR_AKGK601_hcomp.wav`_.  If you want to redo the last simulation with
+headphone compensation, just add the following lines before calling
+``ir_wfs()``.
+
+.. _QU_KEMAR_AKGK601_hcomp.wav: https://raw.githubusercontent.com/sfstoolbox/data/master/headphone_compensation/QU_KEMAR_AKGK601_hcomp.wav
 
 .. sourcecode:: matlab
 
@@ -739,15 +688,16 @@ Binaural simulation of a real setup
 
    Boxed shaped loudspeaker array at the University Rostock.
 
-Besides simulating arbitrary loudspeaker configurations in an anechoic
-space, you can also do binaural simulations of real loudspeaker setups.
-In the following example we use |BRIR|\ s from the 64-channel loudspeaker
-array of the University Rostock as shown in the panorama photo above.
-The |BRIR|\ s and additional information on the recordings are available for
-download, see
-`doi:10.14279/depositonce-87.2 <http://dx.doi.org/10.14279/depositonce-87.2>`_.
-For such a measurement the |SOFA| file format has the advantage to be able
-to include all loudspeakers and head orientations in just one file.
+Besides simulating arbitrary loudspeaker configurations in an anechoic space,
+you can also do binaural simulations of real loudspeaker setups.  In the
+following example we use |BRIR|\ s from the 64-channel loudspeaker array of the
+University Rostock as shown in the panorama photo above.  The |BRIR|\ s and
+additional information on the recordings are available for download, see
+`doi:10.14279/depositonce-87.2`_.  For such a measurement the |SOFA| file format
+has the advantage to be able to include all loudspeakers and head orientations
+in just one file.
+
+.. _doi:10.14279/depositonce-87.2: http://dx.doi.org/10.14279/depositonce-87.2
 
 .. sourcecode:: matlab
 
@@ -832,20 +782,21 @@ the whole frequency range will be affected.
 Using the SoundScape Renderer with the SFS Toolbox
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In addition to binaural synthesis, you may want to apply dynamic
-binaural synthesis, which means you track the position of the head of
-the listener and switches the used impulse responses regarding the head
-position. The `SoundScape Renderer
-(SSR) <http://spatialaudio.net/ssr/>`__ is able to do this. The SFS
-Toolbox provides functions to generate the needed wav files containing
-the impulse responses used by the SoundScape Renderer. All functions
-regarding the |SSR| are stored in folder ``SFS_ssr``.
+In addition to binaural synthesis, you may want to apply dynamic binaural
+synthesis, which means you track the position of the head of the listener and
+switches the used impulse responses regarding the head position. The `SoundScape
+Renderer (SSR)`_ is able to do this. The SFS Toolbox provides functions to
+generate the needed wav files containing the impulse responses used by the
+SoundScape Renderer. All functions regarding the |SSR| are stored in folder
+``SFS_ssr``.
 
 .. sourcecode:: matlab
 
     conf = SFS_config;
     brs = ssr_brs_wfs(X,phi,xs,src,hrtf,conf);
     wavwrite(brs,fs,16,'brs_set_for_SSR.wav');
+
+.. _SoundScape Renderer (SSR): http://spatialaudio.net/ssr/
 
 Small helper functions
 ----------------------
@@ -865,26 +816,9 @@ fields (``plot_sound_field()``) and adding loudspeaker symbols to the figure
 (``draw_loudspeakers()``). If you have gnuplot installed, you can use the
 functions ``gp_save_matrix()`` and ``gp_save_loudspeakers()`` to save your data
 in a way that it can be used with gnuplot. An example use case can be found `at
-this plot of a plane wave
-<https://github.com/hagenw/phd-thesis/tree/master/02_theory_of_sound_field_synthesis/fig2_04>`_
-which includes the Matlab/Octave code to generate the data and the gnuplot
-script for plotting it.
+this plot of a plane wave`_ which includes the Matlab/Octave code to generate
+the data and the gnuplot script for plotting it.
 
-Citation and feedback
----------------------
-
-If you use the SFS Toolbox for your publications please cite our AES
-Convention e-Brief and the DOI corresponding to the used version of the Toolbox
-which you will find at the `official
-releases page <https://github.com/sfstoolbox/sfs/releases>`__:
-
-H. Wierstorf, S. Spors - Sound Field Synthesis Toolbox. In the
-Proceedings of *132nd Convention of the Audio Engineering Society*,
-2012 [
-`pdf <http://audio.qu.tu-berlin.de/wp-content/uploads/publications/2012/wierstorf2012_SFS_toolbox_AES.pdf>`__
-][ `bibtex <doc/aes132_paper.bib>`__ ]
-
-If you have questions, bug reports or feature requests, please use the
-`Issue Section on the development page <https://github.com/sfstoolbox/sfs/issues>`__ to report them.
+.. _at this plot of a plane wave: https://github.com/hagenw/phd-thesis/tree/master/02_theory_of_sound_field_synthesis/fig2_04
 
 .. vim: filetype=rst spell:

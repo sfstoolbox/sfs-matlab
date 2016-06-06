@@ -12,7 +12,9 @@ function ir = compensate_headphone(ir,conf)
 %
 %   COMPENSATE_HEADPHONE(ir,conf) applies a headphone compensation to the
 %   given impulse response. Which headphone compensation it should use is
-%   mentioned in the conf struct.
+%   mentioned in the conf struct. The compensation filter can be a one-channel
+%   (same filter for left and right) or two-channel signal (1st signal: left,
+%   2nd signal: right) with signals stored as columns in a matrix.
 %   The compensation is only applied, if the conf.ir.usehcomp value is not false.
 %
 %   See also: ir_wfs, ir_point_source, ir_generic

@@ -62,7 +62,8 @@ conf.wfs.usehpre = true;
 conf.wfs.hpretype = 'FIR';
 conf.wfs.hpreflow = 50;
 conf.wfs.hprefhigh = 1200;
-conf.usefracdelay = false;
+conf.delayline.resampling = 'none';
+conf.delayline.filter = 'integer';
 conf.debug = 0;
 conf.showprogress = false;
 

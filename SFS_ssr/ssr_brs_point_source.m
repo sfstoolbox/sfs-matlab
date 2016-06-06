@@ -13,7 +13,7 @@ function brs = ssr_brs_point_source(X,phi,xs,irs,conf)
 %
 %   Output parameters:
 %       brs     - conf.N x 2*nangles matrix containing all impulse responses (2
-%                 channels) for every angles of the BRS set
+%                 channels) for every angle of the BRS set
 %
 %   SSR_BRS_POINT_SOURCE(X,phi,xs,irs,conf) prepares a BRS set for a reference
 %   source (single point source) for the given listener position. One way to use

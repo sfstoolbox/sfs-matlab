@@ -14,7 +14,7 @@ function brs = ssr_brs(X,phi,x0,d,irs,conf)
 %
 %   Output parameters:
 %       brs     - conf.N x 2*nangles matrix containing all impulse responses (2
-%                 channels) for every angles of the BRS set
+%                 channels) for every angle of the BRS set
 %
 %   SSR_BRS(X,phi,x0,d,irs,conf) prepares a BRS set for the given secondary
 %   sources and its driving signals for the given listener position.

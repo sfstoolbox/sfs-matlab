@@ -69,7 +69,7 @@ narginchk(nargmin,nargmax);
 % - Wave Field Synthesis (WFS)
 %   * Pre-equalization
 % - Spectral Division Method (SDM)
-% - Near-Field Compensated Hirger Order Ambisonics (NFC-HOA)
+% - Near-Field Compensated Higher Order Ambisonics (NFC-HOA)
 % - Local Sound Field Synthesis
 % - Binaural Reproduction
 %   * Headphone compensation
@@ -184,7 +184,7 @@ conf.tapwinlen = 0.3; % / percent of array length, 0..1
 % Simulations of monochromatic or time domain sound field
 %
 % xyz-resolution for sound field simulations, this value is applied along every
-% desired dimension, expect if only one point is desired
+% desired dimension, except if only one point is desired
 conf.resolution = 300; % / samples
 % Phase of omega of sound field (change this value to create monochromatic sound
 % fields with different phases, for example this can be useful to create a movie)
@@ -213,7 +213,7 @@ conf.secondary_sources.corner_radius = 0.0; % / m
 % extracted from the provided SOFA file.
 conf.secondary_sources.x0 = []; % / m
 % Grid for the spherical array. Note, that you have to download and install the
-% spherical grids from an additiona source. For available grids see:
+% spherical grids from an additional source. For available grids see:
 % http://github.com/sfstoolbox/data/tree/master/spherical_grids
 % An exception are Gauss grids, which are available via 'gauss' and will be
 % calculated on the fly allowing very high number of secondary sources.
@@ -230,7 +230,7 @@ conf.secondary_sources.grid = 'equally_spaced_points'; % string
 % only want to use the pre-equalization filter until the aliasing frequency,
 % because of the energy the aliasing is adding to the spectrum above this
 % frequency (which means the frequency response over the aliasing frequency is
-% allready "correct") [Reference]
+% already "correct") [Reference]
 % Use WFS preequalization-filter
 conf.wfs.usehpre = true; % boolean
 % FIR or IIR pre-equalization filter
@@ -274,7 +274,7 @@ conf.sdm.withev = true; % boolean
 
 
 %% ===== Near-Field Compensated Higher Order Ambisonics (NFC-HOA) ========
-% Settings for NFCF-HOA, see Ahrens (2012) for an introduction
+% Settings for NFC-HOA, see Ahrens (2012) for an introduction
 %
 % Normally the order of NFC-HOA is set by the nfchoa_order() function which
 % returns the highest order for which no aliasing occurs. If you wish to use
@@ -367,7 +367,7 @@ conf.plot.usenormalisation = true; % boolean
 %   'center'    - center of sound field == 1
 %   'max'       - max of sound field == 1
 conf.plot.normalisation = 'auto'; % string
-% Plot mode (uses the GraphDefaults function). Avaiable modes are:
+% Plot mode (uses the GraphDefaults function). Available modes are:
 %   'monitor'   - displays the plot on the monitor
 %   'paper'     - eps output in conf.plot.outfile
 %   'png'       - png output in conf.plot.outfile
@@ -383,7 +383,7 @@ conf.plot.caxis = []; % [min max]
 % http://www.sandia.gov/~kmorel/documents/ColorMaps/
 % If you set 'gray' or 'grey' you will get a colormap ranging from white to
 % black. In addition you can add every other map you can specify in
-% Matlab/Octave. For example to get the Matlab default colormap ser 'jet'.
+% Matlab/Octave. For example to get the Matlab default colormap set 'jet'.
 conf.plot.colormap = 'default'; % string
 % Plot loudspeakers in the sound field plots
 conf.plot.loudspeakers = true; % boolean

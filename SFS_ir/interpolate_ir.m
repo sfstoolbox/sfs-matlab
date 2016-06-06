@@ -22,7 +22,7 @@ function [ir_new,x0_new] = interpolate_ir(ir,x0,xs,conf)
 %   xs and returns an interpolated impulse response.
 %   Note, that the given parameter are not checked if they have all the correct
 %   dimensions in order to save computational time, because this function could
-%   be called quiet often.
+%   be called quite often.
 %
 %   See also: get_ir, interpolation
 

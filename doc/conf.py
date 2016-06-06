@@ -4,7 +4,6 @@ import sys
 import os
 import shlex
 import sphinx_rtd_theme
-import sfsdoc
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -53,11 +52,6 @@ try:
 except Exception:
     release = '<unknown>'
 
-# Definition of variables that are used by the versions.html theme file
-html_context = {'active_tab': 'matlab',
-                'home_url': 'http://matlab.sfstoolbox.org',
-                'github_url': 'http://github.com/sfstoolbox/sfs'}
-
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 exclude_patterns = ['_build']
@@ -77,10 +71,10 @@ todo_include_todos = False
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = "sfs"
+html_theme = "default"
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = [sfsdoc.get_theme_dir(), sphinx_rtd_theme.get_html_theme_path()]
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".

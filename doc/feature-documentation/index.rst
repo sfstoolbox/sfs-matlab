@@ -3,8 +3,11 @@
 Feature Documentation
 =====================
 
-After setting up the Toolbox you can made one of the magic following
-things with it.
+Add an overview of the Toolbox here. What you can do in general: mono-frquent,
+time domain, binaura simulations, secondary sources and then present links to
+all of the subfolders.
+
+All of the coming sections can maybe put into subfolders.
 
 Secondary sources
 -----------------

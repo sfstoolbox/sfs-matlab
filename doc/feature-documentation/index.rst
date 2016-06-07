@@ -247,7 +247,7 @@ point. This depends on the specification of ``X,Y,Z``. For example ``[-2 2],[-2
 a line along the x-axis; ``3,2,1`` a single point. If you present a range like
 ``[-2 2]`` the Toolbox will create automatically a regular grid from this
 ranging from -2 to 2 with ``conf.resolution`` steps in between. Alternatively
-you could apply a :ref:`sec-custom-grid <custom grid>` by providing a matrix
+you could apply a :ref:`custom grid <sec-custom-grid>` by providing a matrix
 instead of the ``[min max]`` range for all active axes.
 
 For all 2.5D functions the configuration ``conf.xref`` is important as it

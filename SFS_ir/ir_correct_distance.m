@@ -11,11 +11,7 @@ function ir = ir_correct_distance(ir,ir_distance,r,conf)
 %                       N ... number of samples
 %       ir_distance - distance of the given impulse responses [M 1]
 %       r           - desired distance [1]
-%       conf        - configuration struct (see SFS_config), containing:
-%                       conf.c
-%                       conf.fs
-%                       conf.N
-%                       conf.ir.useoriglength
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output paramteres:
 %       ir          - impulse responses [M C N]
@@ -56,12 +52,6 @@ function ir = ir_correct_distance(ir,ir_distance,r,conf)
 %*****************************************************************************
 
 
-%% ===== Checking of input  parameters ==================================
-%nargmin = 4;
-%nargmax = 4;
-%narginchk(nargmin,nargmax);
-
-
 %% ===== Configuration ==================================================
 c = conf.c;
 fs = conf.fs;
@@ -83,7 +73,7 @@ ir = cat(3,ir,zeros(size(ir,1),size(ir,2),N-ir_origlength));
 % Append zeros at the beginning of the impulse responses corresponding to
 % its maximum radius
 if ~useoriglength
-    zero_padding = ceil(ir_distance/c * fs);
+    zero_padding = ceil(ir_distance/c*fs); % / samples
 else
     zero_padding = 0;
 end

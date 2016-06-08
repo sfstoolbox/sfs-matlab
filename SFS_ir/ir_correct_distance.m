@@ -66,7 +66,7 @@ function ir = ir_correct_distance(ir,ir_distance,r,conf)
 c = conf.c;
 fs = conf.fs;
 useoriglength = conf.ir.useoriglength;
-%N = conf.N; is used if useoriglength==false
+N = conf.N;
 
 
 %% ===== Computation ====================================================
@@ -77,9 +77,9 @@ if any(ir_distance>10)
         'only extrapolate up to 10m. All larger radii will be set to ', ...
         '10m.'],upper(mfilename));
 end
-% Zero-pad HRIRs to conf.N
+% Append zeros at the end of the impulse responses to reach a length of N
 ir_origlength = size(ir,3);
-ir = cat(3,ir,zeros(size(ir,1),size(ir,2),conf.N-ir_origlength));
+ir = cat(3,ir,zeros(size(ir,1),size(ir,2),N-ir_origlength));
 % Append zeros at the beginning of the impulse responses corresponding to
 % its maximum radius
 if ~useoriglength
@@ -94,7 +94,7 @@ delay = (r-ir_distance)/c*fs; % / samples
 weight = ir_distance./r;
 % Check if impulse responses are long enough compared to intended delay
 if conf.N-(zero_padding+delay)<ir_origlength
-    error(['%s: choose a larger conf.N value, because otherwise your will '...
+    error(['%s: Choose a larger conf.N value, otherwise you will '...
         'lose samples from the original impulse response.'],...
         upper(mfilename));
 end

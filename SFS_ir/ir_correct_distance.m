@@ -22,6 +22,7 @@ function ir = ir_correct_distance(ir,ir_distance,r,conf)
 %
 %   IR_CORRECT_DISTANCE(ir,ir_distance,r,conf) weights and delays the given
 %   impulse responses, that they are conform with the specified distance r.
+%   The impulse responses are zero-padded to length conf.N.
 %
 %   See also: get_ir
 
@@ -76,15 +77,13 @@ if any(ir_distance>10)
         'only extrapolate up to 10m. All larger radii will be set to ', ...
         '10m.'],upper(mfilename));
 end
+% Zero-pad HRIRs to conf.N
+ir_origlength = size(ir,3);
+ir = cat(3,ir,zeros(size(ir,1),size(ir,2),conf.N-ir_origlength));
 % Append zeros at the beginning of the impulse responses corresponding to
 % its maximum radius
 if ~useoriglength
     zero_padding = ceil(ir_distance/c * fs);
-    if conf.N-zero_padding<128
-        error(['%s: choose a larger conf.N value, because otherwise you ', ...
-            'will have only %i samples of your original impulse response.'], ...
-            upper(mfilename),conf.N-zero_padding);
-    end
 else
     zero_padding = 0;
 end
@@ -93,9 +92,11 @@ delay = (r-ir_distance)/c*fs; % / samples
 % Amplitude weighting (point source model)
 % This gives weight=1 for r==ir_distance
 weight = ir_distance./r;
-if abs(delay)>size(ir,3)
-    error(['%s: your impulse response is to short for a desired ', ...
-        'delay of %.1f samples.'],upper(mfilename),delay);
+% Check if impulse responses are long enough compared to intended delay
+if conf.N-(zero_padding+delay)<ir_origlength
+    error(['%s: choose a larger conf.N value, because otherwise your will '...
+        'lose samples from the original impulse response.'],...
+        upper(mfilename));
 end
 % Apply delay and weighting
 ir = delayline(ir,[delay+zero_padding; delay+zero_padding], ...

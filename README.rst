@@ -10,11 +10,11 @@ distributions, or even generate |BRS| impulse response sets in order to simulate
 
 .. _SoundScape Renderer: http://spatialaudio.net/ssr
 
-Documentation:
-    http://matlab.sfstoolbox.org/
-
 Theory:
     http://sfstoolbox.org/
+
+Documentation:
+    http://matlab.sfstoolbox.org/
 
 SFS Toolbox for Python:
     http://python.sfstoolbox.org/

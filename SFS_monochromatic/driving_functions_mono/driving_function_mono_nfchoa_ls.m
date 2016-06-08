@@ -91,7 +91,7 @@ if strcmp('2D',dimension)
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % 2D line source, see
-        % http://sfstoolbox.org/doc/latest/math/#equation-D.nfchoa.ls.2D
+        % http://sfstoolbox.org/#equation-D.nfchoa.ls.2D
         %
         %                     _N_    (2)
         %                1    \     Hm(w/c r)
@@ -117,7 +117,7 @@ elseif strcmp('2.5D',dimension)
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D line source, see
-        % http://sfstoolbox.org/doc/latest/math/#equation-D.nfchoa.ls.2.5D
+        % http://sfstoolbox.org/#equation-D.nfchoa.ls.2.5D
         %
         %                  _N_             (2)
         %              1   \    i^(m-|m|) Hm(w/c r)
@@ -153,7 +153,7 @@ elseif strcmp('3D',dimension)
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % 3D line source, see
-        % http://sfstoolbox.org/doc/latest/math/#equation-D.nfchoa.ls.3D
+        % http://sfstoolbox.org/#equation-D.nfchoa.ls.3D
         %
         %                    _N_  _n_          (2)
         %               1    \    \   i^(m-n) Hm(w/c r)  -m

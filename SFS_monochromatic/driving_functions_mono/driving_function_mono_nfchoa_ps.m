@@ -105,7 +105,7 @@ elseif strcmp('2.5D',dimension)
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D point source, see
-        % http://sfstoolbox.org/doc/latest/math/#equation-D.nfchoa.ps.2.5D
+        % http://sfstoolbox.org/#equation-D.nfchoa.ps.2.5D
         %
         %                     _N_    (2)
         %               1     \     h|m|(w/c r)
@@ -132,7 +132,7 @@ elseif strcmp('3D',dimension)
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % 3D point source, see
-        % http://sfstoolbox.org/doc/latest/math/#equation-D.nfchoa.ps.3D
+        % http://sfstoolbox.org/#equation-D.nfchoa.ps.3D
         %
         %                              _N_  _n_   (2)
         %                       1      \    \    hn(w/c r)   -m

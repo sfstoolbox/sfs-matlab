@@ -87,7 +87,7 @@ if strcmp('2D',dimension)
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % 2D plane wave, see
-        % http://sfstoolbox.org/doc/latest/math/#equation-D.nfchoa.pw.2D
+        % http://sfstoolbox.org/#equation-D.nfchoa.pw.2D
         %
         %                      _N_
         %                2i    \       i^-m
@@ -113,7 +113,7 @@ elseif strcmp('2.5D',dimension)
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D plane wave, see
-        % http://sfstoolbox.org/doc/latest/math/#equation-D.nfchoa.pw.2.5D
+        % http://sfstoolbox.org/#equation-D.nfchoa.pw.2.5D
         %
         %                       _N_
         %                   2   \           i^-|m|
@@ -140,7 +140,7 @@ elseif strcmp('3D',dimension)
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % 3D plane wave, see
-        % http://sfstoolbox.org/doc/latest/math/#equation-D.nfchoa.pw.3D
+        % http://sfstoolbox.org/#equation-D.nfchoa.pw.3D
         %
         %                            _N_  _n_         -m
         %                      4pi   \    \   i^(-n) Yn(theta_pw,phi_pw)

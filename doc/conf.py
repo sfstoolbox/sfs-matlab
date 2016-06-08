@@ -4,7 +4,6 @@ import sys
 import os
 import shlex
 import sphinx_rtd_theme
-import sfsdoc
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -35,13 +34,13 @@ numfig = True
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
-source_suffix = '.txt'
+source_suffix = '.rst'
 
 # The master toctree document.
 master_doc = 'contents'
 
 # General information about the project. (substitutions)
-project = 'SFS Toolbox - Matlab/Octave Documentation'
+project = 'SFS Toolbox for Matlab/Octave'
 copyright = '2016, SFS Toolbox Developers'
 author = 'SFS Toolbox Developers'
 
@@ -52,11 +51,6 @@ try:
     release = release.decode().strip()
 except Exception:
     release = '<unknown>'
-
-# Definition of variables that are used by the versions.html theme file
-html_context = {'active_tab': 'matlab',
-                'home_url': 'http://matlab.sfstoolbox.org',
-                'github_url': 'http://github.com/sfstoolbox/sfs'}
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -77,10 +71,10 @@ todo_include_todos = False
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = "sfs"
+html_theme = "sphinx_rtd_theme"
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = [sfsdoc.get_theme_dir(), sphinx_rtd_theme.get_html_theme_path()]
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".

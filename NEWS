@@ -5,6 +5,7 @@
     - update delayline() config settings
     - add Lagrange and Thiran filters to delayline()
     - replace wavread and warwrite by audioread and savewav
+    - add new online doc at http://matlab.sfstoolbox.org/
 
 2.1.0 (10. March 2016)
     - make conf struct mandatory

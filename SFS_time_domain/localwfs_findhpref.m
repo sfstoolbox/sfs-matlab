@@ -66,7 +66,6 @@ conf.localsfs.wfs = conf.wfs;
 
 
 %% ===== Variables ======================================================
-N = conf.N;
 irs = dummy_irs(N,conf);    % Impulse responses
 fs = conf.fs;               % Sampling rate
 dimension = conf.dimension; % dimensionality

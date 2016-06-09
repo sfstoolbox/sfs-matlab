@@ -9,7 +9,7 @@ function [ir,delay] = wfs_preequalization(ir,conf)
 %
 %   Output parameters:
 %       ir      - signal with applied pre-equalization
-%       delay   - additional delay added by pre-equalization
+%       delay   - additional delay added by pre-equalization / s
 %
 %
 %   WFS_PREEQUALIZATION(ir,conf) applies the pre-equalization filter for

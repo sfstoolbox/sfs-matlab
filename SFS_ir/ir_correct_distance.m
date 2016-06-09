@@ -60,13 +60,6 @@ N = conf.N;
 
 
 %% ===== Computation ====================================================
-% Stop extrapolation for distances larger than 10m
-if any(ir_distance>10)
-    ir_distance = min(ir_distance,10);
-    warning(['%s: Your desired radius is larger than 10m, but we will ', ...
-        'only extrapolate up to 10m. All larger radii will be set to ', ...
-        '10m.'],upper(mfilename));
-end
 % Append zeros at the end of the impulse responses to reach a length of N
 ir_origlength = size(ir,3);
 ir = cat(3,ir,zeros(size(ir,1),size(ir,2),N-ir_origlength));

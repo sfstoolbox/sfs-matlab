@@ -70,7 +70,6 @@ isargstruct(conf);
 
 %% ===== Configuration ==================================================
 fs = conf.fs;
-N = conf.N;
 c = conf.c;
 t0 = conf.wfs.t0;
 
@@ -142,8 +141,9 @@ else
 end
 % Append zeros at the end of the driving function. This is necessary, because
 % the delayline function cuts into the end of the driving signals in order to
-% delay them. NOTE: this can be changed by the conf.N setting
-d_proto = repmat([row_vector(pulse) zeros(1,N-length(pulse))]',1,size(x0,1));
+% delay them.
+ceil(max(delay)+delay_offset)
+d_proto = repmat([row_vector(pulse) zeros(1,ceil(max(delay)+delay_offset))]',1,size(x0,1));
 % Shift and weight prototype driving function
 [d, delayline_delay] = delayline(d_proto,delay*fs,weight,conf);
 % Add delay offset of delayline

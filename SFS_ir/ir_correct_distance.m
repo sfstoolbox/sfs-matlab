@@ -66,7 +66,6 @@ delay = (r-ir_distance)/c*fs; % / samples
 % This gives weight=1 for r==ir_distance
 weight = ir_distance./r;
 % Make sure impulse response is long enough for the specified delay
-ir = cat(3,ir,zeros(size(ir,1),size(ir,2),delay+offset));
+ir = cat(3,ir,zeros(size(ir,1),size(ir,2),max(ceil(delay+offset))));
 % Apply delay and weighting
-ir = delayline(ir,[delay+zero_padding; delay+zero_padding], ...
-               [weight; weight],conf);
+ir = delayline(ir,[delay+offset; delay+offset],[weight; weight],conf);

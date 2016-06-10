@@ -16,11 +16,11 @@ function D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf)
 %   Output parameters:
 %       D           - driving function signal [nx1]
 %
+%   See also: driving_function_mono_wfs, driving_function_mono_wfs_fs
+
 %   References:
 %       S. Spors, J.Ahrens (2010) - "Local Sound Field Synthesis by Virtual
 %                                    Secondary Sources", 40th AES
-%
-%   See also: driving_function_mono_wfs, driving_function_mono_wfs_fs
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -63,8 +63,8 @@ isargstruct(conf);
 
 %% ===== Configuration ==================================================
 dimension = conf.dimension;
-
 conf.driving_functions = conf.localsfs.vss.driving_functions;
+
 
 %% ===== Computation ====================================================
 % Get driving signals

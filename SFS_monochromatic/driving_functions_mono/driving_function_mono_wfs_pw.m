@@ -18,11 +18,12 @@ function D = driving_function_mono_wfs_pw(x0,nx0,nk,f,conf)
 %   for the given secondary sources, the virtual plane wave direction and the
 %   frequency f.
 %
-%   References:
-%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
-%       "Theory of Sound Field Synthesis"
-%
 %   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
+
+%   References:
+%       F. Schultz (2016) - "Sound Field Synthesis for Line Source
+%       Array Applications in Large-Scale Sound Reinforcement", PhD thesis,
+%       Universität Rostock.
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

@@ -17,10 +17,6 @@ function [delay,weight] = driving_function_imp_wfs_pw(x0,nx0,nk,conf)
 %   DRIVING_FUNCTION_IMP_WFS_PW(x0,nx0,nk,conf) returns delays and weights for
 %   the WFS driving function for plane wave as source model.
 %
-%   References:
-%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
-%       "Theory of Sound Field Synthesis"
-%
 %   See also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_pw
 
 %*****************************************************************************
@@ -82,11 +78,12 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         %
         % d_2D(x0,t) = h(t) * 2 nk nx0 delta(t - 1/c nk x0)
         %
-        % see Wierstorf et al. (2015), eq.(#d:wfs:pw)
+        % See http://sfstoolbox.org/#equation-d.wfs.pw
         %
         % Delay and amplitude weight
-        delay = 1/c * vector_product(nk,x0,2);
+        delay = 1./c .* vector_product(nk,x0,2);
         weight = 2 .* vector_product(nk,nx0,2);
+        %
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a plane wave.'],upper(mfilename),driving_functions);
@@ -111,11 +108,12 @@ elseif strcmp('2.5D',dimension)
         %
         % d_2.5D(x0,t) = h(t) * 2 g0 nk nx0 delta(t - 1/c nk x0)
         %
-        % See Wierstorf et al. (2015), eq.(#d:wfs:pw:2.5D)
+        % See http://sfstoolbox.org/en/update_wfs_ps/#equation-d.wfs.pw.2.5D
         %
         % Delay and amplitude weight
-        delay = 1/c .* vector_product(nk,x0,2);
-        weight = 2*g0 .* vector_product(nk,nx0,2);
+        delay = 1./c .* vector_product(nk,x0,2);
+        weight = 2.*g0 .* vector_product(nk,nx0,2);
+        %
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D plane wave.'],upper(mfilename),driving_functions);

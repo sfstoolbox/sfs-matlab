@@ -17,11 +17,7 @@ function D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf)
 %   DRIVING_FUNCTION_MONO_WFS_LS(x0,nx0,xs,f,src,conf) returns WFS driving
 %   signals for the given secondary sources, the virtual line source position,
 %   its orientation xs(:,4:6), which is parallel to the line source, and the
-%   frequency f. If no explicit orientation is given [0 0 1] is assumed.
-%
-%   References:
-%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
-%       "Theory of Sound Field Synthesis"
+%   frequency f. If no explicit orientation is given, [0 0 1] is assumed.
 %
 %   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
@@ -89,17 +85,14 @@ if strcmp('2D',dimension)
         % D(x0,w) =  - -- -----------  H1  | - |x0-xs| |
         %              2c   |x0-xs|        \ c         /
         %
-        % see Wierstorf et al. (2015), eq.(#D:wfs:ls)
+        % See http://sfstoolbox.org/#equation-D.wfs.ls
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % Driving signal
-        D = -1i*omega/(2*c) .* vector_product(x0-xs,nx0,2) ./ r .* ...
-            besselh(1,2,omega/c.*r);
-        %
-    elseif strcmp('delft1988',driving_functions)
-        % --- Delft 1988 -------------------------------------------------
-        to_be_implemented;
+        D = -1i.*omega./(2.*c) ...
+            .* vector_product(x0-xs,nx0,2) ./ r ...
+            .* besselh(1,2,omega./c.*r);
         %
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
@@ -127,17 +120,14 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D(x0,w) =  - -- _ |---  -----------  H1  | - |x0-xs| |
         %                   2   \| c    |x0-xs|         \ c         /
         %
-        % see Wierstorf et al. (2015), eq.(#D:wfs:ls:2.5D)
+        % See http://sfstoolbox.org/#equation-D.wfs.ls.2.5D
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % Driving signal
-        D = -g0/2 .* sqrt(i*omega/c) .* vector_product(x0-xs,nx0,2) ./ r .* ...
-            besselh(1,2,omega/c.*r);
-        %
-    elseif strcmp('delft1988',driving_functions)
-        % --- Delft 1988 -------------------------------------------------
-        to_be_implemented;
+        D = -g0./2 .* sqrt(i.*omega./c) ...
+            .* vector_product(x0-xs,nx0,2) ./ r ...
+            .* besselh(1,2,omega./c.*r);
         %
     else
         error(['%s: %s, this type of driving function is not implemented ', ...
@@ -159,8 +149,7 @@ elseif strcmp('3D',dimension)
         % where v = x0-xs - <x0-xs,nxs > nxs,
         % and |nxs| = 1.
         %
-        % see Wierstorf et al. (2015), eq.(#D:wfs:ls)
-        % TODO: refered equation is for 2D, 3D case is AFAIK not documented yet.
+        % See http://sfstoolbox.org/#equation-d.wfs.ls.3D
         %
         % v = (I - nxs'nxs)(x0-xs)
         % r = |v|
@@ -170,10 +159,6 @@ elseif strcmp('3D',dimension)
         % Driving signal
         D = -1i*omega/(2*c) .* vector_product(v,nx0,2) ./ r .* ...
             besselh(1,2,omega/c.*r);
-        %
-    elseif strcmp('delft1988',driving_functions)
-        % --- Delft 1988 -------------------------------------------------
-        to_be_implemented;
         %
     else
         error(['%s: %s, this type of driving function is not implemented ', ...

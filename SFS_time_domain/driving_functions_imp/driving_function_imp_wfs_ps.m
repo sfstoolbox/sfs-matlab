@@ -102,7 +102,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % d(x0,t) = h(t) * --- ------------- delta(t-|x0-xs|/c)
         %                  2pi |x0-xs|^(3/2)
         %
-        % See Wierstorf (2014), eq.(2.75)
+        % See Wierstorf (2014), eq.(2.63)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -192,7 +192,7 @@ elseif strcmp('2.5D',dimension)
          % d_2.5D(x0,t) = h(t) * --- ------------- delta(t-|x0-xs|/c)
          %                       2pi |x0-xs|^(3/2)
          %
-         % See Wierstorf (2014), eq.(2.76)
+         % See Wierstorf (2014), eq.(2.64)
          %
          % r = |x0-xs|
          r = vector_norm(x0-xs,2);

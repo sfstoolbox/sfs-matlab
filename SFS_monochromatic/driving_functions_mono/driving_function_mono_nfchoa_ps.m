@@ -104,8 +104,7 @@ elseif strcmp('2.5D',dimension)
     xref = repmat(xref,[size(x0,1) 1]);
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        % 2.5D point source, see
-        % http://sfstoolbox.org/#equation-D.nfchoa.ps.2.5D
+        % 2.5D point source
         %
         %                     _N_    (2)
         %               1     \     h|m|(w/c r)
@@ -113,6 +112,7 @@ elseif strcmp('2.5D',dimension)
         %             2pi r0  m=-N   (2)
         %                           h|m|(w/c r0)
         %
+        % See http://sfstoolbox.org/#equation-D.nfchoa.ps.2.5D
         for m=-N:N
             D = D + 1 ./ (2.*pi.*r0) ...
                 .* sphbesselh(abs(m),2,omega./c.*r) ...
@@ -131,8 +131,7 @@ elseif strcmp('3D',dimension)
 
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        % 3D point source, see
-        % http://sfstoolbox.org/#equation-D.nfchoa.ps.3D
+        % 3D point source
         %
         %                              _N_  _n_   (2)
         %                       1      \    \    hn(w/c r)   -m
@@ -141,6 +140,8 @@ elseif strcmp('3D',dimension)
         %                                        hn(w/c r0)
         %                       m
         %                    x Yn(theta0,phi0)
+        %
+        % See http://sfstoolbox.org/#equation-D.nfchoa.ps.3D
         %
         for n=0:N
             for m=-n:n

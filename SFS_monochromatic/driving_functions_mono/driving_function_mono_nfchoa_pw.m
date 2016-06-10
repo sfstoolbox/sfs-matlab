@@ -86,14 +86,15 @@ if strcmp('2D',dimension)
 
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        % 2D plane wave, see
-        % http://sfstoolbox.org/#equation-D.nfchoa.pw.2D
+        % 2D plane wave
         %
         %                      _N_
         %                2i    \       i^-m
         % D(phi0,w) = - -----  /__  ---------- e^(i m (phi0-phi_pw))
         %               pi r0  m=-N  (2)
         %                           Hm(w/c r0)
+        %
+        % See http://sfstoolbox.org/#equation-D.nfchoa.pw.2D
         %
         for m=-N:N
             D = D - 2.*1i ./ (pi.*r0) ...
@@ -112,14 +113,15 @@ elseif strcmp('2.5D',dimension)
 
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        % 2.5D plane wave, see
-        % http://sfstoolbox.org/#equation-D.nfchoa.pw.2.5D
+        % 2.5D plane wave
         %
         %                       _N_
         %                   2   \           i^-|m|
         % D_25D(phi0,w) = - --  /__  -------------------- e^(i m (phi0-phi_pw))
         %                   r0  m=-N       (2)
         %                             i w/c h|m|(w/c r0)
+        %
+        % See http://sfstoolbox.org/#equation-D.nfchoa.pw.2.5D
         %
         for m=-N:N
             D = D - 2./r0 ...
@@ -139,8 +141,7 @@ elseif strcmp('3D',dimension)
 
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
-        % 3D plane wave, see
-        % http://sfstoolbox.org/#equation-D.nfchoa.pw.3D
+        % 3D plane wave
         %
         %                            _N_  _n_         -m
         %                      4pi   \    \   i^(-n) Yn(theta_pw,phi_pw)
@@ -149,6 +150,8 @@ elseif strcmp('3D',dimension)
         %                                         i w/c hn(w/c r0)
         %                       m
         %                    x Yn(theta0,phi0)
+        %
+        % See http://sfstoolbox.org/#equation-D.nfchoa.pw.3D
         %
         for n=0:N
             for m=-n:n

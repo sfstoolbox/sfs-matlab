@@ -17,13 +17,15 @@ function [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs,conf)
 %   DRIVING_FUNCTION_IMP_WFS_FS(x0,nx0,xs,conf) returns delays and weights for
 %   the WFS driving function for a focused source as source model.
 %
+%   See also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_fs
+
 %   References:
-%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
-%       "Theory of Sound Field Synthesis"
+%       E. Start (1997) - "Direct Sound Enhancement by Wave Field Synthesis", 
+%       PhD thesis, TU Delft
 %       E. Verheijen (1997) - "Sound Reproduction by Wave Field Synthesis", PhD
 %       thesis, TU Delft
-%
-%   See also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_fs
+%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       PhD thesis, TU Berlin
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -83,17 +85,34 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % --- SFS Toolbox ------------------------------------------------
         % d using a focused point source as source model
         %
-        %                   1   (x0-xs) nx0
-        % d(x0,t) = h(t) * --- ------------- delta(t+|x0-xs|/c)
-        %                  2pi |x0-xs|^(3/2)
+        %                   1  (x0-xs) nx0
+        % d(x0,t) = h(t) * --- ----------- delta(t+|x0-xs|/c)
+        %                  2pi  |x0-xs|^2
         %
-        % see Wierstorf et al. (2015) eq.(#d:wfs:fs)
+        % See http://sfstoolbox.org/#equation-d.wfs.fs
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % Delay and amplitude weight
-        delay = -1/c .* r;
-        weight = 1/(2*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3/2);
+        delay = -1./c .* r;
+        weight = 1./(2.*pi) .* vector_product(xs-x0,nx0,2) ./ r.^2;
+        %
+    if strcmp('legacy',driving_functions)
+        % --- Old SFS Toolbox default ------------------------------------
+        % d using a focused point source as source model
+        %
+        %                   1   (x0-xs) nx0
+        % d(x0,t) = h(t) * --- ------------- delta(t+|x0-xs|/c)
+        %                  2pi |x0-xs|^(3/2)
+        %
+        % See Wierstorf (2014) eq. (2.75)
+        %
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        % Delay and amplitude weight
+        delay = -1./c .* r;
+        weight = 1./(2.*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3./2);
+        %
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a focused source.'],upper(mfilename),driving_functions);
@@ -103,7 +122,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
 elseif strcmp('2.5D',dimension)
 
   % === 2.5-Dimensional ================================================
-  
+
   % Reference point
   xref = repmat(xref,[size(x0,1) 1]);
   switch driving_functions
@@ -119,7 +138,7 @@ elseif strcmp('2.5D',dimension)
       % g0 = _ |---------------------
       %       \| |xref-x0| - |xs-x0|
       %
-      % Verheijen (1997), eq. (A.14) 
+      % See Verheijen (1997), eq. (A.14)
       %
       g0 = sqrt( vector_norm(xref-x0,2) ./ (vector_norm(x0-xref,2) - r) );
       %                                  ___
@@ -127,11 +146,11 @@ elseif strcmp('2.5D',dimension)
       % d_2.5D(x0,t) = h_pre(-t) * g0 _ |---  ------------- delta(t+|x0-xs|/c)
       %                                \|2pi  |x0-xs|^(3/2)
       %
-      % Inverse Fourier Transform of Verheijen (1997), eq. (A.14)
+      % See http://sfstoolbox.org/#equation-d.wfs.fs.2.5D
       %
       % Delay and amplitude weight
-      delay = -1/c .* r;
-      weight = g0/sqrt(2*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3/2);
+      delay = -1./c .* r;
+      weight = g0 ./ sqrt(2.*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3./2);
       %
     case 'reference_line'
       % Driving function with two stationary phase approximations,
@@ -146,7 +165,7 @@ elseif strcmp('2.5D',dimension)
       %        _______________________
       % g0 = \| d_ref / (d_ref - d_s)
       %
-      % see Start (1997), eq. (3.16)
+      % See Start (1997), eq. (3.16)
       %
       g0 = sqrt( dref / (dref - ds));
       %                                  ___
@@ -159,8 +178,8 @@ elseif strcmp('2.5D',dimension)
       % r = |x0-xs|
       r = vector_norm(x0-xs,2);
       % Delay and amplitude weight
-      delay = -1/c .* r;
-      weight = g0/sqrt(2*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3/2);
+      delay = -1./c .* r;
+      weight = g0 ./ sqrt(2.*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3./2);
       %
     case 'legacy'
       % --- SFS Toolbox ------------------------------------------------
@@ -176,13 +195,13 @@ elseif strcmp('2.5D',dimension)
       % d_2.5D(x0,t) = h(t) * --- ------------- delta(t + |xs-x0|/c)
       %                       2pi |xs-x0|^(3/2)
       %
-      % see Wierstorf et al. (2015), eq.(#d:wfs:fs:2.5D)
+      % See Wierstorf (2014), eq. (2.76)
       %
       % r = |xs-x0|
       r = vector_norm(xs-x0,2);
       % Delay and amplitude weight
-      delay = -1/c .* r;
-      weight = g0/(2*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3/2);
+      delay = -1./c .* r;
+      weight = g0 ./ (2.*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3./2);
       %
     otherwise
       error(['%s: %s, this type of driving function is not implemented', ...

@@ -131,4 +131,4 @@ Copyright (c) 2010-2016 SFS Toolbox Developers
 .. _Issue Section: https://github.com/sfstoolbox/sfs/issues
 .. _official releases page: https://github.com/sfstoolbox/sfs/releases
 .. _pdf: http://www.deutsche-telekom-laboratories.de/~sporssas/publications/2012/Wierstorf_et_al_SFS_toolbox.pdf
-.. _bibtex: ./doc/aes132_paper.bibCitation and feedback
+.. _bibtex: ./doc/files/aes132_paper.bib

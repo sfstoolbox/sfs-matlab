@@ -149,7 +149,8 @@ elseif strcmp('3D',dimension)
         % where v = x0-xs - <x0-xs,nxs > nxs,
         % and |nxs| = 1.
         %
-        % See http://sfstoolbox.org/#equation-d.wfs.ls.3D
+        % See http://sfstoolbox.org/#equation-d.wfs.ls
+        % and http://sfstoolbox.org/#equation-v.ls
         %
         % v = (I - nxs'nxs)(x0-xs)
         % r = |v|

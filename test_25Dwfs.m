@@ -1,7 +1,7 @@
 clear variables
 close all
 
-conf = SFS_config_example;
+conf = SFS_config;
 conf.plot.usedb = true;
 conf.plot.useplot = false;
 conf.usenormalisation = false;

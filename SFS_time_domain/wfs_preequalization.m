@@ -9,7 +9,7 @@ function [ir,delay] = wfs_preequalization(ir,conf)
 %
 %   Output parameters:
 %       ir      - signal with applied pre-equalization
-%       delay   - additional delay added by pre-equalization
+%       delay   - additional delay added by pre-equalization / s
 %
 %
 %   WFS_PREEQUALIZATION(ir,conf) applies the pre-equalization filter for
@@ -20,7 +20,7 @@ function [ir,delay] = wfs_preequalization(ir,conf)
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Team                                   *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *

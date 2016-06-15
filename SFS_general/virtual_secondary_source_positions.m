@@ -36,7 +36,7 @@ function xv = virtual_secondary_source_positions(x0,xs,src,conf)
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Team                                   *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *

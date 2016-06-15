@@ -12,7 +12,9 @@ function ir = compensate_headphone(ir,conf)
 %
 %   COMPENSATE_HEADPHONE(ir,conf) applies a headphone compensation to the
 %   given impulse response. Which headphone compensation it should use is
-%   mentioned in the conf struct.
+%   mentioned in the conf struct. The compensation filter can be a one-channel
+%   (same filter for left and right) or two-channel signal (1st signal: left,
+%   2nd signal: right) with signals stored as columns in a matrix.
 %   The compensation is only applied, if the conf.ir.usehcomp value is not false.
 %
 %   See also: ir_wfs, ir_point_source, ir_generic
@@ -20,7 +22,7 @@ function ir = compensate_headphone(ir,conf)
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Team                                   *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -63,7 +65,7 @@ usehcomp = conf.ir.usehcomp;
 if(usehcomp)
     lenir = size(ir,1);
     % Read headphone compensation filter
-    hcomp = wavread(conf.ir.hcompfile);
+    hcomp = audioread(conf.ir.hcompfile);
     % Check if the IR has the right length for the filter
     if lenir<length(hcomp)
         warning(['The length of the used IR is shorter than the headphone ', ...

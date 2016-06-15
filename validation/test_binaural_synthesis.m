@@ -10,7 +10,7 @@ function test_binaural_synthesis()
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Team                                   *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -50,7 +50,6 @@ conf.fs = 44100;
 conf.secondary_sources.x0 = [];
 conf.secondary_sources.center = [0 0 0];
 conf.secondary_sources.size = 3;
-conf.ir.useoriglength = false;
 conf.ir.usehcomp = false;
 conf.ir.useinterpolation = true;
 conf.N = 2048;
@@ -62,7 +61,8 @@ conf.wfs.usehpre = true;
 conf.wfs.hpretype = 'FIR';
 conf.wfs.hpreflow = 50;
 conf.wfs.hprefhigh = 1200;
-conf.usefracdelay = false;
+conf.delayline.resampling = 'none';
+conf.delayline.filter = 'integer';
 conf.debug = 0;
 conf.showprogress = false;
 

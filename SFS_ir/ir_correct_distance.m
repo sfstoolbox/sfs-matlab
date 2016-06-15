@@ -11,24 +11,21 @@ function ir = ir_correct_distance(ir,ir_distance,r,conf)
 %                       N ... number of samples
 %       ir_distance - distance of the given impulse responses [M 1]
 %       r           - desired distance [1]
-%       conf        - configuration struct (see SFS_config), containing:
-%                       conf.c
-%                       conf.fs
-%                       conf.N
-%                       conf.ir.useoriglength
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output paramteres:
 %       ir          - impulse responses [M C N]
 %
 %   IR_CORRECT_DISTANCE(ir,ir_distance,r,conf) weights and delays the given
 %   impulse responses, that they are conform with the specified distance r.
+%   The impulse responses are zero-padded to length conf.N.
 %
 %   See also: get_ir
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Team                                   *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -55,48 +52,27 @@ function ir = ir_correct_distance(ir,ir_distance,r,conf)
 %*****************************************************************************
 
 
-%% ===== Checking of input  parameters ==================================
-%nargmin = 4;
-%nargmax = 4;
-%narginchk(nargmin,nargmax);
-
-
 %% ===== Configuration ==================================================
 c = conf.c;
 fs = conf.fs;
-useoriglength = conf.ir.useoriglength;
-%N = conf.N; is used if useoriglength==false
+N = conf.N;
+hrirpredelay = conf.ir.hrirpredelay;
 
 
 %% ===== Computation ====================================================
-% Stop extrapolation for distances larger than 10m
-if any(ir_distance>10)
-    ir_distance = min(ir_distance,10);
-    warning(['%s: Your desired radius is larger than 10m, but we will ', ...
-        'only extrapolate up to 10m. All larger radii will be set to ', ...
-        '10m.'],upper(mfilename));
-end
-% Append zeros at the beginning of the impulse responses corresponding to
-% its maximum radius
-if ~useoriglength
-    zero_padding = ceil(ir_distance/c * fs);
-    if conf.N-zero_padding<128
-        error(['%s: choose a larger conf.N value, because otherwise you ', ...
-            'will have only %i samples of your original impulse response.'], ...
-            upper(mfilename),conf.N-zero_padding);
-    end
-else
-    zero_padding = 0;
-end
-% Time delay of the source (at the listener position)
-delay = (r-ir_distance)/c*fs; % / samples
+% Append zeros at the end of the impulse responses to reach a length of N
+ir_origlength = size(ir,3);
+ir = cat(3,ir,zeros(size(ir,1),size(ir,2),N-ir_origlength));
 % Amplitude weighting (point source model)
 % This gives weight=1 for r==ir_distance
 weight = ir_distance./r;
-if abs(delay)>size(ir,3)
-    error(['%s: your impulse response is to short for a desired ', ...
-        'delay of %.1f samples.'],upper(mfilename),delay);
+% Time delay of the source (at the listener position)
+delay = r/c*fs - hrirpredelay; % / samples
+% Check if impulse responses are long enough compared to intended delay
+if conf.N-delay<ir_origlength
+    warning('SFS:get_ir',['%s: Choose a conf.N value larger than %i. ', ...
+        'Otherwise you will lose samples from the end of the original ', ...
+        'impulse response.'],upper(mfilename),ceil(ir_origlength+delay));
 end
 % Apply delay and weighting
-ir = delayline(ir,[delay+zero_padding; delay+zero_padding], ...
-               [weight; weight],conf);
+ir = delayline(ir,delay,[weight; weight],conf);

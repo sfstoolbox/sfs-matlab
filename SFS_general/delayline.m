@@ -1,7 +1,7 @@
-function sig = delayline(sig,dt,weight,conf)
+function [sig,delay_offset] = delayline(sig,dt,weight,conf)
 %DELAYLINE implements a (fractional) delay line with weights
 %
-%   Usage: sig = delayline(sig,dt,weight,conf)
+%   Usage: [sig,delay_offset] = delayline(sig,dt,weight,conf)
 %
 %   Input parameter:
 %       sig     - input signal (vector), can be in the form of [N C], or
@@ -15,24 +15,24 @@ function sig = delayline(sig,dt,weight,conf)
 %       dt      - delay / samples
 %       weight  - amplitude weighting factor
 %       conf    - configuration struct (see SFS_config).
-%                 Used settings are:
-%                     conf.usefracdelay;
-%                     conf.fracdelay_method; (only if conf.usefracdelay==true)
 %
 %   Output parameter:
-%       sig     - delayed signal
+%       sig             - delayed signal
+%       delay_offset    - additional delay, added by the fractional delayline
+%                         filters to all channels. For integer delays this is 0.
 %
 %   DELAYLINE(sig,dt,weight,conf) implementes a delayline, that delays the given
 %   signal by dt samples and applies an amplitude weighting factor. The delay is
-%   implemented as integer delay or fractional delay filter, see description of
-%   conf input parameter.
+%   implemented as integer delay or fractional delay filter, see delayline
+%   section in SFS_config for possible settings. As default setting an integer
+%   delayline is used.
 %
 %   See also: get_ir, driving_function_imp_wfs
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Team                                   *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -59,88 +59,168 @@ function sig = delayline(sig,dt,weight,conf)
 %*****************************************************************************
 
 
-%% ===== Configuration ==================================================
-usefracdelay = conf.usefracdelay;
+%% ===== Configuration ===================================================
+% Check for old configuration
+if isfield(conf, 'usefracdelay')
+    error(['%s: conf.usefracdelay is deprecated, please use conf.delayline', ...
+           ' instead. See SFS_config for details.'],upper(mfilename));
+end
+delay = conf.delayline;
 
 
-%% ===== Computation =====================================================
-% Check if the impulse response is given in SOFA conventions [M C N], or in
-% usual [N C] convention, where
+%% ===== Preparation =====================================================
+% --- Reshape signals ---
+% Check if the signal is an impulse response given in SOFA conventions [M C N],
+% or in usual [N C] convention, where
 % M ... number of measurements
 % C ... number of channels
 % N ... number of samples
 if ndims(sig)==3
-    [M C samples] = size(sig);
+    [M,C,samples] = size(sig);
     channels = M * C;
     % Reshape [M C N] => [N C*M], this will be redone at the end of the function
     sig = reshape(sig,[channels,samples])';
     reshaped = true;
 else
     % Assume standard format [N C]
-    [samples channels] = size(sig);
+    [samples,channels] = size(sig);
     reshaped = false;
 end
+% --- Expand dt and weight ---
 % If only single valued time delay and weight is given, create vectors
 if channels>1 && length(dt)==1, dt=repmat(dt,[1 channels]); end
 if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
 
-if usefracdelay
 
-    % Additional configuration
-    fracdelay_method = conf.fracdelay_method;
-    rfactor = 100; % resample factor (1/stepsize of fractional delays)
-    Lls = 30;      % length of least-squares factional delay filter
+%% ===== Resampling ======================================================
+% The resampling is applied independently from the actual fractional/integer
+% delay handling performed in the next step. The resampling is redone at the end
+% of the file.
+% If resampling is used together with the integer delay filter, this is already
+% a usage of fractional delay due to the upsampling.
+%
+switch delay.resampling
+    case 'none'
+        rfactor = 1.0;
+        delay_offset = 0.0;
+    case 'matlab'
+        rfactor = delay.resamplingfactor;
+        delay_offset = 0.0;
+        sig = resample(sig,rfactor,1);
+    case 'pm'
+        % === Parks-McClellan linear phase FIR filter ===
+        rfactor = delay.resamplingfactor;
+        delay_offset = delay.resamplingorder / 2;
+        a = [1 1 0 0];
+        f = [0.0 0.9/rfactor 1/rfactor 1.0];
+        b = firpm(delay.resamplingorder,f,a);
 
-    % Defining a temporary conf struct for recursive calling of delayline
-    conf2.usefracdelay = false;
-
-    switch fracdelay_method
-    case 'resample'
-       sig2 = resample(sig,rfactor,1);
-       sig2 = delayline(sig2,rfactor.*dt,weight,conf2);
-       sig = resample(sig2,1,rfactor);
-
-    case 'least_squares'
-        idt = floor(dt);
-        sig = delayline(sig,idt,weight,conf2);
-        if abs(dt-idt)>0
-            for ii=1:channels
-                h = general_least_squares(Lls,dt(ii)-idt(ii),0.90);
-                tmp = convolution(sig(:,ii),h);
-                sig(:,ii) = tmp(Lls/2:end-Lls/2);
-            end
-        end
-
-    case 'interp1'
-        idt = floor(dt);
-        sig = delayline(sig,idt,weight,conf2);
-        t = (1:samples)';
-        for ii=1:channels
-            sig(:,ii) = interp1(t,sig(:,ii),-(dt(ii)-idt(ii))+t,'spline');
-        end
-
+        sig = reshape(sig,1,channels*samples);
+        sig = [sig; zeros(rfactor-1,channels*samples)];
+        sig = reshape(sig,rfactor*samples,channels);
+        
+        sig = filter(b,1,sig,[],1);
     otherwise
-        disp('Delayline: Unknown fractional delay method');
-    end
+        error('%s: "%s": unknown resampling method',upper(mfilename), ...
+            delay.resampling);
+end
 
-else
-    % From here on integer delays are considered
-    idt = round(dt);
 
-    % Handling of too long delay values (returns vector of zeros)
-    idt(abs(idt)>samples) = samples;
-
-    % Handle positive or negative delays
-    for ii=1:channels
-        if idt(ii)>=0
-            sig(:,ii) = [zeros(idt(ii),1); weight(ii)*sig(1:end-idt(ii),ii)];
+%% ===== Conversion to integer delay =====================================
+dt = rfactor.*dt;  % resampled delays
+samples = rfactor.*samples;  % length of resampled signals
+switch delay.filter
+    case 'integer'
+        % === Integer delays ===
+        idt = ceil(dt);  % round up to next integer delay
+        delay_offset = delay_offset + 0;
+    case 'lagrange'
+        % === Lagrange polynomial interpolator ===
+        if iseven(delay.filterorder)
+            idt = round(dt);  % round delay for even order
         else
-            sig(:,ii) = [weight(ii)*sig(-idt(ii)+1:end,ii); zeros(-idt(ii),1)];
+            idt = floor(dt);  % floor delay for odd order
         end
+        fdt = dt - idt;  % fractional part of delays
+        b = lagrange_filter(delay.filterorder,fdt);
+        a = ones(1,channels);
+        delay_offset = delay_offset + delay.filterorder / 2;
+    case 'thiran'
+        % === Thiran's allpass filter for maximally flat group delay ===
+        idt = round(dt);  % integer part of delays
+        fdt = dt - idt;  % fractional part of delays
+        [b,a] = thiran_filter(delay.filterorder,fdt);
+        delay_offset = delay_offset + delay.filterorder;
+    case 'least_squares'
+        % ==== Least squares interpolation filter ===
+        idt = floor(dt);  % integer part of delays
+        fdt = dt - idt;  % fractional part of delays
+        b = zeros(delay.filterorder+1,channels);
+        for ii=1:channels
+            b(:,ii) = general_least_squares(delay.filterorder+1,fdt(ii),0.90);
+        end
+        a = ones(1,channels);
+        delay_offset = delay_offset + delay.filterorder / 2;
+    case 'farrow'
+        % === Farrow-structure ===
+        % Based on the assumption, that each coefficient h(n) of the fractional
+        % delay filter can be expressed as a polynomial in d (frac. delay), i.e.
+        %            __
+        %           \  NPol
+        % h_d(n) ~=  >      c_m(n) d^m
+        %           /__m=0
+        %
+        % For some Filter design methods, e.g. Lagrange Interpolators, this is
+        % perfectly possible. For other, a uniform grid of test delays d_q is
+        % used to fit the polynomials to the desired coefficient(n) find a set
+        % polynomial which approximates each coefficient of the desired filter.
+        % This structure allows to perform the convolution independently from 
+        % the delay and reuse the results of the filter for different delays.
+        %                           __
+        %                          \  NPol
+        % y(n) = h_d(n) * x(n) ~=   >      ( c_m(n)*x(n) ) d^m
+        %                          /__m=0
+        %
+        % The above representation shows that the convolution of the input 
+        % signal x can be performed by first convolving c_m and x and 
+        % incorporating the delay d afterwards.
+        
+        % number of parallel filters, i.e. order of polynomial + 1
+        % Nfilter = delay.filternumber;
+        to_be_implemented(mfilename);
+    otherwise
+        error('%s: \"%s\" is an unknown delayline filter', ...
+            upper(mfilename),delay.filter);
+end
+% Apply filter if needed
+if exist('a','var') && exist('b','var')
+    for ii=1:channels
+        sig(:,ii) = filter(b(:,ii),a(:,ii),sig(:,ii));
     end
 end
 
-% Undo reshaping [N M*C] => [M C N]
+
+%% ===== Integer delayline ===============================================
+% Handling of too long delay values (returns vector of zeros)
+idt(abs(idt)>samples) = samples;
+% Handle positive or negative delays
+for ii=1:channels
+    if idt(ii)>=0
+        sig(:,ii) = [zeros(idt(ii),1); weight(ii)*sig(1:end-idt(ii),ii)];
+    else
+        sig(:,ii) = [weight(ii)*sig(-idt(ii)+1:end,ii); zeros(-idt(ii),1)];
+    end
+end
+
+
+%% ===== Postprocessing ==================================================
+% --- Downsampling ---
+if rfactor~=1
+    sig = sig(1:rfactor:samples,:);
+    delay_offset = delay_offset ./ rfactor;
+end
+% --- Undo reshape ---
+% [N M*C] => [M C N]
 if reshaped
-    sig = reshape(sig',[M C samples]);
+    sig = reshape(sig',[M C size(sig,1)]);
 end

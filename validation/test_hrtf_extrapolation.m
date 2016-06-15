@@ -17,7 +17,7 @@ function boolean = test_hrtf_extrapolation(hrtf_set)
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Team                                   *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -71,10 +71,9 @@ if strcmp('QU_KEMAR',hrtf_set)
     conf.wfs.usehpre = true;
     conf.wfs.hpretype = 'FIR';
     conf.driving_functions = 'default';
-    conf.usefracdelay = false;
-    conf.fracdelay_method = 'resample';
+    conf.delayline.resampling = 'none';
+    conf.delayline.filter = 'integer';
     conf.ir.useinterpolation = true;
-    conf.ir.useoriglength = false;
     conf.showprogress = true;
     % check if HRTF data set is available, download otherwise
     basepath = get_sfs_path();
@@ -131,7 +130,6 @@ elseif strcmp('FABIAN_3D',hrtf_set)
     conf.usefracdelay = false;
     conf.fracdelay_method = 'resample';
     conf.ir.useinterpolation = true;
-    conf.ir.useoriglength = false;
     conf.showprogress = true;
     hrtf_file = 'FABIAN_3d_anechoic.sofa';
     % do the extrapolation

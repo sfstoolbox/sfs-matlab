@@ -22,7 +22,7 @@ function outsig = auralize_ir(ir,content,usenorm,conf)
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Team                                   *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -71,7 +71,7 @@ fs = conf.fs;
 if isnumeric(content)
     contentfs = conf.fs;
 elseif ~exist(content,'file')
-    [content,contentfs] = wavread(contentfile);
+    [content,contentfs] = audioread(contentfile);
 else
     error('%s: %s file was not found.',upper(mfilename),content);
 end

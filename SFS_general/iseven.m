@@ -16,7 +16,7 @@ function bool = iseven(number)
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Team                                   *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -41,13 +41,6 @@ function bool = iseven(number)
 %                                                                            *
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
-
-
-%% ===== Checking input parameters =======================================
-nargmin = 1;
-nargmax = 1;
-narginchk(nargmin,nargmax);
-isargmatrix(number);
 
 
 %% ===== Computation =====================================================

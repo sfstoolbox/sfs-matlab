@@ -31,7 +31,7 @@ function [d,delay,weight,delay_offset] = driving_function_imp_wfs(x0,xs,src,conf
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Team                                   *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -145,4 +145,6 @@ end
 % delay them. NOTE: this can be changed by the conf.N setting
 d_proto = repmat([row_vector(pulse) zeros(1,N-length(pulse))]',1,size(x0,1));
 % Shift and weight prototype driving function
-d = delayline(d_proto,delay*fs,weight,conf);
+[d, delayline_delay] = delayline(d_proto,delay*fs,weight,conf);
+% Add delay offset of delayline
+delay_offset = delay_offset + delayline_delay;

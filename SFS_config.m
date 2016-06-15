@@ -18,7 +18,7 @@ function conf = SFS_config()
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Team                                   *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -57,6 +57,7 @@ narginchk(nargmin,nargmax);
 %
 % - Misc
 % - Audio
+% - Delayline
 % - Sound Field Synthesis (SFS)
 %   * Dimensionality
 %   * Driving functions
@@ -68,7 +69,7 @@ narginchk(nargmin,nargmax);
 % - Wave Field Synthesis (WFS)
 %   * Pre-equalization
 % - Spectral Division Method (SDM)
-% - Near-Field Compensated Hirger Order Ambisonics (NFC-HOA)
+% - Near-Field Compensated Higher Order Ambisonics (NFC-HOA)
 % - Local Sound Field Synthesis
 % - Binaural Reproduction
 %   * Headphone compensation
@@ -96,13 +97,43 @@ conf.showprogress = false; % boolean
 conf.fs = 44100; % / Hz
 % Speed of sound
 conf.c = 343; % / m/s
-% use fractional delays for delay lines
-conf.usefracdelay = false; % boolean
-conf.fracdelay_method = 'resample'; % string
 % Bandpass filter applied in sound_field_imp()
 conf.usebandpass = true; % boolean
 conf.bandpassflow = 10; % / Hz
 conf.bandpassfhigh = 20000; % / Hz
+
+
+%% ===== Delayline =======================================================
+% Delaying of time signals. This can be critical as very often the wanted delays
+% are given as fractions of samples. This configuration section handles how
+% those delays should be handled. As the default setting, integer only delays
+% are used by rounding to the next larger integer delay.
+% Beside choosing the actual delayline filter, the signal can also be resampled
+% before delaying.
+%
+% Resample signal
+%   'none'   - no resampling (default) 
+%   'matlab' - use matlab's resample() function
+%   'pm'     - use Parks-McClellan-Method to compute resample filter (firpm)
+conf.delayline.resampling = 'none'; % / string
+% Oversamplingfactor factor >= 1
+% This should be in the order of (1/stepsize of fractional delays)
+conf.delayline.resamplingfactor = 100; % / 1
+% Order of Parks-McClellan resample filter (only for 'pm')
+conf.delayline.resamplingorder = 128;
+%
+% Delayline filter
+%   'integer'       - round to next larger integer delay (default)
+%   'lagrange'      - lagrange interpolator (FIR Filter)
+%   'least_squares' - least squares FIR interpolation filter
+%   'thiran'        - Thiran's allpass IIR filter
+%   'farrow'        - use the Farrow structure (to be implemented)
+conf.delayline.filter = 'integer';  % string
+% Order of delayline filter (only for Lagrange, Least-Squares & Thiran)
+conf.delayline.filterorder = 0;  % / 1
+% Number of parallel filters in Farrow structure
+% (only for 'farrow');
+conf.delayline.filternumber = 1; % / 1
 
 
 %% ===== Sound Field Synthesis (SFS) =====================================
@@ -153,7 +184,7 @@ conf.tapwinlen = 0.3; % / percent of array length, 0..1
 % Simulations of monochromatic or time domain sound field
 %
 % xyz-resolution for sound field simulations, this value is applied along every
-% desired dimension, expect if only one point is desired
+% desired dimension, except if only one point is desired
 conf.resolution = 300; % / samples
 % Phase of omega of sound field (change this value to create monochromatic sound
 % fields with different phases, for example this can be useful to create a movie)
@@ -182,7 +213,7 @@ conf.secondary_sources.corner_radius = 0.0; % / m
 % extracted from the provided SOFA file.
 conf.secondary_sources.x0 = []; % / m
 % Grid for the spherical array. Note, that you have to download and install the
-% spherical grids from an additiona source. For available grids see:
+% spherical grids from an additional source. For available grids see:
 % http://github.com/sfstoolbox/data/tree/master/spherical_grids
 % An exception are Gauss grids, which are available via 'gauss' and will be
 % calculated on the fly allowing very high number of secondary sources.
@@ -199,7 +230,7 @@ conf.secondary_sources.grid = 'equally_spaced_points'; % string
 % only want to use the pre-equalization filter until the aliasing frequency,
 % because of the energy the aliasing is adding to the spectrum above this
 % frequency (which means the frequency response over the aliasing frequency is
-% allready "correct") [Reference]
+% already "correct") [Reference]
 % Use WFS preequalization-filter
 conf.wfs.usehpre = true; % boolean
 % FIR or IIR pre-equalization filter
@@ -243,7 +274,7 @@ conf.sdm.withev = true; % boolean
 
 
 %% ===== Near-Field Compensated Higher Order Ambisonics (NFC-HOA) ========
-% Settings for NFCF-HOA, see Ahrens (2012) for an introduction
+% Settings for NFC-HOA, see Ahrens (2012) for an introduction
 %
 % Normally the order of NFC-HOA is set by the nfchoa_order() function which
 % returns the highest order for which no aliasing occurs. If you wish to use
@@ -295,20 +326,19 @@ conf.localsfs.vss.consider_secondary_sources = true;
 % Settings regarding all the stuff with impulse responses from the SFS_ir and
 % SFS_binaural_synthesis folders
 %
-% If we load an HRTF data set we are most likely interested to modify its
-% existing length, to enable a delaying of the impulse responses without
-% problems. If these value is set to "false", zeros are padded at the
-% beginning of all HRTFs corresponding to the maximum distance of the whole
-% set. In addition the overall length of the impulse responses is set to
-% conf.N.
-% Only set this to "true" if you really know what you are doing.
-conf.ir.useoriglength = false; % boolean
-%
 % Use interpolation to get the desired HRTF for binaural simulation. If this is
 % disabled the HRTF returned by a nearest neighbour search is used instead.
 % Depending on the geometry of the measured HRTF data set, the interpolation
 % will be done between the two or three nearest HRTFs.
 conf.ir.useinterpolation = true; % boolean
+%
+% If you have HRIRs in the form of the SimpleFreeFieldHRIR SOFA convention, zeros
+% are padded at the beginning of every impulse response corresponding to their
+% measurement distance. If you know that your measured HRIRs already have a
+% given pre-delay, add the pre-delay here and accordingly less zero padding will
+% be applied. In this case you can lose samples from the beginning of the
+% impulse response. If you are not sure, choose a value of 0.
+conf.ir.hrirpredelay = 0; % / samples
 %
 % === Headphone compensation ===
 % Headphone compensation
@@ -336,7 +366,7 @@ conf.plot.usenormalisation = true; % boolean
 %   'center'    - center of sound field == 1
 %   'max'       - max of sound field == 1
 conf.plot.normalisation = 'auto'; % string
-% Plot mode (uses the GraphDefaults function). Avaiable modes are:
+% Plot mode (uses the GraphDefaults function). Available modes are:
 %   'monitor'   - displays the plot on the monitor
 %   'paper'     - eps output in conf.plot.outfile
 %   'png'       - png output in conf.plot.outfile
@@ -352,7 +382,7 @@ conf.plot.caxis = []; % [min max]
 % http://www.sandia.gov/~kmorel/documents/ColorMaps/
 % If you set 'gray' or 'grey' you will get a colormap ranging from white to
 % black. In addition you can add every other map you can specify in
-% Matlab/Octave. For example to get the Matlab default colormap ser 'jet'.
+% Matlab/Octave. For example to get the Matlab default colormap set 'jet'.
 conf.plot.colormap = 'default'; % string
 % Plot loudspeakers in the sound field plots
 conf.plot.loudspeakers = true; % boolean

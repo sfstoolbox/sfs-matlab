@@ -7,7 +7,7 @@ function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
 %       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
 %       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
-%       x0          - positions of secondary sources / m
+%       x0          - secondary sources / m [nx7]
 %       src         - source model of the Green's function. Valid models are:
 %                       'ps' - point source
 %                       'ls' - line source
@@ -46,7 +46,7 @@ function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Team                                   *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *

@@ -121,7 +121,7 @@ elseif strcmp('pw',src)
     % Direction of plane wave
     nxs = xs(:,1:3) / norm(xs(:,1:3));
     % Calculate sound field
-    G = exp(-1i*omega/c.*(nxs(1)*x+nxs(2)*y+nxs(3)*z));
+    G = exp(-1i*omega/c.*(nxs(1).*x+nxs(2).*y+nxs(3).*z));
 else
     error('%s: %s is not a valid source model for the Green''s function', ...
         upper(mfilename),src);

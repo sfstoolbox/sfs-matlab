@@ -75,4 +75,4 @@ if conf.N-delay<ir_origlength
         upper(mfilename));
 end
 % Apply delay and weighting
-ir = delayline(ir,[delay; delay],[weight; weight],conf);
+ir = delayline(ir,delay,[weight; weight],conf);

@@ -143,7 +143,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
             .* vector_product(x0-xs,nx0,2) ./ r ...
             .* besselh(1,2,omega./c.*r);
         %
-    if strcmp('legacy',driving_functions)
+    elseif strcmp('legacy',driving_functions)
         % --- Old SFS Toolbox default ------------------------------------
         % D using a point sink and large distance approximation
         %

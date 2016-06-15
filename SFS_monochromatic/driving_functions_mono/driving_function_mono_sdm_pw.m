@@ -17,13 +17,6 @@ function D = driving_function_mono_sdm_pw(x0,nk,f,conf)
 %   for the given secondary sources, the virtual plane wave direction and the
 %   frequency f.
 %
-%   References:
-%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
-%       "Theory of Sound Field Synthesis"
-%       J. Ahrens and S. Spors (2010) - "Sound Field Reproduction Using Planar
-%       and Linear Arrays of Loudspeakers", Transactions on Audio, Speech and
-%       Language Processing, Volume 18(8), p. 2038-2050
-%
 %   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
 %*****************************************************************************
@@ -111,8 +104,7 @@ elseif strcmp('2.5D',dimension)
         %                    H0  | - nky*xrefy |
         %                         \c          /
         %
-        % see Wierstorf et al. (2015), eq.(#D:sdm:pw:2.5D) and
-        % Ahrens and Spors (2010), eq.(17)
+        % See http://sfstoolbox.org/#equation-D.sdm.pw.2.5D
         %
         D = 4*1i.*exp(-1i*omega/c.*nk(:,2).*xref(:,2)) ./ ...
             besselh(0,2,omega/c.*nk(:,2).*xref(:,2)) .* ...

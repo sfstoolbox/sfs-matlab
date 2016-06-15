@@ -55,32 +55,24 @@ function ir = ir_correct_distance(ir,ir_distance,r,conf)
 %% ===== Configuration ==================================================
 c = conf.c;
 fs = conf.fs;
-useoriglength = conf.ir.useoriglength;
 N = conf.N;
+hrirpredelay = conf.ir.hrirpredelay;
 
 
 %% ===== Computation ====================================================
 % Append zeros at the end of the impulse responses to reach a length of N
 ir_origlength = size(ir,3);
 ir = cat(3,ir,zeros(size(ir,1),size(ir,2),N-ir_origlength));
-% Append zeros at the beginning of the impulse responses corresponding to
-% its maximum radius
-if ~useoriglength
-    zero_padding = ceil(ir_distance/c*fs); % / samples
-else
-    zero_padding = 0;
-end
-% Time delay of the source (at the listener position)
-delay = (r-ir_distance)/c*fs; % / samples
 % Amplitude weighting (point source model)
 % This gives weight=1 for r==ir_distance
 weight = ir_distance./r;
+% Time delay of the source (at the listener position)
+delay = r/c*fs - hrirpredelay; % / samples
 % Check if impulse responses are long enough compared to intended delay
-if conf.N-(zero_padding+delay)<ir_origlength
-    error(['%s: Choose a larger conf.N value, otherwise you will '...
-        'lose samples from the original impulse response.'],...
-        upper(mfilename));
+if conf.N-delay<ir_origlength
+    warning('SFS:get_ir',['%s: Choose a conf.N value larger than %i. ', ...
+        'Otherwise you will lose samples from the end of the original ', ...
+        'impulse response.'],upper(mfilename),ceil(ir_origlength+delay));
 end
 % Apply delay and weighting
-ir = delayline(ir,[delay+zero_padding; delay+zero_padding], ...
-               [weight; weight],conf);
+ir = delayline(ir,delay,[weight; weight],conf);

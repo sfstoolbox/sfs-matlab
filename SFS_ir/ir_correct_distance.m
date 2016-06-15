@@ -63,27 +63,23 @@ hrirpredelay = conf.ir.hrirpredelay
 % Append zeros at the end of the impulse responses to reach a length of N
 ir_origlength = size(ir,3);
 ir = cat(3,ir,zeros(size(ir,1),size(ir,2),N-ir_origlength));
-% Append zeros at the beginning of the impulse responses corresponding to
-% its maximum radius
-zero_padding = ir_distance/c*fs - hrirpredelay; % / samples
-% Time delay of the source (at the listener position)
-delay = (r-ir_distance)/c*fs; % / samples
 % Amplitude weighting (point source model)
 % This gives weight=1 for r==ir_distance
 weight = ir_distance./r;
+% Time delay of the source (at the listener position)
+delay = r/c*fs - hrirpredelay; % / samples
 % Check if delay is negative
-if zero_padding+delay<0
+if delay<0
     warning('SFS:negativedelay',['%s: Your delay is shorter than '...
         'the predelay in the original impulse response. You will lose '...
         'samples from the beginning of the original impulse response.'], ...
         upper(mfilename));
 end
 % Check if impulse responses are long enough compared to intended delay
-if conf.N-(zero_padding+delay)<ir_origlength
+if conf.N-delay<ir_origlength
     error(['%s: Choose a larger conf.N value, otherwise you will '...
         'lose samples from the end of the original impulse response.'],...
         upper(mfilename));
 end
 % Apply delay and weighting
-ir = delayline(ir,[delay+zero_padding; delay+zero_padding], ...
-               [weight; weight],conf);
+ir = delayline(ir,[delay; delay],[weight; weight],conf);

@@ -70,7 +70,6 @@ isargstruct(conf);
 
 %% ===== Configuration ==================================================
 fs = conf.fs;
-N = conf.N;
 c = conf.c;
 t0 = conf.wfs.t0;
 
@@ -112,17 +111,12 @@ end
 if strcmp('system',t0)
     % Set minimum delay to 0, in order to begin always at t=1 with the first
     % wave front at any secondary source
-    delay = delay - min(delay);
+    delay = delay - min(delay); % / s
     % Return extra offset due to prefilter
-    delay_offset = prefilter_delay;
+    delay_offset = prefilter_delay; % / s
 elseif strcmp('source',t0)
     % Add extra delay to ensure causality at all secondary sources (delay>0)
     [diameter,center] = secondary_source_diameter(conf);
-    t0 = diameter/c;
-    if (ceil((max(delay)+t0)*fs) - 1 ) > N
-        % This is a lot more likely to happen.
-        warning('conf.N = %i is too short for requested source.',N);
-    end
     if strcmp('fs',src)
         % Reject focused source that's too far away
         % (this will only happen for unbounded listening arrays.)
@@ -132,19 +126,20 @@ elseif strcmp('source',t0)
                 'spanned by the array diameter.'],upper(mfilename));
         end
     end
-    delay = delay + t0;
+    delay = delay + diameter/c; % / s
     % Return extra added delay. This is can be used to ensure that the virtual
     % source always starts at t = 0.
-    delay_offset = t0 + prefilter_delay;
+    delay_offset = diameter/c + prefilter_delay; % / s
 else
     error('%s: t0 needs to be "system" or "source" and not "%s".', ...
           upper(mfilename),t0);
 end
 % Append zeros at the end of the driving function. This is necessary, because
 % the delayline function cuts into the end of the driving signals in order to
-% delay them. NOTE: this can be changed by the conf.N setting
-d_proto = repmat([row_vector(pulse) zeros(1,N-length(pulse))]',1,size(x0,1));
+% delay them.
+zero_padding = zeros(1,ceil(max(delay)*fs));
+d_proto = repmat([row_vector(pulse) zero_padding]',1,size(x0,1));
 % Shift and weight prototype driving function
-[d, delayline_delay] = delayline(d_proto,delay*fs,weight,conf);
+[d,delayline_delay] = delayline(d_proto,delay*fs,weight,conf);
 % Add delay offset of delayline
 delay_offset = delay_offset + delayline_delay;

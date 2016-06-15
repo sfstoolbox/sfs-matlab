@@ -77,10 +77,10 @@ if strcmp('FIR',conf.wfs.hpretype)
     % Delay in s added by filter
     delay = conf.wfs.hpreFIRorder/2 / fs;
 elseif strcmp('IIR',conf.wfs.hpretype)
-    if len_ir == 1
+    if len_ir < 2048
         % Happens when called from driving_function_imp_wfs()
-        % Zeropadding to length conf.N
-       ir = [ir; zeros(conf.N-1,size(ir,2))];
+        % Zeropadding to 2048 (IIR filter needs infinite long signal)
+       ir = [ir; zeros(2048-len_ir,size(ir,2))];
     end
     % Get IIR filter
     hpre = wfs_iir_prefilter(conf);

@@ -64,8 +64,11 @@ isargstruct(conf);
 
 %% ===== Configuration ==================================================
 nls = size(x0,1);
-N = conf.N;
 X0 = conf.secondary_sources.center;
+% Length of driving signal (to which the driving signal is zero padded
+% before the filter)
+N = 2048;
+
 
 %% ===== Computation =====================================================
 % Generate stimulus pusle

@@ -118,37 +118,8 @@ elseif strcmp('pw',src)
     % direction of plane wave
     nxs = xs / norm(xs);
     %
-    % The following code enables us to replace this two for-loops
-    % for ii = 1:size(x,1)
-    %     for jj = 1:size(x,2)
-    %         t(ii,jj) = nxs*[x(ii,jj) y(ii,jj) z(ii,jj)]'./c;
-    %     end
-    % end
-    %
-    % Get a matrix in the form of
-    % 1 1 1 0 0 0 0 0 0
-    % 0 0 0 1 1 1 0 0 0
-    % 0 0 0 0 0 0 1 1 1
-    E = eye(3*size(x,1));
-    E = E(1:3:end,:)+E(2:3:end,:)+E(3:3:end,:);
-    % Multiply this matrix with the plane wave direction
-    N = repmat(nxs,size(x,1)) .* E;
-    % Interlace x,y,z into one matrix
-    % x11 x12 ... x1m
-    % y11 y12 ... y1m
-    % z11 z12 ... z1m
-    % .   .       .
-    % .   .       .
-    % xn1 xn2 ... xnm
-    % yn1 yn2 ... ynm
-    % zn1 zn2 ... znm
-    XYZ = zeros(3*size(x,1),size(x,2));
-    XYZ(1:3:end,:) = x;
-    XYZ(2:3:end,:) = y;
-    XYZ(3:3:end,:) = z;
-    %
     g = 1;
-    t = N*XYZ./c*fs-t;
+    t = (nxs(1).*x+nxs(2).*y+nxs(3).*z)./c.*fs-t;
 
 else
     error('%s: %s is not a valid source model for the Green''s function', ...

@@ -56,7 +56,7 @@ function ir = ir_correct_distance(ir,ir_distance,r,conf)
 c = conf.c;
 fs = conf.fs;
 N = conf.N;
-hrirpredelay = conf.ir.hrirpredelay
+hrirpredelay = conf.ir.hrirpredelay;
 
 
 %% ===== Computation ====================================================

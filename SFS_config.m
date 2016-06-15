@@ -326,15 +326,6 @@ conf.localsfs.vss.consider_secondary_sources = true;
 % Settings regarding all the stuff with impulse responses from the SFS_ir and
 % SFS_binaural_synthesis folders
 %
-% If we load an HRTF data set we are most likely interested to modify its
-% existing length, to enable a delaying of the impulse responses without
-% problems. If these value is set to "false", zeros are padded at the
-% beginning of all HRTFs corresponding to the maximum distance of the whole
-% set. In addition the overall length of the impulse responses is set to
-% conf.N.
-% Only set this to "true" if you really know what you are doing.
-conf.ir.useoriglength = false; % boolean
-%
 % Use interpolation to get the desired HRTF for binaural simulation. If this is
 % disabled the HRTF returned by a nearest neighbour search is used instead.
 % Depending on the geometry of the measured HRTF data set, the interpolation

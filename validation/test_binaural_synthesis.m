@@ -50,7 +50,6 @@ conf.fs = 44100;
 conf.secondary_sources.x0 = [];
 conf.secondary_sources.center = [0 0 0];
 conf.secondary_sources.size = 3;
-conf.ir.useoriglength = false;
 conf.ir.usehcomp = false;
 conf.ir.useinterpolation = true;
 conf.N = 2048;

@@ -64,7 +64,7 @@ ir_origlength = size(ir,3);
 ir = cat(3,ir,zeros(size(ir,1),size(ir,2),N-ir_origlength));
 % Append zeros at the beginning of the impulse responses corresponding to
 % its maximum radius
-zero_padding = ceil(ir_distance/c*fs); % / samples
+zero_padding = ir_distance/c*fs; % / samples
 % Time delay of the source (at the listener position)
 delay = (r-ir_distance)/c*fs; % / samples
 % Amplitude weighting (point source model)

@@ -137,7 +137,7 @@ end
 % Append zeros at the end of the driving function. This is necessary, because
 % the delayline function cuts into the end of the driving signals in order to
 % delay them.
-zero_padding = zeros(1,ceil((max(delay)+delay_offset)*fs));
+zero_padding = zeros(1,ceil(max(delay)*fs));
 d_proto = repmat([row_vector(pulse) zero_padding]',1,size(x0,1));
 % Shift and weight prototype driving function
 [d,delayline_delay] = delayline(d_proto,delay*fs,weight,conf);

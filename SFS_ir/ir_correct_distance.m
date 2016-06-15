@@ -68,13 +68,6 @@ ir = cat(3,ir,zeros(size(ir,1),size(ir,2),N-ir_origlength));
 weight = ir_distance./r;
 % Time delay of the source (at the listener position)
 delay = r/c*fs - hrirpredelay; % / samples
-% Check if delay is negative
-if delay<0
-    warning('SFS:negativedelay',['%s: Your delay is shorter than '...
-        'the predelay in the original impulse response. You will lose '...
-        'samples from the beginning of the original impulse response.'], ...
-        upper(mfilename));
-end
 % Check if impulse responses are long enough compared to intended delay
 if conf.N-delay<ir_origlength
     error(['%s: Choose a larger conf.N value, otherwise you will '...

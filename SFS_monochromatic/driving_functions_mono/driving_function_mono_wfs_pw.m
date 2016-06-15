@@ -141,14 +141,14 @@ elseif strcmp('2.5D',dimension)
         g0 = sqrt(2.*pi.*dref);
         %
         % D_2.5D using a plane wave as source model
-        %                       ___
-        %                      |i w|
-        % D_2.5D(x0,w) = 2g0 _ |---  e^(-i w/c nk x0)
-        %                     \| c
+        %                                ___
+        %                      ______   |i w|
+        % D_2.5D(x0,w) = 2g0 \|nk nx0 _ |---  e^(-i w/c nk x0)
+        %                              \| c
         %
         % See Schultz (2016), eq. (2.170)
         %
-        D = 2.*g0 .* sqrt(1i*omega/c) .* sqrt(vector_product(xref-x0,nx0,2)) ...
+        D = 2.*g0 .* sqrt(1i*omega/c) .* sqrt(vector_product(nk,nx0,2)) ...
             .* exp(-1i.*omega./c.*vector_product(nk,x0,2));
         %
     otherwise

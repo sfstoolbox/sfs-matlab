@@ -22,10 +22,6 @@ function G = greens_function_mono(x,y,z,xs,src,f,conf)
 %   for the given source model located at xs for the given points x,y and the
 %   frequency f.
 %
-%   References:
-%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
-%       "Theory of Sound Field Synthesis"
-%
 %   See also: sound_field_mono
 
 %*****************************************************************************
@@ -78,7 +74,7 @@ if strcmp('ps',src)
     % G(x-xs,w) = --- -----------------
     %             4pi      |x-xs|
     %
-    % see: Wierstorf et al. (2015), eq.(#S:ps)
+    % See http://sfstoolbox.org/#equation-S.ps
     %
     G = 1/(4*pi) * exp(-1i*omega/c .* sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2)) ./ ...
             sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
@@ -90,7 +86,7 @@ elseif strcmp('dps',src)
     % ---- G(x-xs,w) = --- | ----- + ------- | ----------- e^(-i w/c |x-xs|)
     % d ns             4pi  \  c     |x-xs| /   |x-xs|^2
     %
-    % see Wierstorf et al. (2015), eq.(#S:dps)
+    % See http://sfstoolbox.org/#equation-S.dps
     %
     % r = |x-xs|
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
@@ -106,7 +102,7 @@ elseif strcmp('ls',src)
     % G(x-xs,w) =  - -  H0  |  - |x-xs|  |
     %                4       \ c        /
     %
-    % see: Wierstorf et al. (2015), eq.(#S:ls)
+    % See http://sfstoolbox.org/#equation-S.ls
     %
     G = -1i/4 * besselh(0,2,omega/c* ...
         sqrt( (x-xs(1)).^2 + (y-xs(2)).^2 + (z-xs(3)).^2 ));
@@ -116,7 +112,7 @@ elseif strcmp('pw',src)
     %
     % G(x,w) = e^(-i w/c n x)
     %
-    % see: Wierstorf et al. (2015), eq.(#S:pw)
+    % See: http://sfstoolbox.org/#equation-S.pw
     %
     % Direction of plane wave
     nxs = xs(:,1:3) / norm(xs(:,1:3));

@@ -17,12 +17,6 @@ function D = driving_function_mono_sdm_kx_ps(kx,xs,f,conf)
 %   for the given secondary sources, the virtual point source position and the
 %   frequency f. The driving signal is calculated in the kx domain.
 %
-%   References:
-%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
-%       "Theory of Sound Field Synthesis"
-%       S. Spors and J. Ahrens (2010) - "Reproduction of Focused Sources by the
-%       Spectral Division Method", ISCCSP
-%
 %   See also: driving_function_mono_sdm_kx
 
 %*****************************************************************************
@@ -116,9 +110,7 @@ elseif strcmp('2.5D',dimension)
         %                     \ ----------_-_-_-_-_-_---------,       |kx|>|w/c|
         %                          K1( \|kx^2-(w/c)^2 yref )
         %
-        % see Wierstorf et al. (2015), eq.(#D:sdm:ps:2.5D)
-        % A time reversed version of this driving function for focused sources
-        % is given in Spors and Ahrens (2010), eq.(7).
+        % See http://sfstoolbox.org/#equation-D.sdm.ps.2.5D
         %
         D(idxpr) =  exp(1i*kx(idxpr)*xs(1)) .* ...
             besselh(1,2,sqrt( (omega/c)^2 - kx(idxpr).^2 )*abs(xref(2)-xs(2))) ./ ...

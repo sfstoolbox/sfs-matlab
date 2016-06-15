@@ -36,11 +36,6 @@ function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 %   the following configuration option before:
 %   conf.plot.usedB = true;
 %
-%   References:
-%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
-%       PhD thesis, TU Berlin
-%       G. Williams (1999) - "Fourier Acoustics", Academic Press
-%
 %   See also: sound_field_mono, plot_sound_field, greens_function_imp
 
 %*****************************************************************************
@@ -185,7 +180,8 @@ for ii = 1:size(x0,1)
     % p(x,t) = | d(x0,t) g(x-x0,t) dx0
     %          /
     %
-    % see Wierstorf et al. (2015), eq.(#single:layer) or Williams (1993), p. 36
+    % See http://sfstoolbox.org/#equation-single-layer
+    %
     % x0(ii,7) is a weight for the single secondary sources which includes for
     % example a tapering window for WFS or a weighting of the sources for
     % integration on a sphere.

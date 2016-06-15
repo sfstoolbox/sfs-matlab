@@ -332,10 +332,10 @@ conf.localsfs.vss.consider_secondary_sources = true;
 % will be done between the two or three nearest HRTFs.
 conf.ir.useinterpolation = true; % boolean
 %
-% If you have HRIR in the form of the SimpleFreeFieldHRIR SOFA convention, zeros
-% are padded at the beginning of every impulse response correspinding to its
-% measurement distance. If you know, that your measured HRIRs have already a
-% given predelay, add its value here and the zero padding will be adjusted.
+% If you have HRIRs in the form of the SimpleFreeFieldHRIR SOFA convention, zeros
+% are padded at the beginning of every impulse response corresponding to their
+% measurement distance. If you know, that your measured HRIRs already have a
+% given predelay, add their value here and the zero padding will be adjusted.
 conf.ir.hrirpredelay = 0; % / samples
 %
 % === Headphone compensation ===

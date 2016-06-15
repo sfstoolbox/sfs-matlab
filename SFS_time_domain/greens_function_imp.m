@@ -27,10 +27,6 @@ function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 %   have a look at sound_field_imp() and apply the folowing command:
 %   [p,x,y,z] = sound_field_imp(X,Y,Z,[xs 0 -1 0],src,1,t,conf);
 %
-%   References:
-%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
-%       "Theory of Sound Field Synthesis"
-%
 %   See also: greens_function_mono, sound_field_imp
 
 %*****************************************************************************
@@ -81,7 +77,7 @@ if strcmp('ps',src)
     % g(x-xs,t) = ---------- delta(t - |x-xs|/c)
     %             4pi |x-xs|
     %
-    % see Wierstorf et al. (2015), eq.(#s:ps)
+    % See http://sfstoolbox.org/#equation-s.ps
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
     g = 1./(4*pi.*r);
@@ -94,7 +90,7 @@ elseif strcmp('dps',src)
     % g(x-xs,ns,t) = --- | F  | ---- | + ------  | --------- delta(t - |x-xs|/c)
     %                4pi  \    \ c  /    |x-xs| /  |x-xs|^2
     %
-    % see Wierstorf et al. (2015), eq.(#s:dps)
+    % See http://sfstoolbox.org/#equation-s.dps
     %
     to_be_implemented(mfilename);
 
@@ -105,7 +101,7 @@ elseif strcmp('ls',src)
     % g(x-xs,t) = F |--  |  - |---  --_-_-_- delta(t - |x-xs|/c)
     %                \iw/    \|8pi  \||x-xs|
     %
-    % see Wierstorf et al. (2015), eq.(#s:ls)
+    % See http://sfstoolbox.org/en/latest/#equation-s.ls
     % Note, that the filter F^-1 is not implemented!!!!
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
@@ -117,7 +113,7 @@ elseif strcmp('pw',src)
     %
     % g(x,t) = delta(t - nx/c)
     %
-    % see Wierstorf et al. (2015), eq.(#s:pw)
+    % See http://sfstoolbox.org/#equation-s.pw
     %
     % direction of plane wave
     nxs = xs / norm(xs);

@@ -132,7 +132,7 @@ samples = rfactor.*samples;  % length of resampled signals
 switch delay.filter
     case 'integer'
         % === Integer delays ===
-        idt = ceil(dt);  % round up to next integer delay
+        idt = round(dt);  % round to nearest integer delay
         delay_offset = delay_offset + 0;
     case 'lagrange'
         % === Lagrange polynomial interpolator ===

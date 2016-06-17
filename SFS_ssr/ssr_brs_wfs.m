@@ -20,7 +20,7 @@ function brs = ssr_brs_wfs(X,phi,xs,src,irs,conf)
 %
 %   SSR_BRS_WFS(X,phi,xs,src,irs,conf) prepares a BRS set for a virtual source
 %   at xs for WFS and the given listener position. One way to use this BRS set
-%   is using the SoundScapeRenderer (SSR), see http://spatialaudio.net/ssr/
+%   is using the SoundScapeRenderer (SSR), see http://spatialaudio.net/ssr/
 %
 %   See also: ir_generic, ir_wfs, driving_function_imp_wfs
 

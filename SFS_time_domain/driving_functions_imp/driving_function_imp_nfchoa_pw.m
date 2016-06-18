@@ -63,6 +63,7 @@ isargstruct(conf);
 
 %% ===== Configuration ==================================================
 c = conf.c;
+fs = conf.fs;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
 
@@ -93,12 +94,36 @@ elseif strcmp('2.5D',dimension)
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D for a plane wave as source model
-        %
-        [sos,~] = zp2sos(p,z*c/R,2,'down','none');
+
+        % --- bilinear transformation ------------------------------------
+        if isoctave
+            [Z,P] = bilinear(p,z*c/R,1,1/fs);
+        else
+            [Z,P] = bilinear(p,z*c/R,1,fs);
+        end
+        sos = zp2sos(Z,P,1,'up','none');
+        % normalize the response at fs/2 to 0 dB
+        for ii=1:size(sos,1)
+            gain = (sos(ii,4)-sos(ii,5)+sos(ii,6)) ...
+                  /(sos(ii,1)-sos(ii,2)+sos(ii,3));
+            sos(ii,1:3) = gain*sos(ii,1:3);
+        end
         sos(1,1:3) = sos(1,1:3) * (-1)^abs(N);
         %
         % compare Spors et al. (2011), eq. (10)
-        %
+        %       
+    elseif strcmp('matchedz',driving_functions)
+        % --- matched z-transform ----------------------------------------
+        Z = exp(p/fs);
+        P = exp(z*c/R/fs);
+        sos = zp2sos(Z,P,1,'down','none');
+        % normalize the response at fs/2 to 0 dB
+        for ii=1:size(sos,1)
+            gain = (sos(ii,4)-sos(ii,5)+sos(ii,6)) ...
+                  /(sos(ii,1)-sos(ii,2)+sos(ii,3));
+            sos(ii,1:3) = gain*sos(ii,1:3);
+        end
+        sos(1,1:3) = sos(1,1:3) * (-1)^abs(N);
     else
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D plane wave.'],upper(mfilename),driving_functions);

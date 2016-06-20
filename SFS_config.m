@@ -123,7 +123,8 @@ conf.delayline.resamplingfactor = 100; % / 1
 conf.delayline.resamplingorder = 128;
 %
 % Delayline filter
-%   'integer'       - round to next larger integer delay (default)
+%   'integer'       - round to nearest integer delay (default)
+%   'zoh'           - round to next larger integer delay
 %   'lagrange'      - lagrange interpolator (FIR Filter)
 %   'least_squares' - least squares FIR interpolation filter
 %   'thiran'        - Thiran's allpass IIR filter

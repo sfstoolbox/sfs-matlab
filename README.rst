@@ -2,7 +2,7 @@ SFS Toolbox for Matlab/Octave
 =============================
 
 The SFS Toolbox for Matlab/Octave gives you the possibility to play around with
-sound field synthesis methods like |WFS| or |NFC-HOA|.  There are functions to
+sound field synthesis methods like |WFS| or :abbr:`NFC-HOA (Near-Field Compensated Higher Order Ambisonics)`.  There are functions to
 simulate monochromatic sound fields for different secondary source (loudspeaker)
 setups, time snapshots of full band impulses emitted by the secondary source
 distributions, or even generate |BRS| impulse response sets in order to simulate

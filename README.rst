@@ -16,6 +16,9 @@ Theory:
 Documentation:
     http://matlab.sfstoolbox.org/
 
+Source code and issue tracker:
+    http://github.com/sfstoolbox/sfs/
+
 SFS Toolbox for Python:
     http://python.sfstoolbox.org/
 
@@ -26,9 +29,11 @@ License:
 Installation
 ------------
 
-Download the Toolbox, go to the main path of the Toolbox and start it with
+`Download the Toolbox`_, go to the main path of the Toolbox and start it with
 ``SFS_start`` which will add all needed paths to Matlab/Octave.  If
 you want to remove them again, run ``SFS_stop``.
+
+.. _Download the Toolbox: https://github.com/sfstoolbox/sfs/releases/latest
 
 
 Requirements

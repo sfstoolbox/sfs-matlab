@@ -2,11 +2,13 @@ SFS Toolbox for Matlab/Octave
 =============================
 
 The SFS Toolbox for Matlab/Octave gives you the possibility to play around with
-sound field synthesis methods like |WFS| or :abbr:`NFC-HOA (Near-Field Compensated Higher Order Ambisonics)`.  There are functions to
-simulate monochromatic sound fields for different secondary source (loudspeaker)
-setups, time snapshots of full band impulses emitted by the secondary source
-distributions, or even generate |BRS| impulse response sets in order to simulate
-|WFS| with the `SoundScape Renderer`_.
+sound field synthesis methods like wave field synthesis (WFS) or near-field
+compensated higher order Ambisonics (NFC-HOA).  There are functions to simulate
+monochromatic sound fields for different secondary source (loudspeaker) setups,
+time snapshots of full band impulses emitted by the secondary source
+distributions, or even generate binaural room scanning (BRS) impulse response
+sets in order to generate binaural simulations of the synthesized sound fields
+with the `SoundScape Renderer`_.
 
 .. _SoundScape Renderer: http://spatialaudio.net/ssr
 
@@ -60,13 +62,13 @@ audioread:
 
 Impulse responses:
     The Toolbox uses the `SOFA`_ file format for handling impulse response data
-    sets like |HRTF|\ s. If you want to use this functionality you also have to
+    sets like HRTFs. If you want to use this functionality you also have to
     install the `SOFA API for Matlab/Octave`_, which you can add to your paths
     by executing ``SOFAstart``.
 
 Backward compatibility:
     Since version 2.0.0 the SFS Toolbox incorporates `SOFA`_ as file format for
-    |HRTF|\ s which replaces the old `irs file format`_ formerly used by the
+    HRTFs which replaces the old `irs file format`_ formerly used by the
     Toolbox. If you still need this you should download `the latest version with
     irs file support`_.
 
@@ -80,7 +82,7 @@ Getting started
 ---------------
 
 In order to make a simulation of the sound field of a monochromatic point source
-with a frequency of 800 Hz placed at (0,2.5,0) m synthesized by |WFS| run
+with a frequency of 800 Hz placed at (0,2.5,0) m synthesized by WFS run
 
 .. sourcecode:: matlab
 
@@ -89,8 +91,8 @@ with a frequency of 800 Hz placed at (0,2.5,0) m synthesized by |WFS| run
     sound_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf)
 
 To make a simulation of the same point source - now producing a broadband
-impulse - in the time domain at a time of
-200 samples after the first loudspeaker activity run
+impulse - in the time domain at a time of 200 samples after the first
+loudspeaker activity run
 
 .. sourcecode:: matlab
 

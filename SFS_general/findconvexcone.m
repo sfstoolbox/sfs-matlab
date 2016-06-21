@@ -1,22 +1,27 @@
-function [node_indeces,weights] = findconvexcone(x0,xs)
-%FINDCONVEXCONE finds three points that span a cone
+function [x0_indeces,weights] = findconvexcone(x0,xs)
+%FINDCONVEXCONE finds three points from x0 with xs in their conic span
 %
-%   Usage: [node_indeces,weights] = findconvexcone(x0,xs);
+%   Usage: [x0_indeces,weights] = findconvexcone(x0,xs);
 %
 %   Input parameters:
-%       x0                    - points in R3 (N x 3) 
-%       xs                    - a point in R3 (1 x 3)
+%       x0                    - point cloud in R3 (N x 3)
+%       xs                    - point in R3 (1 x 3)
 %
 %   output parameters:
-%       node_indeces          - row indeces of 3 points in x0 (3 x 1)
+%       x0_indeces            - row indeces of 3 points in x0 (3 x 1)
 %       weights               - weights (3 x 1)
 %
-%   FINDCONVEXCONE(x0,xs) returns node_indeces and non-negative weights 
-%   [w1;w2;w3] such that
-%      
-%   xs = w1*x1 + w2*x2 + w3*x3 , 
-%   where [x1; x2; x3] = x0(node_indeces,:) .
-%
+%   FINDCONVEXCONE(x0,xs) returns three row indeces into x0 and
+%   non-negative weights [w1;w2;w3] such that xs lies in the convex cone
+%   with minimum solid angle.
+%       xs = w1*x1 + w2*x2 + w3*x3 , 
+%       where [x1; x2; x3] = x0(x0_indeces,:) .
+%     
+%   (If all x0 and xs have unit norm this is VBAP.)  
+%   
+%   This may fail when 
+%     a) x0 is not convex, or
+%     b) The convex hull of x0 does not contain the origin.
 %
 %   See also: findnearestneighbor
 %
@@ -59,33 +64,33 @@ narginchk(nargmin,nargmax);
 %% ===== Computation =====================================================
 
 % find x0 with smallest angle to xs
-xs_norm = repmat(xs./norm(xs,2),size(x0,1),1);
-x0_norm = x0./repmat(vector_norm(x0,2),[1,3]);
-[~,closest_node] = max(vector_product(x0_norm,xs_norm,2));
+xs_normed = repmat(xs./norm(xs,2),size(x0,1),1);
+x0_normed = x0./repmat(vector_norm(x0,2),[1,3]);
+[~,most_aligned_point] = max(vector_product(x0_normed,xs_normed,2));
 
-% from the triangulation of the convex hull:
-% get all triangles at "closest_node"
+% Delaunay triangulation of convex hull
 triangles = convhull(x0);
-mask = logical(sum(triangles==closest_node,2));
-triangles = triangles(mask,:);
-assert(~isempty(triangles),'something went wrong: x0 non-convex?')
 
-% one of these cones contains xs
-linear_factors = zeros(size(triangles,1),3);
+% get all triangles at "most aligned point"
+mask = logical(sum(triangles==most_aligned_point,2));
+triangles = triangles(mask,:);
+if isempty(triangles)
+    error('x0 contains a point in the interior of its convex hull');
+end
+
+% one of the triangles span a convex cone that contains xs
 for n = 1:size(triangles,1);
     A = x0(triangles(n,:),:);
-    linear_factors(n,:) = xs/A;
+    weights = xs/A;
+    if ~sum(weights < 0) % non-negative weights == conic combination
+        x0_indeces = triangles(n,:);
+        break;
+    end
 end
-% there's one conic combination (i.e. non-negative coefficients)
-mask = logical(~sum(linear_factors < 0,2));
-if ~sum(mask) 
+if sum(weights < 0)
     error('xs is not in convex cone of x0.');
 end
-assert(sum(mask) == 1, 'Should not happen!');
 
-weights = linear_factors(mask,:).';
-node_indeces = triangles(mask,:).';
-
-[weights,order] = sort(weights,'descend');
-node_indeces = node_indeces(order);
+[weights,order] = sort(weights.','descend');
+x0_indeces = x0_indeces(order).';
 

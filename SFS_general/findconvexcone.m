@@ -69,7 +69,7 @@ x0_normed = x0./repmat(vector_norm(x0,2),[1,3]);
 [~,most_aligned_point] = max(vector_product(x0_normed,xs_normed,2));
 
 % Delaunay triangulation of convex hull
-triangles = convhull(x0);
+triangles = convhulln(x0);
 
 % get all triangles at "most aligned point"
 mask = logical(sum(triangles==most_aligned_point,2));

@@ -10,5 +10,5 @@ subpathes.
 
 If you are using Octave you will need the following additional packages from 
 octave-forge (http://octave.sourceforge.net/):
-* audio (e.g. for wavwrite)
+* audio
 * signal (e.g. for firls)

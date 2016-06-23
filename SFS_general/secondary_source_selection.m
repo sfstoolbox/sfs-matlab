@@ -25,42 +25,35 @@ function [x0,idx] = secondary_source_selection(x0,xs,src)
 %   sources for the given geometry and virtual source. In addition the index of
 %   the chosen secondary sources is returned.
 %
-%   References:
-%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
-%       "Theory of Sound Field Synthesis"
-%
 %   See also: secondary_source_positions, secondary_source_tapering
 
 %*****************************************************************************
-% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
@@ -105,10 +98,10 @@ if strcmp('pw',src)
     % a = <
     %      \ 0, else
     %
-    % see Wierstorf et al. (2015), eq.(#wfs:pw:selection)
+    % See http://sfstoolbox.org/#equation-wfs.pw.selection
     %
     % Direction of plane wave (nk) is set above
-    idx = nx0*nk(:) >=eps;
+    idx = nx0*nk(:) >= eps;
 
 elseif strcmp('ps',src)
     % === Point source ===
@@ -118,10 +111,9 @@ elseif strcmp('ps',src)
     % a = <
     %      \ 0, else
     %
-    % see Wierstorf et al. (2015), eq.(#wfs:ps:selection) and
-    % eq.(#wfs:ls:selection)
+    % See http://sfstoolbox.org/#equation-wfs.ps.selection
     %
-    idx = sum(nx0.*x0,2) - nx0*xs(1:3).' >=eps;
+    idx = sum(nx0.*x0,2) - nx0*xs(1:3).' >= -2*eps;
 
 elseif strcmp('ls',src)
     % === Line source ===
@@ -134,8 +126,7 @@ elseif strcmp('ls',src)
     % where v = x0-xs - <x0-xs,nxs > nxs,
     % and |nxs| = 1.
     %
-    % see Wierstorf et al. (2015), eq.(#wfs:ps:selection) and
-    % eq.(#wfs:ls:selection)
+    % See http://sfstoolbox.org/#equation-wfs.ls.selection
     %
     %NOTE: We don't check if we are in a 2D or 3D scenario and use xs(4:6)
     % whenever it is present. This can only provide problems if you use the
@@ -150,7 +141,7 @@ elseif strcmp('ls',src)
         nxs = xs(4:6) / norm(xs(4:6),2);
     end
     v = (x0 - repmat(xs(1:3),[size(x0,1),1]))*(eye(3) - nxs'*nxs);
-    idx = (vector_product(v,nx0,2) > 0);
+    idx = (vector_product(v,nx0,2) >= -2*eps);
 
 elseif strcmp('fs',src)
     % === Focused source ===
@@ -161,11 +152,11 @@ elseif strcmp('fs',src)
     % a = <
     %      \ 0, else
     %
-    % see Wierstorf et al. (2015), eq.(#wfs:fs:selection)
+    % See http://sfstoolbox.org/#equation-wfs.fs.selection
     %
     nxs = xs(4:6);  % vector for orientation of focused source
     xs = xs(1:3);  % vector for position of focused source
-    idx = xs*nxs(:) - x0*nxs(:) >=eps;
+    idx = xs*nxs(:) - x0*nxs(:) >= eps;
 
 elseif strcmp('vss', src)
     % === Virtual secondary sources ===

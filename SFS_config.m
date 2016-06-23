@@ -16,35 +16,32 @@ function conf = SFS_config()
 %   see also: SFS_start
 
 %*****************************************************************************
-% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
@@ -60,6 +57,7 @@ narginchk(nargmin,nargmax);
 %
 % - Misc
 % - Audio
+% - Delayline
 % - Sound Field Synthesis (SFS)
 %   * Dimensionality
 %   * Driving functions
@@ -71,7 +69,7 @@ narginchk(nargmin,nargmax);
 % - Wave Field Synthesis (WFS)
 %   * Pre-equalization
 % - Spectral Division Method (SDM)
-% - Near-Field Compensated Hirger Order Ambisonics (NFC-HOA)
+% - Near-Field Compensated Higher Order Ambisonics (NFC-HOA)
 % - Local Sound Field Synthesis
 % - Binaural Reproduction
 %   * Headphone compensation
@@ -99,13 +97,43 @@ conf.showprogress = false; % boolean
 conf.fs = 44100; % / Hz
 % Speed of sound
 conf.c = 343; % / m/s
-% use fractional delays for delay lines
-conf.usefracdelay = false; % boolean
-conf.fracdelay_method = 'resample'; % string
 % Bandpass filter applied in sound_field_imp()
 conf.usebandpass = true; % boolean
 conf.bandpassflow = 10; % / Hz
 conf.bandpassfhigh = 20000; % / Hz
+
+
+%% ===== Delayline =======================================================
+% Delaying of time signals. This can be critical as very often the wanted delays
+% are given as fractions of samples. This configuration section handles how
+% those delays should be handled. As the default setting, integer only delays
+% are used by rounding to the next larger integer delay.
+% Beside choosing the actual delayline filter, the signal can also be resampled
+% before delaying.
+%
+% Resample signal
+%   'none'   - no resampling (default) 
+%   'matlab' - use matlab's resample() function
+%   'pm'     - use Parks-McClellan-Method to compute resample filter (firpm)
+conf.delayline.resampling = 'none'; % / string
+% Oversamplingfactor factor >= 1
+% This should be in the order of (1/stepsize of fractional delays)
+conf.delayline.resamplingfactor = 100; % / 1
+% Order of Parks-McClellan resample filter (only for 'pm')
+conf.delayline.resamplingorder = 128;
+%
+% Delayline filter
+%   'integer'       - round to next larger integer delay (default)
+%   'lagrange'      - lagrange interpolator (FIR Filter)
+%   'least_squares' - least squares FIR interpolation filter
+%   'thiran'        - Thiran's allpass IIR filter
+%   'farrow'        - use the Farrow structure (to be implemented)
+conf.delayline.filter = 'integer';  % string
+% Order of delayline filter (only for Lagrange, Least-Squares & Thiran)
+conf.delayline.filterorder = 0;  % / 1
+% Number of parallel filters in Farrow structure
+% (only for 'farrow');
+conf.delayline.filternumber = 1; % / 1
 
 
 %% ===== Sound Field Synthesis (SFS) =====================================
@@ -156,7 +184,7 @@ conf.tapwinlen = 0.3; % / percent of array length, 0..1
 % Simulations of monochromatic or time domain sound field
 %
 % xyz-resolution for sound field simulations, this value is applied along every
-% desired dimension, expect if only one point is desired
+% desired dimension, except if only one point is desired
 conf.resolution = 300; % / samples
 % Phase of omega of sound field (change this value to create monochromatic sound
 % fields with different phases, for example this can be useful to create a movie)
@@ -185,7 +213,7 @@ conf.secondary_sources.corner_radius = 0.0; % / m
 % extracted from the provided SOFA file.
 conf.secondary_sources.x0 = []; % / m
 % Grid for the spherical array. Note, that you have to download and install the
-% spherical grids from an additiona source. For available grids see:
+% spherical grids from an additional source. For available grids see:
 % http://github.com/sfstoolbox/data/tree/master/spherical_grids
 % An exception are Gauss grids, which are available via 'gauss' and will be
 % calculated on the fly allowing very high number of secondary sources.
@@ -202,7 +230,7 @@ conf.secondary_sources.grid = 'equally_spaced_points'; % string
 % only want to use the pre-equalization filter until the aliasing frequency,
 % because of the energy the aliasing is adding to the spectrum above this
 % frequency (which means the frequency response over the aliasing frequency is
-% allready "correct") [Reference]
+% already "correct") [Reference]
 % Use WFS preequalization-filter
 conf.wfs.usehpre = true; % boolean
 % FIR or IIR pre-equalization filter
@@ -222,11 +250,20 @@ conf.wfs.hpreIIRorder = 4; % integer
 conf.wfs.hpreFIRorder = 128; % even integer
 %
 % === Time Domain Implementation ===
-% Remove the leading delay in WFS-time domain driving function.
-% If this is set to true, the first active secondary source will be start to
-% emit sound at t = 1.
-% (convenient behaviour for a single virtual source)
-conf.wfs.removedelay = true; % boolean
+% Adjust the starting time in WFS-time domain driving functions.
+% This can be set to
+%   'system'   - the first secondary source will be active at t=0
+%   'source'   - the virtual source will be active at t=0
+% Setting it to 'system' is most convenient when simulating single sources as
+% you will always see activity in the sound field for t>0. Setting it to
+% 'source' helps you to simulate different sources as you can time align them
+% easily. Note, that for virtual sources outside of the array this can mean you
+% will see no activity inside the listening area until the time has passed, that
+% the virtual source needs from its position until the nearest secondary source.
+% (Also note, using 'source' for systems with unbounded listening areas, (e.g.
+% linear arrays), focussed virtual sources may not be placed arbitrarily
+% far from the secondary sources.)
+conf.wfs.t0 = 'system'; % string
 
 
 %% ===== Spectral Division Method (SDM) ==================================
@@ -237,12 +274,23 @@ conf.sdm.withev = true; % boolean
 
 
 %% ===== Near-Field Compensated Higher Order Ambisonics (NFC-HOA) ========
-% Settings for NFCF-HOA, see Ahrens (2012) fro an introduction
+% Settings for NFC-HOA, see Ahrens (2012) for an introduction
 %
-% normally the order of NFC-HOA is set by the nfchoa_order() function which
+% Normally the order of NFC-HOA is set by the nfchoa_order() function which
 % returns the highest order for which no aliasing occurs. If you wish to use
 % another order you can set it manually here, otherwise leave it blank
 conf.nfchoa.order = []; % integer
+% Additional weighting of the modal coefficients by window function
+conf.nfchoa.modal_window = 'rect';  % string
+% Window type. Available windows are:
+%   'rect'                     - all coefficients are weighted by 1.0
+%   'kaiser', 'kaiser-bessel'  - Kaiser aka. Kaiser-Bessel window
+conf.nfchoa.modal_window_parameter = 0.0;  % float
+% Scalar parameter for window, if applicable. Effect for distinct window:
+%   'rect'    - no effect
+%   'kaiser'  - [0,inf]. trade-off between main-lobe width and side-lobe levels.
+%               0.0 results in the rectangular window and the smallest main-lobe
+%               width. infinity results in a dirac impulse.
 
 
 %% ===== Local Sound Field Synthesis =====================================
@@ -261,13 +309,13 @@ conf.localsfs.vss.geometry = 'circular';
 conf.localsfs.vss.number = 56;
 conf.localsfs.vss.grid = 'equally_spaced_points';
 %
-% linear vss distribution: rotate the distribution orthogonal to the progation 
+% linear vss distribution: rotate the distribution orthogonal to the progation
 % direction of the desired sound source
 % circular vss distribution: truncate the distribution to a circular arc
 % which satisfies the secondary source selection criterions ( source normal
 % aligns with propagation directions of desired sound source )
 conf.localsfs.vss.consider_target_field = true;
-% 
+%
 % vss distribution is further truncated if parts of it cannot be correctly
 % reproduced, because they lie outside the area which is surrounded by the real
 % loudspeakers (secondary sources)
@@ -278,26 +326,19 @@ conf.localsfs.vss.consider_secondary_sources = true;
 % Settings regarding all the stuff with impulse responses from the SFS_ir and
 % SFS_binaural_synthesis folders
 %
-% Directory containing HRTF data bases, you want to use. Note, that also all
-% subdirectories will be added to the path. This is not done automatically, but
-% by calling addirspath;
-% If you have more than one path, seperate them by :
-conf.ir.path = '~/git/sfs/data/HRTFs:~/svn/ir_databases:~/svn/measurements'; % string
-%
-% If we load an HRTF data set we are most likely interested to modify its
-% existing length, to enable a delaying of the impulse responses without
-% problems. If these value is set to "false", zeros are padded at the
-% beginning of all HRTFs corresponding to the maximum distance of the whole
-% set. In addition the overall length of the impulse responses is set to
-% conf.N. This is applied directly if you load a HRTF set with read_irs().
-% Only set this to true if you really know what you are doing.
-conf.ir.useoriglength = false; % boolean
-%
 % Use interpolation to get the desired HRTF for binaural simulation. If this is
 % disabled the HRTF returned by a nearest neighbour search is used instead.
 % Depending on the geometry of the measured HRTF data set, the interpolation
 % will be done between the two or three nearest HRTFs.
 conf.ir.useinterpolation = true; % boolean
+%
+% If you have HRIRs in the form of the SimpleFreeFieldHRIR SOFA convention, zeros
+% are padded at the beginning of every impulse response corresponding to their
+% measurement distance. If you know that your measured HRIRs already have a
+% given pre-delay, add the pre-delay here and accordingly less zero padding will
+% be applied. In this case you can lose samples from the beginning of the
+% impulse response. If you are not sure, choose a value of 0.
+conf.ir.hrirpredelay = 0; % / samples
 %
 % === Headphone compensation ===
 % Headphone compensation
@@ -325,7 +366,7 @@ conf.plot.usenormalisation = true; % boolean
 %   'center'    - center of sound field == 1
 %   'max'       - max of sound field == 1
 conf.plot.normalisation = 'auto'; % string
-% Plot mode (uses the GraphDefaults function). Avaiable modes are:
+% Plot mode (uses the GraphDefaults function). Available modes are:
 %   'monitor'   - displays the plot on the monitor
 %   'paper'     - eps output in conf.plot.outfile
 %   'png'       - png output in conf.plot.outfile
@@ -341,7 +382,7 @@ conf.plot.caxis = []; % [min max]
 % http://www.sandia.gov/~kmorel/documents/ColorMaps/
 % If you set 'gray' or 'grey' you will get a colormap ranging from white to
 % black. In addition you can add every other map you can specify in
-% Matlab/Octave. For example to get the Matlab default colormap ser 'jet'.
+% Matlab/Octave. For example to get the Matlab default colormap set 'jet'.
 conf.plot.colormap = 'default'; % string
 % Plot loudspeakers in the sound field plots
 conf.plot.loudspeakers = true; % boolean

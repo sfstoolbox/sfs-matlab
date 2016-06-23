@@ -5,50 +5,46 @@ function z = convolution(x,y)
 %
 %   Input parameters:
 %       x       - matrix/vector with signals as columns
-%       y       - matrix/vector with signals as columns, note that only one of
-%                 the signals can be a matrix
+%       y       - matrix/vector with signals as columns
 %
 %   Output parameters:
 %       z       - convolved signal
 %
-%   CONVOLUTION(x,y) convolves the signals given with x and y. One of the input
-%   signals can be a matrix containing the signals as column vectors, the other
-%   one has to be a column vector. The convolution is done in the frequency
-%   domain and it is checked if we have only real signals to speed up the
-%   calculation. The length of z is length(x)+length(y)-1.
+%   CONVOLUTION(x,y) convolves the signals given with x and y. If both input
+%   signals are matrices, they must contain the same number of signals (columns).
+%   The convolution is done in the frequency domain and it is checked if we have
+%   only real signals to speed up the calculation. The length of z is
+%   length(x)+length(y)-1.
 %
 %   See also: fft_real, ifft_real, fft, ifft
 
 %*****************************************************************************
-% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
@@ -57,23 +53,23 @@ nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
 isargmatrix(x,y);
-% Check if only one of the inputs is a matrix
-if all(size(x)>1) && all(size(y)>1)
-    error('%s: Only one of the inputs can be multi-dimensional.', ...
-        upper(mfilename));
-end
 % Ensure column vectors
 if ~all(size(x)>1), x=column_vector(x); end
 if ~all(size(y)>1), y=column_vector(y); end
-
-
-%% ===== Computation =====================================================
-% If one of the input signals is a matrix repmat the vector of the other signal
-if all(size(x)>1)
+% If the inputs are two matrices, check if the number of signals is the same
+if all(size(x)>1) && all(size(y)>1)
+    if size(x,2)~=size(y,2)
+        error(['%s: Two input matrices must have the same number of signals '...
+            '(columns).'],upper(mfilename));
+    end
+% If the inputs are a matrix and a vector, repmat the vector
+elseif all(size(x)>1)
     y = repmat(y,1,size(x,2));
 elseif all(size(y)>1)
     x = repmat(x,1,size(y,2));
 end
+
+%% ===== Computation =====================================================
 % Length of output signal
 N = size(x,1)+size(y,1)-1;
 % Convolve the signals in frequency domain

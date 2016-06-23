@@ -1,7 +1,17 @@
-Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
+2.2.0 ()
+    - fix impulse response interpolation for three points
+    - add the ability to apply modal weighting window to NFC-HOA in time domain
+    - change license to MIT
+    - update delayline() config settings
+    - add Lagrange and Thiran filters to delayline()
+    - replace wavread and warwrite by audioread and savewav
+    - convolution() excepts now two matrices as input
+    - allow headphone compensation filter to be a one- or two-channel wav file
+    - add new online doc at http://matlab.sfstoolbox.org/
+    - fix greens_function_mono() for plane wave and 3D
+    - replace conf.ir.useoriglength by conf.ir.hrirpredelay
 
-2.1.0 ()
-
+2.1.0 (10. March 2016)
     - make conf struct mandatory
     - add new start message
     - fix handling of 0 in least squares fractional delays
@@ -12,12 +22,12 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
     - rename chromajs colormap to yellowred
     - fix tapering_window() for non-continuous secondary sources
     - remove cubehelix colormap as it is part of Octave
-    - add conf.wfs.removedelay option with is useful, if you have more than one
+    - add conf.wfs.t0 option which is useful, if you have more than one
       virtual source
     - virtual line sources are now available for monochromatic WFS and NFC-HOA
+    - allow arbritrary orders for time-domain NFC-HOA simulations
 
 2.0.0 (26. October 2015)
-
     - add support for SOFA
     - add SOFA convention SimpleFreeFieldHRIR
     - add SOFA convention MultiSpeakerBRIR
@@ -39,7 +49,6 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
     - lots of small bug fixes
 
 1.2.0 (2. June 2015)
-
     - add PDF documentation "Theory of Sound Field Synthesis"
     - fix remaining usegnuplot config entry
     - change default dB color map to chromajs
@@ -48,7 +57,6 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
     - remove noise() function, use the one from the LTFAT Toolbox instead
 
 1.1.0 (2. April 2015)
-
     - fix amplitude bug in get_ir() and ir_generic()
     - remove direct gnuplot plotting
     - add support for local Wave Field Synthesis
@@ -57,7 +65,6 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
     - correct the sign for Wave Field Synthesis driving functions
 
 1.0.1 (4 August 2014)
-
     - rms() works now also with row vectors in order to be compatible with the
       Auditory Modeling Toolbox
     - fixed handling of number of secondary sources for a box shaped array
@@ -65,7 +72,6 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
     - corrected NFC-HOA driving functions for off-center arrays
 
 1.0.0 (27 March 2014)
-
     - added references for all driving functions
     - streamlined nested conf settings; e.g. now it is no longer neccessary to set
       conf.ir.hcompfile if conf.usehcomp == false
@@ -80,7 +86,6 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
     - several small fixes
 
 1.0.0-beta2 (5 December 2013)
-
     - rms() now works for arbitrary arrays
     - speedup of delayline() and HRTF extrapolation
     - delayline() now works with more than one channel
@@ -92,7 +97,6 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
     - several minor fixes
 
 1.0.0-beta (26 August 2013)
-
     - bandpass() can now handle arbritrary frequency limits
     - sphbesselh_zeros() comes now with precomputed zeros for an order up to
       1000
@@ -129,12 +133,10 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
       into xs. For a focused source xs is now [1x6]
 
 0.2.5 (12 July 2013)
-
     - fixed a bug causing the wrong loudspeaker position in the output of
       generic_wfs()
 
 0.2.4 (4 June 2013)
-
     - added a documentation to the github README
     - reworked the plotting, now simple saving to png is possible
     - added a narginchk function for older Matlab versions
@@ -142,16 +144,14 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
     - lots of small bugs were fixed
 
 0.2.3 (9 April 2013)
-
     - summed up line, point, ... sources to green_function for mono and imp
     - introduced global wave_field functions for mono and imp
-    - fixed binaural simulations for NFCHOA
+    - fixed binaural simulations for NFC-HOA
     - removed compatibility for octave versions <3.6
     - fixed a critical bug for the HRTF farfield extrapolation, due to the new
       secondary source selection behavior
 
 0.2.2 (27 November 2012)
-
     - added functions to calculate the sound pressure for monochromatic WFS at a
       single point in analogy to the point_source function
     - changed the behavior of secondary_source_selection to returning a new x0
@@ -161,18 +161,17 @@ Changes in the Sound Field Synthesis-Toolbox. Recent changes on top.
       point always in the direction of the reference point) 
 
 0.2.1 (15 June 2012)
-    
-    - added NFCHOA 2.5D monochromatic
-    - added NFCHOA 2.5D binaural simulations
+    - added NFC-HOA 2.5D monochromatic
+    - added NFC-HOA 2.5D binaural simulations
     - added SDM 2.5D monochromatic
-    - make NFCHOA work under Octave
-    - fixed direction of plane waves and point sources for NFCHOA time domain
+    - make NFC-HOA work under Octave
+    - fixed direction of plane waves and point sources for NFC-HOA time domain
       simulations
     - changed syntax for wave_field_* and driving_* functions:
-        xs,f,src => xs,src,f
-        xs,L,src => xs,src,L
-        xs,L,f,src => xs,src,f,L
+
+        * xs,f,src => xs,src,f
+        * xs,L,src => xs,src,L
+        * xs,L,f,src => xs,src,f,L
 
 0.2.0 (25 April 2012)
-
     - first public release (under the GPLv3+ license)

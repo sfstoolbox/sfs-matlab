@@ -1,5 +1,5 @@
 function win = tapering_window(x0,conf)
-%TAPWIN generate a tapering window for a loudspeaker array
+%TAPERING_WINDOW generate a tapering window for a loudspeaker array
 %
 %   Usage: win = tapering_window(x0,conf)
 %
@@ -8,47 +8,43 @@ function win = tapering_window(x0,conf)
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       win     - tapering window (nlsx1)
+%       win     - tapering window [nlsx1]
 %
-%   TAPERING_WINDOW(xo,conf) generates a tapering window for a secondary source
+%   TAPERING_WINDOW(x0,conf) generates a tapering window for a secondary source
 %   distribution given by x0. The window is created from a squared Hann window.
+%   The strength of the tapering is controlled by the conf.tapwinlen setting.
 %   If the secondary source distribution has some gaps, every joint part gets
 %   its own tapering.
-%   The mean distance of the secondary sources is calculated within this
-%   function in order to identify edges of the array.
 %
 %   See also: secondary_source_position, sound_field_mono_wfs, hann
 
 %*****************************************************************************
-% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
@@ -97,16 +93,16 @@ if usetapwin && nls>2 && ...
     % If we have any edges in our array apply a tapering window for every array
     % part, consisting of two edges
     if ~isempty(edges)
-        edges = sort(edges);
-        if edges(1)==1
+        if edges(end)==1
             % First and last entry of secondary source is an edge
+            edges = circshift(edges,[1,0]);
             start_idx = 1;
         else
             % First and last entry of secondary source is not an edge
             part_nls = edges(1) + nls-edges(end)+1;
             part_win = part_hann_win(part_nls,tapwinlen);
             win(1:edges(1)) = part_win(end-edges(1)+1:end);
-            win(edges(end):end) = part_win(1:end-edges(end)+1);
+            win(edges(end):end) = part_win(1:end-edges(1));
             start_idx = 2;
         end
         % Generate tapwin for every array part within the x0 vector

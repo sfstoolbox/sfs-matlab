@@ -29,35 +29,32 @@ function [d,delay,weight,delay_offset] = driving_function_imp_wfs(x0,xs,src,conf
 %   See also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs
 
 %*****************************************************************************
-% Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2016 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
@@ -75,7 +72,7 @@ isargstruct(conf);
 fs = conf.fs;
 N = conf.N;
 c = conf.c;
-removedelay = conf.wfs.removedelay;
+t0 = conf.wfs.t0;
 
 
 %% ===== Computation =====================================================
@@ -87,7 +84,7 @@ nx0 = x0(:,4:6);
 x0 = x0(:,1:3);
 
 % Source position
-xs = repmat(xs(1:3),[size(x0,1) 1]);
+xs = repmat(xs,[size(x0,1) 1]);
 
 % Get the delay and weighting factors
 if strcmp('pw',src)
@@ -112,13 +109,13 @@ else
     error('%s: %s is not a known source type.',upper(mfilename),src);
 end
 
-if removedelay
-    % Set minimum delay to 0, in order to begin always at t=0 with the first
+if strcmp('system',t0)
+    % Set minimum delay to 0, in order to begin always at t=1 with the first
     % wave front at any secondary source
     delay = delay - min(delay);
     % Return extra offset due to prefilter
     delay_offset = prefilter_delay;
-else
+elseif strcmp('source',t0)
     % Add extra delay to ensure causality at all secondary sources (delay>0)
     [diameter,center] = secondary_source_diameter(conf);
     t0 = diameter/c;
@@ -139,10 +136,15 @@ else
     % Return extra added delay. This is can be used to ensure that the virtual
     % source always starts at t = 0.
     delay_offset = t0 + prefilter_delay;
+else
+    error('%s: t0 needs to be "system" or "source" and not "%s".', ...
+          upper(mfilename),t0);
 end
 % Append zeros at the end of the driving function. This is necessary, because
 % the delayline function cuts into the end of the driving signals in order to
 % delay them. NOTE: this can be changed by the conf.N setting
 d_proto = repmat([row_vector(pulse) zeros(1,N-length(pulse))]',1,size(x0,1));
 % Shift and weight prototype driving function
-d = delayline(d_proto,delay*fs,weight,conf);
+[d, delayline_delay] = delayline(d_proto,delay*fs,weight,conf);
+% Add delay offset of delayline
+delay_offset = delay_offset + delayline_delay;

@@ -331,7 +331,14 @@ conf.localsfs.vss.consider_secondary_sources = true;
 % disabled the HRTF returned by a nearest neighbour search is used instead.
 % Depending on the geometry of the measured HRTF data set, the interpolation
 % will be done between the two or three nearest HRTFs.
-conf.ir.useinterpolation = true; % boolean
+conf.ir.useinterpolation = false; % boolean
+%
+% You can choose between the following interpolation methods:
+%   'simple'      - Interpolation in the time domain performed samplewise. This
+%                   does not heed the time of arrival of the HRTFs.
+%   'freqdomain'  - Interpolation in the frequency domain performed separately
+%                   for magnitude and phase of the HRTF.
+conf.ir.interpolationmethod = 'freqdomain';
 %
 % If you have HRIRs in the form of the SimpleFreeFieldHRIR SOFA convention, zeros
 % are padded at the beginning of every impulse response corresponding to their

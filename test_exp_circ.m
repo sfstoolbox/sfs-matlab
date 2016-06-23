@@ -23,7 +23,7 @@ Z = 0;
 
 f = 1000;
 
-xq = [ 0, 0, 0];
+xq = [0, 0, 0];
 
 conf.xref = xq;
 
@@ -36,13 +36,13 @@ Ncet = circexp_truncation_order(norm(xt)+rt, f, 1e-6, conf);  % 2.5DHOA order fo
 % regular circular expansion at xq
 Apwm = circexp_mono_pw(ns, Nce,f,xq,conf);
 Alsm = circexp_mono_ls(xs, 'R', Nce,f,xq,conf);
-% regular circular expansion at xq+xt
+% regular circular expansion at xq+xt (x' = x - xt)
 Apwm_t = circexp_mono_pw(ns,Nce,f,xq+xt,conf);
 Alsm_t = circexp_mono_ls(xs, 'R', Nce,f,xq+xt,conf);
-% regular-to-regular cylindrical reexpansion (translatory shift)
-[RR, RRm] = circexp_mono_translation(xt,'RR',Nce,f,conf);
-Apwm_re = RRm*Apwm;
-Alsm_re = RRm*Alsm;
+% regular-to-regular cylindrical reexpansion (translatory shift of -xt)
+[RR, RRm] = circexp_mono_translation(-xt,'RR',Nce,f,conf);
+Apwm_re = RR*Apwm_t;
+Alsm_re = RR*Alsm_t;
 
 %% Sound Fields
 % Evaluate spherical basis functions on regular grid
@@ -58,8 +58,8 @@ Plsm = sound_field_mono_circbasis(Alsm, Jm, Ym);
 Ppwm_t = sound_field_mono_circbasis(Apwm_t, Jm_t, Ym_t);
 Plsm_t = sound_field_mono_circbasis(Alsm_t, Jm_t, Ym_t);
 % compute field for cylindrical reexpansion (translatory shift)
-Ppwm_re = sound_field_mono_circbasis(Apwm_re, Jm, Ym_t);
-Plsm_re = sound_field_mono_circbasis(Alsm_re, Jm, Ym_t);
+Ppwm_re = sound_field_mono_circbasis(Apwm_re, Jm, Ym);
+Plsm_re = sound_field_mono_circbasis(Alsm_re, Jm, Ym);
 % plot
 
 plot_sound_field(Ppwm ,X, Y, Z, [], conf);

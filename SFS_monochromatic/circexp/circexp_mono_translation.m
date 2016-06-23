@@ -104,8 +104,8 @@ for n=-Nce:Nce
   l = 0;
   for m=-Nce:Nce
     l = l+1;
-    EFm(s,l) = circbasis(n-m) .* exp(-1j.*(n-m).*phit);
-    EF(s,l) = EFm(s,l) .* (-1)^(n-m);
+    EF(s,l) = circbasis(m-n) .* exp(+1j.*(m-n).*phit);
+    EFm(s,l) = EF(s,l) .* (-1)^(n-m);    
   end
 end
 

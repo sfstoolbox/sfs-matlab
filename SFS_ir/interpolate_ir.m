@@ -65,7 +65,7 @@ narginchk(nargmin,nargmax);
 %% ===== Configuration ==================================================
 useinterpolation = conf.ir.useinterpolation;
 % Check for old configuration
-if ~isfield(conf.ir,'interpolationmethod')
+if useinterpolation && ~isfield(conf.ir,'interpolationmethod')
     warning('SFS:irs_intpolmethod',...
         'no interpolation method provided, will use method ''simple''.');
     interpolationmethod = 'simple';

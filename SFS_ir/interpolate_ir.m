@@ -64,6 +64,14 @@ narginchk(nargmin,nargmax);
 
 %% ===== Configuration ==================================================
 useinterpolation = conf.ir.useinterpolation;
+% Check for old configuration
+if ~isfield(conf.ir,'interpolationmethod')
+    warning('SFS:irs_intpolmethod',...
+        'no interpolation method provided, will use method ''simple''.');
+    interpolationmethod = 'simple';
+else
+    interpolationmethod = conf.ir.interpolationmethod;
+end
 % Precision of the wanted angle. If an impulse response within the given
 % precision could be found no interpolation is applied.
 prec = 0.001; % ~ 0.05 deg
@@ -88,8 +96,33 @@ else
              'and (%.1f,%.1f) deg.'], ...
             deg(x0(1,1)), deg(x0(2,1)), ...
             deg(x0(1,2)), deg(x0(2,2)));
-        ir_new(1,1,:) = interpolation(squeeze(ir(1:2,1,:))',x0(:,1:2),xs);
-        ir_new(1,2,:) = interpolation(squeeze(ir(1:2,2,:))',x0(:,1:2),xs);
+        switch interpolationmethod
+            case 'simple'
+                ir_new(1,1,:) = interpolation(squeeze(ir(1:2,1,:))',x0(:,1:2),xs);
+                ir_new(1,2,:) = interpolation(squeeze(ir(1:2,2,:))',x0(:,1:2),xs);
+            case 'freqdomain'
+                TF = fft(ir,[],3);
+                % Calculate interpolation for magnitude and phase separately
+                mag = abs(TF);
+                pha = unwrap(angle(TF),[],3);
+                % Calculate interpolation only for the first half of the spectrum
+                idx_half = floor(size(mag,3)/2)+1;
+                mag_new(1,1,:) = interpolation(squeeze(mag(1:2,1,1:idx_half))',...
+                    x0(:,1:2),xs);
+                mag_new(1,2,:) = interpolation(squeeze(mag(1:2,2,1:idx_half))',...
+                    x0(:,1:2),xs);
+                pha_new(1,1,:) = interpolation(squeeze(pha(1:2,1,1:idx_half))',...
+                    x0(:,1:2),xs);
+                pha_new(1,2,:) = interpolation(squeeze(pha(1:2,2,1:idx_half))',...
+                    x0(:,1:2),xs);
+                ir_new(1,1,:) = ifft(squeeze(mag_new(1,1,:)...
+                    .*exp(1i*pha_new(1,1,:))),size(mag,3),'symmetric');
+                ir_new(1,2,:) = ifft(squeeze(mag_new(1,2,:)...
+                    .*exp(1i*pha_new(1,1,:))),size(mag,3),'symmetric');
+            otherwise 
+                error('%s: %s is an unknown interpolation method.',...
+                    upper(mfilename),interpolationmethod);
+        end
     else
         % --- 2D interpolation ---
         warning('SFS:irs_intpol3D',...

@@ -331,7 +331,7 @@ conf.localsfs.vss.consider_secondary_sources = true;
 % disabled the HRTF returned by a nearest neighbour search is used instead.
 % Depending on the geometry of the measured HRTF data set, the interpolation
 % will be done between the two or three nearest HRTFs.
-conf.ir.useinterpolation = false; % boolean
+conf.ir.useinterpolation = true; % boolean
 %
 % You can choose between the following interpolation methods:
 %   'simple'      - Interpolation in the time domain performed samplewise. This

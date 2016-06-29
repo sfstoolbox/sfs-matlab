@@ -97,7 +97,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         delay = -1./c .* r;
         weight = 1./(2.*pi) .* vector_product(xs-x0,nx0,2) ./ r.^2;
         %
-    if strcmp('legacy',driving_functions)
+    elseif strcmp('legacy',driving_functions)
         % --- Old SFS Toolbox default ------------------------------------
         % d using a focused point source as source model
         %

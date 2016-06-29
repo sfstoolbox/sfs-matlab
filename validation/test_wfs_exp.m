@@ -48,7 +48,9 @@ conf.plot.usenormalisation = true;
 conf.plot.normalisation = 'center';
 conf.driving_functions = 'default';
 conf.usetapwin = false;
-Nce = 15;
+
+rt = 1.0;  % "size" of the sweet spot
+Nce = circexp_truncation_order(rt, f, 1e-6, conf);  % order for sweet spot
 
 % test scenarios
 scenarios = { ...
@@ -62,6 +64,16 @@ scenarios = { ...
     'WFS', '3D', 'sphere', 'pw', [ 0.5  0.5  0.0], 'sph'; ...
     'WFS', '3D', 'sphere', 'ls', [ 0.0  2.5  0.0], 'sph'; ...
     'WFS', '3D', 'sphere', 'ps', [ 0.0  2.5  0.0], 'sph'; ...
+    'LWFS', '2D',   'circular', 'pw', [ 0.5  0.5  0.0], 'circ'; ...
+    'LWFS', '2D',   'circular', 'ls', [ 0.0  2.5  0.0], 'circ'; ...
+    'LWFS', '2.5D', 'circular', 'pw', [ 0.5  0.5  0.0], 'circ'; ...
+    'LWFS', '2.5D', 'circular', 'pw', [ 0.5  0.5  0.0], 'sph'; ...
+    'LWFS', '2.5D', 'circular', 'ls', [ 0.0  2.5  0.0], 'circ'; ...
+    'LWFS', '2.5D', 'circular', 'ls', [ 0.0  2.5  0.0], 'sph'; ...
+    'LWFS', '2.5D', 'circular', 'ps', [ 0.0  2.5  0.0], 'sph'; ...
+    'LWFS', '3D', 'sphere', 'pw', [ 0.5  0.5  0.0], 'sph'; ...
+    'LWFS', '3D', 'sphere', 'ls', [ 0.0  2.5  0.0], 'sph'; ...
+    'LWFS', '3D', 'sphere', 'ps', [ 0.0  2.5  0.0], 'sph'; ...
 };
 
 % Start testing
@@ -138,7 +150,27 @@ for ii=1:size(scenarios)
       D = Dfunc(x0(:,1:3),x0(:,4:6),A,'R',f,xq,conf);
       P = sound_field_mono(X,Y,Z,x0,secsrc,D,f,conf);
       plot_sound_field(P, X, Y, Z, x0, conf);
+    % ===== local WFS ====================================================
+    elseif strcmp('LWFS',method)
+      x0 = secondary_source_selection(x0,xs,src);
+      x0 = secondary_source_tapering(x0,conf); 
+      
+      % compute timereversed incident field
+      Tfunc = str2func([scenarios{ii,6}, 'exp_mono_timereverse']); 
+      A_rev = Tfunc(A);
+      
+      % compute scattered, timereversed field
+      Sfunc = str2func([scenarios{ii,6}, 'exp_mono_scatter']); 
+      B = Sfunc(A_rev, rt, inf, f, conf);
+      
+      % compute driving function
+      Dfunc = str2func(['driving_function_mono_wfs_', scenarios{ii,6}, 'exp']); 
+      D = Dfunc(x0(:,1:3),x0(:,4:6),B,'S',f,xq,conf);
+      
+      P = sound_field_mono(X,Y,Z,x0,secsrc,conj(D),f,conf);
+      plot_sound_field(P, X, Y, Z, x0, conf);      
     end
+      
     
     title(sprintf('%s %s of %s. exp. of %s', conf.dimension, method, ...
       scenarios{ii,6}, src), 'Interpreter', 'None');    

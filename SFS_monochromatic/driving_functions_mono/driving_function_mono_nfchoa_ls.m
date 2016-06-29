@@ -88,7 +88,8 @@ if strcmp('2D',dimension)
 
     % === 2-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % 2D line source
         %
@@ -105,7 +106,7 @@ if strcmp('2D',dimension)
                 .* besselh(m,2,omega./c.*r) ./ besselh(m,2,omega./c.*r0) ...
                 .* exp(1i.*m.*(phi0-phi));
         end
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2D line source.'],upper(mfilename),driving_functions);
     end
@@ -115,7 +116,8 @@ elseif strcmp('2.5D',dimension)
 
     % === 2.5-Dimensional ================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D line source
         %
@@ -133,7 +135,7 @@ elseif strcmp('2.5D',dimension)
                 ./ (omega./c .* sphbesselh(abs(m),2,omega./c.*r0)) ...
                 .* exp(1i.*m.*(phi0-phi));
         end
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D line source.'],upper(mfilename),driving_functions);
     end
@@ -151,8 +153,8 @@ elseif strcmp('3D',dimension)
     [alpha0,beta0,r0] = cart2sph(x00(:,1),x00(:,2),x00(:,3));
     [alpha,~,~] = cart2sph(xs(:,1),xs(:,2),xs(:,3));
 
-
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % 3D line source
         %
@@ -170,14 +172,14 @@ elseif strcmp('3D',dimension)
             for m=-n:n
                 D = D + 1 ./ (2.*r0.^2) ...
                     .* (1i).^(m-n) .* besselh(m,2,omega./c.*r) ...
-                    ./ (omega./c .* sphbesselh(n,2,omega./c*.r0)) ...
+                    ./ (omega./c .* sphbesselh(n,2,omega./c.*r0)) ...
                     .* conj(sphharmonics(n,m,0,alpha)) ...
                     .* sphharmonics(n,m,beta0,alpha0);
                 %D = D .* sqrt(1i.*omega./c); % equalization (optional)
             end
         end
 
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 3D line source.'],upper(mfilename),driving_functions);
     end

@@ -84,7 +84,8 @@ if strcmp('2D',dimension)
 
     % === 2-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % 2D plane wave
         %
@@ -101,7 +102,7 @@ if strcmp('2D',dimension)
                 .* (1i).^(-m) ./ besselh(m,2,omega./c.*r0) ...
                 .* exp(1i.*m.*(phi0-phi_pw));
         end
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2D plane wave.'],upper(mfilename),driving_functions);
     end
@@ -111,7 +112,8 @@ elseif strcmp('2.5D',dimension)
 
     % === 2.5-Dimensional ================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D plane wave
         %
@@ -126,10 +128,10 @@ elseif strcmp('2.5D',dimension)
         for m=-N:N
             D = D - 2./r0 ...
                 .* (1i).^(-abs(m)) ...
-                ./ (1i .* w/c .* sphbesselh(abs(m),2,omega./c.*r0)) ...
+                ./ (1i .* omega/c .* sphbesselh(abs(m),2,omega./c.*r0)) ...
                 .* exp(1i.*m.*(phi0-phi_pw));
         end
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D plane wave.'],upper(mfilename),driving_functions);
     end
@@ -139,7 +141,8 @@ elseif strcmp('3D',dimension)
 
     % === 3-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % 3D plane wave
         %
@@ -161,7 +164,7 @@ elseif strcmp('3D',dimension)
                     .* sphharmonics(n,m,theta0,phi0);
             end
         end
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 3D plane wave.'],upper(mfilename),driving_functions);
     end

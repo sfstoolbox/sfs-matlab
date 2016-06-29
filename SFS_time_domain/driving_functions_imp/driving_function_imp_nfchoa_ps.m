@@ -77,10 +77,11 @@ if strcmp('2D',dimension)
 
     % === 2-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2D point source.'],upper(mfilename),driving_functions);
     end
@@ -90,16 +91,16 @@ elseif strcmp('2.5D',dimension)
 
     % === 2.5-Dimensional ================================================
 
-    % Reference point
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D using a point source as source model
         %
         [sos,~] = zp2sos(z*c/r,z*c/R,1,'up','none');
         %
-        % compare Spors et al. (2011), eq. (11)
+        % Compare Spors et al. (2011), eq. (11)
         %
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D point source.'],upper(mfilename),driving_functions);
     end
@@ -109,10 +110,11 @@ elseif strcmp('3D',dimension)
 
     % === 3-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 3D point source.'],upper(mfilename),driving_functions);
     end

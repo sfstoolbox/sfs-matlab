@@ -1,5 +1,5 @@
 function D = driving_function_mono_wfs_circexp(x0,n0,Pm,mode,f,xq,conf)
-%computes the wfs driving functions for a sound field expressed by cylindrical 
+%computes the wfs driving functions for a sound field expressed by cylindrical
 %expansion coefficients.
 %
 %   Usage: D = driving_function_mono_wfs_circexp(x0,n0,Pm,mode,f,xq,conf)
@@ -68,6 +68,7 @@ isargstruct(conf);
 isargposition(xq);
 
 %% ===== Configuration ==================================================
+xref = conf.xref;
 c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
@@ -93,13 +94,13 @@ Gradr = zeros(size(x0,1),1);
 Gradphi = zeros(size(x0,1),1);
 Gradz = zeros(size(x0,1),1);
 
-% directional weights for conversion spherical gradient into carthesian 
-% coordinates + point product with normal vector n0 (directional derivative 
+% directional weights for conversion spherical gradient into carthesian
+% coordinates + point product with normal vector n0 (directional derivative
 % in cartesian coordinates)
 Sn0r     =  cos(phi0).*n0(:,1)...
-         +  sin(phi0).*n0(:,2);
+  +  sin(phi0).*n0(:,2);
 Sn0phi   = -sin(phi0).*n0(:,1)...
-         +  cos(phi0).*n0(:,2);
+  +  cos(phi0).*n0(:,2);
 Sn0z     =            n0(:,3);
 
 % select suitable basis function
@@ -119,45 +120,53 @@ end
 % indexing the expansion coefficients
 l = 0;
 
-if strcmp('2D',dimension) || strcmp('3D',dimension)
-  
-  % === 2- or 3-Dimensional ============================================
-  
-  if (strcmp('default',driving_functions))    
-    % --- SFS Toolbox ------------------------------------------------
-    %                d    
-    % D(x0, w) = -2 --- P(x0,w)
-    %               d n
-    % with cylindrical expansion of the sound field:
-    %           \~~    oo       
-    % P(x,w) =  >        B   F (x-xq) 
-    %           /__ n=-oo  n  n
-    %
-    % where F = {R,S}.
-    %
-    % regular cylindrical basis functions:
-    % 
-    % R  (x) = J (kr)  . exp(j n phi))
-    %  n        n       
-    % singular cylindrical basis functions
-    %          (2) 
-    % S (x) = H   (kr) . exp(j n phi)
-    %  n       n
- 
-    for n=-Nce:Nce
-      l = l + 1;      
-      cn_prime = k.*circbasis_derived(n,kr0);
-      cn = circbasis(n,kr0);
-      Yn = exp(1j.*n.*phi0);      
-      Gradr   = Gradr   +       ( Pm(l).*cn_prime.*Yn  );
-      Gradphi = Gradphi + 1./r0.*( Pm(l).*cn.*1j.*n.*Yn );
+switch dimension
+  case {'2D', '2.5D', '3D'}
+    
+    % === 2- or 3-Dimensional ============================================
+    
+    if (strcmp('default',driving_functions))
+      % --- SFS Toolbox ------------------------------------------------
+      %                d
+      % D(x0, w) = -2 --- P(x0,w)
+      %               d n
+      % with cylindrical expansion of the sound field:
+      %           \~~    oo
+      % P(x,w) =  >        B   F (x-xq)
+      %           /__ n=-oo  n  n
+      %
+      % where F = {R,S}.
+      %
+      % regular cylindrical basis functions:
+      %
+      % R  (x) = J (kr)  . exp(j n phi))
+      %  n        n
+      % singular cylindrical basis functions
+      %          (2)
+      % S (x) = H   (kr) . exp(j n phi)
+      %  n       n
+      
+      for n=-Nce:Nce
+        l = l + 1;
+        cn_prime = k.*circbasis_derived(n,kr0);
+        cn = circbasis(n,kr0);
+        Yn = exp(1j.*n.*phi0);
+        Gradr   = Gradr   +       ( Pm(l).*cn_prime.*Yn  );
+        Gradphi = Gradphi + 1./r0.*( Pm(l).*cn.*1j.*n.*Yn );
+      end
+      % directional gradient
+      D = -2*( Sn0r.*Gradr + Sn0phi.*Gradphi + Sn0z.*Gradz );
+      
+      % 2.5D correction factor
+      if strcmp('2.5D', dimension)
+        xref = repmat(xref,[size(x0,1) 1]);
+        g0 = sqrt( 2*pi*vector_norm(xref-x0, 2)./(1j.*k));
+        D = D.*g0;
+      end
+    else
+      error(['%s: %s, this type of driving function is not implemented ', ...
+        'for 2D/3D.'],upper(mfilename),driving_functions);
     end
-    % directional gradient
-    D = -2*( Sn0r.*Gradr + Sn0phi.*Gradphi + Sn0z.*Gradz );
-  else
-    error(['%s: %s, this type of driving function is not implemented ', ...
-      'for 2D/3D.'],upper(mfilename),driving_functions);
-  end  
-else
-  error('%s: the dimension %s is unknown.',upper(mfilename),dimension);
+  otherwise
+    error('%s: the dimension %s is unknown.',upper(mfilename),dimension);
 end

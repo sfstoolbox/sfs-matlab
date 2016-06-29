@@ -78,10 +78,12 @@ if strcmp('2D',dimension)
 
     % Ensure 2D
     nk = nk(:,1:2);
-    if strcmp('default',driving_functions)
+
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2D plane wave.'],upper(mfilename),driving_functions);
     end
@@ -91,8 +93,8 @@ elseif strcmp('2.5D',dimension)
 
     % === 2.5-Dimensional ================================================
 
-    % Reference point
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % D_2.5D using a plane wave as source model
         %
@@ -108,7 +110,7 @@ elseif strcmp('2.5D',dimension)
         D(idx) = 4*1i*exp(-1i*omega/c*nk(2).*xref(2)) / ...
             besselh(0,2,omega/c.*nk(2).*xref(2));
         %
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D plane wave.'],upper(mfilename),driving_functions);
     end
@@ -118,10 +120,11 @@ elseif strcmp('3D',dimension)
 
     % === 3-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 3D plane wave.'],upper(mfilename),driving_functions);
     end

@@ -87,10 +87,11 @@ if strcmp('2D',dimension)
 
     % === 2-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2D point source.'],upper(mfilename),driving_functions);
     end
@@ -102,7 +103,9 @@ elseif strcmp('2.5D',dimension)
 
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
-    if strcmp('default',driving_functions)
+
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D point source
         %
@@ -119,7 +122,7 @@ elseif strcmp('2.5D',dimension)
                 ./ sphbesselh(abs(m),2,omega./c.*r0) ...
                 .* exp(1i.*m.*(phi0-phi));
         end
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D point source.'],upper(mfilename),driving_functions);
     end
@@ -129,7 +132,8 @@ elseif strcmp('3D',dimension)
 
     % === 3-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % 3D point source
         %
@@ -152,7 +156,7 @@ elseif strcmp('3D',dimension)
                     .* sphharmonics(n,m,theta0,phi0);
             end
         end
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 3D point source.'],upper(mfilename),driving_functions);
     end

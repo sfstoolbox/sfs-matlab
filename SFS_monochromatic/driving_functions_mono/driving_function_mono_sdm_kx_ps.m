@@ -84,10 +84,12 @@ if strcmp('2D',dimension)
 
     % Ensure 2D
     xs = xs(1:2);
-    if strcmp('default',driving_functions)
+
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2D point source.'],upper(mfilename),driving_functions);
     end
@@ -97,8 +99,8 @@ elseif strcmp('2.5D',dimension)
 
     % === 2.5-Dimensional ================================================
 
-    % Reference point
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % D_25D(kx,w) = e^(i kx xs) ...
         %                                   ____________
@@ -120,8 +122,8 @@ elseif strcmp('2.5D',dimension)
                 besselk(1,sqrt(kx(idxev).^2 - (omega/c).^2)*abs(xref(2)-xs(2))) ./ ...
                 besselk(1,sqrt(kx(idxev).^2 - (omega/c).^2)*abs(xref(2)-x0(2)));
         end
-
-    else
+        %
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D point source.'],upper(mfilename),driving_functions);
     end
@@ -131,10 +133,11 @@ elseif strcmp('3D',dimension)
 
     % === 3-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 3D point source.'],upper(mfilename),driving_functions);
     end

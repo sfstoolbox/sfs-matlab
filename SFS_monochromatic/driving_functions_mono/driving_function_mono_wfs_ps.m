@@ -94,7 +94,8 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
 
     % === 2- or 3-Dimensional ============================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % D using a point source and the approximation w/c|x0-xs|>>1
         %
@@ -111,7 +112,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
             .* vector_product(x0-xs,nx0,2) ./ r.^2 ...
             .* exp(-1i.*omega./c.*r);
         %
-    elseif strcmp('point_source',driving_functions)
+    case 'point_source'
         % D using a point source as source model
         %
         %            1  / i w      1    \  (x0-xs) nx0
@@ -127,7 +128,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
             .* vector_product(x0-xs,nx0,2) ./ r.^2 ...
             .* exp(-1i.*omega./c.*r);
         %
-    elseif strcmp('line_source',driving_functions)
+    case 'line_source'
         % D using a line source as source model (truly 2D model)
         %
         %             1  i w (x0-xs) nx0  (2)/ w         \
@@ -143,7 +144,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
             .* vector_product(x0-xs,nx0,2) ./ r ...
             .* besselh(1,2,omega./c.*r);
         %
-    elseif strcmp('legacy',driving_functions)
+    case 'legacy'
         % --- Old SFS Toolbox default ------------------------------------
         % D using a point sink and large distance approximation
         %
@@ -160,7 +161,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
             .* vector_product(x0-xs,nx0,2) ./ r.^(3./2) ...
             .* exp(-1i.*omega./c.*r);
         %
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a point source.'],upper(mfilename),driving_functions);
     end
@@ -172,6 +173,7 @@ elseif strcmp('2.5D',dimension)
 
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
+
     switch driving_functions
     case {'default', 'reference_point', 'opperschall', 'volk2010'}
         % Driving function with only one stationary phase approximation,

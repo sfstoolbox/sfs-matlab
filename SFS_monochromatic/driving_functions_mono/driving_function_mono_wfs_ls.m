@@ -77,7 +77,8 @@ if strcmp('2D',dimension)
 
     % === 2-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % D using a line source
         %
@@ -94,7 +95,7 @@ if strcmp('2D',dimension)
             .* vector_product(x0-xs,nx0,2) ./ r ...
             .* besselh(1,2,omega./c.*r);
         %
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a line source.'],upper(mfilename),driving_functions);
     end
@@ -106,7 +107,9 @@ elseif strcmp('2.5D',dimension)
 
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
-    if strcmp('default',driving_functions)
+
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D correction factor
         %        ______________
@@ -129,7 +132,7 @@ elseif strcmp('2.5D',dimension)
             .* vector_product(x0-xs,nx0,2) ./ r ...
             .* besselh(1,2,omega./c.*r);
         %
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D line source.'],upper(mfilename),driving_functions);
     end
@@ -138,7 +141,8 @@ elseif strcmp('3D',dimension)
 
     % === 3-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % D using a line source
         %
@@ -161,7 +165,7 @@ elseif strcmp('3D',dimension)
         D = -1i*omega/(2*c) .* vector_product(v,nx0,2) ./ r .* ...
             besselh(1,2,omega/c.*r);
         %
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a line source.'],upper(mfilename),driving_functions);
     end

@@ -72,7 +72,8 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
 
     % === 2- or 3-Dimensional ============================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % d_2D using a plane wave as source model
         %
@@ -84,7 +85,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         delay = 1./c .* vector_product(nk,x0,2);
         weight = 2 .* vector_product(nk,nx0,2);
         %
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a plane wave.'],upper(mfilename),driving_functions);
     end
@@ -115,7 +116,7 @@ elseif strcmp('2.5D',dimension)
         delay = 1./c .* vector_product(nk,x0,2);
         weight = 2.*g0 .* vector_product(nk,nx0,2);
         %
-    case {'reference_line'}
+    case 'reference_line'
         % Driving function with two stationary phase approximations,
         % reference to a line parallel to a LINEAR secondary source distribution
         %

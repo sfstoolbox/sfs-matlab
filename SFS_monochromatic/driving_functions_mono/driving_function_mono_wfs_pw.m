@@ -82,7 +82,8 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
 
     % === 2- or 3-Dimensional ============================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % D using a plane wave as source model
         %
@@ -95,7 +96,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         D = 2.*1i.*omega./c .* vector_product(nk,nx0,2) ...
             .* exp(-1i.*omega./c.*vector_product(nk,x0,2));
         %
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a plane wave.'],upper(mfilename),driving_functions);
     end
@@ -107,6 +108,7 @@ elseif strcmp('2.5D',dimension)
 
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
+
     switch driving_functions
     case {'default', 'reference_point'}
         % Driving function with only one stationary phase approximation, i.e.

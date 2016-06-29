@@ -78,7 +78,8 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
 
     % === 2- or 3-Dimensional ============================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % d using a point source as source model
         %
@@ -94,7 +95,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         delay = 1./c .* r;
         weight = 1./(2.*pi) .* vector_product(x0-xs,nx0,2) ./ r.^2;
         %
-    elseif strcmp('legacy',driving_functions)
+    case 'legacy'
         % --- Old SFS Toolbox default ------------------------------------
         % d using a point source as source model
         %
@@ -110,7 +111,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         delay = 1/c .* r;
         weight = 1/(2*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
         %
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a point source.'],upper(mfilename),driving_functions);
     end

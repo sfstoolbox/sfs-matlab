@@ -81,7 +81,8 @@ if strcmp('2D',dimension)
 
     % === 2-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % d using a line source as source model
         %                     ___
@@ -97,7 +98,7 @@ if strcmp('2D',dimension)
         delay = 1./c .* r;
         weight = 1./(2.*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3./2);
         %
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a point source.'],upper(mfilename),driving_functions);
     end
@@ -109,10 +110,11 @@ elseif strcmp('2.5D',dimension)
 
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D point source.'],upper(mfilename),driving_functions);
     end
@@ -122,7 +124,8 @@ elseif strcmp('3D',dimension)
 
     % === 3-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % d using a line source as source model
         %                     ___
@@ -143,7 +146,7 @@ elseif strcmp('3D',dimension)
         r = vector_norm(v,2);
         delay = 1/c .* r;
         weight = 1/(2*pi) .* vector_product(v,nx0,2) ./ r.^(3/2);
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a line source.'],upper(mfilename),driving_functions);
     end

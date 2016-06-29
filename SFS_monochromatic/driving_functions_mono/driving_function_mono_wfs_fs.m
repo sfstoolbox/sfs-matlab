@@ -89,7 +89,8 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
 
     % === 2- or 3-Dimensional ============================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % D using a point source and the approximation w/c|x0-xs|>>1
         %
@@ -106,7 +107,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
             .* vector_product(x0-xs,nx0,2) ./ r.^2 ...
             .* exp(+1i.*omega./c.*r);
         %
-    elseif strcmp('point_sink',driving_functions)
+    case 'point_sink'
         % D using a point sink as source model
         %
         % D(x0,w) =
@@ -124,7 +125,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
             .* vector_product(x0-xs,nx0,2) ./ r.^2 ...
             .* exp(+1i.*omega./c.*r);
         %
-    elseif strcmp('line_sink',driving_functions)
+    case 'line_sink'
         % D using a line sink as source model
         %
         %              iw (x0-xs)nk  (1)/ w         \
@@ -140,7 +141,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
             .* vector_product(x0-xs,nx0,2) ./ r ...
             .* besselh(1,1,omega./c.*r);
         %
-    elseif strcmp('legacy',driving_functions)
+    case 'legacy'
         % --- Old SFS Toolbox default ------------------------------------
         % D using an approximated point sink as source model
         %
@@ -157,7 +158,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
             .* vector_product(x0-xs,nx0,2) ./ r.^(3./2) ...
             .* exp(+1i.*omega./c.*r);
         %
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a focused source.'],upper(mfilename),driving_functions);
     end
@@ -169,6 +170,7 @@ elseif strcmp('2.5D',dimension)
     
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
+
     switch driving_functions
     case {'default', 'reference_point'}
         % Driving function with only one stationary phase approximation,

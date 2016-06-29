@@ -117,10 +117,10 @@ elseif strcmp('2.5D',dimension)
         g0 = sqrt( 2*pi*vector_norm(xref-x0,2) );
         %
         % D_2.5D using a plane wave as source model
-        %                             ___
-        %                            |i w|
-        % D_2.5D(x0,w) = g0 nk nx0 _ |---  e^(-i w/c nk x0)
-        %                           \| c
+        %                              ___
+        %                             |i w|
+        % D_2.5D(x0,w) = 2g0 nk nx0 _ |---  e^(-i w/c nk x0)
+        %                            \| c
         %
         % See http://sfstoolbox.org/#equation-D.wfs.pw.2.5D
         %

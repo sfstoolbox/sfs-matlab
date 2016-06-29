@@ -94,15 +94,16 @@ elseif strcmp('2.5D',dimension)
 
     % === 2.5-Dimensional ================================================
 
-    if strcmp('default',driving_functions)
-        % --- SFS Toolbox ------------------------------------------------
-        % Reference point
-        xref = repmat(xref,[size(x0,1) 1]);
-        % 2.5D correction factor
+    % Reference point
+    xref = repmat(xref,[size(x0,1) 1]);
+    switch driving_functions
+    case {'default', 'reference_point'}      
+        % Driving function with only one stationary phase approximation, i.e.
+        % reference to one point in field
         %        ______________
         % g0 = \| 2pi |xref-x0|
         %
-        g0 = sqrt(2*pi*vector_norm(xref-x0,2));
+        g0 = sqrt( 2*pi*vector_norm(xref-x0,2) );
         %
         % d_2.5D using a plane wave as source model
         %
@@ -114,7 +115,32 @@ elseif strcmp('2.5D',dimension)
         delay = 1./c .* vector_product(nk,x0,2);
         weight = 2.*g0 .* vector_product(nk,nx0,2);
         %
-    else
+    case {'reference_line'}
+        % Driving function with two stationary phase approximations,
+        % reference to a line parallel to a LINEAR secondary source distribution
+        %
+        % Distance ref-line to linear ssd
+        dref = vector_product(xref-x0,nx0,2);
+        %
+        % 2.5D correction factor
+        %        ____________
+        % g0 = \| 2pi * d_ref
+        %
+        g0 = sqrt(2.*pi.*dref);
+        %
+        % d_2.5D using a plane wave as source model
+        %
+        %                             ______   
+        % d_2.5D(x0,w) = h(t) * 2g0 \|nk nx0 delta(t - 1/c nk x0)
+        % 
+        %
+        % See Schultz (2016), eq. (2.183)
+        %
+        % Delay and amplitude weight
+        delay = 1./c .* vector_product(nk,x0,2);
+        weight = 2.*g0 .* sqrt(vector_product(nk,nx0,2));
+        %
+    otherwise
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D plane wave.'],upper(mfilename),driving_functions);
     end

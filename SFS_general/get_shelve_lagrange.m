@@ -4,6 +4,7 @@ function H = get_shelve_lagrange(f,H,FlagSub,fSub,FlagAliasing,fAliasing,Bandwid
 %   Usage: H = get_shelve_lagrange(f,H,FlagSub,fSub,FlagAliasing, ...
 %                                  fAliasing,Bandwidth_in_Oct)
 %
+%   Input parameters:
 %       f                -  frequency vector in Hz, typical 0 to half
 %                           sampling frequency, equidistant sampling is
 %                           assumed (i.e. DFT frequencies) but not required
@@ -16,7 +17,7 @@ function H = get_shelve_lagrange(f,H,FlagSub,fSub,FlagAliasing,fAliasing,Bandwid
 %       fAliasing        -  cut-frequency in Hz for high-shelf,
 %                           check e.g. fAliasing=2kHz in [Fig2, Sch13]
 %       Bandwidth_in_Oct -  interpolation bandwidth, i.e. shelf knee range
-%                           in octaves, allowed: 0.5, 1, 2, 3, 4 
+%                           in octaves, allowed: 0.5, 1, 2, 3, 4
 %
 %   Output parameters:
 %       H                -  return complex spectrum at specified frequencies

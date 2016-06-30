@@ -56,8 +56,7 @@ function D = driving_function_mono_nfchoa_sphexp(x0, Pnm,f,conf)
 nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
-isargsecondarysource(x0);
-isargmatrix(Pnm);
+isargmatrix(Pnm,x0);
 isargvector(f);
 isargstruct(conf);
 if mod(sqrt(size(Pnm, 1)),1) ~= 0
@@ -81,7 +80,7 @@ Nse = sqrt(size(Pnm, 1))-1;
 
 % secondary source positions
 x00 = bsxfun(@minus,x0(:,1:3),Xc);
-[phi0, ~,r0] = cart2sph(x00(:,1),x00(:,2),x00(:,3));
+[phi0, theta0, r0] = cart2sph(x00(:,1),x00(:,2),x00(:,3));
 
 % frequency depended stuff
 omega = 2*pi*row_vector(f);  % [1 x Nf]
@@ -97,6 +96,22 @@ D = zeros(size(kr0));  % [N0 x Nf]
 
 %% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
+
+% Regular spherical expansion of the sound field:
+%          \~~   N \~~   n   m           m
+% P(x,w) =  >       >       P  j (kr) . Y  (theta, phi)
+%          /__ n=0 /__ m=-n  n  n        n 
+%
+% and 3D free field Green's Function:
+%             \~~ oo  \~~   n   m             m
+% G  (x0,f) =  >       >       G  . j (kr) . Y  (theta, phi)
+%  ps         /__ n=0 /__ m=-n  n    n        n
+%
+% with the regular expansion coefficients of reen's Function
+% (see Gumerov2004, eq. 3.2.2):
+%    m               (2)       -m
+%   G  = -i  . k  . h   (kr0) Y  (pi/2, 0)
+%    n               n         n
 
 if strcmp('2D',dimension)
   % === 2-Dimensional ==================================================
@@ -114,22 +129,6 @@ elseif strcmp('2.5D',dimension)
     %             2pi r0  m=-N..N    m
     %                               G
     %                                |m|
-    %
-    % with regular spherical expansion of the sound field:
-    %          \~~   N \~~   n   m           m
-    % P(x,w) =  >       >       P  j (kr) . Y  (theta, phi)
-    %          /__ n=0 /__ m=-n  n  n        n 
-    %
-    % and 3D free field Green's Function:
-    %             \~~ oo  \~~   n   m           m
-    % G  (x0,f) =  >       >       G  . j (kr) . Y  (theta, phi)
-    %  ps         /__ n=0 /__ m=-n  n    n        n
-    %
-    % with the regular expansion coefficients (Gumerov2004, eq. 3.2.2):
-    %    m               (2)       -m
-    %   G  = -i  . k  . h   (kr0) Y  (pi/2, 0)
-    %    n               n         n
-
     for m=-Nse:Nse
       v = sphexp_index(m);
       D = D + bsxfun(@times, Pnm(v,:), exp(1i.*m.*phi0)) ./ ...
@@ -154,6 +153,7 @@ elseif strcmp('2.5D',dimension)
     %                             n=|m| n  n          n
     %
     
+    % save some intermediate results
     hn = zeros(size(x0,1),length(omega),Nse+1);
     jn = zeros(1,length(omega),Nse+1);
     for n=0:Nse
@@ -187,8 +187,23 @@ elseif strcmp('2.5D',dimension)
   
 elseif strcmp('3D',dimension)
   % === 3-Dimensional ==================================================
-  
-  to_be_implemented;  
+  %                                          m
+  %                      __      __         P
+  %              1j     \       \            n        m
+  % D(x0,w) = --------- /__     /__     -----------  Y  (theta0, phi0)
+  %            k r0^2  n=0..oo m=-N..N     (2)        n
+  %                                       h   (k r0)
+  %                                        n  
+  for n=0:Nse    
+    Pm = 0;    
+    for m=-n:n
+      v = sphexp_index(m, n);      
+      Pm = Pm + Pnm(v,:).*sphharmonics(n,m,theta0,phi0);
+    end    
+    D = D + bsxfun(@rdivide, Pm, sphbesselh(n,2,kr0));
+  end
+  % order independent factor
+  D = D./(-1j.*(r0.^2)*k);
 else
     error('%s: the dimension %s is unknown.',upper(mfilename),dimension);
 end

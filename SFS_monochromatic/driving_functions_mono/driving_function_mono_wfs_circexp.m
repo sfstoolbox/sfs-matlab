@@ -101,7 +101,6 @@ Sn0r     =  cos(phi0).*n0(:,1)...
   +  sin(phi0).*n0(:,2);
 Sn0phi   = -sin(phi0).*n0(:,1)...
   +  cos(phi0).*n0(:,2);
-Sn0z     =            n0(:,3);
 
 % select suitable basis function
 if strcmp('R', mode)
@@ -114,7 +113,6 @@ else
   error('unknown mode:');
 end
 
-%% ===== Computation ====================================================
 % Calculate the driving function in time-frequency domain
 
 % indexing the expansion coefficients
@@ -123,49 +121,49 @@ l = 0;
 switch dimension
   case {'2D', '2.5D', '3D'}
     
-    % === 2- or 3-Dimensional ============================================
-    
-    if (strcmp('default',driving_functions))
-      % --- SFS Toolbox ------------------------------------------------
-      %                d
-      % D(x0, w) = -2 --- P(x0,w)
-      %               d n
-      % with cylindrical expansion of the sound field:
-      %           \~~    oo
-      % P(x,w) =  >        B   F (x-xq)
-      %           /__ n=-oo  n  n
-      %
-      % where F = {R,S}.
-      %
-      % regular cylindrical basis functions:
-      %
-      % R  (x) = J (kr)  . exp(j n phi))
-      %  n        n
-      % singular cylindrical basis functions
-      %          (2)
-      % S (x) = H   (kr) . exp(j n phi)
-      %  n       n
-      
-      for n=-Nce:Nce
-        l = l + 1;
-        cn_prime = k.*circbasis_derived(n,kr0);
-        cn = circbasis(n,kr0);
-        Yn = exp(1j.*n.*phi0);
-        Gradr   = Gradr   +       ( Pm(l).*cn_prime.*Yn  );
-        Gradphi = Gradphi + 1./r0.*( Pm(l).*cn.*1j.*n.*Yn );
-      end
-      % directional gradient
-      D = -2*( Sn0r.*Gradr + Sn0phi.*Gradphi + Sn0z.*Gradz );
-      
-      % 2.5D correction factor
-      if strcmp('2.5D', dimension)
-        xref = repmat(xref,[size(x0,1) 1]);
-        g0 = sqrt( 2*pi*vector_norm(xref-x0, 2)./(1j.*k));
-        D = D.*g0;
-      end
-    else
-      error(['%s: %s, this type of driving function is not implemented ', ...
-        'for 2D/3D.'],upper(mfilename),driving_functions);
+    % === 2-,2.5-,3-Dimensional ============================================    
+    switch driving_functions
+      case 'default'
+        % --- SFS Toolbox ------------------------------------------------
+        %                d
+        % D(x0, w) = -2 --- P(x0,w)
+        %               d n
+        % with cylindrical expansion of the sound field:
+        %           \~~    oo
+        % P(x,w) =  >         B   F (x-xq)
+        %           /__ n=-oo  n  n
+        %
+        % where F = {R,S}.
+        %
+        % regular cylindrical basis functions:
+        %
+        % R  (x) = J (kr)  . exp(j n phi))
+        %  n        n
+        % singular cylindrical basis functions
+        %          (2)
+        % S (x) = H   (kr) . exp(j n phi)
+        %  n       n
+        
+        for n=-Nce:Nce
+          l = l + 1;
+          cn_prime = k.*circbasis_derived(n,kr0);
+          cn = circbasis(n,kr0);
+          Yn = exp(1j.*n.*phi0);
+          Gradr   = Gradr   +       ( Pm(l).*cn_prime.*Yn  );
+          Gradphi = Gradphi + 1./r0.*( Pm(l).*cn.*1j.*n.*Yn );
+        end
+        % directional gradient
+        D = -2*( Sn0r.*Gradr + Sn0phi.*Gradphi);
+        
+        % 2.5D correction factor
+        if strcmp('2.5D', dimension)
+          xref = repmat(xref,[size(x0,1) 1]);
+          g0 = sqrt( 2*pi*vector_norm(xref-x0, 2)./(1j.*k));
+          D = D.*g0;
+        end
+      otherwise
+        error(['%s: %s, this type of driving function is not implemented ', ...
+          'for 2D/2.5D/3D.'],upper(mfilename),driving_functions);
     end
   otherwise
     error('%s: the dimension %s is unknown.',upper(mfilename),dimension);

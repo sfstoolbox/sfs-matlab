@@ -177,7 +177,7 @@ switch dimension
       % approximate spherical expansion with circular expansion
       Pm = circexp_convert_sphexp(Pnm);
       % compute driving function for circular expansion
-      D = driving_function_mono_wfs_circexp(x0,n0,Pm,mode,f,xq,conf);      
+      D = driving_function_mono_wfs_circexp(x0,n0,Pm,mode,f,xq,conf);
     else
       error(['%s: %s, this type of driving function is not implemented ', ...
         'for 2D/2.5D'],upper(mfilename),driving_functions);

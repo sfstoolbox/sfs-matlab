@@ -1,5 +1,15 @@
-function boolean = test_wfs_exp
-%TEST_WFS_EXP tests the correctness of the driving functions
+function boolean = test_sfs_exp(modus)
+%TEST_SFS_EXP tests the correctness of the driving functions for sound fields
+%expressed as circular or spherical expansions
+
+%   Usage: boolean = test_sfs_exp(modus)
+%
+%   Input parameters:
+%       modus   - 0: numerical
+%                 1: visual
+%
+%   Output parameters:
+%       boolean - true or false
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -30,12 +40,9 @@ function boolean = test_wfs_exp
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
-% TODO: add mode to save data as reference data
-
-
 %% ===== Checking of input  parameters ===================================
-nargmin = 0;
-nargmax = 0;
+nargmin = 1;
+nargmax = 1;
 narginchk(nargmin,nargmax);
 
 
@@ -49,7 +56,7 @@ conf.plot.normalisation = 'center';
 conf.driving_functions = 'default';
 conf.usetapwin = false;
 
-rt = 1.0;  % "size" of the sweet spot
+rt = 0.3;  % "size" of the sweet spot
 
 % test scenarios
 scenarios = { ...
@@ -95,12 +102,20 @@ for ii=1:size(scenarios)
   src = scenarios{ii,4};
   xs = scenarios{ii,5};
   
-  % get secondary source type
+  % get secondary source type and expansion order
   switch conf.dimension
     case '2D'
       secsrc = 'ls';
-    case {'2.5D', '3D'}
+      % circular expansion order
+      Nexp = circexp_truncation_order(rt, f, 1e-6, conf);
+    case '2.5D'
       secsrc = 'ps';
+      % circular expansion order
+      Nexp = circexp_truncation_order(rt, f, 1e-6, conf);
+    case '3D'
+      secsrc = 'ps';
+      % spherical expansion order
+      Nexp = sphexp_truncation_order(rt, f, 1e-6, conf);   
   end
   
   % get secondary source distribution
@@ -132,16 +147,6 @@ for ii=1:size(scenarios)
       conf.secondary_sources.number = 900;
   end
   x0 = secondary_source_positions(conf);
-  
-  % get expansion order
-  switch scenarios{ii,6}
-    case 'sph'
-      % spherical expansion order for sweet spot
-      Nexp = sphexp_truncation_order(rt, f, 1e-6, conf);      
-    case 'circ'
-      % circular expansion order for sweet spot
-      Nexp = circexp_truncation_order(rt, f, 1e-6, conf);
-  end
   
   % get expansion coefficients
   xq = conf.xref;
@@ -195,9 +200,12 @@ for ii=1:size(scenarios)
     D = Dfunc(x0(:,1:3), A, f, conf);
 
   end 
-  
+   
   P = sound_field_mono(X,Y,Z,x0,secsrc,D,f,conf);
-  plot_sound_field(P, X, Y, Z, x0, conf);  
-  title(sprintf('%s %s of %s. exp. of %s', conf.dimension, method, ...
-    scenarios{ii,6}, src), 'Interpreter', 'None');
+  if modus
+    plot_sound_field(P, X, Y, Z, x0, conf);
+    plot_scatterer(xq,rt);
+    title(sprintf('%s %s of %s. exp. (N=%d) of %s', conf.dimension, method, ...
+      scenarios{ii,6}, Nexp, src), 'Interpreter', 'None');
+  end
 end

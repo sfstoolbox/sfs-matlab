@@ -123,7 +123,8 @@ conf.delayline.resamplingfactor = 100; % / 1
 conf.delayline.resamplingorder = 128;
 %
 % Delayline filter
-%   'integer'       - round to next larger integer delay (default)
+%   'integer'       - round to nearest integer delay (default)
+%   'zoh'           - round to next larger integer delay
 %   'lagrange'      - lagrange interpolator (FIR Filter)
 %   'least_squares' - least squares FIR interpolation filter
 %   'thiran'        - Thiran's allpass IIR filter
@@ -308,6 +309,9 @@ conf.localsfs.vss.center = [0, 0, 0];
 conf.localsfs.vss.geometry = 'circular';
 conf.localsfs.vss.number = 56;
 conf.localsfs.vss.grid = 'equally_spaced_points';
+% driving function to create the focused sources, i.e. virtual secondary
+% sources
+conf.localsfs.vss.driving_functions = 'default';
 %
 % linear vss distribution: rotate the distribution orthogonal to the progation
 % direction of the desired sound source

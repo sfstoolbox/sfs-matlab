@@ -10,6 +10,8 @@
     - add new online doc at http://matlab.sfstoolbox.org/
     - fix greens_function_mono() for plane wave and 3D
     - replace conf.ir.useoriglength by conf.ir.hrirpredelay
+    - update default WFS driving functions
+    - add links to equations in online theory at http://sfstoolbox.org
 
 2.1.0 (10. March 2016)
     - make conf struct mandatory

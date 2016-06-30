@@ -118,7 +118,7 @@ switch delay.resampling
         sig = reshape(sig,1,channels*samples);
         sig = [sig; zeros(rfactor-1,channels*samples)];
         sig = reshape(sig,rfactor*samples,channels);
-        
+
         sig = filter(b,1,sig,[],1);
     otherwise
         error('%s: "%s": unknown resampling method',upper(mfilename), ...
@@ -133,6 +133,10 @@ switch delay.filter
     case 'integer'
         % === Integer delays ===
         idt = round(dt);  % round to nearest integer delay
+        delay_offset = delay_offset + 0;
+    case 'zoh'
+        % === Zero-order hold ===
+        idt = ceil(dt);  % round to next larger integer delay
         delay_offset = delay_offset + 0;
     case 'lagrange'
         % === Lagrange polynomial interpolator ===
@@ -184,7 +188,7 @@ switch delay.filter
         % The above representation shows that the convolution of the input 
         % signal x can be performed by first convolving c_m and x and 
         % incorporating the delay d afterwards.
-        
+        %
         % number of parallel filters, i.e. order of polynomial + 1
         % Nfilter = delay.filternumber;
         to_be_implemented(mfilename);

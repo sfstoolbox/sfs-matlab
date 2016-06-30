@@ -17,10 +17,6 @@ function [delay,weight] = driving_function_imp_wfs_pw(x0,nx0,nk,conf)
 %   DRIVING_FUNCTION_IMP_WFS_PW(x0,nx0,nk,conf) returns delays and weights for
 %   the WFS driving function for plane wave as source model.
 %
-%   References:
-%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
-%       "Theory of Sound Field Synthesis"
-%
 %   See also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_pw
 
 %*****************************************************************************
@@ -76,18 +72,20 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
 
     % === 2- or 3-Dimensional ============================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % d_2D using a plane wave as source model
         %
         % d_2D(x0,t) = h(t) * 2 nk nx0 delta(t - 1/c nk x0)
         %
-        % see Wierstorf et al. (2015), eq.(#d:wfs:pw)
+        % See http://sfstoolbox.org/#equation-d.wfs.pw
         %
         % Delay and amplitude weight
-        delay = 1/c * vector_product(nk,x0,2);
+        delay = 1./c .* vector_product(nk,x0,2);
         weight = 2 .* vector_product(nk,nx0,2);
-    else
+        %
+    otherwise
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a plane wave.'],upper(mfilename),driving_functions);
     end
@@ -97,26 +95,53 @@ elseif strcmp('2.5D',dimension)
 
     % === 2.5-Dimensional ================================================
 
-    if strcmp('default',driving_functions)
-        % --- SFS Toolbox ------------------------------------------------
-        % Reference point
-        xref = repmat(xref,[size(x0,1) 1]);
-        % 2.5D correction factor
+    % Reference point
+    xref = repmat(xref,[size(x0,1) 1]);
+    switch driving_functions
+    case {'default', 'reference_point'}      
+        % Driving function with only one stationary phase approximation, i.e.
+        % reference to one point in field
         %        ______________
         % g0 = \| 2pi |xref-x0|
         %
-        g0 = sqrt(2*pi*vector_norm(xref-x0,2));
+        g0 = sqrt( 2*pi*vector_norm(xref-x0,2) );
         %
         % d_2.5D using a plane wave as source model
         %
         % d_2.5D(x0,t) = h(t) * 2 g0 nk nx0 delta(t - 1/c nk x0)
         %
-        % See Wierstorf et al. (2015), eq.(#d:wfs:pw:2.5D)
+        % See http://sfstoolbox.org/en/update_wfs_ps/#equation-d.wfs.pw.2.5D
         %
         % Delay and amplitude weight
-        delay = 1/c .* vector_product(nk,x0,2);
-        weight = 2*g0 .* vector_product(nk,nx0,2);
-    else
+        delay = 1./c .* vector_product(nk,x0,2);
+        weight = 2.*g0 .* vector_product(nk,nx0,2);
+        %
+    case 'reference_line'
+        % Driving function with two stationary phase approximations,
+        % reference to a line parallel to a LINEAR secondary source distribution
+        %
+        % Distance ref-line to linear ssd
+        dref = vector_product(xref-x0,nx0,2);
+        %
+        % 2.5D correction factor
+        %        ____________
+        % g0 = \| 2pi * d_ref
+        %
+        g0 = sqrt(2.*pi.*dref);
+        %
+        % d_2.5D using a plane wave as source model
+        %
+        %                             ______   
+        % d_2.5D(x0,w) = h(t) * 2g0 \|nk nx0 delta(t - 1/c nk x0)
+        % 
+        %
+        % See Schultz (2016), eq. (2.183)
+        %
+        % Delay and amplitude weight
+        delay = 1./c .* vector_product(nk,x0,2);
+        weight = 2.*g0 .* sqrt(vector_product(nk,nx0,2));
+        %
+    otherwise
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D plane wave.'],upper(mfilename),driving_functions);
     end

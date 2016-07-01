@@ -58,9 +58,9 @@ nargmin = 8;
 nargmax = 8;
 narginchk(nargmin,nargmax);
 isargvector(Pm);
-if mod(size(Pm, 1)-1, 2) ~= 0
+if mod(size(Pm, 1), 2) ~= 0
   error('%s: Number of rows of %s has be to odd', upper(mfilename), ...
-    inputname(Pm));
+    inputname(4));
 end
 isargnumeric(X,Y,Z);
 isargpositivescalar(f);

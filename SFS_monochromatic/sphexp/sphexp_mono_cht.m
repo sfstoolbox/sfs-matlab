@@ -1,23 +1,23 @@
-function [P, x, y, z] = sound_field_mono_sht(X,Y,Z,Dnm,f,conf)
-%SOUND_FIELD_MONO_SHT simulates a sound field given with the spherical 
-%harmonics transform of the driving function
+function Pnm = sphexp_mono_cht(Dm, mode, f, conf)
+%SPHEXP_MONO_CHT yields spherical expansion coefficients of a sound field
+%resulting from of a driving function given as a circular harmonics transform
 %
-%   Usage: [P, x, y, z] = sound_field_mono_sht(X,Y,Z,Dnm,f,conf)
+%   Usage: Pnm = sphexp_mono_cht(Dm, mode, f, conf)
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax] or nD-array
-%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
-%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
-%       Dnm         - spherical harmonics transform of nfchoa driving function
-%       f           - frequency in Hz
+%       Dm          - circular harmonics transform of driving function
+%       mode        - 'R' for regular, 'S' for singular
+%       f           - frequency / Hz [Nf x 1] or [1 x Nf]
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       P           - resulting soundfield
+%       Pnm         - spherical expansion coefficients of a synthesized
+%                     sound field reproduced by nfchoa driving function
 %
-%   SOUND_FIELD_MONO_SHT(X,Y,Z,Dnm,f,conf)
-%
-%   see also: sphbasis_mono_grid, sound_field_mono_sphexp
+%   SPHEXP_MONO_CHT(Dm, mode, f, conf) computes the spherical expansion 
+%   coefficients of sound field reproduced by a circular secondary source
+%   distribution consisting of SPHERICAL monopoles. The driving function is
+%   given as its circular harmonics transform.
 
 %*****************************************************************************
 % Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
@@ -52,61 +52,31 @@ function [P, x, y, z] = sound_field_mono_sht(X,Y,Z,Dnm,f,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 6;
+nargmin = 4;
+nargmax = 4;
 narginchk(nargmin,nargmax);
-isargvector(Dnm);
-isargsquaredinteger(length(Dnm));
-isargnumeric(X,Y,Z);
-isargpositivescalar(f);
+isargmatrix(Dm);
+isargvector(f);
+isargchar(mode);
+if ~strcmp('R', mode) && ~strcmp('S', mode)
+  error('%s: unknown mode (%s)!', upper(mfilename), mode);
+end
 isargstruct(conf);
 
 %% ===== Configuration ==================================================
-Xc = conf.secondary_sources.center;
-r0 = conf.secondary_sources.size / 2;
-useplot = conf.plot.useplot;
+R0 = conf.secondary_sources.size / 2;
+
+%% ===== Variables ======================================================
+Nse = (size(Dm, 1)-1)/2;
 
 %% ===== Computation ====================================================
-[x,y,z] = xyz_grid(X,Y,Z,conf);
-% find coordinates, which are inside and outside the loudspeaker array
-select = sqrt((x-Xc(1)).^2 + (y-Xc(2)).^2 + (z-Xc(3)).^2) <= r0;
-
-if (numel(x) == 1) x = repmat(x, size(select)); end
-if (numel(y) == 1) y = repmat(y, size(select)); end
-if (numel(z) == 1) z = repmat(z, size(select)); end
-
-P = zeros(size(x));
-
-% regular (interior) domain inside the loudspeaker array
-if any(select(:))
-  Pnm = sphexp_mono_sht(Dnm,'R',f,conf);
-  P(select) = sound_field_mono_sphexp(x(select), y(select), z(select), ...
-    Pnm, 'R', f, Xc,conf);
-end
-
-% singular (exterior) domain outside the loudspeaker array
-if any(~select(:))
-  Pnm = sphexp_mono_sht(Dnm,'S',f,conf);
-  if sum( ~select(:) ) == 2
-    % this handle cases, where x(~select) would only contain 2 entries, which
-    % would be interpreted as a range by the sound_field_... function
-    xtmp = x(~select);
-    ytmp = y(~select);
-    ztmp = z(~select);
-    Ptmp(1) = sound_field_mono_sphexp(xtmp(1), ytmp(1), ztmp(1), ...
-      Pnm, 'S', f, Xc,conf);
-    Ptmp(2) = sound_field_mono_sphexp(xtmp(2), ytmp(2), ztmp(2), ...
-      Pnm, 'S', f, Xc,conf);
-    P(~select) = [Ptmp(1); Ptmp(2)];
-  else
-    P(~select) = sound_field_mono_sphexp(x(~select), y(~select), z(~select), ...
-      Pnm, 'S', f, Xc,conf);
-  end
-end
-
-%% ===== Plotting =======================================================
-if (nargout==0 || useplot)
-    plot_sound_field(P,X,Y,Z,[],conf);
+% regular/singular spherical expansion of 3D Green's function
+Gnm = sphexp_mono_ps([R0, 0, 0], mode, Nse, f, [0,0,0], conf);
+% regular/singular spherical expansion of synthesised sound field
+Pnm = zeros(size(Gnm));
+for n=0:Nse
+  v = sphexp_index(-n:n,n);
+  Pnm(v,:) = 2*pi*R0*Gnm(v,:).*Dm((-n:n)+Nse+1,:);
 end
 
 end

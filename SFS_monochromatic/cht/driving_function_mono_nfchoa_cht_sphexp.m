@@ -1,24 +1,23 @@
-function D = driving_function_mono_nfchoa_sphexp(x0, Pnm,f,conf)
-%computes the nfchoa driving functions for a sound field expressed by regular
+function Dm = driving_function_mono_nfchoa_cht_sphexp(Pnm, f, conf)
+%DRIVING_FUNCTION_MONO_NFCHOA_CHT_SPHEXP computes the circular harmonics
+%transform of nfchoa driving functions for a sound field expressed by regular
 %spherical expansion coefficients.
 %
-%   Usage: D = driving_function_mono_nfchoa_sphexp(x0,Pnm,f,conf)
+%   Usage: D = driving_function_mono_nfchoa_cht_sphexp(Pnm, f, conf)
 %
 %   Input parameters:
-%       x0          - position of the secondary sources / m [N0x3]
-%       Pnm         - regular spherical expansion coefficients of sound field
-%                     [N x Nf]
-%       f           - frequency / Hz [Nf x 1] or [1 x Nf]
+%       Pnm         - regular spherical expansion coefficients of virtual
+%                     sound field [nxm]
+%       f           - frequency in Hz [m x 1] or [1 x m]
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       D           - driving function signal [nx1]
+%       Dm          - regular circular harmonics transform of driving
+%                     function signal
 %
-%   DRIVING_FUNCTION_MONO_NFCHOA_SPHEXP(x0,Pnm,f,conf) returns NFCHOA
-%   driving signals for the given secondary sources, the virtual sound expressed
-%   by regular spherical expansion coefficients and the frequency f.
-%
-%   see also: driving_function_mono_wfs_sphexp
+%   DRIVING_FUNCTION_MONO_NFCHOA_CHT_SPHEXP(Pnm, f, conf) returns circular
+%   harmonics transform of the NFCHOA driving function for a virtual sound
+%   expressed by regular spherical expansion coefficients and the frequency f.
 
 %*****************************************************************************
 % Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
@@ -53,93 +52,112 @@ function D = driving_function_mono_nfchoa_sphexp(x0, Pnm,f,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 4;
+nargmin = 3;
+nargmax = 3;
 narginchk(nargmin,nargmax);
-isargmatrix(Pnm,x0);
+isargmatrix(Pnm);
+isargsquaredinteger(size(Pnm,1));
 isargvector(f);
 isargstruct(conf);
-if mod(sqrt(size(Pnm, 1)),1) ~= 0
-  error(['%s: number of columns of Pnm (%s) is not the square of an', ...
-    'integer.'], upper(mfilename), sqrt(size(Pnm, 1)));
+if size(Pnm,2) ~= length(f)
+  error( '%s:number of rows in %s have to match length of %s', ...
+    upper(mfilename), inputname(1), inputname(2) );
 end
 
 %% ===== Configuration ==================================================
 c = conf.c;
-dimension = conf.dimension;
 Xc = conf.secondary_sources.center;
-R0 = conf.secondary_sources.size/2;
+R0 = conf.secondary_sources.size / 2;
+xref = conf.xref - Xc;
+rref = norm( xref );  % reference radius
+thetaref = asin( xref(3)./rref);  % reference elevation angle
 
 %% ===== Variables ======================================================
-Nse = sqrt(size(Pnm, 1))-1;
-
-% secondary source positions
-x00 = bsxfun(@minus,x0(:,1:3),Xc);
-[phi0, theta0, r0] = cart2sph(x00(:,1),x00(:,2),x00(:,3));
+Nse = sqrt(size(Pnm,1))-1;
 
 % frequency depended stuff
 omega = 2*pi*row_vector(f);  % [1 x Nf]
 k = omega./c;  % [1 x Nf]
-kr0 = r0 * k;  % [N0 x Nf]
-
-% initialize empty driving signal
-D = zeros(size(kr0));  % [N0 x Nf]
+kR0 = k.*R0;  % [1 x Nf]
+krref = k.*rref;  % [1 x Nf]
 
 %% ===== Computation ====================================================
-% Calculate the driving function in time-frequency domain
-
+% Calculate the circular harmonics of driving function
+%
 % Regular spherical expansion of the sound field:
 %          \~~   N \~~   n   m           m
 % P(x,w) =  >       >       P  j (kr) . Y  (theta, phi)
-%          /__ n=0 /__ m=-n  n  n        n
+%          /__ n=0 /__ m=-n  n  n        n 
 %
 % and 3D free field Green's Function:
 %             \~~ oo  \~~   n   m             m
 % G  (x0,f) =  >       >       G  . j (kr) . Y  (theta, phi)
 %  ps         /__ n=0 /__ m=-n  n    n        n
 %
-% with the regular expansion coefficients of reen's Function
+% with the regular expansion coefficients of Green's Function
 % (see Gumerov2004, eq. 3.2.2):
 %    m               (2)       -m
 %   G  = -i  . k  . h   (kr0) Y  (pi/2, 0)
 %    n               n         n
 
-if strcmp('2D',dimension)
-  % === 2-Dimensional ==================================================
-  % Convert spherical Expansion to circular expansion (approximation)
-  Pm = circexp_convert_sphexp(Pnm);
-  % Compute driving function for circular expansion
-  D = driving_function_mono_nfchoa_circexp(x0,Pm,f,conf);
-  %
-elseif strcmp('2.5D',dimension)
-  % === 2.5-Dimensional ================================================
-  % Spherical Harmonics of Driving Function
-  Dm = driving_function_mono_nfchoa_cht_sphexp(Pnm,f,conf);
-  
-  l = 0;
+% initialize empty driving signal
+Dm = zeros(2*Nse+1, size(Pnm,2));
+l = 0;
+if (rref == 0)
+  % --- Xref == Xc -------------------------------------------------
+  %                 m
+  %                P
+  %        1        |m|
+  % D  = ------  --------
+  %  m   2pi r0     m
+  %                G
+  %                 |m|
   for m=-Nse:Nse
-    l=l+1;
-    % second line is for compensating possible difference between r0 and R0
-    D = D + bsxfun(@times, Dm(l,:), exp(1i.*m.*phi0)).* ...
-      bsxfun(@rdivide, sphbesselh(abs(m),2,kr0), sphbesselh(abs(m),2,k*R0));
+    l = l+1;
+    v = sphexp_index(m);  % n = abs(m)
+
+    Dm(l,:) = Pnm(v,:) ./ ...
+      ( -1i.*k.* sphbesselh(abs(m),2,kR0).*sphharmonics(abs(m),-m, 0, 0) );
   end
-  %
-elseif strcmp('3D',dimension)
-  % === 3-Dimensional ==================================================
-  % Spherical Harmonics of Driving Function
-  Dnm = driving_function_mono_nfchoa_sht_sphexp(Pnm,f,conf);
-  
-  % Inverse Spherical Harmonics Transform
-  for n=0:Nse
-    Dn = 0;
-    for m=-n:n
-      v = sphexp_index(m, n);
-      Dn = Dn + bsxfun(@times, Dnm(v,:), sphharmonics(n,m,theta0,phi0));
-    end
-    % compensating possible difference between r0 and R0
-    D = D + Dn .* bsxfun(@rdivide, sphbesselh(n,2,kr0), sphbesselh(n,2,k*R0));
-  end
-  %
 else
-  error('%s: the dimension %s is unknown.',upper(mfilename),dimension);
+  % --- Xref ~= Xc --------------------------------------------------
+  %
+  % if the reference position is not in the middle of the array,
+  % things get a 'little' more complicated
+  %                __
+  %               \     m             m
+  %               /__  P  j (k rref) Y (thetaref, 0)
+  %  n     1      l=|m| l  l          l
+  % D = ------- ------------------------------------
+  %  m  2pi r0     __
+  %               \     m             m
+  %               /__  G  j (k rref) Y (thetaref, 0)
+  %               l=|m| n  l          l
+  %
+
+  % save some intermediate results   
+  hn = zeros(size(Pnm));
+  jn = hn;
+  for n=0:Nse
+    hn(n+1,:) = sphbesselh(n,2,kR0);  % [1 x Nf]
+    jn(n+1,:) = sphbesselj(n,krref);  % [1 x Nf]
+  end
+
+  for m=-Nse:Nse
+    Pm = zeros(1,length(f));
+    Gm = Pm;
+    for n=abs(m):Nse
+      v = sphexp_index(m,n);
+      % 
+      factor = jn(n+1,:) .* sphharmonics(n, -m, thetaref, 0);
+      % numerator
+      Pm = Pm + Pnm(v,:) .* factor;
+      % denominator
+      Gm = Gm + (-1i*k) .* hn(n+1,:) .* sphharmonics(n, -m, 0, 0) .* factor;
+    end
+    l = l+1;
+    Dm(v,:) = Pm./Gm;
+  end
 end
+% normalization due to size of circular array
+Dm = Dm./(2*pi*R0);

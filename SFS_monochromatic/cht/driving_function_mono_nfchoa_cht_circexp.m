@@ -1,25 +1,23 @@
-function D = driving_function_mono_nfchoa_circexp(x0, Pm,f,conf)
-%computes the nfchoa driving functions for a sound field expressed by regular
-%spherical expansion coefficients.
+function Dm = driving_function_mono_nfchoa_cht_circexp(Pm, f, conf)
+%DRIVING_FUNCTION_MONO_NFCHOA_CHT_CIRCEXP computes the circular harmonics
+%transform of nfchoa driving functions for a sound field expressed by regular
+%circular expansion coefficients.
 %
-%   Usage: D = driving_function_mono_nfchoa_circexp(x0,Pm,f,conf)
+%   Usage: D = driving_function_mono_nfchoa_cht_circexp(Pm, f, conf)
 %
 %   Input parameters:
-%       x0          - position of the secondary sources / m [N0x3]
-%       Pm          - regular circular expansion coefficients of sound field
-%                     [N x Nf]
-%       f           - frequency / Hz [Nf x 1] or [1 x Nf]
+%       Pm          - regular circular expansion coefficients of virtual
+%                     sound field [n x m]
+%       f           - frequency in Hz [m x 1] or [1 x m]
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       D           - driving function signal [nx1]
+%       Dm          - circular harmonics transform of driving function signal
+%                     [n x m]
 %
-%   DRIVING_FUNCTION_MONO_NFCHOA_CIRCEXP(x0,Pm,f,conf) returns the NFCHOA
-%   driving signals for the given secondary sources x0, the virtual sound ex-
-%   pressed by regular circular expansion coefficients Pm, and the frequency f.
-%
-%   see also: driving_function_mono_wfs_circexp
-%             driving_function_mono_nfchoa_sphexp
+%   DRIVING_FUNCTION_MONO_NFCHOA_CHT_CIRCEXP(Pm, f, conf) returns circular
+%   harmonics transform of the NFCHOA driving function for a virtual sound
+%   expressed by regular circular expansion coefficients and the frequency f.
 
 %*****************************************************************************
 % Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
@@ -54,54 +52,61 @@ function D = driving_function_mono_nfchoa_circexp(x0, Pm,f,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 4;
+nargmin = 3;
+nargmax = 3;
 narginchk(nargmin,nargmax);
-isargmatrix(Pm,x0);
+isargmatrix(Pm);
 isargvector(f);
 isargstruct(conf);
+if size(Pm,2) ~= length(f)
+  error( '%s:number of rows in %s have to match length of %s', ...
+    upper(mfilename), inputname(1), inputname(2) );
+end
 
 %% ===== Configuration ==================================================
 c = conf.c;
-dimension = conf.dimension;
-Xc = conf.secondary_sources.center;
-R0 = conf.secondary_sources.size/2;  % radius of SSD
+R0 = conf.secondary_sources.size / 2;
 
-%% ===== Computation ====================================================
+%% ===== Variables ======================================================
 Nce = (size(Pm, 1)-1)/2;
-% Calculate the driving function in time-frequency domain
-
-% secondary source positions
-x00 = bsxfun(@minus,x0(:,1:3),Xc);
-[phi0, r0] = cart2pol(x00(:,1),x00(:,2));
 
 % frequency depended stuff
 omega = 2*pi*row_vector(f);  % [1 x Nf]
 k = omega./c;  % [1 x Nf]
-kr0 = r0 * k;  % [N0 x Nf]
+kR0 = k.*R0;  % [1 x Nf]
 
-% initialize empty driving signal
-D = zeros(size(kr0));  % [N0 x Nf]
+%% ===== Computation ====================================================
+% Calculate the circular harmonics of driving function
+%
+% Regular circular expansion of the sound field:
+%          \~~ oo                 
+% P(x,w) =  >        P  J (kr) . e^(+j m phi)
+%          /__ m=-oo  m  m
+%
+% and 3D free field Green's Function:
+%            \~~ oo                 
+% G  (x,w) =  >        G  J (kr) . e^(+j m phi)
+%  ls        /__ m=-oo  m  m
+%
+% with the regular expansion coefficients of Green's Function
+% (see Gumerov2004, eq. 3.2.2):
+%    m     -i      (2)
+%   G  =  ----- . H   (kr0)
+%    n      4      m
 
-% Calculate the driving function in time-frequency domain
-switch dimension
-  case '2D'
-    % === 2-Dimensional ==================================================
-    % Circular Harmonics of Driving Function
-    Dm = driving_function_mono_nfchoa_cht_circexp(Pm,f,conf);
-    
-    l = 0;
-    for m=-Nce:Nce
-      l = l+1;
-      % second line is for compensating difference between r0 and R0
-      D = D + bsxfun(@times, Dm(l,:), exp(1i.*m.*phi0)).* ...
-        bsxfun(@rdivide, besselh(m,2,kr0), besselh(m,2,k*R0));
-    end
-  case {'2.5D', '3D'}
-    % convert circular expansion to spherical expansion
-    Pmn = sphexp_convert_circexp(Pm);
-    % compute driving function for spherical expansion
-    D = driving_function_mono_nfchoa_sphexp(x0,Pmn,f,conf);
-  otherwise
-    error('%s: the dimension %s is unknown.',upper(mfilename),dimension);
+%                P
+%        1        m
+% D  = ------  --------
+%  m   2pi r0    G
+%                 m
+
+Dm = zeros(size(Pm));
+l = 0;
+for m=-Nce:Nce
+  l = l+1;
+  Dm(l,:) = Pm(l,:) ./ besselh(m,2,kR0);
 end
+% factor from expansion of 2D free field Green's Function
+Dm = Dm./(-1j/4);
+% normalization due to size of circular array
+Dm = Dm./2*pi*R0;

@@ -73,6 +73,8 @@ if exist('addpath')
     addpath([basepath,'/SFS_monochromatic/driving_functions_mono']);
     addpath([basepath,'/SFS_monochromatic/sphexp']);
     addpath([basepath,'/SFS_monochromatic/sht']);
+    addpath([basepath,'/SFS_monochromatic/cht']);
+    addpath([basepath,'/SFS_monochromatic/kx']);
     addpath([basepath,'/SFS_plotting']);
     addpath([basepath,'/SFS_scattering']);
 	addpath([basepath,'/SFS_plotting/colormaps']);

@@ -2,11 +2,11 @@ function boolean = test_sfs_exp(modus)
 %TEST_SFS_EXP tests the correctness of the driving functions for sound fields
 %expressed as circular or spherical expansions
 
-%   Usage: boolean = test_sfs_exp(modus)
+%   Usage: boolean = test_sfs_exp([modus])
 %
 %   Input parameters:
 %       modus   - 0: numerical
-%                 1: visual
+%                 1: visual [default]
 %
 %   Output parameters:
 %       boolean - true or false
@@ -41,11 +41,13 @@ function boolean = test_sfs_exp(modus)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ===================================
-nargmin = 1;
+nargmin = 0;
 nargmax = 1;
 narginchk(nargmin,nargmax);
-
-
+if nargin == nargmin
+  modus = 1;
+end
+  
 %% ===== Configuration ===================================================
 conf = SFS_config;
 conf.secondary_sources.size = 3;

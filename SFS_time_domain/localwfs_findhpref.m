@@ -1,5 +1,6 @@
 function [hpreflow,hprefhigh] = localwfs_findhpref(X,phi,xs,src,conf)
-%LOCALWFS_FINDHPREF
+%LOCALWFS_FINDHPREF finds the frequency limits for the WFS pre-equalization
+%filter
 %
 %   Usage: [hpreflow, hprefhigh] = localwfs_findhpref(X,phi,xs,src,conf)
 %
@@ -12,9 +13,10 @@ function [hpreflow,hprefhigh] = localwfs_findhpref(X,phi,xs,src,conf)
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       hpreflow    -
-%       hprefhigh   -
-%       
+%       hpreflow    - lower frequency limit of preequalization filter / Hz
+%       hprefhigh   - higher frequency limit of preequalization filter / Hz
+%
+% See also: wfs_preequalization, wfs_fir_prefilter, wfs_iir_prefilter
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -45,6 +47,7 @@ function [hpreflow,hprefhigh] = localwfs_findhpref(X,phi,xs,src,conf)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 %% ===== Checking of input  parameters ==================================
 nargmin = 5;
 nargmax = 5;
@@ -59,7 +62,7 @@ end
 
 
 %% ===== Configuration ==================================================
-conf.plot.useplot = false;  % disable plotting in easyfft
+conf.plot.useplot = false;    % disable plotting in easyfft
 conf.ir.usehcomp = false;
 conf.wfs.usehpre = false;     % no prefilter
 conf.localsfs.wfs = conf.wfs;
@@ -67,8 +70,8 @@ conf.localsfs.wfs = conf.wfs;
 
 %% ===== Variables ======================================================
 N = conf.N;
-irs = dummy_irs(N,conf);    % Impulse responses
-fs = conf.fs;               % Sampling rate
+irs = dummy_irs(N,conf);    % impulse responses
+fs = conf.fs;               % sampling rate
 dimension = conf.dimension; % dimensionality
 
 
@@ -77,14 +80,14 @@ dimension = conf.dimension; % dimensionality
 ir = ir_localwfs(X,phi,xs,src,irs,conf);
 [H,~,f]=easyfft(ir(:,1),conf);
 
-H = H./H(1);  % Normalize amplitude spectrum with H(f=0Hz)
+H = H./H(1);  % normalize amplitude spectrum with H(f=0Hz)
 
 % Model of local WFS spectrum without prefilter:
 %   ^
-% 1_| ______flow        
-%   |       \          
-%   |        \   
-%   |         \_______
+% 1_| ______flow
+%   |       \
+%   |        \
+%   |         \
 %   |          fhigh
 %   -------------------------> f
 
@@ -93,21 +96,19 @@ if strcmp('2.5D',dimension)
     % Find 6dB cut-off frequency
     flowidx = find(H <= 1/2, 1, 'first');
     hpreflow = f(flowidx)/2;
-
 elseif strcmp('3D',dimension) || strcmp('2D',dimension)
     % Expected slope: 12dB per frequency-doubling
     % Find 12dB cut-off frequency 
     flowidx = find(H <= 1/4, 1, 'first');
-    hpreflow = f(flowidx)/4;  
-    
+    hpreflow = f(flowidx)/4;
 else
     error('%s: %s is not a valid conf.dimension entry',upper(mfilename));
 end
 
-% approximated slope beginning at hpreflow
+% Approximated slope beginning at hpreflow
 Hslope = hpreflow./f(flowidx:end);
-% mean of H(f) evaluated from f to fs/2
-Hmean = cumsum(H(end:-1:flowidx));  % cumulative sum
+% Mean of H(f) evaluated from f to fs/2
+Hmean = cumsum(H(end:-1:flowidx));   % cumulative sum
 Hmean = Hmean./(1:length(Hmean)).';  % cumulative mean
 Hmean = fliplr(Hmean);
 % fhighidx is the frequency where both functions intersect the first time

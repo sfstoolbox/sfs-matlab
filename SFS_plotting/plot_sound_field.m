@@ -5,17 +5,19 @@ function plot_sound_field(P,X,Y,Z,x0,conf)
 %
 %   Input parameters:
 %       P           - matrix containing the sound field in the format P = P(y,x)
+%       X           - x-axis / m; single value or [xmin,xmax] or nD-array
+%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
+%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       x,y,z       - vectors for the x-, y- and z-axis
 %       x0          - matrix containing the secondary source positions to plot.
 %                     Default: plot no secondary sources
 %       conf        - configuration struct (see SFS_config)
 %
-%   PLOT_SOUND_FIELD(P,X,Y,Z,x0,conf) plots the sound field P in dependence
-%   of the axes that are non-singleton. You have to provide the axes in the same
-%   syntax as for the sound field functions, see help sound_field_mono for a
-%   detailed explanation of the syntax. For a given set x0 of secondary sources
-%   the secondary sources are added as dots or loudspeaker symbols depending on
-%   your setting of conf.plot.realloudspeakers.
+%   PLOT_SOUND_FIELD(P,X,Y,Z,x0,conf) plots the sound field P in dependence of
+%   the axes that are non-singleton. You have to provide the axes in the same
+%   syntax as for the sound field functions. For a given set x0 of secondary
+%   sources the secondary sources are added as dots or loudspeaker symbols
+%   depending on your setting of conf.plot.realloudspeakers.
 %
 %   See also: sound_field_mono, sound_field_imp, draw_loudspeakers
 
@@ -86,30 +88,15 @@ p.file = conf.plot.file;
 %% ===== Calculation =====================================================
 % Handle the given axis and check which should be plotted
 [dimensions,x1,x2,x3] = xyz_axes_selection(X,Y,Z);
-% check whether some of the axis have custom size
-is_custom = is_dim_custom(X,Y,Z);
-% The grid will always be detected as custom, if x,y,z have more than two
+% Check whether some of the axis have custom size
+% NOTE: the grid will always be detected as custom, if x,y,z have more than two
 % entries, which could also happen if you perform for example:
 % >> [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,[0 -1 0],'pw',1000,conf);
 % >> plot_sound_field(P,x,y,z,x0,conf)
 % Instead you should do
 % >> plot_sound_field(P,X,Y,Z,x0,conf)
 % if X,Y,Z are a non-custom grid.
-% As this behavior was different in earlier releases we will give a warning
-% message until the next release:
-if any(is_custom)
-    warning('SFS:plotting',['You have provided a custom grid for the ', ...
-        'X,Y,Z input parameters of PLOT_SOUND_FIELD.\n If this was ', ...
-        'desired ignore this message, otherwise note the following:\n ', ...
-        'The behavior of PLOT_SOUND_FIELD has changed. Before, it worked ', ...
-        'in the following way:\n ', ...
-        '  [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);\n ', ...
-        '  plot_sound_field(P,x,y,z,x0,conf)\n ', ...
-        'Now you should use instead:\n ', ...
-        '  plot_sound_field(P,X,Y,Z,x0,conf)\n ', ...
-        'where X,Y,Z are the same input arguments as for the sound field ', ...
-        'function.']);
-end
+is_custom = is_dim_custom(X,Y,Z);
 
 if any(is_custom) && sum(is_custom) < sum(dimensions)
   error(['%s: it is not possible to combine an axis with regular sampled ' ...

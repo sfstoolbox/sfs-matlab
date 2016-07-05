@@ -1,15 +1,15 @@
-function boolean = test_secondary_source_diameter(modus)
+function status = test_secondary_source_diameter(modus)
 %TEST_SECONDARY_SOURCE_DIAMETER tests the correctness of the function
 %secondary_source_diameter()
 %
-%   Usage: boolean = test_secondary_source_diameter(modus)
+%   Usage: status = test_secondary_source_diameter(modus)
 %
 %   Input parameters:
 %       modus   - 0: numerical (quiet)
 %                 1: numerical (verbose)
 %
 %   Output parameters:
-%       booelan - true or false
+%       status - true or false
 %
 %   TEST_SECONDARY_SOURCE_DIAMTERE(modus) checks if the function, that
 %   calculates the secondary source diameter and center is working correctly.
@@ -44,6 +44,9 @@ function boolean = test_secondary_source_diameter(modus)
 %*****************************************************************************
 
 
+status = false;
+
+
 %% ===== Checking of input  parameters ===================================
 nargmin = 1;
 nargmax = 1;
@@ -51,7 +54,6 @@ narginchk(nargmin,nargmax);
 
 
 %% ===== Main ============================================================
-boolean = true;
 % reference values
 diam_linear_ref = 4;
 center_linear_ref = 0;
@@ -276,3 +278,6 @@ else
     error('%s: modus has to be 0 (numerical quiet) or 1 (numerical).', ...
             upper(mfilename));
 end
+
+
+status = true;

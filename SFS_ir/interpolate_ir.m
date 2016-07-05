@@ -24,6 +24,13 @@ function [ir_new,x0_new] = interpolate_ir(ir,x0,xs,conf)
 %   dimensions in order to save computational time, because this function could
 %   be called quite often.
 %
+%	References:
+%		K. Hartung, J. Braasch, S. J. Sterbing (1999) - "Comparison of different
+%		methods for the interpolation of head-related transfer functions".
+%		Proc. of the 16th AES Conf.
+%		K. Itoh (1982) - "Analysis of the phase unwrapping algorithm". Applied
+%		Optics 21(14), 2470
+%
 %   See also: get_ir, interpolation
 
 %*****************************************************************************
@@ -101,6 +108,8 @@ else
                 ir_new(1,1,:) = interpolation(squeeze(ir(1:2,1,:))',x0(:,1:2),xs);
                 ir_new(1,2,:) = interpolation(squeeze(ir(1:2,2,:))',x0(:,1:2),xs);
             case 'freqdomain'
+				% see Itoh (1982), Hartung et al. (1999)
+				%
                 % Upsample to avoid phase aliasing in unwrapping of phase
                 TF = fft(ir,4*size(ir,3),3);
                 % Magnitude and phase will be interpolated separately

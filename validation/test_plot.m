@@ -1,13 +1,17 @@
-function boolean = test_plot()
+function status = test_plot(modus)
 %TEST_PLOT tests the correctness of test_plot()
 %
-%   Usage: boolean = test_plot()
+%   Usage: status = test_plot(modus)
+%
+%   Input parameters:
+%       modus   - 0: numerical (not available)
+%                 1: visual
 %
 %   Output parameters:
-%       booelan - true or false
+%       status  - true or false
 %
-%   TEST_PLOT() creates plots for monochromatic and time-domain sound field with
-%   different dimensions and different grids.
+%   TEST_PLOT(modus) creates plots for monochromatic and time-domain sound field
+%   with different dimensions and different grids.
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -39,10 +43,18 @@ function boolean = test_plot()
 %*****************************************************************************
 
 
-%% ===== Checking of input  parameters ===================================
-nargmin = 0;
-nargmax = 0;
+status = false;
+
+
+%% ===== Checking of input parameters ====================================
+nargmin = 1;
+nargmax = 1;
 narginchk(nargmin,nargmax);
+if ~modus
+    warning('%s: numerical modus not available.',upper(mfilename));
+    status = true;
+    return;
+end
 
 
 %% ===== Configuration ===================================================
@@ -186,3 +198,6 @@ sound_field_imp_wfs(0,x2,0,xs,src,t,conf)
 title('1D time-domain sound field, y-axis, custom grid')
 sound_field_imp_wfs(0,0,x3,xs,src,t,conf)
 title('1D time-domain sound field, z-axis, custom grid')
+
+
+status = true;

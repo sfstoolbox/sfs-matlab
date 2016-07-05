@@ -5,8 +5,9 @@ function status = test_secondary_source_diameter(modus)
 %   Usage: status = test_secondary_source_diameter(modus)
 %
 %   Input parameters:
-%       modus   - 0: numerical (quiet)
-%                 1: numerical (verbose)
+%       modus   - 0: numerical
+%                 1: visual (not available)
+%                 2: numerical verbose
 %
 %   Output parameters:
 %       status - true or false
@@ -258,9 +259,9 @@ if modus==0
        norm(center_linear-center_linear_ref)>eps || ...
        norm(center_circle-center_circle_ref)>eps || ...
        norm(center_box-center_box_ref)>eps
-        boolean = false;
+        return;
     end
-elseif modus==1
+elseif modus==2
     if abs(diam_linear-diam_linear_ref)>eps 
         error('%s: wrong diameter for linear array.',upper(mfilename));
     elseif norm(center_linear-center_linear_ref)>eps

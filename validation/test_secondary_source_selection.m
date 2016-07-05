@@ -6,7 +6,8 @@ function status = test_secondary_source_selection(modus)
 %
 %   Input parameters:
 %       modus   - 0: numerical (quiet)
-%                 1: numerical (verbose)
+%                 1: visual (not available)
+%                 2: numerical verbose
 %
 %   Output parameters:
 %       status - true or false
@@ -109,7 +110,7 @@ if modus==0
        ~all(eq(ref_selection_box_fs,selection_box_fs))
         return;
     end
-elseif modus==1
+elseif modus==2
     message = 'wrong secondary source selection for a';
     if ~all(eq(ref_selection_circular_pw,selection_circular_pw))
         error('%s: %s circular array and a plane wave.', ...
@@ -147,9 +148,6 @@ elseif modus==1
         error('%s: %s box shaped array and a focused source.', ...
             upper(mfilename),message);
     end
-else
-    error('%s: modus has to be 0 (numerical quiet), 1 (numerical), ', ...
-          upper(mfilename));
 end
 
 

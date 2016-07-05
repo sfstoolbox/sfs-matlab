@@ -1,10 +1,14 @@
-function boolean = test_wfs_25d()
+function status = test_wfs_25d(modus)
 %TEST_WFS_25D tests behavior of 2.5D WFS
 %
-%   Usage: boolean = test_impulse_responses()
+%   Usage: status = test_wfs_25d(modus)
+%
+%   Input parameters:
+%       modus   - 0: numerical
+%                 1: visual
 %
 %   Output parameters:
-%       boolean - true or false
+%       status  - true or false
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -36,14 +40,16 @@ function boolean = test_wfs_25d()
 %*****************************************************************************
 
 
+status = false;
+
+
 %% ===== Checking of input  parameters ===================================
-nargmin = 0;
-nargmax = 0;
+nargmin = 1;
+nargmax = 1;
 narginchk(nargmin,nargmax);
 
 
 %% ===== Configuration ===================================================
-boolean = false;
 % Parameters
 conf = SFS_config;
 conf.secondary_sources.geometry = 'linear';
@@ -70,8 +76,10 @@ for idx=1:length(positions)
     src = sources{idx};
     gt = gtsources{idx};
 
-    figure;
-    ddx = 0;
+    if modus
+        figure;
+        ddx = 0;
+    end
 
     for driving_functions = {'reference_point', 'reference_line'}
 
@@ -79,26 +87,30 @@ for idx=1:length(positions)
         Pgt = sound_field_mono(X,Y,Z,[xs(1:3),0,-1,0,1],gt,1,f,conf);
         Pwfs = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
 
-        subplot(2,2,2*ddx+1);
-        imagesc(Y,X,real(Pwfs));
-        title(sprintf('%s %s',src,driving_functions{:}),'Interpreter','none');
-        set(gca,'YDir','normal');
-        colorbar;
+        if modus
+            subplot(2,2,2*ddx+1);
+            imagesc(Y,X,real(Pwfs));
+            title(sprintf('%s %s',src,driving_functions{:}),'Interpreter','none');
+            set(gca,'YDir','normal');
+            colorbar;
 
-        subplot(2,2,2*ddx+2);
-        imagesc(Y,X,db(1 - Pwfs./Pgt));
-        title(sprintf('%s %s',src,driving_functions{:}),'Interpreter','none');
-        set(gca,'YDir','normal');
-        colorbar;
-        hold on;
-        if strcmp('reference_point',conf.driving_functions)
-            plot(conf.xref(1),conf.xref(2),'gx');
-        else
-            plot(conf.xref(1)+X,conf.xref([2,2]),'g--');
+            subplot(2,2,2*ddx+2);
+            imagesc(Y,X,db(1 - Pwfs./Pgt));
+            title(sprintf('%s %s',src,driving_functions{:}),'Interpreter','none');
+            set(gca,'YDir','normal');
+            colorbar;
+            hold on;
+            if strcmp('reference_point',conf.driving_functions)
+                plot(conf.xref(1),conf.xref(2),'gx');
+            else
+                plot(conf.xref(1)+X,conf.xref([2,2]),'g--');
+            end
+            hold off;
+
+            ddx= ddx+1;
         end
-        hold off;
-
-        ddx= ddx+1;
     end
 end
-boolean = true;
+
+
+status = true;

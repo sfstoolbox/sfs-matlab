@@ -5,9 +5,9 @@ function status = test_secondary_source_positions(modus)
 %   Usage: status = test_secondary_source_positions(modus)
 %
 %   Input parameters:
-%       modus   - 0: numerical (quiet)
-%                 1: numerical (verbose)
-%                 2: visual
+%       modus   - 0: numerical
+%                 1: visual
+%                 2: numerical verbose
 %
 %   Output parameters:
 %       status - true or false
@@ -260,7 +260,7 @@ if modus==0
             ~all(abs(x0_box(:)-x0_box_ref(:))<1e-4)
         return;
     end
-elseif modus==1
+elseif modus==2
     if ~all(eq(size(x0_linear),size(x0_linear_ref)))
         error('%s: wrong size of linear array.',upper(mfilename));
     elseif ~all(abs(x0_linear(:)-x0_linear_ref(:))<1e-4)
@@ -276,7 +276,7 @@ elseif modus==1
     elseif ~all(abs(x0_box(:)-x0_box_ref(:))<1e-4)
         error('%s: wrong value at box shaped array.',upper(mfilename));
     end
-elseif modus==2
+elseif modus==1
     % Graphical mode
     close all;
     % draw results

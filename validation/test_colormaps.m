@@ -1,13 +1,17 @@
-function boolean = test_colormaps()
+function status = test_colormaps(modus)
 %TEST_COLORMAPS does sound field plots with different colormaps
 %
-%   Usage: boolean = test_colormaps()
+%   Usage: status = test_colormaps(modus)
+%
+%   Input parameters:
+%       modus   - 0: numerical (not available)
+%                 1: visual
 %
 %   Output parameters:
-%       booelan - true or false
+%       status  - true or false
 %
-%   TEST_COLORMAPS() creates plots for monochromatic and time-domain sound field in dB
-%   with different colormaps.
+%   TEST_COLORMAPS(modus) creates plots for monochromatic and time-domain sound
+%   field in dB with different colormaps.
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -39,11 +43,19 @@ function boolean = test_colormaps()
 %*****************************************************************************
 
 
-%% ===== Checking of input  parameters ===================================
-nargmin = 0;
-nargmax = 0;
+status = false;
+
+
+%% ===== Checking of input parameters ====================================
+nargmin = 1;
+nargmax = 1;
 narginchk(nargmin,nargmax);
-boolean = false;
+if ~modus
+    warning('%s: numerical modus not available.',upper(mfilename));
+    status = true;
+    return;
+end
+
 
 %% ===== Configuration ===================================================
 conf = SFS_config;
@@ -54,6 +66,7 @@ t = 300;
 X = [-2 2];
 Y = [-2 2];
 Z = 0;
+
 
 %% ===== Monochromatic plots =============================================
 conf.plot.normalisation = 'center';
@@ -89,4 +102,5 @@ for ii=1:length(color_maps_reversed)
     title(sprintf('Time-domain, %s reversed',color_maps_reversed{ii}))
 end
 
-boolean = true;
+
+status = true;

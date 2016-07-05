@@ -6,7 +6,8 @@ function status = test_tapering_window(modus)
 %
 %   Input parameters:
 %       modus   - 0: numerical (quiet)
-%                 1: numerical (verbose)
+%                 1: visual (not available)
+%                 2: numerical verbose
 %
 %   Output parameters:
 %       status - true or false
@@ -125,7 +126,7 @@ if modus==0
        sum(abs(ref_win_box-win_box))>eps
         return;
     end
-elseif modus==1
+elseif modus==2
     message = 'wrong tapering window for';
     if sum(abs(ref_win_circular1-win_circular1))>eps || ...
        sum(abs(ref_win_circular2-win_circular2))>eps

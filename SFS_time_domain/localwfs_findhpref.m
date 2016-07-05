@@ -70,9 +70,9 @@ conf.localsfs.wfs = conf.wfs;
 
 %% ===== Variables ======================================================
 N = conf.N;
-irs = dummy_irs(N,conf);    % impulse responses
-fs = conf.fs;               % sampling rate
-dimension = conf.dimension; % dimensionality
+irs = dummy_irs(round(N/2),conf);    % impulse responses
+fs = conf.fs;                        % sampling rate
+dimension = conf.dimension;          % dimensionality
 
 
 %% ===== Computation ====================================================

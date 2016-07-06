@@ -40,7 +40,7 @@ source_suffix = '.rst'
 master_doc = 'contents'
 
 # General information about the project. (substitutions)
-project = 'SFS Toolbox for Matlab/Octave'
+project = 'Sound Field Synthesis Toolbox'
 copyright = '2016, SFS Toolbox Developers'
 author = 'SFS Toolbox Developers'
 

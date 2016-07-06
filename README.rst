@@ -1,8 +1,8 @@
-SFS Toolbox for Matlab/Octave
-=============================
+Sound Field Synthesis Toolbox for Matlab
+========================================
 
-The SFS Toolbox for Matlab/Octave gives you the possibility to play around with
-sound field synthesis methods like wave field synthesis (WFS) or near-field
+The SFS Toolbox for Matlab gives you the possibility to play around with sound
+field synthesis methods like wave field synthesis (WFS) or near-field
 compensated higher order Ambisonics (NFC-HOA).  There are functions to simulate
 monochromatic sound fields for different secondary source (loudspeaker) setups,
 time snapshots of full band impulses emitted by the secondary source

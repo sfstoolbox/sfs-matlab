@@ -20,6 +20,12 @@ function [ir_new,x0_new] = interpolate_ir(ir,x0,xs,conf)
 %   INTERPOLATE_IR(ir,x0,xs,conf) interpolates the two to three given impulse
 %   responses from ir with their corresponding angles x0 for the given angles
 %   xs and returns an interpolated impulse response.
+%	For the 1D case, the interpolation method differs depending on the setting
+%	of conf.ir.interpolationmethod:
+%     'simple'      - Interpolation in the time domain performed samplewise.
+%	                  This does not heed the time of arrival of the HRTFs.
+%     'freqdomain'  - Interpolation in the frequency domain performed separately
+%                     for magnitude and phase of the HRTF.
 %   Note, that the given parameter are not checked if they have all the correct
 %   dimensions in order to save computational time, because this function could
 %   be called quite often.

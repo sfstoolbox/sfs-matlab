@@ -20,10 +20,7 @@ function [ir,x0] = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %                                           [x y z] / m
 %                             'spherical' - spherical system with
 %                                           [phi theta r] / (rad, rad, m)
-%       conf              - configuration struct (see SFS_config), which will
-%                           be passed to:
-%                             interpolate_ir
-%                             ir_correct_distance (only for SimpleFreeFieldHRIR)
+%       conf              - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ir      - impulse response for the given position (length of IR x 2)
@@ -33,23 +30,18 @@ function [ir,x0] = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %   from the given SOFA file or struct. The impulse response is determined by
 %   the position X and head orientation head_orientation of the listener, and
 %   the position xs of the desired point source.
-%   For the SOFA convention SimpleFreeFieldHRIR the desired distance between
-%   the point source and listener is achieved by delaying and weighting the
-%   impulse response. Distances larger than 10m are ignored and set constantly
-%   to 10m.
 %   If the desired angles are not present in the SOFA data set and
 %   conf.ir.useinterpolation is set to true an interpolation is applied to
 %   create the impulse response. For the SOFA convention MultiSpeakerBRIR the
 %   interpolation is only performed for the head orientations not the different
 %   loudspeaker positions.
-%   A further configuration setting that is considered is conf.ir.useoriglength,
-%   which indicates if additional zeros corresponding to the actual radius of
-%   the measured impulse responses should be added at the beginning of every
-%   impulse response (if set to false). If you know that the measured impulse
-%   responses include already the zeros from the measurement it can be safely
-%   set to true. This is important because the delaying of the impulse responses
-%   in order to achieve the correct distance require enough zeros at the
-%   beginning of every impulse response.
+%
+%   For the SOFA convention SimpleFreeFieldHRIR the desired distance between
+%   the point source and listener is achieved by delaying and weighting the
+%   impulse response. In this case zeros are padded at the beginning and end
+%   of the impulse response and the length of ir is given by conf.N. The zeros
+%   added at the beginning correspond to the actual radius of the measured
+%   impulse response.
 %
 %   For a description of the SOFA file format see: http://sofaconventions.org
 %

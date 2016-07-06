@@ -2,14 +2,14 @@ function D = driving_function_mono_wfs_fs(x0,nx0,xs,f,conf)
 %DRIVING_FUNCTION_MONO_WFS_FS returns the driving signal D for a focused source
 %in WFS
 %
-%   Usage: D = driving_function_mono_wfs_fs(x0,nx0,xs,f,conf)
+%   Usage: D = driving_function_mono_wfs_fs(x0,nx0,xs,f,[conf])
 %
 %   Input parameters:
 %       x0          - position of the secondary sources / m [nx3]
 %       nx0         - directions of the secondary sources / m [nx3]
 %       xs          - position of virtual focused source / m [nx3]
 %       f           - frequency of the monochromatic source / Hz
-%       conf        - configuration struct (see SFS_config)
+%       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
@@ -18,14 +18,16 @@ function D = driving_function_mono_wfs_fs(x0,nx0,xs,f,conf)
 %   for the given secondary sources, the virtual focused source position and the
 %   frequency f.
 %
+%   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
+
 %   References:
-%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
-%       "Theory of Sound Field Synthesis"
 %       S. Spors, H. Wierstorf, M. Geier, J. Ahrens (2009) - "Physical and
 %       Perceptual Properties of Focused Sources in Wave Field Synthesis",
 %       AES127
-%
-%   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
+%       E. Verheijen (1997) - "Sound Reproduction by Wave Field Synthesis", PhD
+%       thesis, TU Delft
+%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       PhD thesis, TU Berlin
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -87,23 +89,25 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
 
     % === 2- or 3-Dimensional ============================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
-        % D using an approximated point sink as source model
+        % D using a point source and the approximation w/c|x0-xs|>>1
         %
         %            1  i w (x0-xs) nx0
-        % D(x0,w) = --- --- ------------- e^(i w/c |x0-xs|)
-        %           2pi  c  |x0-xs|^(3/2)
+        % D(x0,w) = --- --- ----------- e^(i w/c |x0-xs|)
+        %           2pi  c   |x0-xs|^2
         %
-        % see Wierstorf et al. (2015), eq.(#D:wfs:fs)
+        % See http://sfstoolbox.org/#equation-D.wfs.fs
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % Driving signal
-        D = 1/(2*pi) * 1i*omega/c .* ...
-            vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(1i*omega/c.*r);
+        D = 1./(2.*pi) .* (1i.*omega)./c ...
+            .* vector_product(x0-xs,nx0,2) ./ r.^2 ...
+            .* exp(+1i.*omega./c.*r);
         %
-    elseif strcmp('point_sink',driving_functions)
+    case 'point_sink'
         % D using a point sink as source model
         %
         % D(x0,w) =
@@ -112,34 +116,49 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % --- |--- + ------- |  ----------- e^(i w/c |x0-xs|)
         % 2pi \ c    |x0-xs| /   |x0-xs|^2
         %
-        % see Wierstorf et al. (2015), eq.(#D:wfs:fs:woapprox)
+        % See Wierstorf (2014), eq.(2.71)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % Driving signal
-        D = 1/(2*pi) * ( -1i.*omega/c + 1./r ) .* ...
-            vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(1i*omega./c.*r);
+        D = 1./(2.*pi) .* ( -1i.*omega./c + 1./r ) ...
+            .* vector_product(x0-xs,nx0,2) ./ r.^2 ...
+            .* exp(+1i.*omega./c.*r);
         %
-    elseif strcmp('line_sink',driving_functions)
+    case 'line_sink'
         % D using a line sink as source model
         %
         %              iw (x0-xs)nk  (1)/ w         \
         % D(x0,w) =  - -- --------- H1  | - |x0-xs| |
         %              2c  |x0-xs|      \ c         /
         %
-        % compare Wierstorf et al. (2015), eq.(#D:wfs:fs:ls)
+        % See http://sfstoolbox.org/#equation-D.wfs.fs.ls
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % Driving signal
-        D = -1i*omega/(2*c) .* vector_product(x0-xs,nx0,2) ./ r .* ...
-            besselh(1,1,omega/c.*r);
+        D = -1i.*omega./(2.*c) ...
+            .* vector_product(x0-xs,nx0,2) ./ r ...
+            .* besselh(1,1,omega./c.*r);
         %
-    elseif strcmp('delft1988',driving_functions)
-        % --- Delft 1988 -------------------------------------------------
-        to_be_implemented;
+    case 'legacy'
+        % --- Old SFS Toolbox default ------------------------------------
+        % D using an approximated point sink as source model
         %
-    else
+        %            1  i w (x0-xs) nx0
+        % D(x0,w) = --- --- ------------- e^(i w/c |x0-xs|)
+        %           2pi  c  |x0-xs|^(3/2)
+        %
+        % See Wierstorf (2014), eq.(2.73)
+        %
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        % Driving signal
+        D = 1./(2.*pi) .* 1i.*omega./c ...
+            .* vector_product(x0-xs,nx0,2) ./ r.^(3./2) ...
+            .* exp(+1i.*omega./c.*r);
+        %
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a focused source.'],upper(mfilename),driving_functions);
     end
@@ -148,11 +167,70 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
 elseif strcmp('2.5D',dimension)
 
     % === 2.5-Dimensional ================================================
-
+    
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
-    if strcmp('default',driving_functions)
-        % --- SFS Toolbox ------------------------------------------------
+
+    switch driving_functions
+    case {'default', 'reference_point'}
+        % Driving function with only one stationary phase approximation,
+        % reference to one point in field
+        %
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        % 2.5D correction factor
+        %         _____________________
+        %        |      |xref-x0|
+        % g0 = _ |---------------------
+        %       \|||xref-x0| - |xs-x0||
+        %
+        % Verheijen (1997), eq. (A.14)
+        %
+        g0 = sqrt( vector_norm(xref-x0,2) ./ abs(vector_norm(x0-xref,2) - r) );
+        %                       ___     ___
+        %                      | 1     |-iw  (xs-x0) nx0
+        % D_2.5D(x0,w) = g0  _ |---  _ |--- ------------- e^(i w/c |x0-xs|)
+        %                     \|2pi   \| c  |x0-xs|^(3/2)
+        %
+        % See http://sfstoolbox.org/en/update_wfs_ps/#equation-D.wfs.fs.2.5D
+        %
+        % Driving signal
+        D = 1./sqrt(2.*pi) .* sqrt(-1i.*omega./c) .* g0 ...
+            .* vector_product(xs-x0,nx0,2) ./ r.^(3./2) ...
+            .* exp(+1i.*omega./c.*r);
+        %
+    case {'reference_line', 'delft1988'}
+        % Driving function with two stationary phase approximations,
+        % reference to a line parallel to a LINEAR secondary source distribution
+        %
+        % Distance ref-line to linear ssd
+        dref = abs( vector_product(xref-x0,nx0,2) );
+        % Distance source and linear ssd
+        ds = abs( vector_product(xs-x0,nx0,2) );
+        %
+        % 2.5D correction factor
+        %        ______________________
+        % g0 = \| d_ref / (d_ref - d_s)
+        %
+        % See Start (1997), eq. (3.16)
+        %
+        g0 = sqrt( dref ./ (dref - ds) );
+        %                       ___     ___
+        %                      | 1     |-iw  (xs-x0) nx0
+        % D_2.5D(x0,w) = g0  _ |---  _ |--- ------------- e^(i w/c |x0-xs|)
+        %                     \|2pi   \| c  |x0-xs|^(3/2)
+        %
+        % See Verheijen (1997), eq. (2.29b)
+        %
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        % Driving signal
+        D = 1./sqrt(2.*pi) .* sqrt(-1i.*omega./c) .* g0 ...
+            .* vector_product(xs-x0,nx0,2) ./ r.^(3./2) ...
+            .* exp(+1i.*omega./c.*r);
+        %
+    case 'legacy'
+        % --- Old SFS Toolbox default ------------------------------------
         % 2.5D correction factor
         %        ______________
         % g0 = \| 2pi |xref-x0|
@@ -161,19 +239,20 @@ elseif strcmp('2.5D',dimension)
         %
         % D_2.5D using an approximated point sink as source model
         %                        ___
-        %                 g0    |i w (x0-xs) nx0
+        %                 g0    |iw   (x0-xs) nx0
         % D_2.5D(x0,w) = ---  _ |--- ------------- e^(i w/c |x0-xs|)
         %                2pi   \| c  |x0-xs|^(3/2)
         %
-        % see Wierstorf et al. (2015), eq.(#D:wfs:fs:2.5D)
+        % See Wierstorf (2014), eq.(2.74)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % Driving signal
-        D = g0/(2*pi) * sqrt( 1i*omega/c ) .* ...
-            vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(1i*omega/c.*r);
+        D = 1./(2.*pi) .* sqrt(1i.*omega./c) .* g0 ...
+            .* vector_product(x0-xs,nx0,2) ./ r.^(3./2) ...
+            .* exp(+1i*omega./c.*r);
         %
-    elseif strcmp('spors2009eq7',driving_functions)
+    case 'spors2009eq7'
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D correction factor
         %        ______________
@@ -190,15 +269,16 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D(x0,w) = -g0 _ |------  ------------- e^(i w/c |x0-xs|)
         %                     \|2pi ic  |x0-xs|^(3/2)
         %
-        % see Spors (2009), eq.(7)
+        % See Spors (2009), eq.(7)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % Driving signal
-        D = -g0 * sqrt( omega/(2*pi*c*1i) ) .* ...
-            vector_product(x0-xs,nx0,2) ./ r.^(3/2) .* exp(1i*omega/c.*r);
+        D = -g0 .* sqrt( omega./(2.*pi.*c.*1i) ) ...
+            .* vector_product(x0-xs,nx0,2) ./ r.^(3./2) ...
+            .* exp(+1i*omega./c.*r);
         %
-    elseif strcmp('spors2009eq6',driving_functions)
+    case 'spors2009eq6'
         % --- Spors 2009 -------------------------------------------------
         % 2.5D correction factor
         %        ______________
@@ -213,15 +293,16 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D(x0,w) = -g0 -- -----------  H1  | - |x0-xs| |
         %                    2c   |x0-xs|        \ c         /
         %
-        % see Spors et al. (2009), eq.(6)
+        % See Spors et al. (2009), eq.(6)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % Driving signal
-        D = -g0 * 1i*omega/(2*c) .* ...
-            vector_product(x0-xs,nx0,2) ./ r .* besselh(1,1,omega/c.*r);
+        D = -g0 .* 1i.*omega./(2.*c) ...
+            .* vector_product(x0-xs,nx0,2) ./ r ...
+            .* besselh(1,1,omega./c.*r);
         %
-    elseif strcmp('point_sink',driving_functions)
+    case 'point_sink'
         % --- Point Sink -------------------------------------------------
         % 2.5D correction factor
         %        ______________
@@ -237,23 +318,19 @@ elseif strcmp('2.5D',dimension)
         %   ---  | _ |---  + _ |---  ------- |  ----------- e^(i w/c |x0-xs|)
         %   2pi  \  \| c      \|i w  |x0-xs| /   |x0-xs|^2
         %
-        % see Wierstorf et al. (2015), eq.(#D:wfs:fs:woapprox:2.5D)
+        % See ...
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % Driving signal
-        D = g0/(2*pi) .* ( sqrt(1i*omega/c) + sqrt(c/(1i*omega)) ./ r ) .* ...
-            vector_product(x0-xs,nx0,2) ./ r.^2 .* exp(1i*omega/c.*r);
+        D = g0./(2.*pi) .* (sqrt(1i.*omega./c) + sqrt(c./(1i.*omega)) ./ r) ...
+            .* vector_product(x0-xs,nx0,2) ./ r.^2 ...
+            .* exp(+1i*omega./c.*r);
         %
-    elseif strcmp('delft1988',driving_functions)
-        % --- Delft 1988 -------------------------------------------------
-        to_be_implemented;
-        %
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D focused source.'],upper(mfilename),driving_functions);
     end
-
 else
     error('%s: the dimension %s is unknown.',upper(mfilename),dimension);
 end

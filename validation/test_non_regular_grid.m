@@ -1,12 +1,16 @@
-function boolean = test_non_regular_grid()
+function status = test_non_regular_grid(modus)
 %TEST_IMPULSE_RESPONSES tests time behavior of WFS and local WFS
 %
-%   Usage: boolean = test_impulse_responses()
+%   Usage: status = test_impulse_responses(modus)
+%
+%   Input parameters:
+%       modus   - 0: numerical
+%                 1: visual
 %
 %   Output parameters:
-%       booelan - true or false
+%       status  - true or false
 %
-%   TEST_IMPULSE_RESPONSES() compares the time-frequency response of
+%   TEST_IMPULSE_RESPONSES(modus) compares the time-frequency response of
 %   WFS and local WFS by calculating impulse responses, their frequency
 %   spectrum, and spatial-temporal sound field.
 
@@ -40,16 +44,26 @@ function boolean = test_non_regular_grid()
 %*****************************************************************************
 
 
+status = false;
+
+
+%% ===== Checking of input  parameters ===================================
+nargmin = 1;
+nargmax = 1;
+narginchk(nargmin,nargmax);
+
+
 %% ===== Configuration ===================================================
-boolean = false;
 %% Parameters
 conf = SFS_config;
 conf.showprogress = true;
 conf.resolution = 400;
-conf.plot.useplot = true;
-conf.plot.loudspeakers = true;
-conf.plot.realloudspeakers = false;
-conf.plot.usedb = false;
+if modus
+    conf.plot.useplot = true;
+    conf.plot.loudspeakers = true;
+    conf.plot.realloudspeakers = false;
+    conf.plot.usedb = false;
+end
 conf.tapwinlen = 0.3;
 % config for array
 conf.dimension = '2.5D';
@@ -75,8 +89,8 @@ Zreg = 0;
 
 % non regular grid
 alpha = 2*pi / 360 * (0:360-1);
-r = linspace(0, conf.secondary_sources.size/2, 50);
-[alpha, r] = ndgrid(alpha,r);
+r = linspace(0,conf.secondary_sources.size/2,50);
+[alpha,r] = ndgrid(alpha,r);
 
 Xnon  = r.*cos(alpha);
 Ynon  = r.*sin(alpha);
@@ -84,11 +98,12 @@ Znon = 0;
 
 % sound fields
 conf.plot.normalisation = 'center';
-sound_field_mono_wfs(Xreg,Yreg,Zreg, xs, src, f, conf);
-sound_field_mono_wfs(Xnon,Ynon,Znon, xs, src, f, conf);
+[~] = sound_field_mono_wfs(Xreg,Yreg,Zreg,xs,src,f,conf);
+[~] = sound_field_mono_wfs(Xnon,Ynon,Znon,xs,src,f,conf);
 
 conf.plot.normalisation = 'max';
-sound_field_imp_wfs(Xreg,Yreg,Zreg, xs, src, tau, conf);
-sound_field_imp_wfs(Xnon,Ynon,Znon, xs, src, tau, conf);
+[~] = sound_field_imp_wfs(Xreg,Yreg,Zreg,xs,src,tau,conf);
+[~] = sound_field_imp_wfs(Xnon,Ynon,Znon,xs,src,tau,conf);
 
-boolean = true;
+
+status = true;

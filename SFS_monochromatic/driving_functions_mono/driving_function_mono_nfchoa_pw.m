@@ -18,10 +18,6 @@ function D = driving_function_mono_nfchoa_pw(x0,nk,f,N,conf)
 %   signals for the given secondary sources, the virtual plane wave direction
 %   and the frequency f.
 %
-%   References:
-%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
-%       "Theory of Sound Field Synthesis"
-%
 %   See also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_pw
 
 %*****************************************************************************
@@ -71,15 +67,16 @@ driving_functions = conf.driving_functions;
 
 
 %% ===== Computation ====================================================
-% Calculate the driving function in time-frequency domain
-
 % Angle of the secondary sources
 points = bsxfun(@minus,x0,X0);
 [phi0,theta0,r0] = cart2sph(points(:,1),points(:,2),points(:,3));
+
 % Angle of plane wave
 [phi_pw,theta_pw,~] = cart2sph(nk(:,1),nk(:,2),nk(:,3));
+
 % Wavenumber
-w = 2*pi*f;
+omega = 2*pi*f;
+
 % Initialize empty driving signal
 D = zeros(size(x0,1),1);
 
@@ -87,21 +84,25 @@ if strcmp('2D',dimension)
 
     % === 2-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
-        %                        __
-        %                2i     \        i^-m
-        % D(phi0,w) = - -----   /__   ----------  e^(i m (phi0-phi_pw))
-        %               pi r0 m=-N..N  (2)
-        %                             Hm  (w/c r0)
+        % 2D plane wave
         %
-        % see Wierstorf et al. (2015), eq.(#D:hoa:pw:2D)
+        %                      _N_
+        %                2i    \       i^-m
+        % D(phi0,w) = - -----  /__  ---------- e^(i m (phi0-phi_pw))
+        %               pi r0  m=-N  (2)
+        %                           Hm(w/c r0)
+        %
+        % See http://sfstoolbox.org/#equation-D.nfchoa.pw.2D
         %
         for m=-N:N
-            D = D - 2.*1i./(pi.*r0) .* 1i^(-m)./besselh(m,2,w/c.*r0) .* ...
-                exp(1i.*m.*(phi0-phi_pw));
+            D = D - 2.*1i ./ (pi.*r0) ...
+                .* (1i).^(-m) ./ besselh(m,2,omega./c.*r0) ...
+                .* exp(1i.*m.*(phi0-phi_pw));
         end
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2D plane wave.'],upper(mfilename),driving_functions);
     end
@@ -111,22 +112,26 @@ elseif strcmp('2.5D',dimension)
 
     % === 2.5-Dimensional ================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
-        %                      __
-        %                 2i  \            i^|-m|
-        % D_25D(phi0,w) = --  /__    ------------------ e^(i m (phi0-phi_pw) )
-        %                 r0 m=-N..N       (2)
-        %                             w/c h|m| (w/c r0)
+        % 2.5D plane wave
         %
-        % see Wierstorf et al. (2015), eq.(#D:hoa:pw:2.5D)
+        %                       _N_
+        %                   2   \           i^-|m|
+        % D_25D(phi0,w) = - --  /__  -------------------- e^(i m (phi0-phi_pw))
+        %                   r0  m=-N       (2)
+        %                             i w/c h|m|(w/c r0)
+        %
+        % See http://sfstoolbox.org/#equation-D.nfchoa.pw.2.5D
         %
         for m=-N:N
-            D = D + 2.*1i./r0 .* 1i.^(-abs(m)) ./ ...
-                ( w/c .* sphbesselh(abs(m),2,w/c.*r0) ) .* ...
-                exp(1i.*m.*(phi0-phi_pw));
+            D = D - 2./r0 ...
+                .* (1i).^(-abs(m)) ...
+                ./ (1i .* omega/c .* sphbesselh(abs(m),2,omega./c.*r0)) ...
+                .* exp(1i.*m.*(phi0-phi_pw));
         end
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D plane wave.'],upper(mfilename),driving_functions);
     end
@@ -136,24 +141,30 @@ elseif strcmp('3D',dimension)
 
     % === 3-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
-        %                           __    __             -m
-        %                    4i    \     \       i^(-n) Yn (theta_pw,phi_pw)  m
-        % D(theta0,phi0,w) = ----  /__   /__     --------------------------- Yn (theta0,phi0)
-        %                    r0^2 n=0..N m=-n..n           (2)
-        %                                             w/c hn  (w/c r0)
+        % 3D plane wave
         %
-        % see Wierstorf et al. (2015), eq.(#D:hoa:pw:3D)
+        %                            _N_  _n_         -m
+        %                      4pi   \    \   i^(-n) Yn(theta_pw,phi_pw)
+        % D(theta0,phi0,w) = - ----  /__  /__ -------------------------- ...
+        %                      r0^2  n=0 m=-n            (2)
+        %                                         i w/c hn(w/c r0)
+        %                       m
+        %                    x Yn(theta0,phi0)
+        %
+        % See http://sfstoolbox.org/#equation-D.nfchoa.pw.3D
         %
         for n=0:N
             for m=-n:n
-                D = D + 4.*1i./r0.^2 .* 1i.^(-n).*sphharmonics(n,-m,theta_pw,phi_pw) ./...
-                    ( w./c .* sphbesselh(n,2,w./c.*r0) ) .* ...
-                    sphharmonics(n,m,theta0,phi0);
+                D = D - 4.*pi ./ r0.^2 ...
+                    .* (1i).^(-n).*sphharmonics(n,-m,theta_pw,phi_pw) ...
+                    ./ (1i .* omega./c .* sphbesselh(n,2,omega./c.*r0)) ...
+                    .* sphharmonics(n,m,theta0,phi0);
             end
         end
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 3D plane wave.'],upper(mfilename),driving_functions);
     end

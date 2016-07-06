@@ -1,14 +1,14 @@
-function boolean = test_driving_functions(modus)
+function status = test_driving_functions(modus)
 %TEST_DRIVING_FUNCTIONS tests the correctness of the driving functions
 %
-%   Usage: boolean = test_driving_functions(modus)
+%   Usage: status = test_driving_functions(modus)
 %
 %   Input parameters:
 %       modus   - 0: numerical
 %                 1: visual
 %
 %   Output parameters:
-%       booelan - true or false
+%       status - true or false
 %
 %   TEST_DRIVING_FUNCTIONS(MODUS) checks if the functions, that calculates
 %   the driving functions working correctly. Therefore different sound
@@ -43,7 +43,9 @@ function boolean = test_driving_functions(modus)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 % TODO: add mode to save data as reference data
+status = false;
 
 
 %% ===== Checking of input  parameters ===================================
@@ -168,7 +170,7 @@ for ii=1:size(scenarios)
                 upper(mfilename),conf.secondary_sources.geometry,conf.dimension,src);
             lasterr
         end
-    
+
     % ===== NFC-HOA ======================================================
     elseif strcmp('HOA',scenarios{ii,1})
         % mono-frequent
@@ -203,3 +205,6 @@ for ii=1:size(scenarios)
         end
     end
 end
+
+
+status = true;

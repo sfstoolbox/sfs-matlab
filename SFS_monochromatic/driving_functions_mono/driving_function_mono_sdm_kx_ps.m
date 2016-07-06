@@ -17,12 +17,6 @@ function D = driving_function_mono_sdm_kx_ps(kx,xs,f,conf)
 %   for the given secondary sources, the virtual point source position and the
 %   frequency f. The driving signal is calculated in the kx domain.
 %
-%   References:
-%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
-%       "Theory of Sound Field Synthesis"
-%       S. Spors and J. Ahrens (2010) - "Reproduction of Focused Sources by the
-%       Spectral Division Method", ISCCSP
-%
 %   See also: driving_function_mono_sdm_kx
 
 %*****************************************************************************
@@ -90,10 +84,12 @@ if strcmp('2D',dimension)
 
     % Ensure 2D
     xs = xs(1:2);
-    if strcmp('default',driving_functions)
+
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2D point source.'],upper(mfilename),driving_functions);
     end
@@ -103,8 +99,8 @@ elseif strcmp('2.5D',dimension)
 
     % === 2.5-Dimensional ================================================
 
-    % Reference point
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % D_25D(kx,w) = e^(i kx xs) ...
         %                                   ____________
@@ -116,9 +112,7 @@ elseif strcmp('2.5D',dimension)
         %                     \ ----------_-_-_-_-_-_---------,       |kx|>|w/c|
         %                          K1( \|kx^2-(w/c)^2 yref )
         %
-        % see Wierstorf et al. (2015), eq.(#D:sdm:ps:2.5D)
-        % A time reversed version of this driving function for focused sources
-        % is given in Spors and Ahrens (2010), eq.(7).
+        % See http://sfstoolbox.org/#equation-D.sdm.ps.2.5D
         %
         D(idxpr) =  exp(1i*kx(idxpr)*xs(1)) .* ...
             besselh(1,2,sqrt( (omega/c)^2 - kx(idxpr).^2 )*abs(xref(2)-xs(2))) ./ ...
@@ -128,8 +122,8 @@ elseif strcmp('2.5D',dimension)
                 besselk(1,sqrt(kx(idxev).^2 - (omega/c).^2)*abs(xref(2)-xs(2))) ./ ...
                 besselk(1,sqrt(kx(idxev).^2 - (omega/c).^2)*abs(xref(2)-x0(2)));
         end
-
-    else
+        %
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D point source.'],upper(mfilename),driving_functions);
     end
@@ -139,10 +133,11 @@ elseif strcmp('3D',dimension)
 
     % === 3-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 3D point source.'],upper(mfilename),driving_functions);
     end

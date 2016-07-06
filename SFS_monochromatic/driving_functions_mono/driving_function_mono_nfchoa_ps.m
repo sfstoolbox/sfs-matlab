@@ -18,11 +18,6 @@ function D = driving_function_mono_nfchoa_ps(x0,xs,f,N,conf)
 %   signals for the given secondary sources, the virtual point source position
 %   and the frequency f.
 %
-%   References:
-%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
-%       "Theory of Sound Field Synthesis"
-%       J. Ahrens (2012) - "Analytic Methods of Sound Field Synthesis", Springer
-%
 %   See also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_ps
 
 %*****************************************************************************
@@ -73,16 +68,18 @@ X0 = conf.secondary_sources.center;
 
 
 %% ===== Computation ====================================================
-% Calculate the driving function in time-frequency domain
 
 % Secondary source positions
 x00 = bsxfun(@minus,x0,X0);
 [phi0,theta0,r0] = cart2sph(x00(:,1),x00(:,2),x00(:,3));
+
 % Point source
 xs0 = bsxfun(@minus,xs,X0);
 [phi,theta,r] = cart2sph(xs0(:,1),xs0(:,2),xs0(:,3));
+
 % Wavenumber
 omega = 2*pi*f;
+
 % Initialize empty driving signal
 D = zeros(size(x0,1),1);
 
@@ -90,10 +87,11 @@ if strcmp('2D',dimension)
 
     % === 2-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2D point source.'],upper(mfilename),driving_functions);
     end
@@ -105,23 +103,26 @@ elseif strcmp('2.5D',dimension)
 
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
-    if strcmp('default',driving_functions)
+
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
-        % 2.5D point source, after Ahrens (2012), p.186 eq.(5.8)
+        % 2.5D point source
         %
-        %                      __      (2)
-        %               1     \       h|m| (w/c r)
-        % D(phi0,w) = -----   /__    ------------- e^(i m (phi0-phi))
-        %             2pi r0 m=-N..N  (2)
-        %                             h|m| (w/c r0)
+        %                     _N_    (2)
+        %               1     \     h|m|(w/c r)
+        % D(phi0,w) = ------  /__  ------------- e^(i m (phi0-phi))
+        %             2pi r0  m=-N   (2)
+        %                           h|m|(w/c r0)
         %
-        % see Wierstorf et al. (2015), eq.(#D:hoa:ps:2.5D)
-        %
+        % See http://sfstoolbox.org/#equation-D.nfchoa.ps.2.5D
         for m=-N:N
-            D = D + 1./(2.*pi.*r0) .* sphbesselh(abs(m),2,omega/c.*r) ./ ...
-                sphbesselh(abs(m),2,omega/c.*r0) .* exp(1i.*m.*(phi0-phi));
+            D = D + 1 ./ (2.*pi.*r0) ...
+                .* sphbesselh(abs(m),2,omega./c.*r) ...
+                ./ sphbesselh(abs(m),2,omega./c.*r0) ...
+                .* exp(1i.*m.*(phi0-phi));
         end
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D point source.'],upper(mfilename),driving_functions);
     end
@@ -131,29 +132,31 @@ elseif strcmp('3D',dimension)
 
     % === 3-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
-        % 3D point source, after Ahrens (2012), p.185 eq.(5.7)
+        % 3D point source
         %
-        %                              N_   n_  (2)
-        %                       1     \    \    hn (w/c r)   -m
-        % D(theta0,phi0,w) = -------  /__  /__  ------------ Yn(theta,phi) ...
-        %                    2pi r0^2 n=0 m=-n  (2)
-        %                                       hn (w/c r0)
-        %                      m
-        %                     Yn(theta0,phi0)
+        %                              _N_  _n_   (2)
+        %                       1      \    \    hn(w/c r)   -m
+        % D(theta0,phi0,w) = -------   /__  /__ ----------- Yn(theta,phi) ...
+        %                    2pi r0^2  n=0 m=-n   (2)
+        %                                        hn(w/c r0)
+        %                       m
+        %                    x Yn(theta0,phi0)
         %
-        % see Wierstorf et al. (2015), eq.(#D:hoa:ps:3D)
+        % See http://sfstoolbox.org/#equation-D.nfchoa.ps.3D
         %
         for n=0:N
             for m=-n:n
-                D = D + 1./(2.*pi.*r0.^2) .* sphbesselh(n,2,omega/c.*r) ./ ...
-                    sphbesselh(n,2,omega/c.*r0) .* ...
-                    sphharmonics(n,-m,theta,phi) .* ...
-                    sphharmonics(n,m,theta0,phi0);
+                D = D + 1 ./ (2.*pi.*r0.^2) ...
+                    .* sphbesselh(n,2,omega./c.*r) ...
+                    ./ sphbesselh(n,2,omega./c.*r0) ...
+                    .* sphharmonics(n,-m,theta,phi) ...
+                    .* sphharmonics(n,m,theta0,phi0);
             end
         end
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 3D point source.'],upper(mfilename),driving_functions);
     end

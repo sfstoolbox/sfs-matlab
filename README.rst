@@ -1,12 +1,14 @@
-SFS Toolbox for Matlab/Octave
-=============================
+Sound Field Synthesis Toolbox for Matlab
+========================================
 
-The SFS Toolbox for Matlab/Octave gives you the possibility to play around with
-sound field synthesis methods like |WFS| or |NFC-HOA|.  There are functions to
-simulate monochromatic sound fields for different secondary source (loudspeaker)
-setups, time snapshots of full band impulses emitted by the secondary source
-distributions, or even generate |BRS| impulse response sets in order to simulate
-|WFS| with the `SoundScape Renderer`_.
+The SFS Toolbox for Matlab gives you the possibility to play around with sound
+field synthesis methods like wave field synthesis (WFS) or near-field
+compensated higher order Ambisonics (NFC-HOA).  There are functions to simulate
+monochromatic sound fields for different secondary source (loudspeaker) setups,
+time snapshots of full band impulses emitted by the secondary source
+distributions, or even generate binaural room scanning (BRS) impulse response
+sets in order to generate binaural simulations of the synthesized sound fields
+with the `SoundScape Renderer`_.
 
 .. _SoundScape Renderer: http://spatialaudio.net/ssr
 
@@ -15,6 +17,9 @@ Theory:
 
 Documentation:
     http://matlab.sfstoolbox.org/
+
+Source code and issue tracker:
+    http://github.com/sfstoolbox/sfs/
 
 SFS Toolbox for Python:
     http://python.sfstoolbox.org/
@@ -26,9 +31,11 @@ License:
 Installation
 ------------
 
-Download the Toolbox, go to the main path of the Toolbox and start it with
+`Download the Toolbox`_, go to the main path of the Toolbox and start it with
 ``SFS_start`` which will add all needed paths to Matlab/Octave.  If
 you want to remove them again, run ``SFS_stop``.
+
+.. _Download the Toolbox: https://github.com/sfstoolbox/sfs/releases/latest
 
 
 Requirements
@@ -55,13 +62,13 @@ audioread:
 
 Impulse responses:
     The Toolbox uses the `SOFA`_ file format for handling impulse response data
-    sets like |HRTF|\ s. If you want to use this functionality you also have to
+    sets like HRTFs. If you want to use this functionality you also have to
     install the `SOFA API for Matlab/Octave`_, which you can add to your paths
     by executing ``SOFAstart``.
 
 Backward compatibility:
     Since version 2.0.0 the SFS Toolbox incorporates `SOFA`_ as file format for
-    |HRTF|\ s which replaces the old `irs file format`_ formerly used by the
+    HRTFs which replaces the old `irs file format`_ formerly used by the
     Toolbox. If you still need this you should download `the latest version with
     irs file support`_.
 
@@ -75,7 +82,7 @@ Getting started
 ---------------
 
 In order to make a simulation of the sound field of a monochromatic point source
-with a frequency of 800 Hz placed at (0,2.5,0) m synthesized by |WFS| run
+with a frequency of 800 Hz placed at (0,2.5,0) m synthesized by WFS run
 
 .. sourcecode:: matlab
 
@@ -84,8 +91,8 @@ with a frequency of 800 Hz placed at (0,2.5,0) m synthesized by |WFS| run
     sound_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf)
 
 To make a simulation of the same point source - now producing a broadband
-impulse - in the time domain at a time of
-200 samples after the first loudspeaker activity run
+impulse - in the time domain at a time of 200 samples after the first
+loudspeaker activity run
 
 .. sourcecode:: matlab
 
@@ -104,10 +111,9 @@ can look like this:
     conf.fs = 48000;
 
 For a detailed description of all available features the SFS Toolbox, have a
-look at the `feature documentation`_.
+look at the `online documentation`_.
 
 .. _online documentation: http://matlab.sfstoolbox.org
-.. _feature documentation: http://matlab.sfstoolbox.org/en/latest/feature-documentation/
 
 
 Credits and feedback
@@ -130,5 +136,5 @@ Copyright (c) 2010-2016 SFS Toolbox Developers
 
 .. _Issue Section: https://github.com/sfstoolbox/sfs/issues
 .. _official releases page: https://github.com/sfstoolbox/sfs/releases
-.. _pdf: http://www.deutsche-telekom-laboratories.de/~sporssas/publications/2012/Wierstorf_et_al_SFS_toolbox.pdf
-.. _bibtex: ./doc/aes132_paper.bibCitation and feedback
+.. _pdf: http://files.sfstoolbox.org/wierstorf_et_al_sfs-toolbox_aes132.pdf
+.. _bibtex: http://files.sfstoolbox.org/wierstorf_et_al_sfs-toolbox_aes132.bib

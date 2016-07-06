@@ -132,10 +132,12 @@ head_orientation = SOFAconvertCoordinates(sofa.ListenerView, ...
                                           sofa.ListenerView_Type, ...
                                           'spherical');
 head_orientation = rad(head_orientation(1,1:2));
+warning('off','SFS:get_ir'); % Disable warning for short N
 for ii=1:nls
     ir_all(ii,:,:) = get_ir(sofa,X,head_orientation, ...
                             x0_all(ii,1:3),'cartesian',conf)';
 end
+warning('on','SFS:get_ir');
 
 % Generate a impulse response set for all given angles
 for ii=1:nls

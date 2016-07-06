@@ -1,26 +1,14 @@
-function ir = ir_correct_distance(ir,ir_distance,r,conf)
-%IR_CORRECT_DISTANCE weights and delays the impulse reponse for a desired
-%distance
+function status = test_wfs_25d(modus)
+%TEST_WFS_25D tests behavior of 2.5D WFS
 %
-%   Usage: ir = ir_correct_distance(ir,ir_distance,r,conf)
+%   Usage: status = test_wfs_25d(modus)
 %
 %   Input parameters:
-%       ir          - impulse responses [M C N]
-%                       M ... number of measurements
-%                       C ... number of receiver channels
-%                       N ... number of samples
-%       ir_distance - distance of the given impulse responses [M 1]
-%       r           - desired distance [1]
-%       conf        - configuration struct (see SFS_config)
+%       modus   - 0: numerical
+%                 1: visual
 %
-%   Output paramteres:
-%       ir          - impulse responses [M C N]
-%
-%   IR_CORRECT_DISTANCE(ir,ir_distance,r,conf) weights and delays the given
-%   impulse responses, that they are conform with the specified distance r.
-%   The impulse responses are zero-padded to length conf.N.
-%
-%   See also: get_ir
+%   Output parameters:
+%       status  - true or false
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -52,27 +40,77 @@ function ir = ir_correct_distance(ir,ir_distance,r,conf)
 %*****************************************************************************
 
 
-%% ===== Configuration ==================================================
-c = conf.c;
-fs = conf.fs;
-N = conf.N;
-hrirpredelay = conf.ir.hrirpredelay;
+status = false;
 
 
-%% ===== Computation ====================================================
-% Append zeros at the end of the impulse responses to reach a length of N
-ir_origlength = size(ir,3);
-ir = cat(3,ir,zeros(size(ir,1),size(ir,2),N-ir_origlength));
-% Amplitude weighting (point source model)
-% This gives weight=1 for r==ir_distance
-weight = ir_distance./r;
-% Time delay of the source (at the listener position)
-delay = r/c*fs - hrirpredelay; % / samples
-% Check if impulse responses are long enough compared to intended delay
-if conf.N-delay<ir_origlength
-    warning('SFS:get_ir',['%s: Choose a conf.N value larger than %i. ', ...
-        'Otherwise you will lose samples from the end of the original ', ...
-        'impulse response.'],upper(mfilename),ceil(ir_origlength+delay));
+%% ===== Checking of input  parameters ===================================
+nargmin = 1;
+nargmax = 1;
+narginchk(nargmin,nargmax);
+
+
+%% ===== Configuration ===================================================
+% Parameters
+conf = SFS_config;
+conf.secondary_sources.geometry = 'linear';
+conf.secondary_sources.size = 20;
+conf.secondary_sources.number = 512;
+conf.secondary_sources.center = [0,6,0];
+conf.xref = [0,0,0];
+conf.usetapwin = true;
+conf.tapwinlen = 0.2;
+
+%
+f = 2000;  % temporal frequency
+positions = { [0,9,0], [0,-1,0], [0,3,0,0,-1,0] };  % source positions
+sources = {'ps', 'pw', 'fs'};
+gtsources = {'ps', 'pw', 'ps'};
+X = [-2,2];
+Y = [-2,2];
+Z = 0;
+
+
+%% ===== Main ============================================================
+for idx=1:length(positions)
+    xs = positions{idx};
+    src = sources{idx};
+    gt = gtsources{idx};
+
+    if modus
+        figure;
+        ddx = 0;
+    end
+
+    for driving_functions = {'reference_point', 'reference_line'}
+
+        conf.driving_functions = driving_functions{:};
+        Pgt = sound_field_mono(X,Y,Z,[xs(1:3),0,-1,0,1],gt,1,f,conf);
+        Pwfs = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
+
+        if modus
+            subplot(2,2,2*ddx+1);
+            imagesc(Y,X,real(Pwfs));
+            title(sprintf('%s %s',src,driving_functions{:}),'Interpreter','none');
+            set(gca,'YDir','normal');
+            colorbar;
+
+            subplot(2,2,2*ddx+2);
+            imagesc(Y,X,db(1 - Pwfs./Pgt));
+            title(sprintf('%s %s',src,driving_functions{:}),'Interpreter','none');
+            set(gca,'YDir','normal');
+            colorbar;
+            hold on;
+            if strcmp('reference_point',conf.driving_functions)
+                plot(conf.xref(1),conf.xref(2),'gx');
+            else
+                plot(conf.xref(1)+X,conf.xref([2,2]),'g--');
+            end
+            hold off;
+
+            ddx= ddx+1;
+        end
+    end
 end
-% Apply delay and weighting
-ir = delayline(ir,delay,[weight; weight],conf);
+
+
+status = true;

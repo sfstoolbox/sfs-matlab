@@ -27,10 +27,6 @@ function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 %   have a look at sound_field_imp() and apply the folowing command:
 %   [p,x,y,z] = sound_field_imp(X,Y,Z,[xs 0 -1 0],src,1,t,conf);
 %
-%   References:
-%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
-%       "Theory of Sound Field Synthesis"
-%
 %   See also: greens_function_mono, sound_field_imp
 
 %*****************************************************************************
@@ -81,7 +77,7 @@ if strcmp('ps',src)
     % g(x-xs,t) = ---------- delta(t - |x-xs|/c)
     %             4pi |x-xs|
     %
-    % see Wierstorf et al. (2015), eq.(#s:ps)
+    % See http://sfstoolbox.org/#equation-s.ps
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
     g = 1./(4*pi.*r);
@@ -94,7 +90,7 @@ elseif strcmp('dps',src)
     % g(x-xs,ns,t) = --- | F  | ---- | + ------  | --------- delta(t - |x-xs|/c)
     %                4pi  \    \ c  /    |x-xs| /  |x-xs|^2
     %
-    % see Wierstorf et al. (2015), eq.(#s:dps)
+    % See http://sfstoolbox.org/#equation-s.dps
     %
     to_be_implemented(mfilename);
 
@@ -105,7 +101,7 @@ elseif strcmp('ls',src)
     % g(x-xs,t) = F |--  |  - |---  --_-_-_- delta(t - |x-xs|/c)
     %                \iw/    \|8pi  \||x-xs|
     %
-    % see Wierstorf et al. (2015), eq.(#s:ls)
+    % See http://sfstoolbox.org/en/latest/#equation-s.ls
     % Note, that the filter F^-1 is not implemented!!!!
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
@@ -117,42 +113,13 @@ elseif strcmp('pw',src)
     %
     % g(x,t) = delta(t - nx/c)
     %
-    % see Wierstorf et al. (2015), eq.(#s:pw)
+    % See http://sfstoolbox.org/#equation-s.pw
     %
     % direction of plane wave
     nxs = xs / norm(xs);
     %
-    % The following code enables us to replace this two for-loops
-    % for ii = 1:size(x,1)
-    %     for jj = 1:size(x,2)
-    %         t(ii,jj) = nxs*[x(ii,jj) y(ii,jj) z(ii,jj)]'./c;
-    %     end
-    % end
-    %
-    % Get a matrix in the form of
-    % 1 1 1 0 0 0 0 0 0
-    % 0 0 0 1 1 1 0 0 0
-    % 0 0 0 0 0 0 1 1 1
-    E = eye(3*size(x,1));
-    E = E(1:3:end,:)+E(2:3:end,:)+E(3:3:end,:);
-    % Multiply this matrix with the plane wave direction
-    N = repmat(nxs,size(x,1)) .* E;
-    % Interlace x,y,z into one matrix
-    % x11 x12 ... x1m
-    % y11 y12 ... y1m
-    % z11 z12 ... z1m
-    % .   .       .
-    % .   .       .
-    % xn1 xn2 ... xnm
-    % yn1 yn2 ... ynm
-    % zn1 zn2 ... znm
-    XYZ = zeros(3*size(x,1),size(x,2));
-    XYZ(1:3:end,:) = x;
-    XYZ(2:3:end,:) = y;
-    XYZ(3:3:end,:) = z;
-    %
     g = 1;
-    t = N*XYZ./c*fs-t;
+    t = (nxs(1).*x+nxs(2).*y+nxs(3).*z)./c.*fs-t;
 
 else
     error('%s: %s is not a valid source model for the Green''s function', ...

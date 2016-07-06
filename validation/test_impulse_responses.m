@@ -1,12 +1,16 @@
-function boolean = test_impulse_responses()
+function status = test_impulse_responses(modus)
 %TEST_IMPULSE_RESPONSES tests time behavior of WFS and local WFS
 %
-%   Usage: boolean = test_impulse_responses()
+%   Usage: status = test_impulse_responses(modus)
+%
+%   Input parameters:
+%       modus   - 0: numerical
+%                 1: visual
 %
 %   Output parameters:
-%       booelan - true or false
+%       status - true or false
 %
-%   TEST_IMPULSE_RESPONSES() compares the time-frequency response of
+%   TEST_IMPULSE_RESPONSES(modus) compares the time-frequency response of
 %   WFS and local WFS by calculating impulse responses, their frequency
 %   spectrum, and spatial-temporal sound field.
 
@@ -40,16 +44,26 @@ function boolean = test_impulse_responses()
 %*****************************************************************************
 
 
+status = false;
+
+
+%% ===== Checking of input  parameters ===================================
+nargmin = 1;
+nargmax = 1;
+narginchk(nargmin,nargmax);
+
+
 %% ===== Configuration ===================================================
-boolean = false;
 %% Parameters
 conf = SFS_config;
 conf.showprogress = true;
 conf.resolution = 400;
-conf.plot.useplot = true;
-conf.plot.loudspeakers = true;
-conf.plot.realloudspeakers = false;
-conf.plot.usedb = true;
+if modus
+    conf.plot.useplot = true;
+    conf.plot.loudspeakers = true;
+    conf.plot.realloudspeakers = false;
+    conf.plot.usedb = true;
+end
 conf.tapwinlen = 0.3;
 % config for virtual array
 conf.localsfs.method = 'wfs';
@@ -82,27 +96,28 @@ Z = 0;
 
 %% ===== Computation =====================================================
 %% temporal impulse responses
-irs = dummy_irs(conf.N,conf);
+irs = dummy_irs(1024,conf);
 
 % === WFS ===
-% calculate impulse response
+% Calculate impulse response
 s_wfs = ir_wfs(conf.xref,pi/2,xs,src,irs,conf);
-% plot frequency response
-[S_wfs, ~, f_wfs] = easyfft(s_wfs(:,1)./max(abs(s_wfs(:,1))), conf);
-% plot spatio-temporal sound field
-sound_field_imp_wfs(X,Y,Z, xs, src, 190, conf);
+% Frequency response
+[S_wfs, ~, f_wfs] = easyfft(s_wfs(:,1)./max(abs(s_wfs(:,1))),conf);
+% Spatio-temporal sound field
+[~] = sound_field_imp_wfs(X,Y,Z,xs,src,190,conf);
 
 % === Local WFS ===
 conf.tapwinlen = 1.0;
-% calculate prefilter
+% Calculate prefilter
 [conf.wfs.hpreflow, conf.wfs.hprefhigh] = ...
-  localwfs_findhpref(conf.xref, pi/2, xs, src, conf);
+  localwfs_findhpref(conf.xref,pi/2,xs,src,conf);
 conf.localsfs.wfs = conf.wfs;
-% calculate impulse response
+% Calculate impulse response
 s_lwfs = ir_localwfs(conf.xref,pi/2,xs,src,irs,conf);
-% plot frequency response
-[S_lwfs, ~, f_lwfs] = easyfft(s_lwfs(:,1)./max(abs(s_lwfs(:,1))), conf);
-% plot spatio-temporal sound field
-sound_field_imp_localwfs(X,Y,Z, xs, src, 360, conf);
+% Frequency response
+[S_lwfs, ~, f_lwfs] = easyfft(s_lwfs(:,1)./max(abs(s_lwfs(:,1))),conf);
+% Spatio-temporal sound field
+[~] = sound_field_imp_localwfs(X,Y,Z,xs,src,360,conf);
 
-boolean = true;
+
+status = true;

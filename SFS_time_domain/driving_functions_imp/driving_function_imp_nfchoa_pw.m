@@ -76,10 +76,11 @@ if strcmp('2D',dimension)
 
     % === 2-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2D plane wave.'],upper(mfilename),driving_functions);
     end
@@ -89,17 +90,17 @@ elseif strcmp('2.5D',dimension)
 
     % === 2.5-Dimensional ================================================
 
-    % Reference point
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D for a plane wave as source model
         %
         [sos,~] = zp2sos(p,z*c/R,2,'down','none');
         sos(1,1:3) = sos(1,1:3) * (-1)^abs(N);
         %
-        % compare Spors et al. (2011), eq. (10)
+        % Compare Spors et al. (2011), eq. (10)
         %
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D plane wave.'],upper(mfilename),driving_functions);
     end
@@ -109,10 +110,11 @@ elseif strcmp('3D',dimension)
 
     % === 3-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 3D plane wave.'],upper(mfilename),driving_functions);
     end

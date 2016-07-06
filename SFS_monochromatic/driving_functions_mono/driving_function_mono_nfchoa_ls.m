@@ -19,11 +19,6 @@ function D = driving_function_mono_nfchoa_ls(x0,xs,f,N,conf)
 %   signals for the given secondary sources, the virtual line source position
 %   and the frequency f.
 %
-%   References:
-%       N. Hahn, S. Spors (2015) - "Sound Field Synthesis of Virtual Cylindrical
-%       Waves Using Circular and Spherical Loudspeaker Arrays", in Proc. of
-%       138th AES Convention, Paper 9324
-%
 %   See also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_ls
 
 %*****************************************************************************
@@ -74,40 +69,44 @@ X0 = conf.secondary_sources.center;
 
 
 %% ===== Computation ====================================================
-% Calculate the driving function in time-frequency domain
-[xs,nxs] = get_position_and_orientation_ls(xs,conf);
 
-% secondary source positions
+% Secondary source positions
 x00 = bsxfun(@minus,x0,X0);
-[phi0,rho0,~] = cart2pol(x00(:,1),x00(:,2),x00(:,3)); 
+[phi0,r0,~] = cart2pol(x00(:,1),x00(:,2),x00(:,3));
 
-% line source position
-[phi,rho,~] = cart2pol(xs(:,1),xs(:,2),xs(:,3));
+% Line source position
+[xs,nxs] = get_position_and_orientation_ls(xs,conf);
+[phi,r,~] = cart2pol(xs(:,1),xs(:,2),xs(:,3));
 
-% wave number
+% Wave number
 omega = 2*pi*f;
-% initialize empty driving signal
+
+% Initialize empty driving signal
 D = zeros(size(x0,1),1);
 
 if strcmp('2D',dimension)
 
     % === 2-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
-        % 2D line source, (no reference yet)
+        % 2D line source
         %
-        %                      _N_       (2)
-        %                1     \        Hm(w/c rho)
-        % D(phi0,w) = -------- /__     ------------ e^(i m (phi0-phi))
-        %             2pi rho0 m=-N      (2)
-        %                               Hm(w/c rho0)
+        %                     _N_    (2)
+        %                1    \     Hm(w/c r)
+        % D(phi0,w) = ------  /__  ------------ e^(i m (phi0-phi))
+        %             2pi r0  m=-N   (2)
+        %                           Hm(w/c r0)
+        %
+        % See http://sfstoolbox.org/#equation-D.nfchoa.ls.2D
         %
         for m=-N:N
-            D = D + (1/2/pi./rho0) .* besselh(m,2,omega/c*rho) ./ ...
-                besselh(m,2,omega/c*rho0) .* exp(1i*m*(phi0-phi));
+            D = D + 1 ./ (2.*pi.*r0) ...
+                .* besselh(m,2,omega./c.*r) ./ besselh(m,2,omega./c.*r0) ...
+                .* exp(1i.*m.*(phi0-phi));
         end
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2D line source.'],upper(mfilename),driving_functions);
     end
@@ -117,23 +116,26 @@ elseif strcmp('2.5D',dimension)
 
     % === 2.5-Dimensional ================================================
 
-    % Reference point
-%     xref = repmat(xref,[size(x0,1) 1]);
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
-        % 2.5D line source, after Hahn(2015) Eq.(23)
+        % 2.5D line source
         %
-        %                   _N_              (2)
-        %               1   \     i^(m-|m|) Hm(w/c r)
-        % D(phi0,w) = ----- /__   -------------------- e^(im(phi0-phi))
-        %              2r0  m=-N    w/c    (2)
-        %                                 h|m|(w/c r0)
+        %                  _N_             (2)
+        %              1   \    i^(m-|m|) Hm(w/c r)
+        % D(phi0,w) = ---  /__  ------------------- e^(im(phi0-phi))
+        %             2r0  m=-N        (2)
+        %                         w/c h|m|(w/c r0)
+        %
+        % See http://sfstoolbox.org/#equation-D.nfchoa.ls.2.5D
         %
         for m=-N:N
-        D = D + 1/2./rho0 * 1i^(m-abs(m)) .* besselh(m,2,omega/c*rho) ...
-            ./ (omega/c*sphbesselh(abs(m),2,omega/c*rho0)) .* exp(1i*m*(phi0-phi));
+            D = D + 1 ./ (2.*r0) ...
+                .* (1i).^(m-abs(m)) .* besselh(m,2,omega./c.*r) ...
+                ./ (omega./c .* sphbesselh(abs(m),2,omega./c.*r0)) ...
+                .* exp(1i.*m.*(phi0-phi));
         end
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D line source.'],upper(mfilename),driving_functions);
     end
@@ -142,7 +144,7 @@ elseif strcmp('2.5D',dimension)
 elseif strcmp('3D',dimension)
 
     % === 3-Dimensional ==================================================
-    % rotating xs and x00 by (-alphan,pi/2-betan)
+    % Rotating xs and x00 by (-alphan,pi/2-betan)
     [alphan,betan,~] = cart2sph(nxs(1,1),nxs(1,2),nxs(1,3));
     R = rotation_matrix(alphan,3,'counterclockwise') ...
         * rotation_matrix(betan-pi/2,2,'counterclockwise');
@@ -151,30 +153,33 @@ elseif strcmp('3D',dimension)
     [alpha0,beta0,r0] = cart2sph(x00(:,1),x00(:,2),x00(:,3));
     [alpha,~,~] = cart2sph(xs(:,1),xs(:,2),xs(:,3));
 
-
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
-        % 3D line source, after Hahn(2015) Eq.(20)
+        % 3D line source
         %
-        %                   _N_  _n_           (2)
-        %               1   \    \    i^(m-n) Hm(w/c r)     -m
-        % D(phi0,w) = ----- /__  /__  -------------------- Yn(pi/2,alpha) ...
-        %            2r0^2  n=0  m=-n  w/c     (2)
-        %                                     hn(w/c r0)
-        %               m
-        %            x Yn(beta0,alpha0)
+        %                    _N_  _n_          (2)
+        %               1    \    \   i^(m-n) Hm(w/c r)  -m
+        % D(phi0,w) = -----  /__  /__ ----------------- Yn(pi/2,alpha) ...
+        %             2r0^2  n=0 m=-n       (2)
+        %                              w/c hn(w/c r0)
+        %                m
+        %             x Yn(beta0,alpha0)
+        %
+        % See http://sfstoolbox.org/#equation-D.nfchoa.ls.3D
         %
         for n=-N:N
             for m=-n:n
-                D = D + (1/2./r0)*(1i)^(m-n).*besselh(m,2,omega/c*rho) ...
-                    .*conj(sphharmonics(n,m,0,alpha)) ...
-                    ./(omega/c*sphbesselh(n,2,omega/c*r0)) ...
+                D = D + 1 ./ (2.*r0.^2) ...
+                    .* (1i).^(m-n) .* besselh(m,2,omega./c.*r) ...
+                    ./ (omega./c .* sphbesselh(n,2,omega./c.*r0)) ...
+                    .* conj(sphharmonics(n,m,0,alpha)) ...
                     .* sphharmonics(n,m,beta0,alpha0);
-                %D = D * sqrt(1i*omega/c); % equalization (optional)
+                %D = D .* sqrt(1i.*omega./c); % equalization (optional)
             end
         end
 
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 3D line source.'],upper(mfilename),driving_functions);
     end

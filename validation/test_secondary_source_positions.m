@@ -1,16 +1,16 @@
-function boolean = test_secondary_source_positions(modus)
+function status = test_secondary_source_positions(modus)
 %TEST_SECONDARY_SOURCE_POSITIONS tests the correctness of the function
 %secondary_source_positions()
 %
-%   Usage: boolean = test_secondary_source_positions(modus)
+%   Usage: status = test_secondary_source_positions(modus)
 %
 %   Input parameters:
-%       modus   - 0: numerical (quiet)
-%                 1: numerical (verbose)
-%                 2: visual
+%       modus   - 0: numerical
+%                 1: visual
+%                 2: numerical verbose
 %
 %   Output parameters:
-%       booelan - true or false
+%       status - true or false
 %
 %   TEST_SECONDARY_SOURCE_POSITIONS(modus) checks if the function, that
 %   calculates the secondary source positions and directions is working
@@ -46,6 +46,9 @@ function boolean = test_secondary_source_positions(modus)
 %*****************************************************************************
 
 
+status = false;
+
+
 %% ===== Checking of input  parameters ===================================
 nargmin = 1;
 nargmax = 1;
@@ -55,7 +58,6 @@ narginchk(nargmin,nargmax);
 %% ===== Main ============================================================
 conf = SFS_config;
 conf.secondary_sources.size = 4;
-boolean = true;
 % reference values
 x0_linear_ref = [
    -2.0000         0         0         0    -1.0000         0        0.2
@@ -256,9 +258,9 @@ if modus==0
             ~all(abs(x0_linear(:)-x0_linear_ref(:))<1e-4) || ...
             ~all(abs(x0_circle(:)-x0_circle_ref(:))<1e-4) || ...
             ~all(abs(x0_box(:)-x0_box_ref(:))<1e-4)
-        boolean = false;
+        return;
     end
-elseif modus==1
+elseif modus==2
     if ~all(eq(size(x0_linear),size(x0_linear_ref)))
         error('%s: wrong size of linear array.',upper(mfilename));
     elseif ~all(abs(x0_linear(:)-x0_linear_ref(:))<1e-4)
@@ -274,7 +276,7 @@ elseif modus==1
     elseif ~all(abs(x0_box(:)-x0_box_ref(:))<1e-4)
         error('%s: wrong value at box shaped array.',upper(mfilename));
     end
-elseif modus==2
+elseif modus==1
     % Graphical mode
     close all;
     % draw results
@@ -291,3 +293,6 @@ else
     error(['%s: modus has to be 0 (numerical quiet), 1 (numerical), ', ...
             'or 2 (graphical).'],upper(mfilename));
 end
+
+
+status = true;

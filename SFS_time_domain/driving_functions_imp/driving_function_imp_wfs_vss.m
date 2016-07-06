@@ -72,26 +72,27 @@ dv = wfs_preequalization(dv, conf);
 Nv = size(xv,1);
 N0 = size(x0,1);
 
-d = zeros(N, N0);
-delay = inf(N0, Nv);
-weight = zeros(N0, Nv);
+d = zeros(N,N0);
+delay = inf(N0,Nv);
+weight = zeros(N0,Nv);
 
 idx = 1;
 for xvi = xv'
-  % Select active source for one focused source
-  [x0s, xdx] = secondary_source_selection(x0,xvi(1:6)','fs');
-  if ~isempty(x0s) && xvi(7) > 0
-    % Focused source position
-    xs = repmat(xvi(1:3)',[size(x0s,1) 1]);
-    % Delay and weights for single focused source
-    [delay(xdx,idx),weight(xdx,idx)] = driving_function_imp_wfs_fs(x0s(:,1:3),x0s(:,4:6),xs,conf);
-    % Optional tapering
-    x0s = secondary_source_tapering(x0s,conf);
-    % Apply secondary sources' tapering and possibly virtual secondary
-    % sources' tapering to weighting matrix
-    weight(xdx,idx) = weight(xdx,idx).*x0s(:,7).*xvi(7);
-  end
-  idx = idx + 1;
+    % Select active source for one focused source
+    [x0s, xdx] = secondary_source_selection(x0,xvi(1:6)','fs');
+    if ~isempty(x0s) && xvi(7) > 0
+        % Focused source position
+        xs = repmat(xvi(1:3)',[size(x0s,1) 1]);
+        % Delay and weights for single focused source
+        [delay(xdx,idx),weight(xdx,idx)] = ...
+            driving_function_imp_wfs_fs(x0s(:,1:3),x0s(:,4:6),xs,conf);
+        % Optional tapering
+        x0s = secondary_source_tapering(x0s,conf);
+        % Apply secondary sources' tapering and possibly virtual secondary
+        % sources' tapering to weighting matrix
+        weight(xdx,idx) = weight(xdx,idx).*x0s(:,7).*xvi(7);
+    end
+    idx = idx + 1;
 end
 
 % Remove delay offset, in order to begin always at t=0 with the first wave front
@@ -100,10 +101,11 @@ delay = delay - min(delay(:));
 
 % Compose impulse responses
 for idx=1:Nv
-  xdx = weight(:,idx) ~= 0;
-  if sum(xdx) > 0
-    % Shift and weight prototype driving function
-    pulse = repmat(dv(:,idx), 1, sum(xdx));
-    d(:, xdx) = d(:, xdx) + delayline(pulse, delay(xdx,idx)*fs, weight(xdx,idx), conf);
-  end
+    xdx = weight(:,idx) ~= 0;
+    if sum(xdx) > 0
+        % Shift and weight prototype driving function
+        pulse = repmat(dv(:,idx), 1, sum(xdx));
+        d(:,xdx) = d(:,xdx) + ...
+            delayline(pulse,delay(xdx,idx)*fs,weight(xdx,idx),conf);
+    end
 end

@@ -16,11 +16,11 @@ function D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf)
 %   Output parameters:
 %       D           - driving function signal [nx1]
 %
+%   See also: driving_function_mono_wfs, driving_function_mono_wfs_fs
+
 %   References:
 %       S. Spors, J.Ahrens (2010) - "Local Sound Field Synthesis by Virtual
 %                                    Secondary Sources", 40th AES
-%
-%   See also: driving_function_mono_wfs, driving_function_mono_wfs_fs
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -63,6 +63,7 @@ isargstruct(conf);
 
 %% ===== Configuration ==================================================
 dimension = conf.dimension;
+conf.driving_functions = conf.localsfs.vss.driving_functions;
 
 
 %% ===== Computation ====================================================
@@ -96,12 +97,12 @@ N0 = size(x0,1);
 Dmatrix = zeros(N0,Ns);
 
 for idx=1:Ns
-  [xtmp, xdx] = secondary_source_selection(x0,xv(idx,1:6),'fs');
-  if (~isempty(xtmp))
-    xtmp = secondary_source_tapering(xtmp,conf);
-    Dmatrix(xdx,idx) = ...
-        driving_function_mono_wfs(xtmp,xv(idx,1:3),'fs',f,conf) .* xtmp(:,7);
-  end
+    [xtmp, xdx] = secondary_source_selection(x0,xv(idx,1:6),'fs');
+    if (~isempty(xtmp))
+        xtmp = secondary_source_tapering(xtmp,conf);
+        Dmatrix(xdx,idx) = ...
+            driving_function_mono_wfs(xtmp,xv(idx,1:3),'fs',f,conf) .* xtmp(:,7);
+    end
 end
 
 D = Dmatrix*(Dv.*xv(:,7));

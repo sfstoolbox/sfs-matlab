@@ -1,15 +1,15 @@
-function boolean = test_driving_functions_imp_with_delay(modus)
+function status = test_driving_functions_imp_with_delay(modus)
 %TEST_DRIVING_FUNCTIONS_IMP_WITH_DELAY tests the correctness of the time-domain
 %driving functions, in the case of conf.wfs.t0 = 'source'
 %
-%   Usage: boolean = test_driving_functions_imp_with_delay(modus)
+%   Usage: status = test_driving_functions_imp_with_delay(modus)
 %
 %   Input parameters:
 %       modus   - 0: numerical
 %                 1: visual
 %
 %   Output parameters:
-%       booelan - true or false
+%       status - true or false
 %
 %   TEST_DRIVING_FUNCTIONS_IMP_WITH_DELAY(MODUS) checks if the functions,
 %   that calculates the WFS driving functions in time-domain work correctly
@@ -45,7 +45,9 @@ function boolean = test_driving_functions_imp_with_delay(modus)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 % TODO: add mode to save data as reference data
+status = false;
 
 
 %% ===== Checking of input  parameters ===================================
@@ -155,3 +157,6 @@ for ii=1:size(scenarios)
     end
 
 end
+
+
+status = true;

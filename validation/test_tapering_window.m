@@ -1,15 +1,16 @@
-function boolean = test_tapering_window(modus)
+function status = test_tapering_window(modus)
 %TEST_TAPERING_WINDOW tests the tapering_window() function for applying tapering
 %to the secondary sources in Wave Field Synthesis
 %
-%   Usage: boolean = test_tapering_window(modus)
+%   Usage: status = test_tapering_window(modus)
 %
 %   Input parameters:
 %       modus   - 0: numerical (quiet)
-%                 1: numerical (verbose)
+%                 1: visual (not available)
+%                 2: numerical verbose
 %
 %   Output parameters:
-%       booelan - true or false
+%       status - true or false
 %
 %   TEST_TAPERING_WINDOW(modus) checks if the tapering window applied to the
 %   secondary sources in Wave Field Synthesis is working.
@@ -44,6 +45,9 @@ function boolean = test_tapering_window(modus)
 %*****************************************************************************
 
 
+status = false;
+
+
 %% ===== Checking of input  parameters ===================================
 nargmin = 1;
 nargmax = 1;
@@ -53,7 +57,6 @@ narginchk(nargmin,nargmax);
 %% ===== Main ============================================================
 conf = SFS_config;
 conf.secondary_sources.number = 16;
-boolean = true;
 % reference values
 ref_win_linear = [ 
    0.25000
@@ -121,9 +124,9 @@ if modus==0
        sum(abs(ref_win_circular2-win_circular2))>eps || ...
        sum(abs(ref_win_linear-win_linear))>eps || ...
        sum(abs(ref_win_box-win_box))>eps
-        boolean = false;
+        return;
     end
-elseif modus==1
+elseif modus==2
     message = 'wrong tapering window for';
     if sum(abs(ref_win_circular1-win_circular1))>eps || ...
        sum(abs(ref_win_circular2-win_circular2))>eps
@@ -142,3 +145,6 @@ else
     error('%s: modus has to be 0 (numerical quiet), 1 (numerical), ', ...
           upper(mfilename));
 end
+
+
+status = true;

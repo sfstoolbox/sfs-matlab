@@ -1,15 +1,16 @@
-function boolean = test_secondary_source_selection(modus)
+function status = test_secondary_source_selection(modus)
 %TEST_SECONDARY_SOURCE_SELECTION tests the correctness of
 %secondary_source_selection()
 %
-%   Usage: boolean = test_secondary_source_selection(modus)
+%   Usage: status = test_secondary_source_selection(modus)
 %
 %   Input parameters:
 %       modus   - 0: numerical (quiet)
-%                 1: numerical (verbose)
+%                 1: visual (not available)
+%                 2: numerical verbose
 %
 %   Output parameters:
-%       booelan - true or false
+%       status - true or false
 %
 %   TEST_SECONDARY_SOURCE_SELECTION(modus) checks if the secondary source
 %   selection needed for Wave Field Syntesis is implemented correctly in
@@ -45,6 +46,9 @@ function boolean = test_secondary_source_selection(modus)
 %*****************************************************************************
 
 
+status = false;
+
+
 %% ===== Checking of input  parameters ===================================
 nargmin = 1;
 nargmax = 1;
@@ -54,7 +58,6 @@ narginchk(nargmin,nargmax);
 %% ===== Main ============================================================
 conf = SFS_config;
 conf.secondary_sources.number = 16;
-boolean = true;
 % reference values
 ref_selection_circular_pw = ...
     [0   1   1   1   1   1   1   1   0   0   0   0   0   0   0   0]';
@@ -105,9 +108,9 @@ if modus==0
        ~all(eq(ref_selection_box_pw,selection_box_pw)) || ...
        ~all(eq(ref_selection_box_ps,selection_box_ps)) || ...
        ~all(eq(ref_selection_box_fs,selection_box_fs))
-        boolean = false;
+        return;
     end
-elseif modus==1
+elseif modus==2
     message = 'wrong secondary source selection for a';
     if ~all(eq(ref_selection_circular_pw,selection_circular_pw))
         error('%s: %s circular array and a plane wave.', ...
@@ -145,7 +148,7 @@ elseif modus==1
         error('%s: %s box shaped array and a focused source.', ...
             upper(mfilename),message);
     end
-else
-    error('%s: modus has to be 0 (numerical quiet), 1 (numerical), ', ...
-          upper(mfilename));
 end
+
+
+status = true;

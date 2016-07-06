@@ -5,16 +5,23 @@ function H = get_shelve_lagrange(f,H,FlagSub,fSub,FlagAliasing,fAliasing,Bandwid
 %                                  fAliasing,Bandwidth_in_Oct)
 %
 %   Input parameters:
-%       f                -
-%       H                -
-%       FlagSub          -
-%       fSub             -
-%       FlagAliasing     -
-%       fAliasing        -
-%       Bandwidth_in_Oct -
+%       f                -  frequency vector in Hz, typical 0 to half
+%                           sampling frequency, equidistant sampling is
+%                           assumed (i.e. DFT frequencies) but not required
+%       H                -  complex spectrum (mag/phase) at specified frequencies
+%                           with meaningful slope, typically used for +3dB/oct.
+%       FlagSub          -  use low-shelf part, 0 or 1
+%       fSub             -  cut-frequency in Hz for low-shelf,
+%                           check e.g. fLow=100Hz in [Fig2, Sch13]
+%       FlagAliasing     -  use high-sehlf part, 0 or 1
+%       fAliasing        -  cut-frequency in Hz for high-shelf,
+%                           check e.g. fAliasing=2kHz in [Fig2, Sch13]
+%       Bandwidth_in_Oct -  interpolation bandwidth, i.e. shelf knee range
+%                           in octaves, allowed: 0.5, 1, 2, 3, 4
 %
 %   Output parameters:
-%       H                -
+%       H                -  return complex spectrum at specified frequencies
+%                           after low-/ and high-shelf interpolation              -
 %
 %   GET_SHELVE_LAGRANGE(f,H,FlagSub,fSub,FlagAliasing,fAliasing,Bandwidth_in_Oct)
 %   does an Lagrange interplation to get a shelving filter. This function is used
@@ -27,10 +34,10 @@ function H = get_shelve_lagrange(f,H,FlagSub,fSub,FlagAliasing,fAliasing,Bandwid
 %   different interpolation offsets may be required
 %
 %   References:
-%       F. Schultz, V. Erbes, S. Spors, S. Weinzierl (2013) - "Derivation
-%       of IIR prefilters for soundfield synthesis using linear secondary
-%       source distributions", In: Proc. of the International Conference
-%       on Acoustics AIA-DAGA, p.2372-2375
+%       [Sch13]   F. Schultz, V. Erbes, S. Spors, S. Weinzierl (2013) - 
+%       "Derivation of IIR prefilters for soundfield synthesis using linear
+%       secondary source distributions", In: Proc. of the International
+%       Conference on Acoustics AIA-DAGA, p.2372-2375
 %
 %   See also: wfs_iir_prefilter
 

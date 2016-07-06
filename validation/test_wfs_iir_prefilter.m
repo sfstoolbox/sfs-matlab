@@ -1,12 +1,16 @@
-function boolean = test_wfs_iir_prefilter()
+function status = test_wfs_iir_prefilter(modus)
 %TEST_WFS_IIR_PREFILTER tests the IIR WFS pre-equalization filter
 %
-%   Usage: boolean = test_wfs_iir_prefilter()
+%   Usage: status = test_wfs_iir_prefilter(modus)
+%
+%   Input parameters:
+%       modus   - 0: numerical
+%                 1: visual (not available)
 %
 %   Output parameters:
-%       booelan - true or false
+%       status - true or false
 %
-%   TEST_WFS_IIR_PREFILTER() test the WFS pre-euqalization IIR filter
+%   TEST_WFS_IIR_PREFILTER(modus) test the WFS pre-euqalization IIR filter
 %   design. This works only in Matlab as the Signal Processing Toolbox is used.
 %   See wfs_iir_prefilter.m for details
 
@@ -40,9 +44,16 @@ function boolean = test_wfs_iir_prefilter()
 %*****************************************************************************
 
 
+status = false;
+
+
+%% ===== Checking of input parameters ====================================
+nargmin = 1;
+nargmax = 1;
+narginchk(nargmin,nargmax);
+
 
 %% ===== Configuration ===================================================
-boolean = false;
 conf = SFS_config;
 
 
@@ -55,4 +66,6 @@ conf.hprefhigh = 1500;
 conf.hpreBandwidth_in_Oct = 2;
 conf.hpreIIRorder = 4;
 hpre2 = wfs_iir_prefilter(conf)
-boolean = true;
+
+
+status = true;

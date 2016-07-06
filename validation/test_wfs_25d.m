@@ -1,7 +1,7 @@
-function status = test_non_regular_grid(modus)
-%TEST_IMPULSE_RESPONSES tests time behavior of WFS and local WFS
+function status = test_wfs_25d(modus)
+%TEST_WFS_25D tests behavior of 2.5D WFS
 %
-%   Usage: status = test_impulse_responses(modus)
+%   Usage: status = test_wfs_25d(modus)
 %
 %   Input parameters:
 %       modus   - 0: numerical
@@ -9,10 +9,6 @@ function status = test_non_regular_grid(modus)
 %
 %   Output parameters:
 %       status  - true or false
-%
-%   TEST_IMPULSE_RESPONSES(modus) compares the time-frequency response of
-%   WFS and local WFS by calculating impulse responses, their frequency
-%   spectrum, and spatial-temporal sound field.
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -54,56 +50,67 @@ narginchk(nargmin,nargmax);
 
 
 %% ===== Configuration ===================================================
-%% Parameters
+% Parameters
 conf = SFS_config;
-conf.showprogress = true;
-conf.resolution = 400;
-if modus
-    conf.plot.useplot = true;
-    conf.plot.loudspeakers = true;
-    conf.plot.realloudspeakers = false;
-    conf.plot.usedb = false;
-end
-conf.tapwinlen = 0.3;
-% config for array
-conf.dimension = '2.5D';
-conf.secondary_sources.geometry = 'circular';
-conf.secondary_sources.number = 56;
-conf.secondary_sources.size = 3;
-conf.secondary_sources.center = [0, 0, 0];
-conf.driving_functions = 'default';
+conf.secondary_sources.geometry = 'linear';
+conf.secondary_sources.size = 20;
+conf.secondary_sources.number = 512;
+conf.secondary_sources.center = [0,6,0];
 conf.xref = [0,0,0];
-% listening area, virtual source
-xs = [0.0, 2.5, 0];  % propagation direction of plane wave
-src = 'ps';
-f = 1000;
-tau = 190;
+conf.usetapwin = true;
+conf.tapwinlen = 0.2;
 
-conf.usenormalisation = true;
+%
+f = 2000;  % temporal frequency
+positions = { [0,9,0], [0,-1,0], [0,3,0,0,-1,0] };  % source positions
+sources = {'ps', 'pw', 'fs'};
+gtsources = {'ps', 'pw', 'ps'};
+X = [-2,2];
+Y = [-2,2];
+Z = 0;
 
-%% ===== Computation =====================================================
-% regular grid
-Xreg = [-1.5 1.5];
-Yreg = [-1, 1.55];
-Zreg = 0;
 
-% non regular grid
-alpha = 2*pi / 360 * (0:360-1);
-r = linspace(0,conf.secondary_sources.size/2,50);
-[alpha,r] = ndgrid(alpha,r);
+%% ===== Main ============================================================
+for idx=1:length(positions)
+    xs = positions{idx};
+    src = sources{idx};
+    gt = gtsources{idx};
 
-Xnon  = r.*cos(alpha);
-Ynon  = r.*sin(alpha);
-Znon = 0;
+    if modus
+        figure;
+        ddx = 0;
+    end
 
-% sound fields
-conf.plot.normalisation = 'center';
-[~] = sound_field_mono_wfs(Xreg,Yreg,Zreg,xs,src,f,conf);
-[~] = sound_field_mono_wfs(Xnon,Ynon,Znon,xs,src,f,conf);
+    for driving_functions = {'reference_point', 'reference_line'}
 
-conf.plot.normalisation = 'max';
-[~] = sound_field_imp_wfs(Xreg,Yreg,Zreg,xs,src,tau,conf);
-[~] = sound_field_imp_wfs(Xnon,Ynon,Znon,xs,src,tau,conf);
+        conf.driving_functions = driving_functions{:};
+        Pgt = sound_field_mono(X,Y,Z,[xs(1:3),0,-1,0,1],gt,1,f,conf);
+        Pwfs = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
+
+        if modus
+            subplot(2,2,2*ddx+1);
+            imagesc(Y,X,real(Pwfs));
+            title(sprintf('%s %s',src,driving_functions{:}),'Interpreter','none');
+            set(gca,'YDir','normal');
+            colorbar;
+
+            subplot(2,2,2*ddx+2);
+            imagesc(Y,X,db(1 - Pwfs./Pgt));
+            title(sprintf('%s %s',src,driving_functions{:}),'Interpreter','none');
+            set(gca,'YDir','normal');
+            colorbar;
+            hold on;
+            if strcmp('reference_point',conf.driving_functions)
+                plot(conf.xref(1),conf.xref(2),'gx');
+            else
+                plot(conf.xref(1)+X,conf.xref([2,2]),'g--');
+            end
+            hold off;
+
+            ddx= ddx+1;
+        end
+    end
+end
 
 
 status = true;

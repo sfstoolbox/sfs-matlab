@@ -79,10 +79,12 @@ if strcmp('2D',dimension)
     % Ensure 2D
     x0 = x0(:,1:2);
     nk = nk(:,1:2);
-    if strcmp('default',driving_functions)
+
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2D focused source.'],upper(mfilename),driving_functions);
     end
@@ -94,11 +96,13 @@ elseif strcmp('2.5D',dimension)
 
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
-    if strcmp('default',driving_functions)
+
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
         %
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D focused source.'],upper(mfilename),driving_functions);
     end
@@ -108,10 +112,11 @@ elseif strcmp('3D',dimension)
 
     % === 3-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 3D focused source.'],upper(mfilename),driving_functions);
     end

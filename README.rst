@@ -111,10 +111,9 @@ can look like this:
     conf.fs = 48000;
 
 For a detailed description of all available features the SFS Toolbox, have a
-look at the `feature documentation`_.
+look at the `online documentation`_.
 
 .. _online documentation: http://matlab.sfstoolbox.org
-.. _feature documentation: http://matlab.sfstoolbox.org/en/latest/feature-documentation/
 
 
 Credits and feedback

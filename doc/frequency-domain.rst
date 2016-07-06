@@ -5,7 +5,7 @@ Frequency Domain
 
 With the files in the folder ``SFS_monochromatic`` you can simulate a
 monochromatic sound field in a specified area for different techniques like
-|WFS| and NFC-HOA. The area can be a 3D cube, a 2D plane, a line or only one
+|WFS| and |NFC-HOA|. The area can be a 3D cube, a 2D plane, a line or only one
 point. This depends on the specification of ``X,Y,Z``. For example ``[-2 2],[-2
 2],[-2 2]`` will be a 3D cube; ``[-2 2],0,[-2 2]`` the xz-plane; ``[-2 2],0,0``
 a line along the x-axis; ``3,2,1`` a single point. If you present a range like

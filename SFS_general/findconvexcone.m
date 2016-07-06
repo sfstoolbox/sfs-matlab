@@ -4,22 +4,22 @@ function [x0_indeces,weights] = findconvexcone(x0,xs)
 %   Usage: [x0_indeces,weights] = findconvexcone(x0,xs);
 %
 %   Input parameters:
-%       x0                    - point cloud in R3 (N x 3)
-%       xs                    - point in R3 (1 x 3)
+%       x0          - point cloud in R3 (N x 3)
+%       xs          - point in R3 (1 x 3)
 %
 %   output parameters:
-%       x0_indeces            - row indeces of 3 points in x0 (3 x 1)
-%       weights               - weights (3 x 1)
+%       x0_indeces  - row indeces of 3 points in x0 (3 x 1)
+%       weights     - weights (3 x 1)
 %
 %   FINDCONVEXCONE(x0,xs) returns three row indeces into x0 and
 %   non-negative weights [w1;w2;w3] such that xs lies in the convex cone
 %   with minimum solid angle.
-%       xs = w1*x1 + w2*x2 + w3*x3 , 
+%       xs = w1*x1 + w2*x2 + w3*x3 ,
 %       where [x1; x2; x3] = x0(x0_indeces,:) .
-%     
-%   (If all x0 and xs have unit norm this is VBAP.)  
-%   
-%   This may fail when 
+%
+%   (If all x0 and xs have unit norm this is VBAP.)
+%
+%   This may fail when
 %     a) x0 is not convex, or
 %     b) The convex hull of x0 does not contain the origin.
 %
@@ -63,7 +63,7 @@ narginchk(nargmin,nargmax);
 
 %% ===== Computation =====================================================
 
-% find x0 with smallest angle to xs
+% Find x0 with smallest angle to xs
 xs_normed = repmat(xs./norm(xs,2),size(x0,1),1);
 x0_normed = x0./repmat(vector_norm(x0,2),[1,3]);
 [~,most_aligned_point] = max(vector_product(x0_normed,xs_normed,2));
@@ -71,14 +71,14 @@ x0_normed = x0./repmat(vector_norm(x0,2),[1,3]);
 % Delaunay triangulation of convex hull
 triangles = convhulln(x0);
 
-% get all triangles at "most aligned point"
+% Get all triangles at "most aligned point"
 mask = logical(sum(triangles==most_aligned_point,2));
 triangles = triangles(mask,:);
 if isempty(triangles)
     error('x0 contains a point in the interior of its convex hull');
 end
 
-% one of the triangles span a convex cone that contains xs
+% One of the triangles span a convex cone that contains xs
 for n = 1:size(triangles,1);
     A = x0(triangles(n,:),:);
     weights = xs/A;
@@ -93,4 +93,3 @@ end
 
 [weights,order] = sort(weights.','descend');
 x0_indeces = x0_indeces(order).';
-

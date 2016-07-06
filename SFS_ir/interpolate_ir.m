@@ -104,36 +104,36 @@ else
             deg(x0(1,1)), deg(x0(2,1)), ...
             deg(x0(1,2)), deg(x0(2,2)));
         switch interpolationmethod
-            case 'simple'
-                ir_new(1,1,:) = interpolation(squeeze(ir(1:2,1,:))',x0(:,1:2),xs);
-                ir_new(1,2,:) = interpolation(squeeze(ir(1:2,2,:))',x0(:,1:2),xs);
-            case 'freqdomain'
-                % see Itoh (1982), Hartung et al. (1999)
-                %
-                % Upsample to avoid phase aliasing in unwrapping of phase
-                TF = fft(ir,4*size(ir,3),3);
-                % Magnitude and phase will be interpolated separately
-                mag = abs(TF);
-                pha = unwrap(angle(TF),[],3);
-                % Calculate interpolation only for the first half of the spectrum
-                % and only for original bins
-                idx_half = floor(size(TF,3)/2)+1;
-                mag_new(1,:) = interpolation(...
-                    squeeze(mag(1:2,1,1:4:idx_half))',x0(:,1:2),xs);
-                mag_new(2,:) = interpolation(...
-                    squeeze(mag(1:2,2,1:4:idx_half))',x0(:,1:2),xs);
-                pha_new(1,:) = interpolation(...
-                    squeeze(pha(1:2,1,1:4:idx_half))',x0(:,1:2),xs);
-                pha_new(2,:) = interpolation(...
-                    squeeze(pha(1:2,2,1:4:idx_half))',x0(:,1:2),xs);
-                % Calculate interpolated impulse response from magnitude and phase
-                ir_new(1,1,:) = ifft(mag_new(1,:)...
-                    .*exp(1i*pha_new(1,:)),size(ir,3),'symmetric');
-                ir_new(1,2,:) = ifft(mag_new(2,:)...
-                    .*exp(1i*pha_new(2,:)),size(ir,3),'symmetric');
-            otherwise 
-                error('%s: %s is an unknown interpolation method.',...
-                    upper(mfilename),interpolationmethod);
+        case 'simple'
+            ir_new(1,1,:) = interpolation(squeeze(ir(1:2,1,:))',x0(:,1:2),xs);
+            ir_new(1,2,:) = interpolation(squeeze(ir(1:2,2,:))',x0(:,1:2),xs);
+        case 'freqdomain'
+            % see Itoh (1982), Hartung et al. (1999)
+            %
+            % Upsample to avoid phase aliasing in unwrapping of phase
+            TF = fft(ir,4*size(ir,3),3);
+            % Magnitude and phase will be interpolated separately
+            magnitude = abs(TF);
+            phase = unwrap(angle(TF),[],3);
+            % Calculate interpolation only for the first half of the spectrum
+            % and only for original bins
+            idx_half = floor(size(TF,3)/2)+1;
+            magnitude_new(1,:) = interpolation(...
+                squeeze(magnitude(1:2,1,1:4:idx_half))',x0(:,1:2),xs);
+            magnitude_new(2,:) = interpolation(...
+                squeeze(magnitude(1:2,2,1:4:idx_half))',x0(:,1:2),xs);
+            phase_new(1,:) = interpolation(...
+                squeeze(phase(1:2,1,1:4:idx_half))',x0(:,1:2),xs);
+            phase_new(2,:) = interpolation(...
+                squeeze(phase(1:2,2,1:4:idx_half))',x0(:,1:2),xs);
+            % Calculate interpolated impulse response from magnitude and phase
+            ir_new(1,1,:) = ifft(magnitude_new(1,:) ...
+                .* exp(1i*phase_new(1,:)),size(ir,3),'symmetric');
+            ir_new(1,2,:) = ifft(magnitude_new(2,:)...
+                .* exp(1i*phase_new(2,:)),size(ir,3),'symmetric');
+        otherwise
+            error('%s: %s is an unknown interpolation method.', ...
+                upper(mfilename),interpolationmethod);
         end
     else
         % --- 2D interpolation ---

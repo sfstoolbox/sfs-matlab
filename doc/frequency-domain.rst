@@ -113,25 +113,26 @@ If you want to plot the whole loudspeaker array and not only the active
 secondary sources, you can do this by adding these commands. First we
 store all sources in an extra variable ``x0_all``, then we get the active
 ones ``x0`` and the corresponding indices of these active ones in ``x0_all``.
-Afterwards we set all sources in ``x0_all`` to zero, which is inactive and
-only the active ones to ``x0(:,7)``.
-
-FIXME: correct this section. Use real loudspeakers and show weights or simplify
-the example!
+Afterwards we set all sources in ``x0_all`` to zero, which are inactive and
+only the active ones to the loudspeaker weights ``x0(:,7)``.
 
 .. sourcecode:: matlab
 
     x0_all = secondary_source_positions(conf);
-    [x0,idx] = secondary_source_selection(x0_all,[0 2.5 0],'ps');
+    [~,idx] = secondary_source_selection(x0_all,[0 2.5 0],'ps');
     x0_all(:,7) = zeros(1,size(x0_all,1));
     x0_all(idx,7) = x0(:,7);
-    plot_sound_field(P,x,y,z,x0_all,conf);
+    plot_sound_field(P,[-2 2],[-2 2],0,x0_all,conf);
     %print_png('img/sound_field_wfs_25d_with_all_sources.png');
 
 .. figure:: img/sound_field_wfs_25d_with_all_sources.png
    :align: center
 
-   Image
+   Sound pressure of a mono-chromatic point source synthesized by 2.5D |WFS|. The
+   point source has a frequency of 800Hz and is placed at (0 2.5 0)m. All
+   loudspeakers are plotted. Their color correspond to the loudspeaker weights,
+   where white stands for zero.
+
 
 Near-Field Compensated Higher Order Ambisonics
 ----------------------------------------------

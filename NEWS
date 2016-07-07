@@ -1,4 +1,4 @@
-2.2.0 ()
+2.2.0 (7. July 2016)
     - fix impulse response interpolation for three points
     - add the ability to apply modal weighting window to NFC-HOA in time domain
     - change license to MIT

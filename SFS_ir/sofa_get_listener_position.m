@@ -2,7 +2,7 @@ function X = sofa_get_listener_position(sofa,coordinate_system)
 %SOFA_GET_LISTENER_POSITION returns the listener position from the given SOFA
 %data set
 %
-%   Usage: X = sofa_get_listener_position(sofa,[idx])
+%   Usage: X = sofa_get_listener_position(sofa,[coordinate_system])
 %
 %   Input parameters:
 %       sofa              - impulse response data set (SOFA struct/file)

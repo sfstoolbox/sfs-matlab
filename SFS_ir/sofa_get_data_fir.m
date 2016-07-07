@@ -5,12 +5,11 @@ function ir = sofa_get_data_fir(sofa,idx)
 %
 %   Input parameters:
 %       sofa    - impulse response data set (SOFA struct/file)
-%       idx     - index of the single impulse responses that should be returned
+%       idx     - index of the single impulse responses that should be returned.
 %                 idx could be a single value, then only one impulse response
 %                 will be returned, or it can be a vector then all impulse
 %                 responses for the corresponding index positions will be
-%                 returned.
-%                 If no index is specified all data will be returned.
+%                 returned (default: return all impulse responses)
 %
 %   Output parameters:
 %       ir      - impulse response (M,2,N), where

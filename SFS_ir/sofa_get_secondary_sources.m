@@ -5,9 +5,8 @@ function [x0,nss] = sofa_get_secondary_sources(sofa,idx,coordinate_system)
 %
 %   Input parameters:
 %       sofa              - impulse response data set (SOFA struct/file)
-%       idx               - index of secondary sources that should be returned.
-%                           If no index is specified all sources will be
-%                           returned.
+%       idx               - index of secondary sources that should be returned
+%                           (default: return all secondary sources).
 %       coordinate_system - coordinate system the position and direction of the
 %                           secondary sources should be specified in:
 %                             'cartesian' (default)

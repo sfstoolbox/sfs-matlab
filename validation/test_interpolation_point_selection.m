@@ -55,39 +55,57 @@ narginchk(nargmin,nargmax);
 
 %% ===== Main ============================================================
 
-% create grid: two rings with differenent elevation
+% create some grids
 [X,Y,Z] = sph2cart((0:pi/4:7/4*pi).',pi/4*ones(8,1),ones(8,1));
-x0_two_rings = [X,Y,Z];
+x0_upper_ring = [X,Y,Z];
 [X,Y,Z] = sph2cart((0:pi/12:23/12*pi).',zeros(24,1),ones(24,1));
-x0_two_rings = [x0_two_rings; [X,Y,Z]];
+x0_center_ring = [X,Y,Z];
+x0_4points = [-0.1,-0.1,0.9; -1,1,1; 1,-1,1; 0.1,0.1,0.9;];
+x0_4points = diag(1./vector_norm(x0_4points,2))*x0_4points;
+
+
 
 % Test cases:
 % NaN as reference is used as DON'T CARE
 % (NaN as result shall not occur)
-testcases{1}= {
+regular_testcases{1}= {
     'regular case: 3 points selected', ... % 1. description
-    x0_two_rings, ... % 2. grid
+    [x0_upper_ring; x0_center_ring], ... % 2. grid
     [2,0.1,0.1], ...  % 3. desired point
     [9; 10; 1], ...   % 4. reference indeces
     [NaN; NaN; NaN]   % 5. reference weights
     };
-testcases{2} = {
+regular_testcases{2} = {
     'degenerate case: xs colinear with 2 points', ...
-    x0_two_rings, ...
+    [x0_upper_ring; x0_center_ring], ...
     [2,0.1,0], ...
     [9; 10; NaN], ... 
     [NaN; NaN; 0]
     };
-testcases{3}= {
+regular_testcases{3}= {
     'degenerate case: xs coincident', ...
-    x0_two_rings, ...
+    [x0_upper_ring; x0_center_ring], ...
     [2,0,0], ...
     [9; NaN; NaN], ... 
     [NaN; 0; 0]
     };
+regular_testcases{4}= {
+    'pathological case: origin not inside hull: triangulation is not Delaunay', ...
+    x0_4points, ...
+    [0,0,1], ...
+    [NaN; NaN; NaN], ...
+    [NaN; NaN; NaN]
+    };
+regular_testcases{5}= {
+    'xs has equal angle to more than one point', ...
+    [x0_upper_ring;[0,0,-1]], ...
+    [0,0,1], ...
+    [NaN; NaN; NaN], ...
+    [NaN; NaN; NaN]
+    };
 
 
-for testcase_tmp = testcases
+for testcase_tmp = regular_testcases
     testcase = testcase_tmp{1};
     desc_str= testcase{1};
     x0 = testcase{2};
@@ -109,6 +127,33 @@ for testcase_tmp = testcases
     if ~(all(weights == x0_weights_ref| isnan(x0_weights_ref)))
     error('%s: In %s: wrong weights ', ...
         upper(mfilename),desc_str);
+    end
+end
+
+erroneous_testcases{1}= {
+    'all points in x0 coplanar, convhulln raises error', ... % 1. description
+    x0_upper_ring, ... % 2. grid
+    [2,0.1,0.1], ...  % 3. desired point
+    };
+erroneous_testcases{2}= {
+    'no conic combination possible for desired xs', ...
+    x0_4points, ...
+    [0,0,-1], ...
+    };
+
+for testcase_tmp = erroneous_testcases
+    testcase = testcase_tmp{1};
+    desc_str= testcase{1};
+    x0 = testcase{2};
+    xs = testcase{3};
+    if modus
+        plot_point_selection(x0,xs,[],[],desc_str);
+    end
+    try
+        findconvexcone(x0,xs)
+        return
+    catch
+        % okay!
     end
 end
 

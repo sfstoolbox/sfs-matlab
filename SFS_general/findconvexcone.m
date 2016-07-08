@@ -63,32 +63,32 @@ narginchk(nargmin,nargmax);
 
 %% ===== Computation =====================================================
 
+% Delaunay triangulation of convex hull
+triangles = convhulln(x0);
+
 % Find x0 with smallest angle to xs
 xs_normed = repmat(xs./norm(xs,2),size(x0,1),1);
 x0_normed = x0./repmat(vector_norm(x0,2),[1,3]);
 [~,most_aligned_point] = max(vector_product(x0_normed,xs_normed,2));
 
-% Delaunay triangulation of convex hull
-triangles = convhulln(x0);
-
-% Get all triangles at "most aligned point"
+% The triangles at "most aligned point" are the most likely candidates,
+% put them at the beginning of the list
 mask = logical(sum(triangles==most_aligned_point,2));
-triangles = triangles(mask,:);
-if isempty(triangles)
-    error('x0 contains a point in the interior of its convex hull');
-end
+triangles = [triangles(mask,:); triangles(~mask,:) ];
 
 % One of the triangles span a convex cone that contains xs
 for n = 1:size(triangles,1);
     A = x0(triangles(n,:),:);
     weights = xs/A;
-    if ~sum(weights < 0) % non-negative weights == conic combination
+    if all(weights >= 0) % non-negative weights == conic combination
         x0_indeces = triangles(n,:);
         break;
     end
 end
-if sum(weights < 0)
-    error('xs is not in convex cone of x0.');
+if any(weights < 0)
+     error('%s: Could not find a three points in x0 with xs in their', ...
+        'conical span. Make sure the convex hull of x0 contains the origin.', ...
+        upper(mfilename));
 end
 
 [weights,order] = sort(weights.','descend');

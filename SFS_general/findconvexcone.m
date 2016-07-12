@@ -4,16 +4,16 @@ function [x0_indeces,weights] = findconvexcone(x0,xs)
 %   Usage: [x0_indeces,weights] = findconvexcone(x0,xs);
 %
 %   Input parameters:
-%       x0          - point cloud in R3 (N x 3)
-%       xs          - point in R3 (1 x 3)
+%       x0          - point cloud in R^3 / m [nx3]
+%       xs          - point in R^3 / m [1x3]
 %
 %   output parameters:
-%       x0_indeces  - row indeces of 3 points in x0 (3 x 1)
-%       weights     - weights (3 x 1)
+%       x0_indeces  - row indeces of 3 points in x0 [3x1]
+%       weights     - weights [3x1]
 %
-%   FINDCONVEXCONE(x0,xs) returns three row indeces into x0 and
-%   non-negative weights [w1;w2;w3] such that xs lies in the convex cone
-%   with minimum solid angle.
+%   FINDCONVEXCONE(x0,xs) returns three row indeces into x0 and non-negative
+%   weights [w1;w2;w3] such that xs lies in the convex cone with minimum solid
+%   angle.
 %       xs = w1*x1 + w2*x2 + w3*x3 ,
 %       where [x1; x2; x3] = x0(x0_indeces,:) .
 %
@@ -24,7 +24,7 @@ function [x0_indeces,weights] = findconvexcone(x0,xs)
 %     b) The convex hull of x0 does not contain the origin.
 %
 %   See also: findnearestneighbor
-%
+
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *

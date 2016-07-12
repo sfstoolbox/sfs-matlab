@@ -1,4 +1,5 @@
 2.3.0 ()
+    - add findconvexcone()
 
 2.2.0 (7. July 2016)
     - fix impulse response interpolation for three points

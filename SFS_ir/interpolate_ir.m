@@ -14,8 +14,8 @@ function [ir_new,x0_new] = interpolate_ir(ir,x0,xs,conf)
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       ir      - impulse response for the given position [1 C N]
-%       x0      - position corresponding to the returned impulse response
+%       ir_new  - impulse response for the given position [1 C N]
+%       x0_new  - position corresponding to the returned impulse response
 %
 %   INTERPOLATE_IR(ir,x0,xs,conf) interpolates the two to three given impulse
 %   responses from ir with their corresponding angles x0 for the given angles
@@ -23,10 +23,11 @@ function [ir_new,x0_new] = interpolate_ir(ir,x0,xs,conf)
 %	For the 1D case, the interpolation method differs depending on the setting
 %	of conf.ir.interpolationmethod:
 %     'simple'      - Interpolation in the time domain performed samplewise.
-%	                  This does not heed the time of arrival of the HRTFs.
+%	                  This does not heed the times of arrival of the impulse
+%                     responses.
 %     'freqdomain'  - Interpolation in the frequency domain performed separately
-%                     for magnitude and phase of the HRTF.
-%   Note, that the given parameter are not checked if they have all the correct
+%                     for magnitude and phase.
+%   Note, that the given parameters are not checked if they have all the correct
 %   dimensions in order to save computational time, because this function could
 %   be called quite often.
 %

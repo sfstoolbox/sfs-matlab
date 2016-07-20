@@ -105,16 +105,16 @@ switch delay.resampling
     case 'pm'
         % === Parks-McClellan linear phase FIR filter ===
         rfactor = delay.resamplingfactor;
-        delay_offset = delay.resamplingorder / 2;
-        a = [1 1 0 0];
+        delay_offset = delay.resamplingorder*rfactor / 2;
+        A = [1 1 0 0];
         f = [0.0 0.9/rfactor 1/rfactor 1.0];
-        b = firpm(delay.resamplingorder,f,a);
+        rfilt = rfactor*firpm(delay.resamplingorder*rfactor,f,A);
 
         sig = reshape(sig,1,channels*samples);
         sig = [sig; zeros(rfactor-1,channels*samples)];
         sig = reshape(sig,rfactor*samples,channels);
 
-        sig = filter(b,1,sig,[],1);
+        sig = filter(rfilt,1,sig,[],1);
     otherwise
         error('%s: "%s": unknown resampling method',upper(mfilename), ...
             delay.resampling);

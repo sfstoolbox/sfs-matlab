@@ -86,11 +86,6 @@ else
     [samples,channels] = size(sig);
     reshaped = false;
 end
-% --- Expand dt and weight ---
-% If only single valued time delay and weight is given, create vectors
-if channels>1 && length(dt)==1, dt=repmat(dt,[1 channels]); end
-if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
-
 
 %% ===== Resampling ======================================================
 % The resampling is applied independently from the actual fractional/integer
@@ -125,6 +120,17 @@ switch delay.resampling
             delay.resampling);
 end
 
+%% ===== Expansion of signals, delays or weights =========================
+% --- Expand channels
+if channels==1
+  channels = max(length(dt),length(weight));
+  sig=repmat(sig,[1 channels]);
+end
+
+% --- Expand dt and weight ---
+% If only single valued time delay and weight is given, create vectors
+if channels>1 && length(dt)==1, dt=repmat(dt,[1 channels]); end
+if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
 
 %% ===== Conversion to integer delay =====================================
 dt = rfactor.*dt;  % resampled delays
@@ -226,5 +232,6 @@ end
 % --- Undo reshape ---
 % [N M*C] => [M C N]
 if reshaped
-    sig = reshape(sig',[M C size(sig,1)]);
+    % C might have changed due to replication of single-channel input
+    sig = reshape(sig', M, [], size(sig,1));
 end

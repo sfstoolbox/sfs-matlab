@@ -120,7 +120,8 @@ conf.delayline.resampling = 'none'; % / string
 % This should be in the order of (1/stepsize of fractional delays)
 conf.delayline.resamplingfactor = 100; % / 1
 % Order of Parks-McClellan resample filter (only for 'pm')
-conf.delayline.resamplingorder = 128;
+% This results in a filter length of resamplingfactor*resamplingorder
+conf.delayline.resamplingorder = 64;
 %
 % Delayline filter
 %   'integer'       - round to nearest integer delay (default)

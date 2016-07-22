@@ -86,11 +86,6 @@ else
     [samples,channels] = size(sig);
     reshaped = false;
 end
-% --- Expand dt and weight ---
-% If only single valued time delay and weight is given, create vectors
-if channels>1 && length(dt)==1, dt=repmat(dt,[1 channels]); end
-if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
-
 
 %% ===== Resampling ======================================================
 % The resampling is applied independently from the actual fractional/integer
@@ -110,21 +105,32 @@ switch delay.resampling
     case 'pm'
         % === Parks-McClellan linear phase FIR filter ===
         rfactor = delay.resamplingfactor;
-        delay_offset = delay.resamplingorder / 2;
-        a = [1 1 0 0];
+        delay_offset = delay.resamplingorder*rfactor / 2;
+        A = [1 1 0 0];
         f = [0.0 0.9/rfactor 1/rfactor 1.0];
-        b = firpm(delay.resamplingorder,f,a);
+        rfilt = rfactor*firpm(delay.resamplingorder*rfactor,f,A);
 
         sig = reshape(sig,1,channels*samples);
         sig = [sig; zeros(rfactor-1,channels*samples)];
         sig = reshape(sig,rfactor*samples,channels);
 
-        sig = filter(b,1,sig,[],1);
+        sig = filter(rfilt,1,sig,[],1);
     otherwise
         error('%s: "%s": unknown resampling method',upper(mfilename), ...
             delay.resampling);
 end
 
+%% ===== Expansion of signals, delays or weights =========================
+% --- Expand channels
+if channels==1
+  channels = max(length(dt),length(weight));
+  sig=repmat(sig,[1 channels]);
+end
+
+% --- Expand dt and weight ---
+% If only single valued time delay and weight is given, create vectors
+if channels>1 && length(dt)==1, dt=repmat(dt,[1 channels]); end
+if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
 
 %% ===== Conversion to integer delay =====================================
 dt = rfactor.*dt;  % resampled delays
@@ -226,5 +232,6 @@ end
 % --- Undo reshape ---
 % [N M*C] => [M C N]
 if reshaped
-    sig = reshape(sig',[M C size(sig,1)]);
+    % C might have changed due to replication of single-channel input
+    sig = reshape(sig', M, [], size(sig,1));
 end

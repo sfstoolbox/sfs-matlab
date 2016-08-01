@@ -1,7 +1,7 @@
 function [ir_new,x0_new] = interpolate_ir(ir,x0,xs,conf)
 %INTERPOLATE_IR interpolates three given IRs for the given angle
 %
-%   Usage: [ir,x0] = interpolate_ir(ir,x0,xs,conf)
+%   Usage: [ir_new,x0_new] = interpolate_ir(ir,x0,xs,conf)
 %
 %   Input parameters:
 %       ir      - matrix containing impulse responses in the form [M C N], where

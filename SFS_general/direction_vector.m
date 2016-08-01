@@ -59,18 +59,6 @@ end
 
 
 %% ==== Main =============================================================
-% Made both matrices the same size
-m1 = size(x1,1);
-m2 = size(x2,1);
-m = max(m1,m2);
-n = size(x1,2);
-if m1>m2
-    x2 = repmat(x2,[m 1]);
-elseif m2>m1
-    x1 = repmat(x1,[m 1]);
-end
 % Calculate direction vectors
-directions = zeros([m n]);
-for ii=1:size(x1,1)
-    directions(ii,:) = (x2(ii,:)-x1(ii,:)) / norm(x2(ii,:)-x1(ii,:));
-end
+directions = bsxfun(@minus, x2, x1);  % automatically adjusts matrix sizes
+directions = bsxfun(@rdivide, directions, sqrt(sum(abs(directions).^2,2)));

@@ -16,7 +16,7 @@ function z = convolution(x,y)
 %   only real signals to speed up the calculation. The length of z is
 %   length(x)+length(y)-1.
 %
-%   See also: fft_real, ifft_real, fft, ifft
+%   See also: fft, ifft
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -66,10 +66,10 @@ end
 % Length of output signal
 N = size(x,1)+size(y,1)-1;
 % FFT + multiplication
-Z = bsxfun(@times, fft(x,N,1), fft(y,N,1));  % automatically adjusts sizes
+Z = bsxfun(@times,fft(x,N,1),fft(y,N,1));  % automatically adjusts sizes
 % IFFT
 if isreal(x) && isreal(y)
-    z = ifft(Z, [], 1, 'symmetric');
+    z = ifft(Z,[],1,'symmetric');
 else
-    z = ifft(Z, [], 1);
+    z = ifft(Z,[],1);
 end

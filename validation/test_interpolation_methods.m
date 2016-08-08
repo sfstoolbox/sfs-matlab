@@ -83,9 +83,9 @@ hrtf = SOFAload(hrtf_file);
 
 %% ===== Interpolate shifted Dirac impulses ==============================
 % interpolation points
-x0 = [1 3; 0 0; 0 0];
+x0 = [1 3; 0 0; 0 0]/180*pi;
 % target point
-xs = [2; 0; 0];
+xs = [2; 0; 0]/180*pi;
 N = 50; %length impulse responses
 
 % 1. Interpolate between Dirac impulses with one sample in between
@@ -171,8 +171,8 @@ figure
 idx0 = 181; %index for 0° azimuth
 idx1 = 182; %index for 1° azimuth
 idx2 = 183; %index for 2° azimuth
-x0_close = [hrtf.SourcePosition(idx0,:)' hrtf.SourcePosition(idx2,:)'];
-xs_close = hrtf.SourcePosition(idx1,:)';
+x0_close = [hrtf.SourcePosition(idx0,:)' hrtf.SourcePosition(idx2,:)']/180*pi;
+xs_close = hrtf.SourcePosition(idx1,:)'/180*pi;
 hrir_close = [hrtf.Data.IR(idx0,:,:); hrtf.Data.IR(idx2,:,:)];
 hrir_close_ref = hrtf.Data.IR(idx1,:,:);
 
@@ -185,8 +185,8 @@ hrir_close_fd = interpolate_ir(hrir_close,x0_close,xs_close,conf);
 idx0 = 181; %index for 0° azimuth
 idx30 = 211; %index for 30° azimuth
 idx60 = 241; %index for 60° azimuth
-x0_dist = [hrtf.SourcePosition(idx0,:)' hrtf.SourcePosition(idx60,:)'];
-xs_dist = hrtf.SourcePosition(idx30,:)';
+x0_dist = [hrtf.SourcePosition(idx0,:)' hrtf.SourcePosition(idx60,:)']/180*pi;
+xs_dist = hrtf.SourcePosition(idx30,:)'/180*pi;
 hrir_dist = [hrtf.Data.IR(idx0,:,:); hrtf.Data.IR(idx60,:,:)];
 hrir_dist_ref = hrtf.Data.IR(idx30,:,:);
 

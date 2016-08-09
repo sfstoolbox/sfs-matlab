@@ -84,7 +84,7 @@ else
     end
     % Find source1 :=  source with largest distance from origin
     [~,idx1] = max(vector_norm(x0(:,1:3),2));
-    % Find source2 := source with maximum distace to source1
+    % Find source2 := source with maximum distance to source1
     [diam,idx2] = max(vector_norm(x0(:,1:3) - ...
         repmat(x0(idx1,1:3),[size(x0,1),1]),2));
     % Center is half-way between source1 and source2

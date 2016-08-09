@@ -337,6 +337,22 @@ conf.localsfs.vss.consider_secondary_sources = true;
 % will be done between the two or three nearest HRTFs.
 conf.ir.useinterpolation = true; % boolean
 %
+% You can choose between the following interpolation methods:
+%   'simple'      - Interpolation in the time domain performed samplewise. This
+%                   does not heed the times of arrival of the impulse responses.
+%   'freqdomain'  - Interpolation in the frequency domain performed separately
+%                   for magnitude and phase.
+%                   This method cannot work properly if there is too much noise in
+%                   the phase information at low frequencies which is often the
+%                   case for measured HRTFs. Low frequencies can be corrected
+%                   according to theory, see e.g. the corrected KEMAR HRTFs published
+%                   at http://github.com/spatialaudio/lf-corrected-kemar-hrtfs.
+%                   The implementation of this method suffers from circular shifting,
+%                   see test_interpolation_methods.m in the validation folder. For
+%                   typical HRIRs with leading and trailing zeros, the error is
+%                   negligible.
+conf.ir.interpolationmethod = 'simple';
+%
 % If you have HRIRs in the form of the SimpleFreeFieldHRIR SOFA convention, zeros
 % are padded at the beginning of every impulse response corresponding to their
 % measurement distance. If you know that your measured HRIRs already have a

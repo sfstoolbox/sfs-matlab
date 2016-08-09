@@ -1,5 +1,5 @@
 function status = test_interpolation_methods(modus)
-%TEST_INTERPOLATION_METHOD demonstrates the difference between interpolation
+%TEST_INTERPOLATION_METHODS demonstrates the difference between interpolation
 %methods
 %
 %   Usage: status = test_interpolation_methods(modus)
@@ -10,7 +10,7 @@ function status = test_interpolation_methods(modus)
 %
 %   Output parameters:
 %       status  - true or false
-
+%
 %   TEST_INTERPOLATION_METHODS(modus) demonstrates the different interpolation
 %   methods in the interpolate_ir function for shifted Dirac impulses and for
 %   HRIRs of different directions

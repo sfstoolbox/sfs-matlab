@@ -1,5 +1,7 @@
 2.3.0 ()
     - add findconvexcone()
+    - simplify convolution()
+    - add linear interplation working in the frequency domain
 
 2.2.0 (7. July 2016)
     - fix impulse response interpolation for three points

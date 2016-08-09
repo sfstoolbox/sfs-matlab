@@ -67,15 +67,14 @@ conf.ir.useinterpolation = true;
 %% ===== Main ============================================================
 % Check if HRTF data set with low frequency correction is available,
 % download otherwise
-hrtf_file = 'KEMAR_HRTFs_lfcorr.sofa';
+basepath = get_sfs_path();
+hrtf = 'KEMAR_HRTFs_lfcorr.sofa';
+hrtf_file = [basepath '/data/HRTFs/' hrtf];
 if ~exist(hrtf_file,'file')
     disp('Download');
     url = ['https://github.com/spatialaudio/lf-corrected-kemar-hrtfs/', ...
-           'blob/master/' hrtf_file '?raw=true'];
-    basepath = get_sfs_path();
-    file_path = [basepath '/data/HRTFs/'];
-    download_file(url,[file_path hrtf_file]);
-    addpath(genpath(file_path))
+           'blob/master/' hrtf '?raw=true'];
+    download_file(url,hrtf_file);
 end
 % Load HRTF data set
 hrtf = SOFAload(hrtf_file);

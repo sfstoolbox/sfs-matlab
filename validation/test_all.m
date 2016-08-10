@@ -80,6 +80,9 @@ if modus
     test_impulse_responses(1);
     disp('Hit Enter to continue');
     pause
+    disp('Running "test_interpolation_methods(1)"');
+    test_interpolation_methods(1);
+    pause
     disp('Running "test_interpolation_point_selection(1)"');
     test_interpolation_point_selection(1);
     disp('Hit Enter to continue');

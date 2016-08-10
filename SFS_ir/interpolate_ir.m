@@ -79,12 +79,14 @@ narginchk(nargmin,nargmax);
 %% ===== Configuration ==================================================
 useinterpolation = conf.ir.useinterpolation;
 % Check for old configuration
-if useinterpolation && ~isfield(conf.ir,'interpolationmethod')
-    warning('SFS:irs_intpolmethod',...
-        'no interpolation method provided, will use method ''simple''.');
-    interpolationmethod = 'simple';
-else
-    interpolationmethod = conf.ir.interpolationmethod;
+if useinterpolation 
+    if ~isfield(conf.ir,'interpolationmethod')
+        warning('SFS:irs_intpolmethod',...
+            'no interpolation method provided, will use method ''simple''.');
+        interpolationmethod = 'simple';
+    else
+        interpolationmethod = conf.ir.interpolationmethod;
+    end
 end
 % Precision of the wanted angle. If an impulse response within the given
 % precision could be found no interpolation is applied.

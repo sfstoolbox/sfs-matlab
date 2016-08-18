@@ -154,7 +154,7 @@ switch delay.filter
         fdt = dt - idt;  % fractional part of delays
         b = lagrange_filter(delay.filterorder,fdt);
         a = ones(1,channels);
-        delay_offset = delay_offset + delay.filterorder / 2;
+        delay_offset = delay_offset + floor(delay.filterorder / 2);
     case 'thiran'
         % === Thiran's allpass filter for maximally flat group delay ===
         idt = round(dt);  % integer part of delays
@@ -170,7 +170,7 @@ switch delay.filter
             b(:,ii) = general_least_squares(delay.filterorder+1,fdt(ii),0.90);
         end
         a = ones(1,channels);
-        delay_offset = delay_offset + delay.filterorder / 2;
+        delay_offset = delay_offset + floor(delay.filterorder / 2);
     case 'farrow'
         % === Farrow-structure ===
         % Based on the assumption, that each coefficient h(n) of the fractional

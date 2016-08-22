@@ -1,7 +1,9 @@
-2.3.0 ()
+2.2.1 (22. August 2016)
+    - fix delayoffset for FIR fractional delay filter
     - add findconvexcone()
     - simplify convolution()
-    - add linear interplation working in the frequency domain
+    - add linear interpolation working in the frequency domain
+    - fix pm option for delayline()
 
 2.2.0 (7. July 2016)
     - fix impulse response interpolation for three points

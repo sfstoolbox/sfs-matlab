@@ -69,7 +69,7 @@ N = size(x,1)+size(y,1)-1;
 Z = bsxfun(@times,fft(x,N,1),fft(y,N,1));  % automatically adjusts sizes
 % IFFT
 if isreal(x) && isreal(y)
-    z = ifft(Z,[],1,'symmetric');
+    z = real(ifft(Z,[],1));
 else
     z = ifft(Z,[],1);
 end

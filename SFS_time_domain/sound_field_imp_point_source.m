@@ -8,7 +8,7 @@ function varargout = sound_field_imp_point_source(X,Y,Z,xs,t,conf)
 %       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
 %       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       xs          - position of point source / m
-%       t           - time / samples
+%       t           - time / s
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:

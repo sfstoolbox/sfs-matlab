@@ -13,7 +13,7 @@ function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 %                       'ls' - line source
 %                       'pw' - plane wave
 %       d           - driving function of secondary sources
-%       t           - time / samples
+%       t           - time / s
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output options:
@@ -25,7 +25,7 @@ function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 %   SOUND_FIELD_IMP(X,Y,Z,x0,src,d,t,conf) simulates a sound field for the
 %   given secondary sources, driven by the corresponding driving signals. The
 %   given source model src is applied by the corresponding Green's function
-%   for the secondary sources. The simulation is done at one time sample, by
+%   for the secondary sources. The simulation is done for the given time, by
 %   calculating the integral for p with a summation.
 %
 %   To plot the result use:
@@ -137,7 +137,7 @@ max_distance_in_samples = round(max_distance/c*fs);
 d = [zeros(max_distance_in_samples,size(d,2)); d];
 % Correct time vector to work with inverted driving functions, this will lead to
 % a time point of t=0 for the starting of emitting the driving signal
-t_inverted = t-size(d,1);
+t_inverted = t-size(d,1)/fs;
 % Append zeros at the end of the driving signal
 d = [d; zeros(max_distance_in_samples,size(d,2))];
 
@@ -163,7 +163,7 @@ for ii = 1:size(x0,1)
     % function already includes the desired time shift of the driving signal.
     % NOTE: the interpolation is required to account for the fractional
     % delay times from the loudspeakers to the field points
-    ds = interp1(1:length(d(:,ii)),d(:,ii),t_delta,'spline');
+    ds = interp1(1:length(d(:,ii)),d(:,ii),t_delta*fs,'spline');
 
     % ================================================================
     % Integration

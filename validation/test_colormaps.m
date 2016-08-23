@@ -62,13 +62,13 @@ conf = SFS_config;
 xs = [0 -1 0];
 src = 'pw';
 f = 1000;
-t = 300;
+t = 0.007;
 X = [-2 2];
 Y = [-2 2];
 Z = 0;
 
 
-%% ===== Monochromatic plots =============================================
+%% ===== Sound field plots ===============================================
 conf.plot.normalisation = 'center';
 conf.plot.usedb = true;
 

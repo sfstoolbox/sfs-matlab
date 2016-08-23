@@ -18,8 +18,9 @@ function [sig,delay_offset] = delayline(sig,dt,weight,conf)
 %
 %   Output parameter:
 %       sig             - delayed signal
-%       delay_offset    - additional delay, added by the fractional delayline
-%                         filters to all channels. For integer delays this is 0.
+%       delay_offset    - additional delay / samples. This is added by the
+%                         fractional delayline filters to all channels.
+%                         For integer delays this is 0.
 %
 %   DELAYLINE(sig,dt,weight,conf) implementes a delayline, that delays the given
 %   signal by dt samples and applies an amplitude weighting factor. The delay is

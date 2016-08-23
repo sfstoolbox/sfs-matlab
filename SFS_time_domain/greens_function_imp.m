@@ -17,7 +17,7 @@ function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 %
 %   Output parameters:
 %       g       - Green's function evaluated at the points x,y,z
-%       t       - Correspondiong time values with integrated time
+%       t       - Corresponding time values with integrated time
 %                 shift / samples
 %
 %   GREENS_FUNCTION_IMP(x,y,z,xs,src,t,conf) calculates the Green's function for

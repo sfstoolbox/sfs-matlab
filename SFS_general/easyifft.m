@@ -57,7 +57,7 @@ narginchk(nargmin,nargmax);
 samples = 2 * (length(amplitude)-1);
 
 % Rescaling (see easyfft)
-amplitude = amplitude/2 * samples;
+amplitude = [amplitude(1); amplitude(2:end-1)/2; amplitude(end)] * samples;
 
 % Mirror the amplitude spectrum
 amplitude = [ amplitude; amplitude(end-1:-1:2) ];

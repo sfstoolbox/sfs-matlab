@@ -75,9 +75,9 @@ samples = length(sig);
 amplitude = abs(compspec(1:ceil(samples/2)));
 phase = angle(compspec(1:ceil(samples/2)));
 
-% Scale the amplitude (factor two, because we have cut off one half and
+% Scale the amplitude (factor two for cut off half and
 %>divide by number of samples)
-amplitude = 2*amplitude / samples;
+amplitude = [amplitude(1); 2*amplitude(2:end-1); amplitude(end)] / samples;
 
 % Calculate corresponding frequency axis
 f = fs*(0:ceil(samples/2)-1)'/samples;

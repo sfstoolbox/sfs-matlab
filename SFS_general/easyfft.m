@@ -70,17 +70,34 @@ compspec = fft(sig);
 % Length of the signal => number of points of fft
 samples = length(sig);
 
-% Calculate corresponding frequency axis
-f = fs/samples*(0:ceil(samples/2))';
+if mod(samples, 2)  % For odd signal length
 
-% Get amplitude and phase spectra (and use only the first half of the
-%>spectrum (Nyquist) [0, fs/2])
-amplitude = abs(compspec(1:length(f)));
-phase = angle(compspec(1:length(f)));
+    % Calculate corresponding frequency axis
+    f = fs/samples*(0:(samples-1)/2)';
 
-% Scale the amplitude (factor two for cut off half and
-%>divide by number of samples)
-amplitude = [amplitude(1); 2*amplitude(2:end-1); amplitude(end)] / samples;
+    % Get amplitude and phase spectra (and use only the first half of the
+    %>spectrum [0, fs/2[ )
+    amplitude = abs(compspec(1:length(f)));
+    phase = angle(compspec(1:length(f)));
+
+    % Scale the amplitude (factor two for mirrored frequencies
+    %>divide by number of samples)
+    amplitude = [amplitude(1); 2*amplitude(2:end)] / samples;
+
+else  % For even signal length
+
+    % Calculate corresponding frequency axis
+    f = fs/samples*(0:samples/2)';
+
+    % Get amplitude and phase spectra (and use only the first half of the
+    %>spectrum [0, fs/2] )
+    amplitude = abs(compspec(1:length(f)));
+    phase = angle(compspec(1:length(f)))
+
+    % Scale the amplitude (factor two for mirrored frequencies
+    %>divide by number of samples)
+    amplitude = [amplitude(1); 2*amplitude(2:end-1); amplitude(end)] / samples;
+end
 
 % Return values
 if nargout>0, varargout{1}=amplitude; end

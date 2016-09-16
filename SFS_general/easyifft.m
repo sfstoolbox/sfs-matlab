@@ -53,20 +53,39 @@ narginchk(nargmin,nargmax);
 
 
 %% ===== Regenerating wave form from spectrum ============================
-% Length of the signal to generate
-samples = 2 * (length(amplitude)-1);
+% Provided number of frequency bins
+bins = length(amplitude);
 
-% Rescaling (see easyfft)
-amplitude = [amplitude(1); amplitude(2:end-1)/2; amplitude(end)] * samples;
+if mod(bins, 2)  % For odd bins -> even signal length
 
-% Mirror the amplitude spectrum ( 2*pi periodic [0, fs[ )
-amplitude = [ amplitude; amplitude(end-1:-1:2) ];
+    % Length of the signal to generate
+    samples = 2 * (bins-1);
 
-% Mirror the phase spectrum and build the inverse (complex conjugate)
-phase = [ phase; -1*phase(end-1:-1:2) ];
+    % Rescaling (see easyfft)
+    amplitude = [amplitude(1); amplitude(2:end-1)/2; amplitude(end)] * samples;
+
+    % Mirror the amplitude spectrum ( 2*pi periodic [0, fs[ )
+    amplitude = [ amplitude; amplitude(end-1:-1:2) ];
+
+    % Mirror the phase spectrum and build the inverse (complex conjugate)
+    phase = [ phase; -1*phase(end-1:-1:2) ];
+
+else  % For even bins -> odd signal length
+    % Length of the signal to generate
+    samples = 2 * (bins) -1;
+
+    % Rescaling (see easyfft)
+    amplitude = [amplitude(1); amplitude(2:end)/2] * samples;
+
+    % Mirror the amplitude spectrum ( 2*pi periodic [0, fs-bin] )
+    amplitude = [ amplitude; amplitude(end:-1:2) ];
+
+    % Mirror the phase spectrum and build the inverse (complex conjugate)
+    phase = [ phase; -1*phase(end:-1:2) ];
+end
 
 % Convert to complex spectrum
 compspec = amplitude .* exp(1i*phase);
 
 % Build the inverse fft and assume spectrum is conjugate symmetric
-outsig = ifft(compspec, 'symmetric');
+outsig = real(ifft(compspec));

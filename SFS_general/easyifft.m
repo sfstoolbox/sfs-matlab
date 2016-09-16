@@ -63,26 +63,20 @@ bins = length(f);
 if f(end)==fs/2  % -> even signal length
     % Length of the signal to generate
     samples = 2 * (bins-1);
-
     % Rescaling (see easyfft)
     amplitude = [amplitude(1); amplitude(2:end-1)/2; amplitude(end)] * samples;
-
     % Mirror the amplitude spectrum ( 2*pi periodic [0, fs[ )
     amplitude = [ amplitude; amplitude(end-1:-1:2) ];
-
     % Mirror the phase spectrum and build the inverse (complex conjugate)
     phase = [ phase; -1*phase(end-1:-1:2) ];
 
 else  % -> odd signal length
     % Length of the signal to generate
     samples = 2 * (bins) -1;
-
     % Rescaling (see easyfft)
     amplitude = [amplitude(1); amplitude(2:end)/2] * samples;
-
     % Mirror the amplitude spectrum ( 2*pi periodic [0, fs-bin] )
     amplitude = [ amplitude; amplitude(end:-1:2) ];
-
     % Mirror the phase spectrum and build the inverse (complex conjugate)
     phase = [ phase; -1*phase(end:-1:2) ];
 end

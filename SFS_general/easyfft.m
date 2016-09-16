@@ -70,17 +70,17 @@ compspec = fft(sig);
 % Length of the signal => number of points of fft
 samples = length(sig);
 
+% Calculate corresponding frequency axis
+f = fs/samples*(0:ceil(samples/2))';
+
 % Get amplitude and phase spectra (and use only the first half of the
-%>spectrum (Nyquist))
-amplitude = abs(compspec(1:ceil(samples/2)));
-phase = angle(compspec(1:ceil(samples/2)));
+%>spectrum (Nyquist) [0, fs/2])
+amplitude = abs(compspec(1:length(f)));
+phase = angle(compspec(1:length(f)));
 
 % Scale the amplitude (factor two for cut off half and
 %>divide by number of samples)
 amplitude = [amplitude(1); 2*amplitude(2:end-1); amplitude(end)] / samples;
-
-% Calculate corresponding frequency axis
-f = fs*(0:ceil(samples/2)-1)'/samples;
 
 % Return values
 if nargout>0, varargout{1}=amplitude; end

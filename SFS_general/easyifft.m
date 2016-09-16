@@ -59,14 +59,14 @@ samples = 2 * (length(amplitude)-1);
 % Rescaling (see easyfft)
 amplitude = [amplitude(1); amplitude(2:end-1)/2; amplitude(end)] * samples;
 
-% Mirror the amplitude spectrum
+% Mirror the amplitude spectrum ( 2*pi periodic [0, fs[ )
 amplitude = [ amplitude; amplitude(end-1:-1:2) ];
 
-% Mirror the phase spectrum and build the inverse (why?)
+% Mirror the phase spectrum and build the inverse (complex conjugate)
 phase = [ phase; -1*phase(end-1:-1:2) ];
 
 % Convert to complex spectrum
 compspec = amplitude .* exp(1i*phase);
 
-% Build the inverse fft and use only the real part
-outsig = real( ifft(compspec) );
+% Build the inverse fft and assume spectrum is conjugate symmetric
+outsig = ifft(compspec, 'symmetric');

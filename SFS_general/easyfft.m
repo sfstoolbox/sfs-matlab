@@ -68,12 +68,12 @@ useplot = conf.plot.useplot;
 compspec = fft(sig);
 
 % Length of the signal => number of points of fft
-samples = length(sig);
+bins = length(sig);
 
-if mod(samples, 2)  % For odd signal length
+if mod(bins, 2)  % For odd signal length
 
     % Calculate corresponding frequency axis
-    f = fs/samples*(0:(samples-1)/2)';
+    f = fs/bins*(0:(bins-1)/2)';
 
     % Get amplitude and phase spectra (and use only the first half of the
     %>spectrum [0, fs/2[ )
@@ -81,22 +81,22 @@ if mod(samples, 2)  % For odd signal length
     phase = angle(compspec(1:length(f)));
 
     % Scale the amplitude (factor two for mirrored frequencies
-    %>divide by number of samples)
-    amplitude = [amplitude(1); 2*amplitude(2:end)] / samples;
+    %>divide by number of bins)
+    amplitude = [amplitude(1); 2*amplitude(2:end)] / bins;
 
 else  % For even signal length
 
     % Calculate corresponding frequency axis
-    f = fs/samples*(0:samples/2)';
+    f = fs/bins*(0:bins/2)';
 
     % Get amplitude and phase spectra (and use only the first half of the
     %>spectrum [0, fs/2] )
     amplitude = abs(compspec(1:length(f)));
-    phase = angle(compspec(1:length(f)))
+    phase = angle(compspec(1:length(f)));
 
     % Scale the amplitude (factor two for mirrored frequencies
-    %>divide by number of samples)
-    amplitude = [amplitude(1); 2*amplitude(2:end-1); amplitude(end)] / samples;
+    %>divide by number of bins)
+    amplitude = [amplitude(1); 2*amplitude(2:end-1); amplitude(end)] / bins;
 end
 
 % Return values

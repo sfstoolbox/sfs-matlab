@@ -1,7 +1,7 @@
-function outsig = easyifft(amplitude,phase)
+function outsig = easyifft(amplitude,phase,f,conf)
 %EASYIFFT calculates the inverse FFT
 %
-%   Usage: outsig = easyifft(amplitude,phase)
+%   Usage: outsig = easyifft(amplitude,phase,f,conf)
 %
 %   Input parameters:
 %       amplitude   - the amplitude spectrum
@@ -46,18 +46,21 @@ function outsig = easyifft(amplitude,phase)
 
 
 %% ===== Checking input arguments ========================================
-nargmin = 2;
-nargmax = 2;
+nargmin = 4;
+nargmax = 4;
 narginchk(nargmin,nargmax);
 [amplitude,phase] = column_vector(amplitude,phase);
 
 
+%% ===== Configuration ===================================================
+fs = conf.fs;
+
+
 %% ===== Regenerating wave form from spectrum ============================
 % Provided number of frequency bins
-bins = length(amplitude);
+bins = length(f);
 
-if mod(bins, 2)  % For odd bins -> even signal length
-
+if f(end)==fs/2  % -> even signal length
     % Length of the signal to generate
     samples = 2 * (bins-1);
 
@@ -70,7 +73,7 @@ if mod(bins, 2)  % For odd bins -> even signal length
     % Mirror the phase spectrum and build the inverse (complex conjugate)
     phase = [ phase; -1*phase(end-1:-1:2) ];
 
-else  % For even bins -> odd signal length
+else  % -> odd signal length
     % Length of the signal to generate
     samples = 2 * (bins) -1;
 

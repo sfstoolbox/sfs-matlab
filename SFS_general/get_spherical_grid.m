@@ -126,8 +126,8 @@ elseif strcmp('gauss',spherical_grid)
     r = ones(size(phi));
     % Convert to cartesian
     [points(:,1) points(:,2) points(:,3)] = sph2cart(phi(:),theta(:),r(:));
-    % Incorporating integration weights
-    weights = weights(:).*cos(theta(:));
+    % Normalize integration weights
+    weights = weights(:)*pi/number;
 else
     error(['%s: the given spherical grid is not available, have a look at ' ...
         'http://github.com/sfstoolbox/data for avialable grids.'], ...

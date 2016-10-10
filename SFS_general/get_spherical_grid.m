@@ -18,7 +18,7 @@ function [points,weights] = get_spherical_grid(number,conf)
 %   desired file is not available on the hard disk, the function tries to
 %   download it directly from github.
 %   For conf.secondary_sources.grid='gauss' the grid positions are calculated
-%   after Ahrens (2012), p. 121 (see also: Rafaely (2015))
+%   after Ahrens (2012), p. 121 (see also: Rafaely (2015), p. 64)
 %
 %   References:
 %       J. Ahrens (2012) - "Analytic Methods of Sound Field Synthesis", Springer.

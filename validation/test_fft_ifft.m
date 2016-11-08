@@ -62,28 +62,33 @@ sin_sig = (sin1 + sin2 + sin3)';
 
 even_sig = ones(8, 1);
 odd_sig = ones(7, 1);
+alias_sig = repmat([1; -1], fs/2, 1);
 
 %% FFT
 [sin_ampl, sin_phase, sin_f] = easyfft(sin_sig, conf);
 [even_ampl, even_phase, even_f] = easyfft(even_sig, conf);
 [odd_ampl, odd_phase, odd_f] = easyfft(odd_sig, conf);
+[alias_ampl, alias_phase, alias_f] = easyfft(alias_sig, conf);
 
 %% Check frequency bins
 if modus
 figure; semilogx(sin_f,20*log10(sin_ampl)); title('Sinus Mix')
-figure; scatter(even_f, even_ampl); title('Even signal FFT');
-figure; scatter(odd_f, odd_ampl);title('Odd signal FFT');
+figure; scatter(even_f, even_ampl); title('Even signal (f=0) FFT');
+figure; scatter(odd_f, odd_ampl);title('Odd signal (f=0) FFT');
+figure; scatter(alias_f, alias_ampl);title('Signal with f=fs/2 FFT');
 end
 %% IFFT
 sin_outsig = easyifft(sin_ampl, sin_phase, sin_f,conf);
 even_outsig = easyifft(even_ampl, even_phase, even_f,conf);
 odd_outsig = easyifft(odd_ampl, odd_phase, odd_f,conf);
+alias_outsig = easyifft(alias_ampl, alias_phase, alias_f,conf);
 
 %% Check Output
 sin_diff = sum(abs(sin_sig - sin_outsig));
 even_diff = sum(abs(even_sig - even_outsig));
 odd_diff = sum(abs(odd_sig - odd_outsig));
-if sum(sin_diff + even_diff + odd_diff) < 10^(-8)
+alias_diff = sum(abs(alias_sig - alias_outsig));
+if sum(sin_diff + even_diff + odd_diff + alias_diff) < 10^(-8)
     disp('FFT and IFFT : Test passed')
     status = true;
 end

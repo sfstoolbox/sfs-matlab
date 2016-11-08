@@ -50,6 +50,7 @@ nargmin = 1;
 nargmax = 1;
 narginchk(nargmin,nargmax);
 
+
 %% ===== Configuration ===================================================
 conf = SFS_config;
 fs = conf.fs;
@@ -84,7 +85,6 @@ sin_diff = sum(abs(sin_sig - sin_outsig));
 even_diff = sum(abs(even_sig - even_outsig));
 odd_diff = sum(abs(odd_sig - odd_outsig));
 if sum(sin_diff + even_diff + odd_diff) < 10^(-8)
-    disp('FFT and IFFT : Test passed')
     status = true;
 end
 

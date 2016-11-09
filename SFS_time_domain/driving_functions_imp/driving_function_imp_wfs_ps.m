@@ -148,7 +148,7 @@ elseif strcmp('2.5D',dimension)
          %
          % Delay and amplitude weight
          delay = 1./c .* r;
-         weight = g0 ./ sqrt(2.*pi) .* vector_product(x0-xs,nx0,2) ./ r.^2;
+         weight = g0 ./ sqrt(2.*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3/2);
          %
      case 'reference_line'
          % Driving function with two stationary phase approximations,

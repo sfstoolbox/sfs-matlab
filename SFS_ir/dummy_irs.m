@@ -69,7 +69,7 @@ dirac_position = round(distance/c*fs);
 %% ===== Computation =====================================================
 ir = zeros(1,2,nsamples);
 % Create dirac pulse
-ir(:,:,dirac_position) = 1/(4*pi);
+ir(:,:,dirac_position) = 1;
 % Store data
 sofa = SOFAgetConventions('SimpleFreeFieldHRIR');
 sofa.Data.IR = ir;

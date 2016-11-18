@@ -133,6 +133,8 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     % Find nearest neighbours and interpolate if desired and needed
     [neighbours,idx] = findnearestneighbour(x0(:,1:2)',xs(1:2),3);
     ir = sofa_get_data_fir(sofa,idx);
+    % Correct Green's function amplitude
+    ir = ir/(4*pi);
     ir = ir_correct_distance(ir,x0(idx,3),xs(3),conf);
     [ir,x0] = interpolate_ir(ir,neighbours,xs(1:2)',conf);
     [x0(1),x0(2),x0(3)] = sph2cart(x0(1),x0(2),xs(3));
@@ -185,6 +187,8 @@ elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
     end
     % Get the impulse responses, reshape and interpolate
     ir = sofa_get_data_fire(sofa,idx_head,idx_emitter);
+    % Correct Green's function amplitude
+    ir = ir/(4*pi);
     ir = reshape(ir,[size(ir,1) size(ir,2) size(ir,4)]); % [M R E N] => [M R N]
     ir = interpolate_ir(ir,neighbours_head,head_orientation',conf);
 

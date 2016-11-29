@@ -1,24 +1,25 @@
-function varargout = get_spectrum(sig,conf)
-%GET_SPECTRUM returns amplitude and phase spectrum of a signal
+function varargout = get_spectrum(signal,conf)
+%GET_SPECTRUM returns single-sided amplitude and phase spectra of signal
 %   axis
 %
 %   Usage: [amplitude,phase,f] = get_spectrum(sig,conf)
 %
 %   Input parameters:
-%       sig         - one channel audio waveform
+%       signal      - one channel audio (time) signal
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       amplitude   - amplitude spectrum of the input signal
-%       phase       - phase spectrum of the input signal / rad
-%       f           - corresponding frequency axis for the amplitude
-%                     spectrum (=> plot(f,amplitude) / Hz
+%       amplitude   - single-sided amplitude spectrum of the input signal
+%       phase       - single-sided phase spectrum of the input signal / rad
+%       f           - corresponding frequency axis for the spectrum 
+%                     (=> plot(f,amplitude) / Hz
 %
-%   GET_SPECTRUM(sig,conf) calculates the amplitude and phase spectrum of 
-%   the sig by using the fast Fourier transformation. In addition to the 
-%   amplitude and phase, the corresponding frequency axis is returned.
+%   GET_SPECTRUM(signal,conf) calculates the single-sided amplitude and 
+%   phase spectrum of sig by using the fast Fourier transformation.
+%   In addition to the amplitude and phase, the corresponding frequency 
+%   axis is returned.
 %
-%   See also: easyifft, fft
+%   See also: retrieve_signal, fft
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -54,7 +55,7 @@ function varargout = get_spectrum(sig,conf)
 nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-sig = column_vector(sig);
+signal = column_vector(signal);
 isargstruct(conf);
 
 
@@ -65,10 +66,10 @@ useplot = conf.plot.useplot;
 
 %% ===== Calcualate spectrum =============================================
 % Generate fast fourier transformation (=> complex output)
-compspec = fft(sig);
+compspec = fft(signal);
 
 % Length of the signal => number of points of fft
-bins = length(sig);
+bins = length(signal);
 
 if mod(bins, 2)  % For odd signal length
     % Calculate corresponding frequency axis

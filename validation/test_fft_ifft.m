@@ -79,10 +79,10 @@ figure; scatter(odd_f, odd_ampl);title('Odd signal (f=0) FFT');
 figure; scatter(alias_f, alias_ampl);title('Signal with f=fs/2 FFT');
 end
 %% IFFT
-sin_outsig = easyifft(sin_ampl, sin_phase, sin_f,conf);
-even_outsig = easyifft(even_ampl, even_phase, even_f,conf);
-odd_outsig = easyifft(odd_ampl, odd_phase, odd_f,conf);
-alias_outsig = easyifft(alias_ampl, alias_phase, alias_f,conf);
+sin_outsig = retrieve_signal(sin_ampl, sin_phase, sin_f,conf);
+even_outsig = retrieve_signal(even_ampl, even_phase, even_f,conf);
+odd_outsig = retrieve_signal(odd_ampl, odd_phase, odd_f,conf);
+alias_outsig = retrieve_signal(alias_ampl, alias_phase, alias_f,conf);
 
 %% Check Output
 sin_diff = sum(abs(sin_sig - sin_outsig));

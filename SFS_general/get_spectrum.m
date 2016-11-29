@@ -11,12 +11,12 @@ function varargout = get_spectrum(signal,conf)
 %   Output parameters:
 %       amplitude   - single-sided amplitude spectrum of the input signal
 %       phase       - single-sided phase spectrum of the input signal / rad
-%       f           - corresponding frequency axis for the spectrum 
+%       f           - corresponding frequency axis for the spectrum
 %                     (=> plot(f,amplitude) / Hz
 %
-%   GET_SPECTRUM(signal,conf) calculates the single-sided amplitude and 
+%   GET_SPECTRUM(signal,conf) calculates the single-sided amplitude and
 %   phase spectrum of sig by using the fast Fourier transformation.
-%   In addition to the amplitude and phase, the corresponding frequency 
+%   In addition to the amplitude and phase, the corresponding frequency
 %   axis is returned.
 %
 %   See also: retrieve_signal, fft
@@ -103,10 +103,10 @@ if nargout>2, varargout{3}=f; end
 %% ===== Plotting ========================================================
 if nargout==0 || useplot
     figure; title('Spectrum');
-    subplot(2,1,1) 
+    subplot(2,1,1)
     semilogx(f,20*log10(abs(amplitude))); xlim([1 fs/2]);
-    grid on; xlabel('Frequency [Hz]'); ylabel('Amplitude [dB]')
-    subplot(2,1,2) 
+    grid on; xlabel('Frequency / Hz'); ylabel('Amplitude / dB')
+    subplot(2,1,2)
     semilogx(f,unwrap(phase)); xlim([1 fs/2]);
-    grid on; xlabel('Frequency [Hz]'); ylabel('Phase [rad]')
+    grid on; xlabel('Frequency / Hz'); ylabel('Phase / rad')
 end

@@ -2,6 +2,7 @@
     - fix Gauss-Legendre quadrature weights
     - fix default 2.5D WFS driving function in time domain
     - correct absolute amplitude values of WFS in time domain
+    - fix missing secondary source selection in ssr_brs_wfs()
 
 2.2.1 (22. August 2016)
     - fix delayoffset for FIR fractional delay filter

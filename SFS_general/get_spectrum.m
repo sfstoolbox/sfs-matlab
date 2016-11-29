@@ -1,8 +1,8 @@
-function varargout = easyfft(sig,conf)
-%EASYFFT calculates the FFT of a signal and returns the corresponding frequency
+function varargout = get_spectrum(sig,conf)
+%GET_SPECTRUM returns amplitude and phase spectrum of a signal
 %   axis
 %
-%   Usage: [amplitude,phase,f] = easyfft(sig,conf)
+%   Usage: [amplitude,phase,f] = get_spectrum(sig,conf)
 %
 %   Input parameters:
 %       sig         - one channel audio waveform
@@ -14,9 +14,9 @@ function varargout = easyfft(sig,conf)
 %       f           - corresponding frequency axis for the amplitude
 %                     spectrum (=> plot(f,amplitude) / Hz
 %
-%   EASYFFT(sig,conf) calculates the amplitude and phase of the sig spectrum by
-%   using the fast Fourier transformation. In addition to the amplitude and
-%   phase, the corresponding frequency axis for a plot is returned.
+%   GET_SPECTRUM(sig,conf) calculates the amplitude and phase spectrum of 
+%   the sig by using the fast Fourier transformation. In addition to the 
+%   amplitude and phase, the corresponding frequency axis is returned.
 %
 %   See also: easyifft, fft
 

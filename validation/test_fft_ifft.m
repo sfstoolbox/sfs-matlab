@@ -66,10 +66,10 @@ odd_sig = ones(7, 1);
 alias_sig = repmat([1; -1], fs/2, 1);
 
 %% FFT
-[sin_ampl, sin_phase, sin_f] = easyfft(sin_sig, conf);
-[even_ampl, even_phase, even_f] = easyfft(even_sig, conf);
-[odd_ampl, odd_phase, odd_f] = easyfft(odd_sig, conf);
-[alias_ampl, alias_phase, alias_f] = easyfft(alias_sig, conf);
+[sin_ampl, sin_phase, sin_f] = get_spectrum(sin_sig, conf);
+[even_ampl, even_phase, even_f] = get_spectrum(even_sig, conf);
+[odd_ampl, odd_phase, odd_f] = get_spectrum(odd_sig, conf);
+[alias_ampl, alias_phase, alias_f] = get_spectrum(alias_sig, conf);
 
 %% Check frequency bins
 if modus

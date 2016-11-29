@@ -101,5 +101,11 @@ if nargout>2, varargout{3}=f; end
 
 %% ===== Plotting ========================================================
 if nargout==0 || useplot
-    figure; semilogx(f,20*log10(abs(amplitude)));
+    figure; title('Spectrum');
+    subplot(2,1,1) 
+    semilogx(f,20*log10(abs(amplitude))); xlim([1 fs/2]);
+    grid on; xlabel('Frequency [Hz]'); ylabel('Amplitude [dB]')
+    subplot(2,1,2) 
+    semilogx(f,unwrap(phase)); xlim([1 fs/2]);
+    grid on; xlabel('Frequency [Hz]'); ylabel('Phase [rad]')
 end

@@ -67,6 +67,8 @@ isargstruct(conf);
 %% ===== Computation =====================================================
 % Secondary sources
 x0 = secondary_source_positions(conf);
+x0 = secondary_source_selection(x0,xs,src);
+x0 = secondary_source_tapering(x0,conf);
 % Calculate driving function
 d = driving_function_imp_wfs(x0,xs,src,conf);
 % Calculate brs set

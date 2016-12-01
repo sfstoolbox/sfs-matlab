@@ -63,12 +63,13 @@ isargstruct(conf);
 fs = conf.fs;
 c = conf.c;
 distance = 1;
-dirac_position = round(distance/c*fs);
+dirac_position = 1;
 
 
 %% ===== Computation =====================================================
 ir = zeros(1,2,nsamples);
-% Create dirac pulse
+% Create dirac pulse in first sample as the delay corresponding to the distance
+% is handled by get_ir() later on
 ir(:,:,dirac_position) = 1;
 % Store data
 sofa = SOFAgetConventions('SimpleFreeFieldHRIR');

@@ -13,10 +13,6 @@ function hpre = wfs_fir_prefilter(conf)
 %   Wave Field Synthesis (from conf.wfs.hpreflow to conf.wfs.hprefhigh,
 %   see SFS_config).
 %
-%   References:
-%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
-%       "Theory of Sound Field Synthesis"
-%
 %   See also: wfs_preequalization, wfs_iir_prefilter, sound_field_imp_wfs, ir_wfs
 
 %*****************************************************************************
@@ -59,7 +55,8 @@ isargstruct(conf);
 
 %% ===== Configuration ==================================================
 fs = conf.fs;                  % Sampling rate
-dimension = conf.dimension;    % dimensionality
+c = conf.c;                    % Speed of sound
+dimension = conf.dimension;    % Dimensionality
 flow = conf.wfs.hpreflow;      % Lower frequency limit of preequalization
                                % filter (= frequency when subwoofer is active)
 fhigh = conf.wfs.hprefhigh;    % Upper frequency limit of preequalization
@@ -94,21 +91,23 @@ if strcmp('2.5D',dimension)
     %           _______
     %  H(f) = \|f/fhigh, for flow<=f<=fhigh
     %
-    %  see Wierstorf et al. (2015), eq.(#wfs:preeq:2.5D)
+    %  See http://sfstoolbox.org/#equation-h.wfs.2.5D
     %
-    H(idxflow:idxfhigh) = sqrt(f(idxflow:idxfhigh)./fhigh);
+    H(idxflow:idxfhigh) = sqrt(2*pi*f(idxflow:idxfhigh)/c);
+    H(idxfhigh:end) = H(idxfhigh);
 elseif strcmp('3D',dimension) || strcmp('2D',dimension)
     %
     %  H(f) = f/fhigh, for flow<=f<=fhigh
     %
-    %  see Wierstorf et al. (2015), eq.(#wfs:preeq)
+    %  See http://sfstoolbox.org/#equation-h.wfs
     %
-    H(idxflow:idxfhigh) = f(idxflow:idxfhigh)./fhigh;
+    H(idxflow:idxfhigh) = 2*pi*f(idxflow:idxfhigh)/c;
+    H(idxfhigh:end) = H(idxfhigh);
 else
     error('%s: %s is not a valid conf.dimension entry',upper(mfilename),dimension);
 end
 % Set the response for idxf < idxflow to the value at idxflow
-H(1:idxflow) = H(idxflow)*ones(1,idxflow);
+H(1:idxflow) = H(idxflow);
 
 % Compute filter
 hpre = firls(Nfilt,2*f/fs,H);

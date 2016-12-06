@@ -1,4 +1,17 @@
-2.2.0 ()
+2.3.0 ()
+    - fix Gauss-Legendre quadrature weights
+    - fix default 2.5D WFS driving function in time domain
+    - correct absolute amplitude values of WFS in time domain
+    - fix missing secondary source selection in ssr_brs_wfs()
+
+2.2.1 (22. August 2016)
+    - fix delayoffset for FIR fractional delay filter
+    - add findconvexcone()
+    - simplify convolution()
+    - add linear interpolation working in the frequency domain
+    - fix pm option for delayline()
+
+2.2.0 (7. July 2016)
     - fix impulse response interpolation for three points
     - add the ability to apply modal weighting window to NFC-HOA in time domain
     - change license to MIT
@@ -8,6 +21,10 @@
     - convolution() excepts now two matrices as input
     - allow headphone compensation filter to be a one- or two-channel wav file
     - add new online doc at http://matlab.sfstoolbox.org/
+    - fix greens_function_mono() for plane wave and 3D
+    - replace conf.ir.useoriglength by conf.ir.hrirpredelay
+    - update default WFS driving functions
+    - add links to equations in online theory at http://sfstoolbox.org
 
 2.1.0 (10. March 2016)
     - make conf struct mandatory

@@ -25,10 +25,6 @@ function [x0,idx] = secondary_source_selection(x0,xs,src)
 %   sources for the given geometry and virtual source. In addition the index of
 %   the chosen secondary sources is returned.
 %
-%   References:
-%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
-%       "Theory of Sound Field Synthesis"
-%
 %   See also: secondary_source_positions, secondary_source_tapering
 
 %*****************************************************************************
@@ -102,7 +98,7 @@ if strcmp('pw',src)
     % a = <
     %      \ 0, else
     %
-    % see Wierstorf et al. (2015), eq.(#wfs:pw:selection)
+    % See http://sfstoolbox.org/#equation-wfs.pw.selection
     %
     % Direction of plane wave (nk) is set above
     idx = nx0*nk(:) >= eps;
@@ -115,8 +111,7 @@ elseif strcmp('ps',src)
     % a = <
     %      \ 0, else
     %
-    % see Wierstorf et al. (2015), eq.(#wfs:ps:selection) and
-    % eq.(#wfs:ls:selection)
+    % See http://sfstoolbox.org/#equation-wfs.ps.selection
     %
     idx = sum(nx0.*x0,2) - nx0*xs(1:3).' >= -2*eps;
 
@@ -131,8 +126,7 @@ elseif strcmp('ls',src)
     % where v = x0-xs - <x0-xs,nxs > nxs,
     % and |nxs| = 1.
     %
-    % see Wierstorf et al. (2015), eq.(#wfs:ps:selection) and
-    % eq.(#wfs:ls:selection)
+    % See http://sfstoolbox.org/#equation-wfs.ls.selection
     %
     %NOTE: We don't check if we are in a 2D or 3D scenario and use xs(4:6)
     % whenever it is present. This can only provide problems if you use the
@@ -158,7 +152,7 @@ elseif strcmp('fs',src)
     % a = <
     %      \ 0, else
     %
-    % see Wierstorf et al. (2015), eq.(#wfs:fs:selection)
+    % See http://sfstoolbox.org/#equation-wfs.fs.selection
     %
     nxs = xs(4:6);  % vector for orientation of focused source
     xs = xs(1:3);  % vector for position of focused source

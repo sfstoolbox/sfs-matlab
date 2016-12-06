@@ -10,10 +10,9 @@ function ir = sofa_get_data_fire(sofa,idxM,idxE)
 %                 idxM could be a single value, then only one impulse response
 %                 will be returned, or it can be a vector then all impulse
 %                 responses for the corresponding index positions will be
-%                 returned.
-%                 If no index is specified all measurements will be returned.
+%                 returned (default: all measurements).
 %       idxE    - index of the emitter for which the single impulse
-%                 responses should be returned. The rest is identical to idxM.
+%                 responses should be returned (default: all measurements).
 %
 %   Output parameters:
 %       ir      - impulse response (M,2,E,N), where

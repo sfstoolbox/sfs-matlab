@@ -1,19 +1,14 @@
-function y = ifft_real(x,N)
-%IFFT_REAL computes an ifft for real value signals
+function status = test_wfs_25d(modus)
+%TEST_WFS_25D tests behavior of 2.5D WFS
 %
-%   Usage: y = ifft_real(x,samples)
+%   Usage: status = test_wfs_25d(modus)
 %
 %   Input parameters:
-%       x       - matrix x with signals as columns
-%       samples - desired length of the output signals
+%       modus   - 0: numerical
+%                 1: visual
 %
 %   Output parameters:
-%       y       - matrix y with signals as columns
-%
-%   IFFT_REAL(x,samples) computes the ifft of the real signals in x. The signals
-%   have to be the columns of x.
-%
-%   See also: fft_real, convolution
+%       status  - true or false
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -45,22 +40,77 @@ function y = ifft_real(x,N)
 %*****************************************************************************
 
 
-%% ===== Checking of input parameters ====================================
-nargmin = 2;
-nargmax = 2;
+status = false;
+
+
+%% ===== Checking of input  parameters ===================================
+nargmin = 1;
+nargmax = 1;
 narginchk(nargmin,nargmax);
-isargmatrix(x);
-isargpositivescalar(N);
 
 
-%% ===== Computation =====================================================
-% Force IFFT along dimension 1
-if rem(N,2)==0
-  y = [x; flipud(conj(x(2:end-1,:)))];
-else
-  y = [x; flipud(conj(x(2:end,:)))];
-end;
+%% ===== Configuration ===================================================
+% Parameters
+conf = SFS_config;
+conf.secondary_sources.geometry = 'linear';
+conf.secondary_sources.size = 20;
+conf.secondary_sources.number = 512;
+conf.secondary_sources.center = [0,6,0];
+conf.xref = [0,0,0];
+conf.usetapwin = true;
+conf.tapwinlen = 0.2;
 
-y = real(ifft(y,N,1));
+%
+f = 2000;  % temporal frequency
+positions = { [0,9,0], [0,-1,0], [0,3,0,0,-1,0] };  % source positions
+sources = {'ps', 'pw', 'fs'};
+gtsources = {'ps', 'pw', 'ps'};
+X = [-2,2];
+Y = [-2,2];
+Z = 0;
 
 
+%% ===== Main ============================================================
+for idx=1:length(positions)
+    xs = positions{idx};
+    src = sources{idx};
+    gt = gtsources{idx};
+
+    if modus
+        figure;
+        ddx = 0;
+    end
+
+    for driving_functions = {'reference_point', 'reference_line'}
+
+        conf.driving_functions = driving_functions{:};
+        Pgt = sound_field_mono(X,Y,Z,[xs(1:3),0,-1,0,1],gt,1,f,conf);
+        Pwfs = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
+
+        if modus
+            subplot(2,2,2*ddx+1);
+            imagesc(Y,X,real(Pwfs));
+            title(sprintf('%s %s',src,driving_functions{:}),'Interpreter','none');
+            set(gca,'YDir','normal');
+            colorbar;
+
+            subplot(2,2,2*ddx+2);
+            imagesc(Y,X,db(1 - Pwfs./Pgt));
+            title(sprintf('%s %s',src,driving_functions{:}),'Interpreter','none');
+            set(gca,'YDir','normal');
+            colorbar;
+            hold on;
+            if strcmp('reference_point',conf.driving_functions)
+                plot(conf.xref(1),conf.xref(2),'gx');
+            else
+                plot(conf.xref(1)+X,conf.xref([2,2]),'g--');
+            end
+            hold off;
+
+            ddx= ddx+1;
+        end
+    end
+end
+
+
+status = true;

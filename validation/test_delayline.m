@@ -1,11 +1,18 @@
-function test_delayline()
+function status = test_delayline(modus)
 %TEST_DELAYLINE evaluates the delayline implementation
 %
-%   Usage: test_delayline()
+%   Usage: status = test_delayline(modus)
 %
-%   TEST_DELAYLINE() tests the implementation of the delayline. For different
-%   types (conf.usefracdelay) you have to manual edit the code below at the
-%   moment.
+%   Input parameters:
+%       modus   - 0: numerical
+%                 1: visual
+%
+%   Output parameters:
+%       status  - true or false
+%
+%   TEST_DELAYLINE(modus) tests the implementation of the delayline. For
+%   different types (conf.usefracdelay) you have to manual edit the code below
+%   at the moment.
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -37,6 +44,15 @@ function test_delayline()
 %*****************************************************************************
 
 
+status = false;
+
+
+%% ===== Checking of input parameters ====================================
+nargmin = 1;
+nargmax = 1;
+narginchk(nargmin,nargmax);
+
+
 %% ===== Configuration ==================================================
 % Delays to evaluate
 dt=[-5 -2.5 0 2.5 5];
@@ -65,7 +81,7 @@ for resampling = {'none', 'matlab', 'pm'}
     conf.delayline.resampling = resampling{:};
     for filter = {'lagrange', 'thiran', 'least_squares', 'integer'}
         conf.delayline.filter = filter{:};
-        
+
         % --- Computation ---
         % Test all given delays
         for n=1:length(dt)
@@ -75,38 +91,43 @@ for resampling = {'none', 'matlab', 'pm'}
             uwphase(:,n)=-unwrap(angle(H(:,n)));
             phasdel(:,n) = uwphase(2:L,n)./wpi2';
         end
-        
+
         % --- Plotting ---
-        figure;
-        % setup legend and axis
-        t=1:L;
-        t=t-L/2;
-        % Phase delay
-        subplot(2,2,1);
-        plot(wpi2/pi,phasdel-(L/2)+1-delay_offset);
-        title(['resample: ', resampling{:}, ', filter: ', filter{:},' - phase delay']);
-        ylabel('phase delay');
-        xlabel('normalized frequency');
-        legend(num2str(dt.','%.1f'));
-        grid on;
-        % Magnitude response
-        subplot(2,2,2);
-        plot(wpi/pi,magresp);
-        title(['resample: ', resampling{:}, ', filter: ', filter{:},' - magnitude response']);
-        ylabel('magnitude');
-        xlabel('normalized frequency');
-        legend(num2str(dt.','%.1f'));
-        grid on;
-        % Impluse response
-        subplot(2,2,3);
-        imagesc(dt,t(L/2-50:L/2+50),db(abs(outsig(L/2-50:L/2+50,:))));
-        title(['resample: ', resampling{:}, ', filter: ', filter{:},' - impulse response']);
-        caxis([-100 10]);
-        ylabel('samples');
-        xlabel('delay');
-        set(gca,'XTick',dt)
-        turn_imagesc;
-        colorbar;
-        grid on;
+        if modus
+            figure;
+            % setup legend and axis
+            t=1:L;
+            t=t-L/2;
+            % Phase delay
+            subplot(2,2,1);
+            plot(wpi2/pi,phasdel-(L/2)+1-delay_offset);
+            title(['resample: ', resampling{:}, ', filter: ', filter{:},' - phase delay']);
+            ylabel('phase delay');
+            xlabel('normalized frequency');
+            legend(num2str(dt.','%.1f'));
+            grid on;
+            % Magnitude response
+            subplot(2,2,2);
+            plot(wpi/pi,magresp);
+            title(['resample: ', resampling{:}, ', filter: ', filter{:},' - magnitude response']);
+            ylabel('magnitude');
+            xlabel('normalized frequency');
+            legend(num2str(dt.','%.1f'));
+            grid on;
+            % Impluse response
+            subplot(2,2,3);
+            imagesc(dt,t(L/2-50:L/2+50),db(abs(outsig(L/2-50:L/2+50,:))));
+            title(['resample: ', resampling{:}, ', filter: ', filter{:},' - impulse response']);
+            caxis([-100 10]);
+            ylabel('samples');
+            xlabel('delay');
+            set(gca,'XTick',dt)
+            turn_imagesc;
+            colorbar;
+            grid on;
+        end
     end
 end
+
+
+status = true;

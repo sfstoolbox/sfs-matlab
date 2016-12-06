@@ -213,7 +213,7 @@ elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)
     [~,theta] = cart2sph(x0(:,1),x0(:,2),x0(:,3)); % get elevation
     x0(:,7) = x0(:,7) .* cos(theta);
 elseif strcmp('custom',geometry)
-    % Custom geometry definedy by conf.secondary_sources.x0.
+    % Custom geometry defined by conf.secondary_sources.x0.
     % This could be in the form of a n x 7 matrix, where n is the number of
     % secondary sources or as a SOFA file/struct.
     if ischar(conf.secondary_sources.x0) || isstruct(conf.secondary_sources.x0)

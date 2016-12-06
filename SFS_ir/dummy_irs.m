@@ -62,13 +62,14 @@ isargstruct(conf);
 %% ===== Configuration ===================================================
 fs = conf.fs;
 c = conf.c;
-dirac_position = 300;
+distance = 1;
+dirac_position = round(distance/c*fs);
 
 
 %% ===== Computation =====================================================
 ir = zeros(1,2,nsamples);
 % Create dirac pulse
-ir(:,:,dirac_position) = 1;
+ir(:,:,dirac_position) = 1/(4*pi);
 % Store data
 sofa = SOFAgetConventions('SimpleFreeFieldHRIR');
 sofa.Data.IR = ir;
@@ -83,6 +84,5 @@ sofa.ListenerView = [1 0 0];
 sofa.ListenerUp = [0 0 1];
 elevation = 0;
 azimuth = 0;
-distance = dirac_position/fs*c;
 sofa.SourcePosition = [nav2sph(azimuth) elevation distance];
 sofa = SOFAupdateDimensions(sofa);

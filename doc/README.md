@@ -9,5 +9,5 @@ http://matlab.sfstoolbox.org/
 In order to generate a version on your local machine run:
 
 ```bash
-$ sphinx-build -b html -A web=0 -d ./_build/doctrees . ./_build/html-preview/
+$ sphinx-build -b html -d ./_build/doctrees . ./_build/html-preview/
 ```

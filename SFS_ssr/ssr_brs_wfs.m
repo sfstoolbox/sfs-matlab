@@ -11,7 +11,7 @@ function brs = ssr_brs_wfs(X,phi,xs,src,irs,conf)
 %       src     - source type: 'pw' - plane wave
 %                              'ps' - point source
 %                              'fs' - focused source
-%       irs     - IR data set for the second sources
+%       irs     - IR data set for the secondary sources
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -20,7 +20,7 @@ function brs = ssr_brs_wfs(X,phi,xs,src,irs,conf)
 %
 %   SSR_BRS_WFS(X,phi,xs,src,irs,conf) prepares a BRS set for a virtual source
 %   at xs for WFS and the given listener position. One way to use this BRS set
-%   is using the SoundScapeRenderer (SSR), see http://spatialaudio.net/ssr/
+%   is using the SoundScapeRenderer (SSR), see http://spatialaudio.net/ssr/
 %
 %   See also: ir_generic, ir_wfs, driving_function_imp_wfs
 
@@ -67,6 +67,8 @@ isargstruct(conf);
 %% ===== Computation =====================================================
 % Secondary sources
 x0 = secondary_source_positions(conf);
+x0 = secondary_source_selection(x0,xs,src);
+x0 = secondary_source_tapering(x0,conf);
 % Calculate driving function
 d = driving_function_imp_wfs(x0,xs,src,conf);
 % Calculate brs set

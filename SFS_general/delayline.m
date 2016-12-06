@@ -86,11 +86,6 @@ else
     [samples,channels] = size(sig);
     reshaped = false;
 end
-% --- Expand dt and weight ---
-% If only single valued time delay and weight is given, create vectors
-if channels>1 && length(dt)==1, dt=repmat(dt,[1 channels]); end
-if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
-
 
 %% ===== Resampling ======================================================
 % The resampling is applied independently from the actual fractional/integer
@@ -110,21 +105,32 @@ switch delay.resampling
     case 'pm'
         % === Parks-McClellan linear phase FIR filter ===
         rfactor = delay.resamplingfactor;
-        delay_offset = delay.resamplingorder / 2;
-        a = [1 1 0 0];
+        delay_offset = delay.resamplingorder*rfactor / 2;
+        A = [1 1 0 0];
         f = [0.0 0.9/rfactor 1/rfactor 1.0];
-        b = firpm(delay.resamplingorder,f,a);
+        rfilt = rfactor*firpm(delay.resamplingorder*rfactor,f,A);
 
         sig = reshape(sig,1,channels*samples);
         sig = [sig; zeros(rfactor-1,channels*samples)];
         sig = reshape(sig,rfactor*samples,channels);
-        
-        sig = filter(b,1,sig,[],1);
+
+        sig = filter(rfilt,1,sig,[],1);
     otherwise
         error('%s: "%s": unknown resampling method',upper(mfilename), ...
             delay.resampling);
 end
 
+%% ===== Expansion of signals, delays or weights =========================
+% --- Expand channels
+if channels==1
+  channels = max(length(dt),length(weight));
+  sig=repmat(sig,[1 channels]);
+end
+
+% --- Expand dt and weight ---
+% If only single valued time delay and weight is given, create vectors
+if channels>1 && length(dt)==1, dt=repmat(dt,[1 channels]); end
+if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
 
 %% ===== Conversion to integer delay =====================================
 dt = rfactor.*dt;  % resampled delays
@@ -132,7 +138,11 @@ samples = rfactor.*samples;  % length of resampled signals
 switch delay.filter
     case 'integer'
         % === Integer delays ===
-        idt = ceil(dt);  % round up to next integer delay
+        idt = round(dt);  % round to nearest integer delay
+        delay_offset = delay_offset + 0;
+    case 'zoh'
+        % === Zero-order hold ===
+        idt = ceil(dt);  % round to next larger integer delay
         delay_offset = delay_offset + 0;
     case 'lagrange'
         % === Lagrange polynomial interpolator ===
@@ -144,7 +154,7 @@ switch delay.filter
         fdt = dt - idt;  % fractional part of delays
         b = lagrange_filter(delay.filterorder,fdt);
         a = ones(1,channels);
-        delay_offset = delay_offset + delay.filterorder / 2;
+        delay_offset = delay_offset + floor(delay.filterorder / 2);
     case 'thiran'
         % === Thiran's allpass filter for maximally flat group delay ===
         idt = round(dt);  % integer part of delays
@@ -160,7 +170,7 @@ switch delay.filter
             b(:,ii) = general_least_squares(delay.filterorder+1,fdt(ii),0.90);
         end
         a = ones(1,channels);
-        delay_offset = delay_offset + delay.filterorder / 2;
+        delay_offset = delay_offset + floor(delay.filterorder / 2);
     case 'farrow'
         % === Farrow-structure ===
         % Based on the assumption, that each coefficient h(n) of the fractional
@@ -184,7 +194,7 @@ switch delay.filter
         % The above representation shows that the convolution of the input 
         % signal x can be performed by first convolving c_m and x and 
         % incorporating the delay d afterwards.
-        
+        %
         % number of parallel filters, i.e. order of polynomial + 1
         % Nfilter = delay.filternumber;
         to_be_implemented(mfilename);
@@ -222,5 +232,6 @@ end
 % --- Undo reshape ---
 % [N M*C] => [M C N]
 if reshaped
-    sig = reshape(sig',[M C size(sig,1)]);
+    % C might have changed due to replication of single-channel input
+    sig = reshape(sig', M, [], size(sig,1));
 end

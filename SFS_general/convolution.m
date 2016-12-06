@@ -16,7 +16,7 @@ function z = convolution(x,y)
 %   only real signals to speed up the calculation. The length of z is
 %   length(x)+length(y)-1.
 %
-%   See also: fft_real, ifft_real, fft, ifft
+%   See also: fft, ifft
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -54,27 +54,22 @@ nargmax = 2;
 narginchk(nargmin,nargmax);
 isargmatrix(x,y);
 % Ensure column vectors
-if ~all(size(x)>1), x=column_vector(x); end
-if ~all(size(y)>1), y=column_vector(y); end
+if ~all(size(x)>1), x=x(:); end
+if ~all(size(y)>1), y=y(:); end
 % If the inputs are two matrices, check if the number of signals is the same
-if all(size(x)>1) && all(size(y)>1)
-    if size(x,2)~=size(y,2)
-        error(['%s: Two input matrices must have the same number of signals '...
-            '(columns).'],upper(mfilename));
-    end
-% If the inputs are a matrix and a vector, repmat the vector
-elseif all(size(x)>1)
-    y = repmat(y,1,size(x,2));
-elseif all(size(y)>1)
-    x = repmat(x,1,size(y,2));
+if size(x,2)>1 && size(y,2)>1 && size(x,2)~=size(y,2)
+  error(['%s: Two input matrices must have the same number of signals '...
+      '(columns).'],upper(mfilename));
 end
 
 %% ===== Computation =====================================================
 % Length of output signal
 N = size(x,1)+size(y,1)-1;
-% Convolve the signals in frequency domain
+% FFT + multiplication
+Z = bsxfun(@times,fft(x,N,1),fft(y,N,1));  % automatically adjusts sizes
+% IFFT
 if isreal(x) && isreal(y)
-    z = ifft_real(fft_real(fix_length(x,N)).*fft_real(fix_length(y,N)),N);
+    z = real(ifft(Z,[],1));
 else
-    z = ifft(fft(fix_length(x,N)).*fft(fix_length(y,N)));
+    z = ifft(Z,[],1);
 end

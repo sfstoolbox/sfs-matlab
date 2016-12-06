@@ -1,18 +1,29 @@
-function y = fft_real(x)
-%FFT_REAL computes an fft for real value signals
+function [x0_indeces,weights] = findconvexcone(x0,xs)
+%FINDCONVEXCONE finds three points from x0 with xs in their conic span
 %
-%   Usage: y = fft_real(x)
+%   Usage: [x0_indeces,weights] = findconvexcone(x0,xs);
 %
 %   Input parameters:
-%       x       - matrix with signals as columns
+%       x0          - point cloud in R^3 / m [nx3]
+%       xs          - point in R^3 / m [1x3]
 %
-%   Output parameters:
-%       y       - matrix with signals as columns
+%   output parameters:
+%       x0_indeces  - row indeces of 3 points in x0 [3x1]
+%       weights     - weights [3x1]
 %
-%   FFT_REAL(x) computes the fft of the real signals in x. The signals have
-%   to be the columns of x.
+%   FINDCONVEXCONE(x0,xs) returns three row indeces into x0 and non-negative
+%   weights [w1;w2;w3] such that xs lies in the convex cone with minimum solid
+%   angle.
+%       xs = w1*x1 + w2*x2 + w3*x3 ,
+%       where [x1; x2; x3] = x0(x0_indeces,:) .
 %
-%   See also: ifft_real, convolution
+%   (If all x0 and xs have unit norm this is VBAP.)
+%
+%   This may fail when
+%     a) x0 is not convex, or
+%     b) The convex hull of x0 does not contain the origin.
+%
+%   See also: findnearestneighbor
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -45,16 +56,40 @@ function y = fft_real(x)
 
 
 %% ===== Checking of input parameters ====================================
-nargmin = 1;
-nargmax = 1;
+nargmin = 2;
+nargmax = 2;
 narginchk(nargmin,nargmax);
-isargmatrix(x);
 
 
 %% ===== Computation =====================================================
-N = size(x,1);
-N2=floor(N/2)+1;
 
-% Force IFFT along dimension 1
-y = fft(x,N,1);
-y = y(1:N2,:);
+% Delaunay triangulation of convex hull
+triangles = convhulln(x0);
+
+% Find x0 with smallest angle to xs
+xs_normed = repmat(xs./norm(xs,2),size(x0,1),1);
+x0_normed = x0./repmat(vector_norm(x0,2),[1,3]);
+[~,most_aligned_point] = max(vector_product(x0_normed,xs_normed,2));
+
+% The triangles at "most aligned point" are the most likely candidates,
+% put them at the beginning of the list
+mask = logical(sum(triangles==most_aligned_point,2));
+triangles = [triangles(mask,:); triangles(~mask,:) ];
+
+% One of the triangles span a convex cone that contains xs
+for n = 1:size(triangles,1);
+    A = x0(triangles(n,:),:);
+    weights = xs/A;
+    if all(weights >= 0) % non-negative weights == conic combination
+        x0_indeces = triangles(n,:);
+        break;
+    end
+end
+if any(weights < 0)
+     error('%s: Could not find a three points in x0 with xs in their', ...
+        'conical span. Make sure the convex hull of x0 contains the origin.', ...
+        upper(mfilename));
+end
+
+[weights,order] = sort(weights.','descend');
+x0_indeces = x0_indeces(order).';

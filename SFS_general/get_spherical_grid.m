@@ -18,10 +18,11 @@ function [points,weights] = get_spherical_grid(number,conf)
 %   desired file is not available on the hard disk, the function tries to
 %   download it directly from github.
 %   For conf.secondary_sources.grid='gauss' the grid positions are calculated
-%   after Ahrens (2012), p. 121
+%   after Ahrens (2012), p. 121 (see also: Rafaely (2015), p. 64)
 %
 %   References:
 %       J. Ahrens (2012) - "Analytic Methods of Sound Field Synthesis", Springer.
+%       B. Rafaely (2015) - "Fundamentals of Spherical Array Processing", Springer.
 %
 %   See also: secondary_source_positions,
 %       weights_for_points_on_a_sphere_rectangle
@@ -126,8 +127,8 @@ elseif strcmp('gauss',spherical_grid)
     r = ones(size(phi));
     % Convert to cartesian
     [points(:,1) points(:,2) points(:,3)] = sph2cart(phi(:),theta(:),r(:));
-    % Incorporating integration weights
-    weights = weights(:).*cos(theta(:));
+    % Normalize integration weights
+    weights = weights(:)*pi/number;
 else
     error(['%s: the given spherical grid is not available, have a look at ' ...
         'http://github.com/sfstoolbox/data for avialable grids.'], ...

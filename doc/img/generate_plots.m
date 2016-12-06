@@ -126,13 +126,14 @@ conf.dimension = '2.5D';
 conf.plot.useplot = true;
 conf.plot.normalisation = 'center';
 % [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
-[P,x,y,z,x0] = sound_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf);
+[P,~,~,~,x0] = sound_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf);
 print_png('sound_field_wfs_25d.png');
 % plotting WFS with all secondary sources
 x0_all = secondary_source_positions(conf);
-[~,idx] = secondary_source_selection(x0,[0 2.5 0],'ps');
+[~,idx] = secondary_source_selection(x0_all,[0 2.5 0],'ps');
 x0_all(:,7) = zeros(1,size(x0_all,1));
 x0_all(idx,7) = x0(:,7);
+conf.plot.realloudspeakers = true;
 plot_sound_field(P,[-2 2],[-2 2],0,x0_all,conf);
 print_png('sound_field_wfs_25d_with_all_sources.png');
 % simulating 2.5D NFCHOA with circular array and a plane wave

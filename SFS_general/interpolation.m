@@ -1,5 +1,5 @@
 function B = interpolation(A,X,x)
-%INTPOLATION interpolates the given data A(X) at the point x
+%INTERPOLATION interpolates the given data A(X) at the point x
 %
 %   Usage: B = interpolation(A,X,x)
 %

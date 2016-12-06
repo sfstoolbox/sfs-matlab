@@ -1,10 +1,17 @@
-function test_binaural_synthesis()
+function status = test_binaural_synthesis(modus)
 %TEST_BINAURAL_SYNTHESIS tests the correctness of the binaural synthesis
 %functions
 %
-%   Usage: test_binaural_synthesis()
+%   Usage: status = test_binaural_synthesis(modus)
 %
-%   TEST_BINAURAL_SYNTHESIS() tests the ir_wfs function for different
+%   Input parameters:
+%       modus   - 0: numerical
+%                 1: visual (not available)
+%
+%   Output parameters:
+%       status  - true or false
+
+%   TEST_BINAURAL_SYNTHESIS(modus) tests the ir_wfs function for different
 %   loudspeaker arrays and source models.
 
 %*****************************************************************************
@@ -37,10 +44,16 @@ function test_binaural_synthesis()
 %*****************************************************************************
 
 
-%% ===== Checking of input  parameters ===================================
-nargmin = 0;
-nargmax = 0;
+status = false;
+
+
+%% ===== Checking of input parameters ====================================
+nargmin = 1;
+nargmax = 1;
 narginchk(nargmin,nargmax);
+if modus
+    warning('%s: visual modus not available.',upper(mfilename));
+end
 
 
 %% ===== Settings ========================================================
@@ -50,10 +63,9 @@ conf.fs = 44100;
 conf.secondary_sources.x0 = [];
 conf.secondary_sources.center = [0 0 0];
 conf.secondary_sources.size = 3;
-conf.ir.useoriglength = false;
 conf.ir.usehcomp = false;
 conf.ir.useinterpolation = true;
-conf.N = 2048;
+conf.N = 4096;
 conf.dimension = '2.5D';
 conf.driving_functions = 'default';
 conf.usetapwin = true;
@@ -69,7 +81,7 @@ conf.showprogress = false;
 
 
 %% ===== Main ============================================================
-% check if HRTF data set is available, download otherwise
+% Check if HRTF data set is available, download otherwise
 basepath = get_sfs_path();
 hrtf_file = [basepath '/data/HRTFs/QU_KEMAR_anechoic_3m.sofa'];
 if ~exist(hrtf_file,'file')
@@ -78,7 +90,7 @@ if ~exist(hrtf_file,'file')
            'HRTFs/QU_KEMAR_anechoic_3m.sofa?raw=true'];
     download_file(url,hrtf_file);
 end
-% load HRTF data set
+% Load HRTF data set
 hrtf = SOFAload(hrtf_file);
 
 
@@ -139,3 +151,6 @@ ir_wfs(X,phi,xs,src,hrtf,conf);
 src = 'fs';
 xs = [0.5 0.5 0 -1 -1 0];
 ir_wfs(X,phi,xs,src,hrtf,conf);
+
+
+status = true;

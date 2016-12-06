@@ -87,10 +87,12 @@ if strcmp('2D',dimension)
 
     % Ensure 2D
     xs = xs(:,1:2);
-    if strcmp('default',driving_functions)
+
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2D focused source.'],upper(mfilename),driving_functions);
     end
@@ -100,8 +102,8 @@ elseif strcmp('2.5D',dimension)
 
     % === 2.5-Dimensional ================================================
 
-    % Reference point
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         % D_25D(kx,w) = e^(i kx xs) ...
         %                                   ____________
@@ -113,7 +115,7 @@ elseif strcmp('2.5D',dimension)
         %                     \ ----------_-_-_-_-_-_---------,       |kx|>|w/c|
         %                          K0( \|kx^2-(w/c)^2 yref )
         %
-        % see Spors and Ahrens (2010), eq.(7)
+        % See Spors and Ahrens (2010), eq.(7)
         %
         D(idxpr) =  exp(1i*kx(idxpr)*xs(1)) .* ...
             besselh(0,2,sqrt( (omega/c)^2 - kx(idxpr).^2 )*abs(xref(2)-xs(2))) ./ ...
@@ -124,7 +126,7 @@ elseif strcmp('2.5D',dimension)
                 besselk(0,sqrt(kx(idxev).^2 - (omega/c).^2)*abs(xref(2)-x0(2)));
         end
 
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 2.5D focused source.'],upper(mfilename),driving_functions);
     end
@@ -134,10 +136,11 @@ elseif strcmp('3D',dimension)
 
     % === 3-Dimensional ==================================================
 
-    if strcmp('default',driving_functions)
+    switch driving_functions
+    case 'default'
         % --- SFS Toolbox ------------------------------------------------
         to_be_implemented;
-    else
+    otherwise
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a 3D focused source.'],upper(mfilename),driving_functions);
     end

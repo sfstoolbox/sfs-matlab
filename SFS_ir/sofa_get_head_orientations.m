@@ -5,12 +5,12 @@ function [phi,theta] = sofa_get_head_orientations(sofa,idx)
 %
 %   Input parameters:
 %       sofa    - impulse response data set (SOFA struct/file)
-%       idx     - index of secondary sources that should be returned.
-%                 If no index is specified all sources will be returned.
+%       idx     - index of measurement for which head orientation should be
+%                 returned (default: return all head orientations)
 %
 %   Output parameters:
-%       phi     - head orientations in the horizontal plane
-%       theta   - head orientations in the median plane
+%       phi     - head orientations in the horizontal plane / rad
+%       theta   - head orientations in the median plane / rad
 %
 %   SOFA_GET_HEAD_ORIENTATIONS(sofa,idx) returns head orientation [phi,theta] as
 %   defined in the given SOFA file or struct, specified by idx. If no idx is

@@ -88,14 +88,15 @@ x0 = secondary_source_tapering(x0,conf);
 % Generate time axis (0-500 samples)
 t = (0:500)';
 s = zeros(1,length(t));
-d = driving_function_imp_wfs(x0,xs,src,conf);
+% t0 is a time offset (delay) added by the driving function
+[d,~,~,t0] = driving_function_imp_wfs(x0,xs,src,conf);
 % If desired a cosine shaped pulse instead of the default dirac pulse could be
 % used
 % d = convolution(d,hann_window(5,5,10));
 for ii = 1:length(t)
     if showprogress, progress_bar(ii,length(t)); end
     % calculate sound field at the listener position
-    p = sound_field_imp(X(1),X(2),X(3),x0,greens_function,d,t(ii),conf);
+    p = sound_field_imp(X(1),X(2),X(3),x0,greens_function,d,t(ii)+t0*fs,conf);
     s(ii) = real(p);
 end
 

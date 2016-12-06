@@ -1,22 +1,23 @@
-function [ir,x0] = ir_wfs(X,phi,xs,src,sofa,conf)
+function [ir,x0,delay] = ir_wfs(X,phi,xs,src,sofa,conf)
 %IR_WFS generates a binaural simulation of WFS
 %
-%   Usage: [ir,x0] = ir_wfs(X,phi,xs,src,sofa,conf)
+%   Usage: [ir,x0,delay] = ir_wfs(X,phi,xs,src,sofa,conf)
 %
 %   Input parameters:
-%       X       - listener position / m
-%       phi     - listener direction [head orientation] / rad
-%                 0 means the head is oriented towards the x-axis.
-%       xs      - virtual source position / m
-%       src     - source type: 'pw' -plane wave
-%                              'ps' - point source
-%                              'fs' - focused source
-%       sofa    - impulse response data set for the secondary sources
-%       conf    - configuration struct (see SFS_config)
+%       X        - listener position / m
+%       phi      - listener direction [head orientation] / rad
+%                  0 means the head is oriented towards the x-axis.
+%       xs       - virtual source position / m
+%       src      - source type: 'pw' -plane wave
+%                               'ps' - point source
+%                               'fs' - focused source
+%       sofa     - impulse response data set for the secondary sources
+%       conf     - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       ir      - impulse response for the desired WFS array (nx2 matrix)
-%       x0      - secondary sources / m
+%       ir       - impulse response for the desired WFS array (nx2 matrix)
+%       x0       - secondary sources / m
+%       delay    - delay added by driving function / s
 %
 %   IR_WFS(X,phi,xs,src,sofa,conf) calculates a binaural room impulse
 %   response for a virtual source at xs for a virtual WFS array and a
@@ -67,12 +68,16 @@ if conf.debug
 end
 
 
+%% ===== Configuration ===================================================
+fs = conf.fs;
+
+
 %% ===== Computation =====================================================
 % Get secondary sources
 x0 = secondary_source_positions(conf);
 x0 = secondary_source_selection(x0,xs,src);
 x0 = secondary_source_tapering(x0,conf);
 % Get driving signals
-d = driving_function_imp_wfs(x0,xs,src,conf);
+[d,~,~,delay] = driving_function_imp_wfs(x0,xs,src,conf);
 % Generate the impulse response for WFS
 ir = ir_generic(X,phi,x0,d,sofa,conf);

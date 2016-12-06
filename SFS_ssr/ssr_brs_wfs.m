@@ -1,8 +1,8 @@
-function brs = ssr_brs_wfs(X,phi,xs,src,irs,conf)
+function [brs,delay] = ssr_brs_wfs(X,phi,xs,src,irs,conf)
 %SSR_BRS_WFS generates a binaural room scanning (BRS) set for use with the
 %SoundScape Renderer
 %
-%   Usage: brs = ssr_brs_wfs(X,phi,xs,src,irs,conf)
+%   Usage: [brs,delay] = ssr_brs_wfs(X,phi,xs,src,irs,conf)
 %
 %   Input parameters:
 %       X       - listener position / m
@@ -17,6 +17,7 @@ function brs = ssr_brs_wfs(X,phi,xs,src,irs,conf)
 %   Output parameters:
 %       brs     - conf.N x 2*nangles matrix containing all impulse responses (2
 %                 channels) for every angles of the BRS set
+%       delay   - delay added by driving function / s
 %
 %   SSR_BRS_WFS(X,phi,xs,src,irs,conf) prepares a BRS set for a virtual source
 %   at xs for WFS and the given listener position. One way to use this BRS set
@@ -68,6 +69,6 @@ isargstruct(conf);
 % Secondary sources
 x0 = secondary_source_positions(conf);
 % Calculate driving function
-d = driving_function_imp_wfs(x0,xs,src,conf);
+[d,~,~,delay] = driving_function_imp_wfs(x0,xs,src,conf);
 % Calculate brs set
 brs = ssr_brs(X,phi,x0,d,irs,conf);

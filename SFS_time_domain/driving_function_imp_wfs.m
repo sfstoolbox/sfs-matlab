@@ -72,7 +72,7 @@ isargstruct(conf);
 fs = conf.fs;
 N = conf.N;
 c = conf.c;
-t0 = conf.wfs.t0;
+t0 = conf.t0;
 
 
 %% ===== Computation =====================================================

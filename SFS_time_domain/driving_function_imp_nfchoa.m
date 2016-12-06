@@ -1,7 +1,7 @@
-function [d,dm] = driving_function_imp_nfchoa(x0,xs,src,conf)
+function [d,dm,delay_offset] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %DRIVING_FUNCTION_IMP_NFCHOA calculates the NFC-HOA driving function
 %
-%   Usage: [d] = driving_function_imp_nfchoa(x0,xs,src,conf)
+%   Usage: [d,dm,delay_offset] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %
 %   Input parameters:
 %       x0      - position  and direction of secondary sources / m
@@ -13,8 +13,9 @@ function [d,dm] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       d  - matrix of driving signals
-%       dm - matrix of driving funtion in spherical/circular domain
+%       d            - matrix of driving signals
+%       dm           - matrix of driving funtion in spherical/circular domain
+%       delay_offset - delay add by driving function / s
 %
 %   DRIVING_FUNCTION_IMP_NFCHOA(x0,xs,src,conf) returns the
 %   driving function of NFC-HOA for the given source type and position,
@@ -66,6 +67,8 @@ isargstruct(conf);
 nls = size(x0,1);
 N = conf.N;
 X0 = conf.secondary_sources.center;
+t0 = conf.t0;
+c = conf.c;
 
 %% ===== Computation =====================================================
 % Generate stimulus pusle
@@ -109,6 +112,18 @@ for n=2:order+1
     [b,a] = bilinear_transform(sos,conf);
     for ii=1:length(b)
         dm(n,:) = filter(b{ii},a{ii},dm(n,:));
+    end
+end
+
+% Delay_offset
+if strcmp('system',t0)
+    delay_offset = 0;
+elseif strcmp('source',t0)
+    switch src
+    case 'pw'
+        delay_offset = R/c;
+    case 'ps'
+        delay_offset = (R-r_src)/c;
     end
 end
 

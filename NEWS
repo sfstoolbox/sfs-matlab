@@ -1,7 +1,10 @@
 2.3.0 ()
-    - fix Gauss-Legendre quadrature weights
-    - fix default 2.5D WFS driving function in time domain
+    - rename conf.wfs.t0 to conf.t0
+    - add delay_offset as return value to NFC-HOA time domain driving funtions
     - correct absolute amplitude values of WFS in time domain
+    - fix default 2.5D WFS driving function in time domain
+    - fix missing secondary source selection in ssr_brs_wfs()
+    - fix Gauss-Legendre quadrature weights
 
 2.2.1 (22. August 2016)
     - fix delayoffset for FIR fractional delay filter

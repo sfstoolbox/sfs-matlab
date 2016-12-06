@@ -86,7 +86,7 @@ H = ones(1,length(f));
 %   |  flow
 %   -------------------------> f
 %
-% Pre-equilization filter from flow to fhigh
+% Pre-equalization filter from flow to fhigh
 if strcmp('2.5D',dimension)
     %           _______
     %  H(f) = \|f/fhigh, for flow<=f<=fhigh

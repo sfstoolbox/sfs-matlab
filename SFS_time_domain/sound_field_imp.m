@@ -133,8 +133,8 @@ d = d(end:-1:1,:);
 % Add additional zeros to the driving signal to ensure an amplitude of 0 in the
 % whole listening area before and after the real driving signal.
 % First get the maximum distance of the listening area and convert it into time
-% samples, than compare it to the size of the secondary sources. If the size is
-% biger use this for padding zeros.
+% samples, then compare it to the size of the secondary sources. If the size is
+% bigger use this for padding zeros.
 max_distance = norm( [max(xx(:)) max(yy(:)) max(zz(:))] - ...
     [min(xx(:)) min(yy(:)) min(zz(:))] );
 max_distance_in_samples = round(max(max_distance/c*fs,2*L/c*fs));
@@ -151,7 +151,7 @@ d = [d; zeros(max_distance_in_samples,size(d,2))];
 % Initialize empty sound field (dependent on the axes we want)
 p = zeros(size(x1));
 
-% Apply bandbass filter
+% Apply bandpass filter
 if usebandpass
     d = bandpass(d,bandpassflow,bandpassfhigh,conf);
 end
@@ -169,7 +169,7 @@ for ii = 1:size(x0,1)
 
     % Interpolate the driving function w.r.t. the propagation delay from
     % the secondary sources to a field point. The t returned from the Green's
-    % function already inlcudes the desired time shift of the driving signal.
+    % function already includes the desired time shift of the driving signal.
     % NOTE: the interpolation is required to account for the fractional
     % delay times from the loudspeakers to the field points
     ds = interp1(1:length(d(:,ii)),d(:,ii),t_delta,'spline');

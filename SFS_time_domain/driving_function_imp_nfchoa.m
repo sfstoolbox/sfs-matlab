@@ -13,9 +13,9 @@ function [d,dm,delay_offset] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       d  - matrix of driving signals
-%       dm - matrix of driving funtion in spherical/circular domain
-%       delay_offset - additional added delay, so you can correct it
+%       d            - matrix of driving signals
+%       dm           - matrix of driving funtion in spherical/circular domain
+%       delay_offset - delay add by driving function / s
 %
 %   DRIVING_FUNCTION_IMP_NFCHOA(x0,xs,src,conf) returns the
 %   driving function of NFC-HOA for the given source type and position,
@@ -115,14 +115,14 @@ for n=2:order+1
     end
 end
 
-% delay_offset
+% Delay_offset
 if strcmp('system',t0)
     delay_offset = 0;
 elseif strcmp('source',t0)
     switch src
-      case 'pw'
+    case 'pw'
         delay_offset = R/c;
-      case 'ps'
+    case 'ps'
         delay_offset = (R-r_src)/c;
     end
 end

@@ -67,7 +67,7 @@ isargstruct(conf);
 nls = size(x0,1);
 N = conf.N;
 X0 = conf.secondary_sources.center;
-t0 = conf.wfs.t0;
+t0 = conf.t0;
 c = conf.c;
 
 %% ===== Computation =====================================================

@@ -178,6 +178,22 @@ conf.xref = [0 0 0]; % / m
 conf.usetapwin = true; % boolean
 % Size of the tapering window
 conf.tapwinlen = 0.3; % / percent of array length, 0..1
+%
+% === Time Domain Implementation ===
+% Adjust the starting time in time domain driving functions.
+% This can be set to
+%   'system'   - the first secondary source will be active at t=0
+%   'source'   - the virtual source will be active at t=0
+% Setting it to 'system' is most convenient when simulating single sources as
+% you will always see activity in the sound field for t>0. Setting it to
+% 'source' helps you to simulate different sources as you can time align them
+% easily. Note, that for virtual sources outside of the array this can mean you
+% will see no activity inside the listening area until the time has passed, that
+% the virtual source needs from its position until the nearest secondary source.
+% Also note, using 'source' for systems with unbounded listening areas -- e.g.
+% linear arrays -- focussed virtual sources may not be placed arbitrarily
+% far from the secondary sources.
+conf.t0 = 'system'; % string
 
 
 %% ===== Sound Field Simulations =========================================
@@ -248,22 +264,6 @@ conf.wfs.hpreBandwidth_in_Oct = 2; % / octaves
 conf.wfs.hpreIIRorder = 4; % integer
 % desired FIR filter order, results in N+1 taps
 conf.wfs.hpreFIRorder = 128; % even integer
-%
-% === Time Domain Implementation ===
-% Adjust the starting time in WFS-time domain driving functions.
-% This can be set to
-%   'system'   - the first secondary source will be active at t=0
-%   'source'   - the virtual source will be active at t=0
-% Setting it to 'system' is most convenient when simulating single sources as
-% you will always see activity in the sound field for t>0. Setting it to
-% 'source' helps you to simulate different sources as you can time align them
-% easily. Note, that for virtual sources outside of the array this can mean you
-% will see no activity inside the listening area until the time has passed, that
-% the virtual source needs from its position until the nearest secondary source.
-% (Also note, using 'source' for systems with unbounded listening areas, (e.g.
-% linear arrays), focussed virtual sources may not be placed arbitrarily
-% far from the secondary sources.)
-conf.wfs.t0 = 'system'; % string
 
 
 %% ===== Spectral Division Method (SDM) ==================================

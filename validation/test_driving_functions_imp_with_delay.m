@@ -1,6 +1,6 @@
 function boolean = test_driving_functions_imp_with_delay(modus)
 %TEST_DRIVING_FUNCTIONS_IMP_WITH_DELAY tests the correctness of the time-domain
-%driving functions, in the case of conf.wfs.t0 = 'source'
+%driving functions, in the case of conf.t0 = 'source'
 %
 %   Usage: boolean = test_driving_functions_imp_with_delay(modus)
 %
@@ -13,7 +13,7 @@ function boolean = test_driving_functions_imp_with_delay(modus)
 %
 %   TEST_DRIVING_FUNCTIONS_IMP_WITH_DELAY(MODUS) checks if the functions,
 %   that calculates the WFS driving functions in time-domain work correctly
-%   for the setting conf.wfs.t0 = 'source'.
+%   for the setting conf.t0 = 'source'.
 %   Therefore different sound fields are simulated.
 
 %*****************************************************************************
@@ -56,7 +56,7 @@ narginchk(nargmin,nargmax);
 
 %% ===== Configuration ===================================================
 conf = SFS_config;
-conf.wfs.t0 = 'source';
+conf.t0 = 'source';
 conf.secondary_sources.size = 3;
 conf.plot.useplot = false;
 conf.plot.usenormalisation = true;

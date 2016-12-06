@@ -1,6 +1,6 @@
 function status = test_driving_functions_imp_with_delay(modus)
 %TEST_DRIVING_FUNCTIONS_IMP_WITH_DELAY tests the correctness of the time-domain
-%driving functions, in the case of conf.wfs.t0 = 'source'
+%driving functions, in the case of conf.t0 = 'source'
 %
 %   Usage: status = test_driving_functions_imp_with_delay(modus)
 %
@@ -13,7 +13,7 @@ function status = test_driving_functions_imp_with_delay(modus)
 %
 %   TEST_DRIVING_FUNCTIONS_IMP_WITH_DELAY(MODUS) checks if the functions,
 %   that calculates the WFS driving functions in time-domain work correctly
-%   for the setting conf.wfs.t0 = 'source'.
+%   for the setting conf.t0 = 'source'.
 %   Therefore different sound fields are simulated.
 
 %*****************************************************************************
@@ -58,7 +58,7 @@ narginchk(nargmin,nargmax);
 
 %% ===== Configuration ===================================================
 conf = SFS_config;
-conf.wfs.t0 = 'source';
+conf.t0 = 'source';
 conf.secondary_sources.size = 3;
 conf.plot.useplot = false;
 conf.plot.usenormalisation = true;
@@ -87,8 +87,11 @@ scenarios = { ...
     'WFS', '2.5D', 'box',      'ps', [ 2.0  2.0  0.0]; ...
     'WFS', '2.5D', 'box',      'fs', [ 0.5  0.5  0.0 -1.0  -1.0  0.0]; ...
     'WFS', '3D',   'sphere',   'ps', [ 0.0  2.5  0.0]; ...
+    'WFS', '3D',   'sphere',   'ls', [ 0.0  2.5  0.0  0.0  1.0  1.0]; ...
     'WFS', '3D',   'sphere',   'pw', [ 0.0 -1.0  0.0]; ...
     'WFS', '3D',   'sphere',   'fs', [ 0.0  0.5  0.0  0.0 -1.0  0.0]; ...
+    'HOA', '2.5D', 'circular', 'pw', [ 0.5  0.5  0.0]; ...
+    'HOA', '2.5D', 'circular', 'ps', [ 0.0  2.5  0.0]; ...
 };
 
 % Start testing
@@ -140,22 +143,40 @@ for ii=1:size(scenarios)
     end
 
     % ===== WFS ==========================================================
-    % spatio-temporal impulse response
-    try
-        [p,x,y,z,x0] = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf);
-        if modus
-            conf.plot.normalisation = 'max';
-            plot_sound_field(p,X,Y,Z,x0,conf);
-            title_str = sprintf('WFS %s %s array, %s, impulse response', ...
-                conf.dimension,conf.secondary_sources.geometry,src);
-            title(title_str);
+    if strcmp('WFS',scenarios{ii,1})
+        % spatio-temporal impulse response
+        try
+            [p,x,y,z,x0] = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf);
+            if modus
+                conf.plot.normalisation = 'max';
+                plot_sound_field(p,X,Y,Z,x0,conf);
+                title_str = sprintf('WFS %s %s array, %s, impulse response', ...
+                    conf.dimension,conf.secondary_sources.geometry,src);
+                title(title_str);
+            end
+        catch
+            warning('%s: WFS impulse response %s array %s %s gives the following error message.', ...
+                upper(mfilename),conf.secondary_sources.geometry,conf.dimension,src);
+            lasterr
         end
-    catch
-        warning('%s: WFS impulse response %s array %s %s gives the following error message.', ...
-            upper(mfilename),conf.secondary_sources.geometry,conf.dimension,src);
-        lasterr
+    % ===== NFC-HOA ======================================================
+    elseif strcmp('HOA',scenarios{ii,1})
+        % spatio-temporal impulse response
+        try
+            [p,x,y,z,x0] = sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf);
+            if modus
+                conf.plot.normalisation = 'max';
+                plot_sound_field(p,X,Y,Z,x0,conf);
+                title_str = sprintf('NFC-HOA %s %s array, %s, impulse response', ...
+                    conf.dimension,conf.secondary_sources.geometry,src);
+                title(title_str);
+            end
+        catch
+            warning('%s: NFC-HOA impulse response %s array %s %s gives the following error message.', ...
+                upper(mfilename),conf.secondary_sources.geometry,conf.dimension,src);
+            lasterr
+        end
     end
-
 end
 
 

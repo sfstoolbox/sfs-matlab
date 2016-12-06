@@ -213,7 +213,26 @@ sound_field_imp_nfchoa(X,Y,0,[0 2 0],'ps',200,conf);
 print_png('sound_field_imp_nfchoa_25d_dB_custom_grid.png');
 
 
-%% ===== impulse response of the system ==================================
+%% ===== impulse response of a spatial audio system ======================
+conf = SFS_config;
+conf.t0 = 'source';
+X = [0 0 0];
+phi = 0;
+xs = [2.5 0 0];
+src = 'ps';
+hrtf = dummy_irs(conf);
+[ir,~,delay] = ir_wfs(X,phi,xs,src,hrtf,conf);
+figure;
+figsize(540,404,'px');
+plot(ir(1:1000,1),'-g');
+hold on;
+offset = round(delay*conf.fs);
+plot(ir(1+offset:1000+offset,1),'-b');
+hold off;
+print_png('img/impulse_response_wfs_25d.png');
+
+
+%% ===== frequency response of a spatial audio system ====================
 conf = SFS_config;
 conf.ir.usehcomp = 0;
 conf.wfs.usehpre = 0;
@@ -232,7 +251,7 @@ set(gca,'XTick',[10 100 250 1000 5000 20000]);
 legend('w/o pre-filter','w pre-filter');
 xlabel('frequency / Hz');
 ylabel('magnitude / dB');
-print_png('impulse_response_wfs_25d.png');
+print_png('frequency_response_wfs_25d.png');
 % alternative variant
 conf = SFS_config;
 [a,f] = freq_response_wfs([0 0 0],[0 2.5 0],'ps',conf);
@@ -244,5 +263,5 @@ set(gca,'XTick',[10 100 250 1000 5000 20000]);
 legend('w pre-filter');
 xlabel('frequency / Hz');
 ylabel('magnitude / dB');
-print_png('impulse_response_wfs_25d_mono.png');
+print_png('frequency_response_wfs_25d_mono.png');
 

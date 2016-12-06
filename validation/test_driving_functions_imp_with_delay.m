@@ -85,8 +85,11 @@ scenarios = { ...
     'WFS', '2.5D', 'box',      'ps', [ 2.0  2.0  0.0]; ...
     'WFS', '2.5D', 'box',      'fs', [ 0.5  0.5  0.0 -1.0  -1.0  0.0]; ...
     'WFS', '3D',   'sphere',   'ps', [ 0.0  2.5  0.0]; ...
+    'WFS', '3D',   'sphere',   'ls', [ 0.0  2.5  0.0  0.0  1.0  1.0]; ...
     'WFS', '3D',   'sphere',   'pw', [ 0.0 -1.0  0.0]; ...
     'WFS', '3D',   'sphere',   'fs', [ 0.0  0.5  0.0  0.0 -1.0  0.0]; ...
+    'HOA', '2.5D', 'circular', 'pw', [ 0.5  0.5  0.0]; ...
+    'HOA', '2.5D', 'circular', 'ps', [ 0.0  2.5  0.0]; ...
 };
 
 % Start testing
@@ -138,20 +141,38 @@ for ii=1:size(scenarios)
     end
 
     % ===== WFS ==========================================================
-    % spatio-temporal impulse response
-    try
-        [p,x,y,z,x0] = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf);
-        if modus
-            conf.plot.normalisation = 'max';
-            plot_sound_field(p,X,Y,Z,x0,conf);
-            title_str = sprintf('WFS %s %s array, %s, impulse response', ...
-                conf.dimension,conf.secondary_sources.geometry,src);
-            title(title_str);
+    if strcmp('WFS',scenarios{ii,1})
+        % spatio-temporal impulse response
+        try
+            [p,x,y,z,x0] = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf);
+            if modus
+                conf.plot.normalisation = 'max';
+                plot_sound_field(p,X,Y,Z,x0,conf);
+                title_str = sprintf('WFS %s %s array, %s, impulse response', ...
+                    conf.dimension,conf.secondary_sources.geometry,src);
+                title(title_str);
+            end
+        catch
+            warning('%s: WFS impulse response %s array %s %s gives the following error message.', ...
+                upper(mfilename),conf.secondary_sources.geometry,conf.dimension,src);
+            lasterr
         end
-    catch
-        warning('%s: WFS impulse response %s array %s %s gives the following error message.', ...
-            upper(mfilename),conf.secondary_sources.geometry,conf.dimension,src);
-        lasterr
+    % ===== NFC-HOA ======================================================
+    elseif strcmp('HOA',scenarios{ii,1})
+        % spatio-temporal impulse response
+        try
+            [p,x,y,z,x0] = sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf);
+            if modus
+                conf.plot.normalisation = 'max';
+                plot_sound_field(p,X,Y,Z,x0,conf);
+                title_str = sprintf('NFC-HOA %s %s array, %s, impulse response', ...
+                    conf.dimension,conf.secondary_sources.geometry,src);
+                title(title_str);
+            end
+        catch
+            warning('%s: NFC-HOA impulse response %s array %s %s gives the following error message.', ...
+                upper(mfilename),conf.secondary_sources.geometry,conf.dimension,src);
+            lasterr
+        end
     end
-
 end

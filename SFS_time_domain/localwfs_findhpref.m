@@ -62,7 +62,7 @@ end
 
 
 %% ===== Configuration ==================================================
-conf.plot.useplot = false;    % disable plotting in easyfft
+conf.plot.useplot = false;    % disable plotting in spectrum_from_signal()
 conf.ir.usehcomp = false;
 conf.wfs.usehpre = false;     % no prefilter
 conf.localsfs.wfs = conf.wfs;
@@ -78,7 +78,7 @@ dimension = conf.dimension;          % dimensionality
 %% ===== Computation ====================================================
 % Compute impulse response/amplitude spectrum without prefilter
 ir = ir_localwfs(X,phi,xs,src,irs,conf);
-[H,~,f]=easyfft(ir(:,1),conf);
+[H,~,f] = spectrum_from_signal(ir(:,1),conf);
 
 H = H./H(1);  % normalize amplitude spectrum with H(f=0Hz)
 

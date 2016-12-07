@@ -158,8 +158,8 @@ the figure).
     conf.wfs.usehpre = true;
     conf.wfs.hprefhigh = aliasing_frequency(x0,conf);
     ir2 = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',hrtf,conf);
-    [a1,p,f] = easyfft(norm_signal(ir1(:,1)),conf);
-    a2 = easyfft(norm_signal(ir2(:,1)),conf);
+    [a1,p,f] = spectrum_from_signal(norm_signal(ir1(:,1)),conf);
+    a2 = spectrum_from_signal(norm_signal(ir2(:,1)),conf);
     figure;
     figsize(540,404,'px');
     semilogx(f,20*log10(a1),'-b',f,20*log10(a2),'-r');

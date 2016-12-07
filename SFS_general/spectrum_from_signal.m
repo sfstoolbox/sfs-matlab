@@ -1,24 +1,24 @@
-function varargout = easyfft(sig,conf)
-%EASYFFT calculates the FFT of a signal and returns the corresponding frequency
-%   axis
+function varargout = spectrum_from_signal(signal,conf)
+%SPECTRUM_FROM_SIGNAL returns single-sided amplitude and phase spectra of signal
 %
-%   Usage: [amplitude,phase,f] = easyfft(sig,conf)
+%   Usage: [amplitude,phase,f] = spectrum_from_signal(sig,conf)
 %
 %   Input parameters:
-%       sig         - one channel audio waveform
+%       signal      - one channel audio (time) signal
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       amplitude   - amplitude spectrum of the input signal
-%       phase       - phase spectrum of the input signal / rad
-%       f           - corresponding frequency axis for the amplitude
-%                     spectrum (=> plot(f,amplitude) / Hz
+%       amplitude   - single-sided amplitude spectrum of the input signal
+%       phase       - single-sided phase spectrum of the input signal / rad
+%       f           - corresponding frequency axis for the spectrum
+%                     => plot(f,amplitude) / Hz
 %
-%   EASYFFT(sig,conf) calculates the amplitude and phase of the sig spectrum by
-%   using the fast Fourier transformation. In addition to the amplitude and
-%   phase, the corresponding frequency axis for a plot is returned.
+%   SPECTRUM_FROM_SIGNAL(signal,conf) calculates the single-sided amplitude and
+%   phase spectra of a time signal by using the fast Fourier transformation.
+%   In addition to the amplitude and phase, the corresponding frequency axis is
+%   returned.
 %
-%   See also: easyifft, fft
+%   See also: signal_from_spectrum, fft
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -54,7 +54,7 @@ function varargout = easyfft(sig,conf)
 nargmin = 2;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-sig = column_vector(sig);
+signal = column_vector(signal);
 isargstruct(conf);
 
 
@@ -65,22 +65,33 @@ useplot = conf.plot.useplot;
 
 %% ===== Calcualate spectrum =============================================
 % Generate fast fourier transformation (=> complex output)
-compspec = fft(sig);
+compspec = fft(signal);
 
 % Length of the signal => number of points of fft
-samples = length(sig);
+bins = length(signal);
 
-% Get amplitude and phase spectra (and use only the first half of the
-%>spectrum (Nyquist))
-amplitude = abs(compspec(1:ceil(samples/2)));
-phase = angle(compspec(1:ceil(samples/2)));
+if mod(bins,2)  % For odd signal length
+    % Calculate corresponding frequency axis
+    f = fs/bins * (0:(bins-1)/2)';
+    % Get amplitude and phase spectra and use only the first half of the
+    %>spectrum [0, fs/2[
+    amplitude = abs(compspec(1:length(f)));
+    phase = angle(compspec(1:length(f)));
+    % Scale the amplitude (factor two for mirrored frequencies
+    %>divide by number of bins)
+    amplitude = [amplitude(1); 2*amplitude(2:end)] / bins;
 
-% Scale the amplitude (factor two, because we have cut off one half and
-%>divide by number of samples)
-amplitude = 2*amplitude / samples;
-
-% Calculate corresponding frequency axis
-f = fs*(0:ceil(samples/2)-1)'/samples;
+else  % For even signal length
+    % Calculate corresponding frequency axis
+    f = fs/bins * (0:bins / 2)';
+    % Get amplitude and phase spectra and use only the first half of the
+    %>spectrum [0, fs/2]
+    amplitude = abs(compspec(1:length(f)));
+    phase = angle(compspec(1:length(f)));
+    % Scale the amplitude (factor two for mirrored frequencies
+    %>divide by number of bins)
+    amplitude = [amplitude(1); 2*amplitude(2:end-1); amplitude(end)] / bins;
+end
 
 % Return values
 if nargout>0, varargout{1}=amplitude; end
@@ -90,5 +101,11 @@ if nargout>2, varargout{3}=f; end
 
 %% ===== Plotting ========================================================
 if nargout==0 || useplot
-    figure; semilogx(f,20*log10(abs(amplitude)));
+    figure; title('Spectrum');
+    subplot(2,1,1)
+    semilogx(f,20 * log10(abs(amplitude))); xlim([1, fs/2]);
+    grid on; xlabel('frequency / Hz'); ylabel('amplitude / dB')
+    subplot(2,1,2)
+    semilogx(f,unwrap(phase)); xlim([1, fs/2]);
+    grid on; xlabel('frequency / Hz'); ylabel('phase / rad')
 end

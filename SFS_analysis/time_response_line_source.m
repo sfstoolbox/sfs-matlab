@@ -1,26 +1,24 @@
-function varargout = time_response_point_source(X,xs,conf)
-%TIME_RESPONSE_POINT_SOURCE simulates the time response for a point source at
+function varargout = time_response_line_source(X,xs,conf)
+%TIME_RESPONSE_LINE_SOURCE simulates the time response for a line source at
 %the given listener position
 %
-%   Usage: [s,t] = time_response_point_source(X,xs,conf)
+%   Usage: [s,t] = time_response_line_source(X,xs,conf)
 %
 %   Input parameters:
 %       X           - listener position / m
-%       xs          - position of point source / m
+%       xs          - position of line source / m
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       s           - simulated time response
 %       t           - corresponding time axis / s
 %
-%   TIME_RESPONSE_POINT_SOURCE(X,xs,conf) simulates the impulse response of a
-%   point source placed at xs at the given virtual microphone position X.
+%   TIME_RESPONSE_LINE_SOURCE(X,xs,conf) simulates the impulse response of a
+%   line source placed at xs at the given virtual microphone position X.
 %   The length in samples of the impulse response is given by conf.N.
 %   The actual calculation is done via sound_field_imp() and a loop over time t.
-%   A similar result can be achieved by using ir_point_source() in combination
-%   with dummy_irs().
 %
-%   See also: ir_point_source, sound_field_imp, freq_response_point_source
+%   See also: sound_field_imp, freq_response_line_source
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -72,7 +70,7 @@ useplot = conf.plot.useplot;
 % Disable progress bar and plotting for sound_field_imp()
 conf.showprogress = false;
 conf.plot.useplot = false;
-% Get the position of the loudspeaker from point source position.
+% Get the position of the loudspeaker from line source position.
 % NOTE: its directivity [0 -1 0] will be ignored
 x0 = [xs 0 -1 0 1];
 % Generate time axis
@@ -81,7 +79,7 @@ s = zeros(1,length(t));
 for ii = 1:length(t)
     if showprogress, progress_bar(ii,length(t)); end
     % Calculate sound field at the listener position
-    p = sound_field_imp(X(1),X(2),X(3),x0,'ps',dirac_imp(),t(ii),conf);
+    p = sound_field_imp(X(1),X(2),X(3),x0,'ls',dirac_imp(),t(ii),conf);
     s(ii) = real(p);
 end
 

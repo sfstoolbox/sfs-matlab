@@ -17,11 +17,15 @@ function varargout = time_response_wfs(X,xs,src,conf)
 %       s           - simulated time response
 %       t           - corresponding time axis / s
 %
-%   TIME_RESPONSE_WFS(X,xs,src,conf) simulates the time response of the
-%   sound field at the given position X. The sound field is simulated for the
-%   given source type (src) using the sound_field_imp_wfs function.
+%   TIME_RESPONSE_WFS(X,xs,src,conf) simulates the impulse response of a the
+%   source type src placed at xs and synthesized by WFS at the given virtual
+%   microphone position X.
+%   The length in samples of the impulse response is given by conf.N. The
+%   actual calculation is done via sound_field_imp() and a loop over time t. A
+%   similar result can be achieved by using ir_wfs() in combination with
+%   dummy_irs().
 %
-%   See also: sound_field_imp_wfs, freq_response_wfs, time_response_nfchoa
+%   See also: ir_wfs, sound_field_imp, freq_response_wfs, time_response_nfchoa
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -64,14 +68,10 @@ isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
-% Plotting result
-useplot = conf.plot.useplot;
 fs = conf.fs;
+N = conf.N;
 showprogress = conf.showprogress;
-% Disable progress bar for the sound field function
-conf.showprogress = 0;
-% Disable plotting, otherwise the sound_field_imp fails
-conf.plot.useplot = 0;
+useplot = conf.plot.useplot;
 % Select secondary source type
 if strcmp('2D',conf.dimension)
     greens_function = 'ls';
@@ -81,22 +81,22 @@ end
 
 
 %% ===== Computation ====================================================
+% Disable progress bar and plotting for sound_field_imp()
+conf.showprogress = false;
+conf.plot.useplot = false;
 % Get the position of the loudspeakers
 x0 = secondary_source_positions(conf);
 x0 = secondary_source_selection(x0,xs,src);
 x0 = secondary_source_tapering(x0,conf);
-% Generate time axis (0-500 samples)
-t = (0:500)';
+% Generate time axis
+t = (0:N-1)'/fs;
 s = zeros(1,length(t));
-% t0 is a time offset (delay) added by the driving function
-[d,~,~,t0] = driving_function_imp_wfs(x0,xs,src,conf);
-% If desired a cosine shaped pulse instead of the default dirac pulse could be
-% used
-% d = convolution(d,hann_window(5,5,10));
+% delay is the time offset added by the driving function
+[d,~,~,delay] = driving_function_imp_wfs(x0,xs,src,conf);
 for ii = 1:length(t)
     if showprogress, progress_bar(ii,length(t)); end
     % calculate sound field at the listener position
-    p = sound_field_imp(X(1),X(2),X(3),x0,greens_function,d,t(ii)+t0*fs,conf);
+    p = sound_field_imp(X(1),X(2),X(3),x0,greens_function,d,t(ii)+delay,conf);
     s(ii) = real(p);
 end
 
@@ -109,7 +109,7 @@ if nargout>1, varargout{2}=t; end
 if nargout==0 || useplot
     figure;
     figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-    plot(t/fs*1000,db(abs(s)));
-    ylabel('amplitude / dB');
+    plot(t*1000,s);
+    ylabel('amplitude');
     xlabel('time / ms');
 end

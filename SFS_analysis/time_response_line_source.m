@@ -1,36 +1,29 @@
-function varargout = time_response_wfs(X,xs,src,conf)
-%TIME_RESPONSE_WFS simulates the time response for WFS at the given
-%listener position
+function varargout = time_response_line_source(X,xs,conf)
+%TIME_RESPONSE_LINE_SOURCE simulates the time response for a line source at
+%the given listener position
 %
-%   Usage: [s,t] = time_response_wfs(X,xs,src,conf)
+%   Usage: [s,t] = time_response_line_source(X,xs,conf)
 %
 %   Input parameters:
 %       X           - listener position / m
-%       xs          - position of virtual source / m
-%       src         - source type of the virtual source
-%                         'pw' -plane wave
-%                         'ps' - point source
-%                         'fs' - focused source
+%       xs          - position of line source / m
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       s           - simulated time response
 %       t           - corresponding time axis / s
 %
-%   TIME_RESPONSE_WFS(X,xs,src,conf) simulates the impulse response of a the
-%   source type src placed at xs and synthesized by WFS at the given virtual
-%   microphone position X.
-%   The length in samples of the impulse response is given by conf.N. The
-%   actual calculation is done via sound_field_imp() and a loop over time t. A
-%   similar result can be achieved by using ir_wfs() in combination with
-%   dummy_irs().
+%   TIME_RESPONSE_LINE_SOURCE(X,xs,conf) simulates the impulse response of a
+%   line source placed at xs at the given virtual microphone position X.
+%   The length in samples of the impulse response is given by conf.N.
+%   The actual calculation is done via sound_field_imp() and a loop over time t.
 %
-%   See also: ir_wfs, sound_field_imp, freq_response_wfs, time_response_nfchoa
+%   See also: sound_field_imp, freq_response_line_source
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2017 SFS Toolbox Developers                             *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -58,12 +51,11 @@ function varargout = time_response_wfs(X,xs,src,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 4;
+nargmin = 3;
+nargmax = 3;
 narginchk(nargmin,nargmax);
 isargposition(X);
 isargxs(xs);
-isargchar(src);
 isargstruct(conf);
 
 
@@ -72,31 +64,22 @@ fs = conf.fs;
 N = conf.N;
 showprogress = conf.showprogress;
 useplot = conf.plot.useplot;
-% Select secondary source type
-if strcmp('2D',conf.dimension)
-    greens_function = 'ls';
-else
-    greens_function = 'ps';
-end
 
 
 %% ===== Computation ====================================================
 % Disable progress bar and plotting for sound_field_imp()
 conf.showprogress = false;
 conf.plot.useplot = false;
-% Get the position of the loudspeakers
-x0 = secondary_source_positions(conf);
-x0 = secondary_source_selection(x0,xs,src);
-x0 = secondary_source_tapering(x0,conf);
+% Get the position of the loudspeaker from line source position.
+% NOTE: its directivity [0 -1 0] will be ignored
+x0 = [xs 0 -1 0 1];
 % Generate time axis
 t = (0:N-1)'/fs;
 s = zeros(1,length(t));
-% delay is the time offset added by the driving function
-[d,~,~,delay] = driving_function_imp_wfs(x0,xs,src,conf);
 for ii = 1:length(t)
     if showprogress, progress_bar(ii,length(t)); end
-    % calculate sound field at the listener position
-    p = sound_field_imp(X(1),X(2),X(3),x0,greens_function,d,t(ii)+delay,conf);
+    % Calculate sound field at the listener position
+    p = sound_field_imp(X(1),X(2),X(3),x0,'ls',dirac_imp(),t(ii),conf);
     s(ii) = real(p);
 end
 

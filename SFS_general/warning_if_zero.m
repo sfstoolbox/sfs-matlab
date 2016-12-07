@@ -5,7 +5,7 @@ function warning_if_zero(P,t)
 %
 %   Input parameters:
 %       P       - sound field
-%       t       - time t / samples
+%       t       - time t / s
 %
 %   WARNING_IF_ZERO(P,t) returns a warning if the whole sound field is zero or
 %   NaN. If the sound field consist only of one point no warning is given.
@@ -56,5 +56,5 @@ if length(P)==1, return; end
 if max(abs(P(:)))==0 || all(isnan(P(:)))
     warning('SFS:check_sound_field',...
         ['The activity in the simulated sound field is zero. ',...
-         'Maybe you should use another time frame t than %i. '],t);
+         'Maybe you should use another time t than %i s. '],t);
 end

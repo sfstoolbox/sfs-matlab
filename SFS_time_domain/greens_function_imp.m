@@ -12,18 +12,18 @@ function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 %                   'ps' - point source
 %                   'ls' - line source
 %                   'pw' - plane wave
-%       t       - time / samples
+%       t       - time / s
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       g       - Green's function evaluated at the points x,y,z
 %       t       - Corresponding time values with integrated time
-%                 shift / samples
+%                 shift / s
 %
 %   GREENS_FUNCTION_IMP(x,y,z,xs,src,t,conf) calculates the Green's function for
 %   the given source model located at xs for the given points x,y,z. Note, that
 %   the delta function for the time t is returned as an extra argument. If you
-%   want the value of the Green's function only to this specific time you should
+%   want the value of the Green's function only for a specific time you should
 %   have a look at sound_field_imp() and apply the folowing command:
 %   [p,x,y,z] = sound_field_imp(X,Y,Z,[xs 0 -1 0],src,1,t,conf);
 %
@@ -65,7 +65,6 @@ function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 
 %% ===== Configuration ===================================================
 c = conf.c;
-fs = conf.fs;
 
 
 %% ===== Computation =====================================================
@@ -81,7 +80,7 @@ if strcmp('ps',src)
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
     g = 1./(4*pi.*r);
-    t = (r/c)*fs-t;
+    t = (r/c)-t;
 
 elseif strcmp('dps',src)
     % Source model for a dipole point source: derivative of 3D Green's function.
@@ -106,7 +105,7 @@ elseif strcmp('ls',src)
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
     g = 1./sqrt(r) * sqrt(1/(8*pi));
-    t = (r/c)*fs-t;
+    t = (r/c)-t;
 
 elseif strcmp('pw',src)
     % Source model for a plane wave:
@@ -119,7 +118,7 @@ elseif strcmp('pw',src)
     nxs = xs / norm(xs);
     %
     g = 1;
-    t = (nxs(1).*x+nxs(2).*y+nxs(3).*z)./c.*fs-t;
+    t = (nxs(1).*x+nxs(2).*y+nxs(3).*z)./c-t;
 
 else
     error('%s: %s is not a valid source model for the Green''s function', ...

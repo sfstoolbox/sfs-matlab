@@ -12,7 +12,7 @@ function varargout = sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
 %                         'pw' - plane wave (xs, ys are the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
-%       t           - time point t / samples
+%       t           - time point t / s
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output options:
@@ -90,7 +90,7 @@ x0 = secondary_source_positions(conf);
 % Calculate driving function
 [d, ~, delay_offset] = driving_function_imp_nfchoa(x0,xs,src,conf);
 % Ensure virtual source/secondary source activity starts at t = 0
-t = t + delay_offset*fs;
+t = t + delay_offset;
 % Calculate sound field
 [varargout{1:min(nargout,4)}] = ...
     sound_field_imp(X,Y,Z,x0,greens_function,d,t,conf);

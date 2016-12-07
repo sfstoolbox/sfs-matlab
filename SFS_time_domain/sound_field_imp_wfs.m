@@ -13,7 +13,7 @@ function varargout = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf)
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'fs' - focused source
-%       t           - time point t of the sound field / samples
+%       t           - time point t of the sound field / s
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output options:
@@ -97,7 +97,7 @@ x0 = secondary_source_tapering(x0,conf);
 % Get driving signals
 [d,~,~,delay_offset] = driving_function_imp_wfs(x0,xs,src,conf);
 % Ensure virtual source/secondary source activity starts at t = 0
-t = t + delay_offset*fs;
+t = t + delay_offset;
 % Calculate sound field
 [varargout{1:min(nargout,4)}] = ...
     sound_field_imp(X,Y,Z,x0,greens_function,d,t,conf);

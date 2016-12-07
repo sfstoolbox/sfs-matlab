@@ -1,35 +1,28 @@
-function varargout = freq_response_wfs(X,xs,src,conf)
-%FREQ_RESPONSE_WFS simulates the frequency response for WFS at the given
-%listener position
+function varargout = freq_response_line_source(X,xs,conf)
+%FREQ_RESPONSE_WFS simulates the frequency response for a line source at the
+%given listener position
 %
-%   Usage: [S,f] = freq_response_wfs(X,xs,src,conf)
+%   Usage: [S,f] = freq_response_line_source(X,xs,conf)
 %
 %   Input parameters:
 %       X           - listener position / m
-%       xs          - position of virtual source / m
-%       src         - source type of the virtual source
-%                         'pw' -plane wave
-%                         'ps' - point source
-%                         'fs' - focused source
+%       xs          - position of line source / m
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       S           - simulated frequency response
 %       f           - corresponding frequency axis / Hz
 %
-%   FREQ_RESPONSE_WFS(X,xs,src,conf) simulates the frequency response of a the
-%   source type src placed at xs and synthesized by WFS at the given virtual
-%   microphone position X.
-%   The length in samples of the frequency response is given by conf.N. The
-%   actual calculation is done via sound_field_mono() and a loop over frequency
-%   f.
+%   FREQ_RESPONSE_LINE_SOURCE(X,xs,conf) simulates the frequency response of a
+%   line source placed at xs at the given virtual microphone position X.
+%   The length in samples of the frequency response is given by conf.N.
 %
-%   See also: sound_field_mono_wfs, time_response_wfs
+%   See also: sound_field_mono_line_source, time_response_line_source
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2017 SFS Toolbox Developers                             *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -57,12 +50,11 @@ function varargout = freq_response_wfs(X,xs,src,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 4;
+nargmin = 3;
+nargmax = 3;
 narginchk(nargmin,nargmax);
 isargposition(X);
 isargxs(xs);
-isargchar(src);
 isargstruct(conf);
 
 
@@ -70,31 +62,23 @@ isargstruct(conf);
 N = conf.N;
 showprogress = conf.showprogress;
 useplot = conf.plot.useplot;
-% Check type of secondary sources to use
-if strcmp('2D',conf.dimension)
-    greens_function = 'ls';
-else
-    greens_function = 'ps';
-end
 
 
 %% ===== Computation ====================================================
 % Disable progress bar and plotting for sound_field_imp()
 conf.showprogress = false;
 conf.plot.useplot = false;
-% Get the position of the loudspeakers
-x0 = secondary_source_positions(conf);
-x0 = secondary_source_selection(x0,xs,src);
-x0 = secondary_source_tapering(x0,conf);
+% Get the position of the loudspeaker from line source position.
+% NOTE: its directivity [0 -1 0] will be ignored
+x0 = [xs 0 -1 0 1];
 % Generate frequencies (10^1-10^4.3)
 f = logspace(0,4.3,N)';
 S = zeros(size(f));
 % Get the result for all frequencies
 for ii = 1:length(f)
     if showprogress, progress_bar(ii,length(f)); end
-    D = driving_function_mono_wfs(x0,xs,src,f(ii),conf);
     % Calculate sound field at the listener position
-    P = sound_field_mono(X(1),X(2),X(3),x0,greens_function,D,f(ii),conf);
+    P = sound_field_mono(X(1),X(2),X(3),x0,'ls',1,f(ii),conf);
     S(ii) = abs(P);
 end
 

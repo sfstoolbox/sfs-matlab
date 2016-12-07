@@ -17,11 +17,14 @@ function varargout = freq_response_localwfs(X,xs,src,conf)
 %       S           - simulated frequency response
 %       f           - corresponding frequency axis / Hz
 %
-%   FREQ_RESPONSE_WFS(X,xs,src,conf) simulates the frequency response of the
-%   sound field at the given position X. The sound field is simulated for the
-%   given source type (src) using a monochromatic WFS driving function.
+%   FREQ_RESPONSE_LOCALWFS(X,xs,src,conf) simulates the frequency response of a
+%   the source type src placed at xs and synthesized by local WFS at the given
+%   virtual microphone position X.
+%   The length in samples of the frequency response is given by conf.N. The
+%   actual calculation is done via sound_field_mono() and a loop over frequency
+%   f.
 %
-%   See also: sound_field_mono_wfs, sound_field_imp_wfs
+%   See also: sound_field_mono_localwfs, time_response_localwfs
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -64,11 +67,8 @@ isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
-% Plotting result
-useplot = conf.plot.useplot;
 showprogress = conf.showprogress;
-% Disable progress bar for sound field function
-conf.showprogress = false;
+useplot = conf.plot.useplot;
 % Check type of secondary sources to use
 if strcmp('2D',conf.dimension)
     greens_function = 'ls';
@@ -78,13 +78,13 @@ end
 
 
 %% ===== Computation ====================================================
+% Disable progress bar and plotting for sound_field_imp()
+conf.showprogress = false;
+conf.plot.useplot = false;
 % Get the position of the loudspeakers
 x0_real = secondary_source_positions(conf);
-% Generate frequencies (10^0-10^5)
-f = logspace(0,5,500)';
-% We want only frequencies until f = 20000Hz
-idx = find(f>20000,1);
-f = f(1:idx);
+% Generate frequencies (10^1-10^4.3)
+f = logspace(0,4.3,N)';
 S = zeros(size(f));
 % Get the result for all frequencies
 for ii = 1:length(f)
@@ -106,6 +106,6 @@ if nargout==0 || useplot
     figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
     semilogx(f,db(S));
     set(gca,'XTick',[10 100 250 1000 5000 20000]);
-    ylabel('Amplitude (dB)');
-    xlabel('Frequency (Hz)');
+    ylabel('amplitude / dB');
+    xlabel('frequency / Hz');
 end

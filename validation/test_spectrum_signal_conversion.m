@@ -1,7 +1,8 @@
-function status = test_fft_ifft(modus)
-%TEST_HRTF_EXTRAPOLATION tests the HRTF extrapolation functions
+function status = test_spectrum_signal_conversion(modus)
+%TEST_SPECTRUM_SIGNAL_CONVERSION tests the spectrum to and from signal
+%conversions
 %
-%   Usage: status = test_fft_ifft(modus)
+%   Usage: status = test_spectrum_signal_conversion(modus)
 %
 %   Input parameters:
 %       modus    - 0: numerical
@@ -10,7 +11,8 @@ function status = test_fft_ifft(modus)
 %   Output parameters:
 %       status - true or false
 %
-%   test_fft_ifft(modus) checks if the FFT and IFFT works correctly.
+%   test_spectrum_signal_conversion(modus) checks if spectrum_from_signal() and
+%   signal_from_spectrum() works correctly.
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

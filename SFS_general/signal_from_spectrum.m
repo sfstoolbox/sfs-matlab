@@ -1,7 +1,7 @@
-function outsig = retrieve_signal(amplitude,phase,f,conf)
-%RETRIEVE_SIGNAL creates time signal from single-sided spectrum
+function outsig = signal_from_spectrum(amplitude,phase,f,conf)
+%SIGNAL_FROM_SPECTRUM creates time signal from single-sided spectrum
 %
-%   Usage: outsig = retrieve_signal(amplitude,phase,f,conf)
+%   Usage: outsig = signal_from_spectrum(amplitude,phase,f,conf)
 %
 %   Input parameters:
 %       amplitude   - the single-sided amplitude spectrum
@@ -12,12 +12,11 @@ function outsig = retrieve_signal(amplitude,phase,f,conf)
 %   Output parameters:
 %       outsig      - a one channel (time) signal
 %
-%   RETRIEVE_SIGNAL(amplitude,phase) generates the time signal from
-%   single-sided amplitude and phase spectra using ifft. 
-%   It is the counterpart of GET_SPECTRUM and not interchangeable with 
-%   calling ifft.
+%   SIGNAL_FROM_SPECTRUM(amplitude,phase) generates the time signal from
+%   single-sided amplitude and phase spectra using ifft. It is the counterpart
+%   of SPECTRUM_FROM_SIGNAL and not interchangeable with calling ifft.
 %
-%   See also: get_spectrum, ifft
+%   See also: spectrum_from_signal, ifft
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -67,7 +66,7 @@ bins = length(f);
 if f(end)==fs/2  % -> even signal length
     % Length of the signal to generate
     samples = 2 * (bins-1);
-    % Rescaling (see easyfft)
+    % Rescaling (see spectrum_from_signal())
     amplitude = [amplitude(1); amplitude(2:end-1)/2; amplitude(end)] * samples;
     % Mirror the amplitude spectrum ( 2*pi periodic [0, fs[ )
     amplitude = [ amplitude; amplitude(end-1:-1:2) ];
@@ -77,7 +76,7 @@ if f(end)==fs/2  % -> even signal length
 else  % -> odd signal length
     % Length of the signal to generate
     samples = 2 * (bins) -1;
-    % Rescaling (see easyfft)
+    % Rescaling (see signal_from_spectrum)
     amplitude = [amplitude(1); amplitude(2:end)/2] * samples;
     % Mirror the amplitude spectrum ( 2*pi periodic [0, fs-bin] )
     amplitude = [ amplitude; amplitude(end:-1:2) ];

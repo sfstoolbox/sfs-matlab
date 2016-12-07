@@ -66,10 +66,10 @@ odd_sig = ones(7, 1);
 alias_sig = repmat([1; -1], fs/2, 1);
 
 %% FFT
-[sin_ampl, sin_phase, sin_f] = get_spectrum(sin_sig, conf);
-[even_ampl, even_phase, even_f] = get_spectrum(even_sig, conf);
-[odd_ampl, odd_phase, odd_f] = get_spectrum(odd_sig, conf);
-[alias_ampl, alias_phase, alias_f] = get_spectrum(alias_sig, conf);
+[sin_ampl, sin_phase, sin_f] = spectrum_from_signal(sin_sig, conf);
+[even_ampl, even_phase, even_f] = spectrum_from_signal(even_sig, conf);
+[odd_ampl, odd_phase, odd_f] = spectrum_from_signal(odd_sig, conf);
+[alias_ampl, alias_phase, alias_f] = spectrum_from_signal(alias_sig, conf);
 
 %% Check frequency bins
 if modus
@@ -79,10 +79,10 @@ figure; scatter(odd_f, odd_ampl);title('Odd signal (f=0) FFT');
 figure; scatter(alias_f, alias_ampl);title('Signal with f=fs/2 FFT');
 end
 %% IFFT
-sin_outsig = retrieve_signal(sin_ampl, sin_phase, sin_f,conf);
-even_outsig = retrieve_signal(even_ampl, even_phase, even_f,conf);
-odd_outsig = retrieve_signal(odd_ampl, odd_phase, odd_f,conf);
-alias_outsig = retrieve_signal(alias_ampl, alias_phase, alias_f,conf);
+sin_outsig = signal_from_spectrum(sin_ampl, sin_phase, sin_f,conf);
+even_outsig = signal_from_spectrum(even_ampl, even_phase, even_f,conf);
+odd_outsig = signal_from_spectrum(odd_ampl, odd_phase, odd_f,conf);
+alias_outsig = signal_from_spectrum(alias_ampl, alias_phase, alias_f,conf);
 
 %% Check Output
 sin_diff = sum(abs(sin_sig - sin_outsig));

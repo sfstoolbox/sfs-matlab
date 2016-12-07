@@ -102,7 +102,7 @@ irs = dummy_irs(1024,conf);
 % Calculate impulse response
 s_wfs = ir_wfs(conf.xref,pi/2,xs,src,irs,conf);
 % Frequency response
-[S_wfs, ~, f_wfs] = easyfft(s_wfs(:,1)./max(abs(s_wfs(:,1))),conf);
+[S_wfs,~,f_wfs] = spectrum_from_signal(s_wfs(:,1)./max(abs(s_wfs(:,1))),conf);
 % Spatio-temporal sound field
 [~] = sound_field_imp_wfs(X,Y,Z,xs,src,190,conf);
 
@@ -115,7 +115,7 @@ conf.localsfs.wfs = conf.wfs;
 % Calculate impulse response
 s_lwfs = ir_localwfs(conf.xref,pi/2,xs,src,irs,conf);
 % Frequency response
-[S_lwfs, ~, f_lwfs] = easyfft(s_lwfs(:,1)./max(abs(s_lwfs(:,1))),conf);
+[S_lwfs,~,f_lwfs] = spectrum_from_signal(s_lwfs(:,1)./max(abs(s_lwfs(:,1))),conf);
 % Spatio-temporal sound field
 [~] = sound_field_imp_localwfs(X,Y,Z,xs,src,360,conf);
 

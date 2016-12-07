@@ -1,8 +1,7 @@
-function varargout = get_spectrum(signal,conf)
-%GET_SPECTRUM returns single-sided amplitude and phase spectra of signal
-%   axis
+function varargout = spectrum_from_signal(signal,conf)
+%SPECTRUM_FROM_SIGNAL returns single-sided amplitude and phase spectra of signal
 %
-%   Usage: [amplitude,phase,f] = get_spectrum(sig,conf)
+%   Usage: [amplitude,phase,f] = spectrum_from_signal(sig,conf)
 %
 %   Input parameters:
 %       signal      - one channel audio (time) signal
@@ -14,12 +13,11 @@ function varargout = get_spectrum(signal,conf)
 %       f           - corresponding frequency axis for the spectrum
 %                     (=> plot(f,amplitude) / Hz
 %
-%   GET_SPECTRUM(signal,conf) calculates the single-sided amplitude and
-%   phase spectrum of sig by using the fast Fourier transformation.
-%   In addition to the amplitude and phase, the corresponding frequency
-%   axis is returned.
+%   SPECTRUM_FROM_SIGNAL(signal,conf) calculates the single-sided amplitude and
+%   phase spectrum of sig by using the fast Fourier transformation.  In addition
+%   to the amplitude and phase, the corresponding frequency axis is returned.
 %
-%   See also: retrieve_signal, fft
+%   See also: signal_from_spectrum, fft
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

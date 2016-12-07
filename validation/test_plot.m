@@ -62,7 +62,7 @@ conf = SFS_config;
 xs = [0 -1 0];
 src = 'pw';
 f = 1000;
-t = 300;
+t = 300/conf.fs;
 
 
 %% ===== Monochromatic plots =============================================

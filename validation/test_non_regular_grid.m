@@ -77,7 +77,7 @@ conf.xref = [0,0,0];
 xs = [0.0, 2.5, 0];  % propagation direction of plane wave
 src = 'ps';
 f = 1000;
-tau = 190;
+t = 190/conf.fs;
 
 conf.usenormalisation = true;
 
@@ -102,8 +102,8 @@ conf.plot.normalisation = 'center';
 [~] = sound_field_mono_wfs(Xnon,Ynon,Znon,xs,src,f,conf);
 
 conf.plot.normalisation = 'max';
-[~] = sound_field_imp_wfs(Xreg,Yreg,Zreg,xs,src,tau,conf);
-[~] = sound_field_imp_wfs(Xnon,Ynon,Znon,xs,src,tau,conf);
+[~] = sound_field_imp_wfs(Xreg,Yreg,Zreg,xs,src,t,conf);
+[~] = sound_field_imp_wfs(Xnon,Ynon,Znon,xs,src,t,conf);
 
 
 status = true;

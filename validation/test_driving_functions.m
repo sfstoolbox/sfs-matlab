@@ -58,7 +58,7 @@ narginchk(nargmin,nargmax);
 conf = SFS_config;
 conf.secondary_sources.size = 3;
 f = 1000;
-t = 200;
+t = 200/conf.fs;
 conf.plot.useplot = false;
 conf.plot.usenormalisation = true;
 conf.driving_functions = 'default';

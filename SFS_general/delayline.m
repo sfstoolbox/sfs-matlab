@@ -12,7 +12,7 @@ function [sig,delay_offset] = delayline(sig,dt,weight,conf)
 %                 If the input is [M C N], the length of dt and weight has to be
 %                 1 or M*C. In the last case the first M entries in dt are
 %                 applied to the first channel and so on.
-%       dt      - delay / samples
+%       dt      - delay / s
 %       weight  - amplitude weighting factor
 %       conf    - configuration struct (see SFS_config).
 %
@@ -66,6 +66,7 @@ if isfield(conf, 'usefracdelay')
     error(['%s: conf.usefracdelay is deprecated, please use conf.delayline', ...
            ' instead. See SFS_config for details.'],upper(mfilename));
 end
+fs = conf.fs;
 delay = conf.delayline;
 
 
@@ -88,6 +89,7 @@ else
     reshaped = false;
 end
 
+
 %% ===== Resampling ======================================================
 % The resampling is applied independently from the actual fractional/integer
 % delay handling performed in the next step. The resampling is redone at the end
@@ -106,7 +108,7 @@ switch delay.resampling
     case 'pm'
         % === Parks-McClellan linear phase FIR filter ===
         rfactor = delay.resamplingfactor;
-        delay_offset = delay.resamplingorder*rfactor / 2;
+        delay_offset = (delay.resamplingorder*rfactor/2) / fs;
         A = [1 1 0 0];
         f = [0.0 0.9/rfactor 1/rfactor 1.0];
         rfilt = rfactor*firpm(delay.resamplingorder*rfactor,f,A);
@@ -124,8 +126,8 @@ end
 %% ===== Expansion of signals, delays or weights =========================
 % --- Expand channels
 if channels==1
-  channels = max(length(dt),length(weight));
-  sig=repmat(sig,[1 channels]);
+    channels = max(length(dt),length(weight));
+    sig = repmat(sig,[1 channels]);
 end
 
 % --- Expand dt and weight ---
@@ -134,7 +136,7 @@ if channels>1 && length(dt)==1, dt=repmat(dt,[1 channels]); end
 if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
 
 %% ===== Conversion to integer delay =====================================
-dt = rfactor.*dt;  % resampled delays
+dt = rfactor.*dt.*fs;  % resampled delays / s
 samples = rfactor.*samples;  % length of resampled signals
 switch delay.filter
     case 'integer'
@@ -155,13 +157,13 @@ switch delay.filter
         fdt = dt - idt;  % fractional part of delays
         b = lagrange_filter(delay.filterorder,fdt);
         a = ones(1,channels);
-        delay_offset = delay_offset + floor(delay.filterorder / 2);
+        delay_offset = delay_offset + floor(delay.filterorder/2) / fs;
     case 'thiran'
         % === Thiran's allpass filter for maximally flat group delay ===
         idt = round(dt);  % integer part of delays
         fdt = dt - idt;  % fractional part of delays
         [b,a] = thiran_filter(delay.filterorder,fdt);
-        delay_offset = delay_offset + delay.filterorder;
+        delay_offset = delay_offset + delay.filterorder/fs;
     case 'least_squares'
         % ==== Least squares interpolation filter ===
         idt = floor(dt);  % integer part of delays
@@ -171,7 +173,7 @@ switch delay.filter
             b(:,ii) = general_least_squares(delay.filterorder+1,fdt(ii),0.90);
         end
         a = ones(1,channels);
-        delay_offset = delay_offset + floor(delay.filterorder / 2);
+        delay_offset = delay_offset + floor(delay.filterorder/2) / fs;
     case 'farrow'
         % === Farrow-structure ===
         % Based on the assumption, that each coefficient h(n) of the fractional

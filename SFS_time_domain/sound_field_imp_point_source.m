@@ -68,4 +68,5 @@ isargxs(xs);
 
 
 %% ===== Computation ====================================================
-[varargout{1:nargout}] = sound_field_imp(X,Y,Z,[xs 0 -1 0 1],'ps',1,t,conf);
+x0 = [xs 0 -1 0 1];
+[varargout{1:nargout}] = sound_field_imp(X,Y,Z,x0,'ps',dirac_imp(),t,conf);

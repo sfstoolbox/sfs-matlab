@@ -71,4 +71,5 @@ isargstruct(conf);
 %% ===== Computation ====================================================
 % Disable the plotting of a source, because we have a plane wave
 conf.plot.loudspeakers = 0;
-[varargout{1:nargout}] = sound_field_imp(X,Y,Z,[xs 0 1 0 1],'pw',1,t,conf);
+x0 = [xs 0 -1 0 1];
+[varargout{1:nargout}] = sound_field_imp(X,Y,Z,x0,'pw',dirac_imp(),t,conf);

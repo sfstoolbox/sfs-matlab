@@ -54,7 +54,7 @@ narginchk(nargmin,nargmax);
 
 
 %% ===== Configuration ==================================================
-% Delays to evaluate
+% Delays to evaluate in samples (they will be transformed into seconds later)
 dt = [-5 -2.5 0 2.5 5];
 %dt=[-1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
 %dt=[0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];

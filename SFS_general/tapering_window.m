@@ -1,5 +1,5 @@
 function win = tapering_window(x0,conf)
-%TAPERING_WINDOW generate a tapering window for a loudspeaker array
+%TAPERING_WINDOW generates a tapering window for a loudspeaker array
 %
 %   Usage: win = tapering_window(x0,conf)
 %
@@ -123,7 +123,7 @@ function [win] = part_hann_win(nls,tapwinlen)
     % splitted to both sides of the loudspeaker array.
     lenwin = round(tapwinlen*nls)+2;
     %
-    % Check if we have a to short window to apply it in a useful way. This can
+    % Check if we have a too short window to apply it in a useful way. This can
     % be the case for very short loudspeaker arrays (as used in Wierstorf2010).
     if lenwin<4
         win = ones(1,nls);

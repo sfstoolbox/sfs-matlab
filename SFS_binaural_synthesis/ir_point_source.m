@@ -11,7 +11,7 @@ function ir = ir_point_source(X,phi,xs,sofa,conf)
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       ir      - Impulse response (nx2 matrix)
+%       ir      - impulse response (nx2 matrix)
 %
 %   IR_POINT_SOURCE(X,phi,xs,sofa,conf) calculates a impulse response for a
 %   single loudspeaker at position xs and a listener located at X, looking

@@ -85,7 +85,9 @@ for ii=1:size(x0,1)
     % If needed interpolate the given impulse response set and weight, delay the
     % impulse for the correct distance
     ir = get_ir(sofa,X,[phi 0],x0(ii,1:3),'cartesian',conf);
-
+    % Correct Green's function amplitude
+    ir = ir/(4*pi);
+    
     % === Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay ===
     % Also applying the weights of the secondary sources including integration
     % weights or tapering windows etc.

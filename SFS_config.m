@@ -97,10 +97,6 @@ conf.showprogress = false; % boolean
 conf.fs = 44100; % / Hz
 % Speed of sound
 conf.c = 343; % / m/s
-% Bandpass filter applied in sound_field_imp()
-conf.usebandpass = true; % boolean
-conf.bandpassflow = 10; % / Hz
-conf.bandpassfhigh = 20000; % / Hz
 
 
 %% ===== Delayline =======================================================
@@ -196,6 +192,10 @@ conf.tapwinlen = 0.3; % / percent of array length, 0..1
 % linear arrays -- focussed virtual sources may not be placed arbitrarily
 % far from the secondary sources.
 conf.t0 = 'system'; % string
+% Bandpass filter applied in sound_field_imp()
+conf.usebandpass = true; % boolean
+conf.bandpassflow = 10; % / Hz
+conf.bandpassfhigh = 20000; % / Hz
 
 
 %% ===== Sound Field Simulations =========================================

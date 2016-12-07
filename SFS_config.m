@@ -159,7 +159,7 @@ conf.driving_functions = 'default'; % string
 % === Impulse responses ===
 % Length of impulse responses used in the time domain driving functions
 % and for the creation of the binaural simulations.
-% Don't worry, SFS checks for you if conf.N is large enough)
+% Don't worry, SFS checks for you if conf.N is large enough
 conf.N = 2048; % samples
 %
 % === 2.5D ===

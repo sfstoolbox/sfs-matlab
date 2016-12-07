@@ -86,21 +86,15 @@ end
 
 
 %% ===== Configuration ==================================================
-% Plotting result
-useplot = conf.plot.useplot;
-% Speed of sound
 c = conf.c;
-% Sampling rate
 fs = conf.fs;
-% Debug mode
+L = conf.secondary_sources.size;
+useplot = conf.plot.useplot;
 debug = conf.debug;
-% Progress bar
 showprogress = conf.showprogress;
-% Bandpass
 usebandpass = conf.usebandpass;
 bandpassflow = conf.bandpassflow;
 bandpassfhigh = conf.bandpassfhigh;
-L = conf.secondary_sources.size;
 
 
 %% ===== Computation =====================================================
@@ -110,9 +104,8 @@ L = conf.secondary_sources.size;
 
 % === Reshaping of the driving signal ===
 %
-% Time reversal of driving function due to propagation of sound
-% later parts of the driving function are emitted later by secondary
-% sources
+% Time reversal of driving function due to propagation of sound later parts of
+% the driving function are emitted later by secondary sources
 %
 % ^      _
 % |     / \    driving function
@@ -123,27 +116,27 @@ L = conf.secondary_sources.size;
 % ^            _
 % |           / \  sound coming out of
 % |         --   \ the secondary source
-% | --------      ---
+% | x-------      ---
 %  -----------------------------------> x
 %   ^
 %   position of secondary source
 %
 d = d(end:-1:1,:);
-%
+
 % Add additional zeros to the driving signal to ensure an amplitude of 0 in the
 % whole listening area before and after the real driving signal.
+%
 % First get the maximum distance of the listening area and convert it into time
-% samples, than compare it to the size of the secondary sources. If the size is
-% biger use this for padding zeros.
-max_distance = norm( [max(xx(:)) max(yy(:)) max(zz(:))] - ...
-    [min(xx(:)) min(yy(:)) min(zz(:))] );
-max_distance_in_samples = round(max(max_distance/c*fs,2*L/c*fs));
-
+% samples, then compare it to the size 2*L of the secondary sources. If the size
+% is larger use this for padding zeros.
+max_listening_area = [max(xx(:)) max(yy(:)) max(zz(:))];
+min_listening_area = [min(xx(:)) min(yy(:)) min(zz(:))];
+max_distance = max(norm(max_listening_area-min_listening_area),2*L);
+max_distance_in_samples = round(max_distance/c*fs);
 % Append zeros at the beginning of the driving signal
 d = [zeros(max_distance_in_samples,size(d,2)); d];
-% Correct time vector to work with inverted driving functions
-% this will lead to a time point of t=0 for the starting of emitting the driving
-% signal
+% Correct time vector to work with inverted driving functions, this will lead to
+% a time point of t=0 for the starting of emitting the driving signal
 t_inverted = t-size(d,1);
 % Append zeros at the end of the driving signal
 d = [d; zeros(max_distance_in_samples,size(d,2))];
@@ -151,7 +144,7 @@ d = [d; zeros(max_distance_in_samples,size(d,2))];
 % Initialize empty sound field (dependent on the axes we want)
 p = zeros(size(x1));
 
-% Apply bandbass filter
+% Apply bandpass filter
 if usebandpass
     d = bandpass(d,bandpassflow,bandpassfhigh,conf);
 end
@@ -159,17 +152,15 @@ end
 % Integration over secondary sources
 for ii = 1:size(x0,1)
 
-    % progress bar
     if showprogress, progress_bar(ii,size(x0,1)); end
 
     % ================================================================
     % Secondary source model: Greens function g3D(x,t)
-    % distance of secondary source to receiver position
     [g,t_delta] = greens_function_imp(xx,yy,zz,x0(ii,1:3),src,t_inverted,conf);
 
     % Interpolate the driving function w.r.t. the propagation delay from
     % the secondary sources to a field point. The t returned from the Green's
-    % function already inlcudes the desired time shift of the driving signal.
+    % function already includes the desired time shift of the driving signal.
     % NOTE: the interpolation is required to account for the fractional
     % delay times from the loudspeakers to the field points
     ds = interp1(1:length(d(:,ii)),d(:,ii),t_delta,'spline');
@@ -190,7 +181,7 @@ for ii = 1:size(x0,1)
 end
 
 % === Checking of sound field ===
-check_sound_field(p,t);
+warning_if_zero(p,t);
 
 % Return parameter
 if nargout>0, varargout{1}=p; end
@@ -204,7 +195,6 @@ if nargout==0 || useplot
     plot_sound_field(p,X,Y,Z,x0,conf);
 end
 
-% Some debug stuff
 if debug
     figure; imagesc(db(abs(d))); title('driving functions'); caxis([-100 0]); colorbar;
 end

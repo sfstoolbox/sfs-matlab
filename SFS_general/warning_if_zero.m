@@ -1,15 +1,14 @@
-function check_sound_field(P,t)
-%CHECK_SOUND_FIELD checks if we have any activity in the sound field and returns a
-%   warning otherwise.
+function warning_if_zero(P,t)
+%WARNING_IF_ZERO returns a warning if the whole sound field is zero or NaN
 %
-%   Usage: check_sound_field(P,t)
+%   Usage: warning_if_zero(P,t)
 %
 %   Input parameters:
 %       P       - sound field
 %       t       - time t / samples
 %
-%   CHECK_SOUND_FIELD(P,t) checks if the sound field is different from zero.
-%   If this is not the case it returns a warning.
+%   WARNING_IF_ZERO(P,t) returns a warning if the whole sound field is zero or
+%   NaN. If the sound field consist only of one point no warning is given.
 %
 %   See also: sound_field_imp_wfs, norm_sound_field
 

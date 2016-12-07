@@ -11,7 +11,7 @@ function varargout = spectrum_from_signal(signal,conf)
 %       amplitude   - single-sided amplitude spectrum of the input signal
 %       phase       - single-sided phase spectrum of the input signal / rad
 %       f           - corresponding frequency axis for the spectrum
-%                     (=> plot(f,amplitude) / Hz
+%                     => plot(f,amplitude) / Hz
 %
 %   SPECTRUM_FROM_SIGNAL(signal,conf) calculates the single-sided amplitude and
 %   phase spectra of a time signal by using the fast Fourier transformation.
@@ -72,25 +72,25 @@ bins = length(signal);
 
 if mod(bins,2)  % For odd signal length
     % Calculate corresponding frequency axis
-    f = fs / bins * (0:(bins-1) / 2)';
-    % Get amplitude and phase spectra (and use only the first half of the
-    %>spectrum [0, fs/2[ )
+    f = fs/bins * (0:(bins-1)/2)';
+    % Get amplitude and phase spectra and use only the first half of the
+    %>spectrum [0, fs/2[
     amplitude = abs(compspec(1:length(f)));
     phase = angle(compspec(1:length(f)));
     % Scale the amplitude (factor two for mirrored frequencies
     %>divide by number of bins)
-    amplitude = [amplitude(1); 2 * amplitude(2:end)] / bins;
+    amplitude = [amplitude(1); 2*amplitude(2:end)] / bins;
 
 else  % For even signal length
     % Calculate corresponding frequency axis
-    f = fs / bins * (0:bins / 2)';
-    % Get amplitude and phase spectra (and use only the first half of the
-    %>spectrum [0, fs/2] )
+    f = fs/bins * (0:bins / 2)';
+    % Get amplitude and phase spectra and use only the first half of the
+    %>spectrum [0, fs/2]
     amplitude = abs(compspec(1:length(f)));
     phase = angle(compspec(1:length(f)));
     % Scale the amplitude (factor two for mirrored frequencies
     %>divide by number of bins)
-    amplitude = [amplitude(1); 2 * amplitude(2:end-1); amplitude(end)] / bins;
+    amplitude = [amplitude(1); 2*amplitude(2:end-1); amplitude(end)] / bins;
 end
 
 % Return values
@@ -104,8 +104,8 @@ if nargout==0 || useplot
     figure; title('Spectrum');
     subplot(2,1,1)
     semilogx(f,20 * log10(abs(amplitude))); xlim([1, fs/2]);
-    grid on; xlabel('Frequency / Hz'); ylabel('Amplitude / dB')
+    grid on; xlabel('frequency / Hz'); ylabel('amplitude / dB')
     subplot(2,1,2)
     semilogx(f,unwrap(phase)); xlim([1, fs/2]);
-    grid on; xlabel('Frequency / Hz'); ylabel('Phase / rad')
+    grid on; xlabel('frequency / Hz'); ylabel('phase / rad')
 end

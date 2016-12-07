@@ -63,7 +63,7 @@ fs = conf.fs;
 % Provided number of frequency bins
 bins = length(f);
 
-if f(end) == fs / 2  % -> even time signal length
+if f(end) == fs/2  % -> even time signal length
     % Length of the signal to generate
     samples = 2 * (bins-1);
     % Rescaling (see spectrum_from_signal())
@@ -75,17 +75,17 @@ if f(end) == fs / 2  % -> even time signal length
 
 else  % -> odd time signal length
     % Length of the signal to generate
-    samples = 2 * (bins) -1;
+    samples = 2*bins - 1;
     % Rescaling (see signal_from_spectrum)
-    amplitude = [amplitude(1); amplitude(2:end) / 2] * samples;
+    amplitude = [amplitude(1); amplitude(2:end)/2] * samples;
     % Mirror the amplitude spectrum ( 2*pi periodic [0, fs-bin] )
     amplitude = [amplitude; amplitude(end:-1:2)];
     % Mirror the phase spectrum and build the inverse (complex conjugate)
-    phase = [phase; -1 * phase(end:-1:2)];
+    phase = [phase; -1*phase(end:-1:2)];
 end
 
 % Convert to complex spectrum
-compspec = amplitude .* exp(1i * phase);
+compspec = amplitude .* exp(1i*phase);
 
 % Build the inverse fft and assume spectrum is conjugate symmetric
 outsig = real(ifft(compspec));

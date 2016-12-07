@@ -82,11 +82,6 @@ if strcmp('2D',conf.dimension)
 else
     greens_function = 'ps';
 end
-usehpre = conf.wfs.usehpre;
-hpretype = conf.wfs.hpretype;
-hpreFIRorder = conf.wfs.hpreFIRorder;
-c = conf.c;
-fs = conf.fs;
 
 
 %% ===== Computation =====================================================

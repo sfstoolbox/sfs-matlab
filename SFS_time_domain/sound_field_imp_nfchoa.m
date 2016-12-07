@@ -82,13 +82,13 @@ if strcmp('2D',conf.dimension)
 else
     greens_function = 'ps';
 end
-fs = conf.fs;
+
 
 %% ===== Computation =====================================================
 % Get secondary sources
 x0 = secondary_source_positions(conf);
 % Calculate driving function
-[d, ~, delay_offset] = driving_function_imp_nfchoa(x0,xs,src,conf);
+[d,~,delay_offset] = driving_function_imp_nfchoa(x0,xs,src,conf);
 % Ensure virtual source/secondary source activity starts at t = 0
 t = t + delay_offset;
 % Calculate sound field

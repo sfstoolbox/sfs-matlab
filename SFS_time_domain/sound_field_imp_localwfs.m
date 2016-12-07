@@ -65,6 +65,7 @@ function varargout = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 %% ===== Checking of input  parameters ==================================
 nargmin = 7;
 nargmax = 7;
@@ -78,23 +79,23 @@ isargstruct(conf);
 
 %% ===== Configuration ==================================================
 fs = conf.fs;
+useplot = conf.plot.useplot;
 if strcmp('2D',conf.dimension)
     greens_function = 'ls';
 else
     greens_function = 'ps';
 end
-useplot = conf.plot.useplot;
-
 compensate_wfs_fir_delay = ...
     (conf.wfs.usehpre && strcmp(conf.wfs.hpretype,'FIR'));
 compensate_local_wfs_fir_delay = ...
     (conf.localsfs.wfs.usehpre && strcmp(conf.localsfs.wfs.hpretype,'FIR'));
 
+
 %% ===== Computation =====================================================
 % Get secondary sources
 x0 = secondary_source_positions(conf);
 % Get driving signals
-[d, x0, xv] = driving_function_imp_localwfs(x0,xs,src,conf);
+[d,x0,xv] = driving_function_imp_localwfs(x0,xs,src,conf);
 % Fix the time to account for sample offset of FIR pre-equalization filters
 if (compensate_wfs_fir_delay && compensate_local_wfs_fir_delay)
     t = t + (conf.wfs.hpreFIRorder/2 + ...
@@ -113,8 +114,8 @@ if nargout==5, varargout{5}=x0; end
 
 % === Plotting ===
 if nargout==0 || useplot
-  hold on
+    hold on
     dimensions = xyz_axes_selection(X,Y,Z);
-    draw_loudspeakers(xv, dimensions, conf);
-  hold off
+    draw_loudspeakers(xv,dimensions,conf);
+    hold off
 end

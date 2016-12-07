@@ -54,9 +54,8 @@ function ir = ir_correct_distance(ir,ir_distance,r,conf)
 
 %% ===== Configuration ==================================================
 c = conf.c;
-fs = conf.fs;
 N = conf.N;
-hrirpredelay = conf.ir.hrirpredelay;
+hrirpredelay = conf.ir.hrirpredelay / conf.fs;
 
 
 %% ===== Computation ====================================================
@@ -67,7 +66,7 @@ ir = cat(3,ir,zeros(size(ir,1),size(ir,2),N-ir_origlength));
 % This gives weight=1 for r==ir_distance
 weight = ir_distance./r;
 % Time delay of the source (at the listener position)
-delay = r/c*fs - hrirpredelay; % / samples
+delay = r/c - hrirpredelay; % / s
 % Check if impulse responses are long enough compared to intended delay
 if conf.N-delay<ir_origlength
     warning('SFS:get_ir',['%s: Choose a conf.N value larger than %i. ', ...

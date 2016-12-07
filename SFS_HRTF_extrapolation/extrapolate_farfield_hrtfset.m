@@ -161,8 +161,6 @@ for ii=1:nls
     conf.wfs.usehpre = false;
     [~,delay,weight] = driving_function_imp_wfs(x0,xs,'pw',conf);
     conf.wfs.usehpre = tmp_usehpre;
-    % Delay in samples
-    delay = delay.*fs;
     % Sum up contributions from individual virtual speakers
     for jj=1:size(x0,1)
         % Delay and weight HRTFs

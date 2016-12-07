@@ -55,12 +55,11 @@ narginchk(nargmin,nargmax);
 
 %% ===== Configuration ==================================================
 % Delays to evaluate
-dt=[-5 -2.5 0 2.5 5];
+dt = [-5 -2.5 0 2.5 5];
 %dt=[-1 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
 %dt=[0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1];
 %dt=1*[0 0.01 0.02 0.03 0.04 0.05 0.06 0.07 0.08 0.09 0.1];
 %dt=linspace(0,2,200);
-% Parameters for delayline
 
 % Length of input signal
 L=256;
@@ -72,6 +71,7 @@ wpi2=wpi(2:L);
 insig = zeros(L,1);
 insig(L/2) = 1;
 
+conf.fs = 44100;
 conf.delayline.filterorder = 4;  % / 1
 conf.delayline.resamplingfactor = 4;  % / 1
 conf.delayline.resamplingorder = 128; % / 1
@@ -85,7 +85,7 @@ for resampling = {'none', 'matlab', 'pm'}
         % --- Computation ---
         % Test all given delays
         for n=1:length(dt)
-            [outsig(:,n), delay_offset] = delayline(insig,dt(n),1,conf);
+            [outsig(:,n), delay_offset] = delayline(insig,dt(n)/conf.fs,1,conf);
             H(:,n) = freqz(outsig(:,n),1,wpi);
             magresp(:,n) = abs(H(:,n));
             uwphase(:,n)=-unwrap(angle(H(:,n)));
@@ -120,7 +120,7 @@ for resampling = {'none', 'matlab', 'pm'}
             title(['resample: ', resampling{:}, ', filter: ', filter{:},' - impulse response']);
             caxis([-100 10]);
             ylabel('samples');
-            xlabel('delay');
+            xlabel('delay / samples');
             set(gca,'XTick',dt)
             turn_imagesc;
             colorbar;

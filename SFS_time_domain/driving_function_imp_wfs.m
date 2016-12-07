@@ -20,7 +20,7 @@ function [d,delay,weight,delay_offset] = driving_function_imp_wfs(x0,xs,src,conf
 %       d               - driving signals [mxn]
 %       delay           - delay of the driving function / s [nx1]
 %       weight          - weight (amplitude) of the driving function [nx1]
-%       delay_offset    - additional added delay, so you can correct it
+%       delay_offset    - additional added delay / s
 %
 %   DRIVING_FUNCTION_IMP_WFS(x0,xs,src,conf) returns the driving signals and
 %   weighting and delay parameters of the WFS driving function for the given
@@ -145,6 +145,6 @@ end
 % delay them. NOTE: this can be changed by the conf.N setting
 d_proto = repmat([row_vector(pulse) zeros(1,N-length(pulse))]',1,size(x0,1));
 % Shift and weight prototype driving function
-[d, delayline_delay] = delayline(d_proto,delay*fs,weight,conf);
+[d, delayline_delay] = delayline(d_proto,delay,weight,conf);
 % Add delay offset of delayline
-delay_offset = delay_offset + delayline_delay/fs;
+delay_offset = delay_offset + delayline_delay;

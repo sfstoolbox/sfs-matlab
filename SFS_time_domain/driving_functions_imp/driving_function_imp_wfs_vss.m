@@ -106,6 +106,6 @@ for idx=1:Nv
         % Shift and weight prototype driving function
         pulse = repmat(dv(:,idx), 1, sum(xdx));
         d(:,xdx) = d(:,xdx) + ...
-            delayline(pulse,delay(xdx,idx)*fs,weight(xdx,idx),conf);
+            delayline(pulse,delay(xdx,idx),weight(xdx,idx),conf);
     end
 end

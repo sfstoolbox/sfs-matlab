@@ -16,7 +16,8 @@ function D = driving_function_mono_wfs_fs(x0,nx0,xs,f,conf)
 %
 %   DRIVING_FUNCTION_MONO_WFS_FS(x0,xs,f,src,conf) returns WFS driving signals
 %   for the given secondary sources, the virtual focused source position and the
-%   frequency f.
+%   frequency f. For 3D and 2.5D the default behavior is to use a focused point
+%   source as source model, for 2D a focused line source is used instead.
 %
 %   References:
 %       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
@@ -60,7 +61,7 @@ function D = driving_function_mono_wfs_fs(x0,nx0,xs,f,conf)
 %*****************************************************************************
 
 
-%% ===== Checking of input  parameters ==================================
+%% ===== Checking of input  parameters ===================================
 nargmin = 4;
 nargmax = 5;
 narginchk(nargmin,nargmax);
@@ -73,45 +74,28 @@ else
 end
 
 
-%% ===== Configuration ==================================================
+%% ===== Configuration ===================================================
 xref = conf.xref;
 c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
 
 
-%% ===== Computation ====================================================
+%% ===== Computation =====================================================
 % Calculate the driving function in time-frequency domain
 
 % Frequency
 omega = 2*pi*f;
 
-if strcmp('2D',dimension)
-    % === 2-Dimensional ============================================
 
-    switch driving_functions
-      case {'default', 'line_sink'}
-        % D using a line sink as source model
-        %
-        %              iw (x0-xs)nk  (1)/ w         \
-        % D(x0,w) =  - -- --------- H1  | - |x0-xs| |
-        %              2c  |x0-xs|      \ c         /
-        %
-        % compare Wierstorf et al. (2015), eq.(#D:wfs:fs:ls)
-        %
-        % r = |x0-xs|
-        r = vector_norm(x0-xs,2);
-        % Driving signal
-        D = -1i*omega/(2*c) .* vector_product(x0-xs,nx0,2) ./ r .* ...
-            besselh(1,1,omega/c.*r);
-      otherwise
-        error(['%s: %s, this type of driving function is not implemented ', ...
-          'for a focused source.'],upper(mfilename),driving_functions);
+if strcmp('2D',dimension) || strcmp('3D',dimension)
+
+    % === 2- or 3-Dimensional ============================================
+
+    % For 2D the default focussed source should be a line sink
+    if strcmp('2D',dimension) && strcmp('default',driving_functions)
+        driving_functions = 'line_sink';
     end
-    
-elseif strcmp('3D',dimension)
-
-    % === 3-Dimensional ============================================
 
     if strcmp('default',driving_functions)
         % --- SFS Toolbox ------------------------------------------------

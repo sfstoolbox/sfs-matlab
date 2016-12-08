@@ -16,60 +16,54 @@ function D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf)
 %   Output parameters:
 %       D           - driving function signal [nx1]
 %
+%   See also: driving_function_mono_wfs, driving_function_mono_wfs_fs
+
 %   References:
 %       S. Spors, J.Ahrens (2010) - "Local Sound Field Synthesis by Virtual
 %                                    Secondary Sources", 40th AES
-%
-%   See also: driving_function_mono_wfs, driving_function_mono_wfs_fs
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
+nargmin = 5;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargvector(Dv);
 isargpositivescalar(f);
 isargsecondarysource(x0,xv);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
 dimension = conf.dimension;
+conf.driving_functions = conf.localsfs.vss.driving_functions;
 
 
 %% ===== Computation ====================================================
@@ -103,12 +97,12 @@ N0 = size(x0,1);
 Dmatrix = zeros(N0,Ns);
 
 for idx=1:Ns
-  [xtmp, xdx] = secondary_source_selection(x0,xv(idx,1:6),'fs');
-  if (~isempty(xtmp))
-    xtmp = secondary_source_tapering(xtmp,conf);
-    Dmatrix(xdx,idx) = ...
-        driving_function_mono_wfs(xtmp,xv(idx,1:3),'fs',f,conf) .* xtmp(:,7);
-  end
+    [xtmp, xdx] = secondary_source_selection(x0,xv(idx,1:6),'fs');
+    if (~isempty(xtmp))
+        xtmp = secondary_source_tapering(xtmp,conf);
+        Dmatrix(xdx,idx) = ...
+            driving_function_mono_wfs(xtmp,xv(idx,1:3),'fs',f,conf) .* xtmp(:,7);
+    end
 end
 
 D = Dmatrix*(Dv.*xv(:,7));

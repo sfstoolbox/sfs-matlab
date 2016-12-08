@@ -1,13 +1,13 @@
-function [P,x,y,z] = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
-%SOUND_FIELD_SDM_WFS_25D_KX simulates the sound field of a given source for SDM
+function varargout = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
+%SOUND_FIELD_MONO_SDM_KX simulates the sound field of a given source for SDM
 %in the kx domain
 %
-%   Usage: [P,x,y,z] = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,[conf])
+%   Usage: [P,x,y,z] = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
 %
 %   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax]
-%       Y           - y-axis / m; single value or [ymin,ymax]
-%       Z           - z-axis / m; single value or [zmin,zmax]
+%       X           - x-axis / m; [xmin,xmax]
+%       Y           - y-axis / m; [ymin,ymax]
+%       Z           - z-axis / m; single value
 %       xs          - position of point source / m
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
@@ -15,7 +15,7 @@ function [P,x,y,z] = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
 %                         'ps' - point source
 %                         'fs' - focused source
 %       f           - monochromatic frequency / Hz
-%       conf        - optional configuration struct (see SFS_config)
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       P           - Simulated sound field
@@ -23,14 +23,17 @@ function [P,x,y,z] = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
 %       y           - corresponding y axis / m
 %       z           - corresponding z axis / m
 %
-%   SOUND_FIELD_MONO_SDM_KX(X,Y,Z,xs,src,f,conf) simulates a sound field of
-%   the given source type (src) using a SDM driving function in the
-%   spectro-temporal freqeuncy domain. Note, that the linaer secondary sources are
-%   placed automatically on a line parrallel to the x-axis accordingly to
-%   conf.secondary_sources.center. The field can only be calculated in the
-%   xy-plane, meaning only Z=0 is allowed.
-%   To plot the result use plot_sound_field(P,x,y,z).
+%   SOUND_FIELD_MONO_SDM_KX(X,Y,Z,xs,src,f,conf) simulates a monochromatic sound
+%   field of the given source type (src) synthesized with the spectral devision
+%   method (SDM). Note, that the linaer secondary sources are placed automatically
+%   on a line parrallel to the x-axis accordingly to conf.secondary_sources.center.
+%   The field can only be calculated in the xy-plane, meaning only Z=0 is allowed.
 %
+%   To plot the result use:
+%   plot_sound_field(P,X,Y,Z,conf);
+%   or simple call the function without output argument:
+%   sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
+%%
 %   NOTE: due to numerical problems with the fft and the bessel functions needed
 %   in SDM (which resulted in an imaginary part which is hundreds of orders
 %   greater/smaller than the real part) the FFT is done by hand in this
@@ -47,40 +50,37 @@ function [P,x,y,z] = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
 %   See also: plot_sound_field, sound_field_mono_sdm
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 6;
+nargmin = 7;
 nargmax = 7;
 narginchk(nargmin,nargmax);
 isargvector(X,Y,Z);
@@ -91,11 +91,7 @@ end
 isargxs(xs);
 isargpositivescalar(f);
 isargchar(src);
-if nargin<nargmax
-    conf = SFS_config;
-else
-    isargstruct(conf);
-end
+isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
@@ -116,7 +112,10 @@ kxal = omega/c;
 % Factor by which kx is extended of kx = omega/c criteria
 Nkx=1.5;
 kx = linspace(-Nkx*kxal,Nkx*kxal,Nkx*resolution*10);
-[~,~,~,x,y,z] = xyz_grid(X,Y,Z,conf);
+% Create axes
+x = linspace(X(1),X(2),resolution);
+y = linspace(Y(1),Y(2),resolution);
+z = Z;
 % Indexes for evanescent contributions and propagating part of the sound field
 idxpr = (( abs(kx) <= (omega/c) ));
 idxev = (( abs(kx) > (omega/c) ));
@@ -133,11 +132,11 @@ Gkx = zeros(length(kx),length(y));
 % G_3D(kx,y,w) = <                ____________
 %                 \ 1/(2pi) K0( \|kx^2-(w/c)^2 y )
 %
-[K,Y] = meshgrid(kx(idxpr),abs(y-X0(2)));
-Gkx(idxpr,:) = -1j/4 .* besselh(0,2,sqrt( (omega/c)^2 - K.^2 ).* Y).';
+[kk,yy] = meshgrid(kx(idxpr),abs(y-X0(2)));
+Gkx(idxpr,:) = -1j/4 .* besselh(0,2,sqrt( (omega/c)^2 - kk.^2 ).* yy).';
 if(withev)
-    [K,Y] = meshgrid(kx(idxev),abs(y-X0(2)));
-    Gkx(idxev,:) = 1/(2*pi) .* besselk(0,sqrt( K.^2 - (omega/c)^2).* Y).';
+    [kk,yy] = meshgrid(kx(idxev),abs(y-X0(2)));
+    Gkx(idxev,:) = 1/(2*pi) .* besselk(0,sqrt( kk.^2 - (omega/c)^2).* yy).';
 end
 
 % ========================================================================
@@ -156,7 +155,7 @@ Pkx = repmat(Dkx.',1,length(y)) .* Gkx;
 
 
 %% ===== Inverse spatial Fourier transformation =========================
-% 
+%
 %            /
 % P(x,y,w) = | Pkx(kx,y,w) * e^(-i kx x) dkx
 %            /
@@ -170,10 +169,14 @@ for n=1:length(x)
     P(:,n) = sum ( Pkx .* repmat(exp(-1j*kx*x(n))',1,resolution),1 )';
 end
 
-% === Scale signal (at xref) ===
-P = norm_sound_field_at_xref(P,x,y,z,conf);
+% return parameter
+if nargout>0, varargout{1}=P; end
+if nargout>1, varargout{2}=x; end
+if nargout>2, varargout{3}=y; end
+if nargout>3, varargout{4}=z; end
+
 
 %% ===== Plotting ========================================================
 if nargout==0 || useplot
-    plot_sound_field(P,x,y,z,conf);
+    plot_sound_field(P,X,Y,Z,conf);
 end

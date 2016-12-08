@@ -1,7 +1,7 @@
-function [ir,x0] = ir_nfchoa(X,phi,xs,src,irs,conf)
+function [ir,x0,delay] = ir_nfchoa(X,phi,xs,src,sofa,conf)
 %IR_NFCHOA generates a binaural simulation of NFCHOA
 %
-%   Usage: [ir,x0] = ir_nfchoa(X,phi,xs,src,irs,[conf])
+%   Usage: [ir,x0,delay] = ir_nfchoa(X,phi,xs,src,sofa,conf)
 %
 %   Input parameters:
 %       X       - listener position / m
@@ -10,65 +10,61 @@ function [ir,x0] = ir_nfchoa(X,phi,xs,src,irs,conf)
 %       xs      - virtual source position [ys > Y0 => focused source] / m
 %       src     - source type: 'pw' -plane wave
 %                              'ps' - point source
-%       irs     - IR data set for the secondary sources
-%       conf    - optional configuration struct (see SFS_config) 
+%       sofa    - impulse response data set for the secondary sources
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ir      - impulse response for the desired HOA synthesis (nx2 matrix)
 %       x0      - secondary sources
+%       delay   - delay added by driving function / s
 %
-%   IR_NFCHOA(X,phi,xs,src,L,irs,conf) calculates a binaural room impulse
+%   IR_NFCHOA(X,phi,xs,src,L,sofa,conf) calculates a binaural room impulse
 %   response for a virtual source at xs for a virtual NFCHOA array and a
 %   listener located at X.
 %
 %   See also: ssr_brs_nfchoa, ir_nfchoa, ir_point_source, auralize_ir
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
+nargmin = 6;
 nargmax = 6;
 narginchk(nargmin,nargmax);
-if nargin==nargmax-1
-    conf = SFS_config;
-end
 if conf.debug
     isargposition(X);
     isargxs(xs);
     isargscalar(phi);
     isargpositivescalar(L);
     isargchar(src);
+    isargstruct(config);
 end
 
 
@@ -79,6 +75,6 @@ x0 = secondary_source_positions(conf);
 
 %% ===== BRIR ===========================================================
 % Calculate driving function
-d = driving_function_imp_nfchoa(x0,xs,src,conf);
+[d,~,delay] = driving_function_imp_nfchoa(x0,xs,src,conf);
 % Generate the impulse response for NFCHOA
-ir = ir_generic(X,phi,x0,d,irs,conf);
+ir = ir_generic(X,phi,x0,d,sofa,conf);

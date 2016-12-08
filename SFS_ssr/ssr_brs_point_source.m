@@ -2,70 +2,63 @@ function brs = ssr_brs_point_source(X,phi,xs,irs,conf)
 %SSR_BRS_POINT_SOURCE generates a binaural room scanning (BRS) set for use with
 %the SoundScape Renderer
 %
-%   Usage: brs = ssr_brs_point_source(X,phi,xs,irs,[conf])
+%   Usage: brs = ssr_brs_point_source(X,phi,xs,irs,conf)
 %
 %   Input parameters:
 %       X       - listener position / m
 %       phi     - listener direction [head orientation] / rad
 %       xs      - source position / m
 %       irs     - IR data set for the second sources
-%       conf    - optional configuration struct (see SFS_config)
+%       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       brs     - conf.N x 2*nangles matrix containing all impulse responses (2
-%                 channels) for every angles of the BRS set
+%                 channels) for every angle of the BRS set
 %
-%   SSR_BRS_POINT_SOURCE(X,phi,xs,irs,conf) prepares a BRS set for
-%   a reference source (single point source) for the given listener
-%   position.
-%   One way to use this BRS set is using the SoundScapeRenderer (SSR), see
+%   SSR_BRS_POINT_SOURCE(X,phi,xs,irs,conf) prepares a BRS set for a reference
+%   source (single point source) for the given listener position. One way to use
+%   this BRS set is using the SoundScapeRenderer (SSR), see
 %   http://spatialaudio.net/ssr/
 %
 %   See also: ir_generic, ir_point_source, get_ir
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
+nargmin = 5;
 nargmax = 5;
 narginchk(nargmin,nargmax);
 isargposition(X);
 isargxs(xs);
 isargscalar(phi);
-if nargin<nargmax
-    conf = SFS_config;
-end
 isargstruct(conf);
 
 

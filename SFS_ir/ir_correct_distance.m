@@ -11,95 +11,68 @@ function ir = ir_correct_distance(ir,ir_distance,r,conf)
 %                       N ... number of samples
 %       ir_distance - distance of the given impulse responses [M 1]
 %       r           - desired distance [1]
-%       conf        - configuration struct (see SFS_config), containing:
-%                       conf.c
-%                       conf.fs
-%                       conf.N
-%                       conf.ir.useoriglength
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output paramteres:
 %       ir          - impulse responses [M C N]
 %
 %   IR_CORRECT_DISTANCE(ir,ir_distance,r,conf) weights and delays the given
 %   impulse responses, that they are conform with the specified distance r.
+%   The impulse responses are zero-padded to length conf.N.
 %
 %   See also: get_ir
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
-
-
-%% ===== Checking of input  parameters ==================================
-%nargmin = 4;
-%nargmax = 4;
-%narginchk(nargmin,nargmax);
 
 
 %% ===== Configuration ==================================================
 c = conf.c;
 fs = conf.fs;
-useoriglength = conf.ir.useoriglength;
-%N = conf.N; is used if useoriglength==false
+N = conf.N;
+hrirpredelay = conf.ir.hrirpredelay;
 
 
 %% ===== Computation ====================================================
-% Stop extrapolation for distances larger than 10m
-if any(ir_distance>10)
-    ir_distance = min(ir_distance,10);
-    warning(['%s: Your desired radius is larger than 10m, but we will ', ...
-        'only extrapolate up to 10m. All larger radii will be set to ', ...
-        '10m.'],upper(mfilename));
-end
-% Append zeros at the beginning of the impulse responses corresponding to
-% its maximum radius
-if ~useoriglength
-    zero_padding = ceil(ir_distance/c * fs);
-    if conf.N-zero_padding<128
-        error(['%s: choose a larger conf.N value, because otherwise you ', ...
-            'will have only %i samples of your original impulse response.'], ...
-            upper(mfilename),conf.N-zero_padding);
-    end
-else
-    zero_padding = 0;
-end
-% Time delay of the source (at the listener position)
-delay = (r-ir_distance)/c*fs; % / samples
+% Append zeros at the end of the impulse responses to reach a length of N
+ir_origlength = size(ir,3);
+ir = cat(3,ir,zeros(size(ir,1),size(ir,2),N-ir_origlength));
 % Amplitude weighting (point source model)
 % This gives weight=1 for r==ir_distance
 weight = ir_distance./r;
-if abs(delay)>size(ir,3)
-    error(['%s: your impulse response is to short for a desired ', ...
-        'delay of %.1f samples.'],upper(mfilename),delay);
+% Time delay of the source (at the listener position)
+delay = r/c*fs - hrirpredelay; % / samples
+% Check if impulse responses are long enough compared to intended delay
+if conf.N-delay<ir_origlength
+    warning('SFS:get_ir',['%s: Choose a conf.N value larger than %i. ', ...
+        'Otherwise you will lose samples from the end of the original ', ...
+        'impulse response.'],upper(mfilename),ceil(ir_origlength+delay));
 end
 % Apply delay and weighting
-ir = delayline(ir,[delay+zero_padding; delay+zero_padding], ...
-               [weight; weight],conf);
+ir = delayline(ir,delay,[weight; weight],conf);

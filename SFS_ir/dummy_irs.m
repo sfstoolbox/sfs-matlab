@@ -1,16 +1,16 @@
 function sofa = dummy_irs(nsamples,conf)
 % DUMMY_IRS creates a dummy dirac pulse impulse response set
 %
-%   Usage: irs = dummy_irs([nsamples],[conf])
+%   Usage: irs = dummy_irs([nsamples],conf)
 %
 %   Input parameters:
 %       nsamples  - length of impulse response in samples, default: 1024
-%       conf      - optional configuration struct (see SFS_config)
+%       conf      - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       sofa      - sofa struct
 %
-%   DUMMY_IRS(nsamples) creates a dummy impulse response data set (Dirac
+%   DUMMY_IRS(nsamples,conf) creates a dummy impulse response data set (Dirac
 %   impulse) to check processing without real impulse responses. It returns only
 %   one Dirac impulse, which is then applied for all direction if you for
 %   example use it together with ir_wfs().
@@ -18,69 +18,59 @@ function sofa = dummy_irs(nsamples,conf)
 %   See also: SOFAgetConventions, get_ir, ir_wfs
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
 %% ===== Checking input parameters =======================================
-nargmin = 0;
+nargmin = 1;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-if nargin==2
-    isargpositivescalar(nsamples);
-    isargstruct(conf);
-elseif nargin==1
-    if isstruct(nsamples)
-        conf = nsamples;
-        nsamples = 1024;
-    else
-        conf = SFS_config;
-        isargpositivescalar(nsamples);
-    end
-else
+if nargin<nargmax
+    conf = nsamples;
     nsamples = 1024;
-    conf = SFS_config;
 end
+isargpositivescalar(nsamples);
+isargstruct(conf);
 
 
 %% ===== Configuration ===================================================
 fs = conf.fs;
 c = conf.c;
-dirac_position = 300;
+distance = 1;
+dirac_position = 1;
 
 
 %% ===== Computation =====================================================
 ir = zeros(1,2,nsamples);
-% Create dirac pulse
-ir(:,:,dirac_position) = 1;
+% Create dirac pulse in first sample as the delay corresponding to the distance
+% is handled by get_ir() later on
+ir(:,:,dirac_position) = 1/(4*pi);
 % Store data
 sofa = SOFAgetConventions('SimpleFreeFieldHRIR');
 sofa.Data.IR = ir;
@@ -95,6 +85,5 @@ sofa.ListenerView = [1 0 0];
 sofa.ListenerUp = [0 0 1];
 elevation = 0;
 azimuth = 0;
-distance = dirac_position/fs*c;
 sofa.SourcePosition = [nav2sph(azimuth) elevation distance];
 sofa = SOFAupdateDimensions(sofa);

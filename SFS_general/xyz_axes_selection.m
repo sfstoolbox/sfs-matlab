@@ -1,55 +1,53 @@
 function [dimensions,x1,x2,x3] = xyz_axes_selection(x,y,z)
-%XYZ_AXES_SELECTION returns the first two active dimensions and a vector
+%XYZ_AXES_SELECTION returns the first non-singleton axes and a vector
 %indicating which axes are selected
 %
 %   Usage: [dimensions,x1,x2,x3] = xyz_axes_selection(x,y,z)
 %
 %   Input options:
-%       x,y,z      - vectors conatining the x-, y- and z-axis values / m
+%       x,y,z      - vectors/matrices containing the x-, y- and z-axis values / m
 %
 %   Output options:
 %       dimensions - 1x3 vector containing 1 or 0 to indicate the activity
 %                    of the single dimensions in the order [x y z]
-%       x1         - vector containing the first axis / m
-%       x2         - vector containing the second axis / m
-%       x3         - vector containing the third axis / m
+%       x1         - vector/matrix containing the first axis / m
+%       x2         - vector/matrix containing the second axis / m
+%       x3         - vector/matrix containing the third axis / m
 %
 %   XYZ_AXES_SELECTION(x,y,z) returns a indicating vector for the x-, y- and
 %   z-axis if we have any activity on this axis or if it is a singleton axis.
-%   In addition the first non-singleton axis are returned.
+%   In addition, the axes are reordered starting first with the non-singleton
+%   axes.
 %
-%   See also: norm_wavefield, plot_wavefield, xyz_axes, xyz_grid
+%   See also: plot_sound_field, xyz_grid, is_dim_custom
 
 %*****************************************************************************
-% Copyright (c) 2010-2015 Quality & Usability Lab, together with             *
-%                         Assessment of IP-based Applications                *
-%                         Telekom Innovation Laboratories, TU Berlin         *
-%                         Ernst-Reuter-Platz 7, 10587 Berlin, Germany        *
+% The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2013-2015 Institut fuer Nachrichtentechnik                   *
-%                         Universitaet Rostock                               *
-%                         Richard-Wagner-Strasse 31, 18119 Rostock           *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
-% This file is part of the Sound Field Synthesis-Toolbox (SFS).              *
+% Permission is hereby granted,  free of charge,  to any person  obtaining a *
+% copy of this software and associated documentation files (the "Software"), *
+% to deal in the Software without  restriction, including without limitation *
+% the rights  to use, copy, modify, merge,  publish, distribute, sublicense, *
+% and/or  sell copies of  the Software,  and to permit  persons to whom  the *
+% Software is furnished to do so, subject to the following conditions:       *
 %                                                                            *
-% The SFS is free software:  you can redistribute it and/or modify it  under *
-% the terms of the  GNU  General  Public  License  as published by the  Free *
-% Software Foundation, either version 3 of the License,  or (at your option) *
-% any later version.                                                         *
+% The above copyright notice and this permission notice shall be included in *
+% all copies or substantial portions of the Software.                        *
 %                                                                            *
-% The SFS is distributed in the hope that it will be useful, but WITHOUT ANY *
-% WARRANTY;  without even the implied warranty of MERCHANTABILITY or FITNESS *
-% FOR A PARTICULAR PURPOSE.                                                  *
-% See the GNU General Public License for more details.                       *
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR *
+% IMPLIED, INCLUDING BUT  NOT LIMITED TO THE  WARRANTIES OF MERCHANTABILITY, *
+% FITNESS  FOR A PARTICULAR  PURPOSE AND  NONINFRINGEMENT. IN NO EVENT SHALL *
+% THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER *
+% LIABILITY, WHETHER  IN AN  ACTION OF CONTRACT, TORT  OR OTHERWISE, ARISING *
+% FROM,  OUT OF  OR IN  CONNECTION  WITH THE  SOFTWARE OR  THE USE  OR OTHER *
+% DEALINGS IN THE SOFTWARE.                                                  *
 %                                                                            *
-% You should  have received a copy  of the GNU General Public License  along *
-% with this program.  If not, see <http://www.gnu.org/licenses/>.            *
+% The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
+% methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% The SFS is a toolbox for Matlab/Octave to  simulate and  investigate sound *
-% field  synthesis  methods  like  wave  field  synthesis  or  higher  order *
-% ambisonics.                                                                *
-%                                                                            *
-% http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
+% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
@@ -57,50 +55,16 @@ function [dimensions,x1,x2,x3] = xyz_axes_selection(x,y,z)
 nargmin = 3;
 nargmax = 3;
 narginchk(nargmin,nargmax);
-isargvector(x,y,z);
+isargnumeric(x,y,z);
 
 
 %% ===== Computation =====================================================
-dimensions = [1 1 1];
-% Check if we have any inactive dimensions
-if x(1)==x(end)
-    dimensions(1) = 0;
-end
-if y(1)==y(end)
-    dimensions(2) = 0;
-end
-if z(1)==z(end)
-    dimensions(3) = 0;
-end
+dims = {x,y,z};
+dimensions = ~is_dim_singleton(dims{:});
+Nd = sum(dimensions);
 
-% Return the axis
-x1=x;
-x2=y;
-x3=z;
-if all(dimensions)
-    % Do nothing
-elseif dimensions(1) && dimensions(2)
-    x3=z(1);
-elseif dimensions(1) && dimensions(3)
-    x2=z;
-    x3=y(1);
-elseif dimensions(2) && dimensions(3)
-    x1=y;
-    x2=z;
-    x3=x(1);
-elseif dimensions(1)
-    x2=y(1);
-    x3=z(1);
-elseif dimensions(2)
-    x1=y;
-    x2=x(1);
-    x3=z(1);
-elseif dimensions(3)
-    x1=z;
-    x2=x(1);
-    x3=z(1);
-else
-    x1=x(1);
-    x2=y(1);
-    x3=z(1);
-end
+newdims = {x(1),y(1),z(1)};  % default case, if all dimensions are singleton
+newdims(Nd+1:end) = newdims(~dimensions); % move singleton dimensions to the end
+newdims(1:Nd) = dims(dimensions);  % move non-singleton dimensions to the front
+
+[x1, x2, x3] = newdims{:};

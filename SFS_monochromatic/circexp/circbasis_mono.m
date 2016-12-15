@@ -1,10 +1,10 @@
-function [Jn, H2n, Yn]  = circbasis_mono(r, phi, Nce, k, conf)
+function [Jn,H2n,Yn] = circbasis_mono(r,phi,Nce,k,conf)
 %CIRCBASIS_MONO evaluates circular basis functions for given input arguments
 %
-%   Usage: [Jn, H2n, Yn]  = circbasis_mono(r, phi, Nce, k, conf)
+%   Usage: [Jn,H2n,Yn]  = circbasis_mono(r,phi,Nce,k,conf)
 %
 %   Input parameters:
-%       r           - distance from z-axis in cylindrical coordinates 
+%       r           - distance from z-axis in cylindrical coordinates
 %       phi         - azimuth angle in cylindrical coordinates
 %       k           - wave number
 %       conf        - optional configuration struct (see SFS_config)
@@ -78,17 +78,16 @@ Yn = cell(L,1);
 
 l = 0;
 for n=-Nce:0
-  % negative n
-  l = l + 1;
-  Jn{l} = besselj(n,kr);
-  H2n{l} = Jn{l} - 1j*bessely(n,kr);
-  Yn{l} = exp(1j*n*phi);
-  % positive n
-  Jn{L-l+1} = (-1)^n*Jn{l};
-  H2n{L-l+1} = (-1)^n*H2n{l};
-  Yn{L-l+1} = conj(Yn{l});  
-  if showprogress, progress_bar(n+Nce,Nce); end  % progress bar
+    % negative n
+    l = l + 1;
+    Jn{l} = besselj(n,kr);
+    H2n{l} = Jn{l} - 1j*bessely(n,kr);
+    Yn{l} = exp(1j*n*phi);
+    % positive n
+    Jn{L-l+1} = (-1)^n*Jn{l};
+    H2n{L-l+1} = (-1)^n*H2n{l};
+    Yn{L-l+1} = conj(Yn{l});
+    if showprogress, progress_bar(n+Nce,Nce); end  % progress bar
 end
 
 end
-

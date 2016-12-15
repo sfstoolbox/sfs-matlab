@@ -1,10 +1,10 @@
-function Am = circexp_mono_pw(npw, Nce, f, xq, conf)
+function Am = circexp_mono_pw(npw,Nce,f,xq,conf)
 %CIRCEXP_MONO_PW computes regular circular expansion coefficients of plane wave
 %
-%   Usage: Am = circexp_mono_pw(npw, Nce, f, xq, conf)
+%   Usage: Am = circexp_mono_pw(npw,Nce,f,xq,conf)
 %
 %   Input parameters:
-%       nk          - propagation direction of plane wave 
+%       nk          - propagation direction of plane wave
 %       Nce         - maximum order of circular basis functions
 %       f           - frequency / Hz [1 x Nf] or [Nf x 1]
 %       xq          - expansion center
@@ -13,12 +13,12 @@ function Am = circexp_mono_pw(npw, Nce, f, xq, conf)
 %   Output parameters:
 %       Am          - regular cylindrical expansion coefficients [2*Nce+1 x Nf]
 %
-%   CIRCEXP_MONO_PW(npw, Nce, f, xq, conf) computes the regular circular
+%   CIRCEXP_MONO_PW(npw,Nce,f,xq,conf) computes the regular circular
 %   expansion coefficients for a plane wave. The expansion will be done a
 %   round the expansion coordinate xq:
 %
-%              \~~  oo       
-%   p  (x,f) =  >        A  R  (x-x ) 
+%              \~~  oo
+%   p  (x,f) =  >        A  R  (x-x )
 %    pw        /__ n=-oo  n  n     q
 %
 %   with the cylyndrical expansion coefficients:
@@ -85,9 +85,8 @@ Nf = length(delay);
 Am = zeros(L,Nf);
 l = 0;
 for n=-Nce:Nce
-  l = l+1;
-  Am(l,:) = (1j)^(-n).*exp(-1j*n*phi).*exp(-1j*delay);
+    l = l+1;
+    Am(l,:) = (1j)^(-n).*exp(-1j*n*phi).*exp(-1j*delay);
 end
 
 end
-

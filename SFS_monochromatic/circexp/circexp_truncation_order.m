@@ -1,8 +1,8 @@
-function Nce = circexp_truncation_order(r, f, nmse, conf)
-%CIRCEXP_TRUNCATION_ORDER computes truncation order for circular expansion 
+function Nce = circexp_truncation_order(r,f,nmse,conf)
+%CIRCEXP_TRUNCATION_ORDER computes truncation order for circular expansion
 %coefficients of an arbitrary sound field
 %
-%   Usage: Nce = circexp_truncation_order(r, f, nmse, conf)
+%   Usage: Nce = circexp_truncation_order(r,f,nmse,conf)
 %
 %   Input parameters:
 %       r           - max 2D distance from expansion center / m
@@ -13,13 +13,13 @@ function Nce = circexp_truncation_order(r, f, nmse, conf)
 %   Output parameters:
 %       Nce         - Maximum order for circular expansion
 %
-%   CIRCEXP_TRUNCATION_ORDER(r, f, epsilon, conf) yields the order up to which 
+%   CIRCEXP_TRUNCATION_ORDER(r,f,epsilon,conf) yields the order up to which
 %   a the circular expansion coefficients of an arbitrary sound field have
-%   be summed up. For a given frequency and maximum radius the normalized 
+%   be summed up. For a given frequency and maximum radius the normalized
 %   truncation mean squared error is below the specified error bound (nmse).
 %
 %   References:
-%       Kennedy et al. (2007) - "Intrinsic Limits of Dimensionality and 
+%       Kennedy et al. (2007) - "Intrinsic Limits of Dimensionality and
 %                               Richness in Random Multipath Fields",
 %                               IEEE Transactions on Signal Processing
 
@@ -71,4 +71,3 @@ delta = max(0, ceil(0.5*log(0.0093/nmse)));
 Nce = ceil(pi*r*exp(1)/lambda) + delta;
 
 end
-

@@ -1,8 +1,8 @@
-function [P, x, y, z] = sound_field_mono_circexp(X,Y,Z,Pm,mode,f,xq,conf)
+function [P,x,y,z] = sound_field_mono_circexp(X,Y,Z,Pm,mode,f,xq,conf)
 %SOUND_FIELD_MONO_CIRCEXP yields a sound field given with regular/singular
 %spherical expansion coefficients
 %
-%   Usage: [P, x, y, z] = sound_field_mono_circexp(X,Y,Z,Pm,mode,f,xq,conf)
+%   Usage: [P,x,y,z] = sound_field_mono_circexp(X,Y,Z,Pm,mode,f,xq,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -58,9 +58,9 @@ nargmin = 8;
 nargmax = 8;
 narginchk(nargmin,nargmax);
 isargvector(Pm);
-if mod(size(Pm, 1), 2) ~= 0
-  error('%s: Number of rows of %s has be to odd', upper(mfilename), ...
-    inputname(4));
+if mod(size(Pm,1),2) ~= 0
+    error('%s: Number of rows of %s has be to odd',upper(mfilename), ...
+           inputname(4));
 end
 isargnumeric(X,Y,Z);
 isargpositivescalar(f);
@@ -71,12 +71,12 @@ Nce = ( size(Pm, 1) - 1 ) / 2;
 
 %% ===== Computation ====================================================
 switch mode
-  case 'R'
-    [fn, ~, Ym, x, y, z] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf);
-  case 'S'
-    [~, fn, Ym, x, y, z] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf);
-  otherwise
-    error('%s: %s is an unknown mode!',upper(mfilename), mode);
+    case 'R'
+        [fn,~,Ym,x,y,z] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf);
+    case 'S'
+        [~,fn,Ym,x,y,z] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf);
+    otherwise
+        error('%s: %s is an unknown mode!',upper(mfilename),mode);
 end
 P = sound_field_mono_circbasis(Pm,fn,Ym);
 

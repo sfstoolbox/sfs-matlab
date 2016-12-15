@@ -1,11 +1,11 @@
-function [EF, EFm] = circexp_mono_translation(xt, mode, Nce, f, conf)
-%CIRCEXP_MONO_TRANSLATION compute circular translation coefficients 
+function [EF,EFm] = circexp_mono_translation(xt,mode,Nce,f,conf)
+%CIRCEXP_MONO_TRANSLATION compute circular translation coefficients
 %(multipole re-expansion)
 %
-%   Usage: [EF, EFm] = circexp_mono_translation(xt, mode, Nce, f, conf)
+%   Usage: [EF,EFm] = circexp_mono_translation(xt,mode,Nce,f,conf)
 %
 %   Input parameters:
-%       xt          - translatory shift [1x3] / m                    
+%       xt          - translatory shift [1x3] / m
 %       mode        - 'RS' for regular-to-singular reexpansion
 %                     'RR' for regular-to-regular reexpansion
 %                     'SR' for singular-to-regular reexpansion
@@ -16,22 +16,22 @@ function [EF, EFm] = circexp_mono_translation(xt, mode, Nce, f, conf)
 %   Output parameters:
 %       EF          - circular re-expansion coefficients for t
 %       EFm         - circular re-expansion coefficients for -t
-%  
-%  CIRCEXP_MONO_TRANSLATION(t, mode, f, conf) computes the circular re-expansion
+%
+%  CIRCEXP_MONO_TRANSLATION(t,mode,f,conf) computes the circular re-expansion
 %  coefficients to perform as translatory shift of circular basis function.
 %  Multipole Re-expansion computes the circular basis function for a shifted
-%  coordinate system (x+t) based on the original basis functions for (x). 
+%  coordinate system (x+t) based on the original basis functions for (x).
 %
 %              \~~ inf
 %  E (x + t) =  >         (E|F)   (xt) F (x)
 %   n          /__ l=-inf      l,n      l
 %
 %  where {E,F} = {R,S}. R denotes the regular circular basis function, while
-%  S symbolizes the singular circular basis function. Note that (S|S) and 
+%  S symbolizes the singular circular basis function. Note that (S|S) and
 %  (S|R) are equivalent to (R|R) and (R|S), respectively.
 %
 %  see also: circexp_mono_ps, circexp_mono_pw
- 
+
 %*****************************************************************************
 % Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
 %                         Assessment of IP-based Applications                *
@@ -89,24 +89,24 @@ EF = zeros(L,L);
 EFm = EF;
 
 % select suitable basis function
-if strcmp('RR', mode) || strcmp('SS', mode)
-  circbasis = @(nu) besselj(nu, kr);
-elseif strcmp('SR', mode) || strcmp('RS', mode)
-  circbasis = @(nu) besselh(nu, 2, kr);
+if strcmp('RR',mode) || strcmp('SS',mode)
+    circbasis = @(nu) besselj(nu,kr);
+elseif strcmp('SR',mode) || strcmp('RS',mode)
+    circbasis = @(nu) besselh(nu,2,kr);
 else
-  error('unknown mode:');
+    error('unknown mode:');
 end
 
 %% ===== Computation ====================================================
 s = 0;
 for n=-Nce:Nce
-  s = s+1;
-  l = 0;
-  for m=-Nce:Nce
-    l = l+1;
-    EF(s,l) = circbasis(m-n) .* exp(+1j.*(m-n).*phit);
-    EFm(s,l) = EF(s,l) .* (-1)^(n-m);    
-  end
+    s = s+1;
+    l = 0;
+    for m=-Nce:Nce
+        l = l+1;
+        EF(s,l) = circbasis(m-n) .* exp(+1j.*(m-n).*phit);
+        EFm(s,l) = EF(s,l) .* (-1)^(n-m);
+    end
 end
 
 end

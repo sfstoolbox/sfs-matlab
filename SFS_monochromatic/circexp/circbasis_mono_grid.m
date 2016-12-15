@@ -1,8 +1,8 @@
-function [jn, h2n, Ynm] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf)
-%CIRCBASIS_MONO_GRID evaluate spherical basis functions for given grid in 
+function [jn,h2n,Ynm] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf)
+%CIRCBASIS_MONO_GRID evaluate spherical basis functions for given grid in
 %cartesian coordinates
 %
-%   Usage: [jn, h2n, Ynm] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf)
+%   Usage: [jn,h2n,Ynm] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -67,7 +67,7 @@ function [jn, h2n, Ynm] = circbasis_mono_grid(X,Y,Z,Nce,f,xq,conf)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
-%% ===== Checking of input  parameters ==================================
+%% ===== Checking of input parameters ==================================
 nargmin = 7;
 nargmax = 7;
 narginchk(nargmin,nargmax);
@@ -88,4 +88,4 @@ yy = yy-xq(2);
 r = sqrt(xx.^2 + yy.^2);
 phi = atan2(yy,xx);
 
-[jn, h2n, Ynm] = circbasis_mono(r, phi, Nce, k, conf);
+[jn,h2n,Ynm] = circbasis_mono(r,phi,Nce,k,conf);

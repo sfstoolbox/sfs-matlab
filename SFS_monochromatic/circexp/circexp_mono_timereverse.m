@@ -48,9 +48,9 @@ nargmin = 1;
 nargmax = 1;
 narginchk(nargmin,nargmax);
 isargmatrix(Pm);
-if mod(size(Pm, 1)-1, 2) ~= 0
-  error('%s: Number of rows of %s has be to odd', upper(mfilename), ...
-    inputname(Pm));
+if mod(size(Pm,1)-1,2) ~= 0
+    error('%s: Number of rows of %s has be to odd',upper(mfilename), ...
+           inputname(Pm));
 end
 
 %% ===== Computation ====================================================
@@ -58,4 +58,3 @@ Nce = (size(Pm,1)-1) / 2;
 Pm = conj(Pm(end:-1:1,:)).*(-1).^(-Nce:Nce).';
 
 end
-

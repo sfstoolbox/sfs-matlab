@@ -1,12 +1,12 @@
-function P = sound_field_mono_circbasis(Pm, JH2m, Ym)
-%SOUND_FIELD_MONO_CIRCBASIS simulates a sound field expressed with 
+function P = sound_field_mono_circbasis(Pm,JH2m,Ym)
+%SOUND_FIELD_MONO_CIRCBASIS simulates a sound field expressed with
 %circular basis functions
 %
-%   Usage: P = sound_field_mono_circbasis(Pm, JH2m, Ym)
+%   Usage: P = sound_field_mono_circbasis(Pm,JH2m,Ym)
 %
 %   Input parameters:
 %       Pm          - regular/singular circular expansion coefficients
-%       JH2m        - cell array of cylindrical bessel/hankel(2nd kind) 
+%       JH2m        - cell array of cylindrical bessel/hankel(2nd kind)
 %                     functions
 %       Ym          - cell array of cylindrical harmonics (exponential
 %                     functions)
@@ -14,7 +14,7 @@ function P = sound_field_mono_circbasis(Pm, JH2m, Ym)
 %   Output parameters:
 %       P           - resulting soundfield
 %
-%   SOUND_FIELD_MONO_CIRCBASIS(Pm, JH2m, Ym)
+%   SOUND_FIELD_MONO_CIRCBASIS(Pm,JH2m,Ym)
 %
 %   see also: circbasis_mono_grid sound_field_mono_circexp
 
@@ -57,8 +57,8 @@ narginchk(nargmin,nargmax);
 isargvector(Pm);
 isargequallength(Pm, Ym);
 if length(Ym) ~= length(JH2m)
-  error('%s, length(%s) has to be length(%s)!', upper(mfilename), ...
-    inputname(2), inputname(3));
+    error('%s, length(%s) has to be length(%s)!',upper(mfilename), ...
+           inputname(2),inputname(3));
 end
 
 %% ===== Variables ======================================================
@@ -69,8 +69,8 @@ P = zeros(size(JH2m{1}));
 
 l = 0;
 for n=0:Nce
-  l=l+1;    
-  P = P + Pm(l).*(JH2m{l}.*Ym{l});
+    l=l+1;
+    P = P + Pm(l).*(JH2m{l}.*Ym{l});
 end
 
 end

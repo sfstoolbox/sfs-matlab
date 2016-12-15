@@ -1,7 +1,7 @@
-function ABm = circexp_mono_ls(xs, mode, Nce, f, xq, conf)
+function ABm = circexp_mono_ls(xs,mode,Nce,f,xq,conf)
 %CIRCEXP_MONO_LS computes the regular/singular circular expansion of line source
 %
-%   Usage: ABm = circexp_mono_ls(xs, mode, Nce, f, xq, conf)
+%   Usage: ABm = circexp_mono_ls(xs,mode,Nce,f,xq,conf)
 %
 %   Input parameters:
 %       xs          - position of line source
@@ -14,28 +14,28 @@ function ABm = circexp_mono_ls(xs, mode, Nce, f, xq, conf)
 %   Output parameters:
 %       ABm         - regular cylindrical expansion coefficients [2*Nce+1 x Nf]
 %
-%   CIRCEXP_MONO_LS(xs, mode, Nce, f, xq, conf) computes the regular circular
-%   expansion coefficients for a line source. The expansion will be done 
+%   CIRCEXP_MONO_LS(xs,mode,Nce,f,xq,conf) computes the regular circular
+%   expansion coefficients for a line source. The expansion will be done
 %   around the expansion coordinate xq:
 %
 %   Regular Expansion:
-%                \~~ oo        
-%   p    (x,f) =  >         A  R  (x-x ) 
+%                \~~ oo
+%   p    (x,f) =  >         A  R  (x-x )
 %    ls,R        /__ n=-oo   n  n     q
 %
 %   with the expansion coefficients:
-%    m   -i           
-%   A  = ---  S (x -x ) 
-%    n    4    n  s  q  
+%    m   -i
+%   A  = ---  S (x -x )
+%    n    4    n  s  q
 %
 %   Singular Expansion:
-%                \~~ oo      m  
-%   p    (x,f) =  >         B  S  (x-x ) 
+%                \~~ oo      m
+%   p    (x,f) =  >         B  S  (x-x )
 %    ls,R        /__ n=-oo   n  n     q
 %
 %   with the expansion coefficients):
-%    m   -i           
-%   B  = ---  R (x -x ) 
+%    m   -i
+%   B  = ---  R (x -x )
 %    n    4    n  s  q
 %
 %   see also: circexp_mono_pw circexp_mono_scatter
@@ -96,11 +96,11 @@ kr = k.*r;
 
 % select suitable basis function
 if strcmp('R', mode)
-  circbasis = @(nu,z) besselh(nu,2,z);
+    circbasis = @(nu,z) besselh(nu,2,z);
 elseif strcmp('S', mode)
-  circbasis = @besselj;
+    circbasis = @besselj;
 else
-  error('unknown mode:');
+    error('unknown mode:');
 end
 
 %% ===== Computation ====================================================
@@ -109,9 +109,8 @@ Nf = length(kr);
 ABm = zeros(L,Nf);
 l = 0;
 for n=-Nce:Nce
-  l = l+1;
-  ABm(l,:) = -1j/4*circbasis(n,kr).*exp(-1j*n*phi);
+    l = l+1;
+    ABm(l,:) = -1j/4*circbasis(n,kr).*exp(-1j*n*phi);
 end
 
 end
-

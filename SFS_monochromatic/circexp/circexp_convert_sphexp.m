@@ -1,5 +1,5 @@
 function Am = circexp_convert_sphexp(Anm)
-%CIRCEXP_CONVERT_SPHEXP converts regular spherical expansion coefficients into 
+%CIRCEXP_CONVERT_SPHEXP converts regular spherical expansion coefficients into
 %regular circular expansion coefficients
 %
 %   Usage: Am = circexp_convert_sphexp(Anm)
@@ -11,8 +11,8 @@ function Am = circexp_convert_sphexp(Anm)
 %       Am            - regular circular expansion coefficients
 %
 %   References:
-%       Hahn, Winter, Spors (2016) - 
-%           "Local Wave Field Synthesis by Spatial Band-limitation in the 
+%       Hahn, Winter, Spors (2016) -
+%           "Local Wave Field Synthesis by Spatial Band-limitation in the
 %            Circular/Spherical Harmonics Domain", 140th AES Convention
 
 %*****************************************************************************
@@ -47,18 +47,19 @@ function Am = circexp_convert_sphexp(Anm)
 % http://github.com/sfstoolbox/sfs                      sfstoolbox@gmail.com *
 %*****************************************************************************
 
-%% ===== Checking of input  parameters ==================================
+%% ===== Checking of input parameters ==================================
 nargmin = 1;
 nargmax = 1;
 narginchk(nargmin,nargmax);
 isargvector(Anm);
-Nse = sqrt(size(Anm, 1))-1;
+Nse = sqrt(size(Anm,1))-1;
 
 %% ===== Computation ====================================================
 
 % Implementation of Hahn2016, Eq. (32)
-Am = zeros(2*Nse+1,size(Anm, 2));
+Am = zeros(2*Nse+1,size(Anm,2));
 for m=-Nse:Nse
-  v = sphexp_index(m);  % (n,m) = (abs(m),m);
-  Am(m+Nse+1,:) = Anm(v,:)./(4*pi.*1j.^(m-abs(m))*sphharmonics(abs(m),-m,0,0));
+    v = sphexp_index(m);  % (n,m) = (abs(m),m);
+    Am(m+Nse+1,:) = Anm(v,:)./(4*pi.*1j.^(m-abs(m))* ...
+                     sphharmonics(abs(m),-m,0,0));
 end

@@ -1,8 +1,8 @@
-function [EF, EFm] = sphexp_mono_translation(t, mode, Nse, f, conf)
-%SPHEXP_MONO_TRANSLATION computes spherical translation coefficients 
+function [EF,EFm] = sphexp_mono_translation(t,mode,Nse,f,conf)
+%SPHEXP_MONO_TRANSLATION computes spherical translation coefficients
 %(multipole re-expansion)
 %
-%   Usage: [EF, EFm] = sphexp_mono_translation(t, mode, Nse, f, conf)
+%   Usage: [EF,EFm] = sphexp_mono_translation(t,mode,Nse,f,conf)
 %
 %   Input parameters:
 %       t           - translatory shift [1x3] / m
@@ -18,7 +18,7 @@ function [EF, EFm] = sphexp_mono_translation(t, mode, Nse, f, conf)
 %       EF          - spherical re-expansion coefficients for t
 %       EFm         - spherical re-expansion coefficients for -t
 %
-%  SPHEXP_MONO_TRANSLATION(t, mode, Nse, f, conf) computes the spherical 
+%  SPHEXP_MONO_TRANSLATION(t,mode,Nse,f,conf) computes the spherical
 %  re-expansion coefficients to perform as translatory shift of spherical basis
 %  function. Multipole Re-expansion computes the spherical basis function for a
 %  shifted coordinate system (x+t) based on the original basis functions for
@@ -30,9 +30,9 @@ function [EF, EFm] = sphexp_mono_translation(t, mode, Nse, f, conf)
 %
 %  where {E,F} = {R,S}. R denotes the regular spherical basis function, while
 %  S symbolizes the singular spherical basis function. Note that (S|S) and
-%  (S|R) are respectively equivalent to (R|R) and (R|S). The reexpansion 
-%  coefficients can seperated into sectorial (n = abs|m| and/or l = abs|s|) 
-%  and tesseral (else) coefficients. Latter will only be computed, if 
+%  (S|R) are respectively equivalent to (R|R) and (R|S). The reexpansion
+%  coefficients can seperated into sectorial (n = abs|m| and/or l = abs|s|)
+%  and tesseral (else) coefficients. Latter will only be computed, if
 %  conf.dimensions == '3D'.
 %
 %  References:
@@ -97,30 +97,30 @@ theta = asin(t(3)./r);
 % frequency
 Nf = length(f);
 k = 2*pi*f/conf.c;
-kr = reshape(k, 1, 1, Nf)*r;
+kr = reshape(k,1,1,Nf)*r;
 
 L = (2*Nse + 1).^2;
-S = zeros(L, L, Nf);
+S = zeros(L,L,Nf);
 
 % Auxilary Coefficients for Computations
-[a, b] = sphexp_translation_auxiliary(2*Nse,conf);
+[a,b] = sphexp_translation_auxiliary(2*Nse,conf);
 
 % select suitable basis function
-if strcmp('RR', mode) || strcmp('SS', mode)
-  sphbasis = @(nu) sphbesselj(nu, kr);
-elseif strcmp('SR', mode) || strcmp('RS', mode)
-  sphbasis = @(nu) sphbesselh(nu, 2, kr);
+if strcmp('RR',mode) || strcmp('SS',mode)
+    sphbasis = @(nu) sphbesselj(nu,kr);
+elseif strcmp('SR',mode) || strcmp('RS',mode)
+    sphbasis = @(nu) sphbesselh(nu,2,kr);
 else
-  error('unknown mode:');
+    error('unknown mode:');
 end
 
 %% ===== Sectorial Coefficients =========================================
 % if translation vector's z-coordinate is zero, many coefficients are zero.
 % This is to save some computation time
 if t(3) == 0
- inc = 2;
+    inc = 2;
 else
- inc = 1;
+    inc = 1;
 end
 
 % for n=0, m=0 (Gumerov2004, eq. 3.2.5)
@@ -144,20 +144,20 @@ end
 %      0, m        0, n          n
 %
 for l=0:2*Nse  % n=l
-  Hn  = sqrt(4*pi)*sphbasis(l);  % radial basis function (see Variables)
-  for s=l:-inc:0  % m=s
-    % spherical harmonics: conj(Y_n^m) = Y_n^-m (Gumerov2004, eq. 2.1.59)
-    Ynm = sphharmonics(l,s, theta, phi);
+    Hn  = sqrt(4*pi)*sphbasis(l);  % radial basis function (see Variables)
+    for s=l:-inc:0  % m=s
+        % spherical harmonics: conj(Y_n^m) = Y_n^-m (Gumerov2004, eq. 2.1.59)
+        Ynm = sphharmonics(l,s,theta,phi);
 
-    v = sphexp_index(s,l);
-    S(v,1,:) = (-1).^l*Hn.*conj(Ynm);  % s,l, m=0, n=0
-    S(1,v,:) = Hn.*Ynm;   % s=0,l=0, m, n
+        v = sphexp_index(s,l);
+        S(v,1,:) = (-1).^l*Hn.*conj(Ynm);  % s,l, m=0, n=0
+        S(1,v,:) = Hn.*Ynm;   % s=0,l=0, m, n
 
-    v = sphexp_index(-s,l);
-    S(v,1,:) = (-1).^l*Hn.*Ynm; % -s,l, m=0, n=0
-    S(1,v,:) = Hn.*conj(Ynm);  % s=0,l=0, -m, n
-  end
-  if showprogress, progress_bar(v,L); end % progress bar
+        v = sphexp_index(-s,l);
+        S(v,1,:) = (-1).^l*Hn.*Ynm; % -s,l, m=0, n=0
+        S(1,v,:) = Hn.*conj(Ynm);  % s=0,l=0, -m, n
+    end
+    if showprogress, progress_bar(v,L); end % progress bar
 end
 
 %% ===== Sectorial Coefficients ==========================================
@@ -174,25 +174,25 @@ end
 % while {E,F} = {R,S}
 %
 for m=0:Nse-1
-  % NOTE: sphexp_access(b, -m-1) == sphexp_access(b, -m-1, m+1)
-  bm = 1./sphexp_access(b,-m-1);
-  for l=1:(2*Nse-m-1)
-    for s=-l:inc:l
-      % +m
-      [v, w] = sphexp_index(s,l,m+1);
-      S(v,w,:) = bm * ( ...
-        sphexp_access(b,-s ,l)    * sphexp_access(S,s-1,l-1,m) - ...
-        sphexp_access(b,s-1,l+1)  * sphexp_access(S,s-1,l+1,m)...
-        );
-      % -m
-      [v, w] = sphexp_index(s,l,-m-1);
-      S(v,w,:) = bm * ( ...
-        sphexp_access(b,s   ,l)   * sphexp_access(S,s+1,l-1,-m) - ...
-        sphexp_access(b,-s-1,l+1) * sphexp_access(S,s+1,l+1,-m)...
-        );
+    % NOTE: sphexp_access(b, -m-1) == sphexp_access(b, -m-1, m+1)
+    bm = 1./sphexp_access(b,-m-1);
+    for l=1:(2*Nse-m-1)
+        for s=-l:inc:l
+            % +m
+            [v,w] = sphexp_index(s,l,m+1);
+            S(v,w,:) = bm * ( ...
+              sphexp_access(b,-s ,l)    * sphexp_access(S,s-1,l-1,m) - ...
+              sphexp_access(b,s-1,l+1)  * sphexp_access(S,s-1,l+1,m)...
+              );
+            % -m
+            [v,w] = sphexp_index(s,l,-m-1);
+            S(v,w,:) = bm * ( ...
+              sphexp_access(b,s   ,l)   * sphexp_access(S,s+1,l-1,-m) - ...
+              sphexp_access(b,-s-1,l+1) * sphexp_access(S,s+1,l+1,-m)...
+              );
+        end
     end
-  end
-  if showprogress, progress_bar(m,Nse); end % progress bar
+    if showprogress, progress_bar(m,Nse); end % progress bar
 end
 
 % for l=|s| using symmetry relation (Gumerov2004, eq. 3.2.49
@@ -204,12 +204,12 @@ end
 % while {E,F} = {R,S}
 %
 for l=1:Nse
-  for n=inc:(2*Nse-l)
-    s = [-l,l];
-    m = (-n+inc):inc:(n-inc);
-    [v, w] = sphexp_index( s, l, m, n);
-    S(v,w,:) = (-1).^(l+n)*sphexp_access(S,-m,n,-s, l).';
-  end
+    for n=inc:(2*Nse-l)
+        s = [-l,l];
+        m = (-n+inc):inc:(n-inc);
+        [v,w] = sphexp_index( s,l,m,n);
+        S(v,w,:) = (-1).^(l+n)*sphexp_access(S,-m,n,-s,l).';
+    end
 end
 
 %% ===== Tesseral Coefficients ==========================================
@@ -255,10 +255,10 @@ EF = S(1:L,1:L,:);  % (E|F)(t)
 % SR(-t)
 EFm = zeros(L,L,Nf);
 for n=0:Nse
-  for l=0:Nse
-    m = -n:inc:n;
-    s = -l:inc:l;
-    [v, w] = sphexp_index(s,l,m,n);
-    EFm(v,w,:) = (-1).^(l+n)*sphexp_access(EF,s,l,m,n);
-  end
+    for l=0:Nse
+        m = -n:inc:n;
+        s = -l:inc:l;
+        [v,w] = sphexp_index(s,l,m,n);
+        EFm(v,w,:) = (-1).^(l+n)*sphexp_access(EF,s,l,m,n);
+    end
 end

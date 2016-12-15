@@ -1,21 +1,21 @@
-function Anm = sphexp_mono_ls(xs, mode, Nse, f, xq, conf)
+function Anm = sphexp_mono_ls(xs,mode,Nse,f,xq,conf)
 %SPHEXP_MONO_LS computes the regular/singular spherical expansion of line source
 %
-%   Usage: Anm = sphexp_mono_ls(xs, mode, Nse, f, xq, conf)
+%   Usage: Anm = sphexp_mono_ls(xs,mode,Nse,f,xq,conf)
 %
 %   Input parameters:
 %       xs          - position of line source
 %       mode        - 'R' for regular, 'S' for singular
 %       Nse         - maximum order of spherical basis functions
 %       f           - frequency
-%       xq          - optional expansion center coordinate 
+%       xq          - optional expansion center coordinate
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       Al          - regular Spherical Expansion Coefficients
 %
-%   SPHEXP_MONO_LS(xs, mode, Nse, f, xq, conf) computes the regular/singular 
-%   spherical expansion coefficients for a point source at xs. The expansion 
+%   SPHEXP_MONO_LS(xs,mode,Nse,f,xq,conf) computes the regular/singular
+%   spherical expansion coefficients for a point source at xs. The expansion
 %   will be done around the expansion coordinate xq.
 %
 %   see also: sphexp_mono_ps sphexp_mono_pw sphexp_convert_circexp
@@ -57,20 +57,19 @@ nargmin = 6;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargposition(xs);
-isargpositivescalar(f, Nse);
+isargpositivescalar(f,Nse);
 isargposition(xq);
 isargstruct(conf);
 
 %% ===== Computation ====================================================
 % select suitable basis function
-if strcmp('R', mode)
-  Am = circexp_mono_ls(xs, mode, Nse, f, xq, conf);
-  Anm = sphexp_convert_circexp(Am);
-elseif strcmp('S', mode)
-  to_be_implemented;
+if strcmp('R',mode)
+    Am = circexp_mono_ls(xs,mode,Nse,f,xq,conf);
+    Anm = sphexp_convert_circexp(Am);
+elseif strcmp('S',mode)
+    to_be_implemented;
 else
-  error('%s: %s, unknown mode', upper(mfilename), mode);
+    error('%s: %s, unknown mode',upper(mfilename),mode);
 end
 
 end
-

@@ -1,8 +1,8 @@
-function [a, b] = sphexp_translation_auxiliary(Nse,conf)
-%SPHEXP_TRANSLATION_AUXILIARY yields the auxiliary coefficients for the 
+function [a,b] = sphexp_translation_auxiliary(Nse,conf)
+%SPHEXP_TRANSLATION_AUXILIARY yields the auxiliary coefficients for the
 %recursive calculation of spherical translation coefficients
 %
-%   Usage: [a, b] = sphexp_translation_auxiliary(Nse,conf)
+%   Usage: [a,b] = sphexp_translation_auxiliary(Nse,conf)
 %
 %   Input parameters:
 %       Nse         - maximum degree of the auxiliary functions (optional)
@@ -15,7 +15,7 @@ function [a, b] = sphexp_translation_auxiliary(Nse,conf)
 %                     spherical translation coefficients
 %
 %   SPHEXP_TRANSLATION_AUXILIARY(Nse,conf) computes the auxiliary coefficients
-%   for the calculation of tesseral spherical translation coefficients 
+%   for the calculation of tesseral spherical translation coefficients
 %   (Gumerov2004, eq. 2.2.8 and 3.2.65):
 %
 %         +------------------+
@@ -101,14 +101,14 @@ L = (Nse + 1).^2;
 a = zeros(L,1);
 b = zeros(L,1);
 for n=0:Nse
-  a_denum = (2*n+1)*(2*n+3);
-  b_denum = (2*n-1)*(2*n+1);
+    a_denum = (2*n+1)*(2*n+3);
+    b_denum = (2*n-1)*(2*n+1);
 
-  m = -n:n;
-  v = sphexp_index(m,n);
+    m = -n:n;
+    v = sphexp_index(m,n);
 
-  a(v) = sqrt( (n+1+abs(m)).*(n+1-abs(m))./a_denum );
-  b(v) = ( 1-(m<0)*2 ) .* sqrt( (n-m-1).*(n-m)./b_denum );
+    a(v) = sqrt( (n+1+abs(m)).*(n+1-abs(m))./a_denum );
+    b(v) = ( 1-(m<0)*2 ) .* sqrt( (n-m-1).*(n-m)./b_denum );
 
-  if showprogress, progress_bar(v(end),L); end % progress bar
+    if showprogress, progress_bar(v(end),L); end % progress bar
 end

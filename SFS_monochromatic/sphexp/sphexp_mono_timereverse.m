@@ -53,6 +53,6 @@ isargsquaredinteger(L);
 %% ===== Computation ====================================================
 
 for n=0:(sqrt(L)-1)
-  v = sphexp_index(-n:n,n);
-  ABnm(v) = conj(sphexp_access(ABnm,n:-1:-n,n));
+    v = sphexp_index(-n:n,n);
+    ABnm(v) = conj(sphexp_access(ABnm,n:-1:-n,n));
 end

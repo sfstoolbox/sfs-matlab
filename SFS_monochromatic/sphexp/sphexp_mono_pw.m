@@ -1,7 +1,7 @@
-function Anm = sphexp_mono_pw(npw, Nse, f, xq, conf)
+function Anm = sphexp_mono_pw(npw,Nse,f,xq,conf)
 %SPHEXP_MONO_PW computes the regular spherical expansion of plane wave
 %
-%   Usage: Anm = sphexp_mono_pw(npw, Nse, f, xq, conf)
+%   Usage: Anm = sphexp_mono_pw(npw,Nse,f,xq,conf)
 %
 %   Input parameters:
 %       npw         - unit vector propagation direction of plane wave
@@ -13,7 +13,7 @@ function Anm = sphexp_mono_pw(npw, Nse, f, xq, conf)
 %   Output parameters:
 %       Anm         - regular Spherical Expansion Coefficients [(Nse+1)^2 x Nf]
 %
-%   SPHEXP_MONO_PW(npw, Nse, f, xq, conf) computes the regular spherical 
+%   SPHEXP_MONO_PW(npw,Nse,f,xq,conf) computes the regular spherical
 %   expansion coefficients for a plane wave. The expansion will be done around
 %   the expansion coordinate xq:
 %
@@ -95,17 +95,17 @@ theta = asin(npw(3));
 phase = exp(-1j*2*pi*row_vector(f)/c*(npw*xq.'));
 Nf = length(phase);
 
-Anm = zeros((Nse + 1).^2, Nf);
+Anm = zeros((Nse + 1).^2,Nf);
 for n=0:Nse
-  cn = 4*pi*(1j)^(-n);
-  for m=0:n
-    % spherical harmonics: conj(Y_n^m) = Y_n^-m (Gumerov2004, eq. 2.1.59)
-    Ynm = sphharmonics(n,m, theta, phi);
-    % -m
-    v = sphexp_index(-m,n);
-    Anm(v,:) = cn.*Ynm.*phase;
-    % +m
-    v = sphexp_index(m,n);
-    Anm(v,:) = cn.*conj(Ynm).*phase;
-  end
+    cn = 4*pi*(1j)^(-n);
+    for m=0:n
+        % spherical harmonics: conj(Y_n^m) = Y_n^-m (Gumerov2004, eq. 2.1.59)
+        Ynm = sphharmonics(n,m,theta,phi);
+        % -m
+        v = sphexp_index(-m,n);
+        Anm(v,:) = cn.*Ynm.*phase;
+        % +m
+        v = sphexp_index(m,n);
+        Anm(v,:) = cn.*conj(Ynm).*phase;
+    end
 end

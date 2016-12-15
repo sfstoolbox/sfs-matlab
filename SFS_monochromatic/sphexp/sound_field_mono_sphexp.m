@@ -1,17 +1,17 @@
-function [P, x, y, z] = sound_field_mono_sphexp(X,Y,Z,ABnm,mode,f,xq,conf)
+function [P,x,y,z] = sound_field_mono_sphexp(X,Y,Z,ABnm,mode,f,xq,conf)
 %SOUND_FIELD_MONO_SPHEXPR simulates a sound field given with regular/singular
 %spherical expansion coefficients
 %
-%   Usage: [P, x, y, z] = sound_field_mono_sphexp(X,Y,Z,ABnm,mode,f,xq,conf)
+%   Usage: [P,x,y,z] = sound_field_mono_sphexp(X,Y,Z,ABnm,mode,f,xq,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
 %       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
 %       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       ABnm        - regular/singular spherical expansion coefficients
-%       mode        - 'R' for regular, 'S' for singular
+%       mode        - 'R' for regular,'S' for singular
 %       f           - frequency in Hz
-%       xq          - expansion center coordinates, default: [0, 0, 0]
+%       xq          - expansion center coordinates,default: [0,0,0]
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -19,7 +19,7 @@ function [P, x, y, z] = sound_field_mono_sphexp(X,Y,Z,ABnm,mode,f,xq,conf)
 %
 %   SOUND_FIELD_MONO_SPHEXPR(X,Y,Z,ABnm,mode,f,xq,conf)
 %
-%   see also: sphbasis_mono_grid, sound_field_mono_sphbasis
+%   see also: sphbasis_mono_grid,sound_field_mono_sphbasis
 
 %*****************************************************************************
 % Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
@@ -61,19 +61,19 @@ isargvector(ABnm);
 isargsquaredinteger(length(ABnm));
 isargnumeric(X,Y,Z);
 isargpositivescalar(f);
-isargposition(xq); 
+isargposition(xq);
 isargstruct(conf);
 
 %% ===== Variables ======================================================
 Nse = sqrt(length(ABnm)) - 1;
 
 %% ===== Computation ====================================================
-if strcmp('R', mode)
-  [fn, ~, Ynm, x, y, z] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf);
-elseif strcmp('S', mode)
-  [~, fn, Ynm, x, y, z] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf);
+if strcmp('R',mode)
+    [fn,~,Ynm,x,y,z] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf);
+elseif strcmp('S',mode)
+    [~,fn,Ynm,x,y,z] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf);
 else
-  error('%s: %s is an unknown mode!', upper(mfilename), mode);
+    error('%s: %s is an unknown mode!',upper(mfilename),mode);
 end
 
 P = sound_field_mono_sphbasis(ABnm,fn,Ynm);

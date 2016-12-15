@@ -1,8 +1,8 @@
-function [l1, l2] = sphexp_index(m1, n1, m2, n2)
-%SPHEXP_INDEX calculates index(indices) for the arrays of spherical expansion 
+function [l1,l2] = sphexp_index(m1,n1,m2,n2)
+%SPHEXP_INDEX calculates index(indices) for the arrays of spherical expansion
 %coefficients
 %
-%   Usage: [l1, l2] = sphexp_index(m1, n1, m2, n2)
+%   Usage: [l1,l2] = sphexp_index(m1,n1,m2,n2)
 %
 %   Input parameters:
 %       m1          - order of 1st dimension
@@ -14,7 +14,7 @@ function [l1, l2] = sphexp_index(m1, n1, m2, n2)
 %       l1          - index for 1st dimension
 %       l2          - index for 2st dimension
 %
-%   SPHEXP_INDEX(m1, n1, m2, n2) computes one/two indices for accessing
+%   SPHEXP_INDEX(m1,n1,m2,n2) computes one/two indices for accessing
 %   1D/2D arrays of spherical expansion coefficients
 %   A(n1,m1) => A(l1) ; A(n2,m2) => A(l2)
 %   CAUTION: THIS FUNCTION DOES NOT USE ANY CHECK OF INPUT ARGUMENTS
@@ -55,13 +55,13 @@ function [l1, l2] = sphexp_index(m1, n1, m2, n2)
 
 %% ===== Checking of input  parameters ==================================
 if nargin < 2
-  n1 = abs(m1);
+    n1 = abs(m1);
 end
 if nargin < 3
-  m2 = 0;
+    m2 = 0;
 end
-if nargin < 4 
-  n2 = abs(m2);
+if nargin < 4
+    n2 = abs(m2);
 end
 
 %% ===== Computation ====================================================

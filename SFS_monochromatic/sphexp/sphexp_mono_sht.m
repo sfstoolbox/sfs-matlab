@@ -1,8 +1,8 @@
-function Pnm = sphexp_mono_sht(Dnm, mode, f, conf)
+function Pnm = sphexp_mono_sht(Dnm,mode,f,conf)
 %SPHEXP_MONO_NFCHOA_SHT yields spherical expansion coefficients of a sound field
 %resulting from of a driving function given as a spherical harmonics transform
 %
-%   Usage: Pnm = sphexp_mono_sht(Dnm, mode, f, conf)
+%   Usage: Pnm = sphexp_mono_sht(Dnm,mode,f,conf)
 %
 %   Input parameters:
 %       Dnm         - spherical harmonics transform of nfchoa driving function
@@ -14,7 +14,7 @@ function Pnm = sphexp_mono_sht(Dnm, mode, f, conf)
 %       Pnm         - spherical expansion coefficients of a sound field
 %                     reproduced by nfchoa driving function
 %
-%   SPHEXP_MONO_SHT(Dnm, mode, f, conf)
+%   SPHEXP_MONO_SHT(Dnm,mode,f,conf)
 
 %*****************************************************************************
 % Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
@@ -56,8 +56,8 @@ isargmatrix(Dnm);
 isargsquaredinteger(size(Dnm,1));
 isargvector(f);
 isargchar(mode);
-if ~strcmp('R', mode) && ~strcmp('S', mode)
-  error('%s: unknown mode (%s)!', upper(mfilename), mode);
+if ~strcmp('R',mode) && ~strcmp('S',mode)
+  error('%s: unknown mode (%s)!',upper(mfilename),mode);
 end
 isargstruct(conf);
 
@@ -70,28 +70,28 @@ Nse = sqrt(size(Dnm,1)) - 1;
 
 %% ===== Computation ====================================================
 if strcmp('2D',dimension)
-  % === 2-Dimensional ==================================================
+    % === 2-Dimensional ==================================================
 
-  error('%s: 2D not supported.',upper(mfilename));
+    error('%s: 2D not supported.',upper(mfilename));
 
 elseif strcmp('2.5D',dimension)
-  % === 2.5-Dimensional ================================================
+    % === 2.5-Dimensional ================================================
 
-  % regular/singular expansion of 3D Green's function
-  Gnm = 2*pi*r0*sphexp_mono_ps([r0, 0, 0], mode, Nse, f, [0,0,0], conf);
+    % regular/singular expansion of 3D Green's function
+    Gnm = 2*pi*r0*sphexp_mono_ps([r0,0,0],mode,Nse,f,[0,0,0],conf);
 elseif strcmp('3D',dimension)
-  % === 3-Dimensional ==================================================
+    % === 3-Dimensional ==================================================
 
-  % regular/singular expansion of 3D Green's function
-  Gnm = sphexp_mono_ps([0, 0, r0], mode, Nse, f, [0,0,0], conf);
+    % regular/singular expansion of 3D Green's function
+    Gnm = sphexp_mono_ps([0,0,r0],mode,Nse,f,[0,0,0],conf);
 
-  for n=0:Nse
-    v = sphexp_index(-n:n,n);
-    w = sphexp_index(0,n);
-    Gnm(v,:) = 2*pi*r0^2*sqrt(4*pi / (2*n+1))*Gnm(w,:);
-  end
+    for n=0:Nse
+        v = sphexp_index(-n:n,n);
+        w = sphexp_index(0,n);
+        Gnm(v,:) = 2*pi*r0^2*sqrt(4*pi / (2*n+1))*Gnm(w,:);
+    end
 else
-  error('%s: the dimension %s is unknown.',upper(mfilename),dimension);
+    error('%s: the dimension %s is unknown.',upper(mfilename),dimension);
 end
 
 Pnm = Gnm .* Dnm;

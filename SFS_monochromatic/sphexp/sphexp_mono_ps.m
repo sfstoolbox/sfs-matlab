@@ -1,26 +1,26 @@
-function Anm = sphexp_mono_ps(xs, mode, Nse, f, xq, conf)
+function Anm = sphexp_mono_ps(xs,mode,Nse,f,xq,conf)
 %SPHEXP_MONO_PS computes regular/singular spherical expansion of point source
 %
-%   Usage: Anm = sphexp_mono_ps(xs, mode, Nse, f, xq, conf)
+%   Usage: Anm = sphexp_mono_ps(xs,mode,Nse,f,xq,conf)
 %
 %   Input parameters:
 %       xs          - position of point source
 %       mode        - 'R' for regular, 'S' for singular
 %       Nse         - maximum order of spherical basis functions
 %       f           - frequency [Nf x 1] or [1 x Nf]
-%       xq          - optional expansion center coordinate 
+%       xq          - optional expansion center coordinate
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       Anm         - regular Spherical Expansion Coefficients [(Nse+1)^2 x m]
 %
-%   SPHEXP_MONO_PS(xs, mode, f, Nse, xq, conf) computes the regular/singular 
-%   Spherical Expansion Coefficients for a point source at xs. The expansion 
+%   SPHEXP_MONO_PS(xs,mode,f,Nse,xq,conf) computes the regular/singular
+%   Spherical Expansion Coefficients for a point source at xs. The expansion
 %   will be done around the expansion coordinate xq:
 %
 %   Regular Expansion:
 %                \~~ oo  \~~   n   m  m
-%   p    (x,f) =  >       >       A  R  (x-x ) 
+%   p    (x,f) =  >       >       A  R  (x-x )
 %    ps,R        /__ n=0 /__ m=-n  n  n     q
 %
 %   with the expansion coefficients (Gumerov2004, eq. 3.2.2):
@@ -30,24 +30,24 @@ function Anm = sphexp_mono_ps(xs, mode, Nse, f, xq, conf)
 %
 %   Singular Expansion:
 %                \~~ oo  \~~   n   m  m
-%   p    (x,f) =  >       >       B  S  (x-x ) 
+%   p    (x,f) =  >       >       B  S  (x-x )
 %    ps,S        /__ n=0 /__ m=-n  n  n     q
-%   
+%
 %   with the expansion coefficients (Gumerov2004, eq. 3.2.2):
 %    m               -m
 %   B  = -i  . k  . R  (x  - x )
 %    n               n   s    q
 %
-%   The coefficients are stored in linear arrays with index l resulting from 
+%   The coefficients are stored in linear arrays with index l resulting from
 %   m and n:
-% 
+%
 %         m         m               2
 %   A  = A  ; B  = B  with l = (n+1)  - (n - m)
 %    l    n    l    n
 %
 %   References:
-%       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the 
-%                                    Helmholtz Equation in three 
+%       Gumerov,Duraiswami (2004) - "Fast Multipole Methods for the
+%                                    Helmholtz Equation in three
 %                                    Dimensions", ELSEVIER
 %
 %   see also: sphexp_mono_ls sphexp_mono_pw
@@ -109,26 +109,26 @@ kr = k.*r;
 Nf = length(kr);
 
 % select suitable basis function
-if strcmp('R', mode)
-  sphbasis = @(nu) sphbesselh(nu,2,kr);
-elseif strcmp('S', mode)
-  sphbasis = @(nu) sphbesselj(nu, kr);
+if strcmp('R',mode)
+    sphbasis = @(nu) sphbesselh(nu,2,kr);
+elseif strcmp('S',mode)
+    sphbasis = @(nu) sphbesselj(nu,kr);
 else
-  error('unknown mode:');
+    error('unknown mode:');
 end
 
 %% ===== Computation ====================================================
-Anm = zeros( (Nse + 1).^2 , Nf);
+Anm = zeros((Nse + 1).^2,Nf);
 for n=0:Nse
-  cn = -1j.*k.*sphbasis(n);
-  for m=0:n    
-    % spherical harmonics: conj(Y_n^m) = Y_n^-m (Gumerov2004, eq. 2.1.59)
-    Ynm = sphharmonics(n,m, theta, phi);
-    % -m
-    v = sphexp_index(-m,n);  
-    Anm(v,:) = cn.*Ynm;
-    % +m
-    v = sphexp_index(m,n); 
-    Anm(v,:) = cn.*conj(Ynm);
-  end
+    cn = -1j.*k.*sphbasis(n);
+    for m=0:n
+        % spherical harmonics: conj(Y_n^m) = Y_n^-m (Gumerov2004, eq. 2.1.59)
+        Ynm = sphharmonics(n,m,theta,phi);
+        % -m
+        v = sphexp_index(-m,n);
+        Anm(v,:) = cn.*Ynm;
+        % +m
+        v = sphexp_index(m,n);
+        Anm(v,:) = cn.*conj(Ynm);
+    end
 end

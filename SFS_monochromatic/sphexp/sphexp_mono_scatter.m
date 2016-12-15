@@ -1,8 +1,8 @@
-function Bnm = sphexp_mono_scatter(Anm, R, sigma, f, conf)
+function Bnm = sphexp_mono_scatter(Anm,R,sigma,f,conf)
 %SPHEXP_MONO_SCATTER compute the singular spherical expansion of a sphere-
 %scattered sound field
 %
-%   Usage: Bnm = sphexp_mono_scatter(Anm, R, sigma, f, conf)
+%   Usage: Bnm = sphexp_mono_scatter(Anm,R,sigma,f,conf)
 %
 %   Input parameters:
 %       Anm         - regular spherical expansion of incident sound field
@@ -14,7 +14,7 @@ function Bnm = sphexp_mono_scatter(Anm, R, sigma, f, conf)
 %       Bnm         - singular spherical expansion coefficients of scattered
 %                     field
 %
-%   SPHEXP_MONO_SCATTER(Anm, R, sigma, f, conf) computes the singular spherical
+%   SPHEXP_MONO_SCATTER(Anm,R,sigma,f,conf) computes the singular spherical
 %   expansion coefficients of a field resulting from a scattering of an incident
 %   field at a sphere. Incident field is descriped by regular expansion
 %   coefficients (expansion center is expected to be at the center of the sphere
@@ -108,17 +108,17 @@ kR = k.*R;
 
 % select suitable transformation function
 if isinf(sigma)
-  T = @(x) -sphbesselj(x,kR)./sphbesselh(x,2,kR);
+    T = @(x) -sphbesselj(x,kR)./sphbesselh(x,2,kR);
 elseif sigma == 0
-  T = @(x) -sphbesselj_derived(x,kR)./sphbesselh_derived(x,2,kR);
+    T = @(x) -sphbesselj_derived(x,kR)./sphbesselh_derived(x,2,kR);
 else
-  T = @(x) -(k.*sphbesselj_derived(x,kR)+sigma.*sphbesselj(x,kR)) ...
-    ./(k.*sphbesselh_derived(x,2,kR)+sigma.*sphbesselh(x,2,kR));
+    T = @(x) -(k.*sphbesselj_derived(x,kR)+sigma.*sphbesselj(x,kR)) ...
+        ./(k.*sphbesselh_derived(x,2,kR)+sigma.*sphbesselh(x,2,kR));
 end
 
 %% ===== Computation ====================================================
 Bnm = zeros(size(Anm));
 for n=0:(sqrt(L) - 1)
-  v = sphexp_index(-n:n,n);
-  Bnm(v,:) = T(n).*Anm(v,:);
+    v = sphexp_index(-n:n,n);
+    Bnm(v,:) = T(n).*Anm(v,:);
 end

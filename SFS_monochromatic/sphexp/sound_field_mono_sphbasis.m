@@ -1,8 +1,8 @@
-function P = sound_field_mono_sphbasis(ABnm, jh2n, Ynm)
+function P = sound_field_mono_sphbasis(ABnm,jh2n,Ynm)
 %SOUND_FIELD_MONO_SPHBASIS simulates a sound field expressed with spherical
 %basis functions
 %
-%   Usage: P = sound_field_mono_sphbasis(AB, jh2n, Ynm)
+%   Usage: P = sound_field_mono_sphbasis(AB,jh2n,Ynm)
 %
 %   Input parameters:
 %       ABnm        - regular/singular spherical expansion coefficients
@@ -12,7 +12,7 @@ function P = sound_field_mono_sphbasis(ABnm, jh2n, Ynm)
 %   Output parameters:
 %       P           - resulting soundfield
 %
-%   SOUND_FIELD_MONO_SPHBASIS(ABnm, jh2n, Ynm)
+%   SOUND_FIELD_MONO_SPHBASIS(ABnm,jh2n,Ynm)
 %
 %   see also: sphbasis_mono_grid sound_field_mono_sphexp
 
@@ -56,10 +56,10 @@ isargvector(ABnm);
 L = size(ABnm,1);
 isargsquaredinteger(L);
 if length(Ynm) ~= length(jh2n)^2
-  error('%s: length(Y) has to be equal length(jh2n)^2!',upper(mfilename));
+    error('%s: length(Y) has to be equal length(jh2n)^2!',upper(mfilename));
 end
 if length(Ynm) < length(ABnm)
-  error('%s: length(Y) has to larger equal length(ABnm)!',upper(mfilename));
+    error('%s: length(Y) has to larger equal length(ABnm)!',upper(mfilename));
 end
 
 %% ===== Variables ======================================================
@@ -71,8 +71,8 @@ P = zeros(size(jh2n{1}));
 % spherical basic functions
 l = 0;
 for n=0:Nse
-  for m=-n:n
-    l=l+1;    
-    P = P + ABnm(l)*(jh2n{n+1}.*Ynm{l});
-  end
+    for m=-n:n
+        l=l+1;
+        P = P + ABnm(l)*(jh2n{n+1}.*Ynm{l});
+    end
 end

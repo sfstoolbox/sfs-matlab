@@ -1,8 +1,8 @@
-function [jn, h2n, Ynm, x, y, z] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf)
-%SPHBASIS_MONO_GRID(X,Y,Z,f,xq,conf) evaluates spherical basis functions for 
+function [jn,h2n,Ynm,x,y,z] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf)
+%SPHBASIS_MONO_GRID(X,Y,Z,f,xq,conf) evaluates spherical basis functions for
 %given grid in cartesian coordinates
 %
-%   Usage: [jn, h2n, Ynm] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf)
+%   Usage: [jn,h2n,Ynm] = sphbasis_mono_grid(X,Y,Z,Nse,f,xq,conf)
 %
 %   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
@@ -77,7 +77,7 @@ isargpositivescalar(Nse,f);
 isargcoord(xq);
 
 %% ===== Computation ====================================================
-[x,y,z] = xyz_grid(X, Y, Z, conf);
+[x,y,z] = xyz_grid(X,Y,Z,conf);
 
 k = 2*pi*f/conf.c;  % wavenumber
 
@@ -87,7 +87,7 @@ y = y - xq(2);
 z = z - xq(3);
 % coordinate transformation
 r = sqrt(x.^2 + y.^2 + z.^2);
-phi = atan2(y, x);
+phi = atan2(y,x);
 theta = asin(z./r);
 
-[jn, h2n, Ynm] = sphbasis_mono(r, theta, phi, Nse, k, conf);
+[jn,h2n,Ynm] = sphbasis_mono(r,theta,phi,Nse,k,conf);

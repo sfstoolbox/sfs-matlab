@@ -1,8 +1,8 @@
-function Pnm = sphexp_mono_cht(Dm, mode, f, conf)
+function Pnm = sphexp_mono_cht(Dm,mode,f,conf)
 %SPHEXP_MONO_CHT yields spherical expansion coefficients of a sound field
 %resulting from of a driving function given as a circular harmonics transform
 %
-%   Usage: Pnm = sphexp_mono_cht(Dm, mode, f, conf)
+%   Usage: Pnm = sphexp_mono_cht(Dm,mode,f,conf)
 %
 %   Input parameters:
 %       Dm          - circular harmonics transform of driving function
@@ -14,7 +14,7 @@ function Pnm = sphexp_mono_cht(Dm, mode, f, conf)
 %       Pnm         - spherical expansion coefficients of a synthesized
 %                     sound field reproduced by nfchoa driving function
 %
-%   SPHEXP_MONO_CHT(Dm, mode, f, conf) computes the spherical expansion 
+%   SPHEXP_MONO_CHT(Dm,mode,f,conf) computes the spherical expansion
 %   coefficients of sound field reproduced by a circular secondary source
 %   distribution consisting of SPHERICAL monopoles. The driving function is
 %   given as its circular harmonics transform.
@@ -58,8 +58,8 @@ narginchk(nargmin,nargmax);
 isargmatrix(Dm);
 isargvector(f);
 isargchar(mode);
-if ~strcmp('R', mode) && ~strcmp('S', mode)
-  error('%s: unknown mode (%s)!', upper(mfilename), mode);
+if ~strcmp('R',mode) && ~strcmp('S',mode)
+    error('%s: unknown mode (%s)!',upper(mfilename),mode);
 end
 isargstruct(conf);
 
@@ -67,16 +67,16 @@ isargstruct(conf);
 R0 = conf.secondary_sources.size / 2;
 
 %% ===== Variables ======================================================
-Nse = (size(Dm, 1)-1)/2;
+Nse = (size(Dm,1)-1)/2;
 
 %% ===== Computation ====================================================
 % regular/singular spherical expansion of 3D Green's function
-Gnm = sphexp_mono_ps([R0, 0, 0], mode, Nse, f, [0,0,0], conf);
+Gnm = sphexp_mono_ps([R0,0,0],mode,Nse,f,[0,0,0],conf);
 % regular/singular spherical expansion of synthesised sound field
 Pnm = zeros(size(Gnm));
 for n=0:Nse
-  v = sphexp_index(-n:n,n);
-  Pnm(v,:) = 2*pi*R0*Gnm(v,:).*Dm((-n:n)+Nse+1,:);
+    v = sphexp_index(-n:n,n);
+    Pnm(v,:) = 2*pi*R0*Gnm(v,:).*Dm((-n:n)+Nse+1,:);
 end
 
 end

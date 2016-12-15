@@ -1,8 +1,8 @@
-function Nse = sphexp_truncation_order(r, f, nmse, conf)
+function Nse = sphexp_truncation_order(r,f,nmse,conf)
 %SPHEXP_TRUNCATION_ORDER yields the bound of summation for a spherical expansion
 %of an arbitrary sound field
 %
-%   Usage: Nse = sphexp_truncation_order(r, f, nmse, conf)
+%   Usage: Nse = sphexp_truncation_order(r,f,nmse,conf)
 %
 %   Input parameters:
 %       r           - max 3D distance from expansion center / m
@@ -13,7 +13,7 @@ function Nse = sphexp_truncation_order(r, f, nmse, conf)
 %   Output parameters:
 %       Nse         - maximum order for spherical expansion
 %
-%   SPHEXP_TRUNCATION_ORDER(r, f, nmse, conf) yields the order up to which
+%   SPHEXP_TRUNCATION_ORDER(r,f,nmse,conf) yields the order up to which
 %   a the spherical expansion coefficients of an arbitrary sound field have
 %   be summed up. For a given frequency (f) the normalized truncation mean
 %   squared error is below the specified error bound (nmse) at any point inside
@@ -73,5 +73,5 @@ c = conf.c;
 %% ===== Computation ====================================================
 % See Kennedy et al. (eq. 42/43)
 lambda = c/f;  % wave length
-delta = max(0, ceil(log(0.67848/nmse)));  % nmse dependent term
+delta = max(0,ceil(log(0.67848/nmse)));  % nmse dependent term
 Nse = ceil(pi*r*exp(1)/lambda) + delta;

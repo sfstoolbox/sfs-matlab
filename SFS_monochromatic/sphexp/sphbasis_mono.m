@@ -1,7 +1,7 @@
-function [jn, h2n, Ynm] = sphbasis_mono(r,theta,phi,Nse,k,conf)
+function [jn,h2n,Ynm] = sphbasis_mono(r,theta,phi,Nse,k,conf)
 %SPHBASIS_MONO evaluates spherical basis functions for given input arguments
 %
-%   Usage: [jn, h2n, Ynm] = sphbasis_mono(r,theta,phi,Nse,k,conf)
+%   Usage: [jn,h2n,Ynm] = sphbasis_mono(r,theta,phi,Nse,k,conf)
 %
 %   Input parameters:
 %       r           - distance from origin / m [n1 x n2 x ...]
@@ -16,11 +16,11 @@ function [jn, h2n, Ynm] = sphbasis_mono(r,theta,phi,Nse,k,conf)
 %       h2n         - cell array of spherical hankel functions of 2nd kind
 %       Ynm         - cell array of spherical harmonics
 %
-%   SPHBASIS_MONO(r,theta,phi,Nse,k,conf) computes spherical basis functions 
-%   for the given arguments r, theta and phi. r, theta and phi can be of 
+%   SPHBASIS_MONO(r,theta,phi,Nse,k,conf) computes spherical basis functions
+%   for the given arguments r, theta and phi. r, theta and phi can be of
 %   arbitrary (but same) size. Output will be stored in cell arrays (one cell
-%   entry for each order) of length Nse+1 for jn and h2n. For Ynm the lenght 
-%   is (Nse+1).^2. The coefficients of Ynm are stored with the linear index l 
+%   entry for each order) of length Nse+1 for jn and h2n. For Ynm the lenght
+%   is (Nse+1).^2. The coefficients of Ynm are stored with the linear index l
 %   resulting from the order m and the degree n of the spherical harmonics:
 %
 %         m                 2
@@ -69,9 +69,9 @@ isargpositivescalar(Nse);
 isargequalsize(r,phi,theta);
 isargscalar(k);
 if nargin<nargmax
-  conf = SFS_config;
+    conf = SFS_config;
 else
-  isargstruct(conf);
+    isargstruct(conf);
 end
 
 %% ===== Configuration ==================================================
@@ -88,14 +88,14 @@ h2n = cell(NJ,1);
 Ynm = cell(L,1);
 
 for n=0:Nse
-  jn{n+1} = sphbesselj(n,kr);
-  h2n{n+1} = jn{n+1} - 1j*sphbessely(n,kr);  
-  for m=0:n
-    l_plus = (n + 1).^2 - (n - m);
-    l_minus = (n + 1).^2 - (n + m);
-    if showprogress, progress_bar(l_plus,L); end  % progress bar
-    % spherical harmonics (caution: symmetry relation depends on definition)
-    Ynm{l_plus} = sphharmonics(n,m,theta,phi);
-    Ynm{l_minus} = conj(Ynm{l_plus});
-  end
+    jn{n+1} = sphbesselj(n,kr);
+    h2n{n+1} = jn{n+1} - 1j*sphbessely(n,kr);
+    for m=0:n
+        l_plus = (n + 1).^2 - (n - m);
+        l_minus = (n + 1).^2 - (n + m);
+        if showprogress, progress_bar(l_plus,L); end  % progress bar
+        % spherical harmonics (caution: symmetry relation depends on definition)
+        Ynm{l_plus} = sphharmonics(n,m,theta,phi);
+        Ynm{l_minus} = conj(Ynm{l_plus});
+    end
 end

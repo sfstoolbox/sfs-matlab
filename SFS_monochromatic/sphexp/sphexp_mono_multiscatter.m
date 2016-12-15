@@ -1,11 +1,11 @@
-function B = sphexp_mono_multiscatter(A, xq, R, sigma, f, conf)
+function B = sphexp_mono_multiscatter(A,xq,R,sigma,f,conf)
 %SPHEXP_MONO_MULTISCATTER compute the singular spherical expansion of a sphere-
 %scattered sound field
 %
-%   Usage: B = sphexp_mono_multiscatter(A, xq, R, sigma, f, conf)
+%   Usage: B = sphexp_mono_multiscatter(A,xq,R,sigma,f,conf)
 %
 %   Input parameters:
-%       A           - regular spherical expansion coefficients of incident 
+%       A           - regular spherical expansion coefficients of incident
 %                     sound fields arriving at each sphere [n x Nq]
 %       xq          - positions of the sphere / m [Nq x 3]
 %       R           - radii of the spheres / m [Nq x 1]
@@ -16,7 +16,7 @@ function B = sphexp_mono_multiscatter(A, xq, R, sigma, f, conf)
 %       B           - regular spherical expansion coefficients of sound fields
 %                     scattered at each sphere [n x Nq]
 %
-%   SPHEXP_MONO_MULTISCATTER(A, xq, R, sigma, f, conf)
+%   SPHEXP_MONO_MULTISCATTER(A,xq,R,sigma,f,conf)
 
 %*****************************************************************************
 % Copyright (c) 2010-2016 Quality & Usability Lab, together with             *
@@ -55,23 +55,23 @@ nargmin = 6;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargpositivescalar(f);
-isargvector(R, sigma);
-isargmatrix(A, xq);
+isargvector(R,sigma);
+isargmatrix(A,xq);
 isargstruct(conf);
 
 L = size(A,1);
 isargsquaredinteger(L);
 
 if length(R) == 1
-  R = repmat( R, [1, size(A,2)] );
+    R = repmat( R,[1,size(A,2)] );
 elseif length(R) ~= size(A,2)
-  error('%s: Length of R does not match size of A',upper(mfilename));
+    error('%s: Length of R does not match size of A',upper(mfilename));
 end
 
 if length(sigma) == 1
-  sigma = repmat( sigma, [1, size(A,2)] );
+    sigma = repmat( sigma,[1,size(A,2)] );
 elseif length(sigma) ~= size(A,2)
-  error('%s: Length of R does not match size of A',upper(mfilename));
+    error('%s: Length of R does not match size of A',upper(mfilename));
 end
 
 %% ===== Computation ====================================================
@@ -80,19 +80,19 @@ AB = zeros(Nq*L);
 
 E = ones(L,1);
 for qdx=1:Nq
-  selectq = ((qdx-1)*L+1):(qdx*L);
-  AB(selectq,selectq) = ...
-    diag(1./sphexp_mono_scatter(E, R(qdx), sigma(qdx), f, conf));  
+    selectq = ((qdx-1)*L+1):(qdx*L);
+    AB(selectq,selectq) = ...
+        diag(1./sphexp_mono_scatter(E,R(qdx),sigma(qdx),f,conf));
 end
 
 for qdx=1:Nq
-  selectq = ((qdx-1)*L+1):(qdx*L);
-  for pdx=(qdx+1):Nq
-    selectp = ((pdx-1)*L+1):(pdx*L);    
-    [SRpq, SRqp] = sphexp_mono_translation(xq(qdx,:)-xq(pdx,:), 'SR', f, conf);
-    AB(selectp,selectq) = -SRpq;
-    AB(selectq,selectp) = -SRqp;
-  end
+    selectq = ((qdx-1)*L+1):(qdx*L);
+    for pdx=(qdx+1):Nq
+        selectp = ((pdx-1)*L+1):(pdx*L);
+        [SRpq,SRqp] = sphexp_mono_translation(xq(qdx,:)-xq(pdx,:),'SR',f,conf);
+        AB(selectp,selectq) = -SRpq;
+        AB(selectq,selectp) = -SRqp;
+    end
 end
 
 A = reshape(A,[],1);

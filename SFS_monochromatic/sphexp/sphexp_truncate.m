@@ -1,21 +1,21 @@
-function Anm = sphexp_truncate(Pnm, N, M, Mshift)
-%SPHEXP_TRUNCATE truncates spherical expansion by setting remaining 
+function Anm = sphexp_truncate(Pnm,N,M,Mshift)
+%SPHEXP_TRUNCATE truncates spherical expansion by setting remaining
 %coefficients to zero
 %
-%   Usage: Anm = sphexp_truncate(Pnm, N, M, Mshift)
+%   Usage: Anm = sphexp_truncate(Pnm,N,M,Mshift)
 %
 %   Input parameters:
 %       Pnm         - 1D array of spherical expansion coefficients [n x Nf]
 %       N           - maximum degree of spherical expansion
 %       M           - maximum order of spherical expansion, default: N
 %       Mshift      - shift for asymmetric trunction with respect to order,
-%                     default: 0                    
+%                     default: 0
 %
 %   Output parameters:
 %       Anm         - 1D array of bandlimited spherical expansion
 %                     coefficients [n x Nf]
 %
-%   SPHEXP_TRUNCATE(Pnm, N, M, Mshift) sets coefficients belonging to an degree
+%   SPHEXP_TRUNCATE(Pnm,N,M,Mshift) sets coefficients belonging to an degree
 %   n higher than N or an order m exceeding (-M+Mshift:+M+Mshift) to zero.
 %
 %   see also: sphexp_truncation_order
@@ -59,24 +59,24 @@ narginchk(nargmin,nargmax);
 isargmatrix(Pnm);
 isargpositivescalar(N);
 switch nargin
-  case 2
-    M = N;
-    Mshift = 0;
-  case 3
-    isargpositivescalar(M);
-    Mshift = 0;
-  case 4
-    isargscalar(Mshift);
+    case 2
+        M = N;
+        Mshift = 0;
+    case 3
+        isargpositivescalar(M);
+        Mshift = 0;
+    case 4
+        isargscalar(Mshift);
 end
 %% ===== Variable =======================================================
-Nse = min(sqrt(size(Pnm, 1))-1, N);
+Nse = min(sqrt(size(Pnm,1))-1,N);
 
 %% ===== Computation ====================================================
 Anm = zeros(size(Pnm));
 
 for m=max(-M+Mshift,-Nse):min(M+Mshift,Nse)
-  v = sphexp_index(m,abs(m):Nse);
-  Anm(v,:) = Pnm(v,:);
+    v = sphexp_index(m,abs(m):Nse);
+    Anm(v,:) = Pnm(v,:);
 end
 
 end

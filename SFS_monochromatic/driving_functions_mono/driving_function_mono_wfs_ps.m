@@ -215,11 +215,9 @@ elseif strcmp('2.5D',dimension)
         %
         % 2.5D correction factor
         %        _______________________
-        % g0 = \| d_ref / (d_ref - d_s)
+        % g0 = \| d_ref / (d_ref + d_s)
         %
-        % See Start (1997), eq. (3.16)
-        %
-        g0 = sqrt( dref ./ (dref - ds) );
+        g0 = sqrt( dref ./ (dref + ds) );
         %
         % D_2.5D(x0,w) =
         %       ___    ___

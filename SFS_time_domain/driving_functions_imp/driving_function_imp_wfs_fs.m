@@ -135,14 +135,12 @@ elseif strcmp('2.5D',dimension)
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
         % 2.5D correction factor
-        %         _____________________
-        %        |      |xref-x0|
-        % g0 = _ |---------------------
-        %       \|||xref-x0| - |xs-x0||
+        %         ___________________
+        %        |     |xref-x0|
+        % g0 = _ |-------------------
+        %       \||xref-x0| + |xs-x0|
         %
-        % See Verheijen (1997), eq. (A.14)
-        %
-        g0 = sqrt( vector_norm(xref-x0,2) ./ abs(vector_norm(x0-xref,2) - r) );
+        g0 = sqrt( vector_norm(xref-x0,2) ./ abs(vector_norm(x0-xref,2) + r) );
         %                                  ___
         %                                 | 1    (xs-x0) nx0
         % d_2.5D(x0,t) = h_pre(-t) * g0 _ |---  ------------- delta(t+|x0-xs|/c)

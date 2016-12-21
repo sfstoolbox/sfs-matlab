@@ -184,7 +184,7 @@ elseif strcmp('2.5D',dimension)
         % g0 = _ |-------------------
         %       \||xref-x0| + |xs-x0|
         %
-        g0 = sqrt( vector_norm(xref-x0,2) ./ abs(vector_norm(x0-xref,2) + r) );
+        g0 = sqrt( vector_norm(xref-x0,2) ./ (vector_norm(xref-x0,2) + r) );
         %                       ___     ___
         %                      | 1     |-iw  (xs-x0) nx0
         % D_2.5D(x0,w) = g0  _ |---  _ |--- ------------- e^(i w/c |x0-xs|)

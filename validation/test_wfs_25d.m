@@ -95,7 +95,7 @@ for idx=1:length(positions)
             colorbar;
 
             subplot(2,2,2*ddx+2);
-            imagesc(Y,X,db(1 - Pwfs./Pgt));
+            imagesc(Y,X,real(db(1 - Pwfs./Pgt)));
             title(sprintf('%s %s',src,driving_functions{:}),'Interpreter','none');
             set(gca,'YDir','normal');
             colorbar;

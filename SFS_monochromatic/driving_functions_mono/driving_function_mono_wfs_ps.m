@@ -187,8 +187,6 @@ elseif strcmp('2.5D',dimension)
         % g0 = _ |---------------------
         %       \| |xref-x0| + |x0-xs|
         %
-        % See Start (1997), eq. (3.11)
-        %
         g0 = sqrt( vector_norm(xref-x0,2) ./ (vector_norm(xref-x0,2) + r) );
         %
         % D_2.5D(x0,w) =
@@ -209,17 +207,15 @@ elseif strcmp('2.5D',dimension)
         % reference to a line parallel to a LINEAR secondary source distribution
         %
         % Distance ref-line to linear ssd
-        dref = vector_product(xref-x0,nx0,2);
+        dref = abs( vector_product(xref-x0,nx0,2) );
         % Distance source and linear ssd
-        ds = vector_product(xs-x0,nx0,2);
+        ds = abs( vector_product(xs-x0,nx0,2) );
         %
         % 2.5D correction factor
         %        _______________________
-        % g0 = \| d_ref / (d_ref - d_s)
+        % g0 = \| d_ref / (d_ref + d_s)
         %
-        % See Start (1997), eq. (3.16)
-        %
-        g0 = sqrt( dref ./ (dref - ds) );
+        g0 = sqrt( dref ./ (dref + ds) );
         %
         % D_2.5D(x0,w) =
         %       ___    ___

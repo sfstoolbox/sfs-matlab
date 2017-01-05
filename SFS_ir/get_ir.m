@@ -166,8 +166,12 @@ elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
     end
     % Find nearest head orientation in the horizontal plane
     [phi,theta] = sofa_get_head_orientations(header);
-    [neighbours_head,idx_head] = ...
-        findnearestneighbour([phi theta]',head_orientation,3);
+    [x(:,1),x(:,2),x(:,3)] = sph2cart(phi,theta,ones(length(phi),1));
+    [x_desired(1),x_desired(2),x_desired(3)] = ...
+        sph2cart(head_orientation(1),head_orientation(2),1);
+    [neighbours,idx_head] = findnearestneighbour(x',x_desired',3);
+    [neighbours_head(1,:),neighbours_head(2,:)] = ...
+        cart2sph(neighbours(1,:),neighbours(2,:),neighbours(3,:));
     % Check if head orientation is out of bounds
     if all(abs(head_orientation(1))>abs(neighbours_head(1,:)))
         warning('SFS:get_ir',['Head azimuth %.1f deg out of bound, ', ...

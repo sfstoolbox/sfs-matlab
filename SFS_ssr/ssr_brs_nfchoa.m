@@ -11,7 +11,7 @@ function [brs,delay] = ssr_brs_nfchoa(X,phi,xs,src,irs,conf)
 %       src     - source type: 'pw' - plane wave
 %                              'ps' - point source
 %                              'fs' - focused source
-%       irs     - IR data set for the second sources
+%       irs     - impulse response data set for the second sources
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:

@@ -8,7 +8,7 @@ function brs = ssr_brs_point_source(X,phi,xs,irs,conf)
 %       X       - listener position / m
 %       phi     - listener direction [head orientation] / rad
 %       xs      - source position / m
-%       irs     - IR data set for the second sources
+%       irs     - impulse response data set for the second sources
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:

@@ -9,7 +9,7 @@ function brs = ssr_brs(X,phi,x0,d,irs,conf)
 %       phi     - listener direction [head orientation] / rad
 %       x0      - secondary sources
 %       d       - corresponding driving signals
-%       irs     - IR data set for the second sources
+%       irs     - impulse response data set for the second sources
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:

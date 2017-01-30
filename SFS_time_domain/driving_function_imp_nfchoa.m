@@ -89,7 +89,7 @@ xs(1:3) = xs(1:3)-X0;
 
 % Compute impulse responses of modal filters
 dm = [repmat(pulse,[order+1 1]) zeros(order+1,N-length(pulse))];
-for n=2:order+1
+for n=1:order+1
 
     % Get the second-order sections for the different virtual sources
     if strcmp('pw',src)
@@ -151,7 +151,7 @@ for l=1:N
 end
 d = circshift(d,[-order,0]);
 d = ifft(transpose(d),[],2);
-d = 1/pi/R*nls*real(d);
+d = 1/(2*pi)/R*nls*real(d);
 
 % -------------------------------------------------------------------------
 % The following is the direct implementation of the spatial IDFT which
@@ -166,5 +166,5 @@ if(0)
         end
         d(:,n) = transpose(dtemp);
     end
-    d = 1/pi/R*real(d);
+    d = 1/(2*pi)/R*real(d);
 end

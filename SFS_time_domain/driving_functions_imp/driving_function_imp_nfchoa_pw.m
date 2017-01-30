@@ -96,7 +96,7 @@ elseif strcmp('2.5D',dimension)
         % 2.5D for a plane wave as source model
         %
         [sos,~] = zp2sos(p,z*c/R,2,'down','none');
-        sos(1,1:3) = sos(1,1:3) * (-1)^abs(N);
+        sos(1,1:3) = sos(1,1:3) * (-1)^abs(N) * 4*pi * R;
         %
         % Compare Spors et al. (2011), eq. (10)
         %

@@ -97,6 +97,7 @@ elseif strcmp('2.5D',dimension)
         % 2.5D using a point source as source model
         %
         [sos,~] = zp2sos(z*c/r,z*c/R,1,'up','none');
+        sos(1,1:3) = sos(1,1:3) * R/r;
         %
         % Compare Spors et al. (2011), eq. (11)
         %

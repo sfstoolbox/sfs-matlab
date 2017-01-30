@@ -89,7 +89,7 @@ H = ones(1,length(f));
 % Pre-equalization filter from flow to fhigh
 if strcmp('2.5D',dimension)
     %            ______
-    %           |2*pi f
+    %           |2*pi*f
     %  H(f) = \ |------ for flow<=f<=fhigh
     %          \|  c
     %
@@ -99,7 +99,7 @@ if strcmp('2.5D',dimension)
     H(idxfhigh:end) = H(idxfhigh);
 elseif strcmp('3D',dimension) || strcmp('2D',dimension)
     %
-    %         2*pi f
+    %         2*pi*f
     %  H(f) = ------ for flow<=f<=fhigh
     %           c
     %

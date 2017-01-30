@@ -78,18 +78,20 @@ H = ones(1,length(f));
 
 %% ===== Computation ====================================================
 % Desired response
-%   ^
-% 1_|          fhigh_______
-%   |            /
-%   |        /
-%   | ___/
-%   |  flow
-%   -------------------------> f
+%           ^
+% H(fhigh) _|          fhigh_______
+%           |            /
+%           |        /
+%  H(flow) _| ___/
+%           |  flow
+%           -------------------------> f
 %
 % Pre-equalization filter from flow to fhigh
 if strcmp('2.5D',dimension)
-    %           _______
-    %  H(f) = \|f/fhigh, for flow<=f<=fhigh
+    %            ______
+    %           |2*pi f
+    %  H(f) = \ |------ for flow<=f<=fhigh
+    %          \|  c
     %
     %  See http://sfstoolbox.org/#equation-h.wfs.2.5D
     %
@@ -97,7 +99,9 @@ if strcmp('2.5D',dimension)
     H(idxfhigh:end) = H(idxfhigh);
 elseif strcmp('3D',dimension) || strcmp('2D',dimension)
     %
-    %  H(f) = f/fhigh, for flow<=f<=fhigh
+    %         2*pi f
+    %  H(f) = ------ for flow<=f<=fhigh
+    %           c
     %
     %  See http://sfstoolbox.org/#equation-h.wfs
     %

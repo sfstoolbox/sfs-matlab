@@ -1,33 +1,36 @@
-function [ir_new,x0_new] = interpolate_ir(ir,x0,xs,conf)
-%INTERPOLATE_IR interpolates three given IRs for the given angle
+function [ir_new,weights_new,x0_new] = interpolate_ir(ir,weights,x0,conf)
+%INTERPOLATE_IR interpolates the given impulse responses according to their weights
 %
-%   Usage: [ir_new,x0_new] = interpolate_ir(ir,x0,xs,conf)
+%   Usage: [ir_new,weights_new,x0_new] = interpolate_ir(ir,weights,x0,conf)
 %
 %   Input parameters:
-%       ir      - matrix containing impulse responses in the form [M C N], where
-%                     M ... Number of measurements (2<=M<=3)
-%                     C ... Number of channels
-%                     N ... Number of samples
-%       x0      - matrix containing positions of single impulse
-%                 responses [2 M] / (rad, rad)
-%       xs      - desired position after interpolation [2 1] / (rad, rad)
-%       conf    - configuration struct (see SFS_config)
+%       ir           - matrix containing impulse responses in the form [M C N], where
+%                          M ... Number of measurements
+%                          C ... Number of channels
+%                          N ... Number of samples
+%       weights      - M weights for impulse reponses
+%       x0           - M positions corresponding to given impulse responses
+%       conf         - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       ir_new  - impulse response for the given position [1 C N]
-%       x0_new  - position corresponding to the returned impulse response
+%       ir_new       - impulse response for the given position [1 C N]
+%       weights_new  - weights corresponding to impulse responses used for
+%                      interpolation
+%       x0_new       - position corresponding to impulse responses used for
+%                      interpolation
 %
-%   INTERPOLATE_IR(ir,x0,xs,conf) interpolates the two to three given impulse
-%   responses from ir with their corresponding angles x0 for the given angles
-%   xs and returns an interpolated impulse response.
-%	For the 1D case, the interpolation method differs depending on the setting
-%	of conf.ir.interpolationmethod:
+%   INTERPOLATE_IR(ir,x0,xs,conf) interpolates the given impulse responses by
+%   applying the given weights and returns the interpolated impulse response as
+%   well as its corresponding position. Only impulse responses with weights >= prec
+%   will be used.
+%	The interpolation method differs depending on the setting of
+%	conf.ir.interpolationmethod:
 %     'simple'      - Interpolation in the time domain performed samplewise.
 %	                  This does not heed the times of arrival of the impulse
 %                     responses.
 %     'freqdomain'  - Interpolation in the frequency domain performed separately
 %                     for magnitude and phase.
-%   Note, that the given parameters are not checked if they have all the correct
+%   Note that the given parameters are not checked if they all have the correct
 %   dimensions in order to save computational time, because this function could
 %   be called quite often.
 %
@@ -88,71 +91,41 @@ if useinterpolation
         interpolationmethod = conf.ir.interpolationmethod;
     end
 end
-% Precision of the wanted angle. If an impulse response within the given
-% precision could be found no interpolation is applied.
-prec = 0.001; % ~ 0.05 deg
+
+% Precision of the weights. Impulse responses with smaller weights are left out.
+prec = 0.001;
 
 
 %% ===== Computation ====================================================
-ir_new = ir(1,:,:);
-x0_new = xs;
-% Check if we have found directly the desired point or have to interpolate
-% between different impulse responses
-if norm(x0(:,1)-xs)<prec || ~useinterpolation || size(x0,2)==1
-    % Return the first nearest neighbour
-    x0_new = x0(:,1);
-    return;
-else
-    % === IR interpolation ===
-    % Check if we have to interpolate in one or two dimensions
-    if norm(x0(1,1)-x0(1,2))<prec || norm(x0(2,1)-x0(2,2))<prec
-        % --- 1D interpolation ---
-        warning('SFS:irs_intpol',...
-            ['doing 1D IR interpolation between (%.1f,%.1f) deg ', ...
-             'and (%.1f,%.1f) deg.'], ...
-            deg(x0(1,1)), deg(x0(2,1)), ...
-            deg(x0(1,2)), deg(x0(2,2)));
-        switch interpolationmethod
-        case 'simple'
-            ir_new(1,1,:) = interpolation(squeeze(ir(1:2,1,:))',x0(:,1:2),xs);
-            ir_new(1,2,:) = interpolation(squeeze(ir(1:2,2,:))',x0(:,1:2),xs);
-        case 'freqdomain'
-            % see Itoh (1982), Hartung et al. (1999)
-            %
-            % Upsample to avoid phase aliasing in unwrapping of phase
-            TF = fft(ir,4*size(ir,3),3);
-            % Magnitude and phase will be interpolated separately
-            magnitude = abs(TF);
-            phase = unwrap(angle(TF),[],3);
-            % Calculate interpolation only for the first half of the spectrum
-            % and only for original bins
-            idx_half = floor(size(TF,3)/2)+1;
-            magnitude_new(1,:) = interpolation(...
-                squeeze(magnitude(1:2,1,1:4:idx_half))',x0(:,1:2),xs);
-            magnitude_new(2,:) = interpolation(...
-                squeeze(magnitude(1:2,2,1:4:idx_half))',x0(:,1:2),xs);
-            phase_new(1,:) = interpolation(...
-                squeeze(phase(1:2,1,1:4:idx_half))',x0(:,1:2),xs);
-            phase_new(2,:) = interpolation(...
-                squeeze(phase(1:2,2,1:4:idx_half))',x0(:,1:2),xs);
-            % Calculate interpolated impulse response from magnitude and phase
-            ir_new(1,1,:) = ifft(magnitude_new(1,:) ...
-                .* exp(1i*phase_new(1,:)),size(ir,3),'symmetric');
-            ir_new(1,2,:) = ifft(magnitude_new(2,:)...
-                .* exp(1i*phase_new(2,:)),size(ir,3),'symmetric');
-        otherwise
-            error('%s: %s is an unknown interpolation method.', ...
-                upper(mfilename),interpolationmethod);
-        end
-    else
-        % --- 2D interpolation ---
-        warning('SFS:irs_intpol3D',...
-            ['doing 2D IR interpolation between (%.1f,%.1f) deg, ', ...
-             '(%.1f,%.1f) deg and (%.1f,%.1f) deg.'], ...
-            deg(x0(1,1)), deg(x0(2,1)), ...
-            deg(x0(1,2)), deg(x0(2,2)), ...
-            deg(x0(1,3)), deg(x0(2,3)));
-        ir_new(1,1,:) = interpolation(squeeze(ir(1:3,1,:))',x0(:,1:3),xs);
-        ir_new(1,2,:) = interpolation(squeeze(ir(1:3,2,:))',x0(:,1:3),xs);
+% Leave out impulse responses with weights smaller than prec
+ir = ir(weights>=prec,:,:);
+weights_new = weights(weights>=prec);
+x0_new = x0(weights>=prec,:);
+
+% === IR interpolation ===
+if useinterpolation
+    switch interpolationmethod
+    case 'simple'
+        ir_new = sum(bsxfun(@times,ir,weights),1);
+    case 'freqdomain'
+        % See Itoh (1982), Hartung et al. (1999)
+        %
+        % Upsample to avoid phase aliasing in unwrapping of phase
+        TF = fft(ir,4*size(ir,3),3);
+        % Magnitude and phase will be interpolated separately
+        magnitude = abs(TF);
+        phase = unwrap(angle(TF),[],3);
+        % Calculate interpolation only for the first half of the spectrum
+        % and only for original bins
+        idx_half = floor(size(TF,3)/2)+1;
+        magnitude_new = sum(bsxfun(@times,magnitude(:,:,1:4:idx_half),weights),1);
+        phase_new = sum(bsxfun(@times,phase(:,:,1:4:idx_half),weights),1);
+        % Calculate interpolated impulse response from new magnitude and phase
+        ir_new = ifft(magnitude_new.*exp(1i*phase_new),size(ir,3),3,'symmetric');
+    otherwise
+        error('%s: %s is an unknown interpolation method.', ...
+            upper(mfilename),interpolationmethod);
     end
+elseif ~useinterpolation || length(weights)==1
+    ir_new = ir;
 end

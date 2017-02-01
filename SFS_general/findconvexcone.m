@@ -1,21 +1,21 @@
 function [selection,weights] = findconvexcone(x0,xs)
 %FINDCONVEXCONE selects up to 3 points from x0 with xs in their conic span
 %
-%   Usage: [selection,weights] = findconvexcone(x0,xs);
+%   Usage: [selection,weights] = findconvexcone(x0,xs)
 %
 %   Input parameters:
-%       x0          - point cloud in R^3 / m [nx3]
-%       xs          - point in R^3 / m [1x3]
+%       x0          - point cloud on a sphere around the origin / m [nx3]
+%       xs          - desired direction as point in R^3 / m [1x3]
 %
 %   Output parameters:
 %       selection   - row indices of N points in x0 [Nx1]
 %                     where N is 1,2 or 3
 %       weights     - weights [Nx1]
 %
-%   FINDCONVEXCONE(x0,xs) returns 1,2 or 3 row indices into x0
-%   and non-negative weights w1, ..., w3 such that
-%       xs == w1*x1 + w2*x2 + w3*x3,
-%       where [x1; x2; x3] == x0(selection,:) .
+%   FINDCONVEXCONE(x0,xs) returns 1,2 or 3 row indices into x0 and non-negative
+%   weights w1, ..., w3 such that w1*x1 + w2*x2 + w3*x3 with
+%   [x1; x2; x3] == x0(selection,:) composes the point inside the triangle spanned
+%   by x1, x2, x3.
 %
 %   x1...x3 are selected from the convex hull in R3.
 %   Various precautions are taken to make this well-behaved in most cases.
@@ -63,6 +63,13 @@ narginchk(nargmin,nargmax);
 
 
 %% ===== Prepare Grid (see local functions below) ========================
+% Normalise x0 and xs to lie on unit sphere as only direction is relevant
+xs = xs./norm(xs,2);
+radii = vector_norm(x0,2);
+if abs(max(radii) - min(radii)) >1e-3
+     warning('%s: Grid is apparently not a sphere.', upper(mfilename))
+end
+x0 = x0./repmat(radii,[1,size(x0,2)]);
 
 % Rotate to principal axes to enable 2D arrays
 [x0, xs] = rotate_to_principal_axes(x0, xs);
@@ -74,37 +81,26 @@ if ~isempty(dummy_points)
     x0 = [x0; dummy_points];
 end
 
-% Add curvature to all points to enable linear/planar arrays.
-% Modified grid is only used for hull, not for calculation of weights.
-% (The value 500 was tested for a 10 m line array 10 m distance to center with
-% inter-element spacing 1 mm. For longer/remoter/denser arrays, point
-% selection may fail near the endpoints.)
-x0_ = inflate_radius(x0,500);
-
 
 %% ===== Computation =====================================================
 % Delaunay triangulation of convex hull
-simplices = convhulln(x0_);
-if length(unique(simplices)) < size(x0,1)
-    warning(['%s: Grid may be non-convex. ', ...
-        'Point selection may not be as desired.'], upper(mfilename))
-end
+simplices = convhulln(x0);
 
 % Find x0 with smallest angle to xs
-xs_normed = repmat(xs./norm(xs,2),size(x0,1),1);
-x0_normed = x0./repmat(vector_norm(x0,2),[1,size(x0,2)]);
-[~,most_aligned_point] = max(vector_product(x0_normed,xs_normed,2));
+[~,most_aligned_point] = ...
+    max(vector_product(x0,repmat(xs,size(x0,1),1),2));
 
 % The simplices at "most aligned point" are the most likely candidates,
 % put them at the beginning of the list
 mask = logical(sum(simplices==most_aligned_point,2));
 simplices = [simplices(mask,:); simplices(~mask,:) ];
 
-% One of the simplices spans a convex cone that contains xs
+% One of these simplices contains xs
 for n = 1:size(simplices,1);
     A = x0(simplices(n,:),:);
     weights = xs/A;
-    if all(weights >= 0) % non-negative weights == conic combination
+    weights(abs(weights)<1e-10) = 0;
+    if all(weights >= 0) % non-negative weights == convex combination
         selection = simplices(n,:);
         break;
     end
@@ -117,10 +113,15 @@ if ~isempty(dummy_points)
     dummy_mask = (dummy_indices == selection);
     if any(dummy_mask)
         selection(dummy_mask) = [];
+        if ~weights(dummy_mask)==0
+            warning('%s: Requested point lies outside grid.', upper(mfilename))
+        end
         weights(dummy_mask) = [];
-        warning('%s: Requested point lies outside grid.', upper(mfilename))
     end
 end
+
+% Normalise weights
+weights = weights/sum(weights);
 
 [weights,order] = sort(weights.','descend');
 selection = selection(order).';
@@ -152,7 +153,8 @@ S = diag(S);
 if S(end)/S(end-1) < gamma
     x0(:,3) = [];
     xs(3) = [];
-    warning('%s: Grid is apparently two-dimensional. ',upper(mfilename));
+    warning('SFS:findconvexcone','%s: Grid is apparently two-dimensional. ', ...
+        upper(mfilename));
 end
 end
 
@@ -163,20 +165,4 @@ function dummy_points = augment_bounding_box(x0)
 % contained in the cartesian bounding box of x0.
 dummy_points = -diag(sign(max(x0)) + sign(min(x0)));
 dummy_points(~any(dummy_points,2),:) = [];
-end
-
-% =========================================================================
-
-function x0_ = inflate_radius(x0, delta_r)
-% Add delta_r to radius of all points in x0
-switch size(x0,2)
-    case 2
-        [phi, r] = cart2pol(x0(:,1), x0(:,2));
-        [X,Y] = pol2cart(phi, r + delta_r);
-        x0_ = [X,Y];
-    case 3
-        [phi, theta, r] = cart2sph(x0(:,1), x0(:,2), x0(:,3));
-        [X,Y,Z] = sph2cart(phi, theta, r + delta_r);
-        x0_ = [X,Y,Z];
-end
 end

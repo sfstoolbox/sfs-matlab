@@ -1,20 +1,21 @@
-function [phi,theta] = sofa_get_head_orientations(sofa,idx)
-%SOFA_GET_HEAD_ORIENTATIONS returns phi, theta from the given SOFA data set
+function [phi,theta,r] = sofa_get_head_orientations(sofa,idx)
+%SOFA_GET_HEAD_ORIENTATIONS returns phi, theta and r from the given SOFA data set
 %
-%   Usage: [phi,theta] = sofa_get_head_orientations(sofa,[idx])
+%   Usage: [phi,theta,r] = sofa_get_head_orientations(sofa,[idx])
 %
 %   Input parameters:
-%       sofa    - impulse response data set (SOFA struct/file)
-%       idx     - index of measurement for which head orientation should be
-%                 returned (default: return all head orientations)
+%       sofa   - impulse response data set (SOFA struct/file)
+%       idx    - index of measurement for which head orientation should be
+%                returned (default: return all head orientations)
 %
 %   Output parameters:
-%       phi     - head orientations in the horizontal plane / rad
-%       theta   - head orientations in the median plane / rad
+%       phi    - head orientations in the horizontal plane / rad
+%       theta  - head orientations in the median plane / rad
+%       r      - length of head orientation vector / m
 %
-%   SOFA_GET_HEAD_ORIENTATIONS(sofa,idx) returns head orientation [phi,theta] as
+%   SOFA_GET_HEAD_ORIENTATIONS(sofa,idx) returns head orientation [phi,theta,r] as
 %   defined in the given SOFA file or struct, specified by idx. If no idx is
-%   specified all head orientations are returned.
+%   specified, all head orientations are returned.
 %
 %   See also: get_ir, sofa_get_header, sofa_get_secondary_sources
 
@@ -65,3 +66,4 @@ listener_view = SOFAconvertCoordinates(header.ListenerView, ...
                                        header.ListenerView_Type,'spherical');
 phi = correct_azimuth(rad(listener_view(idx,1)));
 theta = correct_elevation(rad(listener_view(idx,2)));
+r = listener_view(idx,3);

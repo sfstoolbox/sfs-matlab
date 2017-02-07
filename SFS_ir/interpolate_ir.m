@@ -21,8 +21,8 @@ function [ir_new,weights_new,x0_new] = interpolate_ir(ir,weights,x0,conf)
 %
 %   INTERPOLATE_IR(ir,x0,xs,conf) interpolates the given impulse responses by
 %   applying the given weights and returns the interpolated impulse response as
-%   well as its corresponding position. Only impulse responses with weights >= prec
-%   will be used.
+%   well as its corresponding position. Only impulse responses with weights larger
+%   that the precision prec=0.001 will be used.
 %	The interpolation method differs depending on the setting of
 %	conf.ir.interpolationmethod:
 %     'simple'      - Interpolation in the time domain performed samplewise.

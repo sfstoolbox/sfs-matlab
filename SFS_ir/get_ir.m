@@ -142,7 +142,7 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     xs = xs-X+X_sofa;
     % Get measured loudspeaker positions
     x0 = sofa_get_secondary_sources(header,'cartesian');
-    x0 = x0(:,1:3); % need position only
+    x0 = x0(:,1:3); % need positions only
     % Combine head orientation and desired direction of source (see note above)
     [xs(1),xs(2),xs(3)] = cart2sph(xs(1),xs(2),xs(3));
     xs(1) = correct_azimuth(xs(1)-head_orientation(1));
@@ -174,7 +174,7 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     % Select or interpolate to desired impulse response
     [ir,weights_selected,x0_selected] = interpolate_ir(ir,weights,x0(idx,:),conf);
     % Calculate position of returned impulse response
-    x0_new = weights_selected'*x0_selected;
+    x0_new = weights_selected'*x0_selected
     [x0_new(1),x0_new(2),x0_new(3)] = cart2sph(x0_new(1),x0_new(2),x0_new(3));
     x0_new(3) = xs(3);
     [x0_new(1),x0_new(2),x0_new(3)] = sph2cart(x0_new(1),x0_new(2),x0_new(3));

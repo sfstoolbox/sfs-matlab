@@ -174,7 +174,7 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     % Select or interpolate to desired impulse response
     [ir,weights_selected,x0_selected] = interpolate_ir(ir,weights,x0(idx,:),conf);
     % Calculate position of returned impulse response
-    x0_new = weights_selected'*x0_selected
+    x0_new = weights_selected'*x0_selected;
     [x0_new(1),x0_new(2),x0_new(3)] = cart2sph(x0_new(1),x0_new(2),x0_new(3));
     x0_new(3) = xs(3);
     [x0_new(1),x0_new(2),x0_new(3)] = sph2cart(x0_new(1),x0_new(2),x0_new(3));

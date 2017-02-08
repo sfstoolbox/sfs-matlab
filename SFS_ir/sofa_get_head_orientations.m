@@ -11,7 +11,7 @@ function [phi,theta,r] = sofa_get_head_orientations(sofa,idx)
 %   Output parameters:
 %       phi    - head orientations in the horizontal plane / rad
 %       theta  - head orientations in the median plane / rad
-%       r      - length of head orientation vector / m
+%       r      - head orientations radii / m
 %
 %   SOFA_GET_HEAD_ORIENTATIONS(sofa,idx) returns head orientation [phi,theta,r] as
 %   defined in the given SOFA file or struct, specified by idx. If no idx is

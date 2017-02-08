@@ -103,7 +103,9 @@ weights_new = weights(weights>=prec);
 x0_new = x0(weights>=prec,:);
 
 % === IR interpolation ===
-if useinterpolation
+if ~useinterpolation || length(weights)==1
+    ir_new = ir;
+elseif useinterpolation
     switch interpolationmethod
     case 'simple'
         ir_new = sum(bsxfun(@times,ir,weights),1);
@@ -125,7 +127,5 @@ if useinterpolation
     otherwise
         error('%s: %s is an unknown interpolation method.', ...
             upper(mfilename),interpolationmethod);
-    end
-elseif ~useinterpolation || length(weights)==1
-    ir_new = ir;
+    end   
 end

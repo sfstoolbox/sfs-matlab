@@ -51,7 +51,6 @@ narginchk(nargmin,nargmax);
 %% ===== Configuration ===================================================
 % Parameters
 conf = SFS_config;
-conf.secondary_sources.geometry = 'linear';
 conf.xref = [0,0,0];
 conf.dimension = '2.5D';
 conf.plot.useplot = false;
@@ -85,13 +84,13 @@ for ii=1:size(scenarios)
   switch scenarios{ii,3}
     case 'linear'
       conf.secondary_sources.size = 4;
-      conf.secondary_sources.number = 56;
-      % conf.usetapwin = true;
-      % conf.tapwinlen = 0.2;
+      conf.secondary_sources.number = 128;
+      conf.usetapwin = true;
+      conf.tapwinlen = 0.2;
       conf.secondary_sources.center = [0, 1.5, 0];
     case 'circular'
       conf.secondary_sources.size = 1.5;
-      conf.secondary_sources.number = 56;
+      conf.secondary_sources.number = 128;
       conf.secondary_sources.center = [0, 0, 0];
   end
   x0 = secondary_source_positions(conf);

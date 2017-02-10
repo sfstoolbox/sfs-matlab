@@ -94,16 +94,16 @@ for n=1:order+1
     % Get the second-order sections for the different virtual sources
     if strcmp('pw',src)
         % === Plane wave =================================================
-        sos = driving_function_imp_nfchoa_pw(n-1,R,conf);
+        [sos,g] = driving_function_imp_nfchoa_pw(n-1,R,conf);
     elseif strcmp('ps',src)
         % === Point source ===============================================
-        sos = driving_function_imp_nfchoa_ps(n-1,R,r_src,conf);
+        [sos,g] = driving_function_imp_nfchoa_ps(n-1,R,r_src,conf);
     elseif strcmp('ls',src)
         % === Line source ================================================
-        sos = driving_function_imp_nfchoa_ls(n-1,R,r_src,conf);
+        [sos,g] = driving_function_imp_nfchoa_ls(n-1,R,r_src,conf);
     elseif strcmp('fs',src)
         % === Focussed source ============================================
-        sos = driving_function_imp_nfchoa_fs(n-1,R,r_src,conf);
+        [sos,g] = driving_function_imp_nfchoa_fs(n-1,R,r_src,conf);
     else
         error('%s: %s is not a known source type.',upper(mfilename),src);
     end
@@ -113,6 +113,7 @@ for n=1:order+1
     for ii=1:length(b)
         dm(n,:) = filter(b{ii},a{ii},dm(n,:));
     end
+    dm(n,:) = dm(n,:)*g;  % apply gain factor
 end
 
 % Delay_offset
@@ -151,7 +152,7 @@ for l=1:N
 end
 d = circshift(d,[-order,0]);
 d = ifft(transpose(d),[],2);
-d = 1/(2*pi)/R*nls*real(d);
+d = 1/(2*pi*R)*nls*real(d);
 
 % -------------------------------------------------------------------------
 % The following is the direct implementation of the spatial IDFT which
@@ -166,5 +167,5 @@ if(0)
         end
         d(:,n) = transpose(dtemp);
     end
-    d = 1/(2*pi)/R*real(d);
+    d = 1/(2*pi*R)*real(d);
 end

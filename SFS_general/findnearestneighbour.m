@@ -61,19 +61,19 @@ if nargout==2 && N>=3
 end
 % Ensure row vector
 if size(b,1)>1
-    b=b';
+    b=b.';
 end
 
 
 %% ===== Computation =====================================================
 % Calculate distance between points
-distance = vector_norm(bsxfun(@minus,A',b'),1);
+distance = vector_norm(bsxfun(@minus,A.',b.'),1);
 % Sort the distances in order to find the n lowest once
 [~,idx] = sort(distance);
-idx = idx(1:min(N,length(idx)))';
+idx = idx(1:min(N,length(idx))).';
 
 % Determine weights for linear 1D interpolation over angle
-cos_alpha = sum(bsxfun(@times,A(idx,:)',b'))./vector_norm(A(idx,:),2)'/norm(b);
+cos_alpha = sum(bsxfun(@times,A(idx,:).',b.'))./vector_norm(A(idx,:),2).'/norm(b);
 % Ensure range -1...1
 cos_alpha = min(cos_alpha,1);
 cos_alpha = max(cos_alpha,-1);
@@ -82,7 +82,7 @@ if angles == 0
     weights = 1;
 else
     angles = fliplr(angles);
-    weights = angles'/sum(angles);
+    weights = angles.'/sum(angles);
 end
 assert(all(weights >= 0), '%s: Negative weights. Shall never happen.', ...
     upper(mfilename))

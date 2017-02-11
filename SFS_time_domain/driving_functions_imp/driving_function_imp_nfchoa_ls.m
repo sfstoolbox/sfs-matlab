@@ -1,4 +1,4 @@
-function sos = driving_function_imp_nfchoa_ls(N,R,r,conf)
+function [sos,g] = driving_function_imp_nfchoa_ls(N,R,r,conf)
 %DRIVING_FUNCTION_IMP_NFCHOA_LS calculates the second-order section
 %representation for a virtual line source in NFC-HOA
 %
@@ -12,6 +12,7 @@ function sos = driving_function_imp_nfchoa_ls(N,R,r,conf)
 %
 %   Output parameters:
 %       sos     - second-order section representation
+%       g       - scalar gain factor
 %
 %   DRIVING_FUNCTION_IMP_NFCHOA_LS(N,R,r,conf) returns the second-order section
 %   representation for the NFC-HOA driving function for a virtual line source

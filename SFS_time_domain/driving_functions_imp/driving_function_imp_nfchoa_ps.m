@@ -1,4 +1,4 @@
-function sos = driving_function_imp_nfchoa_ps(N,R,r,conf)
+function [sos,g] = driving_function_imp_nfchoa_ps(N,R,r,conf)
 %DRIVING_FUNCTION_IMP_NFCHOA_PS calculates the second-order section
 %representation for a virtual point source in NFC-HOA
 %
@@ -12,6 +12,7 @@ function sos = driving_function_imp_nfchoa_ps(N,R,r,conf)
 %
 %   Output parameters:
 %       sos     - second-order section representation
+%       g       - scalar gain factor
 %
 %   DRIVING_FUNCTION_IMP_NFCHOA_PS(N,R,r,conf) returns the second-order section
 %   representation for the NFC-HOA driving function for a virtual point source
@@ -96,7 +97,8 @@ elseif strcmp('2.5D',dimension)
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D using a point source as source model
         %
-        [sos,~] = zp2sos(z*c/r,z*c/R,1,'up','none');
+        [sos,g] = zp2sos(z*c/r,z*c/R,1,'up','none');
+        g = g * R/r;
         %
         % Compare Spors et al. (2011), eq. (11)
         %

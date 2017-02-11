@@ -1,4 +1,4 @@
-function sos = driving_function_imp_nfchoa_pw(N,R,conf)
+function [sos,g] = driving_function_imp_nfchoa_pw(N,R,conf)
 %DRIVING_FUNCTION_IMP_NFCHOA_PW calculates the second-order section
 %representation for a virtual plane wave in NFC-HOA
 %
@@ -11,6 +11,7 @@ function sos = driving_function_imp_nfchoa_pw(N,R,conf)
 %
 %   Output parameters:
 %       sos     - second-order section representation
+%       g       - scalar gain factor
 %
 %   DRIVING_FUNCTION_IMP_NFCHOA_PW(N,R,conf) returns the second-order section
 %   representation for the NFC-HOA driving function for a virtual plane wave
@@ -95,8 +96,8 @@ elseif strcmp('2.5D',dimension)
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D for a plane wave as source model
         %
-        [sos,~] = zp2sos(p,z*c/R,2,'down','none');
-        sos(1,1:3) = sos(1,1:3) * (-1)^abs(N);
+        [sos, g] = zp2sos(p,z*c/R,1,'down','none');
+        g = g * (-1)^abs(N) * 4*pi * R;
         %
         % Compare Spors et al. (2011), eq. (10)
         %

@@ -1,7 +1,7 @@
-function b = pm_filter(order, Wpass, Wstop)
-%PM_Filter computes an FIR lowpass-filter using the Parks-McClellan Algorithm
+function b = pm_filter(order,Wpass,Wstop)
+%PM_FILTER computes an FIR lowpass-filter using the Parks-McClellan Algorithm
 %
-%   Usage: b = pm_filter(order, Wpass, Wstop)
+%   Usage: b = pm_filter(order,Wpass,Wstop)
 %
 %   Input parameter:
 %     order   - order N of filter in original (not upsampled) domain
@@ -44,7 +44,6 @@ function b = pm_filter(order, Wpass, Wstop)
 
 
 %% ===== Computation =====================================================
-
 persistent pmCachedOrder
 persistent pmCachedWpass
 persistent pmCachedWstop

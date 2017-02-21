@@ -1,4 +1,5 @@
 2.3.0 ()
+    - change default value of conf.usebandpass to false
     - rename conf.wfs.t0 to conf.t0
     - add delay_offset as return value to NFC-HOA time domain driving funtions
     - correct absolute amplitude values of WFS in time domain

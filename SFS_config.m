@@ -193,7 +193,7 @@ conf.tapwinlen = 0.3; % / percent of array length, 0..1
 % far from the secondary sources.
 conf.t0 = 'system'; % string
 % Bandpass filter applied in sound_field_imp()
-conf.usebandpass = true; % boolean
+conf.usebandpass = false; % boolean
 conf.bandpassflow = 10; % / Hz
 conf.bandpassfhigh = 20000; % / Hz
 

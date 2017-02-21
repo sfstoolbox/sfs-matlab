@@ -92,21 +92,6 @@ if length(head_orientation)==1
 end
 
 
-%% ===== Configuration ==================================================
-useinterpolation = conf.ir.useinterpolation;
-% Check for old configuration
-if useinterpolation
-    if ~isfield(conf.ir,'interpolationpointselection')
-        warning('SFS:get_ir:interpolationpointselection',...
-            ['%s: no method for selection of interpolation points provided, ', ...
-            'will use method ''nearestneighbour''.'],upper(mfilename));
-        interpolationpointselection = 'nearestneighbour';
-    else
-        interpolationpointselection = conf.ir.interpolationpointselection;
-    end
-end
-
-
 %% ===== Computation ====================================================
 warning('off','SOFA:upgrade')
 %
@@ -149,21 +134,7 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     xs(2) = correct_elevation(xs(2)-head_orientation(2));
     [xs(1),xs(2),xs(3)] = sph2cart(xs(1),xs(2),xs(3));
     % Get nearest neighbour point or points for interpolation
-    if useinterpolation
-        switch interpolationpointselection
-        case 'nearestneighbour'
-            [idx,weights] = findnearestneighbour(x0,xs,2);
-        case 'delaunay'
-            [idx,weights] = findconvexcone(x0,xs);
-        case 'voronoi'
-            to_be_implemented;
-        otherwise
-            error(['%s: ''%s'' is an unknown method to select interpolation ', ...
-                'points.'],upper(mfilename),interpolationpointselection);
-        end
-    else
-        [idx,weights] = findnearestneighbour(x0,xs,1);
-    end
+    [idx,weights] = point_selection(x0,xs,conf);
     % Get impulse responses according to point selection
     ir = sofa_get_data_fir(sofa,idx);
     % Correct distance
@@ -212,24 +183,8 @@ elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
         sofa_head_orientations(:,3)] = sph2cart(phi,theta,r);
     [head_orientation(1),head_orientation(2),head_orientation(3)] = ...
         sph2cart(head_orientation(1),head_orientation(2),1);
-    if useinterpolation
-        switch interpolationpointselection
-        case 'nearestneighbour'
-            [idx_head,weights] = findnearestneighbour(...
-                    sofa_head_orientations,head_orientation,2);
-        case 'delaunay'
-            [idx_head,weights] = ...
-                findconvexcone(sofa_head_orientations,head_orientation);
-        case 'voronoi'
-            to_be_implemented;
-        otherwise
-            error(['%s: ''%s'' is an unknown method to select interpolation ', ...
-                'points.'],upper(mfilename),interpolationpointselection);
-        end
-    else
-        [idx_head,weights] = ...
-            findnearestneighbour(sofa_head_orientations,head_orientation,1);
-    end
+    [idx_head,weights] = point_selection(...
+        sofa_head_orientations,head_orientation,conf);
     % Get impulse responses according to point selection
     ir = sofa_get_data_fire(sofa,idx_head,idx_emitter);
     ir = reshape(ir,[size(ir,1) size(ir,2) size(ir,4)]); % [M R E N] => [M R N]
@@ -259,3 +214,50 @@ if strcmp('spherical',coordinate_system)
 end
 
 warning('on','SOFA:upgrade')
+end
+
+% =========================================================================
+
+function [idx,weights] = point_selection(x0,xs,conf)
+%POINT_SELECTION selects points out of x0 with weights that can be used to
+% interpolate an impulse response associated with xs out of impulse responses
+% associated with x0(idx,:). Instead of interpolation, the nearest neighbour point
+% can be selected as well.
+%
+%   Input parameters:
+%       x0       - points in R^3 / m [nx3]
+%       xs       - desired point in R^3 / m [1x3]
+%       conf     - 
+%
+%   Output parameters:
+%       idx      - row indices of N points in A [Nx1]
+%       weights  - weights [Nx1]
+useinterpolation = conf.ir.useinterpolation;
+% Check for old configuration
+if useinterpolation
+    if ~isfield(conf.ir,'interpolationpointselection')
+        warning('SFS:get_ir:interpolationpointselection',...
+            ['%s: no method for selection of interpolation points provided, ', ...
+            'will use method ''nearestneighbour''.'],upper(mfilename));
+        interpolationpointselection = 'nearestneighbour';
+    else
+        interpolationpointselection = conf.ir.interpolationpointselection;
+    end
+end
+% Get nearest neighbour point or points for interpolation
+if useinterpolation
+    switch interpolationpointselection
+    case 'nearestneighbour'
+        [idx,weights] = findnearestneighbour(x0,xs,2);
+    case 'delaunay'
+        [idx,weights] = findconvexcone(x0,xs);
+    case 'voronoi'
+        to_be_implemented;
+    otherwise
+        error(['%s: ''%s'' is an unknown method to select interpolation ', ...
+            'points.'],upper(mfilename),interpolationpointselection);
+    end
+else
+    [idx,weights] = findnearestneighbour(x0,xs,1);
+end
+end

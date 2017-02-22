@@ -54,7 +54,7 @@ nargmin = 1;
 nargmax = 2;
 narginchk(nargmin,nargmax)
 if nargin==nargmax-1
-   idx = ':';
+    idx = ':';
 else
     isargvector(idx);
 end

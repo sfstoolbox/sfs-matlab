@@ -100,17 +100,17 @@ end
 switch delay.resampling
     case 'none'
         rfactor = 1.0;
-        delay_offset = 0.0;
+        delay_offset = 0;
     case 'matlab'
         rfactor = delay.resamplingfactor;
-        delay_offset = 0.0;
+        delay_offset = 0;
         sig = resample(sig,rfactor,1);
     case 'pm'
         % === Parks-McClellan linear phase FIR filter ===
         rfactor = delay.resamplingfactor;
         rfilt = pm_filter(rfactor*delay.resamplingorder, 0.9/rfactor, ...
           1/rfactor);        
-        delay_offset = (delay.resamplingorder*rfactor/2) / fs;
+        delay_offset = delay.resamplingorder*rfactor/2;
 
         sig = reshape(sig,1,channels*samples);
         sig = [sig; zeros(rfactor-1,channels*samples)];
@@ -137,7 +137,7 @@ if channels>1 && length(weight)==1, weight=repmat(weight,[1 channels]); end
 
 
 %% ===== Conversion to integer delay =====================================
-dt = rfactor.*dt.*fs;  % resampled delays / s
+dt = dt.*rfactor.*fs;  % resampled delay / samples
 samples = rfactor.*samples;  % length of resampled signals
 switch delay.filter
 case 'integer'
@@ -158,13 +158,13 @@ case 'lagrange'
     fdt = dt - idt;  % fractional part of delays
     b = lagrange_filter(delay.filterorder,fdt);
     a = ones(1,channels);
-    delay_offset = delay_offset + floor(delay.filterorder/2) / fs;
+    delay_offset = delay_offset + floor(delay.filterorder/2);
 case 'thiran'
     % === Thiran's allpass filter for maximally flat group delay ===
     idt = round(dt);  % integer part of delays
     fdt = dt - idt;  % fractional part of delays
     [b,a] = thiran_filter(delay.filterorder,fdt);
-    delay_offset = delay_offset + delay.filterorder/fs;
+    delay_offset = delay_offset + delay.filterorder;
 case 'least_squares'
     % ==== Least squares interpolation filter ===
     idt = floor(dt);  % integer part of delays
@@ -174,7 +174,7 @@ case 'least_squares'
         b(:,ii) = general_least_squares(delay.filterorder+1,fdt(ii),0.90);
     end
     a = ones(1,channels);
-    delay_offset = delay_offset + floor(delay.filterorder/2) / fs;
+    delay_offset = delay_offset + floor(delay.filterorder/2);
 case 'farrow'
     % === Farrow-structure ===
     % Based on the assumption, that each coefficient h(n) of the fractional
@@ -239,3 +239,5 @@ if reshaped
     % C might have changed due to replication of single-channel input
     sig = reshape(sig',M,[],size(sig,1));
 end
+% --- delay_offset in seconds ---
+delay_offset = delay_offset / fs;

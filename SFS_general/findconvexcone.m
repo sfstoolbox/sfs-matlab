@@ -1,30 +1,28 @@
-function [selection,weights] = findconvexcone(x0,xs)
+function [idx,weights] = findconvexcone(x0,xs)
 %FINDCONVEXCONE selects up to 3 points from x0 with xs in their conic span
 %
-%   Usage: [selection,weights] = findconvexcone(x0,xs)
+%   Usage: [idx,weights] = findconvexcone(x0,xs)
 %
 %   Input parameters:
 %       x0          - point cloud on a sphere around the origin / m [nx3]
 %       xs          - desired direction as point in R^3 / m [1x3]
 %
 %   Output parameters:
-%       selection   - row indices of N points in x0 [Nx1]
+%       idx         - row indices of N points in x0 [Nx1]
 %                     where N is 1,2 or 3
 %       weights     - weights [Nx1]
 %
 %   FINDCONVEXCONE(x0,xs) returns 1,2 or 3 row indices into x0 and non-negative
 %   weights w1, ..., w3 such that w1*x1 + w2*x2 + w3*x3 with
-%   [x1; x2; x3] == x0(selection,:) composes the point inside the triangle spanned
+%   [x1; x2; x3] == x0(idx,:) composes the point inside the triangle spanned
 %   by x1, x2, x3.
 %
 %   x1...x3 are selected from the convex hull in R3.
 %   Various precautions are taken to make this well-behaved in most cases.
 %
+%   (If all x0 and xs have unit norm this is VBAP.)
 %
-% (If all x0 and xs have unit norm this is VBAP.)
-%
-%
-%   See also: findnearestneighbour, test_interpolation_point_selection
+%   See also: findnearestneighbour, test_interpolation_point_idx
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -101,7 +99,7 @@ for n = 1:size(simplices,1);
     weights = xs/A;
     weights(abs(weights)<1e-10) = 0;
     if all(weights >= 0) % non-negative weights == convex combination
-        selection = simplices(n,:);
+        idx = simplices(n,:);
         break;
     end
 end
@@ -110,9 +108,9 @@ assert(all(weights >= 0), '%s: Negative weights. Shall never happen.', ...
 
 if ~isempty(dummy_points)
     % Remove possible dummies from selected points
-    dummy_mask = (dummy_indices == selection);
+    dummy_mask = (dummy_indices == idx);
     if any(dummy_mask)
-        selection(dummy_mask) = [];
+        idx(dummy_mask) = [];
         if ~weights(dummy_mask)==0
             warning('%s: Requested point lies outside grid.', upper(mfilename))
         end
@@ -124,7 +122,7 @@ end
 weights = weights/sum(weights);
 
 [weights,order] = sort(weights.','descend');
-selection = selection(order).';
+idx = idx(order).';
 end
 
 % =========================================================================

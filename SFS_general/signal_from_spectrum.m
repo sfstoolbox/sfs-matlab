@@ -1,29 +1,22 @@
-function [brs,delay] = ssr_brs_wfs(X,phi,xs,src,irs,conf)
-%SSR_BRS_WFS generates a binaural room scanning (BRS) set for use with the
-%SoundScape Renderer
+function outsig = signal_from_spectrum(amplitude,phase,f,conf)
+%SIGNAL_FROM_SPECTRUM creates time signal from single-sided spectrum
 %
-%   Usage: [brs,delay] = ssr_brs_wfs(X,phi,xs,src,irs,conf)
+%   Usage: outsig = signal_from_spectrum(amplitude,phase,f,conf)
 %
 %   Input parameters:
-%       X       - listener position / m
-%       phi     - listener direction [head orientation] / rad
-%       xs      - virtual source position [ys > Y0 => focused source] / m
-%       src     - source type: 'pw' - plane wave
-%                              'ps' - point source
-%                              'fs' - focused source
-%       irs     - impulse response data set for the secondary sources
-%       conf    - configuration struct (see SFS_config)
+%       amplitude   - the single-sided amplitude spectrum
+%       phase       - the single-sided phase spectrum / rad
+%       f           - the corresponding frequency vector
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       brs     - conf.N x 2*nangles matrix containing all impulse responses (2
-%                 channels) for every angles of the BRS set
-%       delay   - delay added by driving function / s
+%       outsig      - one channel audio (time) signal
 %
-%   SSR_BRS_WFS(X,phi,xs,src,irs,conf) prepares a BRS set for a virtual source
-%   at xs for WFS and the given listener position. One way to use this BRS set
-%   is using the SoundScapeRenderer (SSR), see http://spatialaudio.net/ssr/
+%   SIGNAL_FROM_SPECTRUM(amplitude,phase,f,conf) generates the time signal from
+%   single-sided amplitude and phase spectra using ifft. It is the counterpart
+%   of SPECTRUM_FROM_SIGNAL and not interchangeable with calling ifft.
 %
-%   See also: ir_generic, ir_wfs, driving_function_imp_wfs
+%   See also: spectrum_from_signal, ifft
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -55,22 +48,44 @@ function [brs,delay] = ssr_brs_wfs(X,phi,xs,src,irs,conf)
 %*****************************************************************************
 
 
-%% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 6;
+%% ===== Checking input arguments ========================================
+nargmin = 4;
+nargmax = 4;
 narginchk(nargmin,nargmax);
-isargposition(X);
-isargxs(xs);
-isargscalar(phi);
-isargstruct(conf);
+[amplitude,phase] = column_vector(amplitude,phase);
 
 
-%% ===== Computation =====================================================
-% Secondary sources
-x0 = secondary_source_positions(conf);
-x0 = secondary_source_selection(x0,xs,src);
-x0 = secondary_source_tapering(x0,conf);
-% Calculate driving function
-[d,~,~,delay] = driving_function_imp_wfs(x0,xs,src,conf);
-% Calculate brs set
-brs = ssr_brs(X,phi,x0,d,irs,conf);
+%% ===== Configuration ===================================================
+fs = conf.fs;
+
+
+%% ===== Regenerating wave form from spectrum ============================
+% Provided number of frequency bins
+bins = length(f);
+
+if f(end) == fs/2  % -> even time signal length
+    % Length of the signal to generate
+    samples = 2 * (bins-1);
+    % Rescaling (see spectrum_from_signal())
+    amplitude = [amplitude(1); amplitude(2:end-1)/2; amplitude(end)] * samples;
+    % Mirror the amplitude spectrum ( 2*pi periodic [0, fs[ )
+    amplitude = [amplitude; amplitude(end-1:-1:2)];
+    % Mirror the phase spectrum and build the inverse (complex conjugate)
+    phase = [phase; -1 * phase(end-1:-1:2)];
+
+else  % -> odd time signal length
+    % Length of the signal to generate
+    samples = 2*bins - 1;
+    % Rescaling (see signal_from_spectrum)
+    amplitude = [amplitude(1); amplitude(2:end)/2] * samples;
+    % Mirror the amplitude spectrum ( 2*pi periodic [0, fs-bin] )
+    amplitude = [amplitude; amplitude(end:-1:2)];
+    % Mirror the phase spectrum and build the inverse (complex conjugate)
+    phase = [phase; -1*phase(end:-1:2)];
+end
+
+% Convert to complex spectrum
+compspec = amplitude .* exp(1i*phase);
+
+% Build the inverse fft and assume spectrum is conjugate symmetric
+outsig = real(ifft(compspec));

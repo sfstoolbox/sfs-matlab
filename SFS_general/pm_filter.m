@@ -1,29 +1,17 @@
-function [brs,delay] = ssr_brs_wfs(X,phi,xs,src,irs,conf)
-%SSR_BRS_WFS generates a binaural room scanning (BRS) set for use with the
-%SoundScape Renderer
+function b = pm_filter(order,wpass,wstop)
+%PM_FILTER computes an FIR lowpass-filter using the Parks-McClellan Algorithm
 %
-%   Usage: [brs,delay] = ssr_brs_wfs(X,phi,xs,src,irs,conf)
+%   Usage: b = pm_filter(order,wpass,wstop)
 %
-%   Input parameters:
-%       X       - listener position / m
-%       phi     - listener direction [head orientation] / rad
-%       xs      - virtual source position [ys > Y0 => focused source] / m
-%       src     - source type: 'pw' - plane wave
-%                              'ps' - point source
-%                              'fs' - focused source
-%       irs     - impulse response data set for the secondary sources
-%       conf    - configuration struct (see SFS_config)
+%   Input parameter:
+%     order   - order N of filter in original (not upsampled) domain
+%     wpass   - last normalised passband frequency [0..1] 
+%     wstop   - first normalised stopband frequency [0..1]
 %
-%   Output parameters:
-%       brs     - conf.N x 2*nangles matrix containing all impulse responses (2
-%                 channels) for every angles of the BRS set
-%       delay   - delay added by driving function / s
+%   Output parameter:
+%     b   - filter coefficients / [(order+1) x 1]
 %
-%   SSR_BRS_WFS(X,phi,xs,src,irs,conf) prepares a BRS set for a virtual source
-%   at xs for WFS and the given listener position. One way to use this BRS set
-%   is using the SoundScapeRenderer (SSR), see http://spatialaudio.net/ssr/
-%
-%   See also: ir_generic, ir_wfs, driving_function_imp_wfs
+%   See also: delayline, thiran_filter
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -55,22 +43,23 @@ function [brs,delay] = ssr_brs_wfs(X,phi,xs,src,irs,conf)
 %*****************************************************************************
 
 
-%% ===== Checking of input  parameters ==================================
-nargmin = 6;
-nargmax = 6;
-narginchk(nargmin,nargmax);
-isargposition(X);
-isargxs(xs);
-isargscalar(phi);
-isargstruct(conf);
-
-
 %% ===== Computation =====================================================
-% Secondary sources
-x0 = secondary_source_positions(conf);
-x0 = secondary_source_selection(x0,xs,src);
-x0 = secondary_source_tapering(x0,conf);
-% Calculate driving function
-[d,~,~,delay] = driving_function_imp_wfs(x0,xs,src,conf);
-% Calculate brs set
-brs = ssr_brs(X,phi,x0,d,irs,conf);
+persistent pmCachedOrder
+persistent pmCachedWpass
+persistent pmCachedWstop
+persistent pmCachedCoefficients
+
+if isempty(pmCachedOrder) || pmCachedOrder ~= order ...
+    || isempty(pmCachedWpass) || pmCachedWpass ~= wpass ...
+    || isempty(pmCachedWstop) || pmCachedWstop ~= wstop
+  
+  A = [1 1 0 0];
+  f = [0.0 wpass wstop 1.0]; 
+  
+  pmCachedOrder = order;
+  pmCachedWpass = wpass;
+  pmCachedWstop = wstop;
+  pmCachedCoefficients = firpm(order,f,A).';
+end
+  
+b = pmCachedCoefficients;

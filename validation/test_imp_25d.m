@@ -1,7 +1,7 @@
-function status = test_wfs_25d(modus)
-%TEST_WFS_25D tests behavior of 2.5D WFS
+function status = test_imp_25d(modus)
+%TEST_imp_25D tests behavior of 2.5D SFS techniques in time-domain
 %
-%   Usage: status = test_wfs_25d(modus)
+%   Usage: status = test_imp_25d(modus)
 %
 %   Input parameters:
 %       modus   - 0: numerical
@@ -48,69 +48,84 @@ nargmin = 1;
 nargmax = 1;
 narginchk(nargmin,nargmax);
 
-
 %% ===== Configuration ===================================================
 % Parameters
 conf = SFS_config;
-conf.secondary_sources.geometry = 'linear';
-conf.secondary_sources.size = 20;
-conf.secondary_sources.number = 512;
-conf.secondary_sources.center = [0,6,0];
 conf.xref = [0,0,0];
-conf.usetapwin = true;
-conf.tapwinlen = 0.2;
+conf.dimension = '2.5D';
+conf.plot.useplot = false;
+conf.wfs.hpreflow = 20;
+conf.wfs.hprefhigh = 20000;
 
-%
-f = 2000;  % temporal frequency
-positions = { [0,9,0], [0,-1,0], [0,3,0,0,-1,0] };  % source positions
-sources = {'ps', 'pw', 'fs'};
-gtsources = {'ps', 'pw', 'ps'};
-X = [-2,2];
-Y = [-2,2];
-Z = 0;
-
+% test scenarios
+scenarios = { ...
+  'WFS', 'reference_point', 'linear', 'pw', [ 0.0 -1.0   0.0]
+  'WFS', 'reference_point', 'linear', 'ps', [ 0.0  2.5   0.0]
+  'WFS', 'reference_point', 'linear', 'fs', [ 0.0  0.75  0.0  0.0 -1.0  0.0]
+  'WFS', 'reference_line' , 'linear', 'pw', [ 0.0 -1.0   0.0]
+  'WFS', 'reference_line' , 'linear', 'ps', [ 0.0  2.5   0.0]
+  'WFS', 'reference_line' , 'linear', 'fs', [ 0.0  0.75  0.0  0.0 -1.0  0.0]
+  'HOA', 'default', 'circular', 'pw', [ 0.0 -1.0   0.0]
+  'HOA', 'default', 'circular', 'ps', [ 0.0  2.5  0.0]
+  };
 
 %% ===== Main ============================================================
-for idx=1:length(positions)
-    xs = positions{idx};
-    src = sources{idx};
-    gt = gtsources{idx};
 
-    if modus
-        figure;
-        ddx = 0;
-    end
+sofa = dummy_irs(512, conf);
+xt = conf.xref + [0.1, 0, 0];
 
-    for driving_functions = {'reference_point', 'reference_line'}
-
-        conf.driving_functions = driving_functions{:};
-        Pgt = sound_field_mono(X,Y,Z,[xs(1:3),0,-1,0,1],gt,1,f,conf);
-        Pwfs = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
-
-        if modus
-            subplot(2,2,2*ddx+1);
-            imagesc(Y,X,real(Pwfs));
-            title(sprintf('%s %s',src,driving_functions{:}),'Interpreter','none');
-            set(gca,'YDir','normal');
-            colorbar;
-
-            subplot(2,2,2*ddx+2);
-            imagesc(Y,X,real(db(1 - Pwfs./Pgt)));
-            title(sprintf('%s %s',src,driving_functions{:}),'Interpreter','none');
-            set(gca,'YDir','normal');
-            colorbar;
-            hold on;
-            if strcmp('reference_point',conf.driving_functions)
-                plot(conf.xref(1),conf.xref(2),'gx');
-            else
-                plot(conf.xref(1)+X,conf.xref([2,2]),'g--');
-            end
-            hold off;
-
-            ddx= ddx+1;
-        end
-    end
+for ii=1:size(scenarios)
+  
+  src = scenarios{ii, 4};  %
+  xs = scenarios{ii, 5};  % source position
+  
+  % get listening area
+  conf.secondary_sources.geometry = scenarios{ii,3};
+  switch scenarios{ii,3}
+    case 'linear'
+      conf.secondary_sources.size = 4;
+      conf.secondary_sources.number = 128;
+      conf.usetapwin = true;
+      conf.tapwinlen = 0.2;
+      conf.secondary_sources.center = [0, 1.5, 0];
+    case 'circular'
+      conf.secondary_sources.size = 1.5;
+      conf.secondary_sources.number = 128;
+      conf.secondary_sources.center = [0, 0, 0];
+  end
+  x0 = secondary_source_positions(conf);
+  
+  % compute driving signals
+  conf.driving_functions = scenarios{ii, 2};
+  switch scenarios{ii,1}
+    case 'WFS'
+      x0 = secondary_source_selection(x0, xs, src);
+      x0 = secondary_source_tapering(x0, conf);
+      d = driving_function_imp_wfs(x0, xs, src, conf);
+    case 'HOA'
+      d = driving_function_imp_nfchoa(x0, xs, src, conf);
+  end
+  
+  % spectrum of reproduced sound field at reference position
+  ir_sfs = ir_generic(xt,0,x0,d, sofa, conf);
+  [IR_sfs, ~, f_sfs] = spectrum_from_signal(ir_sfs(:,1),conf);
+  
+  % spectrum of ground truth sound field at reference position
+  if strcmp(src, 'pw')
+    ir_gt = ir_point_source(xt, 0, -xs./norm(xs) ,sofa,conf);
+    ir_gt = ir_gt*4*pi;
+  else
+    ir_gt = ir_point_source(xt, 0, xs(1:3),sofa,conf);
+  end
+  [IR_gt, ~, f_gt] = spectrum_from_signal(ir_gt(:,1),conf);
+  
+  if modus    
+    figure;
+    semilogx(f_sfs, db(IR_sfs), 'r', f_gt, db(IR_gt), 'b--');
+    title(sprintf('%s %s %s', scenarios{ii,1}, src,conf.driving_functions), ...
+      'Interpreter','none');
+    legend('reproduced','ground truth','Location','northwest');
+  end  
 end
-
 
 status = true;

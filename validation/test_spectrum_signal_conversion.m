@@ -1,19 +1,18 @@
-function outsig = easyifft(amplitude,phase)
-%EASYIFFT calculates the inverse FFT
+function status = test_spectrum_signal_conversion(modus)
+%TEST_SPECTRUM_SIGNAL_CONVERSION tests the spectrum to and from signal
+%conversions
 %
-%   Usage: outsig = easyifft(amplitude,phase)
+%   Usage: status = test_spectrum_signal_conversion(modus)
 %
 %   Input parameters:
-%       amplitude   - the amplitude spectrum
-%       phase       - the phase spectrum / rad
+%       modus    - 0: numerical
+%                  1: visual
 %
 %   Output parameters:
-%       outsig      - a one channel signal
+%       status - true or false
 %
-%   EASYIFFT(amplitude,phase) generates the corresponding waveform from the
-%   amplitude and phase spectra using ifft.
-%
-%   See also: easyfft, ifft
+%   test_spectrum_signal_conversion(modus) checks if spectrum_from_signal() and
+%   signal_from_spectrum() works correctly.
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -45,28 +44,57 @@ function outsig = easyifft(amplitude,phase)
 %*****************************************************************************
 
 
-%% ===== Checking input arguments ========================================
-nargmin = 2;
-nargmax = 2;
+status = false;
+
+
+%% ===== Checking of input  parameters ===================================
+nargmin = 1;
+nargmax = 1;
 narginchk(nargmin,nargmax);
-[amplitude,phase] = column_vector(amplitude,phase);
 
 
-%% ===== Regenerating wave form from spectrum ============================
-% Length of the signal to generate
-samples = 2 * (length(amplitude)-1);
+%% ===== Configuration ===================================================
+conf = SFS_config;
+fs = conf.fs;
+%% Create defined signal
+t = 0 : 1/fs : 1 - 1/fs;  % 1 s
+sin1 = sin(2*pi*50 * t);
+sin2 = sin(2*pi*300 * t);
+sin3 = sin(2*pi*1000 * t);
+sin_sig = (sin1 + sin2 + sin3)';
 
-% Rescaling (see easyfft)
-amplitude = amplitude/2 * samples;
+even_sig = ones(8, 1);
+odd_sig = ones(7, 1);
+alias_sig = repmat([1; -1], fs/2, 1);
 
-% Mirror the amplitude spectrum
-amplitude = [ amplitude; amplitude(end-1:-1:2) ];
+%% FFT
+[sin_ampl, sin_phase, sin_f] = spectrum_from_signal(sin_sig, conf);
+[even_ampl, even_phase, even_f] = spectrum_from_signal(even_sig, conf);
+[odd_ampl, odd_phase, odd_f] = spectrum_from_signal(odd_sig, conf);
+[alias_ampl, alias_phase, alias_f] = spectrum_from_signal(alias_sig, conf);
 
-% Mirror the phase spectrum and build the inverse (why?)
-phase = [ phase; -1*phase(end-1:-1:2) ];
+%% Check frequency bins
+if modus
+figure; semilogx(sin_f,20*log10(sin_ampl)); title('Sinus Mix')
+figure; scatter(even_f, even_ampl); title('Even signal (f=0) FFT');
+figure; scatter(odd_f, odd_ampl);title('Odd signal (f=0) FFT');
+figure; scatter(alias_f, alias_ampl);title('Signal with f=fs/2 FFT');
+end
+%% IFFT
+sin_outsig = signal_from_spectrum(sin_ampl, sin_phase, sin_f,conf);
+even_outsig = signal_from_spectrum(even_ampl, even_phase, even_f,conf);
+odd_outsig = signal_from_spectrum(odd_ampl, odd_phase, odd_f,conf);
+alias_outsig = signal_from_spectrum(alias_ampl, alias_phase, alias_f,conf);
 
-% Convert to complex spectrum
-compspec = amplitude .* exp(1i*phase);
+%% Check Output
+sin_diff = sum(abs(sin_sig - sin_outsig));
+even_diff = sum(abs(even_sig - even_outsig));
+odd_diff = sum(abs(odd_sig - odd_outsig));
+alias_diff = sum(abs(alias_sig - alias_outsig));
 
-% Build the inverse fft and use only the real part
-outsig = real( ifft(compspec) );
+if sum(sin_diff + even_diff + odd_diff + alias_diff) < 10^(-8)
+    status = true;
+end
+
+end
+

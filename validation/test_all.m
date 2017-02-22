@@ -105,6 +105,8 @@ if modus
     pause
     disp('Running "test_wfs_25d(1)"');
     test_wfs_25d(1);
+    disp('Running "test_fft_ifft(1)"');
+    test_fft_ifft(1);
 else
     if ~all([test_binaural_synthesis(0); ...
              test_delayline(0); ...
@@ -120,6 +122,7 @@ else
              test_secondary_source_selection(0); ...
              test_tapering_window(0); ...
              test_wfs_25d(0); ...
+             test_fft_ifft(0);
              %test_wfs_iir_prefilter(0); ... % needs DSP Tooblox
             ])
         return;

@@ -98,29 +98,28 @@ end
 % a usage of fractional delay due to the upsampling.
 %
 switch delay.resampling
-case 'none'
-    rfactor = 1.0;
-    delay_offset = 0.0;
-case 'matlab'
-    rfactor = delay.resamplingfactor;
-    delay_offset = 0.0;
-    sig = resample(sig,rfactor,1);
-case 'pm'
-    % === Parks-McClellan linear phase FIR filter ===
-    rfactor = delay.resamplingfactor;
-    delay_offset = (delay.resamplingorder*rfactor/2) / fs;
-    A = [1 1 0 0];
-    f = [0.0 0.9/rfactor 1/rfactor 1.0];
-    rfilt = rfactor*firpm(delay.resamplingorder*rfactor,f,A);
+    case 'none'
+        rfactor = 1.0;
+        delay_offset = 0.0;
+    case 'matlab'
+        rfactor = delay.resamplingfactor;
+        delay_offset = 0.0;
+        sig = resample(sig,rfactor,1);
+    case 'pm'
+        % === Parks-McClellan linear phase FIR filter ===
+        rfactor = delay.resamplingfactor;
+        rfilt = pm_filter(rfactor*delay.resamplingorder, 0.9/rfactor, ...
+          1/rfactor);        
+        delay_offset = (delay.resamplingorder*rfactor/2) / fs;
 
-    sig = reshape(sig,1,channels*samples);
-    sig = [sig; zeros(rfactor-1,channels*samples)];
-    sig = reshape(sig,rfactor*samples,channels);
+        sig = reshape(sig,1,channels*samples);
+        sig = [sig; zeros(rfactor-1,channels*samples)];
+        sig = reshape(sig,rfactor*samples,channels);
 
-    sig = filter(rfilt,1,sig,[],1);
-otherwise
-    error('%s: "%s": unknown resampling method',upper(mfilename), ...
-        delay.resampling);
+        sig = convolution(rfactor*rfilt, sig);
+    otherwise
+        error('%s: "%s": unknown resampling method',upper(mfilename), ...
+            delay.resampling);
 end
 
 

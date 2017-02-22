@@ -1,10 +1,18 @@
 2.3.0 ()
+    - speed up Parks-McClellan resampling method
+    - change default value of conf.usebandpass to false
     - rename conf.wfs.t0 to conf.t0
-    - add delay_offset as return value to NFC-HOA time domain driving funtions
-    - correct absolute amplitude values of WFS in time domain
+    - rename and improve easyffft() to spectrum_from_signal()
+    - rename and improve easyifft() to signal_from_spectrum()
+    - correct amplitude values of WFS and NFC-HOA in time domain
     - fix default 2.5D WFS driving function in time domain
+    - add time_response_point_source()
+    - update amplitude and position of dirac in dummy_irs()
     - fix missing secondary source selection in ssr_brs_wfs()
+    - add amplitude terms to WFS FIR pre-filter
     - fix Gauss-Legendre quadrature weights
+    - add delay_offset as return value to NFC-HOA and ir funtions
+    - fix handling of delay_offset in WFS time domain driving functions
 
 2.2.1 (22. August 2016)
     - fix delayoffset for FIR fractional delay filter

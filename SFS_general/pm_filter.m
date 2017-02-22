@@ -1,12 +1,12 @@
-function b = pm_filter(order,Wpass,Wstop)
+function b = pm_filter(order,wpass,wstop)
 %PM_FILTER computes an FIR lowpass-filter using the Parks-McClellan Algorithm
 %
-%   Usage: b = pm_filter(order,Wpass,Wstop)
+%   Usage: b = pm_filter(order,wpass,wstop)
 %
 %   Input parameter:
 %     order   - order N of filter in original (not upsampled) domain
-%     Wpass   - normalised frequency [0..1] 
-%     Wstop   - normalised frequency [0..1]
+%     wpass   - last normalised passband frequency [0..1] 
+%     wstop   - first normalised stopband frequency [0..1]
 %
 %   Output parameter:
 %     b   - filter coefficients / [(order+1) x 1]
@@ -50,15 +50,15 @@ persistent pmCachedWstop
 persistent pmCachedCoefficients
 
 if isempty(pmCachedOrder) || pmCachedOrder ~= order ...
-    || isempty(pmCachedWpass) || pmCachedWpass ~= Wpass ...
-    || isempty(pmCachedWstop) || pmCachedWstop ~= Wstop
+    || isempty(pmCachedWpass) || pmCachedWpass ~= wpass ...
+    || isempty(pmCachedWstop) || pmCachedWstop ~= wstop
   
   A = [1 1 0 0];
-  f = [0.0 Wpass Wstop 1.0]; 
+  f = [0.0 wpass wstop 1.0]; 
   
   pmCachedOrder = order;
-  pmCachedWpass = Wpass;
-  pmCachedWstop = Wstop;
+  pmCachedWpass = wpass;
+  pmCachedWstop = wstop;
   pmCachedCoefficients = firpm(order,f,A).';
 end
   

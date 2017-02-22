@@ -1,7 +1,7 @@
-function [ir,x0_new] = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
+function ir = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %GET_IR returns an impulse response for the given apparent angle
 %
-%   Usage: [ir,x0_new] = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
+%   Usage: ir = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %
 %   Input parameters:
 %       sofa               - impulse response data set (sofa struct/file)
@@ -24,8 +24,6 @@ function [ir,x0_new] = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %
 %   Output parameters:
 %       ir      - impulse response for the given position (length of IR x 2)
-%       x0_new  - position corresponding to the returned impulse response,
-%                 returned in the specified coordinate system
 %
 %   GET_IR(sofa,X,head_orientation,xs,conf) returns a single impulse response
 %   from the given SOFA file or struct. The impulse response is determined by
@@ -143,12 +141,7 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     ir = ir_correct_distance(ir,x0(idx,3),xs(3),conf);
     [x0(:,1),x0(:,2),x0(:,3)] = sph2cart(x0(:,1),x0(:,2),x0(:,3));
     % Select or interpolate to desired impulse response
-    [ir,weights_selected,x0_selected] = interpolate_ir(ir,weights,x0(idx,:),conf);
-    % Calculate position of returned impulse response
-    x0_new = weights_selected.'*x0_selected;
-    [x0_new(1),x0_new(2),x0_new(3)] = cart2sph(x0_new(1),x0_new(2),x0_new(3));
-    x0_new(3) = xs(3);
-    [x0_new(1),x0_new(2),x0_new(3)] = sph2cart(x0_new(1),x0_new(2),x0_new(3));
+    ir = interpolate_ir(ir,weights,x0(idx,:),conf);
 
 elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
     %
@@ -189,8 +182,7 @@ elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
     ir = sofa_get_data_fire(sofa,idx_head,idx_emitter);
     ir = reshape(ir,[size(ir,1) size(ir,2) size(ir,4)]); % [M R E N] => [M R N]
     % Select or interpolate to desired impulse response
-    [ir,weights_selected,sofa_head_orientations_selected] = ...
-        interpolate_ir(ir,weights,sofa_head_orientations(idx_head,:),conf);
+    ir = interpolate_ir(ir,weights,sofa_head_orientations(idx_head,:),conf);
 
 elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)
     %
@@ -208,10 +200,6 @@ end
 
 % Reshape [1 2 N] to [N 2]
 ir = squeeze(ir).';
-% Convert x0 to the specified coordinate system
-if strcmp('spherical',coordinate_system)
-    [x0_new(1),x0_new(2),x0_new(3)] = cart2sph(x0_new(1),x0_new(2),x0_new(3));
-end
 
 warning('on','SOFA:upgrade')
 end

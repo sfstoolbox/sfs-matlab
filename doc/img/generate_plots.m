@@ -187,9 +187,9 @@ t_40cm = round(0.4/conf.c*conf.fs); % in samples
     sound_field_imp_wfs([-2 2],[-2 2],0,[0 -1 0 0 1 0],'fs',20,conf);
 plot_sound_field(p_ps+p_pw+p_fs,[-2 2],[-2 2],0,[x0_ps; x0_pw; x0_fs],conf)
 hold;
-scatter(0,0,'kx');   % origin of plane wave
-scatter(1.9,0,'ko'); % point source
-scatter(0,-1,'ko');  % focused source
+scatter(0,0,'k','x');   % origin of plane wave
+scatter(1.9,0,'k','o'); % point source
+scatter(0,-1,'k','o');  % focused source
 hold off;
 print_png('sound_field_imp_multiple_sources_dB.png');
 

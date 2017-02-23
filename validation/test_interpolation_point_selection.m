@@ -192,16 +192,22 @@ for testcase_tmp = erroneous_testcases
 end
 
 status = true;
-    
+
     function plot_point_selection(x0,xs,indices,weights,desc_str)
-        point_size = weights*100 + 1;
+        if isoctave
+            point_size = 12;
+            selected_point_size = weights*20 + 1;
+        else
+            point_size = 100;
+            selected_point_size = weights*100 + 1;
+        end
         figure
-        scatter3(x0(:,1),x0(:,2),x0(:,3),'b.');
+        scatter3(x0(:,1),x0(:,2),x0(:,3),point_size,'b','.');
         hold on
         quiver3(0,0,0,xs(1),xs(2),xs(3),'k');
-        scatter3(x0(indices,1),x0(indices,2),x0(indices,3),point_size, 'r');
-        scatter3(x0(indices,1),x0(indices,2),x0(indices,3),100, 'rx');
-        scatter3(0,0,0,100, 'k.');
+        scatter3(x0(indices,1),x0(indices,2),x0(indices,3),selected_point_size,'r');
+        scatter3(x0(indices,1),x0(indices,2),x0(indices,3),point_size,'r','x');
+        scatter3(0,0,0,point_size,'k','.');
         hold off
         axis equal
         xlabel('x');

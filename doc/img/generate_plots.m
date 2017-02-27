@@ -229,7 +229,7 @@ hold on;
 offset = round(delay*conf.fs);
 plot(ir(1+offset:1000+offset,1),'-b');
 hold off;
-print_png('img/impulse_response_wfs_25d.png');
+print_png('impulse_response_wfs_25d.png');
 
 
 %% ===== frequency response of a spatial audio system ====================

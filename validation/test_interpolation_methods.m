@@ -83,8 +83,8 @@ hrtf = SOFAload(hrtf_file);
 %% ===== Interpolate shifted Dirac impulses ==============================
 % interpolation points
 x0 = [1 3; 0 0; 0 0]/180*pi;
-% target point
-xs = [2; 0; 0]/180*pi;
+% weights (for target point: xs = [2; 0; 0]/180*pi )
+weights = [.5 .5];
 N = 50; %length impulse responses
 
 % 1. Interpolate between Dirac impulses with one sample in between
@@ -98,9 +98,9 @@ irs1(2,1,:) = h2;
 irs1(:,2,:) = irs1(:,1,:); %redundant second channel
 
 conf.ir.interpolationmethod = 'simple';
-h_int1_simple = interpolate_ir(irs1,x0,xs,conf);
+h_int1_simple = interpolate_ir(irs1,weights,x0,conf);
 conf.ir.interpolationmethod = 'freqdomain';
-h_int1_fd = interpolate_ir(irs1,x0,xs,conf);
+h_int1_fd = interpolate_ir(irs1,weights,x0,conf);
 
 % 2. Interpolate between neighbouring Dirac impulses at impulse reponse start
 h1 = zeros(1,N);
@@ -113,9 +113,9 @@ irs2(2,1,:) = h3;
 irs2(:,2,:) = irs2(:,1,:); %redundant second channel
 
 conf.ir.interpolationmethod = 'simple';
-h_int2_simple = interpolate_ir(irs2,x0,xs,conf);
+h_int2_simple = interpolate_ir(irs2,weights,x0,conf);
 conf.ir.interpolationmethod = 'freqdomain';
-h_int2_fd = interpolate_ir(irs2,x0,xs,conf);
+h_int2_fd = interpolate_ir(irs2,weights,x0,conf);
 
 % 3. Interpolate between neighbouring Dirac impulses in middle of impulse response
 h4 = zeros(1,N);
@@ -128,9 +128,9 @@ irs3(2,1,:) = h5;
 irs3(:,2,:) = irs3(:,1,:);
 
 conf.ir.interpolationmethod = 'simple';
-h_int3_simple = interpolate_ir(irs3,x0,xs,conf);
+h_int3_simple = interpolate_ir(irs3,weights,x0,conf);
 conf.ir.interpolationmethod = 'freqdomain';
-h_int3_fd = interpolate_ir(irs3,x0,xs,conf);
+h_int3_fd = interpolate_ir(irs3,weights,x0,conf);
 
 % Plots
 % impulse responses
@@ -170,29 +170,31 @@ figure
 idx0 = 181; %index for 0° azimuth
 idx1 = 182; %index for 1° azimuth
 idx2 = 183; %index for 2° azimuth
-x0_close = [hrtf.SourcePosition(idx0,:)' hrtf.SourcePosition(idx2,:)']/180*pi;
-xs_close = hrtf.SourcePosition(idx1,:)'/180*pi;
+x0_close = [hrtf.SourcePosition(idx0,:).' hrtf.SourcePosition(idx2,:).']/180*pi;
+% weights (for target point: xs_close = hrtf.SourcePosition(idx1,:).'/180*pi )
+weights_close = [.5 .5];
 hrir_close = [hrtf.Data.IR(idx0,:,:); hrtf.Data.IR(idx2,:,:)];
 hrir_close_ref = hrtf.Data.IR(idx1,:,:);
 
 conf.ir.interpolationmethod = 'simple';
-hrir_close_simple = interpolate_ir(hrir_close,x0_close,xs_close,conf);
+hrir_close_simple = interpolate_ir(hrir_close,weights_close,x0_close,conf);
 conf.ir.interpolationmethod = 'freqdomain';
-hrir_close_fd = interpolate_ir(hrir_close,x0_close,xs_close,conf);
+hrir_close_fd = interpolate_ir(hrir_close,weights_close,x0_close,conf);
 
 % 2. Interpolate between distant HRIRs
 idx0 = 181; %index for 0° azimuth
 idx30 = 211; %index for 30° azimuth
 idx60 = 241; %index for 60° azimuth
-x0_dist = [hrtf.SourcePosition(idx0,:)' hrtf.SourcePosition(idx60,:)']/180*pi;
-xs_dist = hrtf.SourcePosition(idx30,:)'/180*pi;
+x0_dist = [hrtf.SourcePosition(idx0,:).' hrtf.SourcePosition(idx60,:).']/180*pi;
+% weights (for target point: xs_dist = hrtf.SourcePosition(idx30,:).'/180*pi )
+weights_dist = [.5 .5];
 hrir_dist = [hrtf.Data.IR(idx0,:,:); hrtf.Data.IR(idx60,:,:)];
 hrir_dist_ref = hrtf.Data.IR(idx30,:,:);
 
 conf.ir.interpolationmethod = 'simple';
-hrir_dist_simple = interpolate_ir(hrir_dist,x0_dist,xs_dist,conf);
+hrir_dist_simple = interpolate_ir(hrir_dist,weights_dist,x0_dist,conf);
 conf.ir.interpolationmethod = 'freqdomain';
-hrir_dist_fd = interpolate_ir(hrir_dist,x0_dist,xs_dist,conf);
+hrir_dist_fd = interpolate_ir(hrir_dist,weights_dist,x0_dist,conf);
 
 % Plots
 % impulse responses

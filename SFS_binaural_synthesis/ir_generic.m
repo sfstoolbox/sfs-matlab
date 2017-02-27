@@ -78,7 +78,6 @@ phi = correct_azimuth(phi);
 ir_generic = zeros(N,2);
 
 % Create a BRIR for every single loudspeaker
-warning('off','SFS:irs_intpol');
 for ii=1:size(x0,1)
 
     % === Get the desired impulse response.
@@ -92,7 +91,6 @@ for ii=1:size(x0,1)
     ir_generic = ir_generic + fix_length(convolution(ir,d(:,ii)),N).*x0(ii,7);
 
 end
-warning('on','SFS:irs_intpol');
 
 
 %% ===== Headphone compensation =========================================

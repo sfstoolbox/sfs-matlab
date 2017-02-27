@@ -1,29 +1,28 @@
-function [x0_indeces,weights] = findconvexcone(x0,xs)
-%FINDCONVEXCONE finds three points from x0 with xs in their conic span
+function [idx,weights] = findconvexcone(x0,xs)
+%FINDCONVEXCONE selects up to 3 points from x0 with xs in their conic span
 %
-%   Usage: [x0_indeces,weights] = findconvexcone(x0,xs);
+%   Usage: [idx,weights] = findconvexcone(x0,xs)
 %
 %   Input parameters:
-%       x0          - point cloud in R^3 / m [nx3]
-%       xs          - point in R^3 / m [1x3]
+%       x0          - point cloud on a sphere around the origin / m [nx3]
+%       xs          - desired direction as point in R^3 / m [1x3]
 %
-%   output parameters:
-%       x0_indeces  - row indeces of 3 points in x0 [3x1]
-%       weights     - weights [3x1]
+%   Output parameters:
+%       idx         - row indices of N points in x0 [Nx1]
+%                     where N is 1,2 or 3
+%       weights     - weights [Nx1]
 %
-%   FINDCONVEXCONE(x0,xs) returns three row indeces into x0 and non-negative
-%   weights [w1;w2;w3] such that xs lies in the convex cone with minimum solid
-%   angle.
-%       xs = w1*x1 + w2*x2 + w3*x3 ,
-%       where [x1; x2; x3] = x0(x0_indeces,:) .
+%   FINDCONVEXCONE(x0,xs) returns 1,2 or 3 row indices into x0 and non-negative
+%   weights w1, ..., w3 such that w1*x1 + w2*x2 + w3*x3 with
+%   [x1; x2; x3] == x0(idx,:) composes the point inside the triangle spanned
+%   by x1, x2, x3.
+%
+%   x1...x3 are selected from the convex hull in R3.
+%   Various precautions are taken to make this well-behaved in most cases.
 %
 %   (If all x0 and xs have unit norm this is VBAP.)
 %
-%   This may fail when
-%     a) x0 is not convex, or
-%     b) The convex hull of x0 does not contain the origin.
-%
-%   See also: findnearestneighbor
+%   See also: findnearestneighbour, test_interpolation_point_idx
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -61,35 +60,107 @@ nargmax = 2;
 narginchk(nargmin,nargmax);
 
 
-%% ===== Computation =====================================================
+%% ===== Prepare Grid (see local functions below) ========================
+% Normalise x0 and xs to lie on unit sphere as only direction is relevant
+xs = xs./norm(xs,2);
+radii = vector_norm(x0,2);
+if abs(max(radii) - min(radii)) >1e-3
+     warning('%s: Grid is apparently not a sphere.', upper(mfilename))
+end
+x0 = x0./repmat(radii,[1,size(x0,2)]);
 
+% Rotate to principal axes to enable 2D arrays
+[x0, xs] = rotate_to_principal_axes(x0, xs);
+
+% Calculate dummy points to enable "partial" arrays
+dummy_points = augment_bounding_box(x0);
+if ~isempty(dummy_points)
+    dummy_indices = (1:size(dummy_points,1)) + size(x0,1);
+    x0 = [x0; dummy_points];
+end
+
+
+%% ===== Computation =====================================================
 % Delaunay triangulation of convex hull
-triangles = convhulln(x0);
+simplices = convhulln(x0);
 
 % Find x0 with smallest angle to xs
-xs_normed = repmat(xs./norm(xs,2),size(x0,1),1);
-x0_normed = x0./repmat(vector_norm(x0,2),[1,3]);
-[~,most_aligned_point] = max(vector_product(x0_normed,xs_normed,2));
+[~,most_aligned_point] = ...
+    max(vector_product(x0,repmat(xs,size(x0,1),1),2));
 
-% The triangles at "most aligned point" are the most likely candidates,
+% The simplices at "most aligned point" are the most likely candidates,
 % put them at the beginning of the list
-mask = logical(sum(triangles==most_aligned_point,2));
-triangles = [triangles(mask,:); triangles(~mask,:) ];
+mask = logical(sum(simplices==most_aligned_point,2));
+simplices = [simplices(mask,:); simplices(~mask,:) ];
 
-% One of the triangles span a convex cone that contains xs
-for n = 1:size(triangles,1);
-    A = x0(triangles(n,:),:);
+% One of these simplices contains xs
+for n = 1:size(simplices,1);
+    A = x0(simplices(n,:),:);
     weights = xs/A;
-    if all(weights >= 0) % non-negative weights == conic combination
-        x0_indeces = triangles(n,:);
+    weights(abs(weights)<1e-10) = 0;
+    if all(weights >= 0) % non-negative weights == convex combination
+        idx = simplices(n,:);
         break;
     end
 end
-if any(weights < 0)
-     error('%s: Could not find a three points in x0 with xs in their', ...
-        'conical span. Make sure the convex hull of x0 contains the origin.', ...
-        upper(mfilename));
+assert(all(weights >= 0), '%s: Negative weights. Shall never happen.', ...
+    upper(mfilename))
+
+if ~isempty(dummy_points)
+    % Remove possible dummies from selected points
+    dummy_mask = (dummy_indices == idx);
+    if any(dummy_mask)
+        idx(dummy_mask) = [];
+        if ~weights(dummy_mask)==0
+            warning('%s: Requested point lies outside grid.', upper(mfilename))
+        end
+        weights(dummy_mask) = [];
+    end
 end
 
+% Normalise weights
+weights = weights/sum(weights);
+
 [weights,order] = sort(weights.','descend');
-x0_indeces = x0_indeces(order).';
+idx = idx(order).';
+end
+
+% =========================================================================
+
+function [x0, xs] = rotate_to_principal_axes(x0, xs, gamma)
+%ROTATE_TO_PRINCIPAL_AXES rotates x0 and xs to x0's principal axes.
+% If the ratio of second-to-smallest singular values is < gamma,
+% the third dimension is discarded.
+%
+%   Input parameters:
+%       x0          - point cloud in R^3
+%       xs          - point in R^3
+%       gamma       - scalar in 0 < gamma << 1
+%
+%   Output parameters:
+%       x0          - point cloud in R^3 or R^2
+%       xs          - point in R^3 or R^2
+if nargin < 3
+    gamma = 0.1; % inverse of aspect ratio of principal axes
+end
+
+[~,S,V] = svd(x0);
+x0 = x0*V;
+xs = xs*V;
+S = diag(S);
+if S(end)/S(end-1) < gamma
+    x0(:,3) = [];
+    xs(3) = [];
+    warning('SFS:findconvexcone','%s: Grid is apparently two-dimensional. ', ...
+        upper(mfilename));
+end
+end
+
+% =========================================================================
+
+function dummy_points = augment_bounding_box(x0)
+%AUGMENT_BOUNDING_BOX yields dummy points such that the origin is
+% contained in the cartesian bounding box of x0.
+dummy_points = -diag(sign(max(x0)) + sign(min(x0)));
+dummy_points(~any(dummy_points,2),:) = [];
+end

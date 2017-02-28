@@ -49,5 +49,7 @@ narginchk(nargmin,nargmax);
 %% ===== Main ============================================================
 % Font type
 set_font_type('Arial');
+pause(0.2)
 print('-r150','-opengl','-dpng',outfile);
+pause(0.2)
 close;

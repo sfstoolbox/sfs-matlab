@@ -111,12 +111,15 @@ conf.secondary_sources.geometry = 'sphere';
 % [P,x,y,z,x0,win] = sound_field_mono_wfs_25d(X,Y,Z,xs,src,fconf);
 sound_field_mono_wfs([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
 axis([-2 2 -2 2]);
+xticks(-2:1:2); yticks(-2:1:2);
 print_png('sound_field_wfs_3d_xy.png');
 sound_field_mono_wfs([-2 2],0,[-2 2],[0 -1 0],'pw',800,conf);
 axis([-2 2 -2 2]);
+xticks(-2:1:2); yticks(-2:1:2);
 print_png('sound_field_wfs_3d_xz.png');
 sound_field_mono_wfs(0,[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
 axis([-2 2 -2 2]);
+xticks(-2:1:2); yticks(-2:1:2);
 print_png('sound_field_wfs_3d_yz.png');
 conf.resolution = 100;
 sound_field_mono_wfs([-2 2],[-2 2],[-2 2],[0 -1 0],'pw',800,conf);
@@ -131,6 +134,7 @@ conf.plot.normalisation = 'center';
 % [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf);
 [P,~,~,~,x0] = sound_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf);
 axis([-2 2 -2 2]);
+xticks(-2:1:2); yticks(-2:1:2);
 print_png('sound_field_wfs_25d.png');
 % plotting WFS with all secondary sources
 x0_all = secondary_source_positions(conf);
@@ -140,6 +144,7 @@ x0_all(idx,7) = x0(:,7);
 conf.plot.realloudspeakers = true;
 plot_sound_field(P,[-2 2],[-2 2],0,x0_all,conf);
 axis([-2 2 -2 2]);
+xticks(-2:1:2); yticks(-2:1:2);
 print_png('sound_field_wfs_25d_with_all_sources.png');
 % simulating 2.5D NFCHOA with circular array and a plane wave
 conf = SFS_config;
@@ -147,6 +152,7 @@ conf.dimension = '2.5D';
 % sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf);
 sound_field_mono_nfchoa([-2 2],[-2 2],0,[0 -1 0],'pw',800,conf);
 axis([-2 2 -2 2]);
+xticks(-2:1:2); yticks(-2:1:2);
 print_png('sound_field_nfchoa_25d.png');
 
 % === 2D local WFS with box shaped array and circular virtual array ===
@@ -179,10 +185,12 @@ conf.plot.useplot = true;
 % sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
 [p,x,y,z,x0] = sound_field_imp_nfchoa([-2 2],[-2 2],0,[0 2 0],'ps',200,conf);
 axis([-2 2 -2 2]);
+xticks(-2:1:2); yticks(-2:1:2);
 print_png('sound_field_imp_nfchoa_25d.png');
 conf.plot.usedb = true;
 plot_sound_field(p,[-2 2],[-2 2],0,x0,conf);
 axis([-2 2 -2 2]);
+xticks(-2:1:2); yticks(-2:1:2);
 print_png('sound_field_imp_nfchoa_25d_dB.png');
 conf.plot.useplot = false;
 conf.t0 = 'source';
@@ -200,6 +208,7 @@ scatter(1.9,0,'k','o'); % point source
 scatter(0,-1,'k','o');  % focused source
 hold off;
 axis([-2 2 -2 2]);
+xticks(-2:1:2); yticks(-2:1:2);
 print_png('sound_field_imp_multiple_sources_dB.png');
 
 %% ===== custom grids ====================================================
@@ -220,6 +229,7 @@ conf.secondary_sources.number = 64;
 conf.secondary_sources.geometry = 'circle';
 sound_field_imp_nfchoa(X,Y,0,[0 2 0],'ps',200,conf);
 axis([-2 2 -2 2]);
+xticks(-2:1:2); yticks(-2:1:2);
 print_png('sound_field_imp_nfchoa_25d_dB_custom_grid.png');
 
 

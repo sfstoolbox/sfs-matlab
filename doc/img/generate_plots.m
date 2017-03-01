@@ -21,6 +21,7 @@ figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
+xticks(-2:1:2); yticks(-2:1:2);
 print_png('secondary_sources_circle.png');
 
 % === box shaped ===
@@ -31,6 +32,7 @@ figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
+xticks(-2:1:2); yticks(-2:1:2);
 print_png('secondary_sources_box.png');
 
 % === box shaped with smoothed edges ===
@@ -42,6 +44,7 @@ figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
+xticks(-2:1:2); yticks(-2:1:2);
 print_png('secondary_sources_rounded-box.png');
 
 % === spherical array ===
@@ -52,6 +55,7 @@ figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 2]);
+xticks(-2:1:2); yticks(-2:1:2);
 print_png('secondary_sources_sphere.png');
 
 % === arbitrary shaped arrays ===
@@ -93,11 +97,13 @@ figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2.5 2.5]);
+xticks(-2:1:2); yticks(-2:1:2);
 print_png('secondary_sources_arbitrary.png');
 conf.plot.realloudspeakers = true;
 figure;
 figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
+xticks(-2:1:2); yticks(-2:1:2);
 axis([-2 2 -2.5 2.5]);
 print_png('secondary_sources_arbitrary_realloudspeakers.png');
 

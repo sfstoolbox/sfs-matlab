@@ -137,6 +137,79 @@ reflections. Note, that the head orientation is chosen to be ``0``
 instead of ``pi/2`` as in the |HRTF| examples due to a difference in the
 orientation of the coordinate system of the |BRIR| measurement.
 
+Impulse response of your spatial audio system
+---------------------------------------------
+
+Binaural simulations are also an interesting approach to investigate the
+behavior of a given spatial audio system at different listener positions. Here, we
+are mainly interested in the influence of the system and not the |HRTF|\ s so we
+simply use a Dirac impulse as |HRTF| as provided by ``dummy_irs()``.
+
+.. sourcecode:: matlab
+
+    conf = SFS_config;
+    conf.t0 = 'source';
+    X = [0 0 0];
+    phi = 0;
+    xs = [2.5 0 0];
+    src = 'ps';
+    hrtf = dummy_irs(conf);
+    [ir,~,delay] = ir_wfs(X,phi,xs,src,hrtf,conf);
+    figure;
+    figsize(540,404,'px');
+    plot(ir(1:1000,1),'-g');
+    hold on;
+    offset = round(delay*conf.fs);
+    plot(ir(1+offset:1000+offset,1),'-b');
+    hold off;
+    %print_png('img/impulse_response_wfs_25d.png');
+
+.. figure:: img/impulse_response_wfs_25d.png
+   :align: center
+
+   Sound pressure of an impulse synthesized as a point source by 2.5D |WFS| at
+   (2.5, 0, 0) m. The sound pressure is observed by a virtual microphone at (0,
+   0, 0) m. The impulse is plotted including the delay offset of the WFS driving
+   function (green) and with a corrected delay that corresponds to the source
+   poisition (blue).
+
+The figure includes two versions of the impulse response at two different time
+instances. The green impulse response includes the processing delay that is
+added by `driving_function_imp_wfs()` and other functions performing filtering
+and delaying of signals. This delay is returned by `ir_wfs()` as well and can be
+used to correct it during plotting. The blue impulse response is the corrected
+one, which is now placed at 321 samples which corresponds to the actual distance
+of the synthesized source of 2.5 m.
+
+The impulse response can also be calculated without involving functions for
+binaural simulations, but by utilizing directly `sound_field_imp()` related
+function.
+
+.. sourcecode:: matlab
+
+    conf = SFS_config;
+	conf.N = 1000;
+    conf.t0 = 'source';
+    X = [0 0 0];
+    phi = 0;
+    xs = [2.5 0 0];
+    src = 'ps';
+	time_response_wfs(X,xs,src,conf)
+    %print_png('img/impulse_response_wfs_25d_imp.png');
+
+.. figure:: img/impulse_response_wfs_25d.png
+   :align: center
+
+   Sound pressure of an impulse synthesized as a point source by 2.5D
+   |WFS| at (2.5, 0, 0) m. The sound pressure is observed by a virtual
+   microphone at (0, 0, 0) m.
+
+This time the delay offset of the driving function is automatically corrected
+for and the involved calculation uses inherently a fractional delay filter. The
+downside is that the calculation takes longer and the amplitude is slightly
+lower by the involved fractional delay method.
+
+
 Frequency response of your spatial audio system
 -----------------------------------------------
 
@@ -168,9 +241,9 @@ the figure).
     legend('w/o pre-filter','w pre-filter');
     xlabel('frequency / Hz');
     ylabel('magnitude / dB');
-    %print_png('img/impulse_response_wfs_25d.png');
+    %print_png('img/frequency_response_wfs_25d.png');
 
-.. figure:: img/impulse_response_wfs_25d.png
+.. figure:: img/frequency_response_wfs_25d.png
    :align: center
 
    Sound pressure in decibel of a point source synthesized by 2.5D |WFS| for
@@ -185,9 +258,9 @@ the whole frequency range will be affected.
 
     freq_response_wfs([0 0 0],[0 2.5 0],'ps',conf);
     axis([10 20000 -40 0]);
-    %print_png('img/impulse_response_wfs_25d_mono.png');
+    %print_png('img/frequency_response_wfs_25d_mono.png');
 
-.. figure:: img/impulse_response_wfs_25d_mono.png
+.. figure:: img/frequency_response_wfs_25d_mono.png
    :align: center
 
    Sound pressure in decibel of a point source synthesized by 2.5D |WFS| for

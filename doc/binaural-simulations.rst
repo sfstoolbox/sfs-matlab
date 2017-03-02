@@ -145,7 +145,7 @@ behavior of a given spatial audio system at different listener positions. Here, 
 are mainly interested in the influence of the system and not the |HRTF|\ s so we
 simply use a Dirac impulse as |HRTF| as provided by ``dummy_irs()``.
 
-.. sourceode:: matlab
+.. sourcecode:: matlab
 
     conf = SFS_config;
     conf.t0 = 'source';

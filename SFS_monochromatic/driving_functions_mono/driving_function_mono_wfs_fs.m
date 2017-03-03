@@ -16,7 +16,8 @@ function D = driving_function_mono_wfs_fs(x0,nx0,xs,f,conf)
 %
 %   DRIVING_FUNCTION_MONO_WFS_FS(x0,xs,f,src,conf) returns WFS driving signals
 %   for the given secondary sources, the virtual focused source position and the
-%   frequency f.
+%   frequency f. For 3D and 2.5D the default behavior is to use a focused point
+%   source as source model, for 2D a focused line source is used instead.
 %
 %   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 
@@ -71,14 +72,14 @@ if size(xs,2)~=3
 end
 
 
-%% ===== Configuration ==================================================
+%% ===== Configuration ===================================================
 xref = conf.xref;
 c = conf.c;
 dimension = conf.dimension;
 driving_functions = conf.driving_functions;
 
 
-%% ===== Computation ====================================================
+%% ===== Computation =====================================================
 % Calculate the driving function in time-frequency domain
 
 % Frequency
@@ -88,6 +89,11 @@ omega = 2*pi*f;
 if strcmp('2D',dimension) || strcmp('3D',dimension)
 
     % === 2- or 3-Dimensional ============================================
+
+    % For 2D the default focussed source should be a line sink
+    if strcmp('2D',dimension) && strcmp('default',driving_functions)
+        driving_functions = 'line_sink';
+    end
 
     switch driving_functions
     case 'default'
@@ -162,7 +168,6 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         error(['%s: %s, this type of driving function is not implemented ', ...
             'for a focused source.'],upper(mfilename),driving_functions);
     end
-
 
 elseif strcmp('2.5D',dimension)
 

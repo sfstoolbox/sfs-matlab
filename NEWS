@@ -1,3 +1,5 @@
+2.4.0 ()
+
 2.3.0 (04. March 2017)
     - default 2D WFS focused source is now a line sink
     - improve point selection and interpolation of impulse responses

@@ -91,14 +91,14 @@ with a frequency of 800 Hz placed at (0,2.5,0) m synthesized by WFS run
     sound_field_mono_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',800,conf)
 
 To make a simulation of the same point source - now producing a broadband
-impulse - in the time domain at a time of 200 samples after the first
-loudspeaker activity run
+impulse - in the time domain at a time of 5 ms after the first loudspeaker
+activity run
 
 .. sourcecode:: matlab
 
     conf = SFS_config;
     conf.plot.normalisation = 'max';
-    sound_field_imp_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',200,conf)
+    sound_field_imp_wfs([-2 2],[-2 2],0,[0 2.5 0],'ps',0.005,conf)
 
 After that have a look at ``SFS_config.m`` for the default settings of
 the Toolbox.  Please don't change the settings directly in

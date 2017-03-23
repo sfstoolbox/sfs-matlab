@@ -56,6 +56,11 @@ conf.dimension = '2.5D';
 conf.plot.useplot = false;
 conf.wfs.hpreflow = 20;
 conf.wfs.hprefhigh = 20000;
+conf.localsfs.wfs = conf.wfs;
+conf.delayline.resamplingfactor = 8;
+conf.delayline.resampling = 'pm';
+conf.delayline.filter = 'lagrange';
+conf.delayline.filterorder = 9;
 
 % test scenarios
 scenarios = { ...
@@ -67,6 +72,8 @@ scenarios = { ...
   'WFS', 'reference_line' , 'linear', 'fs', [ 0.0  0.75  0.0  0.0 -1.0  0.0]
   'HOA', 'default', 'circular', 'pw', [ 0.0 -1.0   0.0]
   'HOA', 'default', 'circular', 'ps', [ 0.0  2.5  0.0]
+  'LWFS-SBL', 'default', 'circular', 'pw', [ 0.0 -1.0   0.0]
+  'LWFS-SBL', 'default', 'circular', 'ps', [ 0.0  2.5  0.0]
   };
 
 %% ===== Main ============================================================
@@ -104,6 +111,8 @@ for ii=1:size(scenarios)
       d = driving_function_imp_wfs(x0, xs, src, conf);
     case 'HOA'
       d = driving_function_imp_nfchoa(x0, xs, src, conf);
+    case 'LWFS-SBL'
+      d = driving_function_imp_localwfs_sbl(x0, xs, src, conf);
   end
   
   % spectrum of reproduced sound field at reference position

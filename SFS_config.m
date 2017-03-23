@@ -296,7 +296,7 @@ conf.nfchoa.modal_window_parameter = 0.0;  % float
 
 
 %% ===== Local Sound Field Synthesis =====================================
-% Settings for Local SFS, see Spors, Ahrens (2010) for an introduction
+% Settings for Local SFS, 
 %
 % Method the virtual secondary sources should be driven
 conf.localsfs.method = 'wfs'; % 'wfs' or 'nfchoa'
@@ -304,6 +304,10 @@ conf.localsfs.usetapwin = false; % boolean
 conf.localsfs.tapwinlen = 0.5; % 0..1
 % WFS settings
 conf.localsfs.wfs = conf.wfs;
+
+% === Local Sound Field Synthesis using Virtual Secondary Sources ===
+% see Spors, Ahrens (2010) for an introduction
+
 % Virtual secondary sources (vss)
 conf.localsfs.vss.size = 0.4;
 conf.localsfs.vss.center = [0, 0, 0];
@@ -326,6 +330,12 @@ conf.localsfs.vss.consider_target_field = true;
 % loudspeakers (secondary sources)
 conf.localsfs.vss.consider_secondary_sources = true;
 
+% === Local Sound Field Synthesis using Spatial Bandwidth Limitation ===
+conf.localsfs.sbl.order = 27;
+conf.localsfs.sbl.fc = [];
+conf.localsfs.sbl.Npw = [];
+% driving function to create the plane waves
+conf.localsfs.sbl.driving_functions = 'default';
 
 %% ===== Binaural reproduction ===========================================
 % Settings regarding all the stuff with impulse responses from the SFS_ir and

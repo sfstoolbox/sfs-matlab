@@ -75,6 +75,8 @@ if exist('addpath')
     addpath([basepath,'/SFS_ssr']);
     addpath([basepath,'/SFS_time_domain']);
     addpath([basepath,'/SFS_time_domain/driving_functions_imp']);
+    addpath([basepath,'/SFS_time_domain/circexp_imp']);
+    addpath([basepath,'/SFS_time_domain/pwd_imp']);
     addpath([basepath,'/SFS_HRTF_extrapolation']);
     addpath([basepath,'/validation']);
     if isoctave
@@ -94,6 +96,8 @@ else
     path(path,[basepath,'/SFS_ssr']);
     path(path,[basepath,'/SFS_time_domain']);
     path(path,[basepath,'/SFS_time_domain/driving_functions_imp']);
+    path(path,[basepath,'/SFS_time_domain/circexp_imp']);
+    path(path,[basepath,'/SFS_time_domain/pwd_imp']);
     path([basepath,'/SFS_HRTF_extrapolation']);
     path(path,[basepath,'/validation']);
     if isoctave

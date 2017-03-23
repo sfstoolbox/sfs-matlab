@@ -60,6 +60,7 @@ else
 end
 driving_functions = conf.driving_functions;
 
+conf.t0 = 'source';  % needed to time-align lf and hf part of driving function
 wfsconf = conf;
 wfsconf.wfs = conf.localsfs.wfs;
 wfsconf.driving_functions = conf.localsfs.sbl.driving_functions;
@@ -95,11 +96,13 @@ ppwd = pwd_imp_circexp(pm, Npw);
 [d_lwfs, delay_lwfs] = driving_function_imp_wfs_pwd(x0, ppwd, xref, wfsconf);
 
 % === WFS for low frequencies ===
-% driving function
+% 
+conf.driving_functions = 'reference_point';
+% secondary source selection
 [~, xdx] = secondary_source_selection(x0, xs, 'ps');
 x0(xdx,:) = secondary_source_tapering(x0(xdx,:) , conf);
+% driving function
 d_lp = zeros(Nfft,N0);
-conf.driving_functions = 'default';
 [d_lp(:,xdx), ~, ~, delay_lp] = driving_function_imp_wfs(x0(xdx,:), xs, 'ps', conf);
 % lowpass filtering
 [sos, g] = zp2sos(zlp, plp, klp, 'down', 'none');  % generate sos

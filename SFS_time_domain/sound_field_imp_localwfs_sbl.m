@@ -75,7 +75,7 @@ isargxs(xs);
 isargchar(src);
 isargscalar(t);
 isargstruct(conf);
-
+fs = conf.fs;
 
 %% ===== Configuration ==================================================
 if strcmp('2D',conf.dimension)
@@ -90,7 +90,7 @@ x0 = secondary_source_positions(conf);
 % Get driving signals
 [d,delay_offset] = driving_function_imp_localwfs_sbl(x0,xs,src,conf);
 % Ensure virtual source/secondary source activity starts at t = 0
-t = t + delay_offset;
+t = t + delay_offset*fs;
 % Calculate sound field
 [varargout{1:min(nargout,4)}] = ...
     sound_field_imp(X,Y,Z,x0,greens_function,d,t,conf);

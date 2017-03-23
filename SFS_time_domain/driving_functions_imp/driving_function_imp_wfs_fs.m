@@ -30,7 +30,7 @@ function [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs,conf)
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
+% Copyright (c) 2010-2017 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -81,6 +81,11 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
 
     % === 2- or 3-Dimensional ============================================
 
+    % For 2D the default focussed source should be a line sink
+    if strcmp('2D',dimension) && strcmp('default',driving_functions)
+        driving_functions = 'line_sink';
+    end
+
     switch driving_functions
     case 'default'
         % --- SFS Toolbox ------------------------------------------------
@@ -97,6 +102,21 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % Delay and amplitude weight
         delay = -1./c .* r;
         weight = 1./(2.*pi) .* vector_product(xs-x0,nx0,2) ./ r.^2;
+        %
+    case 'line_sink'
+        % d using a focused line source as source model
+        %                     ___
+        %                    | 1   (x0-xs) nx0
+        % d(x0,t) = h(t) * _ |--- ------------- delta(t+|x0-xs|/c)
+        %                   \|2pi |x0-xs|^(3/2)
+        %
+        % See http://sfstoolbox.org/#equation-d.wfs.fs.ls
+        %
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        % Delay and amplitude weight
+        delay = -1./c .* r;
+        weight = 1./(2.*pi) .* vector_product(x0-xs,nx0,2) ./ r.^(3./2);
         %
     case 'legacy'
         % --- Old SFS Toolbox default ------------------------------------

@@ -1,4 +1,8 @@
-2.3.0 ()
+2.4.0 ()
+
+2.3.0 (04. March 2017)
+    - default 2D WFS focused source is now a line sink
+    - improve point selection and interpolation of impulse responses
     - speed up Parks-McClellan resampling method
     - change default value of conf.usebandpass to false
     - rename conf.wfs.t0 to conf.t0

@@ -13,7 +13,7 @@ function print_png(outfile)
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
+% Copyright (c) 2010-2017 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -49,5 +49,7 @@ narginchk(nargmin,nargmax);
 %% ===== Main ============================================================
 % Font type
 set_font_type('Arial');
-print(outfile,'-dpng','-r150');
+pause(0.2);
+print('-r150','-opengl','-dpng',outfile);
+pause(0.2);
 close;

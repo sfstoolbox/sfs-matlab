@@ -1,4 +1,4 @@
-function status = test_plot(modus)
+function status = test_plotting(modus)
 %TEST_PLOT tests the correctness of test_plot()
 %
 %   Usage: status = test_plot(modus)

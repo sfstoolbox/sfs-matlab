@@ -189,7 +189,7 @@ conf = SFS_config;
 conf.dimension = '2.5D';
 conf.plot.useplot = true;
 % sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
-[p,x,y,z,x0] = sound_field_imp_nfchoa([-2 2],[-2 2],0,[0 2 0],'ps',200,conf);
+[p,x,y,z,x0] = sound_field_imp_nfchoa([-2 2],[-2 2],0,[0 2 0],'ps',0.005,conf);
 axis([-2 2 -2 2]);
 xticks(-2:1:2); yticks(-2:1:2);
 print_png('sound_field_imp_nfchoa_25d.png');
@@ -200,13 +200,14 @@ xticks(-2:1:2); yticks(-2:1:2);
 print_png('sound_field_imp_nfchoa_25d_dB.png');
 conf.plot.useplot = false;
 conf.t0 = 'source';
-t_40cm = round(0.4/conf.c*conf.fs); % in samples
+t_40cm = 0.4/conf.c; % time to travel 40 cm in s
+t0 = 0.0005; % start time of focused source in s
 [p_ps,~,~,~,x0_ps] = ...
-    sound_field_imp_wfs([-2 2],[-2 2],0,[1.9 0 0],'ps',20+t_40cm,conf);
+    sound_field_imp_wfs([-2 2],[-2 2],0,[1.9 0 0],'ps',t0+t_40cm,conf);
 [p_pw,~,~,~,x0_pw] = ...
-    sound_field_imp_wfs([-2 2],[-2 2],0,[1 -2 0],'pw',20-t_40cm,conf);
+    sound_field_imp_wfs([-2 2],[-2 2],0,[1 -2 0],'pw',t0-t_40cm,conf);
 [p_fs,~,~,~,x0_fs] = ...
-    sound_field_imp_wfs([-2 2],[-2 2],0,[0 -1 0 0 1 0],'fs',20,conf);
+    sound_field_imp_wfs([-2 2],[-2 2],0,[0 -1 0 0 1 0],'fs',t0,conf);
 plot_sound_field(p_ps+p_pw+p_fs,[-2 2],[-2 2],0,[x0_ps; x0_pw; x0_fs],conf)
 hold;
 scatter(0,0,'k','x');   % origin of plane wave
@@ -233,7 +234,7 @@ conf.plot.usedb = true;
 conf.dimension = '2.5D';
 conf.secondary_sources.number = 64;
 conf.secondary_sources.geometry = 'circle';
-sound_field_imp_nfchoa(X,Y,0,[0 2 0],'ps',200,conf);
+sound_field_imp_nfchoa(X,Y,0,[0 2 0],'ps',0.005,conf);
 axis([-2 2 -2 2]);
 xticks(-2:1:2); yticks(-2:1:2);
 print_png('sound_field_imp_nfchoa_25d_dB_custom_grid.png');

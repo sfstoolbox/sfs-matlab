@@ -61,7 +61,6 @@ end
 conf.t0 = 'source';  % needed to time-align lf and hf part of driving function
 wfsconf = conf;
 wfsconf.wfs = conf.localsfs.wfs;
-wfsconf.driving_functions = conf.localsfs.sbl.driving_functions;
 
 %% ===== Variables ============================================================
 Nlr = ceil(Nce/2)*2;  % order of Linkwitz-Riley Coefficients

@@ -334,8 +334,6 @@ conf.localsfs.vss.consider_secondary_sources = true;
 conf.localsfs.sbl.order = 27;
 conf.localsfs.sbl.fc = [];
 conf.localsfs.sbl.Npw = [];
-% driving function to create the plane waves
-conf.localsfs.sbl.driving_functions = 'default';
 
 %% ===== Binaural reproduction ===========================================
 % Settings regarding all the stuff with impulse responses from the SFS_ir and

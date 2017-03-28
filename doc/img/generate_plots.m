@@ -234,7 +234,7 @@ conf.plot.usedb = true;
 conf.dimension = '2.5D';
 conf.secondary_sources.number = 64;
 conf.secondary_sources.geometry = 'circle';
-sound_field_imp_nfchoa(X,Y,0,[0 2 0],'ps',200,conf);
+sound_field_imp_nfchoa(X,Y,0,[0 2 0],'ps',0.005,conf);
 axis([-2 2 -2 2]);
 xticks(-2:1:2); yticks(-2:1:2);
 print_png('sound_field_imp_nfchoa_25d_dB_custom_grid.png');

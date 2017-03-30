@@ -24,7 +24,7 @@ it for one dimension, two dimensions, or all three dimensions.
     conf.dimension = '2.5D';
     conf.secondary_sources.number = 64;
     conf.secondary_sources.geometry = 'circle';
-    sound_field_imp_nfchoa(X,Y,0,[0 2 0],'ps',200,conf);
+    sound_field_imp_nfchoa(X,Y,0,[0 2 0],'ps',0.005,conf);
     %print_png('img/sound_field_imp_nfchoa_25d_dB_custom_grid.png');
 
 .. figure:: img/sound_field_wfs_3d_xyz_custom_grid.png
@@ -40,7 +40,7 @@ it for one dimension, two dimensions, or all three dimensions.
 
    Sound pressure in decibel of a broadband impulse point source synthesized by
    2.5D |NFC-HOA|. The point source is placed at (0,2,0) m and a time snapshot
-   after 200 samples of the first active secondary source is shown. The sound
-   pressure is calculated only at the explicitly provided grid points.
+   after 5 ms of the first active secondary source is shown. The sound pressure
+   is calculated only at the explicitly provided grid points.
 
 .. vim: filetype=rst spell:

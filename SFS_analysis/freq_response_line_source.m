@@ -1,23 +1,28 @@
-function status = test_non_regular_grid(modus)
-%TEST_IMPULSE_RESPONSES tests time behavior of WFS and local WFS
+function varargout = freq_response_line_source(X,xs,conf)
+%FREQ_RESPONSE_WFS simulates the frequency response for a line source at the
+%given listener position
 %
-%   Usage: status = test_impulse_responses(modus)
+%   Usage: [S,f] = freq_response_line_source(X,xs,conf)
 %
 %   Input parameters:
-%       modus   - 0: numerical
-%                 1: visual
+%       X           - listener position / m
+%       xs          - position of line source / m
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       status  - true or false
+%       S           - simulated frequency response
+%       f           - corresponding frequency axis / Hz
 %
-%   TEST_IMPULSE_RESPONSES(modus) compares the time-frequency response of
-%   WFS and local WFS by calculating impulse responses, their frequency
-%   spectrum, and spatial-temporal sound field.
+%   FREQ_RESPONSE_LINE_SOURCE(X,xs,conf) simulates the frequency response of a
+%   line source placed at xs at the given virtual microphone position X.
+%   The length in samples of the frequency response is given by conf.N.
+%
+%   See also: sound_field_mono_line_source, time_response_line_source
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2017 SFS Toolbox Developers                             *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -44,66 +49,50 @@ function status = test_non_regular_grid(modus)
 %*****************************************************************************
 
 
-status = false;
-
-
-%% ===== Checking of input  parameters ===================================
-nargmin = 1;
-nargmax = 1;
+%% ===== Checking of input  parameters ==================================
+nargmin = 3;
+nargmax = 3;
 narginchk(nargmin,nargmax);
+isargposition(X);
+isargxs(xs);
+isargstruct(conf);
 
 
-%% ===== Configuration ===================================================
-%% Parameters
-conf = SFS_config;
-conf.showprogress = true;
-conf.resolution = 400;
-if modus
-    conf.plot.useplot = true;
-    conf.plot.loudspeakers = true;
-    conf.plot.realloudspeakers = false;
-    conf.plot.usedb = false;
+%% ===== Configuration ==================================================
+N = conf.N;
+showprogress = conf.showprogress;
+useplot = conf.plot.useplot;
+
+
+%% ===== Computation ====================================================
+% Disable progress bar and plotting for sound_field_imp()
+conf.showprogress = false;
+conf.plot.useplot = false;
+% Get the position of the loudspeaker from line source position.
+% NOTE: its directivity [0 -1 0] will be ignored
+x0 = [xs 0 -1 0 1];
+% Generate frequencies (10^1-10^4.3)
+f = logspace(0,4.3,N)';
+S = zeros(size(f));
+% Get the result for all frequencies
+for ii = 1:length(f)
+    if showprogress, progress_bar(ii,length(f)); end
+    % Calculate sound field at the listener position
+    P = sound_field_mono(X(1),X(2),X(3),x0,'ls',1,f(ii),conf);
+    S(ii) = abs(P);
 end
-conf.tapwinlen = 0.3;
-% config for array
-conf.dimension = '2.5D';
-conf.secondary_sources.geometry = 'circular';
-conf.secondary_sources.number = 56;
-conf.secondary_sources.size = 3;
-conf.secondary_sources.center = [0, 0, 0];
-conf.driving_functions = 'default';
-conf.xref = [0,0,0];
-% listening area, virtual source
-xs = [0.0, 2.5, 0];  % propagation direction of plane wave
-src = 'ps';
-f = 1000;
-t = 190/conf.fs;
 
-conf.usenormalisation = true;
-
-%% ===== Computation =====================================================
-% regular grid
-Xreg = [-1.5 1.5];
-Yreg = [-1, 1.55];
-Zreg = 0;
-
-% non regular grid
-alpha = 2*pi / 360 * (0:360-1);
-r = linspace(0,conf.secondary_sources.size/2,50);
-[alpha,r] = ndgrid(alpha,r);
-
-Xnon  = r.*cos(alpha);
-Ynon  = r.*sin(alpha);
-Znon = 0;
-
-% sound fields
-conf.plot.normalisation = 'center';
-[~] = sound_field_mono_wfs(Xreg,Yreg,Zreg,xs,src,f,conf);
-[~] = sound_field_mono_wfs(Xnon,Ynon,Znon,xs,src,f,conf);
-
-conf.plot.normalisation = 'max';
-[~] = sound_field_imp_wfs(Xreg,Yreg,Zreg,xs,src,t,conf);
-[~] = sound_field_imp_wfs(Xnon,Ynon,Znon,xs,src,t,conf);
+% Return parameter
+if nargout>0, varargout{1}=S; end
+if nargout>1, varargout{2}=f; end
 
 
-status = true;
+%% ===== Plotting ========================================================
+if nargout==0 || useplot
+    figure;
+    figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
+    semilogx(f,db(S));
+    set(gca,'XTick',[10 100 250 1000 5000 20000]);
+    ylabel('amplitude / dB)');
+    xlabel('frequency / Hz');
+end

@@ -8,7 +8,7 @@ function varargout = sound_field_imp_plane_wave(X,Y,Z,xs,t,conf)
 %       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
 %       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
 %       xs          - direction of the plane wave / m
-%       t           - time / samples
+%       t           - time / s
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -71,4 +71,5 @@ isargstruct(conf);
 %% ===== Computation ====================================================
 % Disable the plotting of a source, because we have a plane wave
 conf.plot.loudspeakers = 0;
-[varargout{1:nargout}] = sound_field_imp(X,Y,Z,[xs 0 1 0 1],'pw',1,t,conf);
+x0 = [xs 0 -1 0 1];
+[varargout{1:nargout}] = sound_field_imp(X,Y,Z,x0,'pw',dirac_imp(),t,conf);

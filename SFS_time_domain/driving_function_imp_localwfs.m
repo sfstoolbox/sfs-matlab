@@ -1,7 +1,7 @@
-function [d, x0, xv] = driving_function_imp_localwfs(x0,xs,src,conf)
+function [d,x0,xv] = driving_function_imp_localwfs(x0,xs,src,conf)
 %DRIVING_FUNCTION_IMP_LOCALWFS returns the driving signal d for local WFS
 %
-%   Usage: [D, x0, xv] = driving_function_mono_localwfs(x0,xs,src,conf)
+%   Usage: [d,x0,xv] = driving_function_mono_localwfs(x0,xs,src,conf)
 %
 %   Input parameters:
 %       x0          - position and direction of the secondary source / m [nx6]
@@ -14,11 +14,10 @@ function [d, x0, xv] = driving_function_imp_localwfs(x0,xs,src,conf)
 %                         'ls' - line source
 %                         'fs' - focused source
 %
-%       f           - frequency of the monochromatic source / Hz
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       D           - driving function signal [nx1]
+%       d           - driving function signal [nx1]
 %       x0          - position, direction, and weights of the real secondary
 %                     sources / m [nx7]
 %       xv          - position, direction, and weights of the virtual secondary
@@ -186,7 +185,7 @@ switch method
     tau0 = tau0 - min(tau0(selector));     
     % Shift and weight prototype driving function
     pulse = repmat( [pulse; zeros(N-length(pulse),1)] , 1, sum(selector(:)) );
-    pulse = delayline(pulse, tau0(selector)*fs, w0(selector), conf);
+    pulse = delayline(pulse, tau0(selector), w0(selector), conf);
     % Compose impulse responses
     d = zeros(N, N0);
     kdx = 1;

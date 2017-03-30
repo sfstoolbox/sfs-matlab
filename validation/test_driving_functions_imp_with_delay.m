@@ -135,9 +135,9 @@ for ii=1:size(scenarios)
     % Adjust time for different source types (t=0 corresponds to first activity
     % of virtual source).
     if strcmp('ps',src) || strcmp('ls',src)
-        t = 2 / conf.c * conf.fs;   % time for traveling 2 m
+        t = 2/conf.c;   % time for traveling 2 m
     elseif strcmp('fs',src)
-        t = 0.5 / conf.c * conf.fs; % time for traveling 0.5 m
+        t = 0.5/conf.c; % time for traveling 0.5 m
     else
         t = 0;
     end

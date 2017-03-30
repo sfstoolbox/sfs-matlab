@@ -1,4 +1,8 @@
 2.4.0 ()
+    - switch handling of time from samples to seconds
+    - add freq_response_line_source()
+    - add freq_response_point_source()
+    - add time_response_line_source()
 
 2.3.0 (04. March 2017)
     - default 2D WFS focused source is now a line sink

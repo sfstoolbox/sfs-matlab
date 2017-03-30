@@ -69,9 +69,6 @@ else
 end
 isargstruct(conf);
 
-%% ===== Configuration ==================================================
-fs = conf.fs;
-
 %% ===== Computation ====================================================
 % some sizes
 Npw = size(ppwd, 2);
@@ -132,11 +129,11 @@ for ndx = 1:Npw
   xsel = w0(ndx, :) ~= 0;
   
   [tmp, delayline_delay] = ...
-    delayline(ppwd(:,ndx), tau0(ndx, xsel)*fs, w0(ndx, xsel), conf);
+    delayline(ppwd(:,ndx), tau0(ndx, xsel), w0(ndx, xsel), conf);
   d(:, xsel) = d(:, xsel) + tmp;
 end
 % add delay of delayline
-delay_offset = delay_offset + delayline_delay/fs;
+delay_offset = delay_offset + delayline_delay;
 
 % apply hpre to driving signals if its more efficient
 if Npw > N0

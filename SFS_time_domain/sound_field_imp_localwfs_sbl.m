@@ -13,7 +13,7 @@ function varargout = sound_field_imp_localwfs_sbl(X,Y,Z,xs,src,t,conf)
 %                         'pw' - plane wave (xs, ys are the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
-%       t           - time point t of the sound field / samples
+%       t           - time point t of the sound field / seconds
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output options:
@@ -30,12 +30,12 @@ function varargout = sound_field_imp_localwfs_sbl(X,Y,Z,xs,src,t,conf)
 %   To plot the result use:
 %   plot_sound_field(p,X,Y,Z,x0,conf);
 %   or simple call the function without output argument:
-%   sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
+%   sound_field_imp_localwfs_sbl(X,Y,Z,xs,src,t,conf)
 %   For plotting you may also consider to display the result in dB, by setting
 %   the following configuration option before:
 %   conf.plot.usedB = true;
 %
-%   See also: driving_function_imp_localwfs, sound_field_mono_localwfs
+%   See also: driving_function_imp_localwfs_sbl
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -90,7 +90,7 @@ x0 = secondary_source_positions(conf);
 % Get driving signals
 [d,delay_offset] = driving_function_imp_localwfs_sbl(x0,xs,src,conf);
 % Ensure virtual source/secondary source activity starts at t = 0
-t = t + delay_offset*fs;
+t = t + delay_offset;
 % Calculate sound field
 [varargout{1:min(nargout,4)}] = ...
     sound_field_imp(X,Y,Z,x0,greens_function,d,t,conf);

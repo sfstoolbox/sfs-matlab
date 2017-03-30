@@ -94,7 +94,7 @@ d_lp = sosfilt(sos, d_lp, 1)*g;
 % get delay of delayline
 [~, delay_delayline] = delayline(1, 0, 0, conf);
 % delay to compensate between lf-part and hf-part
-delay_comp = (delay_lp-delay_lwfs-delay_circexp)*conf.fs - delay_delayline;
+delay_comp = delay_lp-delay_lwfs-delay_circexp-delay_delayline;
 % combined driving signal
 d = d_lp + delayline(d_lwfs, delay_comp, 1, conf);
 

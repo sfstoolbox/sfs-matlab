@@ -5,13 +5,13 @@ function [delay,weight] = driving_function_imp_wfs_pw(x0,nx0,nk,conf)
 %   Usage: [delay,weight] = driving_function_imp_wfs_pw(x0,nx0,nk,conf);
 %
 %   Input parameters:
-%       x0      - position  of secondary sources (m) [nx3]
+%       x0      - position  of secondary sources / m [nx3]
 %       nx0     - direction of secondary sources [nx3]
 %       nk      - direction of plane wave [nx3]
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       delay   - delay of the driving function (s)
+%       delay   - delay of the driving function / s
 %       weight  - weight (amplitude) of the driving function
 %
 %   DRIVING_FUNCTION_IMP_WFS_PW(x0,nx0,nk,conf) returns delays and weights for

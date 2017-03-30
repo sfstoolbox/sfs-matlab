@@ -5,14 +5,14 @@ function [delay,weight] = driving_function_imp_wfs_ls(x0,nx0,xs,conf)
 %   Usage: [delay,weight] = driving_function_imp_wfs_ls(x0,nx0,xs,conf)
 %
 %   Input parameters:
-%       x0      - position  of secondary sources (m) [nx3]
+%       x0      - position  of secondary sources / m [nx3]
 %       nx0     - direction of secondary sources [nx3]
 %        xs     - position and orientation of virtual line source / m [nx3]
 %                 or [nx6]
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       delay   - delay of the driving function (s)
+%       delay   - delay of the driving function / s
 %       weight  - weight (amplitude) of the driving function
 %
 %   DRIVING_FUNCTION_IMP_WFS_LS(x0,nx0,xs,conf) returns delays and weights for

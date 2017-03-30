@@ -13,11 +13,14 @@ function varargout = time_response_point_source(X,xs,conf)
 %       s           - simulated time response
 %       t           - corresponding time axis / s
 %
-%   TIME_RESPONSE_POINT_SOURCE(X,xs,conf) simulates the time response of the
-%   sound field at the given position X. The sound field is simulated for a
-%   point source at the given source position xs.
+%   TIME_RESPONSE_POINT_SOURCE(X,xs,conf) simulates the impulse response of a
+%   point source placed at xs at the given virtual microphone position X.
+%   The length in samples of the impulse response is given by conf.N.
+%   The actual calculation is done via sound_field_imp() and a loop over time t.
+%   A similar result can be achieved by using ir_point_source() in combination
+%   with dummy_irs().
 %
-%   See also: sound_field_imp_wfs, freq_response_wfs, time_response_nfchoa
+%   See also: ir_point_source, sound_field_imp, freq_response_point_source
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -59,22 +62,21 @@ isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
-% Plotting result
-useplot = conf.plot.useplot;
 fs = conf.fs;
+N = conf.N;
 showprogress = conf.showprogress;
-% Disable progress bar for the sound field function
-conf.showprogress = 0;
-% Disable plotting, otherwise the sound_field_imp fails
-conf.plot.useplot = 0;
+useplot = conf.plot.useplot;
 
 
 %% ===== Computation ====================================================
+% Disable progress bar and plotting for sound_field_imp()
+conf.showprogress = false;
+conf.plot.useplot = false;
 % Get the position of the loudspeaker from point source position.
 % NOTE: its directivity [0 -1 0] will be ignored
 x0 = [xs 0 -1 0 1];
-% Generate time axis (0-500 samples)
-t = (0:500)';
+% Generate time axis
+t = (0:N-1)'/fs;
 s = zeros(1,length(t));
 for ii = 1:length(t)
     if showprogress, progress_bar(ii,length(t)); end
@@ -92,7 +94,7 @@ if nargout>1, varargout{2}=t; end
 if nargout==0 || useplot
     figure;
     figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-    plot(t/fs*1000,s);
-    ylabel('amplitude / dB');
+    plot(t*1000,s);
+    ylabel('amplitude');
     xlabel('time / ms');
 end

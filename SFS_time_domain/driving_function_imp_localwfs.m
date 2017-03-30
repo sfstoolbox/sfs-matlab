@@ -1,5 +1,6 @@
-function [d, x0, xv] = driving_function_imp_localwfs(x0,xs,src,conf)
-%DON'T USE THIS FUNCTION ANYMORE
+function [d,x0,xv] = driving_function_imp_localwfs(x0,xs,src,conf)
+%DON'T USE THIS FUNCTION
+%USE DRIVING_FUNCTION_IMP_LOCALWFS_VSS
 %
 %   See also: driving_function_imp_localwfs_vss
 
@@ -36,4 +37,4 @@ warning(['%s: this function name is deprecated and will be removed in' ...
   ' future releases. Use driving_function_imp_localwfs_vss, instead'], ...
   upper(mfilename));
 
-[d, x0, xv] = driving_function_imp_localwfs_vss(x0,xs,src,conf);
+[d,x0,xv] = driving_function_imp_localwfs_vss(x0,xs,src,conf);

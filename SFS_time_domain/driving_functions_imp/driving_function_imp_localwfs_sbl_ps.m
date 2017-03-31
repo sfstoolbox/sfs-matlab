@@ -99,6 +99,7 @@ delay_comp = delay_lp-delay_lwfs-delay_circexp-delay_delayline;
 d = d_lp + delayline(d_lwfs, delay_comp, 1, conf);
 
 % === Compensate Phase-Distortions ===
+% TODO: ensure that the time-reserved filter is not truncated
 % coefficients for allpass filtering
 [zap, pap, kap] = linkwitz_riley(Nlr, Wlr, 'all');
 [sos, g] = zp2sos(zap, pap, kap, 'down', 'none');  % generate sos

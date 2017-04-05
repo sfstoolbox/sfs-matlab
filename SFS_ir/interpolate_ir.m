@@ -103,7 +103,7 @@ weights_new = weights(weights>=prec);
 x0_new = x0(weights>=prec,:);
 
 % === IR interpolation ===
-if ~useinterpolation || length(weights)==1
+if ~useinterpolation || length(weights_new)==1
     ir_new = ir;
 elseif useinterpolation
     switch interpolationmethod

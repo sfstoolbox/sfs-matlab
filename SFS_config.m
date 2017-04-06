@@ -305,7 +305,7 @@ conf.localsfs.tapwinlen = 0.5; % 0..1
 % WFS settings
 conf.localsfs.wfs = conf.wfs;
 
-% === Local Sound Field Synthesis using Virtual Secondary Sources ===
+% === Local Sound Field Synthesis using Virtual Secondary Sources (LSFS-VSS) 
 % see Spors, Ahrens (2010) for an introduction
 
 % Virtual secondary sources (vss)
@@ -330,9 +330,27 @@ conf.localsfs.vss.consider_target_field = true;
 % loudspeakers (secondary sources)
 conf.localsfs.vss.consider_secondary_sources = true;
 
-% === Local Sound Field Synthesis using Spatial Bandwidth Limitation ===
-conf.localsfs.sbl.order = 27;
+% === Local Sound Field Synthesis using Spatial Bandwidth Limitation (LSFS-SBL)
+% see Hahn, Winter, Spors (2016) for an introduction
+
+% the local synthesis region will be in the centre conf.xref
+
+% maximum modal order aka. spatial bandwidth of desired sound field. If left
+% empty, the value is set by nfchoa_order(), which may suboptimal depending on
+% the geometry, e.g. number of secondary sources and shape of the secondary 
+% source distribution
+conf.localsfs.sbl.order = [];
+% Due to stability issues for the time-domain implementation of synthesis 
+% of a point source, conventional WFS has to be used for the low frequencies. 
+% fc defines the crossover frequency between the WFS and LSFS-SBL. If left
+% empty, this frequency is estimated aliasing_frequency().
 conf.localsfs.sbl.fc = [];
+% the spatially bandwidth-limited sound field is converted into plane wave
+% decomposition which is then synthesised using conventional WFS for each
+% individual plane wave. Npw defines the number of plane waves with their 
+% directions distributed equi-angularly on the unit circle. If left empty,
+% it is estimated based on the sampling frequency and size of the secondary 
+% source distribution
 conf.localsfs.sbl.Npw = [];
 
 %% ===== Binaural reproduction ===========================================
@@ -451,5 +469,8 @@ conf.plot.file = ''; % string
 %
 % Spors, Ahrens - Local Sound Field Synthesis by Virtual Secondary Sources, 40
 % AES Conference, Paper 6-3, 2010. http://bit.ly/1t3842v
+%
+% Hahn, Winter, Spors - Local Wave Field Synthesis by Spatial Band-limitation 
+% in the Circular/Spherical Harmonics Domain, 140th AES Convention, 2016.
 %
 % Ahrens - Analytic Methods of Sound Field Synthesis. Springer, 2012.

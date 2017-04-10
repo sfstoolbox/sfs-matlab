@@ -1,7 +1,7 @@
-function [ir_new,weights_new,x0_new] = interpolate_ir(ir,weights,x0,conf)
+function ir_new = interpolate_ir(ir,weights,x0,conf)
 %INTERPOLATE_IR interpolates the given impulse responses according to their weights
 %
-%   Usage: [ir_new,weights_new,x0_new] = interpolate_ir(ir,weights,x0,conf)
+%   Usage: ir_new = interpolate_ir(ir,weights,x0,conf)
 %
 %   Input parameters:
 %       ir           - matrix containing impulse responses in the form [M C N], where
@@ -14,15 +14,11 @@ function [ir_new,weights_new,x0_new] = interpolate_ir(ir,weights,x0,conf)
 %
 %   Output parameters:
 %       ir_new       - impulse response for the given position [1 C N]
-%       weights_new  - weights corresponding to impulse responses used for
-%                      interpolation
-%       x0_new       - position corresponding to impulse responses used for
-%                      interpolation
 %
 %   INTERPOLATE_IR(ir,x0,xs,conf) interpolates the given impulse responses by
-%   applying the given weights and returns the interpolated impulse response as
-%   well as its corresponding position. Only impulse responses with weights larger
-%   that the precision prec=0.001 will be used.
+%   applying the given weights and returns the interpolated impulse response.
+%   Only impulse responses with weights larger that the precision prec=0.001 will
+%   be used.
 %	The interpolation method differs depending on the setting of
 %	conf.ir.interpolationmethod:
 %     'simple'      - Interpolation in the time domain performed samplewise.
@@ -99,11 +95,11 @@ prec = 0.001;
 %% ===== Computation ====================================================
 % Leave out impulse responses with weights smaller than prec
 ir = ir(weights>=prec,:,:);
-weights_new = weights(weights>=prec);
-x0_new = x0(weights>=prec,:);
+weights = weights(weights>=prec);
+x0 = x0(weights>=prec,:);
 
 % === IR interpolation ===
-if ~useinterpolation || length(weights_new)==1
+if ~useinterpolation || length(weights)==1
     ir_new = ir;
 elseif useinterpolation
     switch interpolationmethod

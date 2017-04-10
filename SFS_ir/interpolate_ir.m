@@ -1,7 +1,7 @@
-function [ir_new,weights_new,x0_new] = interpolate_ir(ir,weights,x0,conf)
+function ir = interpolate_ir(ir,weights,conf)
 %INTERPOLATE_IR interpolates the given impulse responses according to their weights
 %
-%   Usage: [ir_new,weights_new,x0_new] = interpolate_ir(ir,weights,x0,conf)
+%   Usage: ir = interpolate_ir(ir,weights,conf)
 %
 %   Input parameters:
 %       ir           - matrix containing impulse responses in the form [M C N], where
@@ -9,20 +9,15 @@ function [ir_new,weights_new,x0_new] = interpolate_ir(ir,weights,x0,conf)
 %                          C ... Number of channels
 %                          N ... Number of samples
 %       weights      - M weights for impulse reponses
-%       x0           - M positions corresponding to given impulse responses
 %       conf         - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       ir_new       - impulse response for the given position [1 C N]
-%       weights_new  - weights corresponding to impulse responses used for
-%                      interpolation
-%       x0_new       - position corresponding to impulse responses used for
-%                      interpolation
+%       ir           - impulse response for the given position [1 C N]
 %
-%   INTERPOLATE_IR(ir,x0,xs,conf) interpolates the given impulse responses by
-%   applying the given weights and returns the interpolated impulse response as
-%   well as its corresponding position. Only impulse responses with weights larger
-%   that the precision prec=0.001 will be used.
+%   INTERPOLATE_IR(ir,weights,conf) interpolates the given impulse responses
+%   by applying the given weights and returns the interpolated impulse response.
+%   Only impulse responses with weights larger that the precision prec=0.001 will
+%   be used.
 %	The interpolation method differs depending on the setting of
 %	conf.ir.interpolationmethod:
 %     'simple'      - Interpolation in the time domain performed samplewise.
@@ -74,8 +69,8 @@ function [ir_new,weights_new,x0_new] = interpolate_ir(ir,weights,x0,conf)
 
 
 %% ===== Checking of input parameters ===================================
-nargmin = 4;
-nargmax = 4;
+nargmin = 3;
+nargmax = 3;
 narginchk(nargmin,nargmax);
 
 
@@ -99,16 +94,13 @@ prec = 0.001;
 %% ===== Computation ====================================================
 % Leave out impulse responses with weights smaller than prec
 ir = ir(weights>=prec,:,:);
-weights_new = weights(weights>=prec);
-x0_new = x0(weights>=prec,:);
+weights = weights(weights>=prec);
 
 % === IR interpolation ===
-if ~useinterpolation || length(weights)==1
-    ir_new = ir;
-elseif useinterpolation
+if useinterpolation && length(weights)>1
     switch interpolationmethod
     case 'simple'
-        ir_new = sum(bsxfun(@times,ir,weights),1);
+        ir = sum(bsxfun(@times,ir,weights),1);
     case 'freqdomain'
         % See Itoh (1982), Hartung et al. (1999)
         %
@@ -120,10 +112,10 @@ elseif useinterpolation
         % Calculate interpolation only for the first half of the spectrum
         % and only for original bins
         idx_half = floor(size(TF,3)/2)+1;
-        magnitude_new = sum(bsxfun(@times,magnitude(:,:,1:4:idx_half),weights),1);
-        phase_new = sum(bsxfun(@times,phase(:,:,1:4:idx_half),weights),1);
+        magnitude = sum(bsxfun(@times,magnitude(:,:,1:4:idx_half),weights),1);
+        phase = sum(bsxfun(@times,phase(:,:,1:4:idx_half),weights),1);
         % Calculate interpolated impulse response from new magnitude and phase
-        ir_new = ifft(magnitude_new.*exp(1i*phase_new),size(ir,3),3,'symmetric');
+        ir = ifft(magnitude.*exp(1i*phase),size(ir,3),3,'symmetric');
     otherwise
         error('%s: %s is an unknown interpolation method.', ...
             upper(mfilename),interpolationmethod);

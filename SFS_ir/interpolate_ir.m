@@ -1,7 +1,7 @@
-function ir = interpolate_ir(ir,weights,x0,conf)
+function ir = interpolate_ir(ir,weights,conf)
 %INTERPOLATE_IR interpolates the given impulse responses according to their weights
 %
-%   Usage: ir = interpolate_ir(ir,weights,x0,conf)
+%   Usage: ir = interpolate_ir(ir,weights,conf)
 %
 %   Input parameters:
 %       ir           - matrix containing impulse responses in the form [M C N], where
@@ -9,13 +9,12 @@ function ir = interpolate_ir(ir,weights,x0,conf)
 %                          C ... Number of channels
 %                          N ... Number of samples
 %       weights      - M weights for impulse reponses
-%       x0           - M positions corresponding to given impulse responses
 %       conf         - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       ir           - impulse response for the given position [1 C N]
 %
-%   INTERPOLATE_IR(ir,weights,x0,conf) interpolates the given impulse responses
+%   INTERPOLATE_IR(ir,weights,conf) interpolates the given impulse responses
 %   by applying the given weights and returns the interpolated impulse response.
 %   Only impulse responses with weights larger that the precision prec=0.001 will
 %   be used.
@@ -70,8 +69,8 @@ function ir = interpolate_ir(ir,weights,x0,conf)
 
 
 %% ===== Checking of input parameters ===================================
-nargmin = 4;
-nargmax = 4;
+nargmin = 3;
+nargmax = 3;
 narginchk(nargmin,nargmax);
 
 

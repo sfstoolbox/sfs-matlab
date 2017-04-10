@@ -1,7 +1,7 @@
-function ir_new = interpolate_ir(ir,weights,x0,conf)
+function ir = interpolate_ir(ir,weights,x0,conf)
 %INTERPOLATE_IR interpolates the given impulse responses according to their weights
 %
-%   Usage: ir_new = interpolate_ir(ir,weights,x0,conf)
+%   Usage: ir = interpolate_ir(ir,weights,x0,conf)
 %
 %   Input parameters:
 %       ir           - matrix containing impulse responses in the form [M C N], where
@@ -13,7 +13,7 @@ function ir_new = interpolate_ir(ir,weights,x0,conf)
 %       conf         - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       ir_new       - impulse response for the given position [1 C N]
+%       ir           - impulse response for the given position [1 C N]
 %
 %   INTERPOLATE_IR(ir,weights,x0,conf) interpolates the given impulse responses
 %   by applying the given weights and returns the interpolated impulse response.
@@ -99,12 +99,10 @@ weights = weights(weights>=prec);
 x0 = x0(weights>=prec,:);
 
 % === IR interpolation ===
-if ~useinterpolation || length(weights)==1
-    ir_new = ir;
-elseif useinterpolation
+if useinterpolation && length(weights)>1
     switch interpolationmethod
     case 'simple'
-        ir_new = sum(bsxfun(@times,ir,weights),1);
+        ir = sum(bsxfun(@times,ir,weights),1);
     case 'freqdomain'
         % See Itoh (1982), Hartung et al. (1999)
         %
@@ -116,10 +114,10 @@ elseif useinterpolation
         % Calculate interpolation only for the first half of the spectrum
         % and only for original bins
         idx_half = floor(size(TF,3)/2)+1;
-        magnitude_new = sum(bsxfun(@times,magnitude(:,:,1:4:idx_half),weights),1);
-        phase_new = sum(bsxfun(@times,phase(:,:,1:4:idx_half),weights),1);
+        magnitude = sum(bsxfun(@times,magnitude(:,:,1:4:idx_half),weights),1);
+        phase = sum(bsxfun(@times,phase(:,:,1:4:idx_half),weights),1);
         % Calculate interpolated impulse response from new magnitude and phase
-        ir_new = ifft(magnitude_new.*exp(1i*phase_new),size(ir,3),3,'symmetric');
+        ir = ifft(magnitude.*exp(1i*phase),size(ir,3),3,'symmetric');
     otherwise
         error('%s: %s is an unknown interpolation method.', ...
             upper(mfilename),interpolationmethod);

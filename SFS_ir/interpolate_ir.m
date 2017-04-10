@@ -96,7 +96,6 @@ prec = 0.001;
 % Leave out impulse responses with weights smaller than prec
 ir = ir(weights>=prec,:,:);
 weights = weights(weights>=prec);
-x0 = x0(weights>=prec,:);
 
 % === IR interpolation ===
 if useinterpolation && length(weights)>1

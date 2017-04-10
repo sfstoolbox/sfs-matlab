@@ -15,8 +15,8 @@ function ir_new = interpolate_ir(ir,weights,x0,conf)
 %   Output parameters:
 %       ir_new       - impulse response for the given position [1 C N]
 %
-%   INTERPOLATE_IR(ir,x0,xs,conf) interpolates the given impulse responses by
-%   applying the given weights and returns the interpolated impulse response.
+%   INTERPOLATE_IR(ir,weights,x0,conf) interpolates the given impulse responses
+%   by applying the given weights and returns the interpolated impulse response.
 %   Only impulse responses with weights larger that the precision prec=0.001 will
 %   be used.
 %	The interpolation method differs depending on the setting of

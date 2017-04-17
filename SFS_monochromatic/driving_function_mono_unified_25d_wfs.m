@@ -1,24 +1,31 @@
-function D = driving_function_mono_unified_25d_wfs(x0,xs,src,f,conf)
+function [D, xPCS] = driving_function_mono_unified_25d_wfs(x0,xs,dx0,src,f,conf)
 %DRIVING_FUNCTION_MONO_UNIFIED_25D_WFS returns the driving signal D for WFS
 %
-%   derived from D = driving_function_mono_wfs(x0,xs,src,f,conf)
-%   Usage: D = driving_function_mono_unified_25d_wfs(x0,xs,src,f,conf)
+%   derived driving_function_mono_wfs(x0,xs,src,f,conf)
+%
+%   Usage: D = driving_function_mono_unified_25d_wfs(x0,xs,dx0,src,f,conf)
 %
 %   Input parameters:
 %       x0          - position and direction of the secondary source / m [nx6]
 %       xs          - position of virtual source or direction of plane
 %                     wave / m [1x3] or [1x6]
+%       dx0         - amplitude factor of unified 2.5D WFS framework
+%                     to obtain amplitude correct synthesis at desired
+%                     locations, i.e. along a definable reference curve,
+%                     this is primary source AND x0 dependent,
+%                     one dx0 per one x0, thus [nx1]
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
 %                         'ls' - line source
 %                         'fs' - focused source
-%       f           - frequency of the monochromatic source / Hz
+%       f           - temporal frequency of the monochromatic source / Hz
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       D           - driving function signal [nx1]
+%       D           - driving function temporal spectrum [nx1]
+%       xPCS        - locations of amplitude correct synthesis [nx3]
 %
 %   References:
 %   [Sch17] Frank Schultz, Gergely Firtha, Peter Fiala, Sascha Spors (2017):
@@ -31,9 +38,10 @@ function D = driving_function_mono_unified_25d_wfs(x0,xs,src,f,conf)
 %   Functions." In: IEEE/ACM Trans. Audio Speech Language Process.,
 %   DOI 10.1109/TASLP.2017.2689245
 %
-%   DRIVING_FUNCTION_MONO_WFS(x0,xs,f,src,conf) returns the driving signal for
-%   the given secondary source and desired source type (src) for WFS for the
-%   given frequency using the unified 2.5D WFS framework
+%   DRIVING_FUNCTION_MONO_UNIFIED_25D_WFS(x0,xs,dx0,src,f,conf)
+%   returns the driving signal for
+%   the given secondary sources and desired source type (src) for the
+%   given temporal frequency using the unified 2.5D WFS framework
 %
 %   See also: plot_sound_field, sound_field_mono_wfs_25d,
 %             driving_function_imp_wfs_25d
@@ -69,18 +77,21 @@ function D = driving_function_mono_unified_25d_wfs(x0,xs,src,f,conf)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 5;
+nargmin = 6;
+nargmax = 6;
 narginchk(nargmin,nargmax);
 isargsecondarysource(x0);
 isargxs(xs);
+
+%isargdx0(dx0); TBD!!!
+
 isargpositivescalar(f);
 isargchar(src);
 isargstruct(conf);
 
 
 %% ===== Computation ====================================================
-% Calculate the driving function in time-frequency domain
+% Calculate the driving function in temporal-frequency domain
 
 % Secondary source positions and directions
 nx0 = x0(:,4:6);
@@ -89,26 +100,55 @@ x0 = x0(:,1:3);
 % Source position/direction/orientation
 xs = repmat(xs,[size(x0,1) 1]);
 
-% Get driving signals
+%%
+% unified 2.5D WFS framework driving function, cf. [(1), Sch17], [(47), Fir17]
+% get driving signals
+omega = 2*pi*f;
+c = conf.c;
+w_c = omega/c;
+pre = -sqrt(8*pi/(1i*w_c));
+
 if strcmp('pw',src)
     % === Plane wave ===
-    % Direction of plane wave
-    nk = bsxfun(@rdivide,xs,vector_norm(xs(:,1:3),2));
-    % Driving signal
-    %D = driving_function_mono_wfs_pw(x0,nx0,nk,f,conf);
-
+    % directional derivative [(3)&(4), Sch17]:
+    nk = bsxfun(@rdivide,xs,vector_norm(xs(:,1:3),2)); % propagating direction of plane wave
+    dP_dn = (-1i*w_c) .*...
+        vector_product(nk,nx0,2) .*...
+        exp(-1i.*w_c.*vector_product(nk,x0,2));
+    
+    xPCS = x0 + nk.*repmat(dx0,[1,3]); %get the locations/positions of
+    %amplitude correct synthesis, [(8), Sch17]
+    
 elseif strcmp('ps',src)
     % === Point source ===
-    %D = driving_function_mono_wfs_ps(x0,nx0,xs(:,1:3),f,conf);
+    % directional derivative [(15)&(16), Sch17]
+    r = vector_norm(x0-xs,2); % r = |x0-xs|
+    dP_dn = (-1i*w_c) .*...
+        (vector_product(x0-xs,nx0,2)./r) .*...
+        (exp(-1i.*w_c.*r)./(4*pi*r));
 
+    xPCS = x0 + (x0-xs) .* repmat(dx0./(r-dx0),[1,3]); %get the locations
+    %/positions of amplitude correct synthesis, [(20), Sch17],
+    %[(33)&(34), Fir17]
+    
 elseif strcmp('ls',src)
     % === Line source ===
-    %D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf);
+    % directional derivative [(10), Sch17]
+    r = vector_norm(x0-xs,2); % r = |x0-xs|    
+    dP_dn = (1i*w_c)/4 .*...
+        (vector_product(x0-xs,nx0,2)./r) .*...
+        besselh(1,2,w_c.*r);
+
+    xPCS = x0 + ((x0-xs)./r).*repmat(dx0,[1,3]); %get the locations/
+    %positions of amplitude correct synthesis, [(14), Sch17] 
 
 elseif strcmp('fs',src)
     % === Focused source ===
-    %D = driving_function_mono_wfs_fs(x0,nx0,xs(:,1:3),f,conf);
-
+    error('%s: %s is not implemented yet.',upper(mfilename),src);
 else
     error('%s: %s is not a known source type.',upper(mfilename),src);
+end
+% put all together for driving function
+D = pre .*  sqrt(dx0) .* dP_dn;
+
 end

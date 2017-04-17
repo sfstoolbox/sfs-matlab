@@ -139,7 +139,7 @@ elseif strcmp('ls',src)
         (vector_product(x0-xs,nx0,2)./r) .*...
         besselh(1,2,w_c.*r);
 
-    xPCS = x0 + ((x0-xs)./r).*repmat(dx0,[1,3]); %get the locations/
+    xPCS = x0 + ((x0-xs)./repmat(r,[1,3])).*repmat(dx0,[1,3]); %get the locations/
     %positions of amplitude correct synthesis, [(14), Sch17] 
 
 elseif strcmp('fs',src)

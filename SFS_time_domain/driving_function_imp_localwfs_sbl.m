@@ -54,14 +54,23 @@ nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 
+%% ===== Configuration ========================================================
+t0 = conf.t0;  
+
 %% ===== Computation ==========================================================
+
+% needed to time-align lf and hf part of driving function for point source
+if ~strcmp(t0, 'source')
+    error('%s: conf.t0 (%s) other than "source" is not supported', ...
+        upper(mfilename),t0);
+end
 
 switch src
 case 'ps'
-  [d,delay_offset] = driving_function_imp_localwfs_sbl_ps(x0,xs,conf);
+    [d,delay_offset] = driving_function_imp_localwfs_sbl_ps(x0,xs,conf);
 case 'pw'
-  xs = xs./norm(xs);
-  [d,delay_offset] = driving_function_imp_localwfs_sbl_pw(x0,xs,conf);
+    xs = xs./norm(xs);
+    [d,delay_offset] = driving_function_imp_localwfs_sbl_pw(x0,xs,conf);
 otherwise
-  error('%s: %s is not a known source type.',upper(mfilename),src);
+    error('%s: %s is not a known source type.',upper(mfilename),src);
 end

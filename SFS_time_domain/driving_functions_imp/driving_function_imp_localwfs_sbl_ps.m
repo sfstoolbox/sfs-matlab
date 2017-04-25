@@ -58,7 +58,6 @@ else
   Npw = conf.localsfs.sbl.Npw;
 end
 
-conf.t0 = 'source';  % needed to time-align lf and hf part of driving function
 wfsconf = conf;
 wfsconf.wfs = conf.localsfs.wfs;
 

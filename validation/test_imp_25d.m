@@ -57,6 +57,7 @@ conf.plot.useplot = false;
 conf.wfs.hpreflow = 20;
 conf.wfs.hprefhigh = 20000;
 conf.localsfs.wfs = conf.wfs;
+conf.localsfs.sbl.order = 23;
 conf.delayline.resamplingfactor = 8;
 conf.delayline.resampling = 'pm';
 conf.delayline.filter = 'lagrange';

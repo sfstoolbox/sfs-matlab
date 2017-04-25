@@ -71,6 +71,9 @@ Wlr = fc/fs*2;  % normalised cut-off frequency of Linkwitz-Riley
 % === Local WFS for high frequencies ===
 % regular circular expansion of point source (highpass implicitly)
 [pm, delay_circexp] = circexp_imp_ps(xs, Nce, xref, fc, conf);
+% modal window
+wm = modal_weighting(Nce, conf);
+pm = bsxfun(@times, wm, pm);
 % plane wave decomposition
 ppwd = pwd_imp_circexp(pm, Npw);
 % driving signal

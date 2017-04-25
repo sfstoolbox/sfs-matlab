@@ -53,7 +53,6 @@ end
 
 wfsconf = conf;
 wfsconf.wfs = conf.localsfs.wfs;
-wfsconf.driving_functions = conf.localsfs.sbl.driving_functions;
 
 %% ===== Computation ==========================================================
 % circular expansion coefficients

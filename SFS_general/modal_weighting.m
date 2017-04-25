@@ -10,14 +10,15 @@ function [win,Win,Phi] = modal_weighting(order,ndtft,conf)
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       win         - the window w_n in the discrete domain (length = 2*order+1)
+%       win         - the window w_n in the discrete domain, only positive n
+%                     (length = order+1)
 %       Win         - the inverse DTFT of w_n (length = ndtft)
 %       Phi         - corresponding angle the inverse DTFT of w_n
 %
 %   MODAL_WEIGHTING(order,ndtft,conf) calculates a weighting window for the
-%   modal band limitation applied in NFC-HOA. The window type is configured in
-%   conf.nfchoa.modal_window. Its default setting is a simple rectangular
-%   window, for other options have a look into SFS_config.
+%   modal band limitation applied in NFC-HOA and LSFS-SBL. The window type is
+%   configured in  conf.modal_window. Its default setting is a simple
+%   rectangular window, for other options have a look into SFS_config.
 %
 %   References:
 %   	Kaiser, J., & Schafer, R. (1980) - "On the use of the I0-sinh window
@@ -71,20 +72,19 @@ isargstruct(conf);
 
 
 %% ===== Configuration ===================================================
-wtype = conf.nfchoa.modal_window;
-
+wtype = conf.modal_window;
 
 %% ===== Computation =====================================================
 switch wtype
     case 'rect'
         % === Rectangular Window =========================================
-        win = ones(1,2*order+1);
+        win = ones(1,order+1);
     case {'kaiser', 'kaiser-bessel'}
         % === Kaiser-Bessel window =======================================
         % Approximation of the slepian window using modified bessel
         % function of zeroth order
-        beta = conf.nfchoa.modal_window_parameter * pi;
-        win = besseli(0,beta*sqrt(1-((-order:order)./order).^2)) ./ ...
+        beta = conf.modal_window_parameter * pi;
+        win = besseli(0,beta*sqrt(1-((0:order)./order).^2)) ./ ...
               besseli(0,beta);
     otherwise
         error('%s: unknown weighting type (%s)!',upper(mfilename),wtype);
@@ -92,7 +92,7 @@ end
 
 % Inverse DTFT
 if nargout>1
-    Win = ifft([win(order+1:end),zeros(1,order)],ndtft,'symmetric');
+    Win = ifft([win,zeros(1,order)],ndtft,'symmetric');
 end
 % Axis corresponding to inverse DTFT
 if nargout>2

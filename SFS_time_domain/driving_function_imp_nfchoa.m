@@ -143,7 +143,7 @@ wm = modal_weighting(order,conf);
 % Compute input signal for IFFT
 dM = zeros(2*order+1,N);
 for n=-order:order
-    dM(n+order+1,:) = wm(n+order+1) * dm(abs(n)+1,:) * exp(-1i*n*theta_src);
+    dM(n+order+1,:) = wm(abs(n)+1) * dm(abs(n)+1,:) * exp(-1i*n*theta_src);
 end
 % Spatial IFFT
 d = zeros(nls,N);

@@ -196,6 +196,22 @@ conf.t0 = 'system'; % string
 conf.usebandpass = false; % boolean
 conf.bandpassflow = 10; % / Hz
 conf.bandpassfhigh = 20000; % / Hz
+%
+% === Modal Weighting ===
+% Additional weighting of the modal coefficients by window function used 
+% for Near-Field Compensated Higher Order Ambisonics (NFC-HOA) and Local Sound
+% Field Synthesis using Spatial Bandwidth Limitation (LSFS-SBL)
+conf.modal_window = 'rect';  % string
+% Window type. Available windows are:
+%   'rect'                     - all coefficients are weighted by 1.0
+%   'kaiser', 'kaiser-bessel'  - Kaiser aka. Kaiser-Bessel window
+conf.modal_window_parameter = 0.0;  % float
+% Scalar parameter for window, if applicable. Effect for distinct window:
+%   'rect'    - no effect
+%   'kaiser'  - [0,inf]. trade-off between main-lobe width and side-lobe levels.
+%               0.0 results in the rectangular window and the smallest main-lobe
+%               width. infinity results in a dirac impulse.
+
 
 
 %% ===== Sound Field Simulations =========================================
@@ -282,18 +298,6 @@ conf.sdm.withev = true; % boolean
 % returns the highest order for which no aliasing occurs. If you wish to use
 % another order you can set it manually here, otherwise leave it blank
 conf.nfchoa.order = []; % integer
-% Additional weighting of the modal coefficients by window function
-conf.nfchoa.modal_window = 'rect';  % string
-% Window type. Available windows are:
-%   'rect'                     - all coefficients are weighted by 1.0
-%   'kaiser', 'kaiser-bessel'  - Kaiser aka. Kaiser-Bessel window
-conf.nfchoa.modal_window_parameter = 0.0;  % float
-% Scalar parameter for window, if applicable. Effect for distinct window:
-%   'rect'    - no effect
-%   'kaiser'  - [0,inf]. trade-off between main-lobe width and side-lobe levels.
-%               0.0 results in the rectangular window and the smallest main-lobe
-%               width. infinity results in a dirac impulse.
-
 
 %% ===== Local Sound Field Synthesis =====================================
 % Settings for Local SFS, 

@@ -109,7 +109,9 @@ pm = [repmat(pulse,[1 Nce+1]); zeros(N-length(pulse),Nce+1)];
 % Negative m can be inferred from symmetry relations
 for m=0:Nce
     % === IIR-Implementation of Spherical Hankel function ===
-    if m~=0
+    if m==0  % not supported by octave
+        zh = []; ph = []; kh=1;
+    else 
         [zh, ph] = sphbesselh_zeros(m);
         % bilinear transform to z-domain
         if isoctave
@@ -117,8 +119,6 @@ for m=0:Nce
         else
             [zh, ph, kh] = bilinear(zh*c/rs, ph*c/rs, 1, fs);
         end
-    else
-        zh = []; ph = []; kh=1;
     end   
     % === Apply Hankel + LR Filter to current mode ===
     % zeros remaining after compensating the poles of hankel function (ph)
@@ -126,7 +126,7 @@ for m=0:Nce
     % generate second-order-sections
     [sos, g] = zp2sos([zlr_comp; zh], plr, klr*kh, 'down', 'none');
     % filtering
-    pm(:,m+1) = sosfilt(sos, pm(:,m+1), 1).*g.*(1j).^m.*exp(-1j*m*phis);
+    pm(:,m+1) = sosfilt(sos, pm(:,m+1)).*g.*(1j).^m.*exp(-1j*m*phis);
 end
 pm = pm./(4*pi*rs);
 

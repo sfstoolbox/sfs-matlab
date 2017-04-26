@@ -108,7 +108,7 @@ d_lp = zeros(Nfft,N0);
 [zlp,plp,klp] = linkwitz_riley(Nlr,Wlr,'low');  % lr-filter
 % lowpass filtering
 [sos,g] = zp2sos(zlp,plp,klp,'down','none');  % generate sos
-d_lp = sosfilt(sos,d_lp,1)*g;
+d_lp = sosfilt(sos,d_lp)*g;
   
 % === Crossover ===
 % get delay of delayline
@@ -124,7 +124,7 @@ d = d_lp + delayline(d_lwfs,delay_comp,1,conf);
 [zap,pap,kap] = linkwitz_riley(Nlr,Wlr,'all');
 [sos,g] = zp2sos(zap,pap,kap,'down','none');  % generate sos
 % (time-reversed) allpass filtering
-d = sosfilt(sos,d(end:-1:1,:),1)*g;
+d = sosfilt(sos,d(end:-1:1,:))*g;
 d = d(end:-1:1,:);
 
 % final delay

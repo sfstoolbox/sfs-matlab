@@ -58,13 +58,13 @@ switch ftype
 case  {'low','high'}
     % === lowpass or highpass LR Filter (squared Butterworth Filter) ===
     [zz,pz,kz] = butter(n/2,wc,ftype);  
-    zz = [zz(:); zz(:)];  % octave creates rows vectors
-    pz = [pz(:); pz(:)];  % octave creates rows vectors
+    zz = [zz(:); zz(:)];  % octave creates row vectors
+    pz = [pz(:); pz(:)];  % octave creates row vectors
     kz = kz.^2;
 case 'all'
     % === allpass LR Filter (same phase as lowpass and highpass LR Filter) ===
     [~,pz,~] = butter(n/2,wc,'low');
-    pz = pz(:);  % octave creates rows vectors
+    pz = pz(:);  % octave creates row vectors
     zz = 1./conj(pz);
     kz = prod(pz);
 otherwise

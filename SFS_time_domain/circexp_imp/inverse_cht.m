@@ -1,4 +1,4 @@
-function A = inverse_cht(Am, Nphi)
+function A = inverse_cht(Am,Nphi)
 %
 
 %*****************************************************************************
@@ -30,6 +30,7 @@ function A = inverse_cht(Am, Nphi)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 %% ===== Checking of input  parameters ==================================
 nargmin = 1;
 nargmax = 2;
@@ -40,6 +41,7 @@ if nargin == nargmin
 else
     isargpositivescalar(Nphi);
 end
+
 
 %% ===== Computation ==================================================
 M = (size(Am,2)-1)/2;
@@ -59,5 +61,3 @@ for l=1:Nfft
 end
 A = circshift(A,[0,-M]);  % m = 0, ..., M, -M, ..., -1
 A = ifft(A,[],2) * Nphi;  % IFFT includes factor 1/Nphi
-
-end

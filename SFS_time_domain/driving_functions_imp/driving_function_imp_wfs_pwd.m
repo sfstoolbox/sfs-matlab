@@ -62,12 +62,13 @@ narginchk(nargmin,nargmax);
 isargsecondarysource(x0);
 isargmatrix(ppwd);
 if nargin == nargmin
-  conf = xq;
-  xq = [0, 0, 0];
+    conf = xq;
+    xq = [0, 0, 0];
 else
-  isargxs(xq);
+    isargxs(xq);
 end
 isargstruct(conf);
+
 
 %% ===== Computation ====================================================
 % some sizes
@@ -78,21 +79,21 @@ N0 = size(x0,1);
 ppwd = ppwd./Npw;
 
 % Calculate pre-equalization filter if required hpre(t)
-[hpre, delay_offset] = wfs_preequalization(dirac_imp(),conf);
+[hpre,delay_offset] = wfs_preequalization(dirac_imp(),conf);
 
 % apply hpre to pwd if its more efficient (less plane wave than loudspeakers)
 if Npw <= N0
-  ppwd = convolution(ppwd, hpre);
+    ppwd = convolution(ppwd,hpre);
 end
 N = size(ppwd,1);
 
 % shift coordinates to expansion center
-x0(:,1:3) = bsxfun(@minus, x0(:,1:3), xq);
-conf.xref = [0, 0, 0];
+x0(:,1:3) = bsxfun(@minus,x0(:,1:3),xq);
+conf.xref = [0 0 0];
 
 % initialise delay and weights
-tau0 = inf(Npw, N0);  % rows for plane waves; columns for ss
-w0 = zeros(Npw, N0);  % rows for plane waves; columns for ss
+tau0 = inf(Npw,N0);  % rows for plane waves; columns for ss
+w0 = zeros(Npw,N0);  % rows for plane waves; columns for ss
 
 % interate over all plane wave directions
 phipw = (0:Npw-1)*2*pi/Npw;
@@ -100,43 +101,43 @@ npw = [cos(phipw); sin(phipw)];  % [2 x Npw]
 npw(3,:) = 0;
 ndx = 0;
 for nk = npw
-  ndx = ndx + 1;
-  % Select active source for one focused source
-  [x0s, xdx] = secondary_source_selection(x0, nk.','pw');
+    ndx = ndx + 1;
+    % Select active source for one focused source
+    [x0s,xdx] = secondary_source_selection(x0,nk.','pw');
 
-  if ~isempty(x0s)
-    % Focused source position
-    xs = repmat(nk.',[size(x0s,1) 1]);
-    % Delay and weights for single plane wave
-    [tau0(ndx,xdx),w0(ndx,xdx)] = driving_function_imp_wfs_pw( ...
-      x0s(:,1:3),x0s(:,4:6),xs,conf);
-    % Optional tapering
-    x0tmp = secondary_source_tapering(x0s,conf);
-    wtap = x0tmp(:,7)./x0s(:,7);  % x0
-    % Apply secondary sources' tapering to weighting matrix
-    w0(ndx,xdx) = w0(ndx,xdx).*wtap.';
-  end
+    if ~isempty(x0s)
+        % Focused source position
+        xs = repmat(nk.',[size(x0s,1) 1]);
+        % Delay and weights for single plane wave
+        [tau0(ndx,xdx),w0(ndx,xdx)] = driving_function_imp_wfs_pw( ...
+            x0s(:,1:3),x0s(:,4:6),xs,conf);
+        % Optional tapering
+        x0tmp = secondary_source_tapering(x0s,conf);
+        wtap = x0tmp(:,7)./x0s(:,7);  % x0
+        % Apply secondary sources' tapering to weighting matrix
+        w0(ndx,xdx) = w0(ndx,xdx).*wtap.';
+    end
 end
 % Remove delay offset, in order to begin always at t=0 with the first wave 
 % front at any secondary source
-delay_offset = delay_offset - min(tau0(w0 ~= 0));
-tau0 = tau0 - min(tau0(w0 ~= 0)); 
+delay_offset = delay_offset - min(tau0(w0~=0));
+tau0 = tau0 - min(tau0(w0~=0)); 
 
 % Compose impulse responses
-d = zeros(N, N0);
+d = zeros(N,N0);
 for ndx = 1:Npw  
-  % select only secondary source with non-zero weights
-  xsel = w0(ndx, :) ~= 0;
-  
-  [tmp, delayline_delay] = ...
-    delayline(ppwd(:,ndx), tau0(ndx, xsel), w0(ndx, xsel), conf);
-  d(:, xsel) = d(:, xsel) + tmp;
+    % select only secondary source with non-zero weights
+    xsel = w0(ndx,:) ~= 0;
+    
+    [tmp,delayline_delay] = ...
+        delayline(ppwd(:,ndx),tau0(ndx,xsel),w0(ndx,xsel),conf);
+    d(:,xsel) = d(:,xsel) + tmp;
 end
 % add delay of delayline
 delay_offset = delay_offset + delayline_delay;
 
 % apply hpre to driving signals if its more efficient
 if Npw > N0
-  d = convolution(d, hpre);
+    d = convolution(d,hpre);
 end
 d = d(1:conf.N, :);

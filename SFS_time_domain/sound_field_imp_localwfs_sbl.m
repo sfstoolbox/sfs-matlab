@@ -66,6 +66,7 @@ function varargout = sound_field_imp_localwfs_sbl(X,Y,Z,xs,src,t,conf)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 %% ===== Checking of input  parameters ==================================
 nargmin = 7;
 nargmax = 7;
@@ -76,6 +77,7 @@ isargchar(src);
 isargscalar(t);
 isargstruct(conf);
 fs = conf.fs;
+
 
 %% ===== Configuration ==================================================
 if strcmp('2D',conf.dimension)

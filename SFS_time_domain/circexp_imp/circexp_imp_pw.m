@@ -48,6 +48,7 @@ function [pm,delay_offset] = circexp_imp_pw(npw,Nce,xq,conf)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 %% ===== Checking of input  parameters ==================================
 nargmin = 4;
 nargmax = 4;
@@ -56,9 +57,11 @@ isargcoord(xq,npw);
 isargpositivescalar(Nce);
 isargstruct(conf);
 
+
 %% ===== Configuration ==================================================
 N = conf.N;
 c = conf.c;
+
 
 %% ===== Computation =====================================================
 [phipw, ~] = cart2pol(npw(1),npw(2));

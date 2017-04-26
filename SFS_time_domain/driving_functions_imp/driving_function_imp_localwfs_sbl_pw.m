@@ -1,4 +1,4 @@
-function [d, delay_offset] = driving_function_imp_localwfs_sbl_pw(x0, nk, conf)
+function [d,delay_offset] = driving_function_imp_localwfs_sbl_pw(x0,nk,conf)
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -29,10 +29,12 @@ function [d, delay_offset] = driving_function_imp_localwfs_sbl_pw(x0, nk, conf)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 %% ===== Checking of input  parameters ==================================
 nargmin = 3;
 nargmax = 3;
 narginchk(nargmin,nargmax);
+
 
 %% ===== Configuration ========================================================
 N0 = size(x0,1);
@@ -46,20 +48,21 @@ else
 end
 % resolution of plane wave decomposition
 if isempty(conf.localsfs.sbl.Npw)
-  Npw = 2*ceil(2*pi*0.9*fs/conf.c*conf.secondary_sources.size/2);
+    Npw = 2*ceil(2*pi*0.9*fs/conf.c*conf.secondary_sources.size/2);
 else
-  Npw = conf.localsfs.sbl.Npw;
+    Npw = conf.localsfs.sbl.Npw;
 end
 
 wfsconf = conf;
 wfsconf.wfs = conf.localsfs.wfs;
 
+
 %% ===== Computation ==========================================================
 % circular expansion coefficients
-[pm, delay_circexp] = circexp_imp_pw(nk, Nce, xref, conf);
+[pm,delay_circexp] = circexp_imp_pw(nk,Nce,xref,conf);
 % plane wave decomposition
-ppwd = pwd_imp_circexp(pm, Npw);
+ppwd = pwd_imp_circexp(pm,Npw);
 % driving signal
-[d, delay_lwfs] = driving_function_imp_wfs_pwd(x0, ppwd, xref, wfsconf);
+[d,delay_lwfs] = driving_function_imp_wfs_pwd(x0,ppwd,xref,wfsconf);
 % delay
-delay_offset = delay_lwfs+delay_circexp;
+delay_offset = delay_lwfs + delay_circexp;

@@ -70,7 +70,7 @@ narginchk(nargmin,nargmax);
 %   * Pre-equalization
 % - Spectral Division Method (SDM)
 % - Near-Field Compensated Higher Order Ambisonics (NFC-HOA)
-% - Local Sound Field Synthesis
+% - Local Sound Field Synthesis (LSFS)
 % - Binaural Reproduction
 %   * Headphone compensation
 %   * SoundScape Renderer
@@ -118,7 +118,6 @@ conf.delayline.resamplingfactor = 100; % / 1
 % Order of Parks-McClellan resample filter (only for 'pm')
 % This results in a filter length of resamplingfactor*resamplingorder
 conf.delayline.resamplingorder = 64;
-%
 % Delayline filter
 %   'integer'       - round to nearest integer delay (default)
 %   'zoh'           - round to next larger integer delay
@@ -200,17 +199,18 @@ conf.bandpassfhigh = 20000; % / Hz
 % === Modal Weighting ===
 % Additional weighting of the modal coefficients by window function used 
 % for Near-Field Compensated Higher Order Ambisonics (NFC-HOA) and Local Sound
-% Field Synthesis using Spatial Bandwidth Limitation (LSFS-SBL)
-conf.modal_window = 'rect';  % string
+% Field Synthesis using Spatial Bandwidth Limitation (LSFS-SBL).
+%
 % Window type. Available windows are:
 %   'rect'                     - all coefficients are weighted by 1.0
 %   'kaiser', 'kaiser-bessel'  - Kaiser aka. Kaiser-Bessel window
-conf.modal_window_parameter = 0.0;  % float
+conf.modal_window = 'rect';  % string
 % Scalar parameter for window, if applicable. Effect for distinct window:
 %   'rect'    - no effect
 %   'kaiser'  - [0,inf]. trade-off between main-lobe width and side-lobe levels.
 %               0.0 results in the rectangular window and the smallest main-lobe
 %               width. infinity results in a dirac impulse.
+conf.modal_window_parameter = 0.0;  % float
 
 
 
@@ -237,7 +237,7 @@ conf.secondary_sources.center = [0 0 0]; % / m
 % Array geometry
 % Possible values are: 'line', 'box', 'rounded-box', 'circle', 'sphere', 'custom'
 conf.secondary_sources.geometry = 'circle'; % string
-% exclusive for 'rounded-box' array geometry. Defines the bending radius for
+% Exclusive for 'rounded-box' array geometry. Defines the bending radius for
 % the corners of the smoothed box
 conf.secondary_sources.corner_radius = 0.0; % / m
 % Vector containing custom secondary source positions and directions.
@@ -299,7 +299,8 @@ conf.sdm.withev = true; % boolean
 % another order you can set it manually here, otherwise leave it blank
 conf.nfchoa.order = []; % integer
 
-%% ===== Local Sound Field Synthesis =====================================
+
+%% ===== Local Sound Field Synthesis (LSFS) ==============================
 % Settings for Local SFS, 
 %
 % Method the virtual secondary sources should be driven
@@ -308,38 +309,35 @@ conf.localsfs.usetapwin = false; % boolean
 conf.localsfs.tapwinlen = 0.5; % 0..1
 % WFS settings
 conf.localsfs.wfs = conf.wfs;
-
-% === Local Sound Field Synthesis using Virtual Secondary Sources (LSFS-VSS) 
-% see Spors, Ahrens (2010) for an introduction
-
+%
+% === LSFS using Virtual Secondary Sources (LSFS-VSS) ===
+% See Spors, Ahrens (2010) for an introduction.
+%
 % Virtual secondary sources (vss)
 conf.localsfs.vss.size = 0.4;
 conf.localsfs.vss.center = [0, 0, 0];
 conf.localsfs.vss.geometry = 'circular';
 conf.localsfs.vss.number = 56;
 conf.localsfs.vss.grid = 'equally_spaced_points';
-% driving function to create the focused sources, i.e. virtual secondary
+% Driving function to create the focused sources, i.e. virtual secondary
 % sources
 conf.localsfs.vss.driving_functions = 'default';
-%
-% linear vss distribution: rotate the distribution orthogonal to the progation
+% Linear vss distribution: rotate the distribution orthogonal to the progation
 % direction of the desired sound source
 % circular vss distribution: truncate the distribution to a circular arc
-% which satisfies the secondary source selection criterions ( source normal
-% aligns with propagation directions of desired sound source )
+% which satisfies the secondary source selection criterions (source normal
+% aligns with propagation directions of desired sound source)
 conf.localsfs.vss.consider_target_field = true;
-%
-% vss distribution is further truncated if parts of it cannot be correctly
+% Vss distribution is further truncated if parts of it cannot be correctly
 % reproduced, because they lie outside the area which is surrounded by the real
 % loudspeakers (secondary sources)
 conf.localsfs.vss.consider_secondary_sources = true;
-
-% === Local Sound Field Synthesis using Spatial Bandwidth Limitation (LSFS-SBL)
-% see Hahn, Winter, Spors (2016) for an introduction
-
-% the local synthesis region will be in the centre conf.xref
-
-% maximum modal order aka. spatial bandwidth of desired sound field. If left
+%
+% === LSFS using Spatial Bandwidth Limitation (LSFS-SBL) ===
+% See Hahn, Winter, Spors (2016) for an introduction.
+% The local synthesis region will be in the centre conf.xref.
+%
+% Maximum modal order aka. spatial bandwidth of desired sound field. If left
 % empty, the value is set by nfchoa_order(), which may suboptimal depending on
 % the geometry, e.g. number of secondary sources and shape of the secondary 
 % source distribution
@@ -349,13 +347,14 @@ conf.localsfs.sbl.order = [];
 % fc defines the crossover frequency between the WFS and LSFS-SBL. If left
 % empty, this frequency is estimated aliasing_frequency().
 conf.localsfs.sbl.fc = [];
-% the spatially bandwidth-limited sound field is converted into plane wave
+% The spatially bandwidth-limited sound field is converted into plane wave
 % decomposition which is then synthesised using conventional WFS for each
 % individual plane wave. Npw defines the number of plane waves with their 
 % directions distributed equi-angularly on the unit circle. If left empty,
 % it is estimated based on the sampling frequency and size of the secondary 
 % source distribution
 conf.localsfs.sbl.Npw = [];
+
 
 %% ===== Binaural reproduction ===========================================
 % Settings regarding all the stuff with impulse responses from the SFS_ir and

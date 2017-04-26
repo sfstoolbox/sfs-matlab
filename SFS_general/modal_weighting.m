@@ -74,6 +74,7 @@ isargstruct(conf);
 %% ===== Configuration ===================================================
 wtype = conf.modal_window;
 
+
 %% ===== Computation =====================================================
 switch wtype
     case 'rect'

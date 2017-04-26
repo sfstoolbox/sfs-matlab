@@ -48,6 +48,7 @@ function [pm,delay_offset] = circexp_imp_ps(xs,Nce,xq,fhp,conf)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 %% ===== Checking of input  parameters ==================================
 nargmin = 4;
 nargmax = 5;
@@ -60,10 +61,12 @@ else
   isargpositivescalar(fhp);
 end
 
+
 %% ===== Configuration ==================================================
 N = conf.N;
 c = conf.c;
 fs = conf.fs;
+
 
 %% ===== Computation =====================================================
 
@@ -103,7 +106,7 @@ end
 % Compute impulse responses for each mode m
 pulse = dirac_imp();
 pm = [repmat(pulse,[1 Nce+1]); zeros(N-length(pulse),Nce+1)];
-% negative m can be inferred from symmetry relations
+% Negative m can be inferred from symmetry relations
 for m=0:Nce
     % === IIR-Implementation of Spherical Hankel function ===
     [zh, ph] = sphbesselh_zeros(m);

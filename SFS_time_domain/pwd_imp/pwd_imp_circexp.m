@@ -1,5 +1,5 @@
 function ppwd = pwd_imp_circexp(pm,Npw)
-%pwd_imp_circexp converts a circular basis expansion of a sound field to its
+%PWD_IMP_CIRCEXP converts a circular basis expansion of a sound field to its
 %two-dimensional plane wave decomposition
 %
 %   Usage: ppwd = pwd_imp_circexp(pm,[Npw])
@@ -10,6 +10,9 @@ function ppwd = pwd_imp_circexp(pm,Npw)
 %
 %   Output parameters:
 %       ppwd    - plane wave decomposition [N x Npw]
+%
+%   See also: driving_function_imp_localwfs_sbl_ps,
+%   driving_function_imp_localwfs_sbl_pw
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -40,6 +43,7 @@ function ppwd = pwd_imp_circexp(pm,Npw)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 %% ===== Checking of input parameters ==================================
 nargmin = 1;
 nargmax = 2;
@@ -52,6 +56,7 @@ else
   isargpositivescalar(Npw);
 end
 
+
 %% ===== Computation ====================================================
 % Implementation of
 %                 ___
@@ -63,4 +68,4 @@ end
 % phipw = n * 2*pi/Npw
 
 pm = [conj(pm(:,end:-1:2)), pm];  % append coefficients for negative m
-ppwd = inverse_cht(bsxfun(@times, pm, 1j.^(-Mce:Mce)), Npw);
+ppwd = inverse_cht(bsxfun(@times,pm,1j.^(-Mce:Mce)),Npw);

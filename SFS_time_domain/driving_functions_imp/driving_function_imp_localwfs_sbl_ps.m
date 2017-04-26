@@ -29,10 +29,12 @@ function [d,delay_offset] = driving_function_imp_localwfs_sbl_ps(x0,xs,conf)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 %% ===== Checking of input  parameters ========================================
 nargmin = 3;
 nargmax = 3;
 narginchk(nargmin,nargmax);
+
 
 %% ===== Configuration ========================================================
 N0 = size(x0,1);
@@ -47,66 +49,67 @@ else
 end
 % Crossover frequency
 if isempty(conf.localsfs.sbl.fc)
-  fc = aliasing_frequency(conf);
+    fc = aliasing_frequency(conf);
 else
-  fc = conf.localsfs.sbl.fc;  
+    fc = conf.localsfs.sbl.fc;  
 end
 % Resolution of plane wave decomposition
 if isempty(conf.localsfs.sbl.Npw)
-  Npw = 2*ceil(2*pi*0.9*fs/conf.c*conf.secondary_sources.size/2);
+    Npw = 2*ceil(2*pi*0.9*fs/conf.c*conf.secondary_sources.size/2);
 else
-  Npw = conf.localsfs.sbl.Npw;
+    Npw = conf.localsfs.sbl.Npw;
 end
 
 wfsconf = conf;
 wfsconf.wfs = conf.localsfs.wfs;
 
+
 %% ===== Variables ============================================================
 Nlr = ceil(Nce/2)*2;  % order of Linkwitz-Riley Coefficients
 Wlr = fc/fs*2;  % normalised cut-off frequency of Linkwitz-Riley
+
 
 %% ===== Computation ==========================================================
 
 % === Local WFS for high frequencies ===
 % regular circular expansion of point source (highpass implicitly)
-[pm, delay_circexp] = circexp_imp_ps(xs, Nce, xref, fc, conf);
+[pm,delay_circexp] = circexp_imp_ps(xs,Nce,xref,fc,conf);
 % modal window
-wm = modal_weighting(Nce, conf);
-pm = bsxfun(@times, wm, pm);
+wm = modal_weighting(Nce,conf);
+pm = bsxfun(@times,wm,pm);
 % plane wave decomposition
-ppwd = pwd_imp_circexp(pm, Npw);
+ppwd = pwd_imp_circexp(pm,Npw);
 % driving signal
-[d_lwfs, delay_lwfs] = driving_function_imp_wfs_pwd(x0, ppwd, xref, wfsconf);
+[d_lwfs,delay_lwfs] = driving_function_imp_wfs_pwd(x0,ppwd,xref,wfsconf);
 
 % === WFS for low frequencies ===
 % secondary source selection
-[~, xdx] = secondary_source_selection(x0, xs, 'ps');
-x0(xdx,:) = secondary_source_tapering(x0(xdx,:) , conf);
+[~,xdx] = secondary_source_selection(x0,xs,'ps');
+x0(xdx,:) = secondary_source_tapering(x0(xdx,:),conf);
 % driving function
 d_lp = zeros(Nfft,N0);
-[d_lp(:,xdx), ~, ~, delay_lp] = ...
-  driving_function_imp_wfs(x0(xdx,:), xs, 'ps', conf);
+[d_lp(:,xdx),~,~,delay_lp] = driving_function_imp_wfs(x0(xdx,:),xs,'ps',conf);
 % coefficients for lowpass filtering of WFS driving function
-[zlp, plp, klp] = linkwitz_riley(Nlr, Wlr, 'low');  % lr-filter
+[zlp,plp,klp] = linkwitz_riley(Nlr,Wlr,'low');  % lr-filter
 % lowpass filtering
-[sos, g] = zp2sos(zlp, plp, klp, 'down', 'none');  % generate sos
-d_lp = sosfilt(sos, d_lp, 1)*g;
+[sos,g] = zp2sos(zlp,plp,klp,'down','none');  % generate sos
+d_lp = sosfilt(sos,d_lp,1)*g;
   
 % === Crossover ===
 % get delay of delayline
-[~, delay_delayline] = delayline(1, 0, 0, conf);
+[~,delay_delayline] = delayline(1,0,0,conf);
 % delay to compensate between lf-part and hf-part
-delay_comp = delay_lp-delay_lwfs-delay_circexp-delay_delayline;
+delay_comp = delay_lp - (delay_lwfs+delay_circexp+delay_delayline);
 % combined driving signal
-d = d_lp + delayline(d_lwfs, delay_comp, 1, conf);
+d = d_lp + delayline(d_lwfs,delay_comp,1,conf);
 
 % === Compensate Phase-Distortions ===
 % TODO: ensure that the time-reserved filter is not truncated
 % coefficients for allpass filtering
-[zap, pap, kap] = linkwitz_riley(Nlr, Wlr, 'all');
-[sos, g] = zp2sos(zap, pap, kap, 'down', 'none');  % generate sos
+[zap,pap,kap] = linkwitz_riley(Nlr,Wlr,'all');
+[sos,g] = zp2sos(zap,pap,kap,'down','none');  % generate sos
 % (time-reversed) allpass filtering
-d = sosfilt(sos, d(end:-1:1,:), 1)*g;
+d = sosfilt(sos,d(end:-1:1,:),1)*g;
 d = d(end:-1:1,:);
 
 % final delay

@@ -49,17 +49,20 @@ function [d,delay_offset] = driving_function_imp_localwfs_sbl(x0,xs,src,conf)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 %% ===== Checking of input  parameters ==================================
 nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 
+
 %% ===== Configuration ========================================================
 t0 = conf.t0;  
 
+
 %% ===== Computation ==========================================================
 
-% needed to time-align lf and hf part of driving function for point source
+% Needed to time-align lf and hf part of driving function for point source
 if ~strcmp(t0, 'source')
     error('%s: conf.t0 (%s) other than "source" is not supported', ...
         upper(mfilename),t0);

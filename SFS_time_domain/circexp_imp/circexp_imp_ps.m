@@ -110,9 +110,15 @@ pm = [repmat(pulse,[1 Nce+1]); zeros(N-length(pulse),Nce+1)];
 for m=0:Nce
     % === IIR-Implementation of Spherical Hankel function ===
     [zh, ph] = sphbesselh_zeros(m);
-    % bilinear transform to z-domain
-    [zh, ph, kh] = bilinear(zh*c/rs, ph*c/rs, 1, fs);
     
+    % bilinear transform to z-domain
+    kh=1;
+    if ~isoctave
+        [zh, ph, kh] = bilinear(zh*c/rs, ph*c/rs, 1, fs);
+    elseif m~=0
+        % octave can't handle empty arrays for zh and ph
+        [zh, ph, kh] = bilinear(zh*c/rs, ph*c/rs, 1, 1/fs);
+    end    
     % === Apply Hankel + LR Filter to current mode ===
     % zeros remaining after compensating the poles of hankel function (ph)
     zlr_comp = ones(length(zlr)-length(ph),1);

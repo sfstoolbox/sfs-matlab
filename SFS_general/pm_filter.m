@@ -53,13 +53,17 @@ if isempty(pmCachedOrder) || pmCachedOrder ~= order ...
     || isempty(pmCachedWpass) || pmCachedWpass ~= wpass ...
     || isempty(pmCachedWstop) || pmCachedWstop ~= wstop
   
-  A = [1 1 0 0];
-  f = [0.0 wpass wstop 1.0]; 
-  
-  pmCachedOrder = order;
-  pmCachedWpass = wpass;
-  pmCachedWstop = wstop;
-  pmCachedCoefficients = firpm(order,f,A).';
+    A = [1 1 0 0];
+    f = [0.0 wpass wstop 1.0]; 
+    
+    pmCachedOrder = order;
+    pmCachedWpass = wpass;
+    pmCachedWstop = wstop;
+    if ~isoctave
+        pmCachedCoefficients = firpm(order,f,A).';
+    else
+        pmCachedCoefficients = remez(order,f,A).';
+    end
 end
   
 b = pmCachedCoefficients;

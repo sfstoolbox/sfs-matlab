@@ -10,11 +10,9 @@ function [zz,pz,kz] = linkwitz_riley(n,wc,ftype)
 %     ftype - filter type {'low','high','all'}
 %
 %   Output parameter:
-%     zz    - 
-%     pz    - 
-%     kz    - 
-%
-%   See also: delayline, thiran_filter
+%     zz    - zeros of filter in z-domain
+%     pz    - poles of filter in z-domain
+%     kz    - gain of filter
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

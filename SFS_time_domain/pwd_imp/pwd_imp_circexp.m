@@ -5,8 +5,9 @@ function ppwd = pwd_imp_circexp(pm,Npw)
 %   Usage: ppwd = pwd_imp_circexp(pm,[Npw])
 %
 %   Input parameters:
-%       pm      - circular basis expansion [N x Nce]
-%       Npw     - number of plane waves, optional
+%       pm      - circular basis expansion [N x (M+1)]
+%       Npw     - number of equi-angular distributed plane waves, optional, 
+%                 default: 2*M+1
 %
 %   Output parameters:
 %       ppwd    - plane wave decomposition [N x Npw]
@@ -49,9 +50,9 @@ nargmin = 1;
 nargmax = 2;
 narginchk(nargmin,nargmax);
 isargmatrix(pm);
-Mce = size(pm,2)-1;
+M = size(pm,2)-1;
 if nargin == nargmin
-  Npw = 2*Mce+1;
+  Npw = 2*M+1;
 else
   isargpositivescalar(Npw);
 end
@@ -62,10 +63,10 @@ end
 %                 ___
 % _               \
 % p(phipw, t) =   /__     p (t) j^m  e^(-j m phipw)
-%             m=-Mce..Mce  m
+%               m=-M..M    m
 % with
 %
 % phipw = n * 2*pi/Npw
 
 pm = [conj(pm(:,end:-1:2)), pm];  % append coefficients for negative m
-ppwd = inverse_cht(bsxfun(@times,pm,1j.^(-Mce:Mce)),Npw);
+ppwd = inverse_cht(bsxfun(@times,pm,1j.^(-M:M)),Npw);

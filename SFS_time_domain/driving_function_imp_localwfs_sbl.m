@@ -1,11 +1,11 @@
 function [d,delay_offset] = driving_function_imp_localwfs_sbl(x0,xs,src,conf)
-%DRIVING_FUNCTION_IMP_LOCALWFS_SBL returns the driving signal d for local WFS
-%using spatial bandwidth limitation in the circular harmonics domain
+%DRIVING_FUNCTION_IMP_LOCALWFS_SBL returns the driving signal for local WFS
+%using spatial bandwidth limitation
 %
 %   Usage: [d,delay_offset] = driving_function_imp_localwfs_sbl(x0,xs,src,conf)
 %
 %   Input parameters:
-%       x0          - position and direction of the secondary source / m [nx6]
+%       x0          - position and direction of the secondary source / m [nx7]
 %       xs          - position of virtual source or direction of plane
 %                     wave / m [1x3]
 %       src         - source type of the virtual source
@@ -54,10 +54,14 @@ function [d,delay_offset] = driving_function_imp_localwfs_sbl(x0,xs,src,conf)
 nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
+isargsecondarysource(x0);
+isargxs(xs);
+isargchar(src);
+isargstruct(conf);
 
 
 %% ===== Configuration ========================================================
-t0 = conf.t0;  
+t0 = conf.t0;
 
 
 %% ===== Computation ==========================================================

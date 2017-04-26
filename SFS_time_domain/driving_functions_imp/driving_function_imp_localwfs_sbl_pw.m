@@ -1,4 +1,19 @@
 function [d,delay_offset] = driving_function_imp_localwfs_sbl_pw(x0,nk,conf)
+%DRIVING_FUNCTION_IMP_LOCALWFS_SBL_PW returns the driving signal for a plane
+%wave using local WFS with spatial bandwidth limitation
+%
+%   Usage: [d,delay_offset] = driving_function_imp_localwfs_sbl_pw(x0,nk,conf)
+%
+%   Input parameters:
+%       x0          - position and direction of the secondary source / m [nx7]
+%       nk          - propagation direction of plane wave / m [1x3]
+%       conf        - configuration struct (see SFS_config)
+%
+%   Output parameters:
+%       d               - driving signals [mxn]
+%       delay_offset    - additional added delay, so you can correct it
+%
+%   See also: sound_field_imp_localwfs_sbl, driving_function_imp_localwfs_sbl
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

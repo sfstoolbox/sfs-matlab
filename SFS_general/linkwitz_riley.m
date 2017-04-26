@@ -1,13 +1,13 @@
-function [zz, pz, kz] = linkwitz_riley(n, wc, ftype)
+function [zz,pz,kz] = linkwitz_riley(n,wc,ftype)
 %LINKWITZ_RILEY computes zero-poles-gain representation in z-domain of
 %Linkwitz-Riley filter
 %
-%   Usage: [zz, pz, kz] = linkwitz_riley(n, wc, ftype)
+%   Usage: [zz,pz,kz] = linkwitz_riley(n,wc,ftype)
 %
 %   Input parameter:
 %     n     - order of filter (only even allowed)
 %     wc    - normalised cutoff frequency [0..1] 
-%     ftype - filter type {'low', 'high', 'all'}
+%     ftype - filter type {'low','high','all'}
 %
 %   Output parameter:
 %     zz    - 
@@ -45,28 +45,30 @@ function [zz, pz, kz] = linkwitz_riley(n, wc, ftype)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 %% ===== Checking of input  parameters ========================================
 nargmin = 3;
 nargmax = 3;
 narginchk(nargmin,nargmax);
 if mod(n,2)
-  error('%s: n (%d) is not an even integer', upper(mfilename), n);
+  error('%s: n (%d) is not an even integer',upper(mfilename),n);
 end
-%% ===== Configuration ========================================================
 
+
+%% ===== Configuration ========================================================
 switch ftype
-case  {'low', 'high'}
-  % === lowpass or highpass LR Filter (squared Butterworth Filter) ===
-  [zz, pz, kz] = butter(n/2, wc, ftype);  
-  zz = [zz ; zz];
-  pz = [pz ; pz];
-  kz = kz.^2;
+case  {'low','high'}
+    % === lowpass or highpass LR Filter (squared Butterworth Filter) ===
+    [zz,pz,kz] = butter(n/2,wc,ftype);  
+    zz = [zz; zz];
+    pz = [pz; pz];
+    kz = kz.^2;
 case 'all'
-  % === allpass LR Filter (same phase as lowpass and highpass LR Filter) ===
-  [~, pz, ~] = butter(n/2, wc, 'low');
-  zz = 1./conj(pz);
-  kz = prod(pz);
+    % === allpass LR Filter (same phase as lowpass and highpass LR Filter) ===
+    [~,pz,~] = butter(n/2,wc,'low');
+    zz = 1./conj(pz);
+    kz = prod(pz);
 otherwise
-  error('%s: ftype (%s) is not a supported filter type', upper(mfilename), ...
-    ftype);
+    error('%s: ftype (%s) is not a supported filter type',upper(mfilename), ...
+        ftype);
 end

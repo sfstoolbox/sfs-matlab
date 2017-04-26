@@ -63,6 +63,7 @@ conf.delayline.resamplingfactor = 8;
 conf.delayline.resampling = 'pm';
 conf.delayline.filter = 'lagrange';
 conf.delayline.filterorder = 9;
+conf.t0 = 'source';
 
 % test scenarios
 scenarios = { ...

@@ -87,7 +87,7 @@ method = conf.localsfs.method;
 
 % Determine driving functions of virtual array with different sfs methods
 switch method
-  case 'wfs'
+case 'wfs'
     % === Wave Field Synthesis ===
     % Create virtual source array
     xv = virtual_secondary_source_positions(x0,xs,src,conf);
@@ -97,13 +97,13 @@ switch method
     xv = secondary_source_tapering(xv,virtualconf);
     % Driving functions for virtual source array
     Dv = driving_function_mono_wfs(xv,xs,src,f,virtualconf);
-  case 'nfchoa'
+case 'nfchoa'
     % === Near-Field-Compensated Higher Order Ambisonics ===
     % Create virtual source array
     xv = secondary_source_positions(virtualconf);
     % Driving functions for virtual source array
     Dv = driving_function_mono_nfchoa(xv,xs,src,f,virtualconf);
-  otherwise
+otherwise
     error('%s: %s is not a supported method for localsfs!',upper(mfilename),method);
 end
 

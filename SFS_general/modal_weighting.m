@@ -77,18 +77,18 @@ wtype = conf.modal_window;
 
 %% ===== Computation =====================================================
 switch wtype
-    case 'rect'
-        % === Rectangular Window =========================================
-        win = ones(1,order+1);
-    case {'kaiser', 'kaiser-bessel'}
-        % === Kaiser-Bessel window =======================================
-        % Approximation of the slepian window using modified bessel
-        % function of zeroth order
-        beta = conf.modal_window_parameter * pi;
-        win = besseli(0,beta*sqrt(1-((0:order)./order).^2)) ./ ...
-              besseli(0,beta);
-    otherwise
-        error('%s: unknown weighting type (%s)!',upper(mfilename),wtype);
+case 'rect'
+    % === Rectangular Window =========================================
+    win = ones(1,order+1);
+case {'kaiser', 'kaiser-bessel'}
+    % === Kaiser-Bessel window =======================================
+    % Approximation of the slepian window using modified bessel
+    % function of zeroth order
+    beta = conf.modal_window_parameter * pi;
+    win = besseli(0,beta*sqrt(1-((0:order)./order).^2)) ./ ...
+          besseli(0,beta);
+otherwise
+    error('%s: unknown weighting type (%s)!',upper(mfilename),wtype);
 end
 
 % Inverse DTFT

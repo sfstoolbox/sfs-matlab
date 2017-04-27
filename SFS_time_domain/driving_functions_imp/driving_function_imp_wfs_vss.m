@@ -1,19 +1,21 @@
-function d = driving_function_imp_wfs_vss(x0,xv,dv,conf)
+function [d,delay_offset] = driving_function_imp_wfs_vss(x0,xv,dv,conf)
 %DRIVING_FUNCTION_IMP_WFS_VSS returns the driving signal d for a given set of
 %virtual secondary sources and their corresponding driving signals
 %
-%   Usage: d = driving_function_imp_wfs_vss(x0,xv,dv,conf)
+%   Usage: d = driving_function_imp_wfs_vss(x0,dv,xv,srcv,conf)
 %
 %   Input parameters:
 %       x0          - position, direction, and weights of the real secondary
 %                     sources / m [nx7]
+%       dv          - driving signals of virtual secondary sources [Sxm]
 %       xv          - position, direction, and weights of the virtual secondary
 %                     sources / m [mx7]
-%       dv          - driving signals of virtual secondary sources [Sxm]
+%       srcv        - type of virtual secondary sources
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       d           - driving function signal [Sxn]
+%       d             - driving function signal [Sxn]
+%       delay_offset  - additional added delay, so you can correct it
 %
 %   References:
 %       S. Spors (2010) - "Local Sound Field Synthesis by Virtual Secondary
@@ -58,23 +60,22 @@ isargmatrix(dv);
 isargsecondarysource(x0,xv);
 isargstruct(conf);
 
-
-%% ===== Configuration ==================================================
-fs = conf.fs;
-N = conf.N;
-
-
 %% ===== Computation ====================================================
-% Apply wfs preequalization filter on each driving signal of the vss'
-dv = wfs_preequalization(dv, conf);
-
 % Initialize
 Nv = size(xv,1);
 N0 = size(x0,1);
 
-d = zeros(N,N0);
-delay = inf(N0,Nv);
-weight = zeros(N0,Nv);
+tau0 = inf(Nv,N0);
+w0 = zeros(Nv,N0);
+
+% Calculate pre-equalization filter if required hpre(t)
+[hpre,delay_offset] = wfs_preequalization(dirac_imp(),conf);
+
+% apply hpre to pwd if its more efficient (less plane wave than loudspeakers)
+if Nv <= N0
+    dv = convolution(dv,hpre);
+end
+N = size(dv,1);
 
 idx = 1;
 for xvi = xv'
@@ -84,28 +85,38 @@ for xvi = xv'
         % Focused source position
         xs = repmat(xvi(1:3)',[size(x0s,1) 1]);
         % Delay and weights for single focused source
-        [delay(xdx,idx),weight(xdx,idx)] = ...
+        [tau0(idx,xdx),w0(idx,xdx)] = ...
             driving_function_imp_wfs_fs(x0s(:,1:3),x0s(:,4:6),xs,conf);
         % Optional tapering
-        x0s = secondary_source_tapering(x0s,conf);
+        x0tmp = secondary_source_tapering(x0s,conf);
+        wtap = x0tmp(:,7)./x0s(:,7);  % x0
         % Apply secondary sources' tapering and possibly virtual secondary
         % sources' tapering to weighting matrix
-        weight(xdx,idx) = weight(xdx,idx).*x0s(:,7).*xvi(7);
+        w0(idx,xdx) = w0(idx,xdx).*wtap.'.*xvi(7);
     end
     idx = idx + 1;
 end
 
-% Remove delay offset, in order to begin always at t=0 with the first wave front
-% at any secondary source
-delay = delay - min(delay(:));
+% Remove delay offset, in order to begin always at t=0 with the first wave 
+% front at any secondary source
+delay_offset = delay_offset - min(tau0(w0~=0));
+tau0 = tau0 - min(tau0(w0~=0)); 
 
 % Compose impulse responses
-for idx=1:Nv
-    xdx = weight(:,idx) ~= 0;
-    if sum(xdx) > 0
-        % Shift and weight prototype driving function
-        pulse = repmat(dv(:,idx), 1, sum(xdx));
-        d(:,xdx) = d(:,xdx) + ...
-            delayline(pulse,delay(xdx,idx),weight(xdx,idx),conf);
-    end
+d = zeros(N,N0);
+for ndx=1:Nv
+    % select only secondary source with non-zero weights
+    xsel = w0(ndx,:) ~= 0;
+    
+    [tmp, delayline_delay] = ...
+        delayline(dv(:,ndx),tau0(ndx,xsel),w0(ndx,xsel),conf);
+    d(:,xsel) = d(:,xsel) + tmp;
 end
+% add delay of delayline
+delay_offset = delay_offset + delayline_delay;
+
+% apply hpre to driving signals if its more efficient
+if Nv > N0
+    d = convolution(d,hpre);
+end
+d = d(1:conf.N, :);

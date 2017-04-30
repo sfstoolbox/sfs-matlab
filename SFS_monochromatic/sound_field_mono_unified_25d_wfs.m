@@ -1,5 +1,5 @@
 function varargout = sound_field_mono_unified_25d_wfs(X,Y,Z,xs,src,f,conf,dx0)
-%SOUND_FIELD_MONO_WFS simulates a sound field for WFS
+%SOUND_FIELD_MONO_UNIFIED_25D_WFS simulates a sound field for unified 2.5D WFS
 %
 %   Usage: [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf)
 %
@@ -30,8 +30,11 @@ function varargout = sound_field_mono_unified_25d_wfs(X,Y,Z,xs,src,f,conf,dx0)
 %       x0          - active secondary sources / m
 %       xPCS        - positions/locations of amplitude correct synthesis
 %                     i.e. the reference curve
-%   SOUND_FIELD_MONO_WFS(X,Y,Z,xs,src,f,conf) simulates a monochromatic sound
+%   SOUND_FIELD_MONO_UNIFIED_25D_WFS(X,Y,Z,xs,src,f,conf,dx0) simulates a monochromatic sound
 %   field for the given source type (src) synthesized with wave field synthesis.
+%
+%   driving_function_mono_unified_25d_wfs() is used for driving
+%   functions
 %
 %   To plot the result use:
 %   plot_sound_field(P,X,Y,Z,x0,conf);

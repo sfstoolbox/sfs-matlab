@@ -35,8 +35,8 @@ function [D, xPCS] = driving_function_mono_unified_25d_wfs(x0,xs,dx0,src,f,conf)
 %
 %   [Fir17] Gergely Firtha, Peter Fiala, Frank Schultz, Sascha Spors (2017):
 %   "Improved Referencing Schemes for 2.5D Wave Field Synthesis Driving
-%   Functions." In: IEEE/ACM Trans. Audio Speech Language Process.,
-%   DOI 10.1109/TASLP.2017.2689245
+%   Functions." In: IEEE/ACM Trans Audio Speech Lang Process,
+%   25(5):1117-1127, DOI 10.1109/TASLP.2017.2689245
 %
 %   DRIVING_FUNCTION_MONO_UNIFIED_25D_WFS(x0,xs,dx0,src,f,conf)
 %   returns the driving signal for

@@ -94,7 +94,7 @@ switch method
 case 'wfs'
     % === Wave Field Synthesis ===
     % Create virtual source array
-    xv = virtual_secondary_source_positions(x0,xs,src,virtualconf);
+    xv = virtual_secondary_source_positions(x0,xs,src,conf);
     % Secondary_source_selection
     xv = secondary_source_selection(xv, xs, src);
     % Optional tapering

@@ -83,11 +83,6 @@ else
     error('%s: %s is not a known source type.',upper(mfilename),dimension);
 end
 
-% Adjust weights of secondary sources in order to use the tapering
-% correctly. Integration weights for the secondary sources will be applied
-% later, when the sound field is computed
-x0(:,7) = 1;
-
 % Get driving signals for real secondary sources
 %
 % See Spors (2010), fig. 2 & eq. (12)
@@ -99,9 +94,9 @@ Dmatrix = zeros(N0,Ns);
 for idx=1:Ns
     [xtmp, xdx] = secondary_source_selection(x0,xv(idx,1:6),'fs');
     if (~isempty(xtmp))
-        xtmp = secondary_source_tapering(xtmp,conf);
+        wtap = tapering_window(xtmp,conf);
         Dmatrix(xdx,idx) = ...
-            driving_function_mono_wfs(xtmp,xv(idx,1:3),'fs',f,conf) .* xtmp(:,7);
+            driving_function_mono_wfs(xtmp,xv(idx,1:3),'fs',f,conf) .* wtap;
     end
 end
 

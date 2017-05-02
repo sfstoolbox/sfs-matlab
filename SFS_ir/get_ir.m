@@ -141,7 +141,7 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     ir = ir_correct_distance(ir,x0(idx,3),xs(3),conf);
     [x0(:,1),x0(:,2),x0(:,3)] = sph2cart(x0(:,1),x0(:,2),x0(:,3));
     % Select or interpolate to desired impulse response
-    ir = interpolate_ir(ir,weights,x0(idx,:),conf);
+    ir = interpolate_ir(ir,weights,conf);
 
 elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
     %
@@ -182,7 +182,7 @@ elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
     ir = sofa_get_data_fire(sofa,idx_head,idx_emitter);
     ir = reshape(ir,[size(ir,1) size(ir,2) size(ir,4)]); % [M R E N] => [M R N]
     % Select or interpolate to desired impulse response
-    ir = interpolate_ir(ir,weights,sofa_head_orientations(idx_head,:),conf);
+    ir = interpolate_ir(ir,weights,conf);
 
 elseif strcmp('SingleRoomDRIR',header.GLOBAL_SOFAConventions)
     %

@@ -88,8 +88,7 @@ for xvi = xv'
         [tau0(idx,xdx),w0(idx,xdx)] = ...
             driving_function_imp_wfs_fs(x0s(:,1:3),x0s(:,4:6),xs,conf);
         % Optional tapering
-        x0tmp = secondary_source_tapering(x0s,conf);
-        wtap = x0tmp(:,7)./x0s(:,7);  % x0
+        wtap = tapering_window(x0s, conf);
         % Apply secondary sources' tapering and possibly virtual secondary
         % sources' tapering to weighting matrix
         w0(idx,xdx) = w0(idx,xdx).*wtap.'.*xvi(7);

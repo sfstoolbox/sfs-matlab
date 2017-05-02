@@ -1,4 +1,4 @@
-function [d,delay_offset] = driving_function_imp_wfs_vss(x0,xv,dv,conf)
+function [d,delay_offset] = driving_function_imp_wfs_vss(x0,xv,srcv,dv,conf)
 %DRIVING_FUNCTION_IMP_WFS_VSS returns the driving signal d for a given set of
 %virtual secondary sources and their corresponding driving signals
 %
@@ -6,15 +6,15 @@ function [d,delay_offset] = driving_function_imp_wfs_vss(x0,xv,dv,conf)
 %
 %   Input parameters:
 %       x0          - position, direction, and weights of the real secondary
-%                     sources / m [nx7]
-%       dv          - driving signals of virtual secondary sources [Sxm]
+%                     sources / m [N0x7]
 %       xv          - position, direction, and weights of the virtual secondary
-%                     sources / m [mx7]
+%                     sources / m [Nvx7]
 %       srcv        - type of virtual secondary sources
+%       dv          - driving signals of virtual secondary sources [NxNv]
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       d             - driving function signal [Sxn]
+%       d             - driving function signal [NxN0]
 %       delay_offset  - additional added delay, so you can correct it
 %
 %   References:
@@ -53,11 +53,12 @@ function [d,delay_offset] = driving_function_imp_wfs_vss(x0,xv,dv,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 4;
-nargmax = 4;
+nargmin = 5;
+nargmax = 5;
 narginchk(nargmin,nargmax);
 isargmatrix(dv);
 isargsecondarysource(x0,xv);
+isargchar(srcv);
 isargstruct(conf);
 
 %% ===== Computation ====================================================
@@ -77,16 +78,26 @@ if Nv <= N0
 end
 N = size(dv,1);
 
+% secondary source selection and driving function to synthesise a single virtual
+% secondary source
+switch srcv
+case 'fs'
+    ssd_select = @(X0,XS) secondary_source_selection(X0,XS(1:6)','fs');
+    driv = @(X0,XS) driving_function_imp_wfs_fs(X0(:,1:3),X0(:,4:6),XS,conf);
+case 'pw'
+    ssd_select = @(X0,XS) secondary_source_selection(X0,XS(1:3)','pw');
+    driv = @(X0,XS) driving_function_imp_wfs_pw(X0(:,1:3),X0(:,4:6),XS,conf);
+end
+
 idx = 1;
 for xvi = xv'
-    % Select active source for one focused source
-    [x0s, xdx] = secondary_source_selection(x0,xvi(1:6)','fs');
+    % select active source for single virtual secondary source
+    [x0s, xdx] = ssd_select(x0,xvi);
     if ~isempty(x0s) && xvi(7) > 0
         % Focused source position
         xs = repmat(xvi(1:3)',[size(x0s,1) 1]);
-        % Delay and weights for single focused source
-        [tau0(idx,xdx),w0(idx,xdx)] = ...
-            driving_function_imp_wfs_fs(x0s(:,1:3),x0s(:,4:6),xs,conf);
+        % Delay and weights for single virtual secondary source
+        [tau0(idx,xdx),w0(idx,xdx)] = driv(x0s,xs);
         % Optional tapering
         wtap = tapering_window(x0s, conf);
         % Apply secondary sources' tapering and possibly virtual secondary

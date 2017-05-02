@@ -115,6 +115,6 @@ end
 % Select secondary sources
 x0 = secondary_source_selection(x0,xv(:,1:6),'vss');
 % Driving functions for real source array
-[d, delay_vss] = driving_function_imp_wfs_vss(x0,xv,dv,conf);
+[d, delay_vss] = driving_function_imp_wfs_vss(x0,xv,'fs',dv,conf);
 % add delay
 delay_offset = delay_offset + delay_vss;

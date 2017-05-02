@@ -132,11 +132,13 @@ for ii=1:size(scenarios)
     [IR_gt,~,f_gt] = spectrum_from_signal(ir_gt(:,1),conf);
     
     if modus    
-          figure;
-      semilogx(f_sfs,db(IR_sfs),'r',f_gt,db(IR_gt),'b--');
-      title(sprintf('%s %s %s',scenarios{ii,1},src,conf.driving_functions), ...
-          'Interpreter','none');
-      legend('reproduced','ground truth','Location','northwest');
+        figure;
+        semilogx(f_sfs,db(IR_sfs),'r',f_gt,db(IR_gt),'b--');
+        xlabel('Frequency / Hz');
+        ylabel('Magnitude / dB');
+        title(sprintf('%s %s %s',scenarios{ii,1},src,conf.driving_functions), ...
+            'Interpreter','none');
+        legend('reproduced','ground truth','Location','northwest');
     end  
 end
 

@@ -1,22 +1,24 @@
-function b = pm_filter(order,wpass,wstop)
-%PM_FILTER computes an FIR lowpass-filter using the Parks-McClellan Algorithm
+function ppwd = pwd_imp_circexp(pm,Npw)
+%PWD_IMP_CIRCEXP converts a circular basis expansion of a sound field to its
+%two-dimensional plane wave decomposition
 %
-%   Usage: b = pm_filter(order,wpass,wstop)
+%   Usage: ppwd = pwd_imp_circexp(pm,[Npw])
 %
-%   Input parameter:
-%     order   - order N of filter in original (not upsampled) domain
-%     wpass   - last normalised passband frequency [0..1] 
-%     wstop   - first normalised stopband frequency [0..1]
+%   Input parameters:
+%       pm      - circular basis expansion [N x (M+1)]
+%       Npw     - number of equi-angular distributed plane waves, optional, 
+%                 default: 2*M+1
 %
-%   Output parameter:
-%     b   - filter coefficients / [(order+1) x 1]
+%   Output parameters:
+%       ppwd    - plane wave decomposition [N x Npw]
 %
-%   See also: delayline, thiran_filter
+%   See also: driving_function_imp_localwfs_sbl_ps,
+%   driving_function_imp_localwfs_sbl_pw
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2017 SFS Toolbox Developers                             *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -43,27 +45,28 @@ function b = pm_filter(order,wpass,wstop)
 %*****************************************************************************
 
 
-%% ===== Computation =====================================================
-persistent pmCachedOrder
-persistent pmCachedWpass
-persistent pmCachedWstop
-persistent pmCachedCoefficients
-
-if isempty(pmCachedOrder) || pmCachedOrder ~= order ...
-    || isempty(pmCachedWpass) || pmCachedWpass ~= wpass ...
-    || isempty(pmCachedWstop) || pmCachedWstop ~= wstop
-  
-    A = [1 1 0 0];
-    f = [0.0 wpass wstop 1.0]; 
-    
-    pmCachedOrder = order;
-    pmCachedWpass = wpass;
-    pmCachedWstop = wstop;
-    if ~isoctave
-        pmCachedCoefficients = firpm(order,f,A).';
-    else
-        pmCachedCoefficients = remez(order,f,A).';
-    end
+%% ===== Checking of input parameters ==================================
+nargmin = 1;
+nargmax = 2;
+narginchk(nargmin,nargmax);
+isargmatrix(pm);
+M = size(pm,2)-1;
+if nargin == nargmin
+  Npw = 2*M+1;
+else
+  isargpositivescalar(Npw);
 end
-  
-b = pmCachedCoefficients;
+
+
+%% ===== Computation ====================================================
+% Implementation of
+%                 ___
+% _               \
+% p(phipw, t) =   /__     p (t) j^m  e^(-j m phipw)
+%               m=-M..M    m
+% with
+%
+% phipw = n * 2*pi/Npw
+
+pm = [conj(pm(:,end:-1:2)), pm];  % append coefficients for negative m
+ppwd = inverse_cht(bsxfun(@times,pm,1j.^(-M:M)),Npw);

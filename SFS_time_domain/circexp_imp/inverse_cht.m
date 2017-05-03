@@ -1,22 +1,22 @@
-function b = pm_filter(order,wpass,wstop)
-%PM_FILTER computes an FIR lowpass-filter using the Parks-McClellan Algorithm
+function A = inverse_cht(Am,Nphi)
+%INVERSE_CHT computes the inverse circular harmonics transform (ICHT)
 %
-%   Usage: b = pm_filter(order,wpass,wstop)
+%   Usage: A = inverse_cht(Am,[Nphi])
 %
-%   Input parameter:
-%     order   - order N of filter in original (not upsampled) domain
-%     wpass   - last normalised passband frequency [0..1] 
-%     wstop   - first normalised stopband frequency [0..1]
+%   Input parameters:
+%       Am      - circular harmonics coefficients [N x (2*M+1)]
+%       Nphi    - number of equi-angular distributed angles, for which the ICHT
+%                 is computed, optional, default: 2*M+1
 %
-%   Output parameter:
-%     b   - filter coefficients / [(order+1) x 1]
+%   Output parameters:
+%       A       - inverse circular harmonics transform [N x Nphi]
 %
-%   See also: delayline, thiran_filter
+%   See also: pwd_imp_circexp
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2017 SFS Toolbox Developers                             *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -43,27 +43,33 @@ function b = pm_filter(order,wpass,wstop)
 %*****************************************************************************
 
 
-%% ===== Computation =====================================================
-persistent pmCachedOrder
-persistent pmCachedWpass
-persistent pmCachedWstop
-persistent pmCachedCoefficients
-
-if isempty(pmCachedOrder) || pmCachedOrder ~= order ...
-    || isempty(pmCachedWpass) || pmCachedWpass ~= wpass ...
-    || isempty(pmCachedWstop) || pmCachedWstop ~= wstop
-  
-    A = [1 1 0 0];
-    f = [0.0 wpass wstop 1.0]; 
-    
-    pmCachedOrder = order;
-    pmCachedWpass = wpass;
-    pmCachedWstop = wstop;
-    if ~isoctave
-        pmCachedCoefficients = firpm(order,f,A).';
-    else
-        pmCachedCoefficients = remez(order,f,A).';
-    end
+%% ===== Checking of input  parameters ==================================
+nargmin = 1;
+nargmax = 2;
+narginchk(nargmin,nargmax);
+isargmatrix(Am);
+if nargin == nargmin
+    Nphi = size(Am, 2);
+else
+    isargpositivescalar(Nphi);
 end
-  
-b = pmCachedCoefficients;
+
+
+%% ===== Computation ==================================================
+M = (size(Am,2)-1)/2;
+Nfft = size(Am,1);
+
+% Implementation of
+%           ___
+%           \
+% A(phi) =  /__    A  e^(-j*m*n*2*pi/Nphi)
+%         m=-M..M   m
+
+% Spatial IFFT
+A = zeros(Nfft, Nphi);
+% this handles cases where Nphi < M
+for l=1:Nfft
+    A(l,:) = sum(buffer(Am(l,:),Nphi),2);
+end
+A = circshift(A,[0,-M]);  % m = 0, ..., M, -M, ..., -1
+A = ifft(A,[],2) * Nphi;  % IFFT includes factor 1/Nphi

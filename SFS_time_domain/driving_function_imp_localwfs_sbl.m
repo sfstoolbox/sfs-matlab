@@ -1,17 +1,24 @@
-function b = pm_filter(order,wpass,wstop)
-%PM_FILTER computes an FIR lowpass-filter using the Parks-McClellan Algorithm
+function [d,delay_offset] = driving_function_imp_localwfs_sbl(x0,xs,src,conf)
+%DRIVING_FUNCTION_IMP_LOCALWFS_SBL returns the driving signal for local WFS
+%using spatial bandwidth limitation
 %
-%   Usage: b = pm_filter(order,wpass,wstop)
+%   Usage: [d,delay_offset] = driving_function_imp_localwfs_sbl(x0,xs,src,conf)
 %
-%   Input parameter:
-%     order   - order N of filter in original (not upsampled) domain
-%     wpass   - last normalised passband frequency [0..1] 
-%     wstop   - first normalised stopband frequency [0..1]
+%   Input parameters:
+%       x0          - position and direction of the secondary source / m [nx7]
+%       xs          - position of virtual source or direction of plane
+%                     wave / m [1x3]
+%       src         - source type of the virtual source
+%                         'pw' - plane wave (xs is the direction of the
+%                                plane wave in this case)
+%                         'ps' - point source
+%       conf        - configuration struct (see SFS_config)
 %
-%   Output parameter:
-%     b   - filter coefficients / [(order+1) x 1]
+%   Output parameters:
+%       d               - driving signals [mxn]
+%       delay_offset    - additional added delay, so you can correct it
 %
-%   See also: delayline, thiran_filter
+%   See also: sound_field_imp, sound_field_imp_localwfs_sbl
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -43,27 +50,34 @@ function b = pm_filter(order,wpass,wstop)
 %*****************************************************************************
 
 
-%% ===== Computation =====================================================
-persistent pmCachedOrder
-persistent pmCachedWpass
-persistent pmCachedWstop
-persistent pmCachedCoefficients
+%% ===== Checking of input  parameters ==================================
+nargmin = 4;
+nargmax = 4;
+narginchk(nargmin,nargmax);
+isargsecondarysource(x0);
+isargxs(xs);
+isargchar(src);
+isargstruct(conf);
 
-if isempty(pmCachedOrder) || pmCachedOrder ~= order ...
-    || isempty(pmCachedWpass) || pmCachedWpass ~= wpass ...
-    || isempty(pmCachedWstop) || pmCachedWstop ~= wstop
-  
-    A = [1 1 0 0];
-    f = [0.0 wpass wstop 1.0]; 
-    
-    pmCachedOrder = order;
-    pmCachedWpass = wpass;
-    pmCachedWstop = wstop;
-    if ~isoctave
-        pmCachedCoefficients = firpm(order,f,A).';
-    else
-        pmCachedCoefficients = remez(order,f,A).';
-    end
+
+%% ===== Configuration ========================================================
+t0 = conf.t0;
+
+
+%% ===== Computation ==========================================================
+
+% Needed to time-align lf and hf part of driving function for point source
+if ~strcmp(t0, 'source')
+    error('%s: conf.t0 (%s) other than "source" is not supported', ...
+        upper(mfilename),t0);
 end
-  
-b = pmCachedCoefficients;
+
+switch src
+case 'ps'
+    [d,delay_offset] = driving_function_imp_localwfs_sbl_ps(x0,xs,conf);
+case 'pw'
+    xs = xs./norm(xs);
+    [d,delay_offset] = driving_function_imp_localwfs_sbl_pw(x0,xs,conf);
+otherwise
+    error('%s: %s is not a known source type.',upper(mfilename),src);
+end

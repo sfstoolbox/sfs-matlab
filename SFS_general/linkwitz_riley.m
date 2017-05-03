@@ -1,17 +1,18 @@
-function b = pm_filter(order,wpass,wstop)
-%PM_FILTER computes an FIR lowpass-filter using the Parks-McClellan Algorithm
+function [zz,pz,kz] = linkwitz_riley(n,wc,ftype)
+%LINKWITZ_RILEY computes zero-poles-gain representation in z-domain of
+%Linkwitz-Riley filter
 %
-%   Usage: b = pm_filter(order,wpass,wstop)
+%   Usage: [zz,pz,kz] = linkwitz_riley(n,wc,ftype)
 %
 %   Input parameter:
-%     order   - order N of filter in original (not upsampled) domain
-%     wpass   - last normalised passband frequency [0..1] 
-%     wstop   - first normalised stopband frequency [0..1]
+%     n     - order of filter (only even allowed)
+%     wc    - normalised cutoff frequency [0..1] 
+%     ftype - filter type {'low','high','all'}
 %
 %   Output parameter:
-%     b   - filter coefficients / [(order+1) x 1]
-%
-%   See also: delayline, thiran_filter
+%     zz    - zeros of filter in z-domain
+%     pz    - poles of filter in z-domain
+%     kz    - gain of filter
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -43,27 +44,30 @@ function b = pm_filter(order,wpass,wstop)
 %*****************************************************************************
 
 
-%% ===== Computation =====================================================
-persistent pmCachedOrder
-persistent pmCachedWpass
-persistent pmCachedWstop
-persistent pmCachedCoefficients
-
-if isempty(pmCachedOrder) || pmCachedOrder ~= order ...
-    || isempty(pmCachedWpass) || pmCachedWpass ~= wpass ...
-    || isempty(pmCachedWstop) || pmCachedWstop ~= wstop
-  
-    A = [1 1 0 0];
-    f = [0.0 wpass wstop 1.0]; 
-    
-    pmCachedOrder = order;
-    pmCachedWpass = wpass;
-    pmCachedWstop = wstop;
-    if ~isoctave
-        pmCachedCoefficients = firpm(order,f,A).';
-    else
-        pmCachedCoefficients = remez(order,f,A).';
-    end
+%% ===== Checking of input  parameters ========================================
+nargmin = 3;
+nargmax = 3;
+narginchk(nargmin,nargmax);
+if mod(n,2)
+  error('%s: n (%d) is not an even integer',upper(mfilename),n);
 end
-  
-b = pmCachedCoefficients;
+
+
+%% ===== Configuration ========================================================
+switch ftype
+case  {'low','high'}
+    % === lowpass or highpass LR Filter (squared Butterworth Filter) ===
+    [zz,pz,kz] = butter(n/2,wc,ftype);  
+    zz = [zz(:); zz(:)];  % octave creates row vectors
+    pz = [pz(:); pz(:)];  % octave creates row vectors
+    kz = kz.^2;
+case 'all'
+    % === allpass LR Filter (same phase as lowpass and highpass LR Filter) ===
+    [~,pz,~] = butter(n/2,wc,'low');
+    pz = pz(:);  % octave creates row vectors
+    zz = 1./conj(pz);
+    kz = prod(pz);
+otherwise
+    error('%s: ftype (%s) is not a supported filter type',upper(mfilename), ...
+        ftype);
+end

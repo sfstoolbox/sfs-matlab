@@ -1,22 +1,28 @@
-function b = pm_filter(order,wpass,wstop)
-%PM_FILTER computes an FIR lowpass-filter using the Parks-McClellan Algorithm
+function [pm,delay_offset] = circexp_imp_pw(npw,Nce,xq,conf)
+%CIRCEXP_IMP_PW calculates the circular basis expansion of a plane wave
 %
-%   Usage: b = pm_filter(order,wpass,wstop)
+%   Usage: [pm,delay_offset] = circexp_imp_pw(npw,Nce,xq,conf)
 %
-%   Input parameter:
-%     order   - order N of filter in original (not upsampled) domain
-%     wpass   - last normalised passband frequency [0..1] 
-%     wstop   - first normalised stopband frequency [0..1]
+%   Input parameters:
+%       npw     - propagation direction of plane wave [1 x 3]
+%       Nce     - maximum order of circular basis expansion
+%       xq      - optional expansion center / m [1 x 3]
+%       conf    - configuration struct (see SFS_config)
 %
-%   Output parameter:
-%     b   - filter coefficients / [(order+1) x 1]
+%   Output parameters:
+%       pm            - regular circular expansion coefficients in time domain
+%                       for m = 0:Nce, [conf.N x Nce+1]
+%       delay_offset  - additional added delay, so you can correct it
 %
-%   See also: delayline, thiran_filter
+%   CIRCEXP_IMP_PW(npw,Nce,xq,conf) returns the circular basis expansion of
+%   a plane wave.
+%
+%   See also: circexp_imp_ps
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2017 SFS Toolbox Developers                             *
+% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -43,27 +49,27 @@ function b = pm_filter(order,wpass,wstop)
 %*****************************************************************************
 
 
-%% ===== Computation =====================================================
-persistent pmCachedOrder
-persistent pmCachedWpass
-persistent pmCachedWstop
-persistent pmCachedCoefficients
+%% ===== Checking of input  parameters ==================================
+nargmin = 4;
+nargmax = 4;
+narginchk(nargmin,nargmax);
+isargcoord(xq,npw);
+isargpositivescalar(Nce);
+isargstruct(conf);
 
-if isempty(pmCachedOrder) || pmCachedOrder ~= order ...
-    || isempty(pmCachedWpass) || pmCachedWpass ~= wpass ...
-    || isempty(pmCachedWstop) || pmCachedWstop ~= wstop
-  
-    A = [1 1 0 0];
-    f = [0.0 wpass wstop 1.0]; 
-    
-    pmCachedOrder = order;
-    pmCachedWpass = wpass;
-    pmCachedWstop = wstop;
-    if ~isoctave
-        pmCachedCoefficients = firpm(order,f,A).';
-    else
-        pmCachedCoefficients = remez(order,f,A).';
-    end
-end
-  
-b = pmCachedCoefficients;
+
+%% ===== Configuration ==================================================
+N = conf.N;
+c = conf.c;
+
+
+%% ===== Computation =====================================================
+[phipw, ~] = cart2pol(npw(1),npw(2));
+
+pulse = dirac_imp();
+% Compute impulse responses for each mode m
+m = (0:Nce);
+pm = (-1j).^m.*exp(-1j*phipw*m)*pulse;
+pm = [pm; zeros(N-size(pm,1),Nce+1)];
+
+delay_offset = -(xq*npw.')/c;

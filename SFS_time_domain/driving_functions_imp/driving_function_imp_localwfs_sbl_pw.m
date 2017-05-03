@@ -1,17 +1,19 @@
-function b = pm_filter(order,wpass,wstop)
-%PM_FILTER computes an FIR lowpass-filter using the Parks-McClellan Algorithm
+function [d,delay_offset] = driving_function_imp_localwfs_sbl_pw(x0,nk,conf)
+%DRIVING_FUNCTION_IMP_LOCALWFS_SBL_PW returns the driving signal for a plane
+%wave using local WFS with spatial bandwidth limitation
 %
-%   Usage: b = pm_filter(order,wpass,wstop)
+%   Usage: [d,delay_offset] = driving_function_imp_localwfs_sbl_pw(x0,nk,conf)
 %
-%   Input parameter:
-%     order   - order N of filter in original (not upsampled) domain
-%     wpass   - last normalised passband frequency [0..1] 
-%     wstop   - first normalised stopband frequency [0..1]
+%   Input parameters:
+%       x0          - position and direction of the secondary source / m [nx7]
+%       nk          - propagation direction of plane wave / m [1x3]
+%       conf        - configuration struct (see SFS_config)
 %
-%   Output parameter:
-%     b   - filter coefficients / [(order+1) x 1]
+%   Output parameters:
+%       d               - driving signals [mxn]
+%       delay_offset    - additional added delay, so you can correct it
 %
-%   See also: delayline, thiran_filter
+%   See also: sound_field_imp_localwfs_sbl, driving_function_imp_localwfs_sbl
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -43,27 +45,39 @@ function b = pm_filter(order,wpass,wstop)
 %*****************************************************************************
 
 
-%% ===== Computation =====================================================
-persistent pmCachedOrder
-persistent pmCachedWpass
-persistent pmCachedWstop
-persistent pmCachedCoefficients
+%% ===== Checking of input  parameters ==================================
+nargmin = 3;
+nargmax = 3;
+narginchk(nargmin,nargmax);
 
-if isempty(pmCachedOrder) || pmCachedOrder ~= order ...
-    || isempty(pmCachedWpass) || pmCachedWpass ~= wpass ...
-    || isempty(pmCachedWstop) || pmCachedWstop ~= wstop
-  
-    A = [1 1 0 0];
-    f = [0.0 wpass wstop 1.0]; 
-    
-    pmCachedOrder = order;
-    pmCachedWpass = wpass;
-    pmCachedWstop = wstop;
-    if ~isoctave
-        pmCachedCoefficients = firpm(order,f,A).';
-    else
-        pmCachedCoefficients = remez(order,f,A).';
-    end
+
+%% ===== Configuration ========================================================
+N0 = size(x0,1);
+xref = conf.xref; 
+fs = conf.fs;
+% maximum order of circular basis expansion of sound field
+if isempty(conf.localsfs.sbl.order)
+    Nce = nfchoa_order(N0,conf);
+else
+    Nce = conf.localsfs.sbl.order;
 end
-  
-b = pmCachedCoefficients;
+% resolution of plane wave decomposition
+if isempty(conf.localsfs.sbl.Npw)
+    Npw = 2*ceil(2*pi*0.9*fs/conf.c*conf.secondary_sources.size/2);
+else
+    Npw = conf.localsfs.sbl.Npw;
+end
+
+wfsconf = conf;
+wfsconf.wfs = conf.localsfs.wfs;
+
+
+%% ===== Computation ==========================================================
+% circular expansion coefficients
+[pm,delay_circexp] = circexp_imp_pw(nk,Nce,xref,conf);
+% plane wave decomposition
+ppwd = pwd_imp_circexp(pm,Npw);
+% driving signal
+[d,delay_lwfs] = driving_function_imp_wfs_pwd(x0,ppwd,xref,wfsconf);
+% delay
+delay_offset = delay_lwfs + delay_circexp;

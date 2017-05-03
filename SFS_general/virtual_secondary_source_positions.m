@@ -165,7 +165,7 @@ if consider_target_field || consider_secondary_sources
     % Direction of the secondary sources
     xv(:,4:6) = direction_vector(xv(:,1:3),repmat(xl,nls,1).*ones(nls,3));
     % Equal weights for all sources
-    xv(:,7) = ones(nls,1);
+    xv(:,7) = ones(nls,1) * (delta_max-delta_min)*Rl/(nls-1);
 
   elseif strcmp('linear',geometry)
     % =====================================================================
@@ -220,7 +220,7 @@ if consider_target_field || consider_secondary_sources
     % Direction of the secondary sources
     xv(:,4:6) = repmat(-nd, nls, 1);
     % Equal weights for all sources
-    xv(:,7) = ones(nls,1);
+    xv(:,7) = ones(nls,1)*(xmax-xmin)/(nls-1);
   else
     xv = secondary_source_positions(virtualconf);
     if consider_target_field

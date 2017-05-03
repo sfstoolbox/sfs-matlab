@@ -131,6 +131,20 @@ for ii=1:size(scenarios)
 
       % sound field plot
       sound_field_imp(X,Y,Z,x0,'pw',ppwd,t+delay_offset,conf);
+
+      % title string
+      str = 'Plane wave decompostion of modally bandlimited';
+      switch src
+      case 'pw'
+          str = sprintf('%s plane wave', str);
+      case 'ps'
+          str = sprintf('%s point source', str);
+      end
+      str = sprintf(['%s ([%1.1f %1.1f %1.1f]):\n%s-window (M=%d), ' ...
+        'center of modal expansion at [%1.1f %1.1f %1.1f]'], ...
+        str, xs, conf.modal_window, Nce, xq);
+      title(str);
+
     end
 end
 

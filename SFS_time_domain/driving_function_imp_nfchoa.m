@@ -4,7 +4,7 @@ function [d,dm,delay_offset] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %   Usage: [d,dm,delay_offset] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %
 %   Input parameters:
-%       x0      - position  and direction of secondary sources / m
+%       x0      - position  and direction of secondary sources [N0x7] / m
 %       xs      - position of virtual source or direction of plane wave / m
 %       src     - source type of the virtual source
 %                     'pw' - plane wave (xs, ys are the direction of the
@@ -13,8 +13,9 @@ function [d,dm,delay_offset] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       d            - matrix of driving signals
+%       d            - matrix of driving signals [NxN0]
 %       dm           - matrix of driving funtion in spherical/circular domain
+%                      [NxM]
 %       delay_offset - delay add by driving function / s
 %
 %   DRIVING_FUNCTION_IMP_NFCHOA(x0,xs,src,conf) returns the
@@ -74,7 +75,7 @@ c = conf.c;
 % Generate stimulus pusle
 pulse = dirac_imp();
 % Radius of array
-R = norm(x0(1,1:3)-X0); 
+R = norm(x0(1,1:3)-X0);
 % Ambisonics order
 if isempty(conf.nfchoa.order)
     % Get maximum order of spherical harmonics
@@ -88,7 +89,7 @@ xs(1:3) = xs(1:3)-X0;
 [theta_src, r_src] = cart2pol(xs(1),xs(2));
 
 % Compute impulse responses of modal filters
-dm = [repmat(pulse,[order+1 1]) zeros(order+1,N-length(pulse))];
+Hm = [repmat(pulse,[1 order+1]); zeros(N-length(pulse),order+1)];
 for n=1:order+1
 
     % Get the second-order sections for the different virtual sources
@@ -111,9 +112,9 @@ for n=1:order+1
     % Apply them by a bilinear transform and filtering
     [b,a] = bilinear_transform(sos,conf);
     for ii=1:length(b)
-        dm(n,:) = filter(b{ii},a{ii},dm(n,:));
+        Hm(:,n) = filter(b{ii},a{ii},Hm(:,n));
     end
-    dm(n,:) = dm(n,:)*g;  % apply gain factor
+    Hm(:,n) = Hm(:,n)*g;  % apply gain factor
 end
 
 % Delay_offset
@@ -137,35 +138,15 @@ end
 % see Spors et al. (2011), eq.(4) and (5)
 %--------------------------------------------------------------------------
 
-% Weighting function
-wm = modal_weighting(order,conf);
+% apply modal weighting
+wm = modal_weighting(order,conf);  % modal weighting function
+Hm = bsxfun(@times,Hm,wm);
 
-% Compute input signal for IFFT
-dM = zeros(2*order+1,N);
-for n=-order:order
-    dM(n+order+1,:) = wm(abs(n)+1) * dm(abs(n)+1,:) * exp(-1i*n*theta_src);
-end
+% apply phase shift due to source angle
+m = 0:order;
+dm = bsxfun(@times,Hm,exp(-1i*m*theta_src));
+
 % Spatial IFFT
-d = zeros(nls,N);
-for l=1:N
-    d(:,l) = sum(buffer(dM(:,l),nls),2);
-end
-d = circshift(d,[-order,0]);
-d = ifft(transpose(d),[],2);
-d = 1/(2*pi*R)*nls*real(d);
-
-% -------------------------------------------------------------------------
-% The following is the direct implementation of the spatial IDFT which
-% takes longer time for higher orders.
-if(0)
-    d = zeros(N,nls);
-    for n=1:nls
-        phin = 2*pi/nls*(n-1); % first phi0 always 0 ??
-        dtemp = zeros(1,N);
-        for m=-order:order
-            dtemp = dtemp + dm(abs(m)+1,:) .* exp(1i*m*(phin-theta_src));
-        end
-        d(:,n) = transpose(dtemp);
-    end
-    d = 1/(2*pi*R)*real(d);
-end
+dm = [conj(dm(:,end:-1:2)), dm];  % append coefficients for negative m
+d = inverse_cht(dm,nls);
+d = 1/(2*pi*R)*real(d);

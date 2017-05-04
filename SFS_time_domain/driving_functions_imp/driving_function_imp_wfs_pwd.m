@@ -62,6 +62,7 @@ isargstruct(conf);
 
 
 %% ===== Computation ====================================================
+% create distribution of plane waves as virtual secondary sources
 Npw = size(ppwd, 2);
 phipw = (0:Npw-1).'*2*pi/Npw;
 xv = [cos(phipw), sin(phipw)];  % [Npw x 2]

@@ -1,7 +1,7 @@
-function varargout = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
+function varargout = sound_field_imp_localwfs_vss(X,Y,Z,xs,src,t,conf)
 %SOUND_FIELD_IMP_LOCALWFS returns the sound field in time domain of an impulse
 %
-%   Usage: [p,x,y,z,x0] = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
+%   Usage: [p,x,y,z,x0] = sound_field_imp_localwfs_vss(X,Y,Z,xs,src,t,conf)
 %
 %   Input options:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array

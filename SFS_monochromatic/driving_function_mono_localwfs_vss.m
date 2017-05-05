@@ -1,5 +1,5 @@
 function [D,x0,xv,idx] = driving_function_mono_localwfs_vss(x0,xs,src,f,conf)
-%DRIVING_FUNCTION_MONO_LOCALWFS returns the driving signal D for local WFS
+%DRIVING_FUNCTION_MONO_LOCALWFS_VSS returns the driving signal D for local WFS
 %
 %   Usage: [D,xv,x0,idx] = driving_function_mono_localwfs_vss(x0,xs,src,f,conf)
 %
@@ -108,6 +108,6 @@ otherwise
 end
 
 % Select secondary sources
-x0 = secondary_source_selection(x0,xv(:,1:6),'vss');
+[x0, idx] = secondary_source_selection(x0,xv(:,1:6),'vss');
 % Driving functions for real source array
 D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf);

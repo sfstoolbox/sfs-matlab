@@ -1,8 +1,8 @@
-function [d,x0,xv,delay_offset] = driving_function_imp_localwfs_vss(x0,xs,src,conf)
+function [d,x0,xv,idx,delay_offset] = driving_function_imp_localwfs_vss(x0,xs,src,conf)
 %DRIVING_FUNCTION_IMP_LOCALWFS_VSS returns the driving signal d for local WFS
 %using focused sources as virtual secondary sources
 %
-%   Usage: [d,x0,xv,delay_offset] = driving_function_imp_localwfs_vss(x0,xs,src,conf)
+%   Usage: [d,x0,xv,idx,delay_offset] = driving_function_imp_localwfs_vss(x0,xs,src,conf)
 %
 %   Input parameters:
 %       x0          - position and direction of the secondary source / m [nx6]
@@ -22,6 +22,8 @@ function [d,x0,xv,delay_offset] = driving_function_imp_localwfs_vss(x0,xs,src,co
 %                       sources / m [nx7]
 %       xv            - position, direction, and weights of the virtual 
 %                       secondary sources / m [mx7]
+%       idx           - index of the selected sources from the original x0
+%                       matrix [mx1]
 %       delay_offset  - additional added delay, so you can correct it
 %
 %   References:
@@ -113,7 +115,7 @@ otherwise
 end
 
 % Select secondary sources
-x0 = secondary_source_selection(x0,xv(:,1:6),'vss');
+[x0,idx] = secondary_source_selection(x0,xv(:,1:6),'vss');
 % Driving functions for real source array
 [d, delay_vss] = driving_function_imp_wfs_vss(x0,xv,'fs',dv,conf);
 % add delay

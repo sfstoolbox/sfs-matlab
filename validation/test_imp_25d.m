@@ -59,6 +59,12 @@ conf.wfs.hpreflow = 20;
 conf.wfs.hprefhigh = 20000;
 conf.localsfs.wfs = conf.wfs;
 conf.localsfs.sbl.order = 23;
+conf.localsfs.vss.geometry = 'circular';
+conf.localsfs.vss.number = 512;
+conf.localsfs.vss.center = conf.xref;
+conf.localsfs.vss.size = 0.6;
+conf.localsfs.vss.consider_secondary_sources = false;
+conf.localsfs.vss.consider_target_field = false;
 conf.delayline.resamplingfactor = 8;
 conf.delayline.resampling = 'pm';
 conf.delayline.filter = 'lagrange';
@@ -75,6 +81,8 @@ scenarios = { ...
   'WFS', 'reference_line' , 'linear', 'fs', [ 0.0  0.75  0.0  0.0 -1.0  0.0]
   'HOA', 'default', 'circular', 'pw', [ 0.0 -1.0   0.0]
   'HOA', 'default', 'circular', 'ps', [ 0.0  2.5  0.0]
+  'LWFS-VSS', 'default', 'circular', 'pw', [ 0.0 -1.0   0.0]
+  'LWFS-VSS', 'default', 'circular', 'ps', [ 0.0  2.5  0.0]
   'LWFS-SBL', 'default', 'circular', 'pw', [ 0.0 -1.0   0.0]
   'LWFS-SBL', 'default', 'circular', 'ps', [ 0.0  2.5  0.0]
   };
@@ -114,6 +122,8 @@ for ii=1:size(scenarios)
         d = driving_function_imp_wfs(x0,xs,src,conf);
     case 'HOA'
         d = driving_function_imp_nfchoa(x0,xs,src,conf);
+    case 'LWFS-VSS'
+        [d, x0] = driving_function_imp_localwfs_vss(x0,xs,src,conf);
     case 'LWFS-SBL'
         d = driving_function_imp_localwfs_sbl(x0,xs,src,conf);
     end
@@ -131,7 +141,7 @@ for ii=1:size(scenarios)
     end
     [IR_gt,~,f_gt] = spectrum_from_signal(ir_gt(:,1),conf);
     
-    if modus    
+    if modus
         figure;
         semilogx(f_sfs,db(IR_sfs),'r',f_gt,db(IR_gt),'b--');
         xlabel('Frequency / Hz');

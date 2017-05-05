@@ -1,38 +1,8 @@
 function varargout = sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf)
-%SOUND_FIELD_MONO_LOCALWFS simulates a sound field for local WFS
+%DON'T USE THIS FUNCTION
+%USE SOUND_FIELD_MONO_LOCALWFS_VSS
 %
-%   Usage: [P,x,y,z,x0] = sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf)
-%
-%   Input parameters:
-%       X           - x-axis / m; single value or [xmin,xmax] or nD-array
-%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
-%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
-%       xs          - position of virtual source / m
-%       src         - source type of the virtual source
-%                         'pw' - plane wave (xs is the direction of the
-%                                plane wave in this case)
-%                         'ps' - point source
-%                         'fs' - focused source
-%       f           - monochromatic frequency / Hz
-%       conf        - configuration struct (see SFS_config)
-%
-%   Output parameters:
-%       P           - simulated sound field
-%       x           - corresponding x values / m
-%       y           - corresponding y values / m
-%       z           - corresponding z values / m
-%       x0          - active secondary sources / m
-%
-%   SOUND_FIELD_MONO_WFS(X,Y,Z,xs,src,f,conf) simulates a monochromatic sound
-%   field for the given source type (src) synthesized with local wave field
-%   synthesis.
-%
-%   To plot the result use:
-%   plot_sound_field(P,X,Y,Z,x0,conf);
-%   or simple call the function without output argument:
-%   sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf)
-%
-%   See also: plot_sound_field, sound_field_imp_wfs, driving_function_mono_wfs
+%   See also: sound_field_mono_localwfs_vss
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -63,48 +33,8 @@ function varargout = sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
+warning(['%s: this function name is deprecated and will be removed in' ...
+  ' future releases. Use sound_field_mono_localwfs_vss, instead'], ...
+  upper(mfilename));
 
-%% ===== Checking of input  parameters ==================================
-nargmin = 7;
-nargmax = 7;
-narginchk(nargmin,nargmax);
-isargxs(xs);
-isargpositivescalar(f);
-isargchar(src);
-isargstruct(conf);
-
-
-%% ===== Configuration ==================================================
-useplot = conf.plot.useplot;
-loudspeakers = conf.plot.loudspeakers;
-dimension = conf.dimension;
-if strcmp('2D',dimension)
-    greens_function = 'ls';
-else
-    greens_function = 'ps';
-end
-
-
-%% ===== Computation ====================================================
-% Get the position of the loudspeakers and its activity
-x0 = secondary_source_positions(conf);
-% Driving function
-[D, x0, xv] = driving_function_mono_localwfs(x0,xs,src,f,conf);
-% Wave field
-[varargout{1:min(nargout,4)}] = ...
-    sound_field_mono(X,Y,Z,x0,greens_function,D,f,conf);
-% Return secondary sources if desired
-if nargout>=5, varargout{5}=x0; end
-if nargout==6, varargout{6}=xv; end
-
-
-% ===== Plotting ========================================================
-% Add the virtual loudspeaker positions
-if (nargout==0 || useplot) && loudspeakers
-    hold on;
-    tmp = conf.plot.realloudspeakers;  % cache option for loudspeaker plotting
-    conf.plot.realloudspeakers = false;
-    draw_loudspeakers(xv,[1 1 0],conf);
-    conf.plot.realloudspeakers = tmp;
-    hold off;
-end
+varargout = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf);

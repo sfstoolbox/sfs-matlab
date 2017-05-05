@@ -93,7 +93,7 @@ conf.localsfs.vss.geometry = 'circular';
 conf.localsfs.vss.number = 56;
 conf.localsfs.vss.consider_target_field = true;
 conf.localsfs.vss.consider_secondary_sources = true;
-[~] = sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf);
+[~] = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf);
 % --- Linear virtual secondary sources ---
 conf.localsfs.method = 'wfs';
 conf.localsfs.usetapwin = false;
@@ -103,7 +103,7 @@ conf.localsfs.vss.geometry = 'linear';
 conf.localsfs.vss.number = 56;
 conf.localsfs.vss.consider_target_field = true;
 conf.localsfs.vss.consider_secondary_sources = true;
-[~] = sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf);
+[~] = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf);
 % --- Box shaped virtual secondary sources ---
 conf.localsfs.method = 'wfs';
 conf.localsfs.usetapwin = false;
@@ -113,7 +113,7 @@ conf.localsfs.vss.geometry = 'box';
 conf.localsfs.vss.number = 4*56;
 conf.localsfs.vss.consider_target_field = true;
 conf.localsfs.vss.consider_secondary_sources = true;
-[~] = sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf);
+[~] = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf);
 
 
 %% =====  Linear secondary sources =======================================
@@ -142,7 +142,7 @@ conf.localsfs.vss.geometry = 'circular';
 conf.localsfs.vss.number = 56;
 conf.localsfs.vss.consider_target_field = true;
 conf.localsfs.vss.consider_secondary_sources = true;
-[~] = sound_field_mono_localwfs(X, Y, Z,xs,src,f,conf);
+[~] = sound_field_mono_localwfs_vss(X, Y, Z,xs,src,f,conf);
 % --- Linear virtual secondary sources ---
 conf.localsfs.method = 'wfs';
 conf.localsfs.usetapwin = false;
@@ -152,7 +152,7 @@ conf.localsfs.vss.geometry = 'linear';
 conf.localsfs.vss.number = 56;
 conf.localsfs.vss.consider_target_field = true;
 conf.localsfs.vss.consider_secondary_sources = true;
-[~] = sound_field_mono_localwfs(X, Y, Z,xs,src,f,conf);
+[~] = sound_field_mono_localwfs_vss(X, Y, Z,xs,src,f,conf);
 % --- Box shaped virtual secondary sources ---
 conf.localsfs.method = 'wfs';
 conf.localsfs.usetapwin = false;
@@ -162,7 +162,7 @@ conf.localsfs.vss.geometry = 'box';
 conf.localsfs.vss.number = 4*56;
 conf.localsfs.vss.consider_target_field = true;
 conf.localsfs.vss.consider_secondary_sources = true;
-[~] = sound_field_mono_localwfs(X, Y, Z,xs,src,f,conf);
+[~] = sound_field_mono_localwfs_vss(X, Y, Z,xs,src,f,conf);
 
 
 %% =====  Box shaped secondary sources ===================================
@@ -191,7 +191,7 @@ conf.localsfs.vss.geometry = 'circular';
 conf.localsfs.vss.number = 56;
 conf.localsfs.vss.consider_target_field = true;
 conf.localsfs.vss.consider_secondary_sources = true;
-[~] = sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf);
+[~] = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf);
 % --- Linear virtual secondary sources ---
 conf.localsfs.method = 'wfs';
 conf.localsfs.usetapwin = false;
@@ -201,7 +201,7 @@ conf.localsfs.vss.geometry = 'linear';
 conf.localsfs.vss.number = 56;
 conf.localsfs.vss.consider_target_field = true;
 conf.localsfs.vss.consider_secondary_sources = true;
-[~] = sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf);
+[~] = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf);
 % --- Box shaped virtual secondary sources ---
 conf.localsfs.method = 'wfs';
 conf.localsfs.usetapwin = false;
@@ -211,7 +211,7 @@ conf.localsfs.vss.geometry = 'box';
 conf.localsfs.vss.number = 4*56;
 conf.localsfs.vss.consider_target_field = true;
 conf.localsfs.vss.consider_secondary_sources = true;
-[~] = sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf);
+[~] = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf);
 
 
 status = true;

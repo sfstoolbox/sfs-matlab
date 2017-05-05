@@ -1,36 +1,38 @@
-function [D,x0,xv,idx] = driving_function_mono_localwfs_vss(x0,xs,src,f,conf)
-%DRIVING_FUNCTION_MONO_LOCALWFS_VSS returns the driving signal D for local WFS
+function varargout = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf)
+%SOUND_FIELD_MONO_LOCALWFS_VSS simulates a sound field for local WFS
 %
-%   Usage: [D,xv,x0,idx] = driving_function_mono_localwfs_vss(x0,xs,src,f,conf)
+%   Usage: [P,x,y,z,x0] = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf)
 %
 %   Input parameters:
-%       x0          - position and direction of the secondary source / m [nx7]
-%       xs          - position of virtual source or direction of plane
-%                     wave / m [1x3]
+%       X           - x-axis / m; single value or [xmin,xmax] or nD-array
+%       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
+%       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
+%       xs          - position of virtual source / m
 %       src         - source type of the virtual source
 %                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
-%                         'ls' - line source
 %                         'fs' - focused source
-%
-%       f           - frequency of the monochromatic source / Hz
+%       f           - monochromatic frequency / Hz
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       D           - driving function signal [nx1]
-%       x0          - position, direction, and weights of the real secondary
-%                     sources / m [nx7]
-%       xv          - position, direction, and weights of the virtual secondary
-%                     sources / m [mx7]
-%       idx         - index of the selected sources from the original x0
-%                     matrix [mx1]
+%       P           - simulated sound field
+%       x           - corresponding x values / m
+%       y           - corresponding y values / m
+%       z           - corresponding z values / m
+%       x0          - active secondary sources / m
 %
-%   References:
-%       S. Spors (2010) - "Local Sound Field Synthesis by Virtual Secondary
-%                          Sources", 40th AES Conference
+%   SOUND_FIELD_MONO_WFS(X,Y,Z,xs,src,f,conf) simulates a monochromatic sound
+%   field for the given source type (src) synthesized with local wave field
+%   synthesis.
 %
-%   See also: plot_sound_field, sound_field_mono_wfs
+%   To plot the result use:
+%   plot_sound_field(P,X,Y,Z,x0,conf);
+%   or simple call the function without output argument:
+%   sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf)
+%
+%   See also: plot_sound_field, sound_field_imp_wfs, driving_function_mono_wfs
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -61,11 +63,11 @@ function [D,x0,xv,idx] = driving_function_mono_localwfs_vss(x0,xs,src,f,conf)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 5;
+nargmin = 7;
+nargmax = 7;
 narginchk(nargmin,nargmax);
-isargsecondarysource(x0);
 isargxs(xs);
 isargpositivescalar(f);
 isargchar(src);
@@ -73,41 +75,36 @@ isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
-virtualconf = conf;
-virtualconf.usetapwin = conf.localsfs.usetapwin;
-virtualconf.tapwinlen = conf.localsfs.tapwinlen;
-virtualconf.secondary_sources.size = conf.localsfs.vss.size;
-virtualconf.secondary_sources.center = conf.localsfs.vss.center;
-virtualconf.secondary_sources.geometry = conf.localsfs.vss.geometry;
-virtualconf.secondary_sources.number = conf.localsfs.vss.number;
-method = conf.localsfs.method;
+useplot = conf.plot.useplot;
+loudspeakers = conf.plot.loudspeakers;
+dimension = conf.dimension;
+if strcmp('2D',dimension)
+    greens_function = 'ls';
+else
+    greens_function = 'ps';
+end
 
 
 %% ===== Computation ====================================================
+% Get the position of the loudspeakers and its activity
+x0 = secondary_source_positions(conf);
+% Driving function
+[D,x0,xv] = driving_function_mono_localwfs_vss(x0,xs,src,f,conf);
+% Wave field
+[varargout{1:min(nargout,4)}] = ...
+    sound_field_mono(X,Y,Z,x0,greens_function,D,f,conf);
+% Return secondary sources if desired
+if nargout>=5, varargout{5}=x0; end
+if nargout==6, varargout{6}=xv; end
 
-% Determine driving functions of virtual array with different sfs methods
-switch method
-case 'wfs'
-    % === Wave Field Synthesis ===
-    % Create virtual source array
-    xv = virtual_secondary_source_positions(x0,xs,src,conf);
-    % Secondary_source_selection
-    xv = secondary_source_selection(xv, xs, src);
-    % Optional tapering
-    xv = secondary_source_tapering(xv,virtualconf);
-    % Driving functions for virtual source array
-    Dv = driving_function_mono_wfs(xv,xs,src,f,virtualconf);
-case 'nfchoa'
-    % === Near-Field-Compensated Higher Order Ambisonics ===
-    % Create virtual source array
-    xv = secondary_source_positions(virtualconf);
-    % Driving functions for virtual source array
-    Dv = driving_function_mono_nfchoa(xv,xs,src,f,virtualconf);
-otherwise
-    error('%s: %s is not a supported method for localsfs!',upper(mfilename),method);
+
+% ===== Plotting ========================================================
+% Add the virtual loudspeaker positions
+if (nargout==0 || useplot) && loudspeakers
+    hold on;
+    tmp = conf.plot.realloudspeakers;  % cache option for loudspeaker plotting
+    conf.plot.realloudspeakers = false;
+    draw_loudspeakers(xv,[1 1 0],conf);
+    conf.plot.realloudspeakers = tmp;
+    hold off;
 end
-
-% Select secondary sources
-[x0,idx] = secondary_source_selection(x0,xv(:,1:6),'vss');
-% Driving functions for real source array
-D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf);

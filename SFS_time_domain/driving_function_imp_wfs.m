@@ -5,7 +5,7 @@ function [d,delay,weight,delay_offset] = driving_function_imp_wfs(x0,xs,src,conf
 %
 %   Input parameters:
 %       x0              - positions and directions of secondary
-%                         sources / m [nx6]
+%                         sources / m [nx7]
 %       xs              - position of virtual source or direction of
 %                         plane wave / m [1x3]
 %       src             - source type of the virtual source

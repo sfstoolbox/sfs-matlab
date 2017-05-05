@@ -4,7 +4,7 @@ function [D,x0,xv,idx] = driving_function_mono_localwfs_vss(x0,xs,src,f,conf)
 %   Usage: [D,xv,x0,idx] = driving_function_mono_localwfs_vss(x0,xs,src,f,conf)
 %
 %   Input parameters:
-%       x0          - position and direction of the secondary source / m [nx6]
+%       x0          - position and direction of the secondary source / m [nx7]
 %       xs          - position of virtual source or direction of plane
 %                     wave / m [1x3]
 %       src         - source type of the virtual source

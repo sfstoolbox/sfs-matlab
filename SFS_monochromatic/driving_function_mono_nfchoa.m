@@ -4,7 +4,7 @@ function D = driving_function_mono_nfchoa(x0,xs,src,f,conf)
 %   Usage: D = driving_function_mono_nfchoa(x0,xs,src,f,conf)
 %
 %   Input parameters:
-%       x0          - position and direction of the secondary source / m [nx6]
+%       x0          - position and direction of the secondary source / m [nx7]
 %       xs          - position of virtual source or direction of plane
 %                     wave / m [1x3] or [1x6]
 %                     OR position and orientation of a line source [1x6]

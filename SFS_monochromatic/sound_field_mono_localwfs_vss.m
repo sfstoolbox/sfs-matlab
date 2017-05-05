@@ -89,7 +89,7 @@ end
 % Get the position of the loudspeakers and its activity
 x0 = secondary_source_positions(conf);
 % Driving function
-[D, x0, xv] = driving_function_mono_localwfs_vss(x0,xs,src,f,conf);
+[D,x0,xv] = driving_function_mono_localwfs_vss(x0,xs,src,f,conf);
 % Wave field
 [varargout{1:min(nargout,4)}] = ...
     sound_field_mono(X,Y,Z,x0,greens_function,D,f,conf);

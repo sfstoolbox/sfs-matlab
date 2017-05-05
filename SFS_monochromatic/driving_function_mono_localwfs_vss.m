@@ -108,6 +108,6 @@ otherwise
 end
 
 % Select secondary sources
-[x0, idx] = secondary_source_selection(x0,xv(:,1:6),'vss');
+[x0,idx] = secondary_source_selection(x0,xv(:,1:6),'vss');
 % Driving functions for real source array
 D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf);

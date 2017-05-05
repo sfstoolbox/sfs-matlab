@@ -88,151 +88,151 @@ consider_target_field       = conf.localsfs.vss.consider_target_field;
 %% ===== Main ============================================================
 
 if consider_target_field || consider_secondary_sources
-  % =====================================================================
-  % Adaptive positioning of virtual secondary sources
-  % =====================================================================
-
-  Rl = virtualconf.secondary_sources.size/2;  % radius of local area
-  xl = virtualconf.secondary_sources.center;  % center of local area
-
-  % Determine vector poiting towards source
-  if strcmp('pw',src)
-    % === Plane wave ===
-    ns = bsxfun(@rdivide,-xs,vector_norm(xs,2));
-  elseif strcmp('ps',src) || strcmp('ls',src)
-    % === Point source ===
-    ns = bsxfun(@rdivide,xs-xl,vector_norm(xs-xl,2));
-  elseif strcmp('fs',src)
-    % === Focused source ===
-    ns = bsxfun(@rdivide,xl-xs,vector_norm(xs-xl,2));
-  end
-  phis = atan2(ns(2),ns(1));  % azimuth angle of ns
-
-  if strcmp('circle',geometry) || strcmp('circular',geometry)
     % =====================================================================
-    % Virtual circular Array
+    % Adaptive positioning of virtual secondary sources
     % =====================================================================
-    % Valid arc of virtual secondary sources
 
-    % CONSTRAINT 1 ========================================================
-    % Consider the target field which shall reproduced
-    phid = pi;
-    if consider_target_field
-      if strcmp('pw',src)
-        phid = pi/2;
-      elseif strcmp('fs', src)
-        phid = acos(vector_norm(xs-xl,2)./Rl);
-      else
-        % 1/2 opening angle of cone spanned by local area and virtual source
-        phid = acos(Rl./vector_norm(xs-xl,2));
-      end
+    Rl = virtualconf.secondary_sources.size/2;  % radius of local area
+    xl = virtualconf.secondary_sources.center;  % center of local area
+
+    % Determine vector poiting towards source
+    if strcmp('pw',src)
+        % === Plane wave ===
+        ns = bsxfun(@rdivide,-xs,vector_norm(xs,2));
+    elseif strcmp('ps',src) || strcmp('ls',src)
+        % === Point source ===
+        ns = bsxfun(@rdivide,xs-xl,vector_norm(xs-xl,2));
+    elseif strcmp('fs',src)
+        % === Focused source ===
+        ns = bsxfun(@rdivide,xl-xs,vector_norm(xs-xl,2));
     end
+    phis = atan2(ns(2),ns(1));  % azimuth angle of ns
 
-    % CONSTRAINT 2 ======================================================
-    % Consider the position of the real loudspeaker array
-    delta_max = phid;
-    delta_min = -phid;
-    if (consider_secondary_sources && ~isempty(x0))
-      delta_max = 0;
-      delta_min = 0;
-      % For each secondary source
-      for idx=1:size(x0,1)
-        xc0 = x0(idx,1:3) - xl;  % vector from secondary source to local area
-        Rc0 = vector_norm(xc0,2);  % distance from secondary source to local area
-        nc0 = xc0./Rc0;  % normal vector from secondary source to local area
-        % 1/2 opening angle of cone spanned by local area and secondary source
-        phix0 = acos(Rl./Rc0);
+    if strcmp('circle',geometry) || strcmp('circular',geometry)
+        % =====================================================================
+        % Virtual circular Array
+        % =====================================================================
+        % Valid arc of virtual secondary sources
 
-        phiso = asin(ns(1)*nc0(2) - ns(2)*nc0(1));  % angle between ns and nc0
-        delta_max = max(delta_max, phiso + phix0);
-        delta_min = min(delta_min, phiso - phix0);
-      end
-      delta_max = min(delta_max, phid);
-      delta_min = max(delta_min, -phid);
-    end
-
-    delta_offset = eps;
-
-    % SOURCE POSITIONING ==================================================
-    % === Equi-angular sampling on valid arc ===
-    phi = phis + linspace(delta_min + delta_offset,delta_max-delta_offset, nls).';
-
-    % Elevation angles
-    theta = zeros(nls,1);
-    % Positions of the secondary sources
-    [cx,cy,cz] = sph2cart(phi,theta,Rl);
-    xv(:,1:3) = [cx,cy,cz] + repmat(xl,nls,1);
-    % Direction of the secondary sources
-    xv(:,4:6) = direction_vector(xv(:,1:3),repmat(xl,nls,1).*ones(nls,3));
-    % Equal weights for all sources
-    xv(:,7) = ones(nls,1) * (delta_max-delta_min)*Rl/(nls-1);
-
-  elseif strcmp('linear',geometry)
-    % =====================================================================
-    % Virtual linear Array
-    % =====================================================================
-    % valid line of virtual secondary sources
-
-    % CONSTRAINT 1 ========================================================
-    % Consider the target field which shall reproduced
-    if consider_target_field
-      nd = ns;
-      ndorth = ns*[0 1 0; -1 0 0; 0 0 1];
-    else
-      nd = [0, 1, 0];
-      ndorth = [-1, 0, 0];
-    end
-
-    % CONSTRAINT 2 ========================================================
-    % Consider the position of the real loudspeaker array
-    if (consider_secondary_sources && ~isempty(x0))
-      xmax = inf;
-      xmin = -inf;
-      % For each secondary source
-      for idx=1:size(x0,1)
-        % This calculates the parameter t for the intersection between the linear
-        % virtual array and the plane spanned by one loudspeaker (position +
-        % orientation)
-        n0 = x0(idx, 4:6);
-        ntmp = (ndorth*n0');
-        if ntmp ~= 0
-          t = (x0(idx,1:3) - xl)*n0'./ntmp;
-          if t > 0
-            xmax = min(xmax, t);
-          else
-            xmin = max(xmin, t);
-          end
+        % CONSTRAINT 1 ========================================================
+        % Consider the target field which shall reproduced
+        phid = pi;
+        if consider_target_field
+            if strcmp('pw',src)
+                phid = pi/2;
+            elseif strcmp('fs', src)
+                phid = acos(vector_norm(xs-xl,2)./Rl);
+            else
+                % 1/2 opening angle of cone spanned by local area and virtual source
+                phid = acos(Rl./vector_norm(xs-xl,2));
+            end
         end
-      end
-      xmax = min(xmax, Rl);
-      xmin = max(xmin, -Rl);
+
+        % CONSTRAINT 2 ======================================================
+        % Consider the position of the real loudspeaker array
+        delta_max = phid;
+        delta_min = -phid;
+        if (consider_secondary_sources && ~isempty(x0))
+            delta_max = 0;
+            delta_min = 0;
+            % For each secondary source
+            for idx=1:size(x0,1)
+                xc0 = x0(idx,1:3) - xl;  % vector from secondary source to local area
+                Rc0 = vector_norm(xc0,2);  % distance from secondary source to local area
+                nc0 = xc0./Rc0;  % normal vector from secondary source to local area
+                % 1/2 opening angle of cone spanned by local area and secondary source
+                phix0 = acos(Rl./Rc0);
+
+                phiso = asin(ns(1)*nc0(2) - ns(2)*nc0(1));  % angle between ns and nc0
+                delta_max = max(delta_max, phiso + phix0);
+                delta_min = min(delta_min, phiso - phix0);
+            end
+            delta_max = min(delta_max, phid);
+            delta_min = max(delta_min, -phid);
+        end
+
+        delta_offset = eps;
+
+        % SOURCE POSITIONING ==================================================
+        % === Equi-angular sampling on valid arc ===
+        phi = phis + linspace(delta_min + delta_offset,delta_max-delta_offset, nls).';
+
+        % Elevation angles
+        theta = zeros(nls,1);
+        % Positions of the secondary sources
+        [cx,cy,cz] = sph2cart(phi,theta,Rl);
+        xv(:,1:3) = [cx,cy,cz] + repmat(xl,nls,1);
+        % Direction of the secondary sources
+        xv(:,4:6) = direction_vector(xv(:,1:3),repmat(xl,nls,1).*ones(nls,3));
+        % Equal weights for all sources
+        xv(:,7) = ones(nls,1) * (delta_max-delta_min)*Rl/(nls-1);
+
+    elseif strcmp('linear',geometry)
+        % =====================================================================
+        % Virtual linear Array
+        % =====================================================================
+        % valid line of virtual secondary sources
+
+        % CONSTRAINT 1 ========================================================
+        % Consider the target field which shall reproduced
+        if consider_target_field
+            nd = ns;
+            ndorth = ns*[0 1 0; -1 0 0; 0 0 1];
+        else
+            nd = [0, 1, 0];
+            ndorth = [-1, 0, 0];
+        end
+
+        % CONSTRAINT 2 ========================================================
+        % Consider the position of the real loudspeaker array
+        if (consider_secondary_sources && ~isempty(x0))
+            xmax = inf;
+            xmin = -inf;
+            % For each secondary source
+            for idx=1:size(x0,1)
+                % This calculates the parameter t for the intersection between the linear
+                % virtual array and the plane spanned by one loudspeaker (position +
+                % orientation)
+                n0 = x0(idx, 4:6);
+                ntmp = (ndorth*n0');
+                if ntmp ~= 0
+                    t = (x0(idx,1:3) - xl)*n0'./ntmp;
+                    if t > 0
+                        xmax = min(xmax, t);
+                    else
+                        xmin = max(xmin, t);
+                    end
+                end
+            end
+            xmax = min(xmax, Rl);
+            xmin = max(xmin, -Rl);
+        else
+            xmax = Rl;
+            xmin = -Rl;
+        end
+
+        % SOURCE POSITIONING ==================================================
+        % === Equi-distant sampling on valid line ===
+        x = linspace(xmin, xmax, nls);
+
+        % Positions of the secondary sources
+        xv(:,1:3) = repmat(xl, nls, 1) + x'*ndorth;
+        % Direction of the secondary sources
+        xv(:,4:6) = repmat(-nd, nls, 1);
+        % Equal weights for all sources
+        xv(:,7) = ones(nls,1)*(xmax-xmin)/(nls-1);
     else
-      xmax = Rl;
-      xmin = -Rl;
+        xv = secondary_source_positions(virtualconf);
+        if consider_target_field
+            xv = secondary_source_selection(xv, xs, src);
+        end
     end
-
-    % SOURCE POSITIONING ==================================================
-    % === Equi-distant sampling on valid line ===
-    x = linspace(xmin, xmax, nls);
-
-    % Positions of the secondary sources
-    xv(:,1:3) = repmat(xl, nls, 1) + x'*ndorth;
-    % Direction of the secondary sources
-    xv(:,4:6) = repmat(-nd, nls, 1);
-    % Equal weights for all sources
-    xv(:,7) = ones(nls,1)*(xmax-xmin)/(nls-1);
-  else
-    xv = secondary_source_positions(virtualconf);
-    if consider_target_field
-      xv = secondary_source_selection(xv, xs, src);
-    end
-  end
 else
-  % =====================================================================
-  % Non-adaptive positioning of  virtual secondary sources
-  % =====================================================================
-  % Just position the virtual secondary sources as you would do it with the
-  % loudspeakers. This ignores the virtual source position, the size of
-  % the local listening area and the position of the real loudspeakers
-  xv = secondary_source_positions(virtualconf);
+    % =====================================================================
+    % Non-adaptive positioning of  virtual secondary sources
+    % =====================================================================
+    % Just position the virtual secondary sources as you would do it with the
+    % loudspeakers. This ignores the virtual source position, the size of
+    % the local listening area and the position of the real loudspeakers
+    xv = secondary_source_positions(virtualconf);
 end

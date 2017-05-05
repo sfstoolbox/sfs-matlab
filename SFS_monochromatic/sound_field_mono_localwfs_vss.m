@@ -1,40 +1,38 @@
-function varargout = sound_field_imp_localwfs_vss(X,Y,Z,xs,src,t,conf)
-%SOUND_FIELD_IMP_LOCALWFS returns the sound field in time domain of an impulse
+function varargout = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf)
+%SOUND_FIELD_MONO_LOCALWFS_VSS simulates a sound field for local WFS
 %
-%   Usage: [p,x,y,z,x0] = sound_field_imp_localwfs_vss(X,Y,Z,xs,src,t,conf)
+%   Usage: [P,x,y,z,x0] = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf)
 %
-%   Input options:
+%   Input parameters:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
 %       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
 %       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
-%       xs          - position of point source / m
+%       xs          - position of virtual source / m
 %       src         - source type of the virtual source
-%                         'pw' - plane wave (xs, ys are the direction of the
+%                         'pw' - plane wave (xs is the direction of the
 %                                plane wave in this case)
 %                         'ps' - point source
-%       t           - time point t of the sound field / s
+%                         'fs' - focused source
+%       f           - monochromatic frequency / Hz
 %       conf        - configuration struct (see SFS_config)
 %
-%   Output options:
-%       p           - simulated sound field
+%   Output parameters:
+%       P           - simulated sound field
 %       x           - corresponding x values / m
 %       y           - corresponding y values / m
 %       z           - corresponding z values / m
-%       x0          - secondary sources / m
+%       x0          - active secondary sources / m
 %
-%   SOUND_FIELD_IMP_LOCALWFS(X,Y,Z,xs,src,t,conf) simulates a sound field of the
-%   given source type (src) synthesized with local wave field synthesis at the
-%   time t.
+%   SOUND_FIELD_MONO_WFS(X,Y,Z,xs,src,f,conf) simulates a monochromatic sound
+%   field for the given source type (src) synthesized with local wave field
+%   synthesis.
 %
 %   To plot the result use:
-%   plot_sound_field(p,X,Y,Z,x0,conf);
+%   plot_sound_field(P,X,Y,Z,x0,conf);
 %   or simple call the function without output argument:
-%   sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
-%   For plotting you may also consider to display the result in dB, by setting
-%   the following configuration option before:
-%   conf.plot.usedB = true;
+%   sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf)
 %
-%   See also: driving_function_imp_localwfs, sound_field_mono_localwfs
+%   See also: plot_sound_field, sound_field_imp_wfs, driving_function_mono_wfs
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -70,52 +68,43 @@ function varargout = sound_field_imp_localwfs_vss(X,Y,Z,xs,src,t,conf)
 nargmin = 7;
 nargmax = 7;
 narginchk(nargmin,nargmax);
-isargnumeric(X,Y,Z);
 isargxs(xs);
+isargpositivescalar(f);
 isargchar(src);
-isargscalar(t);
 isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
-fs = conf.fs;
 useplot = conf.plot.useplot;
-if strcmp('2D',conf.dimension)
+loudspeakers = conf.plot.loudspeakers;
+dimension = conf.dimension;
+if strcmp('2D',dimension)
     greens_function = 'ls';
 else
     greens_function = 'ps';
 end
-compensate_wfs_fir_delay = ...
-    (conf.wfs.usehpre && strcmp(conf.wfs.hpretype,'FIR'));
-compensate_local_wfs_fir_delay = ...
-    (conf.localsfs.wfs.usehpre && strcmp(conf.localsfs.wfs.hpretype,'FIR'));
 
 
-%% ===== Computation =====================================================
-% Get secondary sources
+%% ===== Computation ====================================================
+% Get the position of the loudspeakers and its activity
 x0 = secondary_source_positions(conf);
-% Get driving signals
-[d,x0,xv] = driving_function_imp_localwfs_vss(x0,xs,src,conf);
-% Fix the time to account for sample offset of FIR pre-equalization filters
-if (compensate_wfs_fir_delay && compensate_local_wfs_fir_delay)
-    t = t + (conf.wfs.hpreFIRorder/2 + ...
-        conf.localsfs.wfs.hpreFIRorder/2 - 1)/fs;
-elseif compensate_wfs_fir_delay
-    t = t + (conf.wfs.hpreFIRorder/2)/fs;
-elseif compensate_local_wfs_fir_delay
-    t = t + (conf.local.wfs.hpreFIRorder/2)/fs;
-end
-% Calculate sound field
+% Driving function
+[D, x0, xv] = driving_function_mono_localwfs_vss(x0,xs,src,f,conf);
+% Wave field
 [varargout{1:min(nargout,4)}] = ...
-    sound_field_imp(X,Y,Z,x0,greens_function,d,t,conf);
+    sound_field_mono(X,Y,Z,x0,greens_function,D,f,conf);
 % Return secondary sources if desired
-if nargout==5, varargout{5}=x0; end
+if nargout>=5, varargout{5}=x0; end
+if nargout==6, varargout{6}=xv; end
 
 
-% === Plotting ===
-if nargout==0 || useplot
-    hold on
-    dimensions = xyz_axes_selection(X,Y,Z);
-    draw_loudspeakers(xv,dimensions,conf);
-    hold off
+% ===== Plotting ========================================================
+% Add the virtual loudspeaker positions
+if (nargout==0 || useplot) && loudspeakers
+    hold on;
+    tmp = conf.plot.realloudspeakers;  % cache option for loudspeaker plotting
+    conf.plot.realloudspeakers = false;
+    draw_loudspeakers(xv,[1 1 0],conf);
+    conf.plot.realloudspeakers = tmp;
+    hold off;
 end

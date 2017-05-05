@@ -1,8 +1,8 @@
-function varargout = sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf)
+function varargout = sound_field_imp_localwfs(X,Y,Z,xs,src,t,conf)
 %DON'T USE THIS FUNCTION
-%USE SOUND_FIELD_MONO_LOCALWFS_VSS
+%USE SOUND_FIELD_IMP_LOCALWFS_VSS
 %
-%   See also: sound_field_mono_localwfs_vss
+%   See also: sound_field_imp_localwfs_vss
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -34,7 +34,7 @@ function varargout = sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf)
 %*****************************************************************************
 
 warning(['%s: this function name is deprecated and will be removed in' ...
-  ' future releases. Use sound_field_mono_localwfs_vss, instead'], ...
+  ' future releases. Use sound_field_imp_localwfs_vss, instead'], ...
   upper(mfilename));
 
-varargout = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf);
+varargout = sound_field_imp_localwfs_vss(X,Y,Z,xs,src,t,conf);

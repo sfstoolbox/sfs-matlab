@@ -203,6 +203,30 @@ elseif strcmp('2.5D',dimension)
         delay = -1./c .* r;
         weight = g0 ./ sqrt(2.*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3./2);
         %
+    case {'reference_circle'}
+        % Driving function with two stationary phase approximations,
+        % reference to circle around the focused source with radius |xref-xs|
+        %
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        %
+        % 2.5D correction factor
+        %         _____________
+        %        |        r
+        % g0 = _ |1 + ---------
+        %       \|    |xref-xs|
+        %
+        g0 = sqrt( 1 + r./vector_norm(xref-xs,2) );
+        %                                  ___
+        %                                 | 1    (xs-x0) nx0
+        % d_2.5D(x0,t) = h_pre(-t) * g0 _ |---  ------------- delta(t+|x0-xs|/c)
+        %                                \|2pi  |x0-xs|^(3/2)
+        %
+        %
+        % Delay and amplitude weight
+        delay = -1./c .* r;
+        weight = g0 ./ sqrt(2.*pi) .* vector_product(xs-x0,nx0,2) ./ r.^(3./2);
+        %
     case 'legacy'
         % --- SFS Toolbox ------------------------------------------------
         % 2.5D correction factor

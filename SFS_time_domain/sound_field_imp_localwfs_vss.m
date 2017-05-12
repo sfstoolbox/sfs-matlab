@@ -78,39 +78,25 @@ isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
-fs = conf.fs;
 useplot = conf.plot.useplot;
 if strcmp('2D',conf.dimension)
     greens_function = 'ls';
 else
     greens_function = 'ps';
 end
-compensate_wfs_fir_delay = ...
-    (conf.wfs.usehpre && strcmp(conf.wfs.hpretype,'FIR'));
-compensate_local_wfs_fir_delay = ...
-    (conf.localsfs.wfs.usehpre && strcmp(conf.localsfs.wfs.hpretype,'FIR'));
-
 
 %% ===== Computation =====================================================
 % Get secondary sources
 x0 = secondary_source_positions(conf);
 % Get driving signals
-[d,x0,xv] = driving_function_imp_localwfs_vss(x0,xs,src,conf);
-% Fix the time to account for sample offset of FIR pre-equalization filters
-if (compensate_wfs_fir_delay && compensate_local_wfs_fir_delay)
-    t = t + (conf.wfs.hpreFIRorder/2 + ...
-        conf.localsfs.wfs.hpreFIRorder/2 - 1)/fs;
-elseif compensate_wfs_fir_delay
-    t = t + (conf.wfs.hpreFIRorder/2)/fs;
-elseif compensate_local_wfs_fir_delay
-    t = t + (conf.local.wfs.hpreFIRorder/2)/fs;
-end
+[d,x0,xv,~,delay_offset] = driving_function_imp_localwfs_vss(x0,xs,src,conf);
+% account for delay_offset from driving function
+t = t + delay_offset;
 % Calculate sound field
 [varargout{1:min(nargout,4)}] = ...
     sound_field_imp(X,Y,Z,x0,greens_function,d,t,conf);
 % Return secondary sources if desired
 if nargout==5, varargout{5}=x0; end
-
 
 % === Plotting ===
 if nargout==0 || useplot

@@ -203,13 +203,19 @@ conf.bandpassfhigh = 20000; % / Hz
 %
 % Window type. Available windows are:
 %   'rect'                     - all coefficients are weighted by 1.0
+%   'max-rE'                   - 2D max-rE weighting
 %   'kaiser', 'kaiser-bessel'  - Kaiser aka. Kaiser-Bessel window
+%   'tukey'                    - modified Tukey (tapered cosine) window
 conf.modal_window = 'rect';  % string
 % Scalar parameter for window, if applicable. Effect for distinct window:
 %   'rect'    - no effect
+%   'max-rE'  - no effect
 %   'kaiser'  - [0,inf]. trade-off between main-lobe width and side-lobe levels.
 %               0.0 results in the rectangular window and the smallest main-lobe
 %               width. infinity results in a dirac impulse.
+%   'tukey'   - [0,1]. width of cosine tapering relative to the modal order. 
+%               0.0 results in the rectangular window, 1.0 results in a modified
+%               Hann-window
 conf.modal_window_parameter = 0.0;  % float
 
 

@@ -17,14 +17,17 @@ function [win,Win,Phi] = modal_weighting(order,ndtft,conf)
 %
 %   MODAL_WEIGHTING(order,ndtft,conf) calculates a weighting window for the
 %   modal band limitation applied in NFC-HOA and LSFS-SBL. The window type is
-%   configured in  conf.modal_window. Its default setting is a simple
+%   configured in conf.modal_window. Its default setting is a simple
 %   rectangular window, for other options have a look into SFS_config.
 %
 %   References:
 %   	Kaiser, J., & Schafer, R. (1980) - "On the use of the I0-sinh window
 %           for spectrum analysis", IEEE Transactions on Acoustics, Speech, and
 %           Signal Processing
-%       Van Trees, H. L. (2004) - "Optimum Array Processing", John Wiley & Sons.
+%     Daniel, J., Rault, J.-B., Polack, J.-D. (1998) "Ambisonics Encoding of 
+%           Other Audio Formats for Multiple Listening Conditions", Proc. of 
+%           105th Aud. Eng. Soc. Conv.
+%     Van Trees, H. L. (2004) - "Optimum Array Processing", John Wiley & Sons.
 %
 %   See also: driving_function_imp_nfchoa, driving_function_mono_nfchoa
 
@@ -80,13 +83,31 @@ switch wtype
 case 'rect'
     % === Rectangular Window =========================================
     win = ones(1,order+1);
+case 'max-rE'
+    % === max-rE window ==============================================
+    % The two-dimensional max-rE window is basically a modified cosine window, 
+    % which yields zero for m=order+1 instead of m=order. Hence its last value
+    % is not zero. See Daniel (1998), Eq. (44)
+    win = cos(pi./2.*(0:order)/(order+1));
 case {'kaiser', 'kaiser-bessel'}
     % === Kaiser-Bessel window =======================================
     % Approximation of the slepian window using modified bessel
-    % function of zeroth order
+    % function of zeroth order, see Kaiser (1980)
     beta = conf.modal_window_parameter * pi;
     win = besseli(0,beta*sqrt(1-((0:order)./order).^2)) ./ ...
           besseli(0,beta);
+case 'tukey'
+    % === modified Tukey window ======================================
+    % The original tukey is sometimes referred to as the tapered cosine window.
+    % It yields unity for m <= alpha*order. For m > alpha*order a cosine shaped
+    % fade-out is used. Note, the fade-out of the original Tukey window is
+    % defined such, that the windows is zero for m=order, if alpha~=0. The
+    % window is modified such that the slope would yield zero for m=order+1
+    alpha = conf.modal_window_parameter;
+    m = ceil((1-alpha)*order):order;
+    
+    win = ones(1,order+1);
+    win(m+1) = 0.5*(1 + cos(pi*(m-(1-alpha).*order)./(alpha*order+1)));
 otherwise
     error('%s: unknown weighting type (%s)!',upper(mfilename),wtype);
 end

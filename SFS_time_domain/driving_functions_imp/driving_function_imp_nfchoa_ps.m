@@ -88,9 +88,9 @@ if strcmp('2D',dimension)
     end
 
 
-elseif strcmp('2.5D',dimension)
+elseif strcmp('2.5D',dimension) || strcmp('3D',dimension)
 
-    % === 2.5-Dimensional ================================================
+    % === 2.5- & 3-Dimensional ==========================================
 
     switch driving_functions
     case 'default'
@@ -106,21 +106,6 @@ elseif strcmp('2.5D',dimension)
         error(['%s: %s, this type of driving function is not implemented', ...
             'for a 2.5D point source.'],upper(mfilename),driving_functions);
     end
-
-
-elseif strcmp('3D',dimension)
-
-    % === 3-Dimensional ==================================================
-
-    switch driving_functions
-    case 'default'
-        % --- SFS Toolbox ------------------------------------------------
-        to_be_implemented;
-    otherwise
-        error(['%s: %s, this type of driving function is not implemented', ...
-            'for a 3D point source.'],upper(mfilename),driving_functions);
-    end
-
 else
     error('%s: the dimension %s is unknown.',upper(mfilename),dimension);
 end

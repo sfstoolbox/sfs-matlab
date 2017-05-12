@@ -1,5 +1,5 @@
 function status = test_localwfs_vss(modus)
-%TEST_LOCALWFS tests the LWFS-VSS driving functions
+%TEST_LOCALWFS_VSS tests the LWFS-VSS driving functions
 %
 %   Usage: status = test_localwfs(modus)
 %
@@ -10,9 +10,9 @@ function status = test_localwfs_vss(modus)
 %   Output parameters:
 %       status  - true or false
 %
-%   TEST_LOCALWFS(modus) checks if the monochromatic and time-domain LWFS-VSS
-%   driving functions are working. Different sound fields are calculated and
-%   plotted for visual inspection.
+%   TEST_LOCALWFS_VSS(modus) checks if the monochromatic and time-domain 
+%   LWFS-VSS driving functions are working. Different sound fields are 
+%   calculated and plotted for visual inspection.
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

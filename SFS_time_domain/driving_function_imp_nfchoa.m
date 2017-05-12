@@ -70,12 +70,15 @@ N = conf.N;
 X0 = conf.secondary_sources.center;
 t0 = conf.t0;
 c = conf.c;
+dimension = conf.dimension;
 
 %% ===== Computation =====================================================
 % Generate stimulus pusle
 pulse = dirac_imp();
+% correct position of loudspeakers for off-center arrays
+x0(:,1:3) = bsxfun(@minus, x0(:,1:3), X0);
 % Radius of array
-R = norm(x0(1,1:3)-X0);
+R = norm(x0(1,1:3));
 % Ambisonics order
 if isempty(conf.nfchoa.order)
     % Get maximum order of spherical harmonics
@@ -86,7 +89,7 @@ end
 
 % Correct position of source for off-center arrays
 xs(1:3) = xs(1:3)-X0;
-[theta_src, r_src] = cart2pol(xs(1),xs(2));
+[phi_src, ~, r_src] = cart2sph(xs(1),xs(2),xs(3));
 
 % Compute impulse responses of modal filters
 Hm = [repmat(pulse,[1 order+1]); zeros(N-length(pulse),order+1)];
@@ -129,24 +132,38 @@ elseif strcmp('source',t0)
     end
 end
 
-% -------------------------------------------------------------------------
-%                      ___
-%                1     \
-% D(phi0,w) = -------  /__     Hm(w) e^(im(phi0-phi_src))
-%             2 pi r0  m=-M..M
-%
-% see Spors et al. (2011), eq.(4) and (5)
-%--------------------------------------------------------------------------
+if strcmp('2.5D',dimension)
+    % -------------------------------------------------------------------------
+    %                      ___
+    %                1     \
+    % D(phi0,w) = -------  /__     Hm(w) e^(im(phi0-phi_src))
+    %             2 pi r0  m=-M..M
+    %
+    % see Spors et al. (2011), eq.(4) and (5)
+    %--------------------------------------------------------------------------
+    
+    % apply modal weighting
+    wm = modal_weighting(order,conf);  % modal weighting function
+    Hm = bsxfun(@times,Hm,wm);
+    
+    % apply phase shift due to source angle
+    m = 0:order;
+    dm = bsxfun(@times,Hm,exp(-1i*m*phi_src));
+    
+    % Spatial IFFT
+    dm = [conj(dm(:,end:-1:2)) dm];  % append coefficients for negative m
+    d = inverse_cht(dm,nls);
+    d = 1/(2*pi*R)*real(d);
 
-% apply modal weighting
-wm = modal_weighting(order,conf);  % modal weighting function
-Hm = bsxfun(@times,Hm,wm);
+elseif strcmp('3D',dimension)
 
-% apply phase shift due to source angle
-m = 0:order;
-dm = bsxfun(@times,Hm,exp(-1i*m*theta_src));
+    d = zeros(N,nls);
+    dm = Hm;
+    cosTheta0 = xs*x0(:,1:3).'./r_src./R;  % cosine of angle between x0 and xs;
+    for n=0:order     
+        d = d + (2*n+1)/(4*pi).*Hm(:,n+1)*asslegendre(n,0,cosTheta0);
+    end    
+    d = d./R.^2;
+end
 
-% Spatial IFFT
-dm = [conj(dm(:,end:-1:2)), dm];  % append coefficients for negative m
-d = inverse_cht(dm,nls);
-d = 1/(2*pi*R)*real(d);
+

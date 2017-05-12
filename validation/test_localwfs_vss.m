@@ -133,40 +133,40 @@ for ii=1:size(scenarios)
     
     % set loudspeaker array
     switch scenarios{ii,2}
-        case 'linear'
-            conf.secondary_sources.geometry = 'linear';
-            conf.secondary_sources.number = 56;
-            conf.secondary_sources.size = 2;
-            conf.secondary_sources.center = [0 1 0];
-        case 'circular'
-            conf.secondary_sources.geometry = 'circular';
-            conf.secondary_sources.number = 56;
-            conf.secondary_sources.size = 2;
-            conf.secondary_sources.center = [0 0 0];
-        case 'box'
-            conf.secondary_sources.geometry = 'box';
-            conf.secondary_sources.number = 56*4;
-            conf.secondary_sources.size = 2;
-            conf.secondary_sources.center = [0 0 0];
+    case 'linear'
+        conf.secondary_sources.geometry = 'linear';
+        conf.secondary_sources.number = 56;
+        conf.secondary_sources.size = 2;
+        conf.secondary_sources.center = [0 1 0];
+    case 'circular'
+        conf.secondary_sources.geometry = 'circular';
+        conf.secondary_sources.number = 56;
+        conf.secondary_sources.size = 2;
+        conf.secondary_sources.center = [0 0 0];
+    case 'box'
+        conf.secondary_sources.geometry = 'box';
+        conf.secondary_sources.number = 56*4;
+        conf.secondary_sources.size = 2;
+        conf.secondary_sources.center = [0 0 0];
     end
     
     % set virtual source distribution
     switch scenarios{ii,3}
-        case 'linear'
-            conf.localsfs.vss.size = 0.4;
-            conf.localsfs.vss.center = [0 0.2 0];
-            conf.localsfs.vss.geometry = 'linear';
-            conf.localsfs.vss.number = 56;
-        case 'circular'
-            conf.localsfs.vss.size = 0.4;
-            conf.localsfs.vss.center = [0 0 0];
-            conf.localsfs.vss.geometry = 'circular';
-            conf.localsfs.vss.number = 56;
-        case 'box'
-            conf.localsfs.vss.size = 0.4;
-            conf.localsfs.vss.center = [0 0 0];
-            conf.localsfs.vss.geometry = 'box';
-            conf.localsfs.vss.number = 4*56;
+    case 'linear'
+        conf.localsfs.vss.size = 0.4;
+        conf.localsfs.vss.center = [0 0.2 0];
+        conf.localsfs.vss.geometry = 'linear';
+        conf.localsfs.vss.number = 56;
+    case 'circular'
+        conf.localsfs.vss.size = 0.4;
+        conf.localsfs.vss.center = [0 0 0];
+        conf.localsfs.vss.geometry = 'circular';
+        conf.localsfs.vss.number = 56;
+    case 'box'
+        conf.localsfs.vss.size = 0.4;
+        conf.localsfs.vss.center = [0 0 0];
+        conf.localsfs.vss.geometry = 'box';
+        conf.localsfs.vss.number = 4*56;
     end
     
     % set desired sound field
@@ -175,22 +175,21 @@ for ii=1:size(scenarios)
     
     % set domain (monochromatic or time)
     switch scenarios{ii,6}
-        case 'mono'
-            conf.plot.usedb = false;
-            [~] = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf);
-        case 'imp'
-            % set t for time-shapshot
-            switch src
-                case {'ps', 'ls', 'fs'}
-                    t = norm(xs - conf.xref)/conf.c;
-                case {'pw'}
-                    t = 0;
-                otherwise
-                    error('unknown source type');
-            end
-            
-            conf.plot.usedb = true;
-            [~] = sound_field_imp_localwfs_vss(X,Y,Z,xs,src,t,conf);
+    case 'mono'
+        conf.plot.usedb = false;
+        [~] = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf);
+    case 'imp'
+        % set t for time-shapshot
+        switch src
+        case {'ps', 'ls', 'fs'}
+            t = norm(xs - conf.xref)/conf.c;
+        case {'pw'}
+            t = 0;
+        otherwise
+            error('unknown source type');
+        end
+        conf.plot.usedb = true;
+        [~] = sound_field_imp_localwfs_vss(X,Y,Z,xs,src,t,conf);
     end
     
     % title of plot

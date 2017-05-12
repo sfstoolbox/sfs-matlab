@@ -208,10 +208,6 @@ elseif strcmp('spherical',geometry) || strcmp('sphere',geometry)
     x0(:,4:6) = direction_vector(x0(:,1:3),repmat(X0,nls,1));
     % Secondary source weights + distance scaling
     x0(:,7) = weights .* L^2/4;
-    % Add integration weights (because we integrate over a sphere) to the grid
-    % weights
-    [~,theta] = cart2sph(x0(:,1),x0(:,2),x0(:,3)); % get elevation
-    x0(:,7) = x0(:,7) .* cos(theta);
 elseif strcmp('custom',geometry)
     % Custom geometry defined by conf.secondary_sources.x0.
     % This could be in the form of a n x 7 matrix, where n is the number of

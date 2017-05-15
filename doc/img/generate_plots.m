@@ -189,6 +189,12 @@ conf = SFS_config;
 conf.dimension = '2.5D';
 conf.plot.useplot = true;
 % sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
+conf.modal_window = 'max-rE';
+sound_field_imp_nfchoa([-2 2],[-2 2],0,[0 2 0],'ps',0.005,conf);
+axis([-2 2 -2 2]);
+xticks(-2:1:2); yticks(-2:1:2);
+print_png('sound_field_imp_nfchoa_25d_max-rE.png');
+conf.modal_window = 'rect';
 [p,x,y,z,x0] = sound_field_imp_nfchoa([-2 2],[-2 2],0,[0 2 0],'ps',0.005,conf);
 axis([-2 2 -2 2]);
 xticks(-2:1:2); yticks(-2:1:2);

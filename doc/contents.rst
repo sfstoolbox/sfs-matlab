@@ -10,6 +10,7 @@ Contents
     secondary-sources
     frequency-domain
     time-domain
+    modal-window
     custom-grid
     binaural-simulations
     helper-functions

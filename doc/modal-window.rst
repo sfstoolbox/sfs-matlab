@@ -3,10 +3,11 @@
 Modal Windows
 =============
 
-In the time-domain implementation of |NFC-HOA| it is possible to apply different
-weighting factors to each mode of the driving signals in the circular harmonics
-domain. Using a weighting window that is smoother than the default rectangular
-window, causes a concentration of energy to fewer loudspeakers.
+In the time-domain implementation of |NFC-HOA| it is possible to apply
+different weighting factors to each mode of the driving signals in the circular
+harmonics domain by changing the ``conf.modal_window`` configuration parameter.
+Using a weighting window that is smoother than the default rectangular window,
+causes a concentration of energy to fewer loudspeakers.
 
 .. sourcecode:: matlab
 

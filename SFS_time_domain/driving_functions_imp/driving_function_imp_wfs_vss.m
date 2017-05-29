@@ -72,7 +72,8 @@ w0 = zeros(Nv,N0);
 % Calculate pre-equalization filter if required hpre(t)
 [hpre,delay_offset] = wfs_preequalization(dirac_imp(),conf);
 
-% apply hpre to pwd if its more efficient (less plane wave than loudspeakers)
+% apply hpre to pwd if its more efficient (less virtual sources than 
+% loudspeakers)
 if Nv <= N0
     dv = convolution(dv,hpre);
 end

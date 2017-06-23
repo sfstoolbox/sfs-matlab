@@ -4,17 +4,30 @@ function [z,p] = sphbesselh_zeros(order)
 %   Usage: [z,p] = sphbesselh_zeros(order)
 %
 %   Input parameters:
-%       order       - order of hankel function
+%       order   - order of hankel function
 %
 %   Output parameters:
 %       z       - zeros/roots fo the Bessel function
 %       p       - roots of the Bessel function
 %
-%   SPHBESSELH_ZEROS(order) finds zeros and roots for a spherical hankel function
-%   of the specified order. Due to numerical problems, the order is limited up
-%   to 85.
+%   SPHBESSELH_ZEROS(order) finds zeros and poles for a spherical hankel 
+%   function of the specified order. It is based on the investigations in 
+%   Hahn and Spors (2017) and the Python implementation in from scipy in
+%   signal.filter_design._bessel_zeros.
 %
 %   See also: sphbesselh, driving_function_imp_nfchoa
+%
+%   References:
+%
+%       N. Hahn, S. Spors (2017) - "Further Investigations on the Design of 
+%       Radial Filters for the Driving Functions of Near-Field Compensated 
+%       Higher-Order Ambisonics," in 142nd Convention of the Audio Engineering
+%       Society, Paper 9732, http://www.aes.org/e-lib/browse.cfm?elib=18609
+%
+%       R. Campos, M. Calderon (2011) - "Approximate closed-form formulas for
+%       the zeros of the Bessel Polynomials," https://arxiv.org/abs/1105.0957
+%
+%       This implementation is based on scipy: http://bit.ly/2tPfePn
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -53,74 +66,117 @@ narginchk(nargmin,nargmax);
 isargpositivescalar(order);
 
 
-%% ===== Configuration ===================================================
-% Method for calculating zeros
-% See https://github.com/sfstoolbox/sfs/issues/57 for a discussion
-method = 1;
+%% ===== Constants =======================================================
+TOL = 1E-15;
+MAXITER = 50;
 
 
 %% ===== Main ============================================================
-if order<86
-    if method==1
-        % Method 1 after FIXME
-        % Formula for nominator (source?)
-        B = zeros(1,order+2);
-        for n=0:order
-            B(n+1) = factorial(2*order-n)/(factorial(order-n)*factorial(n)*2^(order-n));
-        end
-        B = B(end:-1:1);
-        % Zeros
-        z = roots(B);
-        % Poles (are always zero)
-        p = zeros(order,1);
-    elseif method==2
-        % Method 2 after Pomberger 2008, p. 43
-        B = cell(order+1,1);
-        z = cell(order+1,1);
-        p = cell(order+1,1);
-        for n=0:order
-          % Recursion formula for nominator
-          B{n+1} = zeros(1,n+1);
-          for k=0:n-1
-              B{n+1}(k+1) = ((2*n-k-1)*(2*n-k)) / (2*(n-k)) * B{n}(k+1);
-          end
-          B{n+1}(n+1) = 1;
-        end
-        for n=0:order
-          % Flip nominator polynoms
-          B{n+1} = B{n+1}(end:-1:1);
-          % Zeros
-          z{n+1} = roots(B{n+1});
-          % Poles (are always zero)
-          p{n+1} = zeros(order,1);
-        end
-        z = z{order+1};
-        p = p{order+1};
-    else
-        error('%s: method has to be 1 or 2.',upper(mfilename));
+p = zeros(order,1);  % poles are always zero
+
+if order < 2
+    z = -ones(order,1);
+    return
+end
+
+% Approximate roots of nth-order ordinary Bessel polynomial as starting points
+r = campos_zeros(order);
+
+% Zeros of nth-order ordinary Bessel polynomial y_n are the same as for
+% the exponentially scaled modified Bessel function of second kind K_v:
+% \sqrt{2pi/x} * exp(1/x) * K_{n+0.5}(1/x) = y_n(x),
+% see for example http://bit.ly/2unx63m.
+% Hence, we define the target function and its first derivative as
+f  = @(x) besselk(order+0.5, 1./x, 1);
+fp = @(x) besselk(order-0.5, 1./x, 1)./2./x.^2  - ...
+          besselk(order+0.5, 1./x, 1)./x.^2  + ...
+          besselk(order+1.5, 1./x, 1)./2./x.^2;
+
+% Simulataneous root finding using the method of Aberth-Ehrlich method
+r = aberth(f,fp,r,TOL,MAXITER);
+
+% Refine root position using Newton-Raphson method
+for idx=1:order
+    r(idx) = newton(f,fp,r(idx),TOL,MAXITER);
+end
+
+% Average complex conjugates to make them exactly symmetrical
+r = 0.5*r + 0.5*conj(r(end:-1:1));
+
+% Roots should sum to -1
+if abs(sum(r) + 1) > TOL
+    error(['%s: Generated roots of the ordinary Bessel polynomial are' ...
+      ' inaccurate, order=%d'],upper(mfilename),order);
+end
+
+% Zeros are the inverted roots of nth-order ordinary Bessel polynomial
+z = 1./r;
+
+end
+
+
+%% ===== Auxiliary Functions =============================================
+function z0 = campos_zeros(n)
+    % Approximate roots of ordinary Bessel polynomial of nth order, see
+    % Campos and Calderon (2011) and http://bit.ly/2txLJyM
+
+    if n == 1
+        z0 = -1;
+        return
     end
-else
-    error(['%s: for orders higher than 85 no stable numerical ', ...
-           'method is available at the moment to caclulate the zeros.'], ...
-          upper(mfilename));
-end
-return
 
+    % See Campos and Calderon (2011), Eq. (7)
+    r = polyval( [1 2 0 0],n);          % n^3 + n^2
+    a1 = polyval( [-6 -6],n) / r;       % ( -6n - 6 ) / r
+    a2 = 6 / r;
 
-%% ===== Computation with Multiprecission Toolbox ========================
-% For the Multiprecission Toolbox, see: http://www.advanpix.com
-% Unfortunately it turned out, that the obtained zeros with this method have
-% some systematic errors, see
-% https://github.com/sfstoolbox/sfs/issues/57#issuecomment-183791477
-% The following code was used to calculate the zeros with the Multiprecission
-% Toolbox. The results are stored at
-% https://github.com/sfstoolbox/data/tree/master/sphbesselh_zeros
-B = mp(zeros(1,order+2));
-A = B;
-for n=mp(0:order)
-    B(n+1) = factorial(2*order-n)/(factorial(order-n)*factorial(n)*2^(order-n));
+    s = polyval( [1 -3 0 2 0 0],n);     % n^5 - 3n^4 + 2n^2
+    b3 = polyval( [-8 16],n) / s;       % ( -8n + 16 ) / s
+    b2 = polyval( [12 -12 -24],n) / s;  % ( 12n^2 - 12n - 24 ) / s
+    b1 = polyval( [-2 -12 24 8],n) / s; % ( -2n^3 - 12n^2 + 24n + 8 ) / s
+    b0 = polyval( [-1 5 0 -6 0],n) / s; % ( -n^4 + 5n^3 - 6n ) / s
+
+    % See Campos and Calderon (2011), Eq. (4)
+    k = (1:n).';
+    x0 = polyval( [a2 a1 0],k);         % real part
+    y0 = polyval( [b3 b2 b1 b0],k);     % imaginary part
+
+    % See Campos and Calderon (2011), Eq. (8)
+    z0 = x0 + 1j*y0;
+
 end
-B = B(end:-1:1);
-z = roots(B);
-A(2) = mp(1);
-p = roots(A);
+
+function x = aberth(f,fp,x0,TOL,MAXITER)
+    % Ehrlich-Aberth method to simulatenous approximation of roots,
+    % see http://bit.ly/2sOfeiT
+    N = length(x0);
+    beta = zeros(size(x0));
+    x = x0;
+    for iter=1:MAXITER
+        alpha = -f(x) ./ fp(x);
+        
+        for k=1:N
+            beta(k) = sum(1./(x(k) - x([1:k-1,k+1:N])));
+        end
+        
+        x = x + alpha./(1 + alpha .* beta);
+        
+        if all(abs(alpha) <= TOL)
+            return
+        end
+    end
+    warning('%s: maximum iterations in aberth() reached; order = %d', ... 
+        upper(mfilename), N);
+end
+
+function x = newton(f,fp,x0,TOL,MAXITER)
+    % Newton-Rapheson method for approximation of a single root
+    for iter=1:MAXITER
+       x = x0 - f(x0) ./ fp(x0);   
+       if abs(x - x0) < TOL
+           return
+       end
+       x0 = x;   
+    end
+    warning('%s: maximum iterations in newton() reached',  upper(mfilename));
+end

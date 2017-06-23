@@ -98,9 +98,9 @@ irs1(2,1,:) = h2;
 irs1(:,2,:) = irs1(:,1,:); %redundant second channel
 
 conf.ir.interpolationmethod = 'simple';
-h_int1_simple = interpolate_ir(irs1,weights,x0,conf);
+h_int1_simple = interpolate_ir(irs1,weights,conf);
 conf.ir.interpolationmethod = 'freqdomain';
-h_int1_fd = interpolate_ir(irs1,weights,x0,conf);
+h_int1_fd = interpolate_ir(irs1,weights,conf);
 
 % 2. Interpolate between neighbouring Dirac impulses at impulse reponse start
 h1 = zeros(1,N);
@@ -113,9 +113,9 @@ irs2(2,1,:) = h3;
 irs2(:,2,:) = irs2(:,1,:); %redundant second channel
 
 conf.ir.interpolationmethod = 'simple';
-h_int2_simple = interpolate_ir(irs2,weights,x0,conf);
+h_int2_simple = interpolate_ir(irs2,weights,conf);
 conf.ir.interpolationmethod = 'freqdomain';
-h_int2_fd = interpolate_ir(irs2,weights,x0,conf);
+h_int2_fd = interpolate_ir(irs2,weights,conf);
 
 % 3. Interpolate between neighbouring Dirac impulses in middle of impulse response
 h4 = zeros(1,N);
@@ -128,9 +128,9 @@ irs3(2,1,:) = h5;
 irs3(:,2,:) = irs3(:,1,:);
 
 conf.ir.interpolationmethod = 'simple';
-h_int3_simple = interpolate_ir(irs3,weights,x0,conf);
+h_int3_simple = interpolate_ir(irs3,weights,conf);
 conf.ir.interpolationmethod = 'freqdomain';
-h_int3_fd = interpolate_ir(irs3,weights,x0,conf);
+h_int3_fd = interpolate_ir(irs3,weights,conf);
 
 % Plots
 % impulse responses
@@ -177,9 +177,9 @@ hrir_close = [hrtf.Data.IR(idx0,:,:); hrtf.Data.IR(idx2,:,:)];
 hrir_close_ref = hrtf.Data.IR(idx1,:,:);
 
 conf.ir.interpolationmethod = 'simple';
-hrir_close_simple = interpolate_ir(hrir_close,weights_close,x0_close,conf);
+hrir_close_simple = interpolate_ir(hrir_close,weights_close,conf);
 conf.ir.interpolationmethod = 'freqdomain';
-hrir_close_fd = interpolate_ir(hrir_close,weights_close,x0_close,conf);
+hrir_close_fd = interpolate_ir(hrir_close,weights_close,conf);
 
 % 2. Interpolate between distant HRIRs
 idx0 = 181; %index for 0° azimuth
@@ -192,9 +192,9 @@ hrir_dist = [hrtf.Data.IR(idx0,:,:); hrtf.Data.IR(idx60,:,:)];
 hrir_dist_ref = hrtf.Data.IR(idx30,:,:);
 
 conf.ir.interpolationmethod = 'simple';
-hrir_dist_simple = interpolate_ir(hrir_dist,weights_dist,x0_dist,conf);
+hrir_dist_simple = interpolate_ir(hrir_dist,weights_dist,conf);
 conf.ir.interpolationmethod = 'freqdomain';
-hrir_dist_fd = interpolate_ir(hrir_dist,weights_dist,x0_dist,conf);
+hrir_dist_fd = interpolate_ir(hrir_dist,weights_dist,conf);
 
 % Plots
 % impulse responses

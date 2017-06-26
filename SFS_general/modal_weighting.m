@@ -1,24 +1,32 @@
-function [win,Win,Phi] = modal_weighting(order,ndtft,conf)
+function [win,varargout] = modal_weighting(order,Ninv,conf)
 %MODAL_WEIGHTING computes weighting window for modal coefficients
 %
-%   Usage: [win,Win,Phi] = modal_weighting(order,[ndtft],conf)
+%   Usage: [win,Win,Ang] = modal_weighting(order,[Ninv],conf)
 %
 %   Input parameters:
 %       order       - half width of weighting window / 1
-%       ndtft       - number of bins for inverse discrete-time Fourier transform
-%                     (DTFT) / 1 (optional, default: 2*order+1)
+%       Ninv        - number of bins for the inverse circular/spherical
+%                     harmonics tranform (ICHT/ISHT) / 1 
+%                     (optional, default: 2*order+1)
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       win         - the window w_n in the discrete domain, only positive n
 %                     (length = order+1)
-%       Win         - the inverse DTFT of w_n (length = ndtft)
-%       Phi         - corresponding angle the inverse DTFT of w_n
+%       Win         - ICHT/ISHT of w_n (length = Ninv)
+%       Ang         - angle corresponding to the ICHT/ISHT
 %
-%   MODAL_WEIGHTING(order,ndtft,conf) calculates a weighting window for the
+%   MODAL_WEIGHTING(order,Ninv,conf) calculates a weighting window for the
 %   modal band limitation applied in NFC-HOA and LSFS-SBL. The window type is
 %   configured in conf.modal_window. Its default setting is a simple
-%   rectangular window, for other options have a look into SFS_config.
+%   rectangular window, for other options have a look into SFS_config. win
+%   may be different for the 2D/2.5D and the 3D case. For the 2D/2.5D case, Win
+%   is the inverse circular harmonics transform (ICHT) of win with Ang as
+%   the corresponding azimuth angle equiangularly distributed within [0,2pi).
+%   For 3D case, Win is the inverse spherical harmonics transform of win. As the
+%   transform is rotationally symmetric around the z-axis, i.e. independent of
+%   the azimuth angle, Win corresponds to the polar angles given in Ang. Latter
+%   are equiangularly distributed within [0,pi].
 %
 %   References:
 %   	Kaiser, J., & Schafer, R. (1980) - "On the use of the I0-sinh window
@@ -27,6 +35,8 @@ function [win,Win,Phi] = modal_weighting(order,ndtft,conf)
 %     Daniel, J., Rault, J.-B., Polack, J.-D. (1998) "Ambisonics Encoding of 
 %           Other Audio Formats for Multiple Listening Conditions", Proc. of 
 %           105th Aud. Eng. Soc. Conv.
+%     Zotter, F. & Frank, M. (2012) - "All-Round Ambisonic Panning and
+%           Decoding", J. Aud. Eng. Soc. 
 %     Van Trees, H. L. (2004) - "Optimum Array Processing", John Wiley & Sons.
 %
 %   See also: driving_function_imp_nfchoa, driving_function_mono_nfchoa
@@ -67,16 +77,16 @@ nargmax = 3;
 narginchk(nargmin,nargmax);
 isargpositivescalar(order);
 if nargin<nargmax
-    conf = ndtft;
-    ndtft = 2*order + 1;
+    conf = Ninv;
+    Ninv = 2*order + 1;
 end
-isargpositivescalar(ndtft);
+isargpositivescalar(Ninv);
 isargstruct(conf);
 
 
 %% ===== Configuration ===================================================
 wtype = conf.modal_window;
-
+dim = conf.dimension;
 
 %% ===== Computation =====================================================
 switch wtype
@@ -85,10 +95,19 @@ case 'rect'
     win = ones(1,order+1);
 case 'max-rE'
     % === max-rE window ==============================================
-    % The two-dimensional max-rE window is basically a modified cosine window, 
-    % which yields zero for m=order+1 instead of m=order. Hence its last value
-    % is not zero. See Daniel (1998), Eq. (44)
-    win = cos(pi./2.*(0:order)/(order+1));
+    if any( strcmp(dim, {'2D', '2.5D'}) )
+        % The two-dimensional max-rE window is basically a modified cosine 
+        % window, which yields zero for m=order+1 instead of m=order. Hence its
+        % last value is not zero. See Daniel (1998), Eq. (44)
+        win = cos(pi./2.*(0:order)/(order+1));
+    else
+        % Approximate solution for the three-dimensional max-rE optimisation 
+        % problem. See Zotter (2012), Eq. (10)
+        win = zeros(1,order+1);
+        for n=0:order
+            win(n+1) = asslegendre(n,0,cosd(137.9/(order+1.51)));
+        end         
+    end    
 case {'kaiser', 'kaiser-bessel'}
     % === Kaiser-Bessel window =======================================
     % Approximation of the slepian window using modified bessel
@@ -112,12 +131,19 @@ otherwise
     error('%s: unknown weighting type (%s)!',upper(mfilename),wtype);
 end
 
-% Inverse DTFT
 if nargout>1
-    Win = ifft([win,zeros(1,order)],ndtft,'symmetric');
-end
-% Axis corresponding to inverse DTFT
-if nargout>2
-    Nphi = length(Win);
-    Phi = 0:2*pi / Nphi:2*pi*(1-1/Nphi);
+    if any( strcmp(dim, {'2D', '2.5D'}) )
+        % === Inverse Circular Harmonics Transform ===
+        [varargout{1:nargout-1}] = inverse_cht([win(end:-1:2),win],Ninv);
+    else
+        % === Inverse Spherical Harmonics Transform ===
+        % For rotationally symmetric kernels this transform is equal to the
+        % Inverse Legendre Transform (ILT) weighted by 1/2pi.
+        % See Zotter (2012), Eq. (7)
+        Ang = 0:pi/(Ninv-1):pi;  % equiangular distributed polar angle
+        varargout{1} = inverse_lt(win,cos(Ang))./(2*pi);
+        if nargout>2
+            varargout{2} = Ang;
+        end
+    end
 end

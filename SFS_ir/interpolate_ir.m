@@ -77,7 +77,7 @@ narginchk(nargmin,nargmax);
 %% ===== Configuration ==================================================
 useinterpolation = conf.ir.useinterpolation;
 % Check for old configuration
-if useinterpolation 
+if useinterpolation
     if ~isfield(conf.ir,'interpolationmethod')
         warning('SFS:irs_intpolmethod',...
             'no interpolation method provided, will use method ''simple''.');
@@ -107,17 +107,21 @@ if useinterpolation && length(weights)>1
         % Upsample to avoid phase aliasing in unwrapping of phase
         TF = fft(ir,4*size(ir,3),3);
         % Magnitude and phase will be interpolated separately
-        magnitude = abs(TF);
-        phase = unwrap(angle(TF),[],3);
-        % Calculate interpolation only for the first half of the spectrum
-        % and only for original bins
-        idx_half = floor(size(TF,3)/2)+1;
-        magnitude = sum(bsxfun(@times,magnitude(:,:,1:4:idx_half),weights),1);
-        phase = sum(bsxfun(@times,phase(:,:,1:4:idx_half),weights),1);
+        idx_half = 2*size(ir,3)+1;  % index for first half of spectrum
+        magnitude = abs(TF(:,:,1:idx_half));
+        phase = unwrap(angle(TF(:,:,1:idx_half)),[],3);
+        % Mirror magnitude and phase
+        magnitude = cat(3,magnitude,magnitude(:,:,idx_half-1:-1:2));
+        phase = cat(3,phase,-phase(:,:,idx_half-1:-1:2));
+        % Calculate interpolation of the spectrum and downsample
+        magnitude = sum(bsxfun(@times,magnitude(:,:,1:4:end),weights),1);
+        phase = sum(bsxfun(@times,phase(:,:,1:4:end),weights),1);
         % Calculate interpolated impulse response from new magnitude and phase
-        ir = ifft(magnitude.*exp(1i*phase),size(ir,3),3,'symmetric');
+        ir = ifft(magnitude.*exp(1i*phase),[],3);
+        % Avoid round-off errors
+        ir = real(ir);
     otherwise
         error('%s: %s is an unknown interpolation method.', ...
             upper(mfilename),interpolationmethod);
-    end   
+    end
 end

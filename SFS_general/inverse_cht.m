@@ -1,7 +1,7 @@
-function A = inverse_cht(Am,Nphi)
+function [A,Phi] = inverse_cht(Am,Nphi)
 %INVERSE_CHT computes the inverse circular harmonics transform (ICHT)
 %
-%   Usage: A = inverse_cht(Am,[Nphi])
+%   Usage: [A,Phi] = inverse_cht(Am,[Nphi])
 %
 %   Input parameters:
 %       Am      - circular harmonics coefficients [N x (2*M+1)]
@@ -10,6 +10,7 @@ function A = inverse_cht(Am,Nphi)
 %
 %   Output parameters:
 %       A       - inverse circular harmonics transform [N x Nphi]
+%       Phi     - corresponding angle of the ICHT [1 x Nphi]
 %
 %   See also: pwd_imp_circexp
 
@@ -57,7 +58,7 @@ end
 
 %% ===== Computation ==================================================
 M = (size(Am,2)-1)/2;
-Nfft = size(Am,1);
+N = size(Am,1);
 
 % Implementation of
 %           ___
@@ -66,10 +67,15 @@ Nfft = size(Am,1);
 %         m=-M..M   m
 
 % Spatial IFFT
-A = zeros(Nfft, Nphi);
+A = zeros(N, Nphi);
 % this handles cases where Nphi < M
-for l=1:Nfft
+for l=1:N
     A(l,:) = sum(buffer(Am(l,:),Nphi),2);
 end
-A = circshift(A,[0,-M]);  % m = 0, ..., M, -M, ..., -1
+A = circshift(A,[0,-M]);  % m = 0, ..., M, ..., -M, ..., -1
 A = ifft(A,[],2) * Nphi;  % IFFT includes factor 1/Nphi
+
+% Axis corresponding to ICHT
+if nargout>1
+    Phi = 0:2*pi / Nphi:2*pi*(1-1/Nphi);
+end

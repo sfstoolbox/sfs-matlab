@@ -1,4 +1,11 @@
 2.4.0 ()
+    - add 'reference_circle' option for focused sources in 2.5D
+    - add max-rE and tukey modal weighting windows
+    - add time-domain implementation of LSFS using spatial bandwidth-limitation
+    - add circular expansion functions
+    - fix incorporation of tapering weights for LWFS
+    - remove x0 from interpolate_ir() call
+    - fix interpolate_ir() for special cases
     - switch handling of time from samples to seconds
     - add freq_response_line_source()
     - add freq_response_point_source()

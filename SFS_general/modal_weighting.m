@@ -114,7 +114,7 @@ end
 
 % Inverse DTFT
 if nargout>1
-    Win = ifft([win,zeros(1,order)],ndtft,'symmetric');
+    Win = symmetric_ifft([win,zeros(1,order)],ndtft);
 end
 % Axis corresponding to inverse DTFT
 if nargout>2

@@ -115,7 +115,7 @@ if useinterpolation && length(weights)>1
         magnitude = sum(bsxfun(@times,magnitude(:,:,1:4:idx_half),weights),1);
         phase = sum(bsxfun(@times,phase(:,:,1:4:idx_half),weights),1);
         % Calculate interpolated impulse response from new magnitude and phase
-        ir = ifft(magnitude.*exp(1i*phase),size(ir,3),3,'symmetric');
+        ir = symmetric_ifft(magnitude.*exp(1i*phase),size(ir,3),3);
     otherwise
         error('%s: %s is an unknown interpolation method.', ...
             upper(mfilename),interpolationmethod);

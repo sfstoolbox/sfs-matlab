@@ -1,4 +1,4 @@
-function [win,Win,Phi] = modal_weighting(order,ndtft,conf)
+function [win,varargout] = modal_weighting(order,ndtft,conf)
 %MODAL_WEIGHTING computes weighting window for modal coefficients
 %
 %   Usage: [win,Win,Phi] = modal_weighting(order,[ndtft],conf)
@@ -124,12 +124,7 @@ otherwise
     error('%s: unknown weighting type (%s)!',upper(mfilename),wtype);
 end
 
-% Inverse DTFT
+% Inverse Circular Harmonics Transform
 if nargout>1
-    Win = ifft([win,zeros(1,order)],ndtft,'symmetric');
-end
-% Axis corresponding to inverse DTFT
-if nargout>2
-    Nphi = length(Win);
-    Phi = 0:2*pi / Nphi:2*pi*(1-1/Nphi);
+    [varargout{1:nargout-1}] = inverse_cht([win(end:-1:2),win],ndtft);
 end

@@ -18,7 +18,8 @@ function [win,Win,Phi] = modal_weighting(order,ndtft,conf)
 %   MODAL_WEIGHTING(order,ndtft,conf) calculates a weighting window for the
 %   modal band limitation applied in NFC-HOA and LSFS-SBL. The window type is
 %   configured in conf.modal_window. Its default setting is a simple
-%   rectangular window, for other options have a look into SFS_config.
+%   rectangular window, for other options have a look into SFS_config. The
+%   windows may be different for the 2D/2.5D and the 3D case.
 %
 %   References:
 %   	Kaiser, J., & Schafer, R. (1980) - "On the use of the I0-sinh window
@@ -27,6 +28,8 @@ function [win,Win,Phi] = modal_weighting(order,ndtft,conf)
 %     Daniel, J., Rault, J.-B., Polack, J.-D. (1998) "Ambisonics Encoding of 
 %           Other Audio Formats for Multiple Listening Conditions", Proc. of 
 %           105th Aud. Eng. Soc. Conv.
+%     Zotter, F. & Frank, M. (2012) - "All-Round Ambisonic Panning and
+%           Decoding", J. Aud. Eng. Soc. 
 %     Van Trees, H. L. (2004) - "Optimum Array Processing", John Wiley & Sons.
 %
 %   See also: driving_function_imp_nfchoa, driving_function_mono_nfchoa
@@ -85,10 +88,19 @@ case 'rect'
     win = ones(1,order+1);
 case 'max-rE'
     % === max-rE window ==============================================
-    % The two-dimensional max-rE window is basically a modified cosine window, 
-    % which yields zero for m=order+1 instead of m=order. Hence its last value
-    % is not zero. See Daniel (1998), Eq. (44)
-    win = cos(pi./2.*(0:order)/(order+1));
+    if any( strcmp(dimension, {'2D', '2.5D'}) )
+        % The two-dimensional max-rE window is basically a modified cosine 
+        % window, which yields zero for m=order+1 instead of m=order. Hence its
+        % last value is not zero. See Daniel (1998), Eq. (44)
+        win = cos(pi./2.*(0:order)/(order+1));
+    else
+        % Approximate solution for the three-dimensional max-rE optimisation 
+        % problem. See Zotter (2012), Eq. (10)
+        win = zeros(1,order+1);
+        for n=0:order
+            win(n+1) = asslegendre(n,0,cosd(137.9/(order+1.51)));
+        end         
+    end    
 case {'kaiser', 'kaiser-bessel'}
     % === Kaiser-Bessel window =======================================
     % Approximation of the slepian window using modified bessel

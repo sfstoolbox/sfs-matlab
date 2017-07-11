@@ -22,6 +22,19 @@ function [d,dm,delay_offset] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %   driving function of NFC-HOA for the given source type and position,
 %   and loudspeaker positions.
 %
+%   References:
+%     Spors, S., Kuscher, V., Ahrens, J. (2011) - "Efficient realization of
+%         model-based rendering for 2.5-dimensional near-field compensated
+%         higher order Ambisonics", IEEE Workshop on Applications of Signal
+%         Processing to Audio and Acoustics (WASPAA), pp. 61-64,
+%         https://doi.org/10.1109/ASPAA.2011.6082325
+%     Schultz, F. and Spors, S. (2014) - "Comparing Approaches to the Spherical
+%         and Planar Single Layer Potentials for Interior Sound Field
+%         Synthesis," Acta Acustica united with Acustica, pp. 900-911,
+%         https://doi.org/10.3813/AAA.918769
+%     Gumerov, N. and Duraiswami, R. (2004) - "Fast multipole methods for the 
+%         Helmholtz equation in three dimensions," Elsevier, Oxford
+%
 %   See also: driving_function_imp_nfchoa_ps, sound_field_imp_nfchoa
 
 %*****************************************************************************
@@ -75,7 +88,7 @@ dimension = conf.dimension;
 %% ===== Computation =====================================================
 % Generate stimulus pusle
 pulse = dirac_imp();
-% correct position of loudspeakers for off-center arrays
+% Correct position of loudspeakers for off-center arrays
 x0(:,1:3) = bsxfun(@minus, x0(:,1:3), X0);
 % Radius of array
 R = norm(x0(1,1:3));
@@ -132,6 +145,10 @@ elseif strcmp('source',t0)
     end
 end
 
+% Apply modal weighting
+wm = modal_weighting(order,conf);
+Hm = bsxfun(@times,Hm,wm);
+
 if strcmp('2.5D',dimension)
     % -------------------------------------------------------------------------
     %                      ___
@@ -139,31 +156,38 @@ if strcmp('2.5D',dimension)
     % D(phi0,w) = -------  /__     Hm(w) e^(im(phi0-phi_src))
     %             2 pi r0  m=-M..M
     %
-    % see Spors et al. (2011), eq.(4) and (5)
+    % See Spors et al. (2011), eq. (4)
     %--------------------------------------------------------------------------
     
-    % apply modal weighting
-    wm = modal_weighting(order,conf);  % modal weighting function
-    Hm = bsxfun(@times,Hm,wm);
-    
-    % apply phase shift due to source angle
+    % Apply phase shift due to source angle
     m = 0:order;
     dm = bsxfun(@times,Hm,exp(-1i*m*phi_src));
     
-    % Spatial IFFT
+    % Inverse circular harmonics transform
     dm = [conj(dm(:,end:-1:2)) dm];  % append coefficients for negative m
     d = inverse_cht(dm,nls);
     d = 1/(2*pi*R)*real(d);
 
 elseif strcmp('3D',dimension)
+    % -------------------------------------------------------------------------
+    %                    ___          ___
+    %               1    \            \       -m               m
+    % D(x0,w) =  ------  /__   Hn(w)  /__    Y  (thetaS,phiS) Y (theta0,phi0)
+    %             R.^2  n=0..M      m=-n..n   n                n
+    %
+    % See Schultz and Spors (2014), eq. (A3) and (A6).
+    % Equivalent expression, see Gumerov and Duraiswami (2004), eq. (2.1.70):
+    %                    ___
+    %               1    \            2n+1
+    % D(x0,w) =  ------  /__   Hn(w) ------ P (cos(THETA))
+    %             R.^2  n=0..M        4*pi   n
+    % 
+    % with P_n (cos(THETA)) being the nth-order Legendre polynomial depending
+    % on the angle THETA between xs and x0. The sum corresponds to an inverse
+    % Legendre transform (ILT) of Hn(w) weighted by 1/2pi.
+    %--------------------------------------------------------------------------
 
-    d = zeros(N,nls);
+    cosTHETA = xs*x0(:,1:3).'./r_src./R;
     dm = Hm;
-    cosTheta0 = xs*x0(:,1:3).'./r_src./R;  % cosine of angle between x0 and xs;
-    for n=0:order     
-        d = d + (2*n+1)/(4*pi).*Hm(:,n+1)*asslegendre(n,0,cosTheta0);
-    end    
-    d = d./R.^2;
+    d = inverse_lt(dm,cosTHETA)./(2*pi*R.^2);  % ILT
 end
-
-

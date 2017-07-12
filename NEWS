@@ -1,4 +1,8 @@
 2.4.0 ()
+    - fix symmetric ifft for Octave
+    - add inverse Legendre transform
+    - fix integral weights for spherical secondary sources
+    - add 3D ps and pw driving functions for NFC-HOA
     - add 'reference_circle' option for focused sources in 2.5D
     - add max-rE and tukey modal weighting windows
     - add time-domain implementation of LSFS using spatial bandwidth-limitation

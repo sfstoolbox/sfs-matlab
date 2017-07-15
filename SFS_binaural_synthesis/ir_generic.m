@@ -1,22 +1,24 @@
-function ir = ir_generic(X,phi,x0,d,sofa,conf)
-%IR_GENERIC Generate a IR
+function ir = ir_generic(X,head_orientation,x0,d,sofa,conf)
+%IR_GENERIC generates driving signals including the impulse responses from the
+%secondary sources to the listener position
 %
-%   Usage: ir = ir_generic(X,phi,x0,d,sofa,conf)
+%   Usage: ir = ir_generic(X,head_orientation,x0,d,sofa,conf)
 %
 %   Input parameters:
-%       X       - listener position / m
-%       phi     - listener direction [head orientation] / rad
-%                 0 means the head is oriented towards the x-axis.
-%       x0      - secondary sources [n x 7] / m
-%       d       - driving signals [m x n]
-%       sofa    - impulse response data set for the secondary sources
-%       conf    - configuration struct (see SFS_config)
+%       X                - listener position / m
+%       head_orientation - orientation of the listener with [phi theta] /
+%                          (rad, rad)
+%       x0               - secondary sources [n x 7] / m
+%       d                - driving signals [m x n]
+%       sofa             - impulse response data set for the secondary sources
+%       conf             - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       ir      - Impulse response for the desired driving functions (nx2 matrix)
+%       ir               - impulse response for the desired driving functions
+%                          (nx2 matrix)
 %
-%   IR_GENERIC(X,phi,x0,d,sofa,conf) calculates a binaural room impulse
-%   response for the given secondary sources and driving signals.
+%   IR_GENERIC(X,head_orientation,x0,d,sofa,conf) calculates a binaural room
+%   impulse response for the given secondary sources and driving signals.
 %
 %   See also: ir_wfs, ir_nfchoa, ir_point_source, auralize_ir
 
@@ -55,7 +57,7 @@ nargmin = 6;
 nargmax = 6;
 narginchk(nargmin,nargmax);
 isargposition(X);
-isargscalar(phi);
+isargvector(head_orientation);
 isargsecondarysource(x0);
 isargmatrix(d);
 isargstruct(conf);
@@ -69,10 +71,6 @@ end
 N = conf.N; % target length of BRS impulse responses
 
 
-%% ===== Variables ======================================================
-phi = correct_azimuth(phi);
-
-
 %% ===== BRIR ===========================================================
 % Initial values
 ir_generic = zeros(N,2);
@@ -83,7 +81,7 @@ for ii=1:size(x0,1)
     % === Get the desired impulse response.
     % If needed interpolate the given impulse response set and weight, delay the
     % impulse for the correct distance
-    ir = get_ir(sofa,X,[phi 0],x0(ii,1:3),'cartesian',conf);
+    ir = get_ir(sofa,X,head_orientation,x0(ii,1:3),'cartesian',conf);
 
     % === Sum up virtual loudspeakers/HRIRs and add loudspeaker time delay ===
     % Also applying the weights of the secondary sources including integration

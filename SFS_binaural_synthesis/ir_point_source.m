@@ -1,22 +1,23 @@
-function ir = ir_point_source(X,phi,xs,sofa,conf)
+function ir = ir_point_source(X,head_orientation,xs,sofa,conf)
 %IR_POINT_SOURCE generates a binaural simulation of a point source
 %
-%   Usage: ir = ir_point_source(X,phi,xs,sofa,conf)
+%   Usage: ir = ir_point_source(X,head_orientation,xs,sofa,conf)
 %
 %   Input parameters:
-%       X       - listener position / m
-%       phi     - listener direction [head orientation] / rad
-%       xs      - source position / m
-%       sofa    - impulse response data set (sofa struct/file)
-%       conf    - configuration struct (see SFS_config)
+%       X                - listener position / m
+%       head_orientation - orientation of the listener with [phi theta] /
+%                          (rad, rad)
+%       xs               - source position / m
+%       sofa             - impulse response data set (sofa struct/file)
+%       conf             - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       ir      - impulse response (nx2 matrix)
+%       ir               - impulse responses (nx2 matrix)
 %
-%   IR_POINT_SOURCE(X,phi,xs,sofa,conf) calculates a impulse response for a
-%   single loudspeaker at position xs and a listener located at X, looking
-%   into direction phi. Whereby at phi = 0 the listener is looking in the
-%   direction of the x-axis.
+%   IR_POINT_SOURCE(X,head_orientation,xs,sofa,conf) calculates a impulse
+%   response for a single loudspeaker at position xs and a listener located
+%   at X, looking into head_orientation. Whereby at head_orientation = [0 0]
+%   the listener is looking in the direction of the x-axis.
 %
 %   See also: ssr_brs_point_source, get_ir, ir_wfs, auralize_ir
 
@@ -56,9 +57,9 @@ nargmax = 5;
 narginchk(nargmin,nargmax);
 isargposition(X);
 isargxs(xs);
-isargscalar(phi);
+isargvector(head_orientation);
 isargstruct(conf);
 
 
 %% ===== Computation =====================================================
-ir = ir_generic(X,phi,[xs 0 -1 0 1],1,sofa,conf);
+ir = ir_generic(X,head_orientation,[xs 0 -1 0 1],1,sofa,conf);

@@ -52,9 +52,13 @@ be convolved with the cello recording by the ``auralize_ir()`` function.
 
 .. sourcecode:: matlab
 
-    conf = SFS_config;
+    X = [0 0 0];
+    head_orientation = [0 0];
+    xs = [rad(30) 0 3];
+    coordinate_system = 'spherical';
     hrtf = SOFAload('QU_KEMAR_anechoic_3m.sofa');
-    ir = get_ir(hrtf,[0 0 0],[0 0],[rad(30) 0 3],'spherical',conf);
+    conf = SFS_config;
+    ir = get_ir(hrtf,X,head_orientation,xs,coordinate_system,conf);
     cello = wavread('anechoic_cello.wav');
     sig = auralize_ir(ir,cello,1,conf);
     sound(sig,conf.fs);
@@ -65,14 +69,17 @@ following.
 
 .. sourcecode:: matlab
 
+    X = [0 0 0];
+    head_orientation = [pi/2 0];
+    xs = [0 3 0];
+    src = 'ps';
+    hrtf = SOFAload('QU_KEMAR_anechoic_3m.sofa');
     conf = SFS_config;
     conf.secondary_sources.size = 3;
     conf.secondary_sources.number = 56;
     conf.secondary_sources.geometry = 'circle';
     conf.dimension = '2.5D';
-    hrtf = SOFAload('QU_KEMAR_anechoic_3m.sofa');
-    % ir = ir_wfs(X,phi,xs,src,hrtf,conf);
-    ir = ir_wfs([0 0 0],pi/2,[0 3 0],'ps',hrtf,conf);
+    ir = ir_wfs(X,head_orientation,xs,src,hrtf,conf);
     cello = wavread('anechoic_cello.wav');
     sig = auralize_ir(ir,cello,1,conf);
 
@@ -117,12 +124,16 @@ in just one file.
 
 .. sourcecode:: matlab
 
-    conf = SFS_config;
+    X = [0 0 0];
+    head_orientation = [0 0];
+    xs = [3 0 0];
+    src = 'ps';
     brir = 'BRIR_AllAbsorbers_ArrayCentre_Emitters1to64.sofa';
+    conf = SFS_config;
     conf.secondary_sources.geometry = 'custom';
     conf.secondary_sources.x0 = brir;
     conf.N = 44100;
-    ir = ir_wfs([0 0 0],0,[3 0 0],'ps',brir,conf);
+    ir = ir_wfs(X,head_orientation,xs,src,brir,conf);
     cello = wavread('anechoic_cello.wav');
     sig = auralize_ir(ir,cello,1,conf);
 
@@ -147,14 +158,14 @@ simply use a Dirac impulse as |HRTF| as provided by ``dummy_irs()``.
 
 .. sourcecode:: matlab
 
-    conf = SFS_config;
-    conf.t0 = 'source';
     X = [0 0 0];
-    phi = 0;
+    head_orientation = [0 0];
     xs = [2.5 0 0];
     src = 'ps';
     hrtf = dummy_irs(conf);
-    [ir,~,delay] = ir_wfs(X,phi,xs,src,hrtf,conf);
+    conf = SFS_config;
+    conf.t0 = 'source';
+    [ir,~,delay] = ir_wfs(X,head_orientation,xs,src,hrtf,conf);
     figure;
     figsize(540,404,'px');
     plot(ir(1:1000,1),'-g');
@@ -187,14 +198,14 @@ function.
 
 .. sourcecode:: matlab
 
-    conf = SFS_config;
-	conf.N = 1000;
-    conf.t0 = 'source';
     X = [0 0 0];
-    phi = 0;
+    head_orientation = [0 0];
     xs = [2.5 0 0];
     src = 'ps';
-	time_response_wfs(X,xs,src,conf)
+    conf = SFS_config;
+    conf.N = 1000;
+    conf.t0 = 'source';
+    time_response_wfs(X,xs,src,conf)
     %print_png('img/impulse_response_wfs_25d_imp.png');
 
 .. figure:: img/impulse_response_wfs_25d.png
@@ -223,14 +234,18 @@ the figure).
 
 .. sourcecode:: matlab
 
+    X = [0 0 0];
+    head_orientation = [pi/2 0];
+    xs = [0 2.5 0];
+    src = 'ps';
+    hrtf = dummy_irs(conf);
     conf = SFS_config;
     conf.ir.usehcomp = false;
     conf.wfs.usehpre = false;
-    hrtf = dummy_irs(conf);
-    [ir1,x0] = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',hrtf,conf);
+    [ir1,x0] = ir_wfs(X,head_orientation,xs,src,hrtf,conf);
     conf.wfs.usehpre = true;
     conf.wfs.hprefhigh = aliasing_frequency(x0,conf);
-    ir2 = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',hrtf,conf);
+    ir2 = ir_wfs(X,head_orientation,xs,src,hrtf,conf);
     [a1,p,f] = spectrum_from_signal(norm_signal(ir1(:,1)),conf);
     a2 = spectrum_from_signal(norm_signal(ir2(:,1)),conf);
     figure;
@@ -256,7 +271,11 @@ the whole frequency range will be affected.
 
 .. sourcecode:: matlab
 
-    freq_response_wfs([0 0 0],[0 2.5 0],'ps',conf);
+    X = [0 0 0];
+    xs = [0 2.5 0];
+    src = 'ps';
+    conf = SFS_config;
+    freq_response_wfs(X,xs,src,conf);
     axis([10 20000 -40 0]);
     %print_png('img/frequency_response_wfs_25d_mono.png');
 
@@ -281,9 +300,14 @@ SoundScape Renderer. All functions regarding the |SSR| are stored in folder
 
 .. sourcecode:: matlab
 
+    X = [0 0 0];
+    head_orientation = [pi/2 0];
+    xs = [0 2.5 0];
+    src = 'ps';
+    hrtf = SOFAload('QU_KEMAR_anechoic_3m.sofa');
     conf = SFS_config;
-    brs = ssr_brs_wfs(X,phi,xs,src,hrtf,conf);
-    wavwrite(brs,fs,16,'brs_set_for_SSR.wav');
+    brs = ssr_brs_wfs(X,head_orientation,xs,src,hrtf,conf);
+    wavwrite(brs,conf.fs,16,'brs_set_for_SSR.wav');
 
 .. _SoundScape Renderer (SSR): http://spatialaudio.net/ssr/
 

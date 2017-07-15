@@ -162,17 +162,20 @@ simply use a Dirac impulse as |HRTF| as provided by ``dummy_irs()``.
     head_orientation = [0 0];
     xs = [2.5 0 0];
     src = 'ps';
+    t = (1:1000)/conf.fs*1000;
     hrtf = dummy_irs(conf);
     conf = SFS_config;
     conf.t0 = 'source';
     [ir,~,delay] = ir_wfs(X,head_orientation,xs,src,hrtf,conf);
     figure;
     figsize(540,404,'px');
-    plot(ir(1:1000,1),'-g');
+    plot(t,ir(1:1000,1),'-g');
     hold on;
     offset = round(delay*conf.fs);
-    plot(ir(1+offset:1000+offset,1),'-b');
+    plot(t,ir(1+offset:1000+offset,1),'-b');
     hold off;
+    xlabel('time / ms');
+    ylabel('amplitude');
     %print_png('img/impulse_response_wfs_25d.png');
 
 .. figure:: img/impulse_response_wfs_25d.png
@@ -189,7 +192,7 @@ instances. The green impulse response includes the processing delay that is
 added by `driving_function_imp_wfs()` and other functions performing filtering
 and delaying of signals. This delay is returned by `ir_wfs()` as well and can be
 used to correct it during plotting. The blue impulse response is the corrected
-one, which is now placed at 321 samples which corresponds to the actual distance
+one, which is now placed at 7.3 ms which corresponds to the actual distance
 of the synthesized source of 2.5 m.
 
 The impulse response can also be calculated without involving functions for
@@ -206,9 +209,10 @@ function.
     conf.N = 1000;
     conf.t0 = 'source';
     time_response_wfs(X,xs,src,conf)
+    axis([0 25 -0.005 0.025]);
     %print_png('img/impulse_response_wfs_25d_imp.png');
 
-.. figure:: img/impulse_response_wfs_25d.png
+.. figure:: img/impulse_response_wfs_25d_imp.png
    :align: center
 
    Sound pressure of an impulse synthesized as a point source by 2.5D

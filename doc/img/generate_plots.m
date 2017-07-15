@@ -286,19 +286,24 @@ hold off;
 print_png('impulse_response_wfs_25d.png');
 
 
+
 %% ===== frequency response of a spatial audio system ====================
+X = [0 0 0];
+head_orientation = [pi/2 0];
+xs = [0 2.5 0];
+src = 'ps';
+hrtf = dummy_irs(conf);
 conf = SFS_config;
-conf.ir.usehcomp = 0;
-conf.wfs.usehpre = 0;
-irs = dummy_irs(conf);
-[ir1,x0] = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
-conf.wfs.usehpre = 1;
+conf.ir.usehcomp = false;
+conf.wfs.usehpre = false;
+[ir1,x0] = ir_wfs(X,head_orientation,xs,src,hrtf,conf);
+conf.wfs.usehpre = true;
 conf.wfs.hprefhigh = aliasing_frequency(x0,conf);
-ir2 = ir_wfs([0 0 0],pi/2,[0 2.5 0],'ps',irs,conf);
+ir2 = ir_wfs(X,head_orientation,xs,src,hrtf,conf);
 [a1,p,f] = spectrum_from_signal(norm_signal(ir1(:,1)),conf);
 a2 = spectrum_from_signal(norm_signal(ir2(:,1)),conf);
 figure;
-figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
+figsize(540,404,'px');
 semilogx(f,20*log10(a1),'-b',f,20*log10(a2),'-r');
 axis([10 20000 -80 -40]);
 set(gca,'XTick',[10 100 250 1000 5000 20000]);
@@ -307,15 +312,11 @@ xlabel('frequency / Hz');
 ylabel('magnitude / dB');
 print_png('frequency_response_wfs_25d.png');
 % alternative variant
+X = [0 0 0];
+xs = [0 2.5 0];
+src = 'ps';
 conf = SFS_config;
-[a,f] = freq_response_wfs([0 0 0],[0 2.5 0],'ps',conf);
-figure;
-figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
-semilogx(f,20*log10(a),'-r');
+freq_response_wfs(X,xs,src,conf);
 axis([10 20000 -40 0]);
-set(gca,'XTick',[10 100 250 1000 5000 20000]);
-legend('w pre-filter');
-xlabel('frequency / Hz');
-ylabel('magnitude / dB');
 print_png('frequency_response_wfs_25d_mono.png');
 

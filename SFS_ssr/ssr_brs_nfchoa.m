@@ -6,7 +6,7 @@ function [brs,delay] = ssr_brs_nfchoa(X,phi,xs,src,irs,conf)
 %
 %   Input parameters:
 %       X       - listener position / m
-%       phi     - listener direction [head orientation] / rad
+%       phi     - azimuthal head orientation / rad
 %       xs      - virtual source position [ys > Y0 => focused source] / m
 %       src     - source type: 'pw' - plane wave
 %                              'ps' - point source

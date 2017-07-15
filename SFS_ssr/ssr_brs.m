@@ -6,7 +6,7 @@ function brs = ssr_brs(X,phi,x0,d,irs,conf)
 %
 %   Input parameters:
 %       X       - listener position / m
-%       phi     - listener direction [head orientation] / rad
+%       phi     - azimuthal head orientation / rad
 %       x0      - secondary sources
 %       d       - corresponding driving signals
 %       irs     - impulse response data set for the second sources

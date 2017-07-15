@@ -55,7 +55,8 @@ function ir = ir_correct_distance(ir,ir_distance,r,conf)
 %% ===== Configuration ==================================================
 c = conf.c;
 N = conf.N;
-hrirpredelay = conf.ir.hrirpredelay / conf.fs;
+fs = conf.fs;
+hrirpredelay = conf.ir.hrirpredelay / fs;
 
 
 %% ===== Computation ====================================================
@@ -68,10 +69,10 @@ weight = ir_distance./r;
 % Time delay of the source (at the listener position)
 delay = r/c - hrirpredelay; % / s
 % Check if impulse responses are long enough compared to intended delay
-if conf.N-delay<ir_origlength
+if ir_origlength+delay*fs>conf.N
     warning('SFS:get_ir',['%s: Choose a conf.N value larger than %i. ', ...
         'Otherwise you will lose samples from the end of the original ', ...
-        'impulse response.'],upper(mfilename),ceil(ir_origlength+delay));
+        'impulse response.'],upper(mfilename),ceil(ir_origlength+delay*fs));
 end
 % Apply delay and weighting
 ir = delayline(ir,delay,[weight; weight],conf);

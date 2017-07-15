@@ -274,17 +274,29 @@ X = [0 0 0];
 phi = 0;
 xs = [2.5 0 0];
 src = 'ps';
+t = (1:1000)/conf.fs*1000;
 hrtf = dummy_irs(conf);
 [ir,~,delay] = ir_wfs(X,phi,xs,src,hrtf,conf);
 figure;
 figsize(540,404,'px');
-plot(ir(1:1000,1),'-g');
+plot(t,ir(1:1000,1),'-g');
 hold on;
 offset = round(delay*conf.fs);
-plot(ir(1+offset:1000+offset,1),'-b');
+plot(t,ir(1+offset:1000+offset,1),'-b');
 hold off;
+xlabel('time / ms');
+ylabel('amplitude');
 print_png('impulse_response_wfs_25d.png');
-
+X = [0 0 0];
+head_orientation = [0 0];
+xs = [2.5 0 0];
+src = 'ps';
+conf = SFS_config;
+conf.N = 1000;
+conf.t0 = 'source';
+time_response_wfs(X,xs,src,conf)
+axis([0 25 -0.005 0.025]);
+print_png('impulse_response_wfs_25d_imp.png');
 
 
 %% ===== frequency response of a spatial audio system ====================

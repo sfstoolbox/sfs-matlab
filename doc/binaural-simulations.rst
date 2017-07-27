@@ -189,14 +189,14 @@ simply use a Dirac impulse as |HRTF| as provided by ``dummy_irs()``.
 
 The figure includes two versions of the impulse response at two different time
 instances. The green impulse response includes the processing delay that is
-added by `driving_function_imp_wfs()` and other functions performing filtering
-and delaying of signals. This delay is returned by `ir_wfs()` as well and can be
-used to correct it during plotting. The blue impulse response is the corrected
-one, which is now placed at 7.3 ms which corresponds to the actual distance
-of the synthesized source of 2.5 m.
+added by ``driving_function_imp_wfs()`` and other functions performing filtering
+and delaying of signals. This delay is returned by ``ir_wfs()`` as well and can
+be used to correct it during plotting. The blue impulse response is the
+corrected one, which is now placed at 7.3 ms which corresponds to the actual
+distance of the synthesized source of 2.5 m.
 
 The impulse response can also be calculated without involving functions for
-binaural simulations, but by utilizing directly `sound_field_imp()` related
+binaural simulations, but by utilizing directly ``sound_field_imp()`` related
 function.
 
 .. sourcecode:: matlab

@@ -117,6 +117,10 @@ if modus
     pause
     disp('Running "test_modal_weighting(1)"');
     test_modal_weighting(1);
+    disp('Hit Enter to continue');
+    pause
+    disp('Running "test_sphbesselh_zeros(1)"');
+    test_sphbesselh_zeros(1);
 else
     if ~all([test_binaural_synthesis(0); ...
              test_delayline(0); ...
@@ -135,6 +139,7 @@ else
              test_imp_25d(0); ...
              test_spectrum_signal_conversion(0);
              test_modal_weighting(0);
+             test_sphbesselh_zeros(0);
              %test_wfs_iir_prefilter(0); ... % needs DSP Tooblox
             ])
         return;

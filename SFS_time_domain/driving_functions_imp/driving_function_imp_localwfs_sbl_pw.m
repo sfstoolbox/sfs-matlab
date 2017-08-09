@@ -68,13 +68,12 @@ else
     Npw = conf.localsfs.sbl.Npw;
 end
 
-wfsconf = conf;
-wfsconf.wfs = conf.localsfs.wfs;
-
-
 %% ===== Computation ==========================================================
 % circular expansion coefficients
 [pm,delay_circexp] = circexp_imp_pw(nk,Nce,xref,conf);
+% modal window
+wm = modal_weighting(Nce,conf);
+pm = bsxfun(@times,wm,pm);
 % plane wave decomposition
 ppwd = pwd_imp_circexp(pm,Npw);
 % driving signal

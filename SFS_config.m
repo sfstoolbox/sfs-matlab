@@ -314,16 +314,16 @@ conf.nfchoa.order = []; % integer
 %% ===== Local Sound Field Synthesis (LSFS) ==============================
 % Settings for Local SFS, 
 %
+% === LSFS using Virtual Secondary Sources (LSFS-VSS) ===
+% See Spors, Ahrens (2010) for an introduction.
+%
 % Method the virtual secondary sources should be driven
 conf.localsfs.method = 'wfs'; % 'wfs' or 'nfchoa'
+% wfs settings for virtual secondary sources
+conf.localsfs.wfs = conf.wfs;
+% tapering of virtual secondary sources (only applied for wfs)
 conf.localsfs.usetapwin = false; % boolean
 conf.localsfs.tapwinlen = 0.5; % 0..1
-% WFS settings
-conf.localsfs.wfs = conf.wfs;
-%
-% === LSFS using Virtual Secondary Sources (LSFS-VSS) ===
-% See Spors, Ahrens (2010b) for an introduction.
-%
 % Virtual secondary sources (vss)
 conf.localsfs.vss.size = 0.4;
 conf.localsfs.vss.center = [0, 0, 0];
@@ -355,7 +355,7 @@ conf.localsfs.sbl.order = [];
 % Due to stability issues for the time-domain implementation of synthesis 
 % of a point source, conventional WFS has to be used for the low frequencies. 
 % fc defines the crossover frequency between the WFS and LSFS-SBL. If left
-% empty, this frequency is estimated aliasing_frequency().
+% empty, this frequency is estimated by aliasing_frequency().
 conf.localsfs.sbl.fc = [];
 % The spatially bandwidth-limited sound field is converted into plane wave
 % decomposition which is then synthesised using conventional WFS for each

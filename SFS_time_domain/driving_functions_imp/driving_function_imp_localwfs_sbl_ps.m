@@ -75,10 +75,6 @@ else
     Npw = conf.localsfs.sbl.Npw;
 end
 
-wfsconf = conf;
-wfsconf.wfs = conf.localsfs.wfs;
-
-
 %% ===== Variables ============================================================
 Nlr = ceil(Nce/2)*2;  % order of Linkwitz-Riley Coefficients
 Wlr = fc/fs*2;  % normalised cut-off frequency of Linkwitz-Riley
@@ -95,7 +91,7 @@ pm = bsxfun(@times,wm,pm);
 % plane wave decomposition
 ppwd = pwd_imp_circexp(pm,Npw);
 % driving signal
-[d_lwfs,delay_lwfs] = driving_function_imp_wfs_pwd(x0,ppwd,xref,wfsconf);
+[d_lwfs,delay_lwfs] = driving_function_imp_wfs_pwd(x0,ppwd,xref,conf);
 
 % === WFS for low frequencies ===
 % secondary source selection

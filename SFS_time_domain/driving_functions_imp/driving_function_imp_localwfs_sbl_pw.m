@@ -77,6 +77,6 @@ pm = bsxfun(@times,wm,pm);
 % plane wave decomposition
 ppwd = pwd_imp_circexp(pm,Npw);
 % driving signal
-[d,delay_lwfs] = driving_function_imp_wfs_pwd(x0,ppwd,xref,wfsconf);
+[d,delay_lwfs] = driving_function_imp_wfs_pwd(x0,ppwd,xref,conf);
 % delay
 delay_offset = delay_lwfs + delay_circexp;

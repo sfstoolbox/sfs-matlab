@@ -162,11 +162,12 @@ conf.xref = [0 0 0]; % / m
 % === Tapering ===
 % The truncation of the loudspeaker array leads to diffraction of the
 % synthesized sound field. It has been shown that the truncation can be
-% discribed by cylindrical waves originating from the edges of the array [e.g.
-% Young, Sommerfeld, Rubinovitch]. Therefore a good method to reduce artifacts
-% due to the diffraction edge waves is to fade out the amplitude of the driving
-% function at the edges of the array. This method is called tapering and
-% implemented using a Hanning window.
+% described by cylindrical waves originating from the edges of the array, see
+% Sect. 8.3.2 in Born, Wolf (1999) for the general principle and Sect. 3.2 in
+% Wierstorf (2014) for how it relates to WFS. Therefore a good method to reduce
+% artifacts due to the diffraction edge waves is to fade out the amplitude of
+% the driving function at the edges of the array. This method is called tapering
+% and implemented using a Hann window in the SFS Toolbox.
 conf.usetapwin = true; % boolean
 % Size of the tapering window
 conf.tapwinlen = 0.3; % / percent of array length, 0..1
@@ -480,6 +481,9 @@ conf.plot.file = ''; % string
 % Processing, vol. 18, no. 8, pp. 2038-2050,
 % https://doi.org/10.1109/TASL.2010.2041106
 %
+% Born, Wolf (1999) - "Principles of Optics", Cambridge University Press, 7th
+% edition.
+%
 % Hahn, Winter, Spors (2016) - "Local Wave Field Synthesis by Spatial
 % Band-limitation in the Circular/Spherical Harmonics Domain", in 140th
 % Convention of the Audio Engineering Society, Paper 9596,
@@ -497,3 +501,6 @@ conf.plot.file = ''; % string
 % Spors, Rabenstein, Ahrens (2008) - "The Theory of Wave Field Synthesis
 % Revisited", in 124th Convention of the Audio Engineering Society, Paper 7358,
 % http://www.aes.org/e-lib/browse.cfm?elib=14488
+%
+% Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+% TU Berlin, https://doi.org/10.14279/depositonce-4310

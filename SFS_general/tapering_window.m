@@ -16,7 +16,24 @@ function win = tapering_window(x0,conf)
 %   If the secondary source distribution has some gaps, every joint part gets
 %   its own tapering.
 %
+%   Tapering windows reduce diffraction in the synthesis sound field that
+%   results from truncated secondary source distributions, see Sect. 3.2 of
+%   Wierstorf (2014). The diffraction part of the sound field can be described
+%   by cylindrical waves originating from the edges of the distribution, see
+%   Sect. 8.3.2 in Born, Wolf (1999). Therefore a good method to reduce
+%   truncation artifacts in the sound field is to fade out the amplitude of the
+%   driving function at the edges of the array.
+%
 %   See also: secondary_source_position, sound_field_mono_wfs, hann
+%
+%
+%   References:
+%
+%       Born, Wolf (1999) - "Principles of Optics", Cambridge University Press,
+%       7th edition.
+%
+%       Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       TU Berlin, https://doi.org/10.14279/depositonce-4310
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -68,7 +85,7 @@ nls = size(x0,1);
 % Standard window with equal weights
 win = ones(1,nls);
 % FIXME: at the moment the tapering window is not working for spherical arrays,
-% see https://github.com/sfstoolbox/sfs/issues/21
+% see https://github.com/sfstoolbox/sfs-matlab/issues/21
 if usetapwin && nls>2 && ...
    ~(strcmp('sphere',geometry) || strcmp('spherical',geometry))
     % Get the mean distance between secondary sources and the smallest distance
@@ -123,13 +140,12 @@ function [win] = part_hann_win(nls,tapwinlen)
     % splitted to both sides of the loudspeaker array.
     lenwin = round(tapwinlen*nls)+2;
     %
-    % Check if we have a too short window to apply it in a useful way. This can
-    % be the case for very short loudspeaker arrays (as used in Wierstorf2010).
+    % If we have less than four secondary sources, the usage of a tapering
+    % window is no longer desired.
     if lenwin<4
         win = ones(1,nls);
     else
         % Create a squared Hann window with length lenwin
         win = hann_window(floor((lenwin-2)/2),floor((lenwin-2)/2),nls).^2;
-
     end
 end

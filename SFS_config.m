@@ -268,21 +268,23 @@ conf.secondary_sources.grid = 'equally_spaced_points'; % string
 % === Pre-Equalization ===
 % WFS can be implemented very efficiently using a delay-line with different
 % amplitudes and convolving the whole signal once with the so called
-% pre-equalization filter [References]. If we have aliasing in our system we
-% only want to use the pre-equalization filter until the aliasing frequency,
-% because of the energy the aliasing is adding to the spectrum above this
-% frequency (which means the frequency response over the aliasing frequency is
-% already "correct") [Reference]
+% pre-equalization filter, see Spors, Ahrens (2010a).
 % Use WFS preequalization-filter
 conf.wfs.usehpre = true; % boolean
 % FIR or IIR pre-equalization filter
 % NOTE: only FIR is working under octave at the moment
 conf.wfs.hpretype = 'FIR'; % 'FIR' or 'IIR'
 % Lower frequency limit of preequalization filter
-% (~ frequency when subwoofer is active)
+% If we have a finite length (<10m) of the secondary source distribution we
+% will have a 3dB increase at the very low frequencies and the pre-equalization
+% filter should only start above those frequencies, see Sect. 7.2 in Spors,
+% Ahrens (2010b).
 conf.wfs.hpreflow = 50; % / Hz
 % Upper frequency limit of preequalization filter
-% (~ aliasing frequency of system)
+% If we have aliasing in our system we only want to use
+% the pre-equalization filter until the aliasing frequency, because of the
+% energy the aliasing is adding to the spectrum above this frequency, see
+% Sect. 6.3 in Spors, Ahrens (2010a).
 conf.wfs.hprefhigh = 1200; % / Hz
 % IIR bandwidth for the Lagrange interpolation region
 conf.wfs.hpreBandwidth_in_Oct = 2; % / octaves
@@ -293,7 +295,7 @@ conf.wfs.hpreFIRorder = 128; % even integer
 
 
 %% ===== Spectral Division Method (SDM) ==================================
-% Settings for SDM, see Ahrens, Spors (2010) for an introduction
+% Settings for SDM, see Ahrens, Spors (2010b) for an introduction
 %
 % Use the evanescent part of the driving function for SDM
 conf.sdm.withev = true; % boolean
@@ -319,7 +321,7 @@ conf.localsfs.tapwinlen = 0.5; % 0..1
 conf.localsfs.wfs = conf.wfs;
 %
 % === LSFS using Virtual Secondary Sources (LSFS-VSS) ===
-% See Spors, Ahrens (2010) for an introduction.
+% See Spors, Ahrens (2010b) for an introduction.
 %
 % Virtual secondary sources (vss)
 conf.localsfs.vss.size = 0.4;
@@ -470,17 +472,28 @@ conf.plot.file = ''; % string
 
 %% ===== References ======================================================
 %
-% Spors, Rabenstein, Ahrens - The Theory of Wave Field Synthesis Revisited, 124
-% AES Convention, Paper 7358, 2008. http://bit.ly/ZCvyQ6
+% Ahrens (2012) - "Analytic Methods of Sound Field Synthesis", Springer,
+% https://doi.org/10.1007/978-3-642-25743-8
 %
-% Ahrens, Spors - Sound Field Reproduction Using Planar and Linear Arrays of
-% Loudspeakers, Transactions on Audio, Speech, and Language Processing, p.
-% 2038-50, 2010. http://bit.ly/10dpA9r
+% Ahrens, Spors (2010) - "Sound Field Reproduction Using Planar and Linear
+% Arrays of Loudspeakers", Transactions on Audio, Speech, and Language
+% Processing, vol. 18, no. 8, pp. 2038-2050,
+% https://doi.org/10.1109/TASL.2010.2041106
 %
-% Spors, Ahrens - Local Sound Field Synthesis by Virtual Secondary Sources, 40
-% AES Conference, Paper 6-3, 2010. http://bit.ly/1t3842v
+% Hahn, Winter, Spors (2016) - "Local Wave Field Synthesis by Spatial
+% Band-limitation in the Circular/Spherical Harmonics Domain", in 140th
+% Convention of the Audio Engineering Society, Paper 9596,
+% http://www.aes.org/e-lib/browse.cfm?elib=18294
 %
-% Hahn, Winter, Spors - Local Wave Field Synthesis by Spatial Band-limitation 
-% in the Circular/Spherical Harmonics Domain, 140th AES Convention, 2016.
+% Spors, Ahrens (2010a) - "Analysis and Improvement of Pre-Equalization in
+% 2.5-Dimensional Wave Field Synthesis", in 128th Convention of the Audio
+% Engineering Society, Paper 8121,
+% http://www.aes.org/e-lib/browse.cfm?elib=15418
 %
-% Ahrens - Analytic Methods of Sound Field Synthesis. Springer, 2012.
+% Spors, Ahrens (2010b) - "Local Sound Field Synthesis by Virtual Secondary
+% Sources", in 40th Conference of the Audio Engineering Society, Paper 6-3,
+% http://www.aes.org/e-lib/browse.cfm?elib=15561
+%
+% Spors, Rabenstein, Ahrens (2008) - "The Theory of Wave Field Synthesis
+% Revisited", in 124th Convention of the Audio Engineering Society, Paper 7358,
+% http://www.aes.org/e-lib/browse.cfm?elib=14488

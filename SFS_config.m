@@ -1,5 +1,5 @@
 function conf = SFS_config()
-%SFS_CONFIG Configuration file for the SoundFieldSynthesis functions
+%SFS_CONFIG returns a struct with the default configuration settings
 %
 %   Usage: conf = SFS_config
 %
@@ -11,9 +11,9 @@ function conf = SFS_config()
 %   them in your script (e.g. conf.fs = 48000) and pass the conf struct to
 %   the desired function as last input (e.g. tapering_window(x0,conf)).
 %
-%   So edit this function only, if the default values have changed!
+%   Please don't edit this function to change your configuration settings!
 %
-%   see also: SFS_start
+%   See also: SFS_start
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -45,15 +45,13 @@ function conf = SFS_config()
 %*****************************************************************************
 
 
-%% ===== Checking of input  parameters ==================================
+%% ===== Checking of input  parameters ===================================
 nargmin = 0;
 nargmax = 0;
 narginchk(nargmin,nargmax);
 
 
-%% ===== Configuration default values ===================================
-
-% ===== Table of Content ========================
+%% ===== Table of Contents ===============================================
 %
 % - Misc
 % - Audio
@@ -76,17 +74,16 @@ narginchk(nargmin,nargmax);
 %   * SoundScape Renderer
 % - Plotting
 % - References
-%
 
 
 %% ===== Misc ============================================================
 conf.tmpdir = '/tmp/sfs'; % string
-% Debugging level. We are supporting 3 levels:
+% Debugging level. We are supporting two levels:
 %   0 - normal mode
 %   1 - debug modus, showing interim results and plots
 conf.debug = 0; % 0 or 1
-% Show a progress bar in the loops (for example sound_field_mono). This can be
-% useful if you are using secondary sources with >1000 loudspeakers
+% Show a progress bar in selected loops (for example sound_field_mono). This can
+% be useful, if you are using a high number of secondary sources.
 conf.showprogress = false; % boolean
 
 
@@ -146,32 +143,30 @@ conf.dimension = '2.5D'; % string
 %
 % === Driving functions ===
 % Implementation of driving functions. For the default ones use 'default'. These
-% functions are described in the PDF documentation, in the doc folder of the
-% SFS-Toolbox. For possible other flags have a look into the driving functions.
+% functions are described at http://sfstoolbox.org. For possible other flags
+% have a look into the driving functions as they can be quite specific.
 % Most users can safely use the 'default' flag here.
 conf.driving_functions = 'default'; % string
 %
 % === Impulse responses ===
 % Length of impulse responses used in the time domain driving functions
 % and for the creation of the binaural simulations.
-% Don't worry, SFS checks for you if conf.N is large enough
+% Don't worry, SFS checks for you if conf.N is large enough.
 conf.N = 2048; % samples
 %
 % === 2.5D ===
 % The amplitude will be correct at the point xref for 2.5D
 % synthesis.
-% This point is also used to scale the sound field to 1 at this point.
 conf.xref = [0 0 0]; % / m
 %
 % === Tapering ===
 % The truncation of the loudspeaker array leads to diffraction of the
-% synthesized sound field. It has been shown that the truncation can be discribed
-% by cylindrical waves originating from the edges of the array
-% [Young,Sommerfeld,Rubinovitch]. Therefore a good method to reduce artifacts
+% synthesized sound field. It has been shown that the truncation can be
+% discribed by cylindrical waves originating from the edges of the array [e.g.
+% Young, Sommerfeld, Rubinovitch]. Therefore a good method to reduce artifacts
 % due to the diffraction edge waves is to fade out the amplitude of the driving
 % function at the edges of the array. This method is called tapering and
 % implemented using a Hanning window.
-% Use tapering window
 conf.usetapwin = true; % boolean
 % Size of the tapering window
 conf.tapwinlen = 0.3; % / percent of array length, 0..1
@@ -252,8 +247,15 @@ conf.secondary_sources.corner_radius = 0.0; % / m
 % Or it could also be a SOFA struct or file name, in this case the positions are
 % extracted from the provided SOFA file.
 conf.secondary_sources.x0 = []; % / m
-% Grid for the spherical array. Note, that you have to download and install the
-% spherical grids from an additional source. For available grids see:
+% Grid for a spherical array. Available grids are:
+%   'equally_spaced_points' - Sphere with equal distance between grid points
+%   'gauss'                 - Gauss grid
+%   'fabian'                - grid of 3D HRTF measurement, available at
+%                             http://dx.doi.org/10.14279/depositonce-5718
+%
+% Note, that 'equally_spaced_points' and 'fabian' are precomputed grids that
+% will be automatically downloaded and cached on your disk. All available number
+% of secondary sources for those grids can be seen at:
 % http://github.com/sfstoolbox/data/tree/master/spherical_grids
 % An exception are Gauss grids, which are available via 'gauss' and will be
 % calculated on the fly allowing very high number of secondary sources.
@@ -276,11 +278,11 @@ conf.wfs.usehpre = true; % boolean
 % FIR or IIR pre-equalization filter
 % NOTE: only FIR is working under octave at the moment
 conf.wfs.hpretype = 'FIR'; % 'FIR' or 'IIR'
-% Lower frequency limit of preequalization filter (~ frequency when
-% subwoofer is active)
+% Lower frequency limit of preequalization filter
+% (~ frequency when subwoofer is active)
 conf.wfs.hpreflow = 50; % / Hz
-% Upper frequency limit of preequalization filter (~ aliasing frequency of
-% system)
+% Upper frequency limit of preequalization filter
+% (~ aliasing frequency of system)
 conf.wfs.hprefhigh = 1200; % / Hz
 % IIR bandwidth for the Lagrange interpolation region
 conf.wfs.hpreBandwidth_in_Oct = 2; % / octaves
@@ -300,9 +302,9 @@ conf.sdm.withev = true; % boolean
 %% ===== Near-Field Compensated Higher Order Ambisonics (NFC-HOA) ========
 % Settings for NFC-HOA, see Ahrens (2012) for an introduction
 %
-% Normally the order of NFC-HOA is set by the nfchoa_order() function which
-% returns the highest order for which no aliasing occurs. If you wish to use
-% another order you can set it manually here, otherwise leave it blank
+% Highest order used with NFC-HOA. If this is set to [], band-limited NFC-HOA is
+% used and the order is set by nfchoa_order() which returns the highest order
+% for which no aliasing occurs.
 conf.nfchoa.order = []; % integer
 
 
@@ -444,7 +446,7 @@ conf.plot.caxis = []; % [min max]
 % http://www.sandia.gov/~kmorel/documents/ColorMaps/
 % If you set 'gray' or 'grey' you will get a colormap ranging from white to
 % black. In addition you can add every other map you can specify in
-% Matlab/Octave. For example to get the Matlab default colormap set 'jet'.
+% Matlab/Octave. For example to get the Matlab default colormap set 'parula'.
 conf.plot.colormap = 'default'; % string
 % Plot loudspeakers in the sound field plots
 conf.plot.loudspeakers = true; % boolean

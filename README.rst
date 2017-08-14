@@ -19,7 +19,7 @@ Documentation:
     http://matlab.sfstoolbox.org/
 
 Source code and issue tracker:
-    http://github.com/sfstoolbox/sfs/
+    http://github.com/sfstoolbox/sfs-matlab/
 
 SFS Toolbox for Python:
     http://python.sfstoolbox.org/
@@ -35,7 +35,7 @@ Installation
 ``SFS_start`` which will add all needed paths to Matlab/Octave.  If
 you want to remove them again, run ``SFS_stop``.
 
-.. _Download the Toolbox: https://github.com/sfstoolbox/sfs/releases/latest
+.. _Download the Toolbox: https://github.com/sfstoolbox/sfs-matlab/releases/latest
 
 
 Requirements
@@ -75,7 +75,7 @@ Backward compatibility:
 .. _SOFA: http://sofaconventions.org/
 .. _SOFA API for Matlab/Octave: https://github.com/sofacoustics/API_MO
 .. _irs file format: https://dev.qu.tu-berlin.de/projects/measurements/wiki/IRs_file_format
-.. _the latest version with irs file support: https://github.com/sfstoolbox/sfs/releases/tag/1.2.0
+.. _the latest version with irs file support: https://github.com/sfstoolbox/sfs-matlab/releases/tag/1.2.0
 
 
 Getting started
@@ -134,7 +134,7 @@ Audio Engineering Society*, 2012
 
 Copyright (c) 2010-2017 SFS Toolbox Developers
 
-.. _Issue Section: https://github.com/sfstoolbox/sfs/issues
-.. _official releases page: https://github.com/sfstoolbox/sfs/releases
+.. _Issue Section: https://github.com/sfstoolbox/sfs-matlab/issues
+.. _official releases page: https://github.com/sfstoolbox/sfs-matlab/releases
 .. _pdf: http://files.sfstoolbox.org/wierstorf_et_al_sfs-toolbox_aes132.pdf
 .. _bibtex: http://files.sfstoolbox.org/wierstorf_et_al_sfs-toolbox_aes132.bib

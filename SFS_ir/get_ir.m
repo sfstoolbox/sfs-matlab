@@ -120,17 +120,17 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     % file and we handle a change in head orientation by changing the source
     % position accordingly.
     %
-    % For SimpleFreeFieldHRIR only the relative position between listener
-    % position and source position is of relevance.
-    xs = xs-X+X_sofa;
-    % Get measured loudspeaker positions
-    x0 = sofa_get_secondary_sources(header,'cartesian');
-    x0 = x0(:,1:3); % need positions only
-    % Combine head orientation and desired direction of source (see note above)
+    % For SimpleFreeFieldHRIR only the relative position between the listener
+    % and the source position is of relevance.
+    xs = xs-X;
+    % Include head orientation of listener into relative position
     [xs(1),xs(2),xs(3)] = cart2sph(xs(1),xs(2),xs(3));
     xs(1) = correct_azimuth(xs(1)-head_orientation(1));
     xs(2) = correct_elevation(xs(2)-head_orientation(2));
     [xs(1),xs(2),xs(3)] = sph2cart(xs(1),xs(2),xs(3));
+    % Get measured loudspeaker positions relative to dummy head position
+    x0 = sofa_get_secondary_sources(header,'cartesian');
+    x0 = bsxfun(@minus,x0(:,1:3),X_sofa);
     % Get nearest neighbour point or points for interpolation
     [idx,weights] = point_selection(x0,xs,conf);
     % Get impulse responses according to point selection

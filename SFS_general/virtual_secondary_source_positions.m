@@ -25,10 +25,10 @@ function xv = virtual_secondary_source_positions(x0,xs,src,conf)
 %   (conf.localsfs.geometry) and local area size(conf.localsfs.size).
 %   The direction of the virtual sources is given as their unit vectors
 %   pointing in the given direction.
-%   Optionally (conf.localsfs.vss.consider_target_field == true), the algorithm
-%   takes the sound field, which is to be reproduced, into account for the
-%   positioning.
-%   Optionally (conf.localsfs.vss.consider_secondary_sources == true), the
+%   Optionally (conf.localwfs_vss.consider_target_field == true), the
+%   algorithm takes the sound field, which is to be reproduced, into account
+%   for the positioning.
+%   Optionally (conf.localwfs_vss.consider_secondary_sources == true), the
 %   algorithm takes the positions of the real loudspeakers into account.
 %
 %   See also: driving_function_mono_localwfs, driving_function_imp_localwfs
@@ -77,12 +77,16 @@ isargstruct(conf);
 
 %% ===== Configuration ===================================================
 virtualconf = conf;
-virtualconf.secondary_sources = conf.localsfs.vss;
+virtualconf.secondary_sources.size = conf.localwfs_vss.size;
+virtualconf.secondary_sources.center = conf.localwfs_vss.center;
+virtualconf.secondary_sources.geometry = conf.localwfs_vss.geometry;
+virtualconf.secondary_sources.number = conf.localwfs_vss.number;
+virtualconf.secondary_sources.grid = conf.localwfs_vss.grid;
 
-geometry                    = conf.localsfs.vss.geometry;
-nls                         = conf.localsfs.vss.number;
-consider_secondary_sources  = conf.localsfs.vss.consider_secondary_sources;
-consider_target_field       = conf.localsfs.vss.consider_target_field;
+geometry                    = conf.localwfs_vss.geometry;
+nls                         = conf.localwfs_vss.number;
+consider_secondary_sources  = conf.localwfs_vss.consider_secondary_sources;
+consider_target_field       = conf.localwfs_vss.consider_target_field;
 
 
 %% ===== Main ============================================================

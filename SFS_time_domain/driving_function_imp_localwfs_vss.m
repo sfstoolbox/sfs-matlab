@@ -74,15 +74,16 @@ isargstruct(conf);
 
 %% ===== Configuration ==================================================
 virtualconf = conf;
-virtualconf.usetapwin = conf.localsfs.usetapwin;
-virtualconf.tapwinlen = conf.localsfs.tapwinlen;
-virtualconf.secondary_sources.size = conf.localsfs.vss.size;
-virtualconf.secondary_sources.center = conf.localsfs.vss.center;
-virtualconf.secondary_sources.geometry = conf.localsfs.vss.geometry;
-virtualconf.secondary_sources.number = conf.localsfs.vss.number;
-virtualconf.wfs = conf.localsfs.wfs;
-virtualconf.driving_functions = conf.localsfs.vss.driving_functions;
-method = conf.localsfs.method;
+virtualconf.usetapwin = conf.localwfs_vss.usetapwin;
+virtualconf.tapwinlen = conf.localwfs_vss.tapwinlen;
+virtualconf.secondary_sources.size = conf.localwfs_vss.size;
+virtualconf.secondary_sources.center = conf.localwfs_vss.center;
+virtualconf.secondary_sources.geometry = conf.localwfs_vss.geometry;
+virtualconf.secondary_sources.number = conf.localwfs_vss.number;
+virtualconf.wfs = conf.localwfs_vss.wfs;
+virtualconf.nfchoa = conf.localwfs_vss.nfchoa;
+virtualconf.driving_functions = conf.localwfs_vss.driving_functions;
+method = conf.localwfs_vss.method;
 
 %% ===== Computation ====================================================
 if strcmp('fs',src)

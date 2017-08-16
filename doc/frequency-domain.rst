@@ -178,10 +178,10 @@ into ``SFS_config.m`` for all possible settings.
     conf.secondary_sources.geometry = 'box';
     conf.secondary_sources.number = 4*56;
     conf.secondary_sources.size = 2;
-    conf.localsfs.vss.size = 0.4;
-    conf.localsfs.vss.center = [0 0 0];
-    conf.localsfs.vss.geometry = 'circular';
-    conf.localsfs.vss.number = 56;
+    conf.localwfs_vss.size = 0.4;
+    conf.localwfs_vss.center = [0 0 0];
+    conf.localwfs_vss.geometry = 'circular';
+    conf.localwfs_vss.number = 56;
     % sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf);
     sound_field_mono_localwfs([-1 1],[-1 1],0,[1.0 -1.0 0],'pw',7000,conf);
     axis([-1.1 1.1 -1.1 1.1]);

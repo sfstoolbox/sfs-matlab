@@ -47,14 +47,14 @@
 
 
 # Checking if we have enough input parameters
-if ('$#'!=5) { print 'gp_set_loudspeakers needs 5 input parameters'; exit }
+if (ARGC!=5) { print 'gp_set_loudspeakers needs 5 input parameters'; exit }
 
 # Getting the input parameters
-x0 = $0
-y0 = $1
-p = $2
-activity = $3
-lssize = $4
+x0 = ARG1
+y0 = ARG2
+p = ARG3
+activity = ARG4
+lssize = ARG5
 
 # Initialize an object number
 if (!exists("object_number")) { object_number = 1; }
@@ -74,5 +74,5 @@ set object object_number polygon from \
 -a/2*cos(p)+a/2*sin(p)+x0, -a/2*sin(p)-a/2*cos(p)+y0  to \
 -a*cos(p)+a/2*sin(p)+x0,   -a*sin(p)-a/2*cos(p)+y0
 # Set the color etc.
-set object object_number fc rgb "black" fillstyle solid 0.5*activity lw 1 front
+set object object_number fillcolor rgb "black" fillstyle solid 0.5*activity lw 1 front
 object_number = object_number+1

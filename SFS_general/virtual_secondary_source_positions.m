@@ -68,9 +68,7 @@ nargmin = 4;
 nargmax = 4;
 narginchk(nargmin,nargmax);
 isargxs(xs);
-if ~isempty(x0)
-    isargsecondarysource(x0);
-end
+isargsecondarysource(x0);
 isargchar(src);
 isargstruct(conf);
 

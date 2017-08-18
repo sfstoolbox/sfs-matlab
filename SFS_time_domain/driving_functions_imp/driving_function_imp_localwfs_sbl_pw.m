@@ -56,28 +56,27 @@ N0 = size(x0,1);
 xref = conf.xref; 
 fs = conf.fs;
 % maximum order of circular basis expansion of sound field
-if isempty(conf.localsfs.sbl.order)
+if isempty(conf.localwfs_sbl.order)
     Nce = nfchoa_order(N0,conf);
 else
-    Nce = conf.localsfs.sbl.order;
+    Nce = conf.localwfs_sbl.order;
 end
 % resolution of plane wave decomposition
-if isempty(conf.localsfs.sbl.Npw)
+if isempty(conf.localwfs_sbl.Npw)
     Npw = 2*ceil(2*pi*0.9*fs/conf.c*conf.secondary_sources.size/2);
 else
-    Npw = conf.localsfs.sbl.Npw;
+    Npw = conf.localwfs_sbl.Npw;
 end
-
-wfsconf = conf;
-wfsconf.wfs = conf.localsfs.wfs;
-
 
 %% ===== Computation ==========================================================
 % circular expansion coefficients
 [pm,delay_circexp] = circexp_imp_pw(nk,Nce,xref,conf);
+% modal window
+wm = modal_weighting(Nce,conf);
+pm = bsxfun(@times,wm,pm);
 % plane wave decomposition
 ppwd = pwd_imp_circexp(pm,Npw);
 % driving signal
-[d,delay_lwfs] = driving_function_imp_wfs_pwd(x0,ppwd,xref,wfsconf);
+[d,delay_lwfs] = driving_function_imp_wfs_pwd(x0,ppwd,xref,conf);
 % delay
 delay_offset = delay_lwfs + delay_circexp;

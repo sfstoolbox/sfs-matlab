@@ -65,7 +65,7 @@ end
 conf.plot.useplot = false;    % disable plotting in spectrum_from_signal()
 conf.ir.usehcomp = false;
 conf.wfs.usehpre = false;     % no prefilter
-conf.localsfs.wfs = conf.wfs;
+conf.localwfs_vss.wfs.usehpre = false;  % no prefilter
 
 
 %% ===== Variables ======================================================

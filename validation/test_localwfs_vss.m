@@ -71,11 +71,11 @@ conf.usetapwin = true;
 conf.tapwinlen = 0.3;
 
 % default settings for LWFS-VSS
-conf.localsfs.method = 'wfs';
-conf.localsfs.usetapwin = true;
+conf.localwfs_vss.method = 'wfs';
+conf.localwfs_vss.usetapwin = true;
 conf.localsfstapwinlen = 0.3;
-conf.localsfs.vss.consider_target_field = true;
-conf.localsfs.vss.consider_secondary_sources = true;
+conf.localwfs_vss.consider_target_field = true;
+conf.localwfs_vss.consider_secondary_sources = true;
 
 % range for sound field computation
 X = [-1 1];
@@ -153,20 +153,20 @@ for ii=1:size(scenarios)
     % set virtual source distribution
     switch scenarios{ii,3}
     case 'linear'
-        conf.localsfs.vss.size = 0.4;
-        conf.localsfs.vss.center = [0 0.2 0];
-        conf.localsfs.vss.geometry = 'linear';
-        conf.localsfs.vss.number = 56;
+        conf.localwfs_vss.size = 0.4;
+        conf.localwfs_vss.center = [0 0.2 0];
+        conf.localwfs_vss.geometry = 'linear';
+        conf.localwfs_vss.number = 56;
     case 'circular'
-        conf.localsfs.vss.size = 0.4;
-        conf.localsfs.vss.center = [0 0 0];
-        conf.localsfs.vss.geometry = 'circular';
-        conf.localsfs.vss.number = 56;
+        conf.localwfs_vss.size = 0.4;
+        conf.localwfs_vss.center = [0 0 0];
+        conf.localwfs_vss.geometry = 'circular';
+        conf.localwfs_vss.number = 56;
     case 'box'
-        conf.localsfs.vss.size = 0.4;
-        conf.localsfs.vss.center = [0 0 0];
-        conf.localsfs.vss.geometry = 'box';
-        conf.localsfs.vss.number = 4*56;
+        conf.localwfs_vss.size = 0.4;
+        conf.localwfs_vss.center = [0 0 0];
+        conf.localwfs_vss.geometry = 'box';
+        conf.localwfs_vss.number = 4*56;
     end
     
     % set desired sound field

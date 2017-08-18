@@ -311,59 +311,61 @@ conf.sdm.withev = true; % boolean
 conf.nfchoa.order = []; % integer
 
 
-%% ===== Local Sound Field Synthesis (LSFS) ==============================
-% Settings for Local SFS, 
+%% ===== Local Wave Field Synthesis (LWFS) ===============================
+% Settings for Local WFS
+%
+% === Local Wave Field Synthesis using Virtual Secondary Sources (LWFS-VSS)
+% See Spors, Ahrens (2010) for an introduction.
 %
 % Method the virtual secondary sources should be driven
-conf.localsfs.method = 'wfs'; % 'wfs' or 'nfchoa'
-conf.localsfs.usetapwin = false; % boolean
-conf.localsfs.tapwinlen = 0.5; % 0..1
-% WFS settings
-conf.localsfs.wfs = conf.wfs;
-%
-% === LSFS using Virtual Secondary Sources (LSFS-VSS) ===
-% See Spors, Ahrens (2010b) for an introduction.
-%
-% Virtual secondary sources (vss)
-conf.localsfs.vss.size = 0.4;
-conf.localsfs.vss.center = [0, 0, 0];
-conf.localsfs.vss.geometry = 'circular';
-conf.localsfs.vss.number = 56;
-conf.localsfs.vss.grid = 'equally_spaced_points';
+conf.localwfs_vss.method = 'wfs'; % 'wfs' or 'nfchoa'
+% WFS settings for virtual secondary sources
+conf.localwfs_vss.wfs = conf.wfs;
+% Tapering of virtual secondary sources (only applied for WFS)
+conf.localwfs_vss.usetapwin = false; % boolean
+conf.localwfs_vss.tapwinlen = 0.5; % 0..1
+% NFC-HOA settings for virtual secondary sources
+conf.localwfs_vss.nfchoa = conf.nfchoa;
+% Virtual secondary sources (see also: conf.secondary_sources)
+conf.localwfs_vss.size = 0.4; % / m
+conf.localwfs_vss.center = [0, 0, 0]; % / m
+conf.localwfs_vss.geometry = 'circular'; % string
+conf.localwfs_vss.number = 56; % integer
+conf.localwfs_vss.grid = 'equally_spaced_points'; % string
 % Driving function for virtual secondary sources
-conf.localsfs.vss.driving_functions = 'default';
-% Linear vss distribution: rotate the distribution orthogonal to the progation
-% direction of the desired sound source
-% circular vss distribution: truncate the distribution to a circular arc
+conf.localwfs_vss.driving_functions = 'default'; % string
+% Linear VSS distribution: rotate the distribution orthogonal to the progation
+% direction of the desired sound source.
+% Circular VSS distribution: truncate the distribution to a circular arc
 % which satisfies the secondary source selection criterions (source normal
-% aligns with propagation directions of desired sound source)
-conf.localsfs.vss.consider_target_field = true;
-% Vss distribution is further truncated if parts of it cannot be correctly
+% aligns with propagation directions of desired sound source).
+conf.localwfs_vss.consider_target_field = true; % boolean
+% VSS distribution is further truncated if parts of it cannot be correctly
 % reproduced, because they lie outside the area which is surrounded by the real
 % loudspeakers (secondary sources)
-conf.localsfs.vss.consider_secondary_sources = true;
+conf.localwfs_vss.consider_secondary_sources = true; % boolean
 %
-% === LSFS using Spatial Bandwidth Limitation (LSFS-SBL) ===
+% === Local Wave Field Synthesis using Spatial Bandwidth Limitation (LWFS-SBL)
 % See Hahn, Winter, Spors (2016) for an introduction.
-% The local synthesis region will be in the centre conf.xref.
+% The centre of the local synthesis region is set by conf.xref
 %
 % Maximum modal order aka. spatial bandwidth of desired sound field. If left
 % empty, the value is set by nfchoa_order(), which may suboptimal depending on
 % the geometry, e.g. number of secondary sources and shape of the secondary 
-% source distribution
-conf.localsfs.sbl.order = [];
+% source distribution.
+conf.localwfs_sbl.order = []; % integer
 % Due to stability issues for the time-domain implementation of synthesis 
 % of a point source, conventional WFS has to be used for the low frequencies. 
-% fc defines the crossover frequency between the WFS and LSFS-SBL. If left
-% empty, this frequency is estimated aliasing_frequency().
-conf.localsfs.sbl.fc = [];
+% fc defines the crossover frequency between the WFS and LWFS-SBL. If left
+% empty, this frequency is estimated by aliasing_frequency().
+conf.localwfs_sbl.fc = []; % float
 % The spatially bandwidth-limited sound field is converted into plane wave
 % decomposition which is then synthesised using conventional WFS for each
 % individual plane wave. Npw defines the number of plane waves with their 
 % directions distributed equi-angularly on the unit circle. If left empty,
 % it is estimated based on the sampling frequency and size of the secondary 
-% source distribution
-conf.localsfs.sbl.Npw = [];
+% source distribution.
+conf.localwfs_sbl.Npw = []; % integer
 
 
 %% ===== Binaural reproduction ===========================================

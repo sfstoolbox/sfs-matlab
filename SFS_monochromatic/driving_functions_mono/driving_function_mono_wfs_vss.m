@@ -63,7 +63,6 @@ isargstruct(conf);
 
 %% ===== Configuration ==================================================
 dimension = conf.dimension;
-conf.driving_functions = conf.localsfs.vss.driving_functions;
 
 
 %% ===== Computation ====================================================

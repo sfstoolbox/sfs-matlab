@@ -55,21 +55,26 @@ conf = SFS_config;
 conf.xref = [0,0,0];
 conf.dimension = '2.5D';
 conf.plot.useplot = false;
+conf.plot.usedb = true;
 conf.wfs.hpreflow = 20;
 conf.wfs.hprefhigh = 20000;
-conf.localsfs.wfs = conf.wfs;
-conf.localsfs.sbl.order = 23;
-conf.localsfs.vss.geometry = 'circular';
-conf.localsfs.vss.number = 512;
-conf.localsfs.vss.center = conf.xref;
-conf.localsfs.vss.size = 0.6;
-conf.localsfs.vss.consider_secondary_sources = false;
-conf.localsfs.vss.consider_target_field = false;
+conf.localwfs_vss.wfs = conf.wfs;
+conf.localwfs_vss.geometry = 'circular';
+conf.localwfs_vss.number = 512;
+conf.localwfs_vss.center = conf.xref;
+conf.localwfs_vss.size = 0.6;
+conf.localwfs_vss.consider_secondary_sources = false;
+conf.localwfs_vss.consider_target_field = false;
+conf.localwfs_sbl.order = 23;
 conf.delayline.resamplingfactor = 8;
 conf.delayline.resampling = 'pm';
 conf.delayline.filter = 'lagrange';
 conf.delayline.filterorder = 9;
 conf.t0 = 'source';
+
+X = [-2.05 2.05];
+Y = [-2.05 2.05];
+Z = 0;
 
 % test scenarios
 scenarios = { ...
@@ -96,6 +101,12 @@ for ii=1:size(scenarios)
   
     src = scenarios{ii,4};  %
     xs = scenarios{ii,5};  % source position
+    switch src
+    case 'pw'
+        tau = xs*conf.xref.'./conf.c;
+    case {'ps', 'fs'}
+        tau = norm(xs(1:3) - conf.xref)./conf.c;
+    end
     
     % get listening area
     conf.secondary_sources.geometry = scenarios{ii,3};
@@ -107,7 +118,7 @@ for ii=1:size(scenarios)
         conf.tapwinlen = 0.2;
         conf.secondary_sources.center = [0, 1.5, 0];
     case 'circular'
-        conf.secondary_sources.size = 1.5;
+        conf.secondary_sources.size = 3;
         conf.secondary_sources.number = 128;
         conf.secondary_sources.center = [0, 0, 0];
     end
@@ -119,14 +130,21 @@ for ii=1:size(scenarios)
     case 'WFS'
         x0 = secondary_source_selection(x0,xs,src);
         x0 = secondary_source_tapering(x0,conf);
-        d = driving_function_imp_wfs(x0,xs,src,conf);
+        [d,~,~,delay_offset] = driving_function_imp_wfs(x0,xs,src,conf);
     case 'HOA'
-        d = driving_function_imp_nfchoa(x0,xs,src,conf);
+        [d,~,delay_offset] = driving_function_imp_nfchoa(x0,xs,src,conf);
     case 'LWFS-VSS'
-        [d, x0] = driving_function_imp_localwfs_vss(x0,xs,src,conf);
+        [d,x0,~,~,delay_offset] = ...
+            driving_function_imp_localwfs_vss(x0,xs,src,conf);
     case 'LWFS-SBL'
-        d = driving_function_imp_localwfs_sbl(x0,xs,src,conf);
+        [d,delay_offset] = driving_function_imp_localwfs_sbl(x0,xs,src,conf);
     end
+    
+    % Spatio-temporal sound field
+    p = sound_field_imp(X,Y,Z,x0,'ps',d,tau+delay_offset,conf);
+    plot_sound_field(p,X,Y,Z,x0,conf);
+    title(sprintf('%s %s %s',scenarios{ii,1},src,conf.driving_functions), ...
+        'Interpreter','none');
     
     % spectrum of reproduced sound field at reference position
     ir_sfs = ir_generic(xt,0,x0,d,sofa,conf);

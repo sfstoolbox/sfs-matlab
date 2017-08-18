@@ -57,27 +57,23 @@ Nfft = conf.N;
 xref = conf.xref;
 fs = conf.fs;
 % Ambisonics order
-if isempty(conf.localsfs.sbl.order)
+if isempty(conf.localwfs_sbl.order)
     Nce = nfchoa_order(N0,conf);
 else
-    Nce = conf.localsfs.sbl.order;
+    Nce = conf.localwfs_sbl.order;
 end
 % Crossover frequency
-if isempty(conf.localsfs.sbl.fc)
+if isempty(conf.localwfs_sbl.fc)
     fc = aliasing_frequency(conf);
 else
-    fc = conf.localsfs.sbl.fc;  
+    fc = conf.localwfs_sbl.fc;
 end
 % Resolution of plane wave decomposition
-if isempty(conf.localsfs.sbl.Npw)
+if isempty(conf.localwfs_sbl.Npw)
     Npw = 2*ceil(2*pi*0.9*fs/conf.c*conf.secondary_sources.size/2);
 else
-    Npw = conf.localsfs.sbl.Npw;
+    Npw = conf.localwfs_sbl.Npw;
 end
-
-wfsconf = conf;
-wfsconf.wfs = conf.localsfs.wfs;
-
 
 %% ===== Variables ============================================================
 Nlr = ceil(Nce/2)*2;  % order of Linkwitz-Riley Coefficients
@@ -95,7 +91,7 @@ pm = bsxfun(@times,wm,pm);
 % plane wave decomposition
 ppwd = pwd_imp_circexp(pm,Npw);
 % driving signal
-[d_lwfs,delay_lwfs] = driving_function_imp_wfs_pwd(x0,ppwd,xref,wfsconf);
+[d_lwfs,delay_lwfs] = driving_function_imp_wfs_pwd(x0,ppwd,xref,conf);
 
 % === WFS for low frequencies ===
 % secondary source selection

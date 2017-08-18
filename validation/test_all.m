@@ -76,10 +76,6 @@ if modus
     test_hrtf_extrapolation(1,'QU_KEMAR');
     disp('Hit Enter to continue');
     pause
-    disp('Running "test_impulse_responses(1)"');
-    test_impulse_responses(1);
-    disp('Hit Enter to continue');
-    pause
     disp('Running "test_interpolation_methods(1)"');
     test_interpolation_methods(1);
     pause

@@ -104,6 +104,14 @@ conf.c = 343; % / m/s
 % Beside choosing the actual delayline filter, the signal can also be resampled
 % before delaying.
 %
+% Delayline filter
+%   'integer'       - round to nearest integer delay (default)
+%   'zoh'           - round to next larger integer delay
+%   'lagrange'      - lagrange interpolator (FIR Filter)
+%   'least_squares' - least squares FIR interpolation filter
+%   'thiran'        - Thiran's allpass IIR filter
+%   'farrow'        - use the Farrow structure (to be implemented)
+conf.delayline.filter = 'integer';  % string
 % Resample signal
 %   'none'   - no resampling (default) 
 %   'matlab' - use matlab's resample() function
@@ -115,14 +123,6 @@ conf.delayline.resamplingfactor = 100; % / 1
 % Order of Parks-McClellan resample filter (only for 'pm')
 % This results in a filter length of resamplingfactor*resamplingorder
 conf.delayline.resamplingorder = 64;
-% Delayline filter
-%   'integer'       - round to nearest integer delay (default)
-%   'zoh'           - round to next larger integer delay
-%   'lagrange'      - lagrange interpolator (FIR Filter)
-%   'least_squares' - least squares FIR interpolation filter
-%   'thiran'        - Thiran's allpass IIR filter
-%   'farrow'        - use the Farrow structure (to be implemented)
-conf.delayline.filter = 'integer';  % string
 % Order of delayline filter (only for Lagrange, Least-Squares & Thiran)
 conf.delayline.filterorder = 0;  % / 1
 % Number of parallel filters in Farrow structure

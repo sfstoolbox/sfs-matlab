@@ -165,13 +165,19 @@ be achieved in |WFS| by applying so called local Wave Field Synthesis. In
 this case the original loudspeaker array is driven by |WFS| to create a
 virtual loudspeaker array consisting of focused sources which can then
 be used to create the desired sound field in a small area. The settings
-are the same as for |WFS|, but a new struct ``conf.localsfs`` has to be filled
+are the same as for |WFS|, but a new struct ``conf.localwfs`` has to be filled
 out, which for example provides the settings for the desired position
 and form of the local region with higher aliasing frequency, have a look
 into ``SFS_config.m`` for all possible settings.
 
 .. sourcecode:: matlab
 
+    X = [-1 1];
+    Y = [-1 1];
+    Z = 0;
+    xs = [1 -1 0];
+    src = 'pw';
+    f = 7000;
     conf = SFS_config;
     conf.resolution = 1000;
     conf.dimension = '2D';
@@ -182,8 +188,7 @@ into ``SFS_config.m`` for all possible settings.
     conf.localwfs_vss.center = [0 0 0];
     conf.localwfs_vss.geometry = 'circular';
     conf.localwfs_vss.number = 56;
-    % sound_field_mono_localwfs(X,Y,Z,xs,src,f,conf);
-    sound_field_mono_localwfs([-1 1],[-1 1],0,[1.0 -1.0 0],'pw',7000,conf);
+    sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf);
     axis([-1.1 1.1 -1.1 1.1]);
     %print_png('img/sound_field_localwfs_2d.png');
 

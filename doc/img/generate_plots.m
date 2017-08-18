@@ -162,6 +162,12 @@ set(gca, 'XTick', -2:1:2); set(gca, 'YTick', -2:1:2);
 print_png('sound_field_nfchoa_25d.png');
 
 % === 2D local WFS with box shaped array and circular virtual array ===
+X = [-1 1];
+Y = [-1 1];
+Z = 0;
+xs = [1 -1 0];
+src = 'pw';
+f = 7000;
 conf = SFS_config;
 conf.resolution = 1000;
 conf.dimension = '2D';
@@ -172,7 +178,7 @@ conf.localwfs_vss.size = 0.4;
 conf.localwfs_vss.center = [0 0 0];
 conf.localwfs_vss.geometry = 'circular';
 conf.localwfs_vss.number = 56;
-sound_field_mono_localwfs([-1 1],[-1 1],0,[1.0 -1.0 0],'pw',7000,conf);
+sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf);
 axis([-1.1 1.1 -1.1 1.1]);
 print_png('sound_field_localwfs_2d.png');
 

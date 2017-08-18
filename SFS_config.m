@@ -99,10 +99,17 @@ conf.c = 343; % / m/s
 %% ===== Delayline =======================================================
 % Delaying of time signals. This can be critical as very often the wanted delays
 % are given as fractions of samples. This configuration section handles how
-% those delays should be handled. As the default setting, integer only delays
-% are used by rounding to the next larger integer delay.
-% Beside choosing the actual delayline filter, the signal can also be resampled
-% before delaying.
+% those delays should be handled. Beside choosing the actual delayline filter,
+% the signal can also be resampled before delaying. As the default setting,
+% integer only delays are used by rounding to the next larger integer delay.
+% If you want to use a fractional delayline, a setting with a high accuracy is:
+%   conf.delayline.resampling = 'pm';
+%   conf.delayline.resamplingfactor = 8;
+%   conf.delayline.resamplingorder = 64;
+%   conf.delayline.filter = 'lagrange';
+%   conf.delayline.filterorder = 9;
+% Note, that the necessary interpolation accuracy highly depends on the
+% actual use case and parametrisation, compare Winter, Spors (2016).
 %
 % Delayline filter
 %   'integer'       - round to nearest integer delay (default)
@@ -506,3 +513,7 @@ conf.plot.file = ''; % string
 %
 % Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
 % TU Berlin, https://doi.org/10.14279/depositonce-4310
+%
+% Winter, Spors (2016) - "On fractional delay interpolation for local wave
+% field synthesis", 24th European Signal Processing Conference (EUSIPCO),
+% pp. 2415-2419, https://doi.org/10.1109/EUSIPCO.2016.7760682

@@ -347,7 +347,7 @@ conf.localwfs_vss.consider_secondary_sources = true; % boolean
 %
 % === Local Wave Field Synthesis using Spatial Bandwidth Limitation (LWFS-SBL)
 % See Hahn, Winter, Spors (2016) for an introduction.
-% The local synthesis region will be in the centre conf.xref.
+% The centre of the local synthesis region is set by conf.xref
 %
 % Maximum modal order aka. spatial bandwidth of desired sound field. If left
 % empty, the value is set by nfchoa_order(), which may suboptimal depending on

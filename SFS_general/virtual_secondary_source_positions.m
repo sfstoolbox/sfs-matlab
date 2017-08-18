@@ -22,7 +22,7 @@ function xv = virtual_secondary_source_positions(x0,xs,src,conf)
 %
 %   VIRTUAL_SECONDARY_SOURCE_POSITIONS(x0,xs,src,conf) generates the positions
 %   and directions xv of virtual secondary sources for a local area geometry
-%   (conf.localsfs.geometry) and local area size(conf.localsfs.size).
+%   (conf.localsfs.geometry) and local area size (conf.localsfs.size).
 %   The direction of the virtual sources is given as their unit vectors
 %   pointing in the given direction.
 %   Optionally (conf.localwfs_vss.consider_target_field == true), the

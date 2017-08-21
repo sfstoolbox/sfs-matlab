@@ -62,7 +62,7 @@ if ~exist(outfile,'file')
     % function
     %dirs = strsplit(outfile,'/');
     dirs = regexp(outfile,'/','split');
-    dir_path = [];
+    dir_path = '';
     for ii=1:length(dirs)-1
         if ii==1 && iswindows
             dir_path = [dir_path dirs{ii}];

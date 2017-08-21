@@ -177,7 +177,33 @@ elseif strcmp('2.5D',dimension)
     xref = repmat(xref,[size(x0,1) 1]);
 
     switch driving_functions
-    case {'default', 'reference_point'}
+    case {'default', 'reference_circle'}
+        % Driving function with two stationary phase approximations,
+        % reference to circle around the focused source with radius |xref-xs|
+        %
+        % r = |x0-xs|
+        r = vector_norm(x0-xs,2);
+        %
+        % 2.5D correction factor
+        %         _____________
+        %        |        r
+        % g0 = _ |1 + ---------
+        %       \|    |xref-xs|
+        %
+        g0 = sqrt( 1 + r./vector_norm(xref-xs,2) );
+        %                       ___     ___
+        %                      | 1     |-iw  (xs-x0) nx0
+        % D_2.5D(x0,w) = g0  _ |---  _ |--- ------------- e^(i w/c |x0-xs|)
+        %                     \|2pi   \| c  |x0-xs|^(3/2)
+        %
+        % See http://sfstoolbox.org/en/update_wfs_ps/#equation-D.wfs.fs.2.5D
+        %
+        % Driving signal
+        D = 1./sqrt(2.*pi) .* sqrt(-1i.*omega./c) .* g0 ...
+            .* vector_product(xs-x0,nx0,2) ./ r.^(3./2) ...
+            .* exp(+1i.*omega./c.*r);
+        %
+    case 'reference_point'
         % Driving function with only one stationary phase approximation,
         % reference to one point in field
         %
@@ -196,8 +222,6 @@ elseif strcmp('2.5D',dimension)
         %                      | 1     |-iw  (xs-x0) nx0
         % D_2.5D(x0,w) = g0  _ |---  _ |--- ------------- e^(i w/c |x0-xs|)
         %                     \|2pi   \| c  |x0-xs|^(3/2)
-        %
-        % See http://sfstoolbox.org/en/update_wfs_ps/#equation-D.wfs.fs.2.5D
         %
         % Driving signal
         D = 1./sqrt(2.*pi) .* sqrt(-1i.*omega./c) .* g0 ...
@@ -229,30 +253,6 @@ elseif strcmp('2.5D',dimension)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
-        % Driving signal
-        D = 1./sqrt(2.*pi) .* sqrt(-1i.*omega./c) .* g0 ...
-            .* vector_product(xs-x0,nx0,2) ./ r.^(3./2) ...
-            .* exp(+1i.*omega./c.*r);
-        %
-    case {'reference_circle'}
-        % Driving function with two stationary phase approximations,
-        % reference to circle around the focused source with radius |xref-xs|
-        %
-        % r = |x0-xs|
-        r = vector_norm(x0-xs,2);
-        %
-        % 2.5D correction factor
-        %         _____________
-        %        |        r
-        % g0 = _ |1 + ---------
-        %       \|    |xref-xs|
-        %
-        g0 = sqrt( 1 + r./vector_norm(xref-xs,2) );
-        %                       ___     ___
-        %                      | 1     |-iw  (xs-x0) nx0
-        % D_2.5D(x0,w) = g0  _ |---  _ |--- ------------- e^(i w/c |x0-xs|)
-        %                     \|2pi   \| c  |x0-xs|^(3/2)
-        %
         % Driving signal
         D = 1./sqrt(2.*pi) .* sqrt(-1i.*omega./c) .* g0 ...
             .* vector_product(xs-x0,nx0,2) ./ r.^(3./2) ...

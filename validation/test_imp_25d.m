@@ -142,9 +142,6 @@ for ii=1:size(scenarios)
     
     % Spatio-temporal sound field
     p = sound_field_imp(X,Y,Z,x0,'ps',d,tau+delay_offset,conf);
-    plot_sound_field(p,X,Y,Z,x0,conf);
-    title(sprintf('%s %s %s',scenarios{ii,1},src,conf.driving_functions), ...
-        'Interpreter','none');
     
     % spectrum of reproduced sound field at reference position
     ir_sfs = ir_generic(xt,0,x0,d,sofa,conf);
@@ -160,6 +157,10 @@ for ii=1:size(scenarios)
     [IR_gt,~,f_gt] = spectrum_from_signal(ir_gt(:,1),conf);
     
     if modus
+        figure;
+        plot_sound_field(p,X,Y,Z,x0,conf);
+        title(sprintf('%s %s %s',scenarios{ii,1},src, ...
+                      conf.driving_functions),'Interpreter','none');
         figure;
         semilogx(f_sfs,db(IR_sfs),'r',f_gt,db(IR_gt),'b--');
         xlabel('Frequency / Hz');

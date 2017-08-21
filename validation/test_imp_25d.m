@@ -157,7 +157,6 @@ for ii=1:size(scenarios)
     [IR_gt,~,f_gt] = spectrum_from_signal(ir_gt(:,1),conf);
     
     if modus
-        figure;
         plot_sound_field(p,X,Y,Z,x0,conf);
         title(sprintf('%s %s %s',scenarios{ii,1},src, ...
                       conf.driving_functions),'Interpreter','none');

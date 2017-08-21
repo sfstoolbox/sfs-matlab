@@ -92,7 +92,7 @@ if modus
     disp('Hit Enter to continue');
     pause
     disp('Running "test_plot(1)"');
-    test_plot(1);
+    test_plotting(1);
     disp('Hit Enter to continue');
     pause
     disp('Running "test_secondary_source_positions(1)"');

@@ -186,8 +186,6 @@ for testcase_tmp = erroneous_testcases
     try
         findconvexcone(x0,xs)
         return
-    catch
-        disp('foo')
     end
 end
 

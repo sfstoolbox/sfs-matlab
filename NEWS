@@ -1,11 +1,16 @@
-2.4.0 ()
+2.4.0 (22. August 2017)
+    - improve references in SFS_config()
+    - update structure of configuration for LWFS methods
+    - fix off-center dummy head positions for HRTFs
+    - add elevation to head orientation for binaural synthesis
+    - fix sphbesselh_zeros() for high orders
     - fix symmetric ifft for Octave
     - add inverse Legendre transform
     - fix integral weights for spherical secondary sources
     - add 3D ps and pw driving functions for NFC-HOA
-    - add 'reference_circle' option for focused sources in 2.5D
+    - add 'reference_circle' as new default for focused sources in 2.5D
     - add max-rE and tukey modal weighting windows
-    - add time-domain implementation of LSFS using spatial bandwidth-limitation
+    - add time-domain implementation of LWFS using spatial bandwidth-limitation
     - add circular expansion functions
     - fix incorporation of tapering weights for LWFS
     - remove x0 from interpolate_ir() call

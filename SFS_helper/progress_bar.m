@@ -1,13 +1,14 @@
-function progress_bar(ii,nii)
+function progress_bar(ii,nii,message)
 %PROGRESS_BAR show a progress of an iteration
 %
-%   Usage: progress_bar(ii,nii)
+%   Usage: progress_bar(ii,nii,[message])
 %
 %   Input parameters:
-%       ii  - current iteration
-%       nii - number of iterations
+%       ii      - current iteration
+%       nii     - number of iterations
+%       message - string printed before progress bar (default: 'Progress')
 %
-%   PROGRESS_BAR(ii,nii) displays the progress of a loop.
+%   PROGRESS_BAR(ii,nii,message) displays the progress of a loop.
 %
 
 %*****************************************************************************
@@ -42,43 +43,41 @@ function progress_bar(ii,nii)
 
 %% ===== Checking of input parameters ====================================
 nargmin = 2;
-nargmax = 2;
+nargmax = 3;
 narginchk(nargmin,nargmax);
 isargpositivescalar(ii,nii);
+if nargin<3
+    message = 'Progress';
+end
+
+
+%% ===== Settings ========================================================
+bar_width = 10;
+bar_prefix = '[';
+bar_suffix = ']';
+bar_empty = ' ';
+bar_full = '.';
 
 
 %% ===== Generate the progress bar =======================================
-% \r is not working under some Windows systems, therefore we use \b to clear the
-% line
-% calculate percentage
-perc = ii/nii * 100;
-% get bar
-if perc<10
-    bar = '[.         ]';
-elseif perc<20
-    bar = '[..        ]';
-elseif perc<30
-    bar = '[...       ]';
-elseif perc<40
-    bar = '[....      ]';
-elseif perc<50
-    bar = '[.....     ]';
-elseif perc<60
-    bar = '[......    ]';
-elseif perc<70
-    bar = '[.......   ]';
-elseif perc<80
-    bar = '[........  ]';
-elseif perc<90
-    bar = '[......... ]';
-else
-    bar = '[..........]';
-end
-str = sprintf('Progress: %s %3.0f%%%%',bar,perc);
+% Format progress bar
+progress = ii/nii;
+nfull = floor(min(bar_width*progress,bar_width)); % number of full chars
+nempty = bar_width - nfull;                       % number of empty chars
+bar = repmat(bar_full,1,nfull);
+empty = repmat(bar_empty,1,nempty);
+% Print to screen
+str = sprintf('%s: %s%s%s%s %3.0f%%%%', ...
+              message, ...
+              bar_prefix, ...
+              bar, ...
+              empty, ...
+              bar_suffix, ...
+              progress*100);
 if ii==1
     fprintf(1,str);
 else
-    clear_line(length(str)-1);
+    clear_line(length(str));
     fprintf(1,str);
 end
 if ii==nii
@@ -94,6 +93,8 @@ end % end of function
 
 %% ------ Subfunctions ---------------------------------------------------
 function clear_line(str_length)
+    % \r is not working under some Windows systems, therefore we use \b to
+    % clear the line
     for ii=1:str_length
         fprintf(1,'\b');
     end

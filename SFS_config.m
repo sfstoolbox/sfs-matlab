@@ -412,8 +412,7 @@ conf.ir.interpolationmethod = 'simple';
 % are padded at the beginning of every impulse response corresponding to their
 % measurement distance. If you know that your measured HRIRs already have a
 % given pre-delay, add the pre-delay here and accordingly less zero padding will
-% be applied. In this case you can lose samples from the beginning of the
-% impulse response. If you are not sure, choose a value of 0.
+% be applied. If you are not sure, choose a value of 0.
 conf.ir.hrirpredelay = 0; % / samples
 %
 % === Headphone compensation ===

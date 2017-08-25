@@ -72,6 +72,6 @@ k = 2*pi*f/c;
 Pm = zeros(1,2*Nce+1);
 for m=-Nce:Nce
   Pm(m+Nce+1) = ...
-      -1j*k*sphbesselh(abs(m),2,k*rs).*1i.^(abs(m)-m).*exp(-1i*m*phis);
+      -1i*k*sphbesselh(abs(m),2,k*rs).*1i.^(abs(m)-m).*exp(-1i*m*phis);
 end
 Pm = Pm./(4*pi);

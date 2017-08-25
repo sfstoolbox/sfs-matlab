@@ -142,7 +142,7 @@ function z0 = campos_zeros(n)
     y0 = polyval( [b3 b2 b1 b0],k);     % imaginary part
 
     % See Campos and Calderon (2011), Eq. (8)
-    z0 = x0 + 1j*y0;
+    z0 = x0 + 1i*y0;
 
 end
 

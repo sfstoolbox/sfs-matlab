@@ -66,5 +66,5 @@ c = conf.c;
 [phipw, ~] = cart2pol(npw(1),npw(2));
 
 m = (-Nce:Nce);
-Pm = (-1j).^m.*exp(-1j.*m.*phipw);
-Pm = Pm.*exp(-1j*xq*npw.'*2*pi*f./c);
+Pm = (-1i).^m.*exp(-1i.*m.*phipw);
+Pm = Pm.*exp(-1i*xq*npw.'*2*pi*f./c);

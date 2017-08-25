@@ -133,7 +133,7 @@ Gkx = zeros(length(kx),length(y));
 %                 \ 1/(2pi) K0( \|kx^2-(w/c)^2 y )
 %
 [kk,yy] = meshgrid(kx(idxpr),abs(y-X0(2)));
-Gkx(idxpr,:) = -1j/4 .* besselh(0,2,sqrt( (omega/c)^2 - kk.^2 ).* yy).';
+Gkx(idxpr,:) = -1i/4 .* besselh(0,2,sqrt( (omega/c)^2 - kk.^2 ).* yy).';
 if(withev)
     [kk,yy] = meshgrid(kx(idxev),abs(y-X0(2)));
     Gkx(idxev,:) = 1/(2*pi) .* besselk(0,sqrt( kk.^2 - (omega/c)^2).* yy).';
@@ -164,9 +164,9 @@ P = zeros(length(y),length(x));
 for n=1:length(x)
     % The following loop can be done faster by using the line below with repmat
     %for m=1:length(y)
-    %    P(m,n) = sum ( Pkx(:,m) .* exp(-1j*kx*x(n))' )';
+    %    P(m,n) = sum ( Pkx(:,m) .* exp(-1i*kx*x(n))' )';
     %end
-    P(:,n) = sum ( Pkx .* repmat(exp(-1j*kx*x(n))',1,resolution),1 )';
+    P(:,n) = sum ( Pkx .* repmat(exp(-1i*kx*x(n))',1,resolution),1 )';
 end
 
 % return parameter

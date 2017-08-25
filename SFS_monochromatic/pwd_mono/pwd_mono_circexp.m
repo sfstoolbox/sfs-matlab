@@ -67,4 +67,4 @@ end
 %
 % phipw = n * 2*pi/Npw
 
-Ppwd = inverse_cht(bsxfun(@times,Pm,1j.^(-M:M)),Npw);
+Ppwd = inverse_cht(bsxfun(@times,Pm,1i.^(-M:M)),Npw);

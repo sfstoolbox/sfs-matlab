@@ -126,7 +126,7 @@ for m=0:Nce
     % generate second-order-sections
     [sos, g] = zp2sos([zlr_comp; zh], plr, klr*kh, 'down', 'none');
     % filtering
-    pm(:,m+1) = sosfilt(sos, pm(:,m+1)).*g.*(1j).^m.*exp(-1j*m*phis);
+    pm(:,m+1) = sosfilt(sos, pm(:,m+1)).*g.*(1i).^m.*exp(-1i*m*phis);
 end
 pm = pm./(4*pi*rs);
 

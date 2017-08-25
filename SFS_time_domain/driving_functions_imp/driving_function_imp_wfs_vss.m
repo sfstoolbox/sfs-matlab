@@ -9,7 +9,12 @@ function [d,delay_offset] = driving_function_imp_wfs_vss(x0,xv,srcv,dv,conf)
 %                     sources / m [N0x7]
 %       xv          - position, direction, and weights of the virtual secondary
 %                     sources / m [Nvx7]
-%       srcv        - type of virtual secondary sources
+%       srcv        - type of virtual secondary sources [mx7]
+%                         'pw' - plane wave (xv(:,1:3) defines the direction of 
+%                                the plane waves in this case)
+%                         'fs' - focused source (xv(:,1:6) defines the position
+%                                and orientation of the focused sources in this 
+%                                case)
 %       dv          - driving signals of virtual secondary sources [NxNv]
 %       conf        - configuration struct (see SFS_config)
 %
@@ -21,7 +26,7 @@ function [d,delay_offset] = driving_function_imp_wfs_vss(x0,xv,srcv,dv,conf)
 %       S. Spors (2010) - "Local Sound Field Synthesis by Virtual Secondary
 %                          Sources", 40th AES
 %
-%   See also: driving_function_imp_localwfs, driving_function_mono_wfs_vss
+%   See also: driving_function_imp_localwfs_vss, driving_function_mono_wfs_vss
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -72,14 +77,14 @@ w0 = zeros(Nv,N0);
 % Calculate pre-equalization filter if required hpre(t)
 [hpre,delay_offset] = wfs_preequalization(dirac_imp(),conf);
 
-% apply hpre to pwd if its more efficient (less virtual sources than 
+% Apply hpre to pwd if its more efficient (less virtual sources than 
 % loudspeakers)
 if Nv <= N0
     dv = convolution(dv,hpre);
 end
 N = size(dv,1);
 
-% secondary source selection and driving function to synthesise a single virtual
+% Secondary source selection and driving function to synthesise a single virtual
 % secondary source
 switch srcv
 case 'fs'
@@ -92,10 +97,10 @@ end
 
 idx = 1;
 for xvi = xv'
-    % select active source for single virtual secondary source
+    % Select active source for single virtual secondary source
     [x0s, xdx] = ssd_select(x0,xvi);
     if ~isempty(x0s) && xvi(7) > 0
-        % Focused source position
+        % Virtual secondary source position
         xs = repmat(xvi(1:3)',[size(x0s,1) 1]);
         % Delay and weights for single virtual secondary source
         [tau0(idx,xdx),w0(idx,xdx)] = driv(x0s,xs);
@@ -116,17 +121,17 @@ tau0 = tau0 - min(tau0(w0~=0));
 % Compose impulse responses
 d = zeros(N,N0);
 for ndx=1:Nv
-    % select only secondary source with non-zero weights
+    % Select only secondary source with non-zero weights
     xsel = w0(ndx,:) ~= 0;
     
     [tmp, delayline_delay] = ...
         delayline(dv(:,ndx),tau0(ndx,xsel),w0(ndx,xsel),conf);
     d(:,xsel) = d(:,xsel) + tmp;
 end
-% add delay of delayline
+% Add delay of delayline
 delay_offset = delay_offset + delayline_delay;
 
-% apply hpre to driving signals if its more efficient
+% Apply hpre to driving signals if its more efficient
 if Nv > N0
     d = convolution(d,hpre);
 end

@@ -1,23 +1,25 @@
-function [A,Phi] = inverse_cht(Am,Nphi)
-%INVERSE_CHT computes the inverse circular harmonics transform (ICHT)
+function D = driving_function_mono_wfs_pwd(x0,Ppwd,f,xq,conf)
+%DRIVING_FUNCTION_IMP_WFS_PWD returns the WFS driving signal for a plane wave 
+%expansion
 %
-%   Usage: [A,Phi] = inverse_cht(Am,[Nphi])
+%   Usage: D = driving_function_mono_wfs_pwd(x0,Ppwd,f,[xq],conf)
 %
 %   Input parameters:
-%       Am      - circular harmonics coefficients [N x (2*M+1)]
-%       Nphi    - number of equi-angular distributed angles, for which the ICHT
-%                 is computed, optional, default: 2*M+1
+%       x0          - position and direction of the secondary source / m [N0x7]
+%       Ppwd        - plane wave coefficients [N x Npw]
+%       f           - frequency / Hz
+%       xq          - centre of plane wave expansion, default = [0 0 0];
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       A       - inverse circular harmonics transform [N x Nphi]
-%       Phi     - corresponding angle of the ICHT [1 x Nphi]
+%       D           - driving function signals [N x N0]
 %
-%   See also: pwd_imp_circexp
+%   See also: driving_function_mono_wfs_vss, driving_function_mono_localwfs_sbl
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
+% Copyright (c) 2010-2017 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -45,37 +47,32 @@ function [A,Phi] = inverse_cht(Am,Nphi)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
-nargmax = 2;
+nargmin = 4;
+nargmax = 5;
 narginchk(nargmin,nargmax);
-isargmatrix(Am);
+isargsecondarysource(x0);
+isargmatrix(Ppwd);
+isargpositivescalar(f);
 if nargin == nargmin
-    Nphi = size(Am, 2);
+    conf = xq;
+    xq = [0, 0, 0];
 else
-    isargpositivescalar(Nphi);
+    isargxs(xq);
 end
+isargstruct(conf);
 
 
-%% ===== Computation ==================================================
-M = (size(Am,2)-1)/2;
-N = size(Am,1);
+%% ===== Computation ====================================================
+% Create distribution of plane waves as virtual secondary sources
+Npw = size(Ppwd, 2);
+phipw = (0:Npw-1).'*2*pi/Npw;
+xv = [cos(phipw) sin(phipw)];  % [Npw x 2]
+xv(:,3) = 0;
+xv(:,4:6) = xv(:,1:3);
+xv(:,7) = 1./Npw;  % apply integrations weights to pwd
 
-% Implementation of
-%           ___
-%           \
-% A(phi) =  /__    A  e^(+j*m*n*2*pi/Nphi)
-%         m=-M..M   m
+% Shift coordinates to expansion center
+x0(:,1:3) = bsxfun(@minus,x0(:,1:3),xq);
+conf.xref = [0 0 0];
 
-% Spatial IFFT
-A = zeros(N, Nphi);
-% this handles cases where Nphi < M
-for l=1:N
-    A(l,:) = sum(buffer(Am(l,:),Nphi),2);
-end
-A = circshift(A,[0,-M]);  % m = 0, ..., M, ..., -M, ..., -1
-A = ifft(A,[],2) * Nphi;  % IFFT includes factor 1/Nphi
-
-% Axis corresponding to ICHT
-if nargout>1
-    Phi = 0:2*pi / Nphi:2*pi*(1-1/Nphi);
-end
+D = driving_function_mono_wfs_vss(x0,xv,'pw',Ppwd,f,conf);

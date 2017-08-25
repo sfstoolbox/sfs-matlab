@@ -70,6 +70,8 @@ if exist('addpath')
     addpath([basepath,'/SFS_ir']);
     addpath([basepath,'/SFS_monochromatic']);
     addpath([basepath,'/SFS_monochromatic/driving_functions_mono']);
+    addpath([basepath,'/SFS_monochromatic/circexp_mono']);
+    addpath([basepath,'/SFS_monochromatic/pwd_mono']);
     addpath([basepath,'/SFS_plotting']);
     addpath([basepath,'/SFS_plotting/colormaps']);
     addpath([basepath,'/SFS_ssr']);
@@ -91,6 +93,8 @@ else
     path(path,[basepath,'/SFS_ir']);
     path(path,[basepath,'/SFS_monochromatic']);
     path(path,[basepath,'/SFS_monochromatic/driving_functions_mono']);
+    path(path,[basepath,'/SFS_monochromatic/circexp_mono']);
+    path(path,[basepath,'/SFS_monochromatic/pwd_mono']);
     path(path,[basepath,'/SFS_plotting']);
     path(path,[basepath,'/SFS_plotting/colormaps']);
     path(path,[basepath,'/SFS_ssr']);

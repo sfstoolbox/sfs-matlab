@@ -1,39 +1,40 @@
-function varargout = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf)
-%SOUND_FIELD_MONO_LOCALWFS_VSS simulates a sound field for local WFS
+function varargout = sound_field_mono_localwfs_sbl(X,Y,Z,xs,src,f,conf)
+%SOUND_FIELD_MONO_LOCALWFS_SBL returns the sound field local WFS
 %
-%   Usage: [P,x,y,z,x0] = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf)
+%   Usage: [P,x,y,z,x0] = sound_field_mono_localwfs_sbl(X,Y,Z,xs,src,f,conf)
 %
-%   Input parameters:
+%   Input options:
 %       X           - x-axis / m; single value or [xmin,xmax] or nD-array
 %       Y           - y-axis / m; single value or [ymin,ymax] or nD-array
 %       Z           - z-axis / m; single value or [zmin,zmax] or nD-array
-%       xs          - position of virtual source or direction of plane
+%       xs          - position of point source or direction of plane
 %                     wave / m [1x3]
 %       src         - source type of the virtual source
-%                         'pw' - plane wave (xs is the direction of the
-%                                plane wave in this case)
+%                         'pw' - plane wave
 %                         'ps' - point source
-%                         'fs' - focused source
-%       f           - monochromatic frequency / Hz
+%       f           - frequency of the monochromatic source / Hz
 %       conf        - configuration struct (see SFS_config)
 %
-%   Output parameters:
+%   Output options:
 %       P           - simulated sound field
 %       x           - corresponding x values / m
 %       y           - corresponding y values / m
 %       z           - corresponding z values / m
-%       x0          - active secondary sources / m
+%       x0          - secondary sources / m
 %
-%   SOUND_FIELD_MONO_LOCALWFS_VSS(X,Y,Z,xs,src,f,conf) simulates a
-%   monochromatic sound field for the given source type (src) synthesized with
-%   local wave field synthesis.
+%   SOUND_FIELD_MONO_LOCALWFS_SBL(X,Y,Z,xs,src,f,conf) simulates a sound field
+%   of the given source type (src) synthesized with local wave field synthesis 
+%   for the frequency f.
 %
 %   To plot the result use:
 %   plot_sound_field(P,X,Y,Z,x0,conf);
 %   or simple call the function without output argument:
-%   sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf)
+%   sound_field_mono_localwfs_sbl(X,Y,Z,xs,src,f,conf)
+%   For plotting you may also consider to display the result in dB, by setting
+%   the following configuration option before:
+%   conf.plot.usedB = true;
 %
-%   See also: plot_sound_field, driving_function_mono_localwfs_vss
+%   See also: plot_sound_field, driving_function_mono_localwfs_sbl
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -69,43 +70,28 @@ function varargout = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf)
 nargmin = 7;
 nargmax = 7;
 narginchk(nargmin,nargmax);
+isargnumeric(X,Y,Z);
 isargxs(xs);
-isargpositivescalar(f);
 isargchar(src);
+isargscalar(f);
 isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
-useplot = conf.plot.useplot;
-loudspeakers = conf.plot.loudspeakers;
-dimension = conf.dimension;
-if strcmp('2D',dimension)
+if strcmp('2D',conf.dimension)
     greens_function = 'ls';
 else
     greens_function = 'ps';
 end
 
 
-%% ===== Computation ====================================================
-% Get the position of the loudspeakers and its activity
+%% ===== Computation =====================================================
+% Get secondary sources
 x0 = secondary_source_positions(conf);
-% Driving function
-[D,x0,xv] = driving_function_mono_localwfs_vss(x0,xs,src,f,conf);
-% Wave field
+% Get driving signals
+D = driving_function_mono_localwfs_sbl(x0,xs,src,f,conf);
+% Calculate sound field
 [varargout{1:min(nargout,4)}] = ...
     sound_field_mono(X,Y,Z,x0,greens_function,D,f,conf);
 % Return secondary sources if desired
-if nargout>=5, varargout{5}=x0; end
-if nargout==6, varargout{6}=xv; end
-
-
-% ===== Plotting ========================================================
-% Add the virtual loudspeaker positions
-if (nargout==0 || useplot) && loudspeakers
-    hold on;
-    tmp = conf.plot.realloudspeakers;  % cache option for loudspeaker plotting
-    conf.plot.realloudspeakers = false;
-    draw_loudspeakers(xv,[1 1 0],conf);
-    conf.plot.realloudspeakers = tmp;
-    hold off;
-end
+if nargout==5, varargout{5}=x0; end

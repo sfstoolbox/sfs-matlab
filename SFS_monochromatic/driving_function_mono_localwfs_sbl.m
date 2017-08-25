@@ -1,23 +1,28 @@
-function [A,Phi] = inverse_cht(Am,Nphi)
-%INVERSE_CHT computes the inverse circular harmonics transform (ICHT)
+function D = driving_function_mono_localwfs_sbl(x0,xs,src,f,conf)
+%DRIVING_FUNCTION_MONO_LOCALWFS_SBL returns the driving signal for local WFS
+%using spatial bandwidth limitation
 %
-%   Usage: [A,Phi] = inverse_cht(Am,[Nphi])
+%   Usage: D = driving_function_mono_localwfs_sbl(x0,xs,src,f,conf)
 %
 %   Input parameters:
-%       Am      - circular harmonics coefficients [N x (2*M+1)]
-%       Nphi    - number of equi-angular distributed angles, for which the ICHT
-%                 is computed, optional, default: 2*M+1
+%       x0          - position and direction of the secondary source / m [nx7]
+%       xs          - position of point source or direction of plane
+%                     wave / m [1x3]
+%       src         - source type of the virtual source
+%                         'pw' - plane wave
+%                         'ps' - point source
+%       f           - frequency of the monochromatic source / Hz
+%       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       A       - inverse circular harmonics transform [N x Nphi]
-%       Phi     - corresponding angle of the ICHT [1 x Nphi]
+%       D           - driving signals [mxn]
 %
-%   See also: pwd_imp_circexp
+%   See also: sound_field_mono, sound_field_mono_localwfs_sbl
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
+% Copyright (c) 2010-2017 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -45,37 +50,47 @@ function [A,Phi] = inverse_cht(Am,Nphi)
 
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 1;
-nargmax = 2;
+nargmin = 5;
+nargmax = 5;
 narginchk(nargmin,nargmax);
-isargmatrix(Am);
-if nargin == nargmin
-    Nphi = size(Am, 2);
+isargsecondarysource(x0);
+isargxs(xs);
+isargchar(src);
+isargpositivescalar(f);
+isargstruct(conf);
+
+
+%% ===== Configuration ========================================================
+xref = conf.xref;
+N0 = size(x0,1);
+% Resolution of plane wave decomposition
+if isempty(conf.localwfs_sbl.Npw)
+    Npw = 2*ceil(2*pi*0.9*f/conf.c*conf.secondary_sources.size/2);
 else
-    isargpositivescalar(Nphi);
+    Npw = conf.localwfs_sbl.Npw;
+end
+% Maximum order of circular basis expansion of sound field
+if isempty(conf.localwfs_sbl.order)
+    Nce = nfchoa_order(N0,conf);
+else
+    Nce = conf.localwfs_sbl.order;
 end
 
 
-%% ===== Computation ==================================================
-M = (size(Am,2)-1)/2;
-N = size(Am,1);
-
-% Implementation of
-%           ___
-%           \
-% A(phi) =  /__    A  e^(+j*m*n*2*pi/Nphi)
-%         m=-M..M   m
-
-% Spatial IFFT
-A = zeros(N, Nphi);
-% this handles cases where Nphi < M
-for l=1:N
-    A(l,:) = sum(buffer(Am(l,:),Nphi),2);
+%% ===== Computation ==========================================================
+% Circular expansion coefficients
+switch src
+case 'ps'
+    Pm = circexp_mono_ps(xs,Nce,f,xref,conf);
+case 'pw'
+    Pm = circexp_mono_pw(xs,Nce,f,xref,conf);
+otherwise
+    error('%s: %s is not a known source type.',upper(mfilename),src);
 end
-A = circshift(A,[0,-M]);  % m = 0, ..., M, ..., -M, ..., -1
-A = ifft(A,[],2) * Nphi;  % IFFT includes factor 1/Nphi
-
-% Axis corresponding to ICHT
-if nargout>1
-    Phi = 0:2*pi / Nphi:2*pi*(1-1/Nphi);
-end
+% Modal window
+wm = modal_weighting(Nce,conf);
+Pm = bsxfun(@times,[wm(end:-1:2),wm],Pm);
+% Plane wave decomposition
+Ppwd = pwd_mono_circexp(Pm,Npw);
+% Driving signal
+D = driving_function_mono_wfs_pwd(x0,Ppwd,f,xref,conf);

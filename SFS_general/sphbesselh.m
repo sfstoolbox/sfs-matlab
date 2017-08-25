@@ -63,4 +63,4 @@ isargnumeric(z)
 
 
 %% ===== Computation =====================================================
-out = sphbesselj(nu, z) + 1j .* sign .* sphbessely(nu, z);
+out = sphbesselj(nu, z) + 1i .* sign .* sphbessely(nu, z);

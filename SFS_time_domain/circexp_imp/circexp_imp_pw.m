@@ -69,7 +69,7 @@ c = conf.c;
 pulse = dirac_imp();
 % Compute impulse responses for each mode m
 m = (0:Nce);
-pm = (-1j).^m.*exp(-1j*phipw*m)*pulse;
+pm = (-1i).^m.*exp(-1i*phipw*m)*pulse;
 pm = [pm; zeros(N-size(pm,1),Nce+1)];
 
 delay_offset = -(xq*npw.')/c;

@@ -69,4 +69,4 @@ end
 % phipw = n * 2*pi/Npw
 
 pm = [conj(pm(:,end:-1:2)), pm];  % append coefficients for negative m
-ppwd = inverse_cht(bsxfun(@times,pm,1j.^(-M:M)),Npw);
+ppwd = inverse_cht(bsxfun(@times,pm,1i.^(-M:M)),Npw);

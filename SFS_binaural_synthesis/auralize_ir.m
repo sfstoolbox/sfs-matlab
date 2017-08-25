@@ -70,8 +70,8 @@ fs = conf.fs;
 %% ===== Get the right content ==========================================
 if isnumeric(content)
     contentfs = conf.fs;
-elseif ~exist(content,'file')
-    [content,contentfs] = audioread(contentfile);
+elseif exist(content,'file')
+    [content,contentfs] = audioread(content);
 else
     error('%s: %s file was not found.',upper(mfilename),content);
 end

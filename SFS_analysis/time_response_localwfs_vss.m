@@ -1,8 +1,8 @@
-function varargout = time_response_localwfs(X,xs,src,conf)
-%TIME_RESPONSE_LOCALWFS simulates the time response for LOCAL WFS at the given
-%listener position
+function varargout = time_response_localwfs_vss(X,xs,src,conf)
+%TIME_RESPONSE_LOCALWFS_VSS simulates the time response for LOCAL WFS at the
+%given listener position
 %
-%   Usage: [s,t] = time_response_localwfs(X,xs,src,conf)
+%   Usage: [s,t] = time_response_localwfs_vss(X,xs,src,conf)
 %
 %   Input parameters:
 %       X           - listener position / m
@@ -17,15 +17,15 @@ function varargout = time_response_localwfs(X,xs,src,conf)
 %       s           - simulated time response
 %       t           - corresponding time axis / s
 %
-%   TIME_RESPONSE_LOCALWFS(X,xs,src,conf) simulates the impulse response of a
-%   the source type src placed at xs and synthesized by local WFS at the given
-%   virtual microphone position X.
+%   TIME_RESPONSE_LOCALWFS_VSS(X,xs,src,conf) simulates the impulse response of
+%   a source synthesized by local WFS using virtual secondary sources (VSS) at
+%   the given virtual microphone position X.
 %   The length in samples of the impulse response is given by conf.N. The
 %   actual calculation is done via sound_field_imp() and a loop over time t. A
 %   similar result can be achieved by using ir_localwfs() in combination with
 %   dummy_irs().
 %
-%   See also: ir_localwfs, sound_field_imp, freq_response_localwfs
+%   See also: ir_localwfs, sound_field_imp, freq_response_localwfs_vss
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -91,7 +91,7 @@ x0 = secondary_source_tapering(x0,conf);
 % Generate time axis
 t = (0:N-1)'/fs;
 s = zeros(1,length(t));
-d = driving_function_imp_localwfs(x0,xs,src,conf);
+d = driving_function_imp_localwfs_vss(x0,xs,src,conf);
 for ii = 1:length(t)
     if showprogress, progress_bar(ii,length(t)); end
     % Calculate sound field at the listener position

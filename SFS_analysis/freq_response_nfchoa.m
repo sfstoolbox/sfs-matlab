@@ -67,6 +67,7 @@ isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
+N = conf.N;
 showprogress = conf.showprogress;
 useplot = conf.plot.useplot;
 % Check type of secondary sources to use

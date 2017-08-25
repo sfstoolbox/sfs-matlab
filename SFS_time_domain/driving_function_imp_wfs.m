@@ -1,7 +1,8 @@
 function [d,delay,weight,delay_offset] = driving_function_imp_wfs(x0,xs,src,conf)
 %DRIVING_FUNCTION_IMP_WFS_25D calculates the WFS weighting and delaying
 %
-%   Usage: [d,delay,weight] = driving_function_imp_wfs(x0,xs,src,conf)
+%   Usage: [d,delay,weight,delay_offset] = ...
+%              driving_function_imp_wfs(x0,xs,src,conf)
 %
 %   Input parameters:
 %       x0              - positions and directions of secondary

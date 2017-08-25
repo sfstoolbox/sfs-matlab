@@ -1,23 +1,23 @@
-function [A,Phi] = inverse_cht(Am,Nphi)
-%INVERSE_CHT computes the inverse circular harmonics transform (ICHT)
+function Ppwd = pwd_mono_circexp(Pm,Npw)
+%PWD_MONO_CIRCEXP converts a circular basis expansion of a sound field to its
+%two-dimensional plane wave decomposition
 %
-%   Usage: [A,Phi] = inverse_cht(Am,[Nphi])
+%   Usage: Ppwd = pwd_mono_circexp(Pm,[Npw])
 %
 %   Input parameters:
-%       Am      - circular harmonics coefficients [N x (2*M+1)]
-%       Nphi    - number of equi-angular distributed angles, for which the ICHT
-%                 is computed, optional, default: 2*M+1
+%       Pm      - circular basis expansion [N x (2*M+1)]
+%       Npw     - number of equi-angular distributed plane waves, optional, 
+%                 default: 2*M+1
 %
 %   Output parameters:
-%       A       - inverse circular harmonics transform [N x Nphi]
-%       Phi     - corresponding angle of the ICHT [1 x Nphi]
+%       Ppwd    - plane wave decomposition [N x Npw]
 %
-%   See also: pwd_imp_circexp
+%   See also: driving_function_mono_localwfs_sbl
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2016 SFS Toolbox Developers                             *
+% Copyright (c) 2010-2017 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -44,38 +44,27 @@ function [A,Phi] = inverse_cht(Am,Nphi)
 %*****************************************************************************
 
 
-%% ===== Checking of input  parameters ==================================
+%% ===== Checking of input parameters ==================================
 nargmin = 1;
 nargmax = 2;
 narginchk(nargmin,nargmax);
-isargmatrix(Am);
+isargmatrix(Pm);
+M = (size(Pm,2)-1)./2;
 if nargin == nargmin
-    Nphi = size(Am, 2);
+  Npw = 2*M+1;
 else
-    isargpositivescalar(Nphi);
+  isargpositivescalar(Npw);
 end
 
 
-%% ===== Computation ==================================================
-M = (size(Am,2)-1)/2;
-N = size(Am,1);
-
+%% ===== Computation ====================================================
 % Implementation of
-%           ___
-%           \
-% A(phi) =  /__    A  e^(+j*m*n*2*pi/Nphi)
-%         m=-M..M   m
+%                 ___
+% _               \
+% P(phipw, w) =   /__     P (w) j^m  e^(+j m phipw)
+%               m=-M..M    m
+% with
+%
+% phipw = n * 2*pi/Npw
 
-% Spatial IFFT
-A = zeros(N, Nphi);
-% this handles cases where Nphi < M
-for l=1:N
-    A(l,:) = sum(buffer(Am(l,:),Nphi),2);
-end
-A = circshift(A,[0,-M]);  % m = 0, ..., M, ..., -M, ..., -1
-A = ifft(A,[],2) * Nphi;  % IFFT includes factor 1/Nphi
-
-% Axis corresponding to ICHT
-if nargout>1
-    Phi = 0:2*pi / Nphi:2*pi*(1-1/Nphi);
-end
+Ppwd = inverse_cht(bsxfun(@times,Pm,1j.^(-M:M)),Npw);

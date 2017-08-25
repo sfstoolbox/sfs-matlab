@@ -1,20 +1,26 @@
-function D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf)
+function D = driving_function_mono_wfs_vss(x0,xv,srcv,Dv,f,conf)
 %DRIVING_FUNCTION_MONO_WFS_VSS returns the driving signal D for a given set of
 %virtual secondary sources and their driving signals
 %
-%   Usage: D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf)
+%   Usage: D = driving_function_mono_wfs_vss(x0,xv,srcv,Dv,f,conf)
 %
 %   Input parameters:
 %       x0          - position, direction, and weights of the real secondary
 %                     sources / m [nx7]
 %       xv          - position, direction, and weights of the virtual secondary
 %                     sources / m [mx7]
+%       srcv        - type of virtual secondary sources [mx7]
+%                         'pw' - plane wave (xv(:,1:3) defines the direction of 
+%                                the plane waves in this case)
+%                         'fs' - focused source (xv(:,1:6) defines the position
+%                                and orientation of the focused sources in this 
+%                                case)
 %       Dv          - driving functions of virtual secondary sources [mx1]
-%       f           - frequency of the monochromatic source / Hz
+%       f           - frequency / Hz
 %       conf        - optional configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       D           - driving function signal [nx1]
+%       D           - driving function [nx1]
 %
 %   See also: driving_function_mono_wfs, driving_function_mono_wfs_fs
 
@@ -52,11 +58,12 @@ function D = driving_function_mono_wfs_vss(x0,xv,Dv,f,conf)
 %*****************************************************************************
 
 %% ===== Checking of input  parameters ==================================
-nargmin = 5;
-nargmax = 5;
+nargmin = 6;
+nargmax = 6;
 narginchk(nargmin,nargmax);
 isargvector(Dv);
 isargpositivescalar(f);
+isargchar(srcv);
 isargsecondarysource(x0,xv);
 isargstruct(conf);
 
@@ -66,37 +73,46 @@ dimension = conf.dimension;
 
 
 %% ===== Computation ====================================================
-% Get driving signals
-if strcmp('2.5D',dimension) || strcmp('3D',dimension)
-    % === Focussed Point Sink ===
-    conf.driving_functions = 'default';
-elseif strcmp('2D',dimension)
-    % === Focussed Line Sink ===
-    % We have to use the driving function setting directly, because in opposite
-    % to the case of a non-focused source where 'ps' and 'ls' are available as
-    % source types, for a focused source only 'fs' is available.
-    % Have a look at driving_function_mono_wfs_fs() for details on the
-    % implemented focused source types.
-    conf.driving_functions = 'line_sink';
-else
-    error('%s: %s is not a known source type.',upper(mfilename),dimension);
+% Secondary source selection and driving function to synthesise a single virtual
+% secondary source
+switch srcv
+case 'fs'
+    ssd_select = @(X0,XS) secondary_source_selection(X0,XS(1:6),'fs');
+    driv = @(X0,XS) driving_function_mono_wfs_fs(X0(:,1:3),X0(:,4:6),XS,f,conf);
+    
+    if strcmp('2.5D',dimension) || strcmp('3D',dimension)
+        % === Focussed Point Sink ===
+        conf.driving_functions = 'default';
+    elseif strcmp('2D',dimension)
+        % === Focussed Line Sink ===
+        % We have to use the driving function setting directly, because in opposite
+        % to the case of a non-focused source where 'ps' and 'ls' are available as
+        % source types, for a focused source only 'fs' is available.
+        % Have a look at driving_function_mono_wfs_fs() for details on the
+        % implemented focused source types.
+        conf.driving_functions = 'line_sink';
+    else
+        error('%s: %s is not a known source type.',upper(mfilename),dimension);
+    end    
+case 'pw'
+    ssd_select = @(X0,XS) secondary_source_selection(X0,XS(1:3),'pw');
+    driv = @(X0,XS) driving_function_mono_wfs_pw(X0(:,1:3),X0(:,4:6),XS,f,conf);
 end
 
-% Get driving signals for real secondary sources
-%
-% See Spors (2010), fig. 2 & eq. (12)
-Ns = size(xv,1);
+% Get driving signals
+Nv = size(xv,1);
 N0 = size(x0,1);
+Dmatrix = zeros(N0,Nv);
 
-Dmatrix = zeros(N0,Ns);
-
-for idx=1:Ns
-    [xtmp, xdx] = secondary_source_selection(x0,xv(idx,1:6),'fs');
-    if (~isempty(xtmp))
-        wtap = tapering_window(xtmp,conf);
-        Dmatrix(xdx,idx) = ...
-            driving_function_mono_wfs(xtmp,xv(idx,1:3),'fs',f,conf) .* wtap;
+for idx=1:Nv
+    [x0s, xdx] = ssd_select(x0,xv(idx,:));
+    if (~isempty(x0s))
+        % Virtual secondary source position
+        xs = repmat(xv(idx,1:3),[size(x0s,1) 1]);
+        % Optional tapering
+        wtap = tapering_window(x0s,conf);
+        Dmatrix(xdx,idx) = driv(x0s,xs) .* wtap;
     end
 end
 
-D = Dmatrix*(Dv.*xv(:,7));
+D = Dmatrix*(Dv(:).*xv(:,7));

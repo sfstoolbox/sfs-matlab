@@ -1,8 +1,8 @@
-function varargout = freq_response_localwfs(X,xs,src,conf)
-%FREQ_RESPONSE_WFS simulates the frequency response for WFS at the given
+function varargout = freq_response_localwfs_sbl(X,xs,src,conf)
+%FREQ_RESPONSE_LOCALWFS_SBL simulates the frequency response for WFS at the given
 %listener position
 %
-%   Usage: [S,f] = freq_response_wfs(X,xs,src,conf)
+%   Usage: [S,f] = freq_response_loaclwfs_sbl(X,xs,src,conf)
 %
 %   Input parameters:
 %       X           - listener position / m
@@ -17,9 +17,9 @@ function varargout = freq_response_localwfs(X,xs,src,conf)
 %       S           - simulated frequency response
 %       f           - corresponding frequency axis / Hz
 %
-%   FREQ_RESPONSE_LOCALWFS(X,xs,src,conf) simulates the frequency response of a
-%   the source type src placed at xs and synthesized by local WFS at the given
-%   virtual microphone position X.
+%   FREQ_RESPONSE_LOCALWFS_SBL(X,xs,src,conf) simulates the frequency response
+%   of a source synthesized by local WFS using spatial bandwith limitation
+%   (SBL) at the given virtual microphone position X.
 %   The length in samples of the frequency response is given by conf.N. The
 %   actual calculation is done via sound_field_mono() and a loop over frequency
 %   f.
@@ -67,6 +67,7 @@ isargstruct(conf);
 
 
 %% ===== Configuration ==================================================
+N = conf.N;
 showprogress = conf.showprogress;
 useplot = conf.plot.useplot;
 % Check type of secondary sources to use
@@ -82,14 +83,14 @@ end
 conf.showprogress = false;
 conf.plot.useplot = false;
 % Get the position of the loudspeakers
-x0_real = secondary_source_positions(conf);
+x0 = secondary_source_positions(conf);
 % Generate frequencies (10^1-10^4.3)
 f = logspace(0,4.3,N)';
 S = zeros(size(f));
 % Get the result for all frequencies
 for ii = 1:length(f)
     if showprogress, progress_bar(ii,length(f)); end
-    [D, x0] = driving_function_mono_localwfs(x0_real,xs,src,f(ii),conf);
+    D = driving_function_mono_localwfs_sbl(x0,xs,src,f(ii),conf);
     % Calculate sound field at the listener position
     P = sound_field_mono(X(1),X(2),X(3),x0,greens_function,D,f(ii),conf);
     S(ii) = abs(P);

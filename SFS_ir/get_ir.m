@@ -240,7 +240,7 @@ if useinterpolation
     case 'delaunay'
         [idx,weights] = findconvexcone(x0,xs);
     case 'voronoi'
-        to_be_implemented;
+        [idx,weights] = findvoronoi(x0, xs);
     otherwise
         error(['%s: ''%s'' is an unknown method to select interpolation ', ...
             'points.'],upper(mfilename),interpolationpointselection);

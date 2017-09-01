@@ -1,18 +1,24 @@
-function [zz,pz,kz] = linkwitz_riley(n,wc,ftype)
-%LINKWITZ_RILEY computes zero-poles-gain representation in z-domain of
-%Linkwitz-Riley filter
+function [z,p,k] = linkwitz_riley(n,wc,ftype,domain)
+%LINKWITZ_RILEY computes zero-poles-gain representation in z-domain (digital)
+%or Laplace-domain (analog) of the Linkwitz-Riley filter
 %
-%   Usage: [zz,pz,kz] = linkwitz_riley(n,wc,ftype)
+%   Usage: [z,p,k] = linkwitz_riley(n,wc,ftype,[domain])
 %
-%   Input parameter:
-%     n     - order of filter (only even allowed)
-%     wc    - normalised cutoff frequency [0..1] 
-%     ftype - filter type {'low','high','all'}
+%   Input parameters:
+%     n       - order of filter (only even allowed)
+%     wc      - cutoff frequency, [0..1] for z-Domain, [0..] rad/s in s-Domain
+%     ftype   - filter type {'low','high','all'}
+%     domain  - 's' for analog/Laplace-Domain
+%               'z' for digital/z-Domain (default)
+%                  
+%   Output parameters:
+%     z       - zeros of filter
+%     p       - poles of filter
+%     k       - gain of filter
 %
-%   Output parameter:
-%     zz    - zeros of filter in z-domain
-%     pz    - poles of filter in z-domain
-%     kz    - gain of filter
+%   References:
+%        S. P. Lipshitz and J. Vanderkooy (1986), "In-Phase Crossover Network 
+%        Design," J. Audio Eng. Soc, vol. 34, no. 11, pp. 889–894
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -44,30 +50,51 @@ function [zz,pz,kz] = linkwitz_riley(n,wc,ftype)
 %*****************************************************************************
 
 
-%% ===== Checking of input  parameters ========================================
+%% ===== Checking of input  parameters ===================================
 nargmin = 3;
-nargmax = 3;
+nargmax = 4;
 narginchk(nargmin,nargmax);
 if mod(n,2)
-  error('%s: n (%d) is not an even integer',upper(mfilename),n);
+    error('%s: n (%d) is not an even integer.',upper(mfilename),n);
+end
+isargpositivescalar(wc);
+isargchar(ftype)
+if ~any(strcmp(ftype, {'low', 'high', 'all'}))
+    error('%s: ftype (%s) is not a supported filter type.',upper(mfilename), ...
+        ftype);
+end
+if nargin == nargmin
+    domain = 'z';
+else
+    isargchar(domain);
+    if ~any(strcmp(domain, {'z', 's'}))
+        error('%s: domain (%s) must be either "z" or "s".',upper(mfilename), ...
+            domain);
+    end
 end
 
-
-%% ===== Configuration ========================================================
+%% ===== Computation =====================================================
 switch ftype
 case  {'low','high'}
     % === lowpass or highpass LR Filter (squared Butterworth Filter) ===
-    [zz,pz,kz] = butter(n/2,wc,ftype);  
-    zz = [zz(:); zz(:)];  % octave creates row vectors
-    pz = [pz(:); pz(:)];  % octave creates row vectors
-    kz = kz.^2;
+    % See Lipshitz & Vanderkooy (1986), eq. (6) & (12)
+    [z,p,k] = butter(n/2,wc,ftype,domain);
+    z = [z(:); z(:)];  % octave creates row vectors
+    p = [p(:); p(:)];  % octave creates row vectors    
+    k = k.^2;
+    if strcmp(ftype, 'high')
+        k = k.*(-1).^(n/2);
+    end
 case 'all'
     % === allpass LR Filter (same phase as lowpass and highpass LR Filter) ===
-    [~,pz,~] = butter(n/2,wc,'low');
-    pz = pz(:);  % octave creates row vectors
-    zz = 1./conj(pz);
-    kz = prod(pz);
-otherwise
-    error('%s: ftype (%s) is not a supported filter type',upper(mfilename), ...
-        ftype);
+    % See Lipshitz & Vanderkooy (1986), eq. (11)
+    [~,p,~] = butter(n/2,wc,'low',domain);
+    p = p(:);  % octave creates row vectors
+    if strcmp(domain,'z')
+        z = 1./conj(p);
+        k = prod(p);
+    else
+        z = -p;
+        k = 1;
+    end
 end

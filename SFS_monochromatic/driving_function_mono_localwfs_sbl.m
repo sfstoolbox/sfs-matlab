@@ -15,7 +15,7 @@ function D = driving_function_mono_localwfs_sbl(x0,xs,src,f,conf)
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       D           - driving signals [mxn]
+%       D           - driving function [nx1]
 %
 %   See also: sound_field_mono, sound_field_mono_localwfs_sbl
 
@@ -60,37 +60,13 @@ isargpositivescalar(f);
 isargstruct(conf);
 
 
-%% ===== Configuration ========================================================
-xref = conf.xref;
-N0 = size(x0,1);
-% Resolution of plane wave decomposition
-if isempty(conf.localwfs_sbl.Npw)
-    Npw = 2*ceil(2*pi*0.9*f/conf.c*conf.secondary_sources.size/2);
-else
-    Npw = conf.localwfs_sbl.Npw;
-end
-% Maximum order of circular basis expansion of sound field
-if isempty(conf.localwfs_sbl.order)
-    Nce = nfchoa_order(N0,conf);
-else
-    Nce = conf.localwfs_sbl.order;
-end
-
-
 %% ===== Computation ==========================================================
-% Circular expansion coefficients
 switch src
 case 'ps'
-    Pm = circexp_mono_ps(xs,Nce,f,xref,conf);
+    D = driving_function_mono_localwfs_sbl_ps(x0,xs,f,conf);
 case 'pw'
-    Pm = circexp_mono_pw(xs,Nce,f,xref,conf);
+    xs = xs./norm(xs);
+    D = driving_function_mono_localwfs_sbl_pw(x0,xs,f,conf);
 otherwise
     error('%s: %s is not a known source type.',upper(mfilename),src);
 end
-% Modal window
-wm = modal_weighting(Nce,conf);
-Pm = bsxfun(@times,[wm(end:-1:2),wm],Pm);
-% Plane wave decomposition
-Ppwd = pwd_mono_circexp(Pm,Npw);
-% Driving signal
-D = driving_function_mono_wfs_pwd(x0,Ppwd,f,xref,conf);

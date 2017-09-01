@@ -7,6 +7,7 @@ function [pm,delay_offset] = circexp_imp_ps(xs,Nce,xq,fhp,conf)
 %       xs      - position of point source / m [1 x 3]
 %       Nce     - maximum order of circular basis expansion
 %       xq      - optional expansion center / m [1 x 3]
+%       fhp     - cut-off frequency of highpass for regularisation
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -76,19 +77,19 @@ xs = xs - xq; % shift coordinates
 %-------------------------------------------------------------------------------
 % Implementation of
 %
-%          j^(|m|-m)
-% p_m(t) = --------- IFT[ -jk h_|m|(k rs) ] e^(-im phis) e^(im phi0)
+%          i^(|m|-m)
+% p_m(t) = --------- IFT[ -ik h_|m|(k rs) ] e^(-im phis) e^(im phi0)
 %             4pi
 %
-% with IFT being the inverse fourier transform of the spherical hankel function.
+% with IFT being the inverse Fourier transform of the spherical Hankel function.
 % The IFT is realised by an IIR-implementation using the Laplace domain (s)
-% respresentation of the spherical hankel function:
-%                                     _____
-%                      exp(-j s tau)   | |  (s - z_n/tau)
-% h_|m|(s tau) = j^|m| -------------   | |  -------------
-%                        -j s tau       n   (s - p_n/tau)
+% respresentation of the spherical Hankel function:
+%                                   _____
+%                      exp(-s tau)   | |  (s - z_n/tau)
+% h_|m|(s tau) = i^|m| -----------   | |  -------------
+%                       -i s tau      n   (s - p_n/tau)
 %
-% z_i and p_i are the zeros and poles of the hankel function. tau = r_s/c.
+% z_n and p_n are the zeros and poles of the Hankel function. tau = r_s/c.
 %-------------------------------------------------------------------------------
 
 % === Linkwitz-Riley (LR) filter for stabilisation ===
@@ -113,7 +114,7 @@ for m=0:Nce
         zh = []; ph = []; kh=1;
     else 
         [zh, ph] = sphbesselh_zeros(m);
-        % bilinear transform to z-domain
+        % Bilinear transform to z-domain
         if isoctave
             [zh, ph, kh] = bilinear(zh*c/rs, ph*c/rs, 1, 1/fs);
         else
@@ -121,11 +122,11 @@ for m=0:Nce
         end
     end   
     % === Apply Hankel + LR Filter to current mode ===
-    % zeros remaining after compensating the poles of hankel function (ph)
+    % Zeros remaining after compensating the poles of hankel function (ph)
     zlr_comp = ones(length(zlr)-length(ph),1);
-    % generate second-order-sections
+    % Generate second-order-sections
     [sos, g] = zp2sos([zlr_comp; zh], plr, klr*kh, 'down', 'none');
-    % filtering
+    % Filtering
     pm(:,m+1) = sosfilt(sos, pm(:,m+1)).*g.*(1i).^m.*exp(-1i*m*phis);
 end
 pm = pm./(4*pi*rs);

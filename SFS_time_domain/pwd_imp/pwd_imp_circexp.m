@@ -62,7 +62,7 @@ end
 % Implementation of
 %                 ___
 % _               \
-% p(phipw, t) =   /__     p (t) j^m  e^(-j m phipw)
+% p(phipw, t) =   /__     p (t) i^m  e^(-i m phipw)
 %               m=-M..M    m
 % with
 %

@@ -1,19 +1,19 @@
-function [d,delay_offset] = driving_function_imp_localwfs_sbl_ps(x0,xs,conf)
-%DRIVING_FUNCTION_IMP_LOCALWFS_SBL_PS returns the driving signal for a point 
-%source using local WFS with spatial bandwidth limitation
+function D = driving_function_mono_localwfs_sbl_pw(x0,nk,f,conf)
+%DRIVING_FUNCTION_MONO_LOCALWFS_SBL_PW returns the driving signal for a plane
+%wave using local WFS with spatial bandwidth limitation
 %
-%   Usage: [d,delay_offset] = driving_function_imp_localwfs_sbl_ps(x0,xs,conf)
+%   Usage: D = driving_function_mono_localwfs_sbl_pw(x0,nk,f,conf)
 %
 %   Input parameters:
 %       x0          - position and direction of the secondary source / m [nx7]
-%       xs          - position of virtual point source / m [1x3]
+%       nk          - propagation direction of plane wave / m [1x3]
+%       f           - frequency of the monochromatic source / Hz
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       d               - driving signals [mxn]
-%       delay_offset    - additional added delay, so you can correct it
+%       D           - driving function [nx1]
 %
-%   See also: sound_field_imp_localwfs_sbl, driving_function_imp_localwfs_sbl
+%   See also: sound_field_mono_localwfs_sbl, driving_function_mono_localwfs_sbl
 %
 %   References:
 %       F. Winter, N. Hahn, and S. Spors (2017), "Time-Domain Realisation of 
@@ -50,85 +50,36 @@ function [d,delay_offset] = driving_function_imp_localwfs_sbl_ps(x0,xs,conf)
 %*****************************************************************************
 
 
-%% ===== Checking of input  parameters ========================================
-nargmin = 3;
-nargmax = 3;
+%% ===== Checking of input  parameters ==================================
+nargmin = 4;
+nargmax = 4;
 narginchk(nargmin,nargmax);
 
 
 %% ===== Configuration ========================================================
 N0 = size(x0,1);
-Nfft = conf.N;
-xref = conf.xref;
-fs = conf.fs;
-% Ambisonics order
+xref = conf.xref; 
+% Maximum order of circular basis expansion of sound field
 if isempty(conf.localwfs_sbl.order)
     Nce = nfchoa_order(N0,conf);
 else
     Nce = conf.localwfs_sbl.order;
 end
-% Crossover frequency
-if isempty(conf.localwfs_sbl.fc)
-    fc = aliasing_frequency(conf);
-else
-    fc = conf.localwfs_sbl.fc;
-end
 % Resolution of plane wave decomposition
 if isempty(conf.localwfs_sbl.Npw)
-    Npw = 2*ceil(2*pi*0.9*fs/conf.c*conf.secondary_sources.size/2);
+    Npw = 2*ceil(2*pi*0.9*f/conf.c*conf.secondary_sources.size/2);
 else
     Npw = conf.localwfs_sbl.Npw;
 end
 
-%% ===== Variables ============================================================
-Nlr = ceil(Nce/2)*2;  % order of Linkwitz-Riley Coefficients
-Wlr = fc/fs*2;  % normalised cut-off frequency of Linkwitz-Riley
-
 
 %% ===== Computation ==========================================================
-
-% === Local WFS for high frequencies ===
-% Regular circular expansion of point source (highpass implicitly)
-% Winter et al. (2017), eq. (14)
-[pm,delay_circexp] = circexp_imp_ps(xs,Nce,xref,fc,conf);
+% Circular expansion coefficients, Winter et al. (2017), eq. (12)
+Pm = circexp_mono_pw(nk,Nce,f,xref,conf);
 % Modal window
 wm = modal_weighting(Nce,conf);
-pm = bsxfun(@times,wm,pm);
-% Plane wave decomposition, Winter et al. (2017), eq. (10)
-ppwd = pwd_imp_circexp(pm,Npw);
-% Driving signal, Winter et al. (2017), eq. (9)
-[dlwfs,delay_lwfs] = driving_function_imp_wfs_pwd(x0,ppwd,xref,conf);
-
-% === WFS for low frequencies ===
-% Secondary source selection
-[~,xdx] = secondary_source_selection(x0,xs,'ps');
-x0(xdx,:) = secondary_source_tapering(x0(xdx,:),conf);
-% Driving signal
-dwfs = zeros(Nfft,N0);
-[dwfs(:,xdx),~,~,delay_lp] = driving_function_imp_wfs(x0(xdx,:),xs,'ps',conf);
-% Coefficients for lowpass filtering of WFS driving function
-[zlp,plp,klp] = linkwitz_riley(Nlr,Wlr,'low');  % LR Lowpass filter
-% Lowpass filtering
-[sos,g] = zp2sos(zlp,plp,klp,'down','none');  % generate sos
-dwfs = sosfilt(sos,dwfs)*g;
-  
-% === Crossover ===
-% Winter et al. (2017), eq. (15)
-% Get delay of delayline
-[~,delay_delayline] = delayline(1,0,0,conf);
-% Delay to compensate between lf-part and hf-part
-delay_comp = delay_lp - (delay_lwfs+delay_circexp+delay_delayline);
-% Combined driving signal
-d = dwfs + delayline(dlwfs,delay_comp,1,conf);
-
-% === Compensate Phase-Distortions by Inverse Allpass ===
-% Winter et al. (2017), eq. (17)
-% TODO: ensure that the time-reserved filter is not truncated
-[zap,pap,kap] = linkwitz_riley(Nlr,Wlr,'all');  % LR Allpass filter
-[sos,g] = zp2sos(zap,pap,kap,'down','none');  % generate sos
-% (time-reversed) allpass filtering
-d = sosfilt(sos,d(end:-1:1,:))*g;
-d = d(end:-1:1,:);
-
-% Final delay
-delay_offset = delay_lp;
+Pm = bsxfun(@times,[wm(end:-1:2),wm],Pm);
+% Plane wave decomposition, inverse FT of Winter et al. (2017), eq. (10)
+Ppwd = pwd_mono_circexp(Pm,Npw); 
+% Driving signal, Winter et al. (2017), eq. (8)
+D = driving_function_mono_wfs_pwd(x0,Ppwd,f,xref,conf);

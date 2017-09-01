@@ -61,7 +61,7 @@ end
 % Implementation of
 %                 ___
 % _               \
-% P(phipw, w) =   /__     P (w) j^m  e^(+j m phipw)
+% P(phipw, w) =   /__     P (w) i^m  e^(+i m phipw)
 %               m=-M..M    m
 % with
 %

@@ -63,7 +63,7 @@ N = size(Am,1);
 % Implementation of
 %           ___
 %           \
-% A(phi) =  /__    A  e^(+j*m*n*2*pi/Nphi)
+% A(phi) =  /__    A  e^(+i*m*n*2*pi/Nphi)
 %         m=-M..M   m
 
 % Spatial IFFT

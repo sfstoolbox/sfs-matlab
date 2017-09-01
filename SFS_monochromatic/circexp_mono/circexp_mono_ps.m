@@ -1,21 +1,22 @@
-function Pm = circexp_mono_ps(xs,Nce,f,xq,conf)
+function Pm = circexp_mono_ps(xs,Nce,f,xq,fhp,conf)
 %CIRCEXP_MONO_PS calculates the circular basis expansion of a point source
 %
-%   Usage: Pm = circexp_mono_ps(xs,Nce,f,xq,conf)
+%   Usage: Pm = circexp_mono_ps(xs,Nce,f,xq,[fhp],conf)
 %
 %   Input parameters:
 %       xs      - position of point source / m [1 x 3]
 %       Nce     - maximum order of circular basis expansion
-%       xq      - optional expansion center / m [1 x 3]
 %       f       - frequency of the monochromatic source / Hz
+%       xq      - expansion center / m [1 x 3]
+%       fhp     - cut-off frequency of highpass for regularisation / Hz
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
 %       Pm      - regular circular expansion coefficients
 %                 for m = 0:Nce, [1 x Nce+1]
 %
-%   CIRCEXP_MONO_PS(xs,Nce,f,xq,conf) returns the circular basis expansion of
-%   a point source.
+%   CIRCEXP_MONO_PS(xs,Nce,f,xq,fhp,conf) returns the circular basis expansion
+%   of a point source.
 %
 %   See also: circexp_mono_pw
 
@@ -51,11 +52,15 @@ function Pm = circexp_mono_ps(xs,Nce,f,xq,conf)
 
 %% ===== Checking of input  parameters ==================================
 nargmin = 5;
-nargmax = 5;
+nargmax = 6;
 narginchk(nargmin,nargmax);
 isargcoord(xq,xs);
 isargpositivescalar(Nce,f);
-
+if nargin == nargmin
+  conf = fhp;
+else
+  isargpositivescalar(fhp);
+end
 
 %% ===== Configuration ==================================================
 c = conf.c;
@@ -64,14 +69,62 @@ c = conf.c;
 %% ===== Computation =====================================================
 xs = xs - xq;  % shift coordinates
 [phis, rs] = cart2pol(xs(1),xs(2));
-k = 2*pi*f/c;
+omega = 2*pi*f;
+tau = rs/c;
 
-%                       j^(|m|-m)
-% P_m = -jk h_|m|(k rs) --------- e^(-im phis)
+%-------------------------------------------------------------------------------
+% Implementation of
+%
+%                       i^(|m|-m)
+% P_m = -ik h_|m|(k rs) --------- e^(-im phis)
 %                          4pi
-Pm = zeros(1,2*Nce+1);
-for m=-Nce:Nce
-  Pm(m+Nce+1) = ...
-      -1i*k*sphbesselh(abs(m),2,k*rs).*1i.^(abs(m)-m).*exp(-1i*m*phis);
+%
+% The Laplace domain (s) respresentation of the spherical Hankel function:
+%                                     _____
+%                      exp(-s tau)     | |  (s - z_n/tau)
+% h_|m|(s tau) = i^|m| -------------   | |  -------------
+%                        -i s tau       n   (s - p_n/tau)
+%
+% z_n and p_n are the zeros and poles of the Hankel function. tau = r_s/c.
+%-------------------------------------------------------------------------------
+
+% === Linkwitz-Riley (LR) filter for stabilisation ===
+zlr = [];
+plr = [];
+klr = 1;
+if Nce > 0
+  if nargin == nargmin
+    warning('without highpass filtering the implementation is not stable');
+  else
+    % zero-pole-gain in s-domain of LR-Filter
+    Nlr = ceil(Nce/2)*2;
+    [zlr, plr, klr] = linkwitz_riley(Nlr, 2*pi*fhp, 'high', 's');
+  end
 end
-Pm = Pm./(4*pi);
+
+% Compute values for each mode m
+Pm = zeros(1,2*Nce+1);
+for m=0:Nce  % Negative m can be inferred from symmetry relations
+    % === zero-pole-gain in s-domain of Spherical Hankel function ===
+    kh=1;
+    if m==0  % not supported by octave
+        zh = []; ph = [];
+    else 
+        [zh, ph] = sphbesselh_zeros(m);
+        zh = zh./tau;
+        ph = ph./tau;        
+    end
+    % Zeros/poles remaining after compensating the poles of Hankel function
+    zlr_comp = zeros(length(zlr)-length(ph),1);  % empty if negative
+    ph_comp = zeros(length(ph)-length(zlr),1);  % empty if negative
+    % Generate second-order-sections
+    [sos, g] = zp2sos([zlr_comp; zh], [ph_comp; plr], klr*kh, 'down', 'none');
+    % Compute value of sos at s = iw
+    Hm = g.* prod( (sos(:,1:3)*[-omega.^2; 1i*omega; 1]) ...
+        ./ (sos(:,4:6)*[-omega.^2; 1i*omega; 1]),1);
+    Pm(m+Nce+1) = Hm;
+end
+
+Pm(1:Nce) = Pm(2*Nce+1:-1:Nce+2);  % symmetry
+Pm = Pm.*exp(+1i*(-Nce:Nce)*(pi/2-phis));  % apply terms only depending on m
+Pm = Pm./(4*pi*rs).*exp(-1i*omega*tau);  % scaling and delay

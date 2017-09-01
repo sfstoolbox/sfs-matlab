@@ -14,6 +14,11 @@ function [d,delay_offset] = driving_function_imp_localwfs_sbl_pw(x0,nk,conf)
 %       delay_offset    - additional added delay, so you can correct it
 %
 %   See also: sound_field_imp_localwfs_sbl, driving_function_imp_localwfs_sbl
+%
+%   References:
+%       F. Winter, N. Hahn, and S. Spors (2017), "Time-Domain Realisation of 
+%       Model-Based Rendering for 2.5D Local Wave Field Synthesis Using Spatial
+%       Bandwidth-Limitation," 25th EUSIPCO
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -55,7 +60,7 @@ narginchk(nargmin,nargmax);
 N0 = size(x0,1);
 xref = conf.xref; 
 fs = conf.fs;
-% maximum order of circular basis expansion of sound field
+% Maximum order of circular basis expansion of sound field
 if isempty(conf.localwfs_sbl.order)
     Nce = nfchoa_order(N0,conf);
 else
@@ -69,14 +74,14 @@ else
 end
 
 %% ===== Computation ==========================================================
-% circular expansion coefficients
+% Circular expansion coefficients, Winter et al. (2017), eq. (12)
 [pm,delay_circexp] = circexp_imp_pw(nk,Nce,xref,conf);
-% modal window
+% Modal window
 wm = modal_weighting(Nce,conf);
 pm = bsxfun(@times,wm,pm);
-% plane wave decomposition
-ppwd = pwd_imp_circexp(pm,Npw);
-% driving signal
+% Plane wave decomposition
+ppwd = pwd_imp_circexp(pm,Npw);  % Winter et al. (2017), eq. (10)
+% Driving signal, Winter et al. (2017), eq. (9)
 [d,delay_lwfs] = driving_function_imp_wfs_pwd(x0,ppwd,xref,conf);
-% delay
+% Delay
 delay_offset = delay_lwfs + delay_circexp;

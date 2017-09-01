@@ -10,8 +10,7 @@ function varargout = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf)
 %       xs          - position of virtual source or direction of plane
 %                     wave / m [1x3]
 %       src         - source type of the virtual source
-%                         'pw' - plane wave (xs is the direction of the
-%                                plane wave in this case)
+%                         'pw' - plane wave
 %                         'ps' - point source
 %                         'fs' - focused source
 %       f           - monochromatic frequency / Hz

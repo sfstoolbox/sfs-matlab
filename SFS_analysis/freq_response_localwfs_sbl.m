@@ -87,6 +87,11 @@ x0 = secondary_source_positions(conf);
 % Generate frequencies (10^1-10^4.3)
 f = logspace(0,4.3,N)';
 S = zeros(size(f));
+% set default value for conf.localwfs_sbl.Npw
+if isempty(conf.localwfs_sbl.Npw)
+    conf.localwfs_sbl.Npw = ...
+        2*ceil(2*pi*max(f)/conf.c*conf.secondary_sources.size/2);
+end
 % Get the result for all frequencies
 for ii = 1:length(f)
     if showprogress, progress_bar(ii,length(f)); end

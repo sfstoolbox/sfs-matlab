@@ -69,8 +69,9 @@ c = conf.c;
 %% ===== Computation =====================================================
 xs = xs - xq;  % shift coordinates
 [phis, rs] = cart2pol(xs(1),xs(2));
-omega = 2*pi*f;
 tau = rs/c;
+omega = 2*pi*f;
+omega_vec = [-omega.^2; 1i*omega; 1];  % vector for evaluation of SOS
 
 %-------------------------------------------------------------------------------
 % Implementation of
@@ -120,9 +121,7 @@ for m=0:Nce  % Negative m can be inferred from symmetry relations
     % Generate second-order-sections
     [sos, g] = zp2sos([zlr_comp; zh], [ph_comp; plr], klr*kh, 'down', 'none');
     % Compute value of sos at s = iw
-    Hm = g.* prod( (sos(:,1:3)*[-omega.^2; 1i*omega; 1]) ...
-        ./ (sos(:,4:6)*[-omega.^2; 1i*omega; 1]),1);
-    Pm(m+Nce+1) = Hm;
+    Pm(m+Nce+1) = g.*prod( (sos(:,1:3)*omega_vec)./(sos(:,4:6)*omega_vec),1);
 end
 
 Pm(1:Nce) = Pm(2*Nce+1:-1:Nce+2);  % symmetry

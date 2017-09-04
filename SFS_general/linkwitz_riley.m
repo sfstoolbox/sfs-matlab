@@ -54,10 +54,10 @@ function [z,p,k] = linkwitz_riley(n,wc,ftype,domain)
 nargmin = 3;
 nargmax = 4;
 narginchk(nargmin,nargmax);
+isargpositivescalar(n,wc);
 if mod(n,2)
     error('%s: n (%d) is not an even integer.',upper(mfilename),n);
 end
-isargpositivescalar(wc);
 isargchar(ftype)
 if ~any(strcmp(ftype, {'low', 'high', 'all'}))
     error('%s: ftype (%s) is not a supported filter type.',upper(mfilename), ...
@@ -97,4 +97,17 @@ case 'all'
         z = -p;
         k = 1;
     end
+end
+
+% Average complex conjugates to make them exactly symmetrical.
+% This avoids the following Octave bug: http://savannah.gnu.org/bugs/?49996
+if ~isempty(z)
+    [~, idx] = sort(imag(z));
+    z = z(idx);
+    z = 0.5*z + 0.5*conj(z(end:-1:1));
+end
+if ~isempty(p)
+    [~, idx] = sort(imag(p));
+    p = p(idx);
+    p = 0.5*p + 0.5*conj(p(end:-1:1));
 end

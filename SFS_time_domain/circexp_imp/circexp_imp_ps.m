@@ -122,7 +122,7 @@ for m=0:Nce
         end
     end   
     % === Apply Hankel + LR Filter to current mode ===
-    % Zeros remaining after compensating the poles of hankel function (ph)
+    % Zeros remaining after compensating the poles of Hankel function (ph)
     zlr_comp = ones(length(zlr)-length(ph),1);
     % Generate second-order-sections
     [sos, g] = zp2sos([zlr_comp; zh], plr, klr*kh, 'down', 'none');

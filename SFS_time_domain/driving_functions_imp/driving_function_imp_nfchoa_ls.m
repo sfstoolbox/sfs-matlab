@@ -5,7 +5,7 @@ function [sos,g] = driving_function_imp_nfchoa_ls(N,R,r,conf)
 %   Usage: sos = driving_function_imp_nfchoa_ls(N,R,r,conf)
 %
 %   Input parameters:
-%       N       - order of spherical hankel function
+%       N       - order of spherical Hankel function
 %       R       - radius of secondary source array / m
 %       r       - distance of line source from array center / m
 %       conf    - configuration struct (see SFS_config)
@@ -65,7 +65,7 @@ driving_functions = conf.driving_functions;
 
 
 %% ===== Computation =====================================================
-% Find spherical hankel function zeros
+% Find spherical Hankel function zeros
 z = sphbesselh_zeros(N);
 
 % Get the delay and weighting factors

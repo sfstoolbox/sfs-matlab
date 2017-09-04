@@ -1,16 +1,16 @@
 function [z,p] = sphbesselh_zeros(order)
-%SPHBESSELH_ZEROS finds zeros/roots of spherical hankel function
+%SPHBESSELH_ZEROS finds zeros/roots of spherical Hankel function
 %
 %   Usage: [z,p] = sphbesselh_zeros(order)
 %
 %   Input parameters:
-%       order   - order of hankel function
+%       order   - order of Hankel function
 %
 %   Output parameters:
 %       z       - zeros/roots fo the Bessel function
 %       p       - roots of the Bessel function
 %
-%   SPHBESSELH_ZEROS(order) finds zeros and poles for a spherical hankel 
+%   SPHBESSELH_ZEROS(order) finds zeros and poles for a spherical Hankel 
 %   function of the specified order. It is based on the investigations in 
 %   Hahn and Spors (2017) and the Python implementation in from scipy in
 %   signal.filter_design._bessel_zeros.

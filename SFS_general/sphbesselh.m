@@ -1,17 +1,17 @@
 function out = sphbesselh(nu,k,z)
-% SPHBESSELH spherical hankel function of order nu, kind k, and argument z
+% SPHBESSELH spherical Hankel function of order nu, kind k, and argument z
 %
 %   Usage: out = sphbesselh(nu,k,z)
 %
 %   Input parameters:
-%       nu  - order of hankel function
-%       k   - kind of hankel function (1 ^= first kind, 2 ^= second kind)
-%       z   - argument of hankel function
+%       nu  - order of Hankel function
+%       k   - kind of Hankel function (1 ^= first kind, 2 ^= second kind)
+%       z   - argument of Hankel function
 %
 %   Output parameters:
-%       out - value of hankel function at point z
+%       out - value of Hankel function at point z
 %
-%   SPHBESSELH(nu,k,z) spherical hankel function of order nu, kind k, and
+%   SPHBESSELH(nu,k,z) spherical Hankel function of order nu, kind k, and
 %   argument z
 %
 %   See also: sphbesselj, sphbessely

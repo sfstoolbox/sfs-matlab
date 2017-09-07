@@ -173,5 +173,5 @@ end
 x0 = x0_tmp(idx,:);
 
 if size(x0,1)==0
-    warning('%s: 0 secondary sources were selected.',upper(mfilename));
+    warning('SFS:x0','%s: 0 secondary sources were selected.',upper(mfilename));
 end

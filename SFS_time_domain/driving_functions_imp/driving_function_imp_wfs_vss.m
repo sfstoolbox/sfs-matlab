@@ -95,6 +95,8 @@ case 'pw'
     driv = @(X0,XS) driving_function_imp_wfs_pw(X0(:,1:3),X0(:,4:6),XS,conf);
 end
 
+% it's ok to have zero secondary sources selected for pwd
+warning('off','SFS:x0'); 
 idx = 1;
 for xvi = xv'
     % Select active source for single virtual secondary source
@@ -112,6 +114,7 @@ for xvi = xv'
     end
     idx = idx + 1;
 end
+warning('on','SFS:x0');
 
 % Remove delay offset, in order to begin always at t=0 with the first wave 
 % front at any secondary source

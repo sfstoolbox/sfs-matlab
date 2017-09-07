@@ -85,11 +85,11 @@ case 'fs'
         conf.driving_functions = 'default';
     elseif strcmp('2D',dimension)
         % === Focussed Line Sink ===
-        % We have to use the driving function setting directly, because in opposite
-        % to the case of a non-focused source where 'ps' and 'ls' are available as
-        % source types, for a focused source only 'fs' is available.
-        % Have a look at driving_function_mono_wfs_fs() for details on the
-        % implemented focused source types.
+        % We have to use the driving function setting directly, because in 
+        % opposite to the case of a non-focused source where 'ps' and 'ls' are
+        % available as source types, for a focused source only 'fs' is 
+        % available. Have a look at driving_function_mono_wfs_fs() for details
+        % on the implemented focused source types.
         conf.driving_functions = 'line_sink';
     else
         error('%s: %s is not a known source type.',upper(mfilename),dimension);
@@ -104,6 +104,8 @@ Nv = size(xv,1);
 N0 = size(x0,1);
 Dmatrix = zeros(N0,Nv);
 
+% it's ok to have zero secondary sources selected for pwd
+warning('off','SFS:x0'); 
 for idx=1:Nv
     [x0s, xdx] = ssd_select(x0,xv(idx,:));
     if (~isempty(x0s))
@@ -114,5 +116,6 @@ for idx=1:Nv
         Dmatrix(xdx,idx) = driv(x0s,xs) .* wtap;
     end
 end
+warning('on','SFS:x0');
 
 D = Dmatrix*(Dv(:).*xv(:,7));

@@ -41,7 +41,7 @@ master_doc = 'contents'
 
 # General information about the project. (substitutions)
 project = 'Sound Field Synthesis Toolbox'
-copyright = '2016, SFS Toolbox Developers'
+copyright = '2010-2017 SFS Toolbox Developers'
 author = 'SFS Toolbox Developers'
 
 # The full version, including alpha/beta/rc tags.

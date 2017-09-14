@@ -1,3 +1,12 @@
+2.5.0 ()
+    - add monochromatic implementation of LWFS using spatial bandwidth-limitation
+    - add monochromatic circular expansion functions for ps and pw
+    - add function for conversion from circular to plane wave expansion
+    - add freq_response_* and time_response_* for all LWFS methods
+    - add optional message arg to progress_bar()
+    - fix missing conf.N in freq_response_nfchoa()
+    - fix auralize_ir() for local files
+
 2.4.0 (22. August 2017)
     - improve references in SFS_config()
     - update structure of configuration for LWFS methods

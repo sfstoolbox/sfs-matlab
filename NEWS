@@ -1,4 +1,4 @@
-2.5.0 ()
+2.4.1 (28. September 2017)
     - add monochromatic implementation of LWFS using spatial bandwidth-limitation
     - add monochromatic circular expansion functions for ps and pw
     - add function for conversion from circular to plane wave expansion

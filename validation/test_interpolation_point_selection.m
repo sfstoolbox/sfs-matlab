@@ -235,7 +235,7 @@ for testcase_tmp = regular_testcases
     elseif strcmp('findconvexcone',method)
         [indices,weights] = findconvexcone(x0,xs);
     end
-    
+   
     if modus
         plot_point_selection(x0,xs,indices,weights,desc_str,method);
     end
@@ -281,15 +281,16 @@ for testcase_tmp = erroneous_testcases
     if strcmp('findvoronoi',method)
         try
             findvoronoi(x0,xs)
-            return
+        catch
+            continue
         end
     elseif strcmp('findconvexcone',method)
         try
             findconvexcone(x0,xs)
-            return
+        catch
+            continue
         end
     end
-
 end
 
 status = true;

@@ -100,14 +100,38 @@ if strcmp('line',geometry) || strcmp('linear',geometry)
     %                       |
     %                       |
     %
-    %% Positions of the secondary sources
-    x0(:,1) = X0(1) + linspace(-L/2,L/2,nls)';
-    x0(:,2) = X0(2) * ones(nls,1);
-    x0(:,3) = X0(3) * ones(nls,1);
-    % Direction of the secondary sources pointing to the -y direction
-    x0(:,4:6) = direction_vector(x0(:,1:3),x0(:,1:3)+repmat([0 -1 0],nls,1));
-    % Weight each secondary source by the inter-loudspeaker distance
-    x0(:,7) = L./(nls-1);
+    x0 = zeros(nls,7);    
+    x0(:,2) = X0(2);
+    x0(:,3) = X0(3);
+    x0(:,5) = -1;  % Direction of secondary sources points in -y direction 
+    
+    u = linspace(-nls/2,nls/2,nls);
+    du = nls/(nls-1);
+    if isempty(conf.secondary_sources.grid) || ... 
+        strcmp(conf.secondary_sources.grid, 'equally_spaced_points')
+        %          L
+        % x0(u) = --- u + X0
+        %         nls
+      
+        x0(:,1) = X0(1) + u.*L/nls;
+       	% Weight each secondary source by the inter-loudspeaker distance
+        x0(:,7) = L./nls*du;  % dx = x0'(u)*du
+    elseif strcmp(conf.secondary_sources.grid, 'logarithmic')
+        % 
+        %                  / |u|/u0  \
+        % x0(u) = sgn(u).* |q      -1| + X0
+        %                  \         / 
+        %
+        %  1/u0    x0(|u|+2) - x0(|u|+1) 
+        % q     = ----------------------- = const.
+        %           x0(|u|+1) - x0(|u|)
+        q = 2;
+        u0 = nls/2.*log(q)./log(L/2+1);
+        
+        x0(:,1) = X0(1) + sign(u).*(q.^abs(u./u0)-1);
+        x0(:,7) = q.^abs(u/u0).*log(q)./u0.*du;  % dx = x0'(u)*du
+    end 
+    
 elseif strcmp('circle',geometry) || strcmp('circular',geometry)
     % === Circular array ===
     %

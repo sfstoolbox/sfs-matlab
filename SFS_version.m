@@ -40,4 +40,4 @@ function versionnumber = SFS_version()
 
 %% ===== Configuration ===================================================
 % Version number
-versionnumber = '2.4.1';
+versionnumber = '2.4.2';

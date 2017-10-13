@@ -70,7 +70,11 @@ end
 x0 = x0./repmat(radii,[1,size(x0,2)]);
 
 % Rotate to principal axes to enable 2D arrays
-[x0, xs] = rotate_to_principal_axes(x0, xs);
+[x0, xs, is_2d] = rotate_to_principal_axes(x0, xs);
+if is_2d  % ignore third dimension
+  x0(:,3) = [];
+  xs(3) = [];  
+end
 
 % Calculate dummy points to enable "partial" arrays
 dummy_points = augment_bounding_box(x0);
@@ -123,44 +127,3 @@ weights = weights/sum(weights);
 
 [weights,order] = sort(weights.','descend');
 idx = idx(order).';
-end
-
-% =========================================================================
-
-function [x0, xs] = rotate_to_principal_axes(x0, xs, gamma)
-%ROTATE_TO_PRINCIPAL_AXES rotates x0 and xs to x0's principal axes.
-% If the ratio of second-to-smallest singular values is < gamma,
-% the third dimension is discarded.
-%
-%   Input parameters:
-%       x0          - point cloud in R^3
-%       xs          - point in R^3
-%       gamma       - scalar in 0 < gamma << 1
-%
-%   Output parameters:
-%       x0          - point cloud in R^3 or R^2
-%       xs          - point in R^3 or R^2
-if nargin < 3
-    gamma = 0.1; % inverse of aspect ratio of principal axes
-end
-
-[~,S,V] = svd(x0);
-x0 = x0*V;
-xs = xs*V;
-S = diag(S);
-if S(end)/S(end-1) < gamma
-    x0(:,3) = [];
-    xs(3) = [];
-    warning('SFS:findconvexcone','%s: Grid is apparently two-dimensional. ', ...
-        upper(mfilename));
-end
-end
-
-% =========================================================================
-
-function dummy_points = augment_bounding_box(x0)
-%AUGMENT_BOUNDING_BOX yields dummy points such that the origin is
-% contained in the cartesian bounding box of x0.
-dummy_points = -diag(sign(max(x0)) + sign(min(x0)));
-dummy_points(~any(dummy_points,2),:) = [];
-end

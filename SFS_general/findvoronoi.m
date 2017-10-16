@@ -125,11 +125,11 @@ simplices_old_s = unique(simplices_old_s,'rows');
 
 % Surface area calculation
 [area_new, area_old] = deal(zeros(size(idx,1),1));
-for i=1:size(idx,1)
-    area_new(i) = calc_surface_area( ...
-        vertices_new_s(regions_new_s{idx(i)},:),1);
-    area_old(i) = calc_surface_area( ...
-        vertices_old_s(regions_old_s{idx(i)},:),1);    
+for ii=1:size(idx,1)
+    area_new(ii) = calc_surface_area( ...
+        vertices_new_s(regions_new_s{idx(ii)},:),1);
+    area_old(ii) = calc_surface_area( ...
+        vertices_old_s(regions_old_s{idx(ii)},:),1);    
 end
 
 % Calculate weights
@@ -239,11 +239,11 @@ dz1(:, 4, :) = [];
 
 % Calculating det in 3D array; inefficient
 [dx, dy, dz, ad] = deal(zeros(1,num));
-for i = 1:num
-    dx(i) = det(dx1(:,:,i));
-    dy(i) = -det(dy1(:,:,i));
-    dz(i) = det(dz1(:,:,i));
-    ad(i) = det(a(:,:,i));
+for ii=1:num
+    dx(ii) = det(dx1(:,:,ii));
+    dy(ii) = -det(dy1(:,:,ii));
+    dz(ii) = det(dz1(:,:,ii));
+    ad(ii) = det(a(:,:,ii));
 end
 
 nominator = cat(1, dx, dy, dz);
@@ -285,8 +285,8 @@ for n=1:size(regions,1)
         regions_sorted{n} = 0;
     else
         current_simplex = remaining(1);
-        for i=1:3
-            k = simplices(current_simplex,i);
+        for ii=1:3
+            k = simplices(current_simplex,ii);
             if k ~= n
                 current_vertex = k;
                 break
@@ -304,14 +304,14 @@ for n=1:size(regions,1)
         
         while remaining_size >= remaining_count
             cs_identified = 0;
-            for i=1:remaining_size
-                if remaining(i) == ARRAY_FILLER
+            for ii=1:remaining_size
+                if remaining(ii) == ARRAY_FILLER
                     continue
                 end
-                s = remaining(i);
-                for j=1:3
-                    if current_vertex == simplices(s, j)
-                        current_simplex = remaining(i);
+                s = remaining(ii);
+                for jj=1:3
+                    if current_vertex == simplices(s, jj)
+                        current_simplex = remaining(ii);
                         cs_identified = cs_identified +1;
                         break
                     end
@@ -321,8 +321,8 @@ for n=1:size(regions,1)
                 end
             end
             
-            for i=1:3
-                s = simplices(current_simplex, i);
+            for ii=1:3
+                s = simplices(current_simplex, ii);
                 if s~=n && s~=current_vertex
                     current_vertex = s;
                     break
@@ -364,9 +364,9 @@ surface_area = 0;
 
 b_point = vertices(2,:);
 root_b_dist = calc_haversine_dist(root_point, b_point);
-for i=2:(n-1)
+for ii=2:(n-1)
     a_point = b_point;
-    b_point = vertices(i+1,:);
+    b_point = vertices(ii+1,:);
     root_a_dist = root_b_dist;
     root_b_dist = calc_haversine_dist(root_point, b_point);
     a_b_dist = calc_haversine_dist(a_point, b_point);

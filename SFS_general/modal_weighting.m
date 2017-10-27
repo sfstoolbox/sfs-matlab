@@ -28,18 +28,25 @@ function [win,varargout] = modal_weighting(order,Ninv,conf)
 %   the azimuth angle, Win corresponds to the polar angles given in Ang. Latter
 %   are equiangularly distributed within [0,pi].
 %
-%   References:
-%   	Kaiser, J., & Schafer, R. (1980) - "On the use of the I0-sinh window
-%           for spectrum analysis", IEEE Transactions on Acoustics, Speech, and
-%           Signal Processing
-%     Daniel, J., Rault, J.-B., Polack, J.-D. (1998) "Ambisonics Encoding of 
-%           Other Audio Formats for Multiple Listening Conditions", Proc. of 
-%           105th Aud. Eng. Soc. Conv.
-%     Zotter, F. & Frank, M. (2012) - "All-Round Ambisonic Panning and
-%           Decoding", J. Aud. Eng. Soc. 
-%     Van Trees, H. L. (2004) - "Optimum Array Processing", John Wiley & Sons.
-%
 %   See also: driving_function_imp_nfchoa, driving_function_mono_nfchoa
+%
+%   References:
+%       Kaiser and Schafer (1980) - "On the use of the I0-sinh window for
+%   	spectrum analysis", IEEE Transactions on Acoustics, Speech, and Signal
+%   	Processing, vol. 28, no. 1, pp. 105-107,
+%   	https://doi.org/10.1109/TASSP.1980.1163349
+%
+%       Daniel, Rault, Polack (1998) "Ambisonics Encoding of Other Audio
+%       Formats for Multiple Listening Conditions", 105th Convention of the
+%       Audio Engineering Society, Paper 4795,
+%       http://www.aes.org/e-lib/browse.cfm?elib=8385
+%
+%       Zotter and Frank (2012) - "All-Round Ambisonic Panning and Decoding",
+%       Journal of the Audio Engineering Society, vol. 60, no. 10, pp. 807-820,
+%       http://www.aes.org/e-lib/browse.cfm?elib=16554 
+%
+%       Van Trees (2002) - "Optimum Array Processing", John Wiley & Sons,
+%       ISBN 978-0-471-09390-9
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -98,11 +105,11 @@ case 'max-rE'
     if any( strcmp(dim, {'2D', '2.5D'}) )
         % The two-dimensional max-rE window is basically a modified cosine 
         % window, which yields zero for m=order+1 instead of m=order. Hence its
-        % last value is not zero. See Daniel (1998), Eq. (44)
+        % last value is not zero. See Daniel et al. (1998), Eq. (44)
         win = cos(pi./2.*(0:order)/(order+1));
     else
         % Approximate solution for the three-dimensional max-rE optimisation 
-        % problem. See Zotter (2012), Eq. (10)
+        % problem. See Zotter and Frank (2012), Eq. (10)
         win = zeros(1,order+1);
         for n=0:order
             win(n+1) = asslegendre(n,0,cosd(137.9/(order+1.51)));
@@ -111,7 +118,7 @@ case 'max-rE'
 case {'kaiser', 'kaiser-bessel'}
     % === Kaiser-Bessel window =======================================
     % Approximation of the slepian window using modified bessel
-    % function of zeroth order, see Kaiser (1980)
+    % function of zeroth order, see Kaiser and Schafer (1980)
     beta = conf.modal_window_parameter * pi;
     win = besseli(0,beta*sqrt(1-((0:order)./order).^2)) ./ ...
           besseli(0,beta);
@@ -139,7 +146,7 @@ if nargout>1
         % === Inverse Spherical Harmonics Transform ===
         % For rotationally symmetric kernels this transform is equal to the
         % Inverse Legendre Transform (ILT) weighted by 1/2pi.
-        % See Zotter (2012), Eq. (7)
+        % See Zotter and Frank (2012), Eq. (7)
         Ang = 0:pi/(Ninv-1):pi;  % equiangular distributed polar angle
         varargout{1} = inverse_lt(win,cos(Ang))./(2*pi);
         if nargout>2

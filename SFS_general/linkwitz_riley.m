@@ -17,8 +17,9 @@ function [z,p,k] = linkwitz_riley(n,wc,ftype,domain)
 %     k       - gain of filter
 %
 %   References:
-%        S. P. Lipshitz and J. Vanderkooy (1986), "In-Phase Crossover Network 
-%        Design," J. Audio Eng. Soc, vol. 34, no. 11, pp. 889–894
+%       Lipshitz and Vanderkooy (1986), "In-Phase Crossover Network Design",
+%       Journal of the Audio Engineering Society, vol. 34, no. 11, pp. 889-894,
+%       http://www.aes.org/e-lib/browse.cfm?elib=5237
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -77,7 +78,7 @@ end
 switch ftype
 case  {'low','high'}
     % === lowpass or highpass LR Filter (squared Butterworth Filter) ===
-    % See Lipshitz & Vanderkooy (1986), eq. (6) & (12)
+    % See Lipshitz and Vanderkooy (1986), eq. (6) & (12)
     [z,p,k] = butter(n/2,wc,ftype,domain);
     z = [z(:); z(:)];  % octave creates row vectors
     p = [p(:); p(:)];  % octave creates row vectors    
@@ -87,7 +88,7 @@ case  {'low','high'}
     end
 case 'all'
     % === allpass LR Filter (same phase as lowpass and highpass LR Filter) ===
-    % See Lipshitz & Vanderkooy (1986), eq. (11)
+    % See Lipshitz and Vanderkooy (1986), eq. (11)
     [~,p,~] = butter(n/2,wc,'low',domain);
     p = p(:);  % octave creates row vectors
     if strcmp(domain,'z')

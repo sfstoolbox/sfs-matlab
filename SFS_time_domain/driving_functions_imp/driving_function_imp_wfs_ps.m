@@ -18,12 +18,16 @@ function [delay,weight] = driving_function_imp_wfs_ps(x0,nx0,xs,conf)
 %   the WFS driving function for a point source as source model.
 %
 %   See also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_ps
-
+%
 %   References:
-%       E. Start (1997) - "Direct Sound Enhancement by Wave Field Synthesis", 
-%       PhD thesis, TU Delft
-%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
-%       PhD thesis, TU Berlin
+%       Start (1997) - "Direct Sound Enhancement by Wave Field Synthesis",
+%       TU Delft,
+%       http://resolver.tudelft.nl/uuid:c80d5b58-67d3-4d84-9e73-390cd30bde0d
+%
+%       Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       TU Berlin, https://doi.org/10.14279/depositonce-4310
+%
+%       http://sfstoolbox.org
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

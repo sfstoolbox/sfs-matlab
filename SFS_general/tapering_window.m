@@ -30,7 +30,7 @@ function win = tapering_window(x0,conf)
 %   References:
 %
 %       Born, Wolf (1999) - "Principles of Optics", Cambridge University Press,
-%       7th edition.
+%       7th edition, ISBN 9780521642224
 %
 %       Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
 %       TU Berlin, https://doi.org/10.14279/depositonce-4310

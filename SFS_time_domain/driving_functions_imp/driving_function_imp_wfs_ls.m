@@ -19,11 +19,10 @@ function [delay,weight] = driving_function_imp_wfs_ls(x0,nx0,xs,conf)
 %   the WFS driving function for a line source as source model. If no
 %   explicit line source orientation xs(:,4:6) is given [0 0 1] is assumed.
 %
-%   References:
-%       H. Wierstorf, J. Ahrens, F. Winter, F. Schultz, S. Spors (2015) -
-%       "Theory of Sound Field Synthesis"
-%
 %   See also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_ls
+%
+%   References:
+%       http://sfstoolbox.org
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

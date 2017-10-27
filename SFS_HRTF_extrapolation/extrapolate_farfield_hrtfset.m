@@ -15,12 +15,13 @@ function sofa_pw = extrapolate_farfield_hrtfset(sofa,conf)
 %   resulting impulse responses are plane waves. The extrapolation is done via
 %   WFS.
 %
-%   References:
-%       S. Spors and J. Ahrens (2011) - "Generation of far-field head-related
-%       transfer functions using sound field synthesis", In German Annual
-%       Conference on Acoustics (DAGA).
-%
 %   See also: get_ir, driving_function_imp_wfs
+%
+%   References:
+%       Spors and Ahrens (2011) - "Generation of far-field head-related
+%       transfer functions using sound field synthesis", 37th German Annual
+%       Conference on Acoustics (DAGA), pp. 673-674,
+%       http://pub.dega-akustik.de/DAGA_2011/data/articles/000370.pdf
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -104,7 +105,8 @@ else
 end
 if strcmp('2.5D',dimension)
     % Apply a amplitude correction, due to 2.5D. This will result in a correct
-    % reproduced ILD in the resulting impulse responses (see, Spors 2011)
+    % reproduced ILD in the resulting impulse responses, see Spors and
+    % Ahrens (2011).
     amplitude_correction = -1.7 * sin(phi);
 else
     amplitude_correction = zeros(nls,1);

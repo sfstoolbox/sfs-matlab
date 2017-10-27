@@ -29,25 +29,23 @@ function hpre = wfs_iir_prefilter(conf)
 %                               filter
 %
 %   Required Functions:
-%   get_shelve_lagrange.m (included in SFS-toolbox)
-%   fdesign (included in the Matlab Signal Processing Toolbox, requiring DSP System Design Toolbox)
-%
+%   get_shelve_lagrange (included in SFS-toolbox)
+%   fdesign (included in the Matlab Signal Processing Toolbox, requiring DSP
+%            System Design Toolbox)
 %
 %   WFS_IIR_PREFILTER(conf) calculates a sqrt(j k) pre-equalization filter
 %   with high shelving characterstics for Wave Field Synthesis.
 %   Note, this function does not work in Octave, use conf.wfs.hpretype='FIR'
 %   instead.
 %
-%   For details see [Sch13]:
-%   Frank Schultz, Vera Erbes, Sascha Spors, Stefan Weinzierl (2013):
-%   "Derivation of IIR prefilters for soundfield synthesis using linear
-%   secondary source distributions", In: Proc. of the
-%   International Conference on Acoustics AIA-DAGA 2013, Merano, Italy,
-%   18 - 21 March 2013, pages 2372-2375
-%
 %   See also: wfs_preequalization, wfs_fir_prefilter, driving_function_imp_wfs,
 %       wfs_ir
-
+%
+%   References:
+%       Schultz, Erbes, Spors, Weinzierl (2013) - "Derivation of IIR prefilters
+%       for soundfield synthesis using linear secondary source distributions",
+%       International Conference on Acoustics (AIA-DAGA), p.2372-2375,
+%       http://pub.dega-akustik.de/AIA_DAGA_2013/data/articles/000604.pdf
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

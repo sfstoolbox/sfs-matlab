@@ -20,14 +20,18 @@ function [fal,dx0] = aliasing_frequency(x0,conf)
 %   For a calculation that includes the dependency on the listener position have
 %   a look at Start (1997).
 %
-%   References:
-%       S. Spors and J. Ahrens (2009) - "Spatial sampling artifacts of wave field
-%       synthesis for the reproduction of virtual point sources", 126th AES Conv.
-%       E. Start (1997) - "Direct Sound Enhancement by Wave Field Synthesis",
-%       TU Delft.
-%
 %   See also: sound_field_mono_wfs, secondary_source_positions,
 %       secondary_source_distance
+%
+%   References:
+%       Spors and Ahrens (2009) - "Spatial sampling artifacts of wave field
+%       synthesis for the reproduction of virtual point sources", 126th
+%       Convention of the Audio Engineering Society, Paper 7744,
+%       http://www.aes.org/e-lib/browse.cfm?elib=14940
+%
+%       Start (1997) - "Direct Sound Enhancement by Wave Field Synthesis",
+%       PhD thesis, TU Delft,
+%       http://resolver.tudelft.nl/uuid:c80d5b58-67d3-4d84-9e73-390cd30bde0d
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

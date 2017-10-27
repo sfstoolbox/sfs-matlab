@@ -26,11 +26,12 @@ function [D,x0,xv,idx] = driving_function_mono_localwfs_vss(x0,xs,src,f,conf)
 %       idx         - index of the selected sources from the original x0
 %                     matrix [mx1]
 %
-%   References:
-%       S. Spors (2010) - "Local Sound Field Synthesis by Virtual Secondary
-%                          Sources", 40th AES Conference
-%
 %   See also: plot_sound_field, sound_field_mono_wfs
+%
+%   References:
+%       Spors (2010) - "Local Sound Field Synthesis by Virtual Secondary
+%       Sources", 40th Conference of the Audio Engineering Society, Paper 6-3,
+%       http://www.aes.org/e-lib/browse.cfm?elib=15561
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

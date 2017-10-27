@@ -18,6 +18,14 @@ function [delay,weight] = driving_function_imp_wfs_pw(x0,nx0,nk,conf)
 %   the WFS driving function for plane wave as source model.
 %
 %   See also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_pw
+%
+%   References:
+%       Schultz (2016) - "Sound Field Synthesis for Line Source Array
+%       Applications in Large-Scale Sound Reinforcement", PhD thesis,
+%       Universität Rostock,
+%       http://nbn-resolving.de/urn:nbn:de:gbv:28-diss2016-0078-1
+%
+%       http://sfstoolbox.org
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -98,7 +106,7 @@ elseif strcmp('2.5D',dimension)
     % Reference point
     xref = repmat(xref,[size(x0,1) 1]);
     switch driving_functions
-    case {'default', 'reference_point'}      
+    case {'default', 'reference_point'}
         % Driving function with only one stationary phase approximation, i.e.
         % reference to one point in field
         %        ______________
@@ -131,9 +139,9 @@ elseif strcmp('2.5D',dimension)
         %
         % d_2.5D using a plane wave as source model
         %
-        %                             ______   
+        %                             ______
         % d_2.5D(x0,w) = h(t) * 2g0 \|nk nx0 delta(t - 1/c nk x0)
-        % 
+        %
         %
         % See Schultz (2016), eq. (2.183)
         %

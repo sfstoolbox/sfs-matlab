@@ -18,14 +18,13 @@ function [z,p] = sphbesselh_zeros(order)
 %   See also: sphbesselh, driving_function_imp_nfchoa
 %
 %   References:
-%
-%       N. Hahn, S. Spors (2017) - "Further Investigations on the Design of 
-%       Radial Filters for the Driving Functions of Near-Field Compensated 
-%       Higher-Order Ambisonics," in 142nd Convention of the Audio Engineering
+%       Hahn, Spors (2017) - "Further Investigations on the Design of  Radial
+%       Filters for the Driving Functions of Near-Field Compensated
+%       Higher-Order Ambisonics", 142nd Convention of the Audio Engineering
 %       Society, Paper 9732, http://www.aes.org/e-lib/browse.cfm?elib=18609
 %
-%       R. Campos, M. Calderon (2011) - "Approximate closed-form formulas for
-%       the zeros of the Bessel Polynomials," https://arxiv.org/abs/1105.0957
+%       Campos, Calderon (2011) - "Approximate closed-form formulas for the
+%       zeros of the Bessel Polynomials", https://arxiv.org/abs/1105.0957
 %
 %       This implementation is based on scipy: http://bit.ly/2tPfePn
 

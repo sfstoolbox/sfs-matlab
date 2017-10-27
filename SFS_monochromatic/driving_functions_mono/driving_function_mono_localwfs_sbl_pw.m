@@ -16,9 +16,10 @@ function D = driving_function_mono_localwfs_sbl_pw(x0,nk,f,conf)
 %   See also: sound_field_mono_localwfs_sbl, driving_function_mono_localwfs_sbl
 %
 %   References:
-%       F. Winter, N. Hahn, and S. Spors (2017), "Time-Domain Realisation of 
-%       Model-Based Rendering for 2.5D Local Wave Field Synthesis Using Spatial
-%       Bandwidth-Limitation," 25th EUSIPCO
+%       Winter, Hahn, Spors (2017), "Time-Domain Realisation of Model-Based
+%       Rendering for 2.5D Local Wave Field Synthesis Using Spatial
+%       Bandwidth-Limitation", 25th European Signal Processing Conference
+%       (EUSIPCO), pp. 718-722, http://bit.ly/2yMjlOw
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

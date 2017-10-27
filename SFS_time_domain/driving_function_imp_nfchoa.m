@@ -22,20 +22,23 @@ function [d,dm,delay_offset] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %   driving function of NFC-HOA for the given source type and position,
 %   and loudspeaker positions.
 %
-%   References:
-%     Spors, S., Kuscher, V., Ahrens, J. (2011) - "Efficient realization of
-%         model-based rendering for 2.5-dimensional near-field compensated
-%         higher order Ambisonics", IEEE Workshop on Applications of Signal
-%         Processing to Audio and Acoustics (WASPAA), pp. 61-64,
-%         https://doi.org/10.1109/ASPAA.2011.6082325
-%     Schultz, F. and Spors, S. (2014) - "Comparing Approaches to the Spherical
-%         and Planar Single Layer Potentials for Interior Sound Field
-%         Synthesis," Acta Acustica united with Acustica, pp. 900-911,
-%         https://doi.org/10.3813/AAA.918769
-%     Gumerov, N. and Duraiswami, R. (2004) - "Fast multipole methods for the 
-%         Helmholtz equation in three dimensions," Elsevier, Oxford
-%
 %   See also: driving_function_imp_nfchoa_ps, sound_field_imp_nfchoa
+%
+%   References:
+%       Spors, Kuscher, Ahrens (2011) - "Efficient realization of model-based
+%       rendering for 2.5-dimensional near-field compensated higher order
+%       Ambisonics", IEEE Workshop on Applications of Signal Processing to Audio
+%       and Acoustics (WASPAA), pp. 61-64,
+%       https://doi.org/10.1109/ASPAA.2011.6082325
+%
+%       Schultz and Spors (2014) - "Comparing Approaches to the Spherical and
+%       Planar Single Layer Potentials for Interior Sound Field Synthesis",
+%       Acta Acustica united with Acustica, vol. 100, no. 5, pp. 900-911,
+%       https://doi.org/10.3813/AAA.918769
+%
+%       Gumerov and Duraiswami (2005) - "Fast multipole methods for the
+%       Helmholtz equation in three dimensions", Elsevier, Oxford,
+%       ISBN 9780080443713
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -176,7 +179,7 @@ elseif strcmp('3D',dimension)
     %             R.^2  n=0..M      m=-n..n   n                n
     %
     % See Schultz and Spors (2014), eq. (A3) and (A6).
-    % Equivalent expression, see Gumerov and Duraiswami (2004), eq. (2.1.70):
+    % Equivalent expression, see Gumerov and Duraiswami (2005), eq. (2.1.70):
     %                    ___
     %               1    \            2n+1
     % D(x0,w) =  ------  /__   Hn(w) ------ P (cos(THETA))

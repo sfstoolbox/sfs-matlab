@@ -20,15 +20,21 @@ function D = driving_function_mono_wfs_fs(x0,nx0,xs,f,conf)
 %   source as source model, for 2D a focused line source is used instead.
 %
 %   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
-
+%
 %   References:
-%       S. Spors, H. Wierstorf, M. Geier, J. Ahrens (2009) - "Physical and
-%       Perceptual Properties of Focused Sources in Wave Field Synthesis",
-%       AES127
-%       E. Verheijen (1997) - "Sound Reproduction by Wave Field Synthesis", PhD
-%       thesis, TU Delft
-%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
-%       PhD thesis, TU Berlin
+%       Spors, Wierstorf, Geier, Ahrens (2009) - "Physical and Perceptual
+%       Properties of Focused Sources in Wave Field Synthesis", 127th Convention
+%       of the Audio Engineering Society, Paper 7914,
+%       http://www.aes.org/e-lib/browse.cfm?elib=15109
+%
+%       Verheijen (1997) - "Sound Reproduction by Wave Field Synthesis", PhD
+%       thesis, TU Delft,
+%       http://resolver.tudelft.nl/uuid:9a35b281-f19d-4f08-bec7-64f6920a3821
+%
+%       Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       PhD thesis, TU Berlin, https://doi.org/10.14279/depositonce-4310
+%
+%       http://sfstoolbox.org
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -298,7 +304,7 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D(x0,w) = -g0 _ |------  ------------- e^(i w/c |x0-xs|)
         %                     \|2pi ic  |x0-xs|^(3/2)
         %
-        % See Spors (2009), eq.(7)
+        % See Spors et al. (2009), eq.(7)
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);

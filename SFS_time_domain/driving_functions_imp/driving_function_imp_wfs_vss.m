@@ -22,11 +22,12 @@ function [d,delay_offset] = driving_function_imp_wfs_vss(x0,xv,srcv,dv,conf)
 %       d             - driving function signal [NxN0]
 %       delay_offset  - additional added delay, so you can correct it
 %
-%   References:
-%       S. Spors (2010) - "Local Sound Field Synthesis by Virtual Secondary
-%                          Sources", 40th AES
-%
 %   See also: driving_function_imp_localwfs_vss, driving_function_mono_wfs_vss
+%
+%   References:
+% 		Spors and Ahrens (2010) - "Local Sound Field Synthesis by Virtual
+%       Secondary Sources", 40th Conference of the Audio Engineering Society,
+%       Paper 6-3, http://www.aes.org/e-lib/browse.cfm?elib=15561
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

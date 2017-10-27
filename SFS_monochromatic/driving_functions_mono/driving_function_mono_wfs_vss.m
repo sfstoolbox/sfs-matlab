@@ -23,10 +23,11 @@ function D = driving_function_mono_wfs_vss(x0,xv,srcv,Dv,f,conf)
 %       D           - driving function [nx1]
 %
 %   See also: driving_function_mono_wfs, driving_function_mono_wfs_fs
-
+%
 %   References:
-%       S. Spors, J.Ahrens (2010) - "Local Sound Field Synthesis by Virtual
-%                                    Secondary Sources", 40th AES
+%       Spors and Ahrens (2010) - "Local Sound Field Synthesis by Virtual
+%       Secondary Sources", in 40th Conference of the Audio Engineering Society,
+%       Paper 6-3, http://www.aes.org/e-lib/browse.cfm?elib=15561
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

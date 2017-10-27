@@ -17,11 +17,13 @@ function D = driving_function_mono_sdm_kx_fs(kx,xs,f,conf)
 %   for the given secondary sources, the focused source direction and the
 %   frequency f. The driving signal is calculated in the kx domain.
 %
-%   References:
-%       S. Spors and J. Ahrens (2010) - "Reproduction of Focused Sources by the
-%       Spectral Division Method", ISCCSP
-%
 %   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
+%
+%   References:
+%       Spors and Ahrens (2010) - "Reproduction of Focused Sources by the
+%       Spectral Division Method", in 4th International Symposium on
+%       Communications, Control and Signal Processing (ISCCSP),
+%       https://doi.org/10.1109/ISCCSP.2010.5463335
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

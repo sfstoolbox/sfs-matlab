@@ -29,14 +29,16 @@ function ir = interpolate_ir(ir,weights,conf)
 %   dimensions in order to save computational time, because this function could
 %   be called quite often.
 %
-%	References:
-%		K. Hartung, J. Braasch, S. J. Sterbing (1999) - "Comparison of different
-%		methods for the interpolation of head-related transfer functions".
-%		Proc. of the 16th AES Conf.
-%		K. Itoh (1982) - "Analysis of the phase unwrapping algorithm". Applied
-%		Optics 21(14), 2470
-%
 %   See also: get_ir, interpolation
+%
+%	References:
+%		Hartung, Braasch, Sterbing (1999) - "Comparison of different methods for
+%		the interpolation of head-related transfer functions", 16th Conference
+%		of the Audio Engineering Society, Paper 16-028,
+%		http://www.aes.org/e-lib/browse.cfm?elib=8026
+%
+%		Itoh (1982) - "Analysis of the phase unwrapping algorithm", Applied
+%		Optics 21(14), p. 2470, https://doi.org/10.1364/AO.21.002470
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

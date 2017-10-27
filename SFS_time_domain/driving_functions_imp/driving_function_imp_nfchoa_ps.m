@@ -18,12 +18,14 @@ function [sos,g] = driving_function_imp_nfchoa_ps(N,R,r,conf)
 %   representation for the NFC-HOA driving function for a virtual point source
 %   as source model.
 %
-%   References:
-%       S. Spors, V. Kuscher, J. Ahrens (2011) - "Efficient realization of
-%       model-based rendering for 2.5-dimensional near-field compensated higher
-%       order Ambisonics", WASPAA, p. 61-64
-%
 %   See also: sound_field_imp, sound_field_imp_nfchoa, driving_function_imp_nfchoa
+%
+%   References:
+%       Spors, Kuscher, Ahrens (2011) - "Efficient realization of model-based
+%       rendering for 2.5-dimensional near-field compensated higher order
+%       Ambisonics", IEEE Workshop on Applications of Signal Processing to Audio
+%       and Acoustics (WASPAA), pp. 61-64,
+%       https://doi.org/10.1109/ASPAA.2011.6082325
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

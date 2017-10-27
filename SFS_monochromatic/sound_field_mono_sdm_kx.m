@@ -42,12 +42,13 @@ function varargout = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
 %   bessel functions, which will result in a wrong evanescent part of the sound
 %   field.
 %
-%   References:
-%       S. Spors, J. Ahrens (2010) - "Analysis and Improvement of
-%       Pre-equalization in 2.5-Dimensional Wave Field Synthesis", 128th AES
-%       Conv.
-%
 %   See also: plot_sound_field, sound_field_mono_sdm
+%
+%   References:
+%       Spors, Ahrens (2010) - "Analysis and Improvement of Pre-equalization in
+%       2.5-Dimensional Wave Field Synthesis", 128th Convention of the Audio
+%       Engineering Society, Paper 8121, 
+%       http://www.aes.org/e-lib/browse.cfm?elib=15418
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

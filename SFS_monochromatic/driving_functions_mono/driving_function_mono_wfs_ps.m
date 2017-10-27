@@ -19,23 +19,21 @@ function D = driving_function_mono_wfs_ps(x0,nx0,xs,f,conf)
 %   frequency f.
 %
 %   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
-
+%
 %   References:
-%       D. Opperschall (2002) - "Realisierung eines Demonstrators für
-%       Punktquellen und ebene Wellen für ein Wellenfeldsynthese-System",
-%       Master thesis, Universität Erlangen-Nürnberg
-%       S. Spors, J. Ahrens (2010) - "Analysis and Improvement of
-%       Pre-equalization in 2.5-Dimensional Wave Field Synthesis", AES128
-%       S. Spors, R. Rabenstein, J. Ahrens (2008) - "The Theory of Wave Field
-%       Synthesis Revisited", AES124
-%       E. Start (1997) - "Direct Sound Enhancement by Wave Field Synthesis", 
-%       PhD thesis, TU Delft
-%       E. Verheijen (1997) - "Sound Reproduction by Wave Field Synthesis", PhD
-%       thesis, TU Delft
-%       F. Völk (2010) - "Psychoakustische Experimente zur Distanz mittels
-%       Wellenfeldsynthese erzeugter Hörereignisse", DAGA, p.1065-66
-%       H. Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
-%       PhD thesis, TU Berlin
+%       Spors and Ahrens (2010) - "Analysis and Improvement of Pre-equalization
+%       in 2.5-Dimensional Wave Field Synthesis", 128th Convention of the Audio
+%       Engineering Society, Paper 8121,
+%       http://www.aes.org/e-lib/browse.cfm?elib=15418
+%
+%       Spors, Rabenstein, Ahrens (2008) - "The Theory of Wave Field Synthesis
+%       Revisited", 124th Convention of the Audio Engineering Society, Paper
+%       7358, http://www.aes.org/e-lib/browse.cfm?elib=14488
+%
+%       Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
+%       PhD thesis, TU Berlin,  https://doi.org/10.14279/depositonce-4310
+%
+%       http://sfstoolbox.org
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

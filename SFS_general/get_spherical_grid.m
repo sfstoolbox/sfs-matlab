@@ -20,12 +20,15 @@ function [points,weights] = get_spherical_grid(number,conf)
 %   For conf.secondary_sources.grid='gauss' the grid positions are calculated
 %   after Ahrens (2012), p. 121 (see also: Rafaely (2015), p. 64)
 %
-%   References:
-%       J. Ahrens (2012) - "Analytic Methods of Sound Field Synthesis", Springer.
-%       B. Rafaely (2015) - "Fundamentals of Spherical Array Processing", Springer.
-%
 %   See also: secondary_source_positions,
 %       weights_for_points_on_a_sphere_rectangle
+%
+%   References:
+%       Ahrens (2012) - "Analytic Methods of Sound Field Synthesis", Springer,
+%       ISBN 978-3-642-25743-8
+%
+%       Rafaely (2015) - "Fundamentals of Spherical Array Processing", Springer,
+%       ISBN 978-3-662-45664-4
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

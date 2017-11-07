@@ -1,6 +1,5 @@
 function varargout = time_response_line_source(X,xs,conf)
-%TIME_RESPONSE_LINE_SOURCE simulates the time response for a line source at
-%the given listener position
+%TIME_RESPONSE_LINE_SOURCE time response of a line source
 %
 %   Usage: [s,t] = time_response_line_source(X,xs,conf)
 %

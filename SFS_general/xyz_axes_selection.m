@@ -4,17 +4,17 @@ function [dimensions,x1,x2,x3] = xyz_axes_selection(x,y,z)
 %
 %   Usage: [dimensions,x1,x2,x3] = xyz_axes_selection(x,y,z)
 %
-%   Input options:
+%   Input parameters:
 %       x,y,z      - vectors/matrices containing the x-, y- and z-axis values / m
 %
-%   Output options:
+%   Output parameters:
 %       dimensions - 1x3 vector containing 1 or 0 to indicate the activity
 %                    of the single dimensions in the order [x y z]
 %       x1         - vector/matrix containing the first axis / m
 %       x2         - vector/matrix containing the second axis / m
 %       x3         - vector/matrix containing the third axis / m
 %
-%   XYZ_AXES_SELECTION(x,y,z) returns a indicating vector for the x-, y- and
+%   XYZ_AXES_SELECTION(x,y,z) returns an indication vector for the x-, y- and
 %   z-axis if we have any activity on this axis or if it is a singleton axis.
 %   In addition, the axes are reordered starting first with the non-singleton
 %   axes.

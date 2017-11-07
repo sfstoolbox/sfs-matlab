@@ -1,5 +1,5 @@
 function [sig,delay_offset] = delayline(sig,dt,weight,conf)
-%DELAYLINE implements a (fractional) delay line with weights
+%DELAYLINE (fractional) delay line with weights
 %
 %   Usage: [sig,delay_offset] = delayline(sig,dt,weight,conf)
 %

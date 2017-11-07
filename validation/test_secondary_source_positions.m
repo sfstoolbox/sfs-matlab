@@ -11,10 +11,6 @@ function status = test_secondary_source_positions(modus)
 %
 %   Output parameters:
 %       status - true or false
-%
-%   TEST_SECONDARY_SOURCE_POSITIONS(modus) checks if the function, that
-%   calculates the secondary source positions and directions is working
-%   correctly.
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

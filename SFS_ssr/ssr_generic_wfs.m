@@ -1,6 +1,6 @@
 function ir = ssr_generic_wfs(xs,src,conf)
-%SSR_GENRIC_WFS generates an impulse response for the generic renderer of the
-%SoundScape Renderer
+%SSR_GENRIC_WFS impulse response for the generic renderer of the SoundScape
+%Renderer
 %
 %   Usage: ir = ssr_generic_wfs(xs,src,conf)
 %
@@ -22,7 +22,7 @@ function ir = ssr_generic_wfs(xs,src,conf)
 %   array has its first loudspeaker at phi=0deg which is on the x-axis. If you
 %   have another setup you have to provide it with conf.secondary_sources.x0.
 %
-% See also: generic_nfchoa, brs_wfs, driving_function_imp_wfs
+%   See also: generic_nfchoa, brs_wfs, driving_function_imp_wfs
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

@@ -1,5 +1,5 @@
 function sig = db(sig)
-%DB Convert to decibels.
+%DB convert to decibels
 %
 %   Usage: sig = db(sig)
 %

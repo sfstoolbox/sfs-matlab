@@ -1,8 +1,9 @@
 function [d,x0,xv,idx,delay_offset] = driving_function_imp_localwfs_vss(x0,xs,src,conf)
-%DRIVING_FUNCTION_IMP_LOCALWFS_VSS returns the driving signal d for local WFS
-%using focused sources as virtual secondary sources
+%DRIVING_FUNCTION_IMP_LOCALWFS_VSS driving signal for local WFS using focused
+%sources as virtual secondary sources
 %
-%   Usage: [d,x0,xv,idx,delay_offset] = driving_function_imp_localwfs_vss(x0,xs,src,conf)
+%   Usage: [d,x0,xv,idx,delay_offset] =
+%               driving_function_imp_localwfs_vss(x0,xs,src,conf)
 %
 %   Input parameters:
 %       x0          - position and direction of the secondary source / m [nx7]

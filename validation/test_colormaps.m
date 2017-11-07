@@ -9,9 +9,6 @@ function status = test_colormaps(modus)
 %
 %   Output parameters:
 %       status  - true or false
-%
-%   TEST_COLORMAPS(modus) creates plots for monochromatic and time-domain sound
-%   field in dB with different colormaps.
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

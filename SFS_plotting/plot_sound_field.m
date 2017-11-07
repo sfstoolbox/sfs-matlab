@@ -1,5 +1,5 @@
 function plot_sound_field(P,X,Y,Z,x0,conf)
-%PLOT_SOUND_FIELD plot the given sound field
+%PLOT_SOUND_FIELD plots a sound field
 %
 %   Usage: plot_sound_field(P,X,Y,Z,[x0],conf)
 %

@@ -1,5 +1,5 @@
 function phi = correct_azimuth(phi)
-%CORRECT_AZIMUTH ensures correct values for azimuth angles
+%CORRECT_AZIMUTH ensures azimuth angle between -pi and +pi-eps 
 %
 %   Usage: phi = correct_azimuth(phi)
 %
@@ -8,9 +8,6 @@ function phi = correct_azimuth(phi)
 %
 %   Output paramteres:
 %       phi     - angle between -pi and +pi-eps / rad
-%
-%   CORRECT_AZIMUTH(phi) returns a value for azimuth phi between
-%   -pi and +pi-eps.
 %
 %   See also: correct_elevation, get_ir
 

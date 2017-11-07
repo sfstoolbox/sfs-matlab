@@ -1,5 +1,5 @@
 function hpre = wfs_iir_prefilter(conf)
-%WFS_IIR_PREFILTER creates a minimum-phase IIR pre-equalization filter for WFS
+%WFS_IIR_PREFILTER minimum-phase IIR pre-equalization filter for WFS
 %
 %   Usage: hpre = wfs_iir_prefilter(conf)
 %

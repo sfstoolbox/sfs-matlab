@@ -1,5 +1,5 @@
 function varargout = sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
-%SOUND_FIELD_IMP_NFCHOA returns the sound field in time domain for NFC-HOA
+%SOUND_FIELD_IMP_NFCHOA sound field for NFC-HOA
 %
 %   Usage: [p,x,y,z,x0] = sound_field_imp_nfchoa(X,Y,Z,xs,src,t,conf)
 %

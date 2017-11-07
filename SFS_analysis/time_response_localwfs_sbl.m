@@ -1,6 +1,5 @@
 function varargout = time_response_localwfs_sbl(X,xs,src,conf)
-%TIME_RESPONSE_LOCALWFS_SBL simulates the time response for LOCAL WFS at the
-%given listener position
+%TIME_RESPONSE_LOCALWFS_SBL time response for local WFS
 %
 %   Usage: [s,t] = time_response_localwfs_sbl(X,xs,src,conf)
 %

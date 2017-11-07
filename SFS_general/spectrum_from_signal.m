@@ -1,5 +1,5 @@
 function varargout = spectrum_from_signal(signal,conf)
-%SPECTRUM_FROM_SIGNAL returns single-sided amplitude and phase spectra of signal
+%SPECTRUM_FROM_SIGNAL single-sided amplitude and phase spectra of signal
 %
 %   Usage: [amplitude,phase,f] = spectrum_from_signal(sig,conf)
 %

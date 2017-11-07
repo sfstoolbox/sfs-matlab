@@ -1,5 +1,5 @@
 function progress_bar(ii,nii,message)
-%PROGRESS_BAR show a progress of an iteration
+%PROGRESS_BAR show the progress of an iteration
 %
 %   Usage: progress_bar(ii,nii,[message])
 %
@@ -7,9 +7,6 @@ function progress_bar(ii,nii,message)
 %       ii      - current iteration
 %       nii     - number of iterations
 %       message - string printed before progress bar (default: 'Progress')
-%
-%   PROGRESS_BAR(ii,nii,message) displays the progress of a loop.
-%
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

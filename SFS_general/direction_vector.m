@@ -1,5 +1,5 @@
 function directions = direction_vector(x1,x2)
-%DIRECTION_VECTOR return unit vector(s) pointing from x1 to x2
+%DIRECTION_VECTOR unit vector(s) pointing from x1 to x2
 %
 %   Usage: n = direction_vector(x1,x2)
 %
@@ -9,9 +9,6 @@ function directions = direction_vector(x1,x2)
 %
 %   Output parameters:
 %       n   - unit vector(s) pointing in the direction(s) from x1 to x2
-%
-%   DIRECTION_VECTOR(x1,x2) calculates the unit vectors pointing from
-%   n-dimensional points x1 to the n-dimensional points x2.
 %
 %   See also: secondary_source_positions
 

@@ -1,5 +1,5 @@
 function D = driving_function_mono_wfs(x0,xs,src,f,conf)
-%DRIVING_FUNCTION_MONO_WFS returns the driving signal D for WFS
+%DRIVING_FUNCTION_MONO_WFS driving signal for WFS
 %
 %   Usage: D = driving_function_mono_wfs(x0,xs,src,f,conf)
 %
@@ -18,10 +18,6 @@ function D = driving_function_mono_wfs(x0,xs,src,f,conf)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
-%
-%   DRIVING_FUNCTION_MONO_WFS(x0,xs,f,src,conf) returns the driving signal for
-%   the given secondary source and desired source type (src) for WFS for the
-%   given frequency.
 %
 %   See also: plot_sound_field, sound_field_mono_wfs_25d,
 %             driving_function_imp_wfs_25d

@@ -10,8 +10,6 @@ function inoutsig = gaindb(inoutsig,gn)
 %   Output parameters:
 %       inoutsig    - given signal with new level
 %
-%   GAINDB(insig,gn) changes the level of the signal by gn dB.
-%
 %   See also: rms, db, setleveldb
 
 %*****************************************************************************

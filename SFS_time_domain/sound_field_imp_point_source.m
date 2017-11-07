@@ -1,5 +1,5 @@
 function varargout = sound_field_imp_point_source(X,Y,Z,xs,t,conf)
-%SOUND_FIELD_IMP_POINT_SOURCE simulates a sound field for a point source
+%SOUND_FIELD_IMP_POINT_SOURCE sound field of a point source
 %
 %   Usage: [p,x,y,z] = sound_field_imp_point_source(X,Y,Z,xs,t,conf)
 %

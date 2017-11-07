@@ -1,6 +1,5 @@
 function varargout = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
-%SOUND_FIELD_MONO_SDM_KX simulates the sound field of a given source for SDM
-%in the kx domain
+%SOUND_FIELD_MONO_SDM_KX sound field for SDM in the kx-domain
 %
 %   Usage: [P,x,y,z] = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
 %
@@ -25,9 +24,10 @@ function varargout = sound_field_mono_sdm_kx(X,Y,Z,xs,src,f,conf)
 %
 %   SOUND_FIELD_MONO_SDM_KX(X,Y,Z,xs,src,f,conf) simulates a monochromatic sound
 %   field of the given source type (src) synthesized with the spectral devision
-%   method (SDM). Note, that the linaer secondary sources are placed automatically
-%   on a line parrallel to the x-axis accordingly to conf.secondary_sources.center.
-%   The field can only be calculated in the xy-plane, meaning only Z=0 is allowed.
+%   method (SDM) for the frequency f. Note, that the linaer secondary sources
+%   are placed automatically on a line parrallel to the x-axis accordingly to
+%   conf.secondary_sources.center.  The field can only be calculated in the
+%   xy-plane, meaning only Z=0 is allowed.
 %
 %   To plot the result use:
 %   plot_sound_field(P,X,Y,Z,conf);

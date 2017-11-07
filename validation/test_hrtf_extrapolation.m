@@ -12,9 +12,6 @@ function status = test_hrtf_extrapolation(modus,hrtf_set)
 %
 %   Output parameters:
 %       status - true or false
-%
-%   TEST_HRTF_EXTRAPOLATION(modus,hrtf_set) checks if the HRTF exrapolation works
-%   correctly.
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

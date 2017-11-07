@@ -1,6 +1,6 @@
 function varargout = sound_field_imp_localwfs_sbl(X,Y,Z,xs,src,t,conf)
-%SOUND_FIELD_IMP_LOCALWFS_SBL returns the sound field in time domain of an 
-%impulse
+%SOUND_FIELD_IMP_LOCALWFS_SBL sound field of local WFS using spatial bandwidth
+%limitation
 %
 %   Usage: [p,x,y,z,x0] = sound_field_imp_localwfs_sbl(X,Y,Z,xs,src,t,conf)
 %
@@ -23,9 +23,9 @@ function varargout = sound_field_imp_localwfs_sbl(X,Y,Z,xs,src,t,conf)
 %       z           - corresponding z values / m
 %       x0          - secondary sources / m
 %
-%   SOUND_FIELD_IMP_LOCALWFS(X,Y,Z,xs,src,t,conf) simulates a sound field of the
-%   given source type (src) synthesized with local wave field synthesis at the
-%   time t.
+%   SOUND_FIELD_IMP_LOCALWFS_SBL(X,Y,Z,xs,src,t,conf) simulates a sound field of
+%   the given source type (src) synthesized with local wave field synthesis
+%   using spatial bandwidth limitation at the time t.
 %
 %   To plot the result use:
 %   plot_sound_field(p,X,Y,Z,x0,conf);

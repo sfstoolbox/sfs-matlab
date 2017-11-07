@@ -1,6 +1,5 @@
 function D = driving_function_mono_nfchoa_pw(x0,nk,f,N,conf)
-%DRIVING_FUNCTION_MONO_NFCHOA_PW returns the driving signal D for a plane wave
-%in NFCHOA
+%DRIVING_FUNCTION_MONO_NFCHOA_PW driving signal for a plane wave in NFC-HOA
 %
 %   Usage: D = driving_function_mono_nfchoa_pw(x0,nk,f,N,conf)
 %
@@ -13,10 +12,6 @@ function D = driving_function_mono_nfchoa_pw(x0,nk,f,N,conf)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
-%
-%   DRIVING_FUNCTION_MONO_NFCHOA_PW(x0,nk,f,N,conf) returns NFCHOA driving
-%   signals for the given secondary sources, the virtual plane wave direction
-%   and the frequency f.
 %
 %   See also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_pw
 

@@ -14,8 +14,8 @@ function X = sofa_get_listener_position(sofa,coordinate_system)
 %   Output parameters:
 %       X                 - listener position
 %
-%   SOFA_GET_LISTENER_POSITION(sofa,coordinate_system) returns listener position X
-%   as defined in the given SOFA file or struct.
+%   SOFA_GET_LISTENER_POSITION(sofa,coordinate_system) returns listener position
+%   X as defined in the given SOFA file or struct.
 %
 %   See also: get_ir, sofa_get_header, sofa_get_listener_view
 

@@ -1,5 +1,5 @@
 function bool = ismonoinc(x)
-%ISMONOINC checks if the data of x are monotonic increasing
+%ISMONOINC true for monotonic increasing data
 %
 %   Usage: bool = ismonoinc(x)
 %
@@ -8,8 +8,6 @@ function bool = ismonoinc(x)
 %
 %   Output parameter:
 %       bool    - boolean value
-%
-%   ISMONOTONIC(x) checks if the data in vector x are monotonic increasing.
 %
 %   See also: intpol_ir
 

@@ -1,10 +1,9 @@
 function isargsecondarysource(varargin)
-%ISARGSECONDARYSOURCE tests if the given arg is a matrix containing secondary
-%   source positions and directions and return an error otherwise
+%ISARGSECONDARYSOURCE throws an error if not secondary sources
 %
 %   Usage: isargsecondarysource(args)
 %
-%   Input options:
+%   Input parameters:
 %       args        - list of args
 %
 %   ISARGSECONDARYSOURCE(args) tests if all given args are a matrix

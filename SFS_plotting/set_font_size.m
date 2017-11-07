@@ -3,11 +3,8 @@ function set_font_size(fontsize)
 %
 %   Usage: set_font_size(fontsize)
 %
-%   Input options:
+%   Input parameters:
 %       fontsize   - font size
-%
-%   SET_FONT_SIZE(fontsize) sets the font size of the active figure to the
-%   given size.
 %
 %   See also: set_font_type, print_png
 

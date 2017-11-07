@@ -13,8 +13,8 @@ function [phi,theta,r] = sofa_get_head_orientations(sofa,idx)
 %       theta  - head orientations in the median plane / rad
 %       r      - head orientations radii / m
 %
-%   SOFA_GET_HEAD_ORIENTATIONS(sofa,idx) returns head orientation [phi,theta,r] as
-%   defined in the given SOFA file or struct, specified by idx. If no idx is
+%   SOFA_GET_HEAD_ORIENTATIONS(sofa,idx) returns head orientation [phi,theta,r]
+%   as defined in the given SOFA file or struct, specified by idx. If no idx is
 %   specified, all head orientations are returned.
 %
 %   See also: get_ir, sofa_get_header, sofa_get_secondary_sources

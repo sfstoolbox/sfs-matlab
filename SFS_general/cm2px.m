@@ -3,13 +3,11 @@ function y = cm2px(x)
 %
 %   Usage: y = cm2px(x)
 %
-%   Input options:
+%   Input parameters:
 %       x     - input / cm
 %
-%   Output options:
+%   Output parameters:
 %       y     - output / px
-%
-%   CM2PX(x) returns the given value x in pixels.
 %
 %   See also: cm2in, px2in, px2cm, in2cm, in2px
 

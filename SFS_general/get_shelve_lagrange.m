@@ -1,5 +1,5 @@
 function H = get_shelve_lagrange(f,H,FlagSub,fSub,FlagAliasing,fAliasing,Bandwidth_in_Oct)
-%GET_SHELVE_LAGRANGE does an Lagrange interpolation towards shelving filter
+%GET_SHELVE_LAGRANGE Lagrange interpolation towards shelving filter
 %
 %   Usage: H = get_shelve_lagrange(f,H,FlagSub,fSub,FlagAliasing, ...
 %                                  fAliasing,Bandwidth_in_Oct)

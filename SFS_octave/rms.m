@@ -1,5 +1,5 @@
 function level = rms(sig,dim)
-%RMS Root-mean square level.
+%RMS root-mean square level
 %
 %   Usage: level = rms(sig,[dim])
 %
@@ -9,9 +9,6 @@ function level = rms(sig,dim)
 %
 %   Output parameters:
 %       level - rms level
-%
-%   RMS(sig,dim) calculates the root mean square level along the given
-%   dimension. Dimension defaults to 1, if non is provided.
 %
 %   See also: db
 

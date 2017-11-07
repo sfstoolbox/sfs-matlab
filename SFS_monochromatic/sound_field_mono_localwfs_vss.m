@@ -1,5 +1,6 @@
 function varargout = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf)
-%SOUND_FIELD_MONO_LOCALWFS_VSS simulates a sound field for local WFS
+%SOUND_FIELD_MONO_LOCALWFS_VSS sound field of local WFS using virtual secondary
+%sources
 %
 %   Usage: [P,x,y,z,x0] = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf)
 %
@@ -23,9 +24,9 @@ function varargout = sound_field_mono_localwfs_vss(X,Y,Z,xs,src,f,conf)
 %       z           - corresponding z values / m
 %       x0          - active secondary sources / m
 %
-%   SOUND_FIELD_MONO_LOCALWFS_VSS(X,Y,Z,xs,src,f,conf) simulates a
-%   monochromatic sound field for the given source type (src) synthesized with
-%   local wave field synthesis.
+%   SOUND_FIELD_MONO_LOCALWFS_VSS(X,Y,Z,xs,src,f,conf) simulates a monochromatic
+%   sound field of the given source type (src) synthesized with local wave field
+%   synthesis using virtual secondary sources for the frequency f.
 %
 %   To plot the result use:
 %   plot_sound_field(P,X,Y,Z,x0,conf);

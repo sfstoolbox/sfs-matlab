@@ -1,13 +1,10 @@
 function isargpositivescalar(varargin)
-%ISARGPOSITIVESCALAR tests if the given arg is a positive scalar
+%ISARGPOSITIVESCALAR throws an error if not a positive scalar
 %
 %   Usage: isargpositivescalar(arg1,arg2,...)
 %
-%   Input options:
+%   Input parameters:
 %       args        - list of args
-%
-%   ISARGPOSITIVESCALAR(args) tests if all given args are a positive
-%   scalar and returns an error otherwise.
 %
 %   See also: isargscalar, isargnegativescalar
 

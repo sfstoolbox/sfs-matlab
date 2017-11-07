@@ -1,5 +1,5 @@
 function to_be_implemented(mfile)
-%TO_BE_IMPLEMENTED indicates that the code had to be implemented
+%TO_BE_IMPLEMENTED throws an error indicating missing code
 %
 %   Usage: to_be_implemented([mfilename])
 %
@@ -7,9 +7,6 @@ function to_be_implemented(mfile)
 %       mfilename   - string containing the name of the calling m file.
 %                   NOTE: this variable is already available in all m files as
 %                   mfilename!
-%
-%   TO_BE_IMPLEMENTED(mfilename) results in an error that indicates the desired
-%   code functionality has to be implemented yet.
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

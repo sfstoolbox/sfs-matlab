@@ -1,5 +1,5 @@
 function sig = norm_signal(sig)
-%NORM_SIGNAL normalizes the signal to 1-eps
+%NORM_SIGNAL normalizes the signal to the range ]-1:1[
 %
 %   Usage: sig = norm_signal(sig)
 %
@@ -8,9 +8,6 @@ function sig = norm_signal(sig)
 %
 %   Output parameters:
 %       sig - audio signal normalized to -1<sig<1
-%
-%   NORM_SIGNAL(sig) normalizes the amplitude of the given signal to the range
-%   of ]-1:1[.
 %
 %   See also: auralize_ir
 

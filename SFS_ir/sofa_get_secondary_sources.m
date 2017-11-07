@@ -17,8 +17,8 @@ function [x0,nss] = sofa_get_secondary_sources(sofa,idx,coordinate_system)
 %       nss     - number of secondary sources
 %
 %   SOFA_GET_SECONDARY_SOURCES(sofa,idx,coordinate_system) returns secondary
-%   sources as defined in the given SOFA file or struct, specified by idx.
-%   If no idx is specified all secondary sources are returned. The coordinate
+%   sources as defined in the given SOFA file or struct, specified by idx.  If
+%   no idx is specified all secondary sources are returned. The coordinate
 %   system the position and direction of the secondary sources are specified in
 %   can be given by the string 'coordinate_system', 'cartesian' is assumed as
 %   default.

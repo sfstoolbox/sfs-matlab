@@ -3,13 +3,11 @@ function y = cm2in(x)
 %
 %   Usage: y = cm2in(x)
 %
-%   Input options:
+%   Input parameters:
 %       x     - input / cm
 %
-%   Output options:
+%   Output parameters:
 %       y     - output / inches
-%
-%   CM2IN(x) returns the given value x in inches.
 %
 %   See also: cm2px, px2in, px2cm, in2cm, in2px
 

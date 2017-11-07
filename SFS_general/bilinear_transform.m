@@ -1,5 +1,5 @@
 function [b,a] = bilinear_transform(sos,conf)
-%BILINEAR_TRANSFORM returns the second-order section as filter coefficients
+%BILINEAR_TRANSFORM second-order section as filter coefficients
 %
 %   Usage: [b,a] = bilinear_transform(sos,conf)
 %

@@ -1,5 +1,5 @@
 function [pm,delay_offset] = circexp_imp_pw(npw,Nce,xq,conf)
-%CIRCEXP_IMP_PW calculates the circular basis expansion of a plane wave
+%CIRCEXP_IMP_PW circular basis expansion of a plane wave in temporal domain
 %
 %   Usage: [pm,delay_offset] = circexp_imp_pw(npw,Nce,xq,conf)
 %
@@ -13,9 +13,6 @@ function [pm,delay_offset] = circexp_imp_pw(npw,Nce,xq,conf)
 %       pm            - regular circular expansion coefficients in time domain
 %                       for m = 0:Nce, [conf.N x Nce+1]
 %       delay_offset  - additional added delay, so you can correct it
-%
-%   CIRCEXP_IMP_PW(npw,Nce,xq,conf) returns the circular basis expansion of
-%   a plane wave.
 %
 %   See also: circexp_imp_ps
 

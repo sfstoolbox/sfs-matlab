@@ -1,13 +1,10 @@
 function isargvector(varargin)
-%ISARGVECTOR tests if the given arg is a vector and returns an error otherwise
+%ISARGVECTOR throws an error if not a vector
 %
 %   Usage: isargvector(args)
 %
-%   Input options:
+%   Input parameters:
 %       args        - list of args
-%
-%   ISARGVECTOR(args) tests if all given args are a vector and returns
-%   an error otherwise.
 %
 %   See also: isargscalar, isargmatrix
 

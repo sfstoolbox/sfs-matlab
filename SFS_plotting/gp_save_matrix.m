@@ -1,5 +1,5 @@
 function gp_save_matrix(file,x,y,M)
-% GP_SAVE_MATRIX save x,y,M in the matrix binary format of Gnuplot
+%GP_SAVE_MATRIX saves x,y,M in the matrix binary format of Gnuplot
 %
 %   Usage: gp_save_matrix(file,x,y,M)
 %

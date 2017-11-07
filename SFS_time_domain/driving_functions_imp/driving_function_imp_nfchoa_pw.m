@@ -1,6 +1,6 @@
 function [sos,g] = driving_function_imp_nfchoa_pw(N,R,conf)
-%DRIVING_FUNCTION_IMP_NFCHOA_PW calculates the second-order section
-%representation for a virtual plane wave in NFC-HOA
+%DRIVING_FUNCTION_IMP_NFCHOA_PW second-order section representation for a
+%plane wave in NFC-HOA
 %
 %   Usage: sos = driving_function_imp_nfchoa_pw(N,R,conf)
 %
@@ -13,11 +13,8 @@ function [sos,g] = driving_function_imp_nfchoa_pw(N,R,conf)
 %       sos     - second-order section representation
 %       g       - scalar gain factor
 %
-%   DRIVING_FUNCTION_IMP_NFCHOA_PW(N,R,conf) returns the second-order section
-%   representation for the NFC-HOA driving function for a virtual plane wave
-%   as source model.
-%
-%   See also: sound_field_imp, sound_field_imp_nfchoa, driving_function_imp_nfchoa
+%   See also: sound_field_imp, sound_field_imp_nfchoa,
+%       driving_function_imp_nfchoa
 %
 %   References:
 %       Spors, Kuscher, Ahrens (2011) - "Efficient realization of model-based

@@ -1,13 +1,10 @@
 function isargnumeric(varargin)
-%ISARGNUMERIC tests if the given arg is numeric and returns an error otherwise
+%ISARGNUMERIC throws an error if not numeric
 %
 %   Usage: isargnumeric(arg1,arg2,...)
 %
-%   Input options:
+%   Input parameters:
 %       args        - list of args
-%
-%   ISARGNUMRIC(args) tests if all given args are numeric and returns
-%   an error otherwise.
 %
 %   See also: isargscalar
 

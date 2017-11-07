@@ -1,5 +1,5 @@
 function varargout = sound_field_mono_sdm(X,Y,Z,xs,src,f,conf)
-%SOUND_FIELD_MONO_SDM simulates a sound field for SDM
+%SOUND_FIELD_MONO_SDM sound field for SDM
 %
 %   Usage: [P,x,y,z,x0] = sound_field_mono_sdm(X,Y,Z,xs,src,f,conf)
 %
@@ -25,7 +25,7 @@ function varargout = sound_field_mono_sdm(X,Y,Z,xs,src,f,conf)
 %
 %   SOUND_FIELD_MONO_SDM(X,Y,Z,xs,src,f,conf) simulates a monochromatic sound
 %   field for the given source type (src) synthesized with the spectral devision
-%   method (SDM).
+%   method (SDM) for the frequency f.
 %
 %   To plot the result use:
 %   plot_sound_field(P,X,Y,Z,x0,conf);

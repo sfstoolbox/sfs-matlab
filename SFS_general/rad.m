@@ -3,13 +3,11 @@ function phi = rad(phi)
 %
 %   Usage: phi = rad(phi)
 %
-%   Input options:
+%   Input parameters:
 %       phi     - angle, can be a scalar or matrix / degree
 %
-%   Output options:
+%   Output parameters:
 %       phi     - angle / rad
-%
-%   RAD(phi) returns the given angles phi in radians.
 %
 %   See also: deg
 

@@ -1,5 +1,5 @@
 function ir = compensate_headphone(ir,conf)
-%COMPENSATE_HEADPHONE applies a headphone compensation to the IR
+%COMPENSATE_HEADPHONE applies a headphone compensation to an impulse response
 %
 %   Usage: ir = compensate_headphone(ir,conf)
 %

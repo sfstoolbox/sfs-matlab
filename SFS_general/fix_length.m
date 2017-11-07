@@ -1,5 +1,5 @@
 function sig = fix_length(sig,N)
-%FIX_LENGTH pads zeros or removes entries from the signal according to length N
+%FIX_LENGTH pads zeros or removes entries from signal accroding to length N
 %
 %   Usage: sig = fix_length(sig,N)
 %

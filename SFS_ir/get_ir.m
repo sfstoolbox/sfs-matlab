@@ -1,5 +1,5 @@
 function ir = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
-%GET_IR returns an impulse response for the given apparent angle
+%GET_IR impulse response for the given apparent angle
 %
 %   Usage: ir = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %

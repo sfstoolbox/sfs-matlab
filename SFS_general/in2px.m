@@ -3,13 +3,11 @@ function y = in2px(x)
 %
 %   Usage: y = in2px(x)
 %
-%   Input options:
+%   Input parameters:
 %       x     - input / inches
 %
-%   Output options:
+%   Output parameters:
 %       y     - output / px
-%
-%   IN2PX(x) returns the given value x in pixel.
 %
 %   See also: in2cm, cm2px, cm2in, px2in, px2cm
 

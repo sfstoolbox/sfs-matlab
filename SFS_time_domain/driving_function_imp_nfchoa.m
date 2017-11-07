@@ -1,5 +1,5 @@
 function [d,dm,delay_offset] = driving_function_imp_nfchoa(x0,xs,src,conf)
-%DRIVING_FUNCTION_IMP_NFCHOA calculates the NFC-HOA driving function
+%DRIVING_FUNCTION_IMP_NFCHOA driving signal for NFC-HOA
 %
 %   Usage: [d,dm,delay_offset] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %
@@ -17,10 +17,6 @@ function [d,dm,delay_offset] = driving_function_imp_nfchoa(x0,xs,src,conf)
 %       dm           - matrix of driving funtion in spherical/circular domain
 %                      [NxM]
 %       delay_offset - delay add by driving function / s
-%
-%   DRIVING_FUNCTION_IMP_NFCHOA(x0,xs,src,conf) returns the
-%   driving function of NFC-HOA for the given source type and position,
-%   and loudspeaker positions.
 %
 %   See also: driving_function_imp_nfchoa_ps, sound_field_imp_nfchoa
 %

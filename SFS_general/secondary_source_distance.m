@@ -1,6 +1,5 @@
 function [dx0,dx0_single] = secondary_source_distance(x0,approx)
-%SECONDARY_SOURCE_DISTANCE calculates the average distance between the secondary
-%sources
+%SECONDARY_SOURCE_DISTANCE average distance between secondary sources
 %
 %   Usage: dx0 = secondary_source_distance(x0,[approx])
 %

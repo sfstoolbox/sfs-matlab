@@ -1,6 +1,6 @@
 function D = driving_function_mono_sdm_kx_pw(kx,nk,f,conf)
-%DRIVING_FUNCTION_MONO_SDM_KX_PW returns the driving signal D for a plane wave in
-%SDM in the kx domain
+%DRIVING_FUNCTION_MONO_SDM_KX_PW driving signal for a plane wave in SDM in
+%the kx-domain
 %
 %   Usage: D = driving_function_mono_sdm_kx_pw(kx,nk,f,conf)
 %
@@ -12,10 +12,6 @@ function D = driving_function_mono_sdm_kx_pw(kx,nk,f,conf)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
-%
-%   DRIVING_FUNCTION_MONO_SDM_KX_PW(kx,nk,f,conf) returns SDM driving signals
-%   for the given secondary sources, the virtual plane wave direction and the
-%   frequency f. The driving signal is calculated in the kx domain.
 %
 %   See also: driving_function_mono_sdm_kx, sound_field_mono_sdm_kx
 

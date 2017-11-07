@@ -1,6 +1,5 @@
 function varargout = freq_response_point_source(X,xs,conf)
-%FREQ_RESPONSE_WFS simulates the frequency response for a point source at the
-%given listener position
+%FREQ_RESPONSE_POINT_SOURCE frequency response of a point
 %
 %   Usage: [S,f] = freq_response_point_source(X,xs,conf)
 %

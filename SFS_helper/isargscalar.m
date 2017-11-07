@@ -1,12 +1,10 @@
 function isargscalar(varargin)
-%ISARGSCALAR tests if the given arg is a scalar and returns an error otherwise
+%ISARGSCALAR throws an error if not a scalar
+%
 %   Usage: isargscalar(arg1,arg2,...)
 %
-%   Input options:
+%   Input parameters:
 %       args        - list of args
-%
-%   ISARGSCALAR(args) tests if all given args are a scalar and returns
-%   an error otherwise.
 %
 %   See also: isargpositivescalar
 

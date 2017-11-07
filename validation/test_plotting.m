@@ -1,5 +1,5 @@
 function status = test_plotting(modus)
-%TEST_PLOT tests the correctness of test_plot()
+%TEST_PLOTTING tests the correctness of plot_sound_field()
 %
 %   Usage: status = test_plot(modus)
 %
@@ -9,9 +9,6 @@ function status = test_plotting(modus)
 %
 %   Output parameters:
 %       status  - true or false
-%
-%   TEST_PLOT(modus) creates plots for monochromatic and time-domain sound field
-%   with different dimensions and different grids.
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

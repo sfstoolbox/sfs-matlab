@@ -1,7 +1,5 @@
 function [diam,center] = secondary_source_diameter(conf)
-%SECONDARY_SOURCE_DIAMETER calculates the maximum distance
-% between the secondary sources (the diameter) and the center of the
-% smallest ball that contains the array.
+%SECONDARY_SOURCE_DIAMETER diameter and center of secondary sources
 %
 %   Usage: [diam,center] = secondary_source_diameter(conf)
 %

@@ -1,9 +1,12 @@
 function bool = iswindows()
-%ISWINDOWS  True if the operating system is Windows
+%ISWINDOWS true if the operating system is Windows
 %
 %   Usage: status = iswindows();
 %
-%   ISWINDOWS returns 1 if the operating system is Windows, otherwise 0
+%   Output parameters:
+%       status - boolean
+%
+%   See also: isoctave
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

@@ -1,6 +1,6 @@
 function varargout = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
-%SOUND_FIELD_MONO simulates a monofrequent sound field for the given driving
-%signals and secondary sources
+%SOUND_FIELD_MONO mono-frequent sound field for the given driving signals and
+%secondary sources
 %
 %   Usage: [P,x,y,z] = sound_field_mono(X,Y,Z,x0,src,D,f,conf)
 %

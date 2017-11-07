@@ -1,5 +1,5 @@
 function R = rotation_matrix(phi,dim,orientation)
-%ROTATION_MATRIX returns a 3D rotation matrix for the given angle and dimension
+%ROTATION_MATRIX 3D rotation matrix
 %
 %   Usage: R = rotation_matrix(phi,[dim,[orientation]])
 %

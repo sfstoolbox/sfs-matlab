@@ -1,10 +1,10 @@
 function xv = virtual_secondary_source_positions(x0,xs,src,conf)
-%VIRTUAL_SECONDARY_SOURCE_POSITIONS generates the positions and directions of a
+%VIRTUAL_SECONDARY_SOURCE_POSITIONS positions and directions of a
 %   virtual secondary source distribution
 %
 %   Usage: xv = virtual_secondary_source_positions(x0,xs,src,conf)
 %
-%   Input options:
+%   Input parameters:
 %       x0          - positions, directions and weights of real secondary
 %                     sources [nx7]
 %       xs          - position and for focused sources also direction of the
@@ -16,7 +16,7 @@ function xv = virtual_secondary_source_positions(x0,xs,src,conf)
 %                       'fs' - focused source (not supported, yet)
 %       conf        - configuration struct (see SFS_config)
 %
-%   Output options:
+%   Output parameters:
 %       xv          - virtual secondary source positions, directions and
 %                     weights / m
 %

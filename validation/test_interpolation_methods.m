@@ -10,10 +10,6 @@ function status = test_interpolation_methods(modus)
 %
 %   Output parameters:
 %       status  - true or false
-%
-%   TEST_INTERPOLATION_METHODS(modus) demonstrates the different interpolation
-%   methods in the interpolate_ir function for shifted Dirac impulses and for
-%   HRIRs of different directions
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

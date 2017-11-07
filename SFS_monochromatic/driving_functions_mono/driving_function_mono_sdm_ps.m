@@ -1,6 +1,5 @@
 function D = driving_function_mono_sdm_ps(x0,nk,f,conf)
-%DRIVING_FUNCTION_MONO_SDM_PS returns the driving signal D for a point source in
-%SDM
+%DRIVING_FUNCTION_MONO_SDM_PS driving signal for a point source in SDM
 %
 %   Usage: D = driving_function_mono_sdm_ps(x0,nk,f,conf)
 %
@@ -12,10 +11,6 @@ function D = driving_function_mono_sdm_ps(x0,nk,f,conf)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
-%
-%   DRIVING_FUNCTION_MONO_SDM_PS(x0,nk,f,conf) returns SDM driving signals
-%   for the given secondary sources, the virtual point source position and the
-%   frequency f.
 %
 %   See also: driving_function_mono_sdm
 

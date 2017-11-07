@@ -1,6 +1,6 @@
 function ir = ssr_generic_nfchoa(xs,src,conf)
-%SSR_GENERIC_NFCHOA generate an impulse response for the generic renderer of the
-%SoundScape Renderer
+%SSR_GENERIC_NFCHOA impulse response for the generic renderer of the SoundScape
+%Renderer
 %
 %   Usage: ir = ssr_generic_nfchoa(xs,src,conf)
 %
@@ -16,12 +16,11 @@ function ir = ssr_generic_nfchoa(xs,src,conf)
 %
 %   GENERIC_NFCHOA(xs,src,conf) calculates an impulse response for a virtual
 %   source at xs for the loudspeakers of a NFC-HOA array. Every loudspeaker of
-%   the array is represented by one column in the impulse response.
-%   For the generic renderer it is of importance to know what position the first
+%   the array is represented by one column in the impulse response.  For the
+%   generic renderer it is of importance to know what position the first
 %   loudspeaker of your array will have. For example, the included circular
 %   array has its first loudspeaker at phi=0deg which is on the x-axis. If you
 %   have another setup you have to provide it with conf.secondary_sources.x0.
-%
 %
 %   See also: generic_wfs, brs_nfchoa, driving_function_imp_nfchoa
 

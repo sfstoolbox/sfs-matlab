@@ -1,5 +1,5 @@
 function [ir,delay] = wfs_preequalization(ir,conf)
-%WFS_PREEQUALIZATION applies a pre-equalization filter for WFS
+%WFS_PREEQUALIZATION applies the pre-equalization filter for WFS
 %
 %   Usage: ir = wfs_preequalization(ir,conf)
 %
@@ -10,10 +10,6 @@ function [ir,delay] = wfs_preequalization(ir,conf)
 %   Output parameters:
 %       ir      - signal with applied pre-equalization
 %       delay   - additional delay added by pre-equalization / s
-%
-%
-%   WFS_PREEQUALIZATION(ir,conf) applies the pre-equalization filter for
-%   Wave Field Synthesis to the given impulse response.
 %
 %   See also: wfs_fir_prefilter, wfs_iir_prefilter, driving_function_imp_wfs
 

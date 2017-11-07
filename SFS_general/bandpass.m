@@ -1,5 +1,5 @@
 function sig =  bandpass(sig,flow,fhigh,conf)
-%BANDPASS filters a signal by a bandpass
+%BANDPASS applies a bandpass to a signal
 %
 %   Usage: sig = bandpass(sig,flow,fhigh,conf)
 %
@@ -11,9 +11,6 @@ function sig =  bandpass(sig,flow,fhigh,conf)
 %
 %   Output parameters:
 %       sig    - filtered signal
-%
-%   BANDPASS(sig,flow,fhigh,conf) filters the given signal with a bandpass
-%   filter with cutoff frequencies of flow and fhigh.
 %
 %   See also: sound_field_imp_wfs
 

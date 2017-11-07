@@ -1,5 +1,5 @@
 function varargout = sound_field_imp_plane_wave(X,Y,Z,xs,t,conf)
-%SOUND_FIELD_IMP_PLANE_WAVE simulates a sound field of a plane wave
+%SOUND_FIELD_IMP_PLANE_WAVE sound field of a plane wave
 %
 %   Usage: [p,x,y,z] = sound_field_imp_plane_wave(X,Y,Z,xs,t,conf)
 %

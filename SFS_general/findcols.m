@@ -1,5 +1,5 @@
 function k = findcols(A,b)
-%FINDCOLS finds indices of a given column within a matrix.
+%FINDCOLS finds a column within a matrix.
 %
 %   Usage: idx = findcols(A,b)
 %

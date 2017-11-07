@@ -10,9 +10,6 @@ function out = sphbesselj(nu,z)
 %   Output parameters:
 %       out - value of bessel function at point z
 %
-%   SPHBESSELJ(nu,z) spherical bessel function of order nu, frist type, and
-%   argument z
-%
 %   See also: sphbesselh, sphbessely
 
 %*****************************************************************************

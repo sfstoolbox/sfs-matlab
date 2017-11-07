@@ -1,5 +1,5 @@
 function generate_movie(outfile,directory,pattern)
-%GENERATE_MOVIE generates a movie from given png files
+%GENERATE_MOVIE movie from given png files
 %
 %   Usage: generate_movie(outfile,[[directory],pattern])
 %

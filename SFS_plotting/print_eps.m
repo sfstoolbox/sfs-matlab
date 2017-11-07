@@ -3,10 +3,8 @@ function print_eps(outfile)
 %
 %   Usage: print_eps(outfile)
 %
-%   Input options:
+%   Input parameters:
 %       outfile     - file name to store the figure
-%
-%   PRINT_EPS(outfile) prints the figure as eps file.
 %
 %   See also: plot_sound_field, print_png
 

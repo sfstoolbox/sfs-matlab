@@ -1,14 +1,10 @@
 function isargxs(varargin)
-%ISARGXS tests if the given args are a [1x3] and/or [1x6] vector and returns
-%an error otherwise
+%ISARGXS throws an error if not a [1x3] and/or [1x6] vector
 %
 %   Usage: isargxs(args)
 %
-%   Input options:
+%   Input parameters:
 %       args        - list of args
-%
-%   ISARGXS(args) tests if all given args are a [1x3] and/or [1x6]  vectors and
-%   returns an error otherwise.
 %
 %   See also: isargscalar, isargvector, isargposition
 

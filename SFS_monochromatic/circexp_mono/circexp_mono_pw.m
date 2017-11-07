@@ -1,5 +1,5 @@
 function Pm = circexp_mono_pw(npw,Nce,f,xq,conf)
-%CIRCEXP_MONO_PW calculates the circular basis expansion of a plane wave
+%CIRCEXP_MONO_PW circular basis expansion of a mono-freqeunt plane wave
 %
 %   Usage: Pm = circexp_mono_pw(npw,Nce,xq,conf)
 %
@@ -13,9 +13,6 @@ function Pm = circexp_mono_pw(npw,Nce,f,xq,conf)
 %   Output parameters:
 %       Pm      - regular circular expansion coefficients
 %                 for m = 0:Nce, [1 x Nce+1]
-%
-%   CIRCEXP_MONO_PW(npw,Nce,xq,conf) returns the circular basis expansion of
-%   a plane wave.
 %
 %   See also: circexp_mono_ps
 

@@ -1,13 +1,10 @@
 function isargdir(varargin)
-%ISARGDIR tests if the given arg is a directory
+%ISARGDIR throws an error if not a directory
 %
 %   Usage: isargdirectory(arg1,arg2,...)
 %
-%   Input options:
+%   Input parameters:
 %       args        - variable number of args
-%
-%   ISARGDIR(args) tests if all given args are a directory and
-%   returns an error otherwise.
 %
 %   See also: isargfile
 

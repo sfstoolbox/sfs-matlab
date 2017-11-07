@@ -1,6 +1,5 @@
 function M = nfchoa_order(nls,conf)
-%NFCHOA_ORDER returns the maximum order for the spherical harmonics for the
-%given number of secondary sources
+%NFCHOA_ORDER maximum order of spatial band-limited NFC-HOA
 %
 %   Usage: M = nfchoa_order(nls,conf)
 %

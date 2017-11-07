@@ -3,10 +3,8 @@ function print_png(outfile)
 %
 %   Usage: print_png(outfile)
 %
-%   Input options:
+%   Input parameters:
 %       outfile     - file name to store the figure
-%
-%   PRINT_EPS(outfile) plots the last figure as an eps file to outfile.
 %
 %   See also: plot_sound_field, print_png
 

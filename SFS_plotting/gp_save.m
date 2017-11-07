@@ -1,5 +1,5 @@
 function gp_save(file,data,header)
-% GP_SAVE save x,y as a text file in a Gnuplot compatible format
+%GP_SAVE saves x,y as a text file in a Gnuplot compatible format
 %
 %   Usage: gp_save(file,data,[header])
 %
@@ -7,9 +7,6 @@ function gp_save(file,data,header)
 %       file    - filename of the data file
 %       data    - data matrix
 %       header  - header comment added before the data
-%
-%   GP_SAVE(file,data,header) saves the values data in a text file in a
-%   format useable by Gnuplot
 %
 %   See also: gp_save_matrix
 

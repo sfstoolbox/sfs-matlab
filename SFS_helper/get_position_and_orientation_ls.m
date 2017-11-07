@@ -1,14 +1,13 @@
 function [xs,nxs] = get_position_and_orientation_ls(xs,conf);
-%GET_POSITION_AND_ORIENTATION_LS returns [nx3] position and [nx3] orientation
-%for a line source
+%GET_POSITION_AND_ORIENTATION_LS position and orientation for a line source
 %
 %   Usage: [xs,nxs] = get_position_and_orientation_ls(xs,conf);
 %
-%   Input options:
+%   Input parameters:
 %       xs          - combined position and orientation / m [nx3] or [nx6]
 %       args        - list of args
 %
-%   Output options:
+%   Output parameters:
 %       xs          - position of line source / m [nx3]
 %       nxs         - orientation of line source / m [nx3]
 %

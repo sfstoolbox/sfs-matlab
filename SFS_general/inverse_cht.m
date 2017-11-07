@@ -1,5 +1,5 @@
 function [A,Phi] = inverse_cht(Am,Nphi)
-%INVERSE_CHT computes the inverse circular harmonics transform (ICHT)
+%INVERSE_CHT inverse circular harmonics transform (ICHT)
 %
 %   Usage: [A,Phi] = inverse_cht(Am,[Nphi])
 %

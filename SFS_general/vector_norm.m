@@ -1,5 +1,5 @@
 function y = vector_norm(x,dim)
-%VECTOR_NORM calculates the norm for the rows/columns of a matrix
+%VECTOR_NORM norm for the rows/columns of a matrix
 %
 %   Usage: y = vector_norm(x,dim)
 %

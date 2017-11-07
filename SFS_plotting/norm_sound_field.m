@@ -3,11 +3,11 @@ function P = norm_sound_field(P,conf)
 %
 %   Usage: P = norm_sound_field(P,conf)
 %
-%   Input options:
+%   Input parameters:
 %       P       - sound field
 %       conf    - configuration struct (see SFS_config)
 %
-%   Output options:
+%   Output parameters:
 %       P       - normalized sound field
 %
 %   NORM_SOUND_FIELD(P,conf) normalizes the given sound field P. This depends on

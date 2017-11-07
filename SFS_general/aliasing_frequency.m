@@ -1,14 +1,13 @@
 function [fal,dx0] = aliasing_frequency(x0,conf)
-%ALIASING_FREQUENCY returns the aliasing frequency for the given secondary
-%sources
+%ALIASING_FREQUENCY aliasing frequency for the given secondary sources
 %
 %   Usage: [fal,dx0] = aliasing_frequency([x0],conf)
 %
-%   Input options:
+%   Input parameters:
 %       x0      - secondary sources / m
 %       conf    - configuration struct (see SFS_config)
 %
-%   Output options:
+%   Output parameters:
 %       fal     - aliasing frequency / Hz
 %       dx0     - mean distance between secondary sources / m
 %

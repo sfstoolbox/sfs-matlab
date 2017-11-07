@@ -1,5 +1,5 @@
 function bool = isodd(number)
-%ISODD returns true for odd integer
+%ISODD true for odd integer
 %
 %   Usage: bool = isodd(number)
 %
@@ -8,8 +8,6 @@ function bool = isodd(number)
 %
 %   Output parameters:
 %       bool    - true if the number is odd, false else
-%
-%   ISODD(number) checks if the given number is odd.
 %
 %   See also: iseven
 

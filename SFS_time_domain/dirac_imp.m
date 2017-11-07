@@ -1,12 +1,10 @@
 function pulse = dirac_imp()
-%DIRAC_IMP returns a pulse as stimulus for the imp driving functions
+%DIRAC_IMP returns a 1 sample long dirac pulse
 %
 %   Usage: pulse = dirac_imp()
 %
 %   Output parameters:
 %       pulse    - short pulse signal
-%
-%   DIRAC_IMP() returns a 1 sample long dirac pulse.
 %
 %   See also: hann_window, driving_function_imp_wfs, driving_function_imp_nfchoa
 

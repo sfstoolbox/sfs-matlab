@@ -1,6 +1,6 @@
 function [d,delay_offset] = driving_function_imp_localwfs_sbl_pw(x0,nk,conf)
-%DRIVING_FUNCTION_IMP_LOCALWFS_SBL_PW returns the driving signal for a plane
-%wave using local WFS with spatial bandwidth limitation
+%DRIVING_FUNCTION_IMP_LOCALWFS_SBL_PW driving signal for a plane wave using local
+%WFS with spatial bandwidth limitation
 %
 %   Usage: [d,delay_offset] = driving_function_imp_localwfs_sbl_pw(x0,nk,conf)
 %

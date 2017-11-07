@@ -1,5 +1,5 @@
 function [ir,x0] = ir_localwfs(X,head_orientation,xs,src,sofa,conf)
-%IR_LOCALWFS generates a binaural simulation of local WFS
+%IR_LOCALWFS binaural simulation of local WFS
 %
 %   Usage: [ir,x0] = ir_localwfs(X,head_orientation,xs,src,sofa,conf)
 %
@@ -19,7 +19,7 @@ function [ir,x0] = ir_localwfs(X,head_orientation,xs,src,sofa,conf)
 %       x0               - secondary sources / m
 %
 %   IR_LOCALWFS(X,head_orientation,xs,src,sofa,conf) calculates a binaural room
-%   impulse response for a virtual source at xs for a virtual LOCAL WFS array
+%   impulse response for a virtual source at xs for a virtual local WFS array
 %   and a listener located at X.
 %
 %   See also: ssr_brs_wfs, ir_point_source, auralize_ir

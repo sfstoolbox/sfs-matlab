@@ -4,12 +4,12 @@ function [x0,n0,w0] = rounded_box(t,ratio)
 %
 %   Usage: [x0,n0,w0] = rounded_box(t,ratio)
 %
-%   Input options:
+%   Input parameters:
 %       t      - parameter indicating position on the boundary [1 x n]
 %       ratio  - ratio between bending radius of the rounded corners and the 
 %                half edge length of the rectangular bounding box (0,1) 
 %
-%   Output options:
+%   Output parameters:
 %       x0     - positions [n x 3]
 %       n0     - unit vector for boundaries normal vector [n x 3]
 %       w0     - weights for integration [n x 1]
@@ -35,7 +35,7 @@ function [x0,n0,w0] = rounded_box(t,ratio)
 %   element. The weights are computed on the distance of neighboring elements
 %   ALONG THE BOUNDARY of the box.
 %
-% See also: secondary_source_positions
+%   See also: secondary_source_positions
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

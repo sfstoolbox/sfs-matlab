@@ -1,5 +1,5 @@
 function sofa = dummy_irs(nsamples,conf)
-% DUMMY_IRS creates a dummy dirac pulse impulse response set
+%DUMMY_IRS dirac pulse impulse response SOFA dataset
 %
 %   Usage: irs = dummy_irs([nsamples],conf)
 %

@@ -1,5 +1,5 @@
 function varargout = row_vector(varargin)
-%ROW_VECTOR transforms the given vector to a row vector
+%ROW_VECTOR returns the given vectors as row vectors
 %
 %   Usage: [x1,x2,...] = row_vector(x1,x2,...)
 %
@@ -8,9 +8,6 @@ function varargout = row_vector(varargin)
 %
 %   Output parameters:
 %       x1,x2,...  - input vectors as row vectors
-%
-%   ROW_VECTOR(x1,x2,...) returns the given vectors x1,x2,... as row
-%   vectors.
 %
 %   See also: column_vector
 

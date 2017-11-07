@@ -1,5 +1,5 @@
 function Pm = circexp_mono_ps(xs,Nce,f,xq,fhp,conf)
-%CIRCEXP_MONO_PS calculates the circular basis expansion of a point source
+%CIRCEXP_MONO_PS circular basis expansion of a mono-frequent point source
 %
 %   Usage: Pm = circexp_mono_ps(xs,Nce,f,xq,[fhp],conf)
 %
@@ -14,9 +14,6 @@ function Pm = circexp_mono_ps(xs,Nce,f,xq,fhp,conf)
 %   Output parameters:
 %       Pm      - regular circular expansion coefficients
 %                 for m = 0:Nce, [1 x Nce+1]
-%
-%   CIRCEXP_MONO_PS(xs,Nce,f,xq,fhp,conf) returns the circular basis expansion
-%   of a point source.
 %
 %   See also: circexp_mono_pw
 

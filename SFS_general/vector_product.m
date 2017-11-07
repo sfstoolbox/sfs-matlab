@@ -1,5 +1,5 @@
 function y = vector_product(x1,x2,dim)
-%VECTOR_PRODUCT calculates the scalar product for two vectors within matrices
+%VECTOR_PRODUCT scalar product for two vectors within matrices
 %
 %   Usage: y = vector_product(x1,x2,dim)
 %
@@ -10,9 +10,6 @@ function y = vector_product(x1,x2,dim)
 %
 %   Output parameter:
 %       y   - scalar product between the vectors [1 x m] or [n x 1]
-%
-%   VECTOR_PRODUCT(x1,x2,dim) calculates the scalar product between the vectors
-%   given within the matrices along the dimension dim.
 %
 %   See also: vector_norm
 

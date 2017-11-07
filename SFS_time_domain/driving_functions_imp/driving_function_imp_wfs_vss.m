@@ -1,5 +1,5 @@
 function [d,delay_offset] = driving_function_imp_wfs_vss(x0,xv,srcv,dv,conf)
-%DRIVING_FUNCTION_IMP_WFS_VSS returns the driving signal d for a given set of
+%DRIVING_FUNCTION_IMP_WFS_VSS driving signal for a given set of
 %virtual secondary sources and their corresponding driving signals
 %
 %   Usage: d = driving_function_imp_wfs_vss(x0,dv,xv,srcv,conf)

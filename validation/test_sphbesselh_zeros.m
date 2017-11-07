@@ -10,9 +10,6 @@ function status = test_sphbesselh_zeros(modus)
 %
 %   Output parameters:
 %       status  - true or false
-%
-%   TEST_SPHBESSELH_ZEROS(modus) creates plots showing the zeros of the
-%   spherical Hankel function as calculated by sphbesselh_zeros(order).
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

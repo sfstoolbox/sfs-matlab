@@ -1,5 +1,5 @@
 function [b,a] = thiran_filter(Norder,fdt)
-%THIRAN_FILTER computes Thiran's IIR allpass for Maximally Flat Group Delay
+%THIRAN_FILTER Thiran's IIR allpass for Maximally Flat Group Delay
 %
 %   Usage: [b,a] = thiran_filter(order,fdt)
 %

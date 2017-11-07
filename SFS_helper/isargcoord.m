@@ -1,9 +1,9 @@
 function isargcoord(varargin)
-%ISARGCOORD tests if the given arg is a point in an euclidian coordinate system
+%ISARGCOORD throws an error if not a point in an euclidian coordinate system
 %
 %   Usage: isargcoord(args)
 %
-%   Input options:
+%   Input parameters:
 %       args        - list of args
 %
 %   ISARGCOORD(args) tests if all given args are a point in an euclidian

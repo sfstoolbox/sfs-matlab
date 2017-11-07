@@ -11,10 +11,6 @@ function status = test_secondary_source_selection(modus)
 %
 %   Output parameters:
 %       status - true or false
-%
-%   TEST_SECONDARY_SOURCE_SELECTION(modus) checks if the secondary source
-%   selection needed for Wave Field Syntesis is implemented correctly in
-%   secondary_source_selection().
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

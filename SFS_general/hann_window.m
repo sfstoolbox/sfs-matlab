@@ -1,5 +1,5 @@
 function win = hann_window(onset,offset,nsamples)
-%HANN_WINDOW generates a Hann window with on and off ramp
+%HANN_WINDOW Hann window with on and off ramp
 %
 %   Usage: win = hann_window(onset,offset,nsamples)
 %

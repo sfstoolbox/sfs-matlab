@@ -1,5 +1,5 @@
 function [win,varargout] = modal_weighting(order,Ninv,conf)
-%MODAL_WEIGHTING computes weighting window for modal coefficients
+%MODAL_WEIGHTING weighting window for modal coefficients
 %
 %   Usage: [win,Win,Ang] = modal_weighting(order,[Ninv],conf)
 %

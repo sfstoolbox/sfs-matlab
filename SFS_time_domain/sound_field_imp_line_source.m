@@ -1,5 +1,5 @@
 function varargout = sound_field_imp_line_source(X,Y,Z,xs,t,conf)
-%SOUND_FIELD_IMP_LINE_SOURCE simulates a sound field for a line source
+%SOUND_FIELD_IMP_LINE_SOURCE sound field of a line source
 %
 %   Usage: [p,x,y,z] = sound_field_imp_line_source(X,Y,Z,xs,t,conf)
 %

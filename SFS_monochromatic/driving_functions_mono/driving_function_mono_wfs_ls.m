@@ -1,6 +1,5 @@
 function D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf)
-%DRIVING_FUNCTION_MONO_WFS_LS returns the driving signal D for a line source in
-%WFS
+%DRIVING_FUNCTION_MONO_WFS_LS driving signal for a line source in WFS
 %
 %   Usage: D = driving_function_mono_wfs_ls(x0,nx0,xs,nxs,f,conf)
 %

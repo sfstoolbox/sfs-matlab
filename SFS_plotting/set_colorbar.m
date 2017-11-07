@@ -3,7 +3,7 @@ function set_colorbar(conf)
 %
 %   Usage: set_colorbar(conf)
 %
-%   Input options:
+%   Input parameters:
 %       conf        - configuration struct (see SFS_config)
 %
 %   SET_COLORBAR(conf) draws a color bar on the figure and sets the map to the

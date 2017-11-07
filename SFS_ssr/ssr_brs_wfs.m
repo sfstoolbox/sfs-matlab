@@ -1,6 +1,6 @@
 function [brs,delay] = ssr_brs_wfs(X,phi,xs,src,irs,conf)
-%SSR_BRS_WFS generates a binaural room scanning (BRS) set for use with the
-%SoundScape Renderer
+%SSR_BRS_WFS binaural room scanning (BRS) set for use with the SoundScape
+%Renderer
 %
 %   Usage: [brs,delay] = ssr_brs_wfs(X,phi,xs,src,irs,conf)
 %

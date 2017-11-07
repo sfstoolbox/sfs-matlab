@@ -1,6 +1,5 @@
 function status = test_binaural_synthesis(modus)
-%TEST_BINAURAL_SYNTHESIS tests the correctness of the binaural synthesis
-%functions
+%TEST_BINAURAL_SYNTHESIS tests the binaural synthesis functions
 %
 %   Usage: status = test_binaural_synthesis(modus)
 %

@@ -1,5 +1,5 @@
 function outsig = signal_from_spectrum(amplitude,phase,f,conf)
-%SIGNAL_FROM_SPECTRUM creates time signal from single-sided spectrum
+%SIGNAL_FROM_SPECTRUM time signal from single-sided spectrum
 %
 %   Usage: outsig = signal_from_spectrum(amplitude,phase,f,conf)
 %

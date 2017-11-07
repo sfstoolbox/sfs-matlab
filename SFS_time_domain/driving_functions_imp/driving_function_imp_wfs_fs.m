@@ -1,6 +1,5 @@
 function [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs,conf)
-%DRIVING_FUNCTION_IMP_WFS_FS calculates the WFS weighting and delaying for a
-%focused source as source model
+%DRIVING_FUNCTION_IMP_WFS_FS weights and delays for a focused source in WFS
 %
 %   Usage: [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs,conf)
 %
@@ -13,9 +12,6 @@ function [delay,weight] = driving_function_imp_wfs_fs(x0,nx0,xs,conf)
 %   Output parameters:
 %       delay   - delay of the driving function / s
 %       weight  - weight (amplitude) of the driving function
-%
-%   DRIVING_FUNCTION_IMP_WFS_FS(x0,nx0,xs,conf) returns delays and weights for
-%   the WFS driving function for a focused source as source model.
 %
 %   See also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_fs
 %

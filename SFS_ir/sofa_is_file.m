@@ -1,5 +1,5 @@
 function boolean = sofa_is_file(sofa)
-%SOFA_CHECK returns 1 for a sofa file, 0 for a sofa struct or an error otherwise
+%SOFA_CHECK true for a sofa file, false for a sofa struct, throws an error else
 %
 %   Usage: number = sofa_check(sofa)
 %

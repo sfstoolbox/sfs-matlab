@@ -1,5 +1,5 @@
 function varargout = sound_field_mono_plane_wave(X,Y,Z,xs,f,conf)
-%SOUND_FIELD_MONO_PLANE_WAVE simulates a sound field of a plane wave
+%SOUND_FIELD_MONO_PLANE_WAVE sound field of a plane wave
 %
 %   Usage: [P,x,y,z] = sound_field_mono_plane_wave(X,Y,Z,xs,f,conf)
 %
@@ -18,7 +18,7 @@ function varargout = sound_field_mono_plane_wave(X,Y,Z,xs,f,conf)
 %       z           - corresponding z values / m
 %
 %   SOUND_FIELD_MONO_PLANE_WAVE(X,Y,Z,xs,f,conf) simulates a monochromatic sound
-%   field of a plane wave going in the direction xs.
+%   field of a plane wave going in the direction xs for the frequency f.
 %
 %   To plot the result use:
 %   plot_sound_field(P,X,Y,Z,conf);

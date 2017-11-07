@@ -1,5 +1,5 @@
 function path = get_sfs_path()
-%GET_SFS_PATH returns the base path of the SFS Toolbox
+%GET_SFS_PATH base path of the SFS Toolbox
 %
 %   Usage: path = get_sfs_path();
 %

@@ -1,5 +1,5 @@
 function varargout = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
-%SOUND_FIELD_IMP returns the sound field in time domain
+%SOUND_FIELD_IMP sound field in time domain
 %
 %   Usage: [p,x,y,z] = sound_field_imp(X,Y,Z,x0,src,d,t,conf)
 %

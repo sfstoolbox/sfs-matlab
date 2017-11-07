@@ -9,10 +9,6 @@ function status = test_driving_functions(modus)
 %
 %   Output parameters:
 %       status - true or false
-%
-%   TEST_DRIVING_FUNCTIONS(MODUS) checks if the functions, that calculates
-%   the driving functions working correctly. Therefore different sound
-%   fields are simulated.
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

@@ -3,13 +3,11 @@ function y = in2cm(x)
 %
 %   Usage: y = in2cm(x)
 %
-%   Input options:
+%   Input parameters:
 %       x     - input / inches
 %
-%   Output options:
+%   Output parameters:
 %       y     - output / cm
-%
-%   IN2CM(x) returns the given value x in centimeters.
 %
 %   See also: in2px, cm2px, cm2in, px2in, px2cm
 

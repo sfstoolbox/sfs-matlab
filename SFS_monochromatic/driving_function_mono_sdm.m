@@ -1,5 +1,5 @@
 function D = driving_function_mono_sdm(x0,xs,src,f,conf)
-%DRIVING_FUNCTION_MONO_SDM returns the driving signal D for SDM
+%DRIVING_FUNCTION_MONO_SDM driving signal for SDM
 %
 %   Usage: D = driving_function_mono_sdm(x0,xs,src,f,conf)
 %
@@ -17,10 +17,6 @@ function D = driving_function_mono_sdm(x0,xs,src,f,conf)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
-%
-%   DRIVING_FUNCTION_MONO_SDM(x0,xs,f,src,conf) returns the driving signal for
-%   the given secondary sources, desired source type (src), and frequency.
-%   To derive the driving signals the spectral division method (SDM) is used.
 %
 %   See also: plot_sound_field, sound_field_mono_sdm, driving_function_imp_sdm
 

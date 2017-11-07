@@ -1,5 +1,5 @@
 function [ir,x0,delay] = ir_wfs(X,head_orientation,xs,src,sofa,conf)
-%IR_WFS generates a binaural simulation of WFS
+%IR_WFS binaural simulation of WFS
 %
 %   Usage: [ir,x0,delay] = ir_wfs(X,head_orientation,xs,src,sofa,conf)
 %

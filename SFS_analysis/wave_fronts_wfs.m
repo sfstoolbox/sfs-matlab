@@ -1,6 +1,5 @@
 function varargout = wave_fronts_wfs(X,phi,xs,src,gnuplot,conf)
-%WAVE_FRONTS_WFS returns direction, amplitude and time of the single wave
-%   fronts for WFS
+%WAVE_FRONTS_WFS direction, amplitude and time of WFS wave fronts
 %
 %   Usage: [alpha,a,t] = wave_fronts_wfs(X,phi,xs,src,[gnuplot],conf)
 %

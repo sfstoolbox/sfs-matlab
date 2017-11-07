@@ -1,6 +1,5 @@
 function D = driving_function_mono_sdm_kx(kx,xs,src,f,conf)
-%DRIVING_FUNCTION_MONO_SDM_KX returns the driving signal D for SDM in the kx
-%domain
+%DRIVING_FUNCTION_MONO_SDM_KX driving signal for SDM in the kx-domain
 %
 %   Usage: D = driving_function_mono_sdm_kx(kx,xs,src,f,conf)
 %
@@ -18,11 +17,6 @@ function D = driving_function_mono_sdm_kx(kx,xs,src,f,conf)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
-%
-%   DRIVING_FUNCTION_MONO_SDM_KX(kx,xs,f,src,conf) returns the driving signal for
-%   the given secondary sources, desired source type (src), and frequency.
-%   To derive the driving signals the spectral division method (SDM) in the kx
-%   domain is used.
 %
 %   See also: plot_sound_field, sound_field_mono_sdm_kx
 

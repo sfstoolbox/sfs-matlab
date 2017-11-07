@@ -1,5 +1,5 @@
 function [pm,delay_offset] = circexp_imp_ps(xs,Nce,xq,fhp,conf)
-%CIRCEXP_IMP_PS calculates the circular basis expansion of a point source
+%CIRCEXP_IMP_PS circular basis expansion of a point source in temporal domain
 %
 %   Usage: [pm,delay_offset] = circexp_imp_ps(xs,Nce,xq,[fhp],conf)
 %
@@ -14,9 +14,6 @@ function [pm,delay_offset] = circexp_imp_ps(xs,Nce,xq,fhp,conf)
 %       pm            - regular circular expansion coefficients in time domain
 %                       for m = 0:Nce, [conf.N x Nce+1]
 %       delay_offset  - additional added delay, so you can correct it
-%
-%   CIRCEXP_IMP_PS(xs,Nce,xq,fhp,conf) returns the circular basis expansion of
-%   a point source.
 %
 %   See also: circexp_imp_pw
 

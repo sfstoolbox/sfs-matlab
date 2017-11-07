@@ -1,5 +1,5 @@
 function gp_save_loudspeakers(file,x0)
-% GP_SAVE_LOUDSPEAKERS save x0 as a text file in a Gnuplot compatible format
+%GP_SAVE_LOUDSPEAKERS saves x0 as a text file in a Gnuplot compatible format
 %
 %   Usage: gp_save_loudspeakers(file,x0)
 %

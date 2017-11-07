@@ -11,9 +11,6 @@ function out = sphbesselh(nu,k,z)
 %   Output parameters:
 %       out - value of Hankel function at point z
 %
-%   SPHBESSELH(nu,k,z) spherical Hankel function of order nu, kind k, and
-%   argument z
-%
 %   See also: sphbesselj, sphbessely
 
 %*****************************************************************************

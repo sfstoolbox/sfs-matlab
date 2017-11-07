@@ -3,11 +3,11 @@ function x0 = secondary_source_tapering(x0,conf)
 %
 %   Usage: x0 = secondary_source_tapering(x0,conf)
 %
-%   Input options:
+%   Input parameters:
 %       x0          - secondary sources / m
 %       conf        - configuration struct (see SFS_config)
 %
-%   Output options:
+%   Output parameters:
 %       x0          - secondary sources / m, containing the applied tapering
 %                     window in its weights in x0(:,7)
 %

@@ -1,6 +1,5 @@
 function D = driving_function_mono_sdm_pw(x0,nk,f,conf)
-%DRIVING_FUNCTION_MONO_SDM_PW returns the driving signal D for a plane wave in
-%SDM
+%DRIVING_FUNCTION_MONO_SDM_PW driving signal for a plane wave in SDM
 %
 %   Usage: D = driving_function_mono_sdm_pw(x0,nk,f,conf)
 %
@@ -12,10 +11,6 @@ function D = driving_function_mono_sdm_pw(x0,nk,f,conf)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
-%
-%   DRIVING_FUNCTION_MONO_SDM_PW(x0,nk,f,conf) returns SDM driving signals
-%   for the given secondary sources, the virtual plane wave direction and the
-%   frequency f.
 %
 %   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 

@@ -10,10 +10,6 @@ function status = test_interpolation_point_selection(modus)
 %
 %   Output parameters:
 %       status - true or false
-%
-%   TEST_SECONDARY_SOURCE_SELECTION(modus) checks if the grid point
-%   selection in findconvexcone for piecewise linear interpolation 
-%   is implemented correctly
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

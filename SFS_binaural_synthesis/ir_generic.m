@@ -1,6 +1,5 @@
 function ir = ir_generic(X,head_orientation,x0,d,sofa,conf)
-%IR_GENERIC generates driving signals including the impulse responses from the
-%secondary sources to the listener position
+%IR_GENERIC impulse response of secondary sources including driving signals
 %
 %   Usage: ir = ir_generic(X,head_orientation,x0,d,sofa,conf)
 %
@@ -18,7 +17,9 @@ function ir = ir_generic(X,head_orientation,x0,d,sofa,conf)
 %                          (nx2 matrix)
 %
 %   IR_GENERIC(X,head_orientation,x0,d,sofa,conf) calculates a binaural room
-%   impulse response for the given secondary sources and driving signals.
+%   impulse response using the provided sofa database for the sound travelling
+%   from the secondary sources to the listener position. In addition, the given
+%   driving signals d are incorporated.
 %
 %   See also: ir_wfs, ir_nfchoa, ir_point_source, auralize_ir
 

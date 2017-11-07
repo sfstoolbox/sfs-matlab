@@ -1,5 +1,5 @@
 function varargout = sound_field_mono_point_source(X,Y,Z,xs,f,conf)
-%SOUND_FIELD_MONO_POINT_SOURCE simulates a sound field for a point source
+%SOUND_FIELD_MONO_POINT_SOURCE sound field for a point source
 %
 %   Usage: [P,x,y,z] = sound_field_mono_point_source(X,Y,Z,xs,f,conf)
 %
@@ -18,7 +18,7 @@ function varargout = sound_field_mono_point_source(X,Y,Z,xs,f,conf)
 %       z           - corresponding z values / m
 %
 %   SOUND_FIELD_MONO_POINT_SOURCE(X,Y,Z,xs,f,conf) simulates a monochromatic sound
-%   field of a point source positioned at xs.
+%   field of a point source positioned at xs for the frequency f.
 %
 %   To plot the result use:
 %   plot_sound_field(P,X,Y,Z,conf);

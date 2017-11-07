@@ -1,5 +1,5 @@
 function short_ir = reduce_ir(ir,fs,nsamples,conf)
-%REDUCE_IR resamples and shortens a IR
+%REDUCE_IR resamples and shortens an impulse response
 %
 %   Usage: ir = reduce_ir(ir,fs,nsamples,conf)
 %

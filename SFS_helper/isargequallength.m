@@ -1,13 +1,10 @@
 function isargequallength(x1,varargin)
-%ISARGEQUALSIZE tests if the given arrays have the same size
+%ISARGEQUALSIZE throws an error if not the same length
 %
 %   Usage: isargequallength(x1,x2,...)
 %
-%   Input options:
+%   Input parameters:
 %       x1,x2,...   - matrices to test
-%
-%   ISARGEQUALLENGTH(x1,x2,...) tests if all given arigs have the same size.
-%   Reports an error otherwise.
 %
 %   See also: isargequalsize
 

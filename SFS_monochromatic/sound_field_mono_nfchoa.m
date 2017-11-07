@@ -1,5 +1,5 @@
 function varargout = sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf)
-%SOUND_FIELD_MONO_NFCHOA simulates a sound field for NFC-HOA
+%SOUND_FIELD_MONO_NFCHOA sound field for NFC-HOA
 %
 %   Usage: [P,x,y,z,x0] = sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf)
 %
@@ -24,7 +24,7 @@ function varargout = sound_field_mono_nfchoa(X,Y,Z,xs,src,f,conf)
 %
 %   SOUND_FIELD_MONO_NFCHOA(X,Y,Z,xs,src,f,conf) simulates a monochromatic sound
 %   field of the given source type (src) synthesized with near-field compensated
-%   higher order Ambisonics.
+%   higher order Ambisonics for the frequency f.
 %
 %   To plot the result use:
 %   plot_sound_field(P,X,Y,Z,x0,conf);

@@ -1,6 +1,5 @@
 function D = driving_function_mono_wfs_fs(x0,nx0,xs,f,conf)
-%DRIVING_FUNCTION_MONO_WFS_FS returns the driving signal D for a focused source
-%in WFS
+%DRIVING_FUNCTION_MONO_WFS_FS driving signal for a focused source in WFS
 %
 %   Usage: D = driving_function_mono_wfs_fs(x0,nx0,xs,f,[conf])
 %

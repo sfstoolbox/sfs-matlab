@@ -1,6 +1,6 @@
 function [d,delay_offset] = driving_function_imp_localwfs_sbl(x0,xs,src,conf)
-%DRIVING_FUNCTION_IMP_LOCALWFS_SBL returns the driving signal for local WFS
-%using spatial bandwidth limitation
+%DRIVING_FUNCTION_IMP_LOCALWFS_SBL driving signal for local WFS using spatial
+%bandwidth limitation
 %
 %   Usage: [d,delay_offset] = driving_function_imp_localwfs_sbl(x0,xs,src,conf)
 %

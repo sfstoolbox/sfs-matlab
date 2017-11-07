@@ -1,6 +1,5 @@
 function varargout = time_response_nfchoa(X,xs,src,conf)
-%TIME_RESPONSE_NFCHOA simulates the time response for NFC-HOA at the given
-%listener position
+%TIME_RESPONSE_NFCHOA time response for NFC-HOA
 %
 %   Usage: [s,t] = time_response_nfchoa(X,xs,src,conf)
 %

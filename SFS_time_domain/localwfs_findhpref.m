@@ -1,6 +1,5 @@
 function [hpreflow,hprefhigh] = localwfs_findhpref(X,phi,xs,src,conf)
-%LOCALWFS_FINDHPREF finds the frequency limits for the WFS pre-equalization
-%filter
+%LOCALWFS_FINDHPREF frequency limits for the WFS pre-equalization filter
 %
 %   Usage: [hpreflow, hprefhigh] = localwfs_findhpref(X,phi,xs,src,conf)
 %

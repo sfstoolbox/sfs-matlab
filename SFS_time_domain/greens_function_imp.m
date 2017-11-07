@@ -1,5 +1,5 @@
 function [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
-%GREENS_FUNCTION_IMP returns a Green's function in the time domain
+%GREENS_FUNCTION_IMP Green's function in the time domain
 %
 %   Usage: [g,t] = greens_function_imp(x,y,z,xs,src,t,conf)
 %

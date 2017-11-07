@@ -1,5 +1,5 @@
 function b = pm_filter(order,wpass,wstop)
-%PM_FILTER computes an FIR lowpass-filter using the Parks-McClellan Algorithm
+%PM_FILTER FIR lowpass-filter using the Parks-McClellan Algorithm
 %
 %   Usage: b = pm_filter(order,wpass,wstop)
 %

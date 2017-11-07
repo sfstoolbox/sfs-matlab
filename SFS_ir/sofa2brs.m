@@ -10,10 +10,10 @@ function brs = sofa2brs(sofa)
 %       brs     - brs data set
 %
 %   SOFA2BRS(sofa) converts a the given sofa file or struct into a brs set
-%   suitable for th SoundScape Renderer. The brs data set is a matrix
-%   containing the channels for all directions. As the SoundScape Renderer is
-%   currently only working in the horizontal plane, only impulse responses from
-%   the sofa data set are used with an elevation of 0.
+%   suitable for th SoundScape Renderer. The brs data set is a matrix containing
+%   the channels for all directions. As the SoundScape Renderer is currently
+%   only working in the horizontal plane, only impulse responses from the sofa
+%   data set are used with an elevation of 0.
 %
 %   See also: sofa_get_header, sofa_get_data, SOFAcalculateAPV
 

@@ -10,9 +10,6 @@ function status = test_spectrum_signal_conversion(modus)
 %
 %   Output parameters:
 %       status - true or false
-%
-%   test_spectrum_signal_conversion(modus) checks if spectrum_from_signal() and
-%   signal_from_spectrum() works correctly.
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

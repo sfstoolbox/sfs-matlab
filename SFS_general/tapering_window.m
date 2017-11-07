@@ -1,5 +1,5 @@
 function win = tapering_window(x0,conf)
-%TAPERING_WINDOW generates a tapering window for a loudspeaker array
+%TAPERING_WINDOW tapering window for secondary sources
 %
 %   Usage: win = tapering_window(x0,conf)
 %

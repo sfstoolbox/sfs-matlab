@@ -1,5 +1,6 @@
 function varargout = sound_field_mono_localwfs_sbl(X,Y,Z,xs,src,f,conf)
-%SOUND_FIELD_MONO_LOCALWFS_SBL returns the sound field local WFS
+%SOUND_FIELD_MONO_LOCALWFS_SBL sound field of local WFS using spatial bandwith
+%limitation
 %
 %   Usage: [P,x,y,z,x0] = sound_field_mono_localwfs_sbl(X,Y,Z,xs,src,f,conf)
 %
@@ -22,9 +23,9 @@ function varargout = sound_field_mono_localwfs_sbl(X,Y,Z,xs,src,f,conf)
 %       z           - corresponding z values / m
 %       x0          - secondary sources / m
 %
-%   SOUND_FIELD_MONO_LOCALWFS_SBL(X,Y,Z,xs,src,f,conf) simulates a sound field
-%   of the given source type (src) synthesized with local wave field synthesis 
-%   for the frequency f.
+%   SOUND_FIELD_MONO_LOCALWFS_SBL(X,Y,Z,xs,src,f,conf) simulates a monochromatic
+%   sound field of the given source type (src) synthesized with local wave field
+%   synthesis using spatial bandwidth limitation for the frequency f.
 %
 %   To plot the result use:
 %   plot_sound_field(P,X,Y,Z,x0,conf);

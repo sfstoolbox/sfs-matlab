@@ -1,6 +1,5 @@
 function brs = ssr_brs(X,phi,x0,d,irs,conf)
-%SSR_BRS generates a binaural room scanning (BRS) set for use with the
-%SoundScape Renderer
+%SSR_BRS binaural room scanning (BRS) set for use with the SoundScape Renderer
 %
 %   Usage: brs = ssr_brs(X,phi,x0,d,irs,conf)
 %
@@ -13,8 +12,8 @@ function brs = ssr_brs(X,phi,x0,d,irs,conf)
 %       conf    - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       brs     - conf.N x 2*nangles matrix containing all impulse responses (2
-%                 channels) for every angle of the BRS set
+%       brs     - conf.N x 2*nangles matrix containing all impulse responses
+%                 (2 channels) for every angle of the BRS set
 %
 %   SSR_BRS(X,phi,x0,d,irs,conf) prepares a BRS set for the given secondary
 %   sources and its driving signals for the given listener position.

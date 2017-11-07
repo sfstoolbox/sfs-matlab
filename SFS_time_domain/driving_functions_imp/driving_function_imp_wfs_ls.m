@@ -1,6 +1,5 @@
 function [delay,weight] = driving_function_imp_wfs_ls(x0,nx0,xs,conf)
-%DRIVING_FUNCTION_IMP_WFS_LS calculates the WFS weighting and delaying for a
-%line source as source model
+%DRIVING_FUNCTION_IMP_WFS_LS weights and delays for a line source in WFS
 %
 %   Usage: [delay,weight] = driving_function_imp_wfs_ls(x0,nx0,xs,conf)
 %

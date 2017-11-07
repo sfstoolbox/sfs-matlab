@@ -1,5 +1,5 @@
 function ir = ir_correct_distance(ir,ir_distance,r,conf)
-%IR_CORRECT_DISTANCE weights and delays the impulse reponse for a desired
+%IR_CORRECT_DISTANCE weights and delays an impulse reponse for a desired
 %distance
 %
 %   Usage: ir = ir_correct_distance(ir,ir_distance,r,conf)

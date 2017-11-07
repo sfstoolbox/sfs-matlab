@@ -1,13 +1,12 @@
 function x0 = secondary_source_positions(conf)
-%SECONDARY_SOURCE_POSITIONS generates the positions, directions, and weights of
-%   the secondary sources
+%SECONDARY_SOURCE_POSITIONS positions, directions, weights of secondary sources
 %
 %   Usage: x0 = secondary_source_positions(conf)
 %
-%   Input options:
+%   Input parameters:
 %       conf   - configuration struct (see SFS_config)
 %
-%   Output options:
+%   Output parameters:
 %       x0     - secondary source positions, directions and weights
 %                [x0 y0 z0 nx0 ny0 nz0 w] / m
 %

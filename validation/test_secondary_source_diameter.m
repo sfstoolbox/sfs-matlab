@@ -11,9 +11,6 @@ function status = test_secondary_source_diameter(modus)
 %
 %   Output parameters:
 %       status - true or false
-%
-%   TEST_SECONDARY_SOURCE_DIAMTERE(modus) checks if the function, that
-%   calculates the secondary source diameter and center is working correctly.
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

@@ -1,9 +1,9 @@
 function figsize(x,y,unit)
-%FIGSIZE changes the size of a figure
+%FIGSIZE size of a figure
 %
 %   Usage: figsize(x,y,unit)
 %
-%   Input options:
+%   Input parameters:
 %       x,y         - x,y size of the figure
 %       unit        - unit in which the size is given, can be one of the
 %                     following: 'cm', 'px'

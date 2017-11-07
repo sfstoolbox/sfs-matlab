@@ -10,11 +10,6 @@ function status = test_driving_functions_imp_with_delay(modus)
 %
 %   Output parameters:
 %       status - true or false
-%
-%   TEST_DRIVING_FUNCTIONS_IMP_WITH_DELAY(MODUS) checks if the functions,
-%   that calculates the WFS driving functions in time-domain work correctly
-%   for the setting conf.t0 = 'source'.
-%   Therefore different sound fields are simulated.
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

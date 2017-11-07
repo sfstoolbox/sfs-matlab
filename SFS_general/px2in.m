@@ -3,13 +3,11 @@ function y = px2in(x)
 %
 %   Usage: y = px2in(x)
 %
-%   Input options:
+%   Input parameters:
 %       x     - input / px
 %
-%   Output options:
+%   Output parameters:
 %       y     - output / inches
-%
-%   PX2IN(x) returns the given value x in inches.
 %
 %   See also: px2cm, in2cm, in2px, cm2px, cm2in
 

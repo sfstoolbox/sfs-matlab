@@ -11,9 +11,6 @@ function status = test_tapering_window(modus)
 %
 %   Output parameters:
 %       status - true or false
-%
-%   TEST_TAPERING_WINDOW(modus) checks if the tapering window applied to the
-%   secondary sources in Wave Field Synthesis is working.
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

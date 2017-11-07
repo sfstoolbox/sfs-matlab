@@ -1,9 +1,9 @@
 function [x0,idx] = secondary_source_selection(x0,xs,src)
-%SECONDARY_SOURCE_SELECTION selects which secondary sources are active
+%SECONDARY_SOURCE_SELECTION selects active secondary sources for WFS
 %
 %   Usage: [x0,idx] = secondary_source_selection(x0,xs,src)
 %
-%   Input options:
+%   Input parameters:
 %       x0          - secondary source positions, directions and weights / m [nx7]
 %       xs          - position and for focused sources also direction of the
 %                     desired source model / m [1x3] or [1x6] or [mx6]
@@ -15,17 +15,20 @@ function [x0,idx] = secondary_source_selection(x0,xs,src)
 %                       'fs'  - focused source
 %                       'vss' - distribution of focused sources for local WFS
 %
-%   Output options:
+%   Output parameters:
 %       x0          - secondary sources / m, containing only the active
 %                     ones [mx7]
 %       idx         - index of the selected sources from the original x0
 %                     matrix [mx1]
 %
 %   SECONDARY_SOURCE_SELECTION(x0,xs,src) returns only the active secondary
-%   sources for the given geometry and virtual source. In addition the index of
-%   the chosen secondary sources is returned.
+%   sources for the given geometry and virtual source in WFS. In addition the
+%   index of the chosen secondary sources is returned.
 %
 %   See also: secondary_source_positions, secondary_source_tapering
+%
+%   References:
+%       http://sfstoolbox.org
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

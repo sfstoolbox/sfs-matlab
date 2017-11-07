@@ -1,5 +1,5 @@
 function [idx,weights] = findnearestneighbour(A,b,N)
-%FINDNEARESTNEIGHBOUR finds the N nearest neighbours and weights (for N<=2)
+%FINDNEARESTNEIGHBOUR finds the N nearest neighbours
 %
 %   Usage: [idx,weights] = findnearestneighbour(A,b,N)
 %

@@ -1,13 +1,10 @@
 function isargstruct(varargin)
-%ISARGSTRUCT tests if the given arg is a struct and returns an error otherwise
+%ISARGSTRUCT throws an error if not a struct
 %
 %   Usage: isargstruct(arg1,arg2,...)
 %
-%   Input options:
+%   Input parameters:
 %       args        - list of args
-%
-%   ISARGSTRUCT(args) tests if all given args are a struct and returns
-%   an error otherwise.
 %
 %   See also: isargchar
 

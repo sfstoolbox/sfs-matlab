@@ -1,5 +1,5 @@
 function [x,y,header] = gp_load(file)
-%GP_LOAD load x,y from a text file
+%GP_LOAD loads x,y from a text file
 %
 %   Usage: [x,y,header] = gp_load(file)
 %

@@ -1,6 +1,5 @@
 function D = driving_function_mono_wfs_ps(x0,nx0,xs,f,conf)
-%DRIVING_FUNCTION_MONO_WFS_PS returns the driving signal D for a point source in
-%WFS
+%DRIVING_FUNCTION_MONO_WFS_PS driving signal for a point source in WFS
 %
 %   Usage: D = driving_function_mono_wfs_ps(x0,nx0,xs,f,conf)
 %
@@ -13,10 +12,6 @@ function D = driving_function_mono_wfs_ps(x0,nx0,xs,f,conf)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
-%
-%   DRIVING_FUNCTION_MONO_WFS_PS(x0,xs,f,src,conf) returns WFS driving signals
-%   for the given secondary sources, the virtual point source position and the
-%   frequency f.
 %
 %   See also: driving_function_mono_wfs, driving_function_imp_wfs_ps
 %

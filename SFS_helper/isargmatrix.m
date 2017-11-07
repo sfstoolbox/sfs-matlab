@@ -1,13 +1,10 @@
 function isargmatrix(varargin)
-%ISARGMATRIX tests if the given arg is a matrix and returns an error otherwise
+%ISARGMATRIX throws an error if not a matrix
 %
 %   Usage: isargmatrix(arg1,arg2,...)
 %
-%   Input options:
+%   Input parameters:
 %       args        - list of args
-%
-%   ISARGMATRIX(args) tests if all given args are a matrix and returns
-%   an error otherwise.
 %
 %   See also: isargvector, isargscalar
 

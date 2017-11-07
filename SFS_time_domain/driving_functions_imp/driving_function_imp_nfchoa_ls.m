@@ -1,6 +1,6 @@
 function [sos,g] = driving_function_imp_nfchoa_ls(N,R,r,conf)
-%DRIVING_FUNCTION_IMP_NFCHOA_LS calculates the second-order section
-%representation for a virtual line source in NFC-HOA
+%DRIVING_FUNCTION_IMP_NFCHOA_LS second-order section representation for a
+%line source in NFC-HOA
 %
 %   Usage: sos = driving_function_imp_nfchoa_ls(N,R,r,conf)
 %
@@ -14,11 +14,8 @@ function [sos,g] = driving_function_imp_nfchoa_ls(N,R,r,conf)
 %       sos     - second-order section representation
 %       g       - scalar gain factor
 %
-%   DRIVING_FUNCTION_IMP_NFCHOA_LS(N,R,r,conf) returns the second-order section
-%   representation for the NFC-HOA driving function for a virtual line source
-%   as source model.
-%
-%   See also: sound_field_imp, sound_field_imp_nfchoa, driving_function_imp_nfchoa
+%   See also: sound_field_imp, sound_field_imp_nfchoa,
+%       driving_function_imp_nfchoa
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

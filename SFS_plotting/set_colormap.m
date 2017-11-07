@@ -1,9 +1,9 @@
 function set_colormap(map)
-%SET_COLORMAP set the color of the color map
+%SET_COLORMAP sets the color of the color map
 %
 %   Usage: set_colormap(map)
 %
-%   Input options:
+%   Input parameters:
 %       map         - can be the real map (see help colormap) or one of the
 %                     following:
 %                       'default' - blue,white,red

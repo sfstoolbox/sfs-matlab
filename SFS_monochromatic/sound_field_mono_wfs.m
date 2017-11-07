@@ -1,5 +1,5 @@
 function varargout = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf)
-%SOUND_FIELD_MONO_WFS simulates a sound field for WFS
+%SOUND_FIELD_MONO_WFS sound field for WFS
 %
 %   Usage: [P,x,y,z,x0] = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf)
 %
@@ -24,7 +24,8 @@ function varargout = sound_field_mono_wfs(X,Y,Z,xs,src,f,conf)
 %       x0          - active secondary sources / m
 %
 %   SOUND_FIELD_MONO_WFS(X,Y,Z,xs,src,f,conf) simulates a monochromatic sound
-%   field for the given source type (src) synthesized with wave field synthesis.
+%   field for the given source type (src) synthesized with wave field synthesis
+%   for the frequency f.
 %
 %   To plot the result use:
 %   plot_sound_field(P,X,Y,Z,x0,conf);

@@ -1,5 +1,6 @@
 function varargout = sound_field_imp_localwfs_vss(X,Y,Z,xs,src,t,conf)
-%SOUND_FIELD_IMP_LOCALWFS returns the sound field in time domain of an impulse
+%SOUND_FIELD_IMP_LOCALWFS sound field of local WFS using virtual secondary
+%sources
 %
 %   Usage: [p,x,y,z,x0] = sound_field_imp_localwfs_vss(X,Y,Z,xs,src,t,conf)
 %
@@ -23,8 +24,8 @@ function varargout = sound_field_imp_localwfs_vss(X,Y,Z,xs,src,t,conf)
 %       x0          - secondary sources / m
 %
 %   SOUND_FIELD_IMP_LOCALWFS(X,Y,Z,xs,src,t,conf) simulates a sound field of the
-%   given source type (src) synthesized with local wave field synthesis at the
-%   time t.
+%   given source type (src) synthesized with local wave field synthesis using
+%   focused sources as virtual secondary sources at the time t.
 %
 %   To plot the result use:
 %   plot_sound_field(p,X,Y,Z,x0,conf);

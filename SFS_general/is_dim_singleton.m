@@ -1,5 +1,5 @@
 function bool = is_dim_singleton(varargin)
-%IS_DIM_SINGLETON returns true for a singleton dimension
+%IS_DIM_SINGLETON true for a singleton axis dimension
 %
 %   Usage: bool = is_dim_singleton(x1,x2,...)
 %
@@ -9,9 +9,6 @@ function bool = is_dim_singleton(varargin)
 %   Output parameters:
 %       bool      - array of logical indicating whether each input is a
 %                   singleton dimension
-%
-%   IS_DIM_SINGLETON(x1,x2,..) checks if we have a singleton dimension for any
-%   of the given x,y,z values.
 %
 %   See also: is_dim_custom, xyz_axes_selection, plot_sound_field
 

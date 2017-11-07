@@ -1,6 +1,5 @@
 function [delay,weight] = driving_function_imp_wfs_pw(x0,nx0,nk,conf)
-%DRIVING_FUNCTION_IMP_WFS_PW calculates the WFS weighting and delaying for a
-%plane wave as source model
+%DRIVING_FUNCTION_IMP_WFS_PW weights and delays for a plane wave in WFS
 %
 %   Usage: [delay,weight] = driving_function_imp_wfs_pw(x0,nx0,nk,conf);
 %
@@ -13,9 +12,6 @@ function [delay,weight] = driving_function_imp_wfs_pw(x0,nx0,nk,conf)
 %   Output parameters:
 %       delay   - delay of the driving function / s
 %       weight  - weight (amplitude) of the driving function
-%
-%   DRIVING_FUNCTION_IMP_WFS_PW(x0,nx0,nk,conf) returns delays and weights for
-%   the WFS driving function for plane wave as source model.
 %
 %   See also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_pw
 %

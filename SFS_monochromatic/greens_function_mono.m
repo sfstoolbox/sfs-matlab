@@ -1,5 +1,5 @@
 function G = greens_function_mono(x,y,z,xs,src,f,conf)
-%GREENS_FUNCTION_MONO returns a Green's function in the frequency domain
+%GREENS_FUNCTION_MONO Green's function in the frequency domain
 %
 %   Usage: G = greens_function_mono(x,y,z,xs,src,f,conf)
 %

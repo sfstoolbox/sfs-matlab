@@ -1,6 +1,5 @@
 function [z,p,k] = linkwitz_riley(n,wc,ftype,domain)
-%LINKWITZ_RILEY computes zero-poles-gain representation in z-domain (digital)
-%or Laplace-domain (analog) of the Linkwitz-Riley filter
+%LINKWITZ_RILEY zero-poles-gain representation of the Linkwitz-Riley filter
 %
 %   Usage: [z,p,k] = linkwitz_riley(n,wc,ftype,[domain])
 %

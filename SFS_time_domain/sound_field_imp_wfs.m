@@ -1,5 +1,5 @@
 function varargout = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf)
-%SOUND_FIELD_IMP_WFS returns the sound field in time domain of an impulse
+%SOUND_FIELD_IMP_WFS sound field for WFS
 %
 %   Usage: [p,x,y,z,x0] = sound_field_imp_wfs(X,Y,Z,xs,src,t,conf)
 %

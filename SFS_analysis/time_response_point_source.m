@@ -1,6 +1,5 @@
 function varargout = time_response_point_source(X,xs,conf)
-%TIME_RESPONSE_POINT_SOURCE simulates the time response for a point source at
-%the given listener position
+%TIME_RESPONSE_POINT_SOURCE time response of a point source
 %
 %   Usage: [s,t] = time_response_point_source(X,xs,conf)
 %

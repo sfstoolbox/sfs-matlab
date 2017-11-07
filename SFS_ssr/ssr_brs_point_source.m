@@ -1,6 +1,6 @@
 function brs = ssr_brs_point_source(X,phi,xs,irs,conf)
-%SSR_BRS_POINT_SOURCE generates a binaural room scanning (BRS) set for use with
-%the SoundScape Renderer
+%SSR_BRS_POINT_SOURCE binaural room scanning (BRS) set for use with the
+%SoundScape Renderer
 %
 %   Usage: brs = ssr_brs_point_source(X,phi,xs,irs,conf)
 %

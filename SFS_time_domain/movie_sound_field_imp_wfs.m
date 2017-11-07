@@ -1,5 +1,5 @@
 function movie_sound_field_imp_wfs(X,Y,Z,xs,src,outfile,conf)
-%MOVIE_SOUND_FIELD_IMP_WFS generates movie a WFS sound field
+%MOVIE_SOUND_FIELD_IMP_WFS movie a WFS sound field
 %
 %   Usage: movie_sound_field_imp_wfs(X,Y,Z,xs,src,outfile,conf)
 %

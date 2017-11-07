@@ -1,6 +1,5 @@
 function [d,delay_offset] = driving_function_imp_wfs_pwd(x0,ppwd,xq,conf)
-%DRIVING_FUNCTION_IMP_WFS_PWD returns the WFS driving signal for a plane wave 
-%expansion
+%DRIVING_FUNCTION_IMP_WFS_PWD driving signal for a plane wave expansion in WFS
 %
 %   Usage: [d,delay_offset] = driving_function_imp_wfs_pwd(x0,ppwd,[xq],conf)
 %

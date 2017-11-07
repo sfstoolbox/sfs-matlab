@@ -1,13 +1,10 @@
 function isargfile(varargin)
-%ISARGFILE tests if the given arg is a file and returns an error otherwise
+%ISARGFILE throws an error if not a file
 %
 %   Usage: isargfile(arg1,arg2,...)
 %
-%   Input options:
+%   Input parameters:
 %       args        - list of args
-%
-%   ISARGFILE(args) tests if all given args are a file and returns
-%   an error otherwise.
 %
 %   See also: isargdir
 

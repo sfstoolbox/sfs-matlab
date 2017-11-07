@@ -1,6 +1,6 @@
 function D = driving_function_mono_localwfs_sbl_pw(x0,nk,f,conf)
-%DRIVING_FUNCTION_MONO_LOCALWFS_SBL_PW returns the driving signal for a plane
-%wave using local WFS with spatial bandwidth limitation
+%DRIVING_FUNCTION_MONO_LOCALWFS_SBL_PW driving signal for a plane wave using
+%local WFS with spatial bandwidth limitation
 %
 %   Usage: D = driving_function_mono_localwfs_sbl_pw(x0,nk,f,conf)
 %

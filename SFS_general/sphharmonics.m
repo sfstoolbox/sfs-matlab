@@ -1,5 +1,5 @@
 function [ Ynm ] = sphharmonics(n,m,theta,phi);
-% SPHHARMONICS spherical harmonics function
+% SPHHARMONICS spherical harmonics
 %
 %   Usage: Ynm = sphharmonics(n,m,theta,phi)
 %

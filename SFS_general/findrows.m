@@ -1,5 +1,5 @@
 function k = findrows(A,b)
-%FINDROWS finds indices of a given row within a matrix.
+%FINDROWS finds a row vector within a matrix.
 %
 %   Usage: idx = findrows(A,b)
 %

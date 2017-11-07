@@ -1,5 +1,5 @@
 function [ Lnm ] = asslegendre(n,m,arg)
-%ASSLEGENDRE calculates associates Legendre function of degree n and order m
+%ASSLEGENDRE associates Legendre function of degree n and order m
 %
 %   Usage: Lnm = asslegendre(n,m,arg)
 %
@@ -10,9 +10,6 @@ function [ Lnm ] = asslegendre(n,m,arg)
 %
 %   Output parameters:
 %       Lnm   - associates Legendre function
-%
-%   ASSLEGENDRE(n,m,arg) calculates the associates Legendre function of degree
-%   n and order m for the values arg.
 %
 %   See also: sphharmonics, legendre
 

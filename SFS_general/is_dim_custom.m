@@ -1,5 +1,5 @@
 function bool = is_dim_custom(varargin)
-%IS_DIM_CUSTOM returns true for a custom grid, otherwise false
+%IS_DIM_CUSTOM true for a custom grid
 %
 %   Usage: bool = is_grid_custom(x1,x2,...)
 %

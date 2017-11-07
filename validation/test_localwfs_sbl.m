@@ -9,10 +9,6 @@ function status = test_localwfs_sbl(modus)
 %
 %   Output parameters:
 %       status  - true or false
-%
-%   TEST_LOCALWFS_SBL(modus) checks if the monochromatic and time-domain 
-%   LWFS-SBL driving functions are working. Different sound fields are 
-%   calculated and plotted for visual inspection.
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

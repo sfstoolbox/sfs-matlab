@@ -1,5 +1,5 @@
 function D = driving_function_mono_nfchoa(x0,xs,src,f,conf)
-%DRIVING_FUNCTION_MONO_NFCHOA returns the driving signal D for NFCHOA
+%DRIVING_FUNCTION_MONO_NFCHOA driving signal for NFC-HOA
 %
 %   Usage: D = driving_function_mono_nfchoa(x0,xs,src,f,conf)
 %
@@ -19,10 +19,6 @@ function D = driving_function_mono_nfchoa(x0,xs,src,f,conf)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
-%
-%   DRIVING_FUNCTION_MONO_NFCHOA(x0,xs,f,src,conf) returns the driving signal for
-%   the given secondary source and desired source type (src) for NFCHOA for the
-%   given frequency.
 %
 %   See also: plot_sound_field, sound_field_mono_nfchoa,
 %             driving_function_imp_nfchoa

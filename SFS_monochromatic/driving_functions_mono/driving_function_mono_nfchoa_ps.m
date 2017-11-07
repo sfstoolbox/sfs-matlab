@@ -1,6 +1,5 @@
 function D = driving_function_mono_nfchoa_ps(x0,xs,f,N,conf)
-%DRIVING_FUNCTION_MONO_NFCHOA_PS returns the driving signal D for a point source
-%in NFCHOA
+%DRIVING_FUNCTION_MONO_NFCHOA_PS driving signal for a point source in NFC-HOA
 %
 %   Usage: D = driving_function_mono_nfchoa_ps(x0,xs,f,N,conf)
 %
@@ -13,10 +12,6 @@ function D = driving_function_mono_nfchoa_ps(x0,xs,f,N,conf)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
-%
-%   DRIVING_FUNCTION_MONO_NFCHOA_PS(x0,xs,f,N,conf) returns NFCHOA driving
-%   signals for the given secondary sources, the virtual point source position
-%   and the frequency f.
 %
 %   See also: driving_function_mono_nfchoa, driving_function_imp_nfchoa_ps
 

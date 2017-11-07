@@ -1,14 +1,10 @@
 function isargposition(varargin)
-%ISARGPOSITION tests if the given arg is a [1x3] vector and returns an error
-%otherwise
+%ISARGPOSITION throws an error if not a [1x3] vector
 %
 %   Usage: isargposition(args)
 %
-%   Input options:
+%   Input parameters:
 %       args        - list of args
-%
-%   ISARGPOSITION(args) tests if all given args are [1x3] vectors and
-%   returns an error otherwise.
 %
 %   See also: isargscalar, isargvector, isargxs
 

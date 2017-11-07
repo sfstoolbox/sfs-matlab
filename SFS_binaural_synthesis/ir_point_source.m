@@ -1,5 +1,5 @@
 function ir = ir_point_source(X,head_orientation,xs,sofa,conf)
-%IR_POINT_SOURCE generates a binaural simulation of a point source
+%IR_POINT_SOURCE binaural simulation of a point source
 %
 %   Usage: ir = ir_point_source(X,head_orientation,xs,sofa,conf)
 %

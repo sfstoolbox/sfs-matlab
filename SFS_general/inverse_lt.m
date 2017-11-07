@@ -1,5 +1,5 @@
 function A = inverse_lt(Am,x)
-%INVERSE_LT computes the inverse Legendre transform (ILT)
+%INVERSE_LT inverse Legendre transform (ILT)
 %
 %   Usage: [A,mu] = inverse_lt(Am,Nx)
 %

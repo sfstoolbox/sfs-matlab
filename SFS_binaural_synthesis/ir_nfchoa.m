@@ -1,5 +1,5 @@
 function [ir,x0,delay] = ir_nfchoa(X,head_orientation,xs,src,sofa,conf)
-%IR_NFCHOA generates a binaural simulation of NFCHOA
+%IR_NFCHOA binaural simulation of NFCHOA
 %
 %   Usage: [ir,x0,delay] = ir_nfchoa(X,head_orientation,xs,src,sofa,conf)
 %

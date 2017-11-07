@@ -1,6 +1,5 @@
 function D = driving_function_mono_wfs_pwd(x0,Ppwd,f,xq,conf)
-%DRIVING_FUNCTION_IMP_WFS_PWD returns the WFS driving signal for a plane wave 
-%expansion
+%DRIVING_FUNCTION_IMP_WFS_PWD driving signal for a plane wave expansion in WFS
 %
 %   Usage: D = driving_function_mono_wfs_pwd(x0,Ppwd,f,[xq],conf)
 %

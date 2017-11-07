@@ -1,13 +1,10 @@
 function isargchar(varargin)
-%ISARGCHAR tests if the given arg is a char and returns an error otherwise
+%ISARGCHAR throws an error if not a char
 %
 %   Usage: isargstruct(arg1,arg2,...)
 %
-%   Input options:
+%   Input parameters:
 %       args        - list of args
-%
-%   ISARGCHAR(args) tests if all given args are a char and returns
-%   an error otherwise.
 %
 %   See also: isargstruct
 

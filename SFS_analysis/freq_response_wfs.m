@@ -1,6 +1,5 @@
 function varargout = freq_response_wfs(X,xs,src,conf)
-%FREQ_RESPONSE_WFS simulates the frequency response for WFS at the given
-%listener position
+%FREQ_RESPONSE_WFS frequency response for WFS
 %
 %   Usage: [S,f] = freq_response_wfs(X,xs,src,conf)
 %

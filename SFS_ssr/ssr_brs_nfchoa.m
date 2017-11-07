@@ -1,6 +1,6 @@
 function [brs,delay] = ssr_brs_nfchoa(X,phi,xs,src,irs,conf)
-%SSR_BRS_NFCHOA generates a binaural room scanning (BRS) set for use with the
-%SoundScape Renderer
+%SSR_BRS_NFCHOA binaural room scanning (BRS) set for use with the SoundScape
+%Renderer
 %
 %   Usage: [brs,delay] = ssr_brs_nfchoa(X,phi,xs,src,irs,conf)
 %

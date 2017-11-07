@@ -3,7 +3,7 @@ function draw_loudspeakers(x0,dimensions,conf)
 %
 %   Usage: draw_loudspeakers(x0,[dimensions],conf)
 %
-%   Input options:
+%   Input parameters:
 %       x0          - positions and directions of the loudspeakers / m
 %       dimensions  - dimension defining the plane in which the loudspeaker
 %                     symbol should be plotted. For example [1 1 0] corresponds

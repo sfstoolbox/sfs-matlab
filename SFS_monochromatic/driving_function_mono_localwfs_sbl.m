@@ -1,6 +1,6 @@
 function D = driving_function_mono_localwfs_sbl(x0,xs,src,f,conf)
-%DRIVING_FUNCTION_MONO_LOCALWFS_SBL returns the driving signal for local WFS
-%using spatial bandwidth limitation
+%DRIVING_FUNCTION_MONO_LOCALWFS_SBL driving signal for local WFS using spatial
+%bandwidth limitation
 %
 %   Usage: D = driving_function_mono_localwfs_sbl(x0,xs,src,f,conf)
 %

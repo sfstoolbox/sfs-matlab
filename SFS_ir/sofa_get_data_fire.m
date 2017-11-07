@@ -1,5 +1,5 @@
 function ir = sofa_get_data_fire(sofa,idxM,idxE)
-%SOFA_GET_DATA_FIRE returns impulse responses from a SOFA file or struct
+%SOFA_GET_DATA_FIRE returns a FIRE data matrix from a SOFA file or struct
 %
 %   Usage: ir = sofa_get_data_fire(sofa,[idxM],[idxE])
 %

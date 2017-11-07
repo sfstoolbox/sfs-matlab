@@ -1,6 +1,5 @@
 function varargout = time_response_wfs(X,xs,src,conf)
-%TIME_RESPONSE_WFS simulates the time response for WFS at the given
-%listener position
+%TIME_RESPONSE_WFS time response for WFS
 %
 %   Usage: [s,t] = time_response_wfs(X,xs,src,conf)
 %

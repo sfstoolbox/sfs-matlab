@@ -1,5 +1,5 @@
 function b = lagrange_filter(Norder,fdt)
-%LAGRANGE_FILTER computes Lagrange interpolation filter for fractional delays
+%LAGRANGE_FILTER Lagrange interpolation filter for fractional delays
 %
 %   Usage: b = lagrange_filter(order,fdt)
 %

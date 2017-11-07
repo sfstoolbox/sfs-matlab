@@ -1,5 +1,5 @@
 function [xx,yy,zz] = xyz_grid(X,Y,Z,conf)
-%XYZ_GRID returns a xyz-grid for the listening area
+%XYZ_GRID returns xyz-grid for the listening area
 %
 %   Usage: [xx,yy,zz] = xyz_grid(X,Y,Z,conf)
 %

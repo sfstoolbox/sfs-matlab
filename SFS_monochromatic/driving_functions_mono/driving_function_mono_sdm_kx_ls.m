@@ -1,6 +1,6 @@
 function D = driving_function_mono_sdm_kx_ls(kx,xs,f,conf)
-%DRIVING_FUNCTION_MONO_SDM_KX_LS returns the driving signal D for a line source in
-%SDM in the kx domain
+%DRIVING_FUNCTION_MONO_SDM_KX_LS driving signal for a line source in SDM in
+%the kx-domain
 %
 %   Usage: D = driving_function_mono_sdm_kx_ps(kx,xs,f,conf)
 %
@@ -12,10 +12,6 @@ function D = driving_function_mono_sdm_kx_ls(kx,xs,f,conf)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
-%
-%   DRIVING_FUNCTION_MONO_SDM_KX_LS(kx,xs,f,conf) returns SDM driving signals
-%   for the given secondary sources, the virtual line source position and the
-%   frequency f. The driving signal is calculated in the kx domain.
 %
 %   See also: driving_function_mono_sdm_kx
 

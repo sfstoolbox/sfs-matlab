@@ -1,5 +1,5 @@
 function hpre = wfs_fir_prefilter(conf)
-%WFS_FIR_PREFILTER creates a pre-equalization filter for WFS
+%WFS_FIR_PREFILTER pre-equalization filter for WFS
 %
 %   Usage: hpre = wfs_fir_prefilter(conf)
 %

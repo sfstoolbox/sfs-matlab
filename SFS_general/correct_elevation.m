@@ -1,5 +1,5 @@
 function delta = correct_elevation(delta)
-%CORRECT_ELEVATION ensures correct values for elevation angles
+%CORRECT_ELEVATION ensures elevation angle between -pi/2 and pi/2
 %
 %   Usage: delta = correct_elevation(delta)
 %
@@ -8,9 +8,6 @@ function delta = correct_elevation(delta)
 %
 %   Output paramteres:
 %       delta     - angle between -pi/2 and +pi/2 / rad
-%
-%   CORRECT_ELEVATION(delta) returns a value for elevation delta between
-%   -pi/2 and pi/2.
 %
 %   See also: correct_azimuth, get_ir
 

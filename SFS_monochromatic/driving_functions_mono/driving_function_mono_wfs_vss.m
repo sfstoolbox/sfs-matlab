@@ -1,6 +1,6 @@
 function D = driving_function_mono_wfs_vss(x0,xv,srcv,Dv,f,conf)
-%DRIVING_FUNCTION_MONO_WFS_VSS returns the driving signal D for a given set of
-%virtual secondary sources and their driving signals
+%DRIVING_FUNCTION_MONO_WFS_VSS driving signal for a given set of virtual
+%secondary sources and their driving signals
 %
 %   Usage: D = driving_function_mono_wfs_vss(x0,xv,srcv,Dv,f,conf)
 %

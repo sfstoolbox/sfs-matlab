@@ -3,10 +3,8 @@ function set_font_type(font)
 %
 %   Usage: set_font_type(font)
 %
-%   Input options:
+%   Input parameters:
 %       font   - font type name
-%
-%   SET_FONT_TYPE(font) sets the font of the active figure to the given type.
 %
 %   See also: set_font_size, print_png
 

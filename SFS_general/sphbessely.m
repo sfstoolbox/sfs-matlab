@@ -1,6 +1,5 @@
 function out = sphbessely(nu,z)
-% SPHBESSELY spherical bessel function of second kind, of order nu, and
-% argument z
+%SPHBESSELY spherical bessel function of second kind, of order nu
 %
 %   Usage: out = sphbesselj(nu,z)
 %
@@ -10,9 +9,6 @@ function out = sphbessely(nu,z)
 %
 %   Output parameters:
 %       out - value of bessel function at point z
-%
-%   SPHBESSELY(nu,z) spherical bessel function of order nu, frist type, and
-%   argument z
 %
 %   See also: sphbesselh, sphbesselj
 

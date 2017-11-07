@@ -1,6 +1,5 @@
 function D = driving_function_mono_sdm_fs(x0,nk,f,conf)
-%DRIVING_FUNCTION_MONO_SDM_FS returns the driving signal D for a focused source in
-%SDM
+%DRIVING_FUNCTION_MONO_SDM_FS driving signal for a focused source in SDM
 %
 %   Usage: D = driving_function_mono_sdm_fs(x0,nk,f,conf)
 %
@@ -12,10 +11,6 @@ function D = driving_function_mono_sdm_fs(x0,nk,f,conf)
 %
 %   Output parameters:
 %       D           - driving function signal [nx1]
-%
-%   DRIVING_FUNCTION_MONO_SDM_FS(x0,nk,f,conf) returns SDM driving signals
-%   for the given secondary sources, the virtual focused source position and the
-%   frequency f.
 %
 %   See also: driving_function_mono_sdm
 

@@ -1,6 +1,5 @@
 function varargout = freq_response_nfchoa(X,xs,src,conf)
-%FREQ_RESPONSE_NFCHOA simulates the frequency response for NFC-HOA at the given
-%listener position
+%FREQ_RESPONSE_NFCHOA frequency response for NFC-HOA
 %
 %   Usage: [S,f] = freq_response_nfchoa(X,xs,src,conf)
 %

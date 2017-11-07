@@ -1,5 +1,5 @@
 function [points,weights] = get_spherical_grid(number,conf)
-%GET_SPHERICAL_GRID returns grid points and weights
+%GET_SPHERICAL_GRID spherical grid points and weights
 %
 %   Usage: [points,weights] = get_spherical_grid(number,conf)
 %

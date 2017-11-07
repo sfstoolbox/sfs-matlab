@@ -1,6 +1,6 @@
 function [w] = weights_for_points_on_a_sphere_rectangle(phi,theta)
-%WEIGHTS_FOR_POINTS_ON_A_SPHERE_RECTANGLE returns the weights for a given
-% set of points on a sphere.
+%WEIGHTS_FOR_POINTS_ON_A_SPHERE_RECTANGLE weights for a given set of points
+%on a sphere.
 %
 %   Usage: [w] = weights_for_points_on_a_sphere_rectangle(phi,theta)
 %

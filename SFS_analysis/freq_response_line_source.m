@@ -1,6 +1,5 @@
 function varargout = freq_response_line_source(X,xs,conf)
-%FREQ_RESPONSE_WFS simulates the frequency response for a line source at the
-%given listener position
+%FREQ_RESPONSE_LINE_SOURCE frequency response of a line source
 %
 %   Usage: [S,f] = freq_response_line_source(X,xs,conf)
 %

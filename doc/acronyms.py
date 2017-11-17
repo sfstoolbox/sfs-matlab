@@ -7,7 +7,7 @@
 # Include this into your conf.py file with
 # from acronyms import rst_epilog 
 
-rst_epilog = """
+acronyms = """
 .. |BRIR|            replace:: :abbr:`BRIR (Binaural Room Impulse Response)`
 .. |BRS|             replace:: :abbr:`BRS (Binaural Room Scanning)`
 .. |FFT|             replace:: :abbr:`FFT (Fast Fourier Transform)`

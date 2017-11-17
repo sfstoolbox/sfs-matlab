@@ -48,10 +48,12 @@ pygments_style = 'trac'
 def setup(app):
     """Include custom theme files to sphinx HTML header"""
     app.add_stylesheet('css/abbr.css')
+    app.add_stylesheet('css/title.css')
 
 html_theme = "sphinx_rtd_theme"
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 html_static_path = ['_static']
+templates_path = ['_template']
 html_title = "SFS Toolbox"
 html_short_title = ""
 htmlhelp_basename = 'sfs-matlab'

@@ -1,0 +1,14 @@
+{% extends "!layout.html" %}
+{% block sidebartitle %}
+
+  <a href="{{ pathto(master_doc) }}"> {{ project }}</a>
+
+  {% include "searchbox.html" %}
+
+	<div class="rtd-nav">
+		<a href="http://sfstoolbox.org/">Theory</a>
+		<a class="active" href="http://matlab.sfstoolbox.org/">Matlab</a>
+		<a href="http://python.sfstoolbox.org/">Python</a>
+	</div>
+
+{% endblock %}

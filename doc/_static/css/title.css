@@ -1,0 +1,33 @@
+.wy-side-nav-search>a, .wy-side-nav-search .wy-dropdown>a {
+    font-family: "Roboto Slab","ff-tisa-web-pro","Georgia",Arial,sans-serif;
+    font-size: 200%;
+    margin-top: .222em;
+    margin-bottom: .202em;
+}
+.wy-side-nav-search {
+    padding: 0;
+}
+form#rtd-search-form {
+    margin-left: .809em;
+    margin-right: .809em;
+}
+.rtd-nav a {
+    float: left;
+    display: block;
+    width: 33.3%;
+    height: 100%;
+    padding-top: 7px;
+    color: white;
+}
+.rtd-nav {
+    overflow: hidden;
+    width: 100%;
+    height: 35px;
+    margin-top: 15px;
+}
+.rtd-nav a:hover {
+    background-color: #388bbd;
+}
+.rtd-nav a.active {
+    background-color: #388bbd;
+}

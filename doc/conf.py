@@ -21,7 +21,7 @@ extensions = [
         'sphinx.ext.mathjax',
         'sphinx.ext.viewcode',
 ]
-master_doc = 'contents'
+master_doc = 'index'
 source_suffix = '.rst'
 exclude_patterns = ['_build']
 # The full version, including alpha/beta/rc tags.

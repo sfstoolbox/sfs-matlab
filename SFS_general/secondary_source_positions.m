@@ -100,11 +100,11 @@ if strcmp('line',geometry) || strcmp('linear',geometry)
     %                       |
     %                       |
     %
-    x0 = zeros(nls,7);    
+    x0 = zeros(nls,7);
     x0(:,2) = X0(2);
     x0(:,3) = X0(3);
-    x0(:,5) = -1;  % Direction of secondary sources points in -y direction 
-    
+    x0(:,5) = -1;  % Direction of secondary sources points in -y direction
+
     u = linspace(-nls/2,nls/2,nls);
     du = nls/(nls-1);
     if isempty(conf.secondary_sources.grid) || ... 
@@ -112,26 +112,28 @@ if strcmp('line',geometry) || strcmp('linear',geometry)
         %          L
         % x0(u) = --- u + X0
         %         nls
-      
         x0(:,1) = X0(1) + u.*L/nls;
        	% Weight each secondary source by the inter-loudspeaker distance
         x0(:,7) = L./nls*du;  % dx = x0'(u)*du
     elseif strcmp(conf.secondary_sources.grid, 'logarithmic')
-        % 
+        % the distance between to loudspeakers increases exponentially
         %                  / |u|/u0  \
         % x0(u) = sgn(u).* |q      -1| + X0
         %                  \         / 
-        %
+        % with
         %  1/u0    x0(|u|+2) - x0(|u|+1) 
         % q     = ----------------------- = const.
         %           x0(|u|+1) - x0(|u|)
-        q = 2;
+        %
+        % Although q^(1/u0) could be subsumed under one variable,
+        % q and u0 have to be handled separately due to numerical issues.
+        q = 2;  % arbitrary choice
+        % ensures, that outer loudspeakers are at +-L/2
         u0 = nls/2.*log(q)./log(L/2+1);
-        
+
         x0(:,1) = X0(1) + sign(u).*(q.^abs(u./u0)-1);
         x0(:,7) = q.^abs(u/u0).*log(q)./u0.*du;  % dx = x0'(u)*du
-    end 
-    
+    end
 elseif strcmp('circle',geometry) || strcmp('circular',geometry)
     % === Circular array ===
     %

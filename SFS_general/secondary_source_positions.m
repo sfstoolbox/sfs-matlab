@@ -104,35 +104,45 @@ if strcmp('line',geometry) || strcmp('linear',geometry)
     x0(:,2) = X0(2);
     x0(:,3) = X0(3);
     x0(:,5) = -1;  % Direction of secondary sources points in -y direction
-
-    u = linspace(-nls/2,nls/2,nls);
-    du = nls/(nls-1);
-    if isempty(conf.secondary_sources.grid) || ... 
-        strcmp(conf.secondary_sources.grid, 'equally_spaced_points')
-        %          L
-        % x0(u) = --- u + X0
-        %         nls
-        x0(:,1) = X0(1) + u.*L/nls;
-       	% Weight each secondary source by the inter-loudspeaker distance
-        x0(:,7) = L./nls*du;  % dx = x0'(u)*du
+    
+    if isempty(conf.secondary_sources.grid) ...
+            || strcmp(conf.secondary_sources.grid, 'equally_spaced_points') ...
+            || ~isfield(conf.secondary_sources, 'logspread') ...
+            || isempty(conf.secondary_sources.logspread) ...
+            || conf.secondary_sources.logspread == 1.0
+        % equi-distantant sampling
+        x0(:,1) = X0(1) + linspace(-L/2,L/2,nls).';
+        % Weight each secondary source by the inter-loudspeaker distance
+        x0(:,7) = L./(nls-1);
     elseif strcmp(conf.secondary_sources.grid, 'logarithmic')
-        % the distance between to loudspeakers increases exponentially
-        %                  / |u|/u0  \
-        % x0(u) = sgn(u).* |q      -1| + X0
-        %                  \         / 
-        % with
-        %  1/u0    x0(|u|+2) - x0(|u|+1) 
-        % q     = ----------------------- = const.
-        %           x0(|u|+1) - x0(|u|)
+        % the distance between the loudspeakers grows exponentially
         %
-        % Although q^(1/u0) could be subsumed under one variable,
-        % q and u0 have to be handled separately due to numerical issues.
-        q = 2;  % arbitrary choice
-        % ensures, that outer loudspeakers are at +-L/2
-        u0 = nls/2.*log(q)./log(L/2+1);
+        %       L              exp(mu*|n|) + C
+        % x0 = --- * sgn(n) * ----------------- + X0
+        %       2               exp(mu*N) + C
+        %
+        % odd number of loudspeakers:
+        %   n = -N,...,N and N = (nls-1)/2.
+        %   C = -1
+        % even number of loudspeakers:
+        %   n = -N,...,-1,1,...,N and N = nls/2.
+        %   C = -0.5*(exp(mu)+1))
 
-        x0(:,1) = X0(1) + sign(u).*(q.^abs(u./u0)-1);
-        x0(:,7) = q.^abs(u/u0).*log(q)./u0.*du;  % dx = x0'(u)*du
+        N = floor(nls/2);
+        mu = log(conf.secondary_sources.logspread)./(N-1);
+        if mod(nls,2)  % for odd numbers
+            C = -1;
+            n = -N:N;
+        else  % for even numbers
+            C = -0.5*exp(mu) - 0.5;
+            n = [-N:-1,1:N];
+        end
+        a0 = L/2/(exp(mu.*N)+C);
+        x0(:,1) = sign(n).*(exp(mu.*abs(n))+C).*a0 + X0(1);
+        x0(:,7) = exp(mu.*abs(n)).*a0.*mu;
+    else
+        error(['%s: the given linear grid ("%s") is not available'], ...
+             upper(mfilename), conf.secondary_sources.grid);
     end
 elseif strcmp('circle',geometry) || strcmp('circular',geometry)
     % === Circular array ===

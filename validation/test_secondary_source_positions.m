@@ -280,8 +280,10 @@ for ii=1:size(scenarios)
     case 1
         % Graphical mode
         figure
-        title('Equi-distant linear loudspeaker array');
         draw_loudspeakers(x0,[1 1 0],conf);
+        title(scenarios{ii,1});
+        xlabel('x / m')
+        ylabel('y / m')
     case 2
         % Numerical mode (verbose)
         if ~all(eq(size(x0),size(x0_ref)))
@@ -290,7 +292,7 @@ for ii=1:size(scenarios)
             error('%s: wrong value at %s.',upper(mfilename), scenarios{ii,1});
         end
     otherwise
-        
+
         error(['%s: modus has to be 0 (numerical quiet), 1 (graphical), ', ...
             'or 2 (numerical).'],upper(mfilename));
     end

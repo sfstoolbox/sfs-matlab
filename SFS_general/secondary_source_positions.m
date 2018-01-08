@@ -105,16 +105,12 @@ if strcmp('line',geometry) || strcmp('linear',geometry)
     x0(:,3) = X0(3);
     x0(:,5) = -1;  % Direction of secondary sources points in -y direction
     
-    if isempty(conf.secondary_sources.grid) ...
-            || strcmp(conf.secondary_sources.grid, 'equally_spaced_points') ...
-            || ~isfield(conf.secondary_sources, 'logspread') ...
-            || isempty(conf.secondary_sources.logspread) ...
-            || conf.secondary_sources.logspread == 1.0
+    if conf.secondary_sources.logspread == 1.0
         % equi-distantant sampling
         x0(:,1) = X0(1) + linspace(-L/2,L/2,nls).';
         % Weight each secondary source by the inter-loudspeaker distance
         x0(:,7) = L./(nls-1);
-    elseif strcmp(conf.secondary_sources.grid, 'logarithmic')
+    else
         % the distance between the loudspeakers grows exponentially
         %
         %       L              exp(mu*|n|) + C
@@ -126,7 +122,7 @@ if strcmp('line',geometry) || strcmp('linear',geometry)
         %   C = -1
         % even number of loudspeakers:
         %   n = -N,...,-1,1,...,N and N = nls/2.
-        %   C = -0.5*(exp(mu)+1))
+        %   C = -0.5*(exp(mu)+1)
 
         N = floor(nls/2);
         mu = log(conf.secondary_sources.logspread)./(N-1);
@@ -140,9 +136,6 @@ if strcmp('line',geometry) || strcmp('linear',geometry)
         a0 = L/2/(exp(mu.*N)+C);
         x0(:,1) = sign(n).*(exp(mu.*abs(n))+C).*a0 + X0(1);
         x0(:,7) = exp(mu.*abs(n)).*a0.*mu;
-    else
-        error(['%s: the given linear grid ("%s") is not available'], ...
-             upper(mfilename), conf.secondary_sources.grid);
     end
 elseif strcmp('circle',geometry) || strcmp('circular',geometry)
     % === Circular array ===

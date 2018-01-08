@@ -99,14 +99,43 @@ if strcmp('line',geometry) || strcmp('linear',geometry)
     %                       |
     %                       |
     %
-    %% Positions of the secondary sources
-    x0(:,1) = X0(1) + linspace(-L/2,L/2,nls)';
-    x0(:,2) = X0(2) * ones(nls,1);
-    x0(:,3) = X0(3) * ones(nls,1);
-    % Direction of the secondary sources pointing to the -y direction
-    x0(:,4:6) = direction_vector(x0(:,1:3),x0(:,1:3)+repmat([0 -1 0],nls,1));
-    % Weight each secondary source by the inter-loudspeaker distance
-    x0(:,7) = L./(nls-1);
+    x0 = zeros(nls,7);
+    x0(:,2) = X0(2);
+    x0(:,3) = X0(3);
+    x0(:,5) = -1;  % Direction of secondary sources points in -y direction
+    
+    if conf.secondary_sources.logspread == 1.0
+        % equi-distantant sampling
+        x0(:,1) = X0(1) + linspace(-L/2,L/2,nls).';
+        % Weight each secondary source by the inter-loudspeaker distance
+        x0(:,7) = L./(nls-1);
+    else
+        % the distance between the loudspeakers grows exponentially
+        %
+        %       L              exp(mu*|n|) + C
+        % x0 = --- * sgn(n) * ----------------- + X0
+        %       2               exp(mu*N) + C
+        %
+        % odd number of loudspeakers:
+        %   n = -N,...,N and N = (nls-1)/2.
+        %   C = -1
+        % even number of loudspeakers:
+        %   n = -N,...,-1,1,...,N and N = nls/2.
+        %   C = -0.5*(exp(mu)+1)
+
+        N = floor(nls/2);
+        mu = log(conf.secondary_sources.logspread)./(N-1);
+        if mod(nls,2)  % for odd numbers
+            C = -1;
+            n = -N:N;
+        else  % for even numbers
+            C = -0.5*exp(mu) - 0.5;
+            n = [-N:-1,1:N];
+        end
+        a0 = L/2/(exp(mu.*N)+C);
+        x0(:,1) = sign(n).*(exp(mu.*abs(n))+C).*a0 + X0(1);
+        x0(:,7) = exp(mu.*abs(n)).*a0.*mu;
+    end
 elseif strcmp('circle',geometry) || strcmp('circular',geometry)
     % === Circular array ===
     %

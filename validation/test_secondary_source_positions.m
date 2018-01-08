@@ -53,7 +53,6 @@ narginchk(nargmin,nargmax);
 
 %% ===== Main ============================================================
 conf = SFS_config;
-conf.secondary_sources.size = 4;
 % reference values
 x0_linear_ref = [
    -2.0000         0         0         0    -1.0000         0        0.2
@@ -77,6 +76,24 @@ x0_linear_ref = [
     1.6000         0         0         0    -1.0000         0        0.2
     1.8000         0         0         0    -1.0000         0        0.2
     2.0000         0         0         0    -1.0000         0        0.2
+    ];
+x0_linear_log_pos_ref = [
+   -7.0000         0         0         0    -1.0000         0        8*log(2)
+   -3.0000         0         0         0    -1.0000         0        4*log(2)
+   -1.0000         0         0         0    -1.0000         0        2*log(2)
+         0         0         0         0    -1.0000         0        1*log(2)
+    1.0000         0         0         0    -1.0000         0        2*log(2)
+    3.0000         0         0         0    -1.0000         0        4*log(2)
+    7.0000         0         0         0    -1.0000         0        8*log(2)
+    ];
+x0_linear_log_neg_ref = [
+   -7.0000         0         0         0    -1.0000         0        1*log(2)
+   -6.0000         0         0         0    -1.0000         0        2*log(2)
+   -4.0000         0         0         0    -1.0000         0        4*log(2)
+         0         0         0         0    -1.0000         0        8*log(2)
+    4.0000         0         0         0    -1.0000         0        4*log(2)
+    6.0000         0         0         0    -1.0000         0        2*log(2)
+    7.0000         0         0         0    -1.0000         0        1*log(2)
     ];
 x0_circle_ref = [
    2.00000   0.00000   0.00000  -1.00000   0.00000   0.00000   0.1995
@@ -230,65 +247,51 @@ x0_box_ref = [
     2.0000   -2.2000         0         0    1.0000         0    0.2414
     ];
 
+% test scenarios
+scenarios = {
+    'Equi-distant linear loudspeaker array'	'linear'	21   4.0 1.0  x0_linear_ref
+    'Logarithmic linear loudspeaker array'  'linear'	 7  14.0 4.0  x0_linear_log_pos_ref
+    'Logarithmic linear loudspeaker array'  'linear'	 7  14.0 0.25 x0_linear_log_neg_ref
+    'Circular loudspeaker array'            'circle'    63   4.0 NaN  x0_circle_ref
+    'Box shaped loudspeaker array'          'box'       84   4.0 NaN  x0_box_ref
+    };
 
 %% ===== Test secondary source positions =================================
-% Calculate current values
-% linear array
-conf.secondary_sources.geometry = 'linear';
-conf.secondary_sources.number = 21;
-x0_linear = secondary_source_positions(conf);
-% circular array
-conf.secondary_sources.geometry = 'circle';
-conf.secondary_sources.number = 63;
-x0_circle = secondary_source_positions(conf);
-% box form array
-conf.secondary_sources.geometry = 'box';
-conf.secondary_sources.number = 84;
-x0_box = secondary_source_positions(conf);
+% Start testing
+for ii=1:size(scenarios)
 
-if modus==0
-    % Numerical mode (quiet)
-    if ~all(eq(size(x0_linear),size(x0_linear_ref))) || ...
-            ~all(eq(size(x0_circle),size(x0_circle_ref))) || ...
-            ~all(eq(size(x0_box),size(x0_box_ref))) || ...
-            ~all(abs(x0_linear(:)-x0_linear_ref(:))<1e-4) || ...
-            ~all(abs(x0_circle(:)-x0_circle_ref(:))<1e-4) || ...
-            ~all(abs(x0_box(:)-x0_box_ref(:))<1e-4)
-        return;
+    conf.secondary_sources.geometry = scenarios{ii,2};
+    conf.secondary_sources.number = scenarios{ii,3};
+    conf.secondary_sources.size = scenarios{ii,4};
+    conf.secondary_sources.logspread = scenarios{ii,5};
+    x0_ref = scenarios{ii,6};
+
+    x0 = secondary_source_positions(conf);
+    switch modus
+    case 0
+        % Numerical mode (quiet)
+        if ~all(eq(size(x0),size(x0_ref))) || ~all(abs(x0(:)-x0_ref(:))<1e-4)
+            return;
+        end
+    case 1
+        % Graphical mode
+        figure
+        draw_loudspeakers(x0,[1 1 0],conf);
+        title(scenarios{ii,1});
+        xlabel('x / m')
+        ylabel('y / m')
+    case 2
+        % Numerical mode (verbose)
+        if ~all(eq(size(x0),size(x0_ref)))
+            error('%s: wrong size of %s.',upper(mfilename), scenarios{ii,1});
+        elseif ~all(abs(x0(:)-x0_ref(:))<1e-4)
+            error('%s: wrong value at %s.',upper(mfilename), scenarios{ii,1});
+        end
+    otherwise
+
+        error(['%s: modus has to be 0 (numerical quiet), 1 (graphical), ', ...
+            'or 2 (numerical).'],upper(mfilename));
     end
-elseif modus==2
-    if ~all(eq(size(x0_linear),size(x0_linear_ref)))
-        error('%s: wrong size of linear array.',upper(mfilename));
-    elseif ~all(abs(x0_linear(:)-x0_linear_ref(:))<1e-4)
-        error('%s: wrong value at linear array.',upper(mfilename));
-    end
-    if ~all(eq(size(x0_circle),size(x0_circle_ref)))
-        error('%s: wrong size of circular array.',upper(mfilename));
-    elseif ~all(abs(x0_circle(:)-x0_circle_ref(:))<1e-4)
-        error('%s: wrong value at circular array.',upper(mfilename));
-    end
-    if ~all(eq(size(x0_box),size(x0_box_ref))) 
-        error('%s: wrong size of box shaped array.',upper(mfilename));
-    elseif ~all(abs(x0_box(:)-x0_box_ref(:))<1e-4)
-        error('%s: wrong value at box shaped array.',upper(mfilename));
-    end
-elseif modus==1
-    % Graphical mode
-    close all;
-    % draw results
-    figure
-    title('Linear loudspeaker array');
-    draw_loudspeakers(x0_linear,[1 1 0],conf);
-    figure
-    title('Circular loudspeaker array');
-    draw_loudspeakers(x0_circle,[1 1 0],conf);
-    figure
-    title('Box shape loudspeaker array');
-    draw_loudspeakers(x0_box,[1 1 0],conf);
-else
-    error(['%s: modus has to be 0 (numerical quiet), 1 (numerical), ', ...
-            'or 2 (graphical).'],upper(mfilename));
 end
-
 
 status = true;

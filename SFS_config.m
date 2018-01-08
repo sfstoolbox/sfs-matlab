@@ -255,7 +255,7 @@ conf.secondary_sources.corner_radius = 0.0; % / m
 % Or it could also be a SOFA struct or file name, in this case the positions are
 % extracted from the provided SOFA file.
 conf.secondary_sources.x0 = []; % / m
-% Grid for a spherical array. Available grids are:
+% For spherical arrays, available grids are:
 %   'equally_spaced_points' - Sphere with equal distance between grid points
 %   'gauss'                 - Gauss grid
 %   'fabian'                - grid of 3D HRTF measurement, available at
@@ -268,6 +268,11 @@ conf.secondary_sources.x0 = []; % / m
 % An exception are Gauss grids, which are available via 'gauss' and will be
 % calculated on the fly allowing very high number of secondary sources.
 conf.secondary_sources.grid = 'equally_spaced_points'; % string
+% Grid for linear arrays: Allows for logarithmically spaced arrays. It defines 
+% the ratio of the spacing of the loudspeakers at the extremities of the array 
+% and the spacing of the loudspeakers at the center of the array. 1.0 for
+% equi-distant sampling.
+conf.secondary_sources.logspread = 1.0;
 
 
 %% ===== Wave Field Synthesis (WFS) ======================================

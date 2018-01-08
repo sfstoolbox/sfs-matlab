@@ -81,7 +81,7 @@ x0_linear_ref = [
     1.8000         0         0         0    -1.0000         0        0.2
     2.0000         0         0         0    -1.0000         0        0.2
     ];
-x0_linear_log_ref = [
+x0_linear_log_pos_ref = [
    -7.0000         0         0         0    -1.0000         0        8*log(2)
    -3.0000         0         0         0    -1.0000         0        4*log(2)
    -1.0000         0         0         0    -1.0000         0        2*log(2)
@@ -89,6 +89,15 @@ x0_linear_log_ref = [
     1.0000         0         0         0    -1.0000         0        2*log(2)
     3.0000         0         0         0    -1.0000         0        4*log(2)
     7.0000         0         0         0    -1.0000         0        8*log(2)
+    ];
+x0_linear_log_neg_ref = [
+   -7.0000         0         0         0    -1.0000         0        1*log(2)
+   -6.0000         0         0         0    -1.0000         0        2*log(2)
+   -4.0000         0         0         0    -1.0000         0        4*log(2)
+         0         0         0         0    -1.0000         0        8*log(2)
+    4.0000         0         0         0    -1.0000         0        4*log(2)
+    6.0000         0         0         0    -1.0000         0        2*log(2)
+    7.0000         0         0         0    -1.0000         0        1*log(2)
     ];
 x0_circle_ref = [
    2.00000   0.00000   0.00000  -1.00000   0.00000   0.00000   0.1995
@@ -244,10 +253,11 @@ x0_box_ref = [
 
 % test scenarios
 scenarios = {
-    'Equi-distant linear loudspeaker array'	'linear'	21   4.0 1.0 x0_linear_ref
-    'Logarithmic linear loudspeaker array'  'linear'	 7  14.0 4.0 x0_linear_log_ref
-    'Circular loudspeaker array'            'circle'    63   4.0 NaN x0_circle_ref
-    'Box shaped loudspeaker array'          'box'       84   4.0 NaN x0_box_ref
+    'Equi-distant linear loudspeaker array'	'linear'	21   4.0 1.0  x0_linear_ref
+    'Logarithmic linear loudspeaker array'  'linear'	 7  14.0 4.0  x0_linear_log_pos_ref
+    'Logarithmic linear loudspeaker array'  'linear'	 7  14.0 0.25 x0_linear_log_neg_ref
+    'Circular loudspeaker array'            'circle'    63   4.0 NaN  x0_circle_ref
+    'Box shaped loudspeaker array'          'box'       84   4.0 NaN  x0_box_ref
     };
 
 %% ===== Test secondary source positions =================================

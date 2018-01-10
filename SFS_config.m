@@ -272,7 +272,7 @@ conf.secondary_sources.grid = 'equally_spaced_points'; % string
 % the ratio of the spacing of the loudspeakers at the extremities of the array 
 % and the spacing of the loudspeakers at the center of the array. 1.0 for
 % equi-distant sampling.
-conf.secondary_sources.logspread = 1.0;
+conf.secondary_sources.logspread = 1.0; % float
 
 
 %% ===== Wave Field Synthesis (WFS) ======================================

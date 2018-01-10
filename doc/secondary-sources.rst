@@ -118,7 +118,8 @@ desired grid, for example ``conf.secondary_sources.grid =
 then automatically download the desired grid from that web page and stores it
 under ``<$SFS_MAIN_PATH>/data``. If the download is not working (which can
 happen especially under Matlab and Windows) you can alternatively checkout or
-download the whole `data repository`_ to the data folder.
+download the whole `data repository`_ to the data folder, or use the ``gauss``
+grid which is calculated on the fly.
 
 .. _corresponding folder of the data repository: http://github.com/sfstoolbox/data/tree/master/spherical_grids
 .. _data repository: http://github.com/sfstoolbox/data

@@ -7,7 +7,7 @@ conf.secondary_sources.geometry = 'line';
 conf.secondary_sources.number = 21;
 x0 = secondary_source_positions(conf);
 figure;
-figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
+figsize(540,404,'px');
 draw_loudspeakers(x0,conf);
 axis([-2 2 -2 1]);
 pause(1)

@@ -26,15 +26,15 @@ Linear array
     conf.secondary_sources.number = 21;
     x0 = secondary_source_positions(conf);
     figure;
-    figsize(conf.plot.size(1),conf.plot.size(2),conf.plot.size_unit);
+    figsize(540,404,'px');
     draw_loudspeakers(x0,conf);
     axis([-2 2 -2 1]);
     %print_png('img/secondary_sources_linear.png');
 
 .. figure:: img/secondary_sources_linear.png
-   :align: center
+    :align: center
 
-   Linear loudspeaker array with a length of 3m consiting of 21 loudspeakers.
+    Linear loudspeaker array with a length of 3m consiting of 21 loudspeakers.
 
 Circular array
 --------------
@@ -52,10 +52,10 @@ Circular array
     %print_png('img/secondary_sources_circle.png');
 
 .. figure:: img/secondary_sources_circle.png
-   :align: center
+    :align: center
 
-   Circular loudspeaker array with a diameter of 3m consiting of 56
-   loudspeakers.
+    Circular loudspeaker array with a diameter of 3m consiting of 56
+    loudspeakers.
 
 Box shaped array
 ----------------
@@ -73,10 +73,10 @@ Box shaped array
     %print_png('img/secondary_sources_box.png');
 
 .. figure:: img/secondary_sources_box.png
-   :align: center
+    :align: center
 
-   Box shaped loudspeaker array with a diameter of 3m consisting of 84
-   loudspeakers.
+    Box shaped loudspeaker array with a diameter of 3m consisting of 84
+    loudspeakers.
 
 Box shaped array with rounded edges
 -----------------------------------
@@ -102,10 +102,10 @@ place directly in the corners of the box.
     %print_png('img/secondary_sources_rounded-box.png');
 
 .. figure:: img/secondary_sources_rounded-box.png
-   :align: center
+    :align: center
 
-   Box shaped loudspeaker array with rounded edges. It has again a diameter of
-   3m, consists of 84 loudspeakers and has a edge bending factor of 0.3.
+    Box shaped loudspeaker array with rounded edges. It has again a diameter of
+    3m, consists of 84 loudspeakers and has a edge bending factor of 0.3.
 
 Spherical array
 ---------------
@@ -138,10 +138,10 @@ download the whole `data repository`_ to the data folder.
     %print_png('img/secondary_sources_sphere.png');
 
 .. figure:: img/secondary_sources_sphere.png
-   :align: center
+    :align: center
 
-   Spherical loudspeaker array with a diameter of 3m consiting of 225
-   loudspeakers arranged on a grid with equally spaced points.
+    Spherical loudspeaker array with a diameter of 3m consiting of 225
+    loudspeakers arranged on a grid with equally spaced points.
 
 Arbitrary shaped arrays
 -----------------------
@@ -201,9 +201,9 @@ sound field from the given driving signals and secondary sources. For |WFS|
     %print_png('img/secondary_sources_arbitrary.png');
 
 .. figure:: img/secondary_sources_arbitrary.png
-   :align: center
+    :align: center
 
-   Custom arena shaped loudspeaker array consiting of 70 loudspeakers.
+    Custom arena shaped loudspeaker array consiting of 70 loudspeakers.
 
 Plot loudspeaker symbols
 ------------------------
@@ -222,9 +222,9 @@ array.
     %print_png('img/secondary_sources_arbitrary_realloudspeakers.png');
 
 .. figure:: img/secondary_sources_arbitrary_realloudspeakers.png
-   :align: center
+    :align: center
 
-   Custom arena shaped loudspeaker array consiting of 70 loudspeakers, plotted
-   using loudspeaker symbols instead of circles for the single loudspeakers.
+    Custom arena shaped loudspeaker array consiting of 70 loudspeakers, plotted
+    using loudspeaker symbols instead of circles for the single loudspeakers.
 
 .. vim: filetype=rst spell:

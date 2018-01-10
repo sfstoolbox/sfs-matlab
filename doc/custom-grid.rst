@@ -28,19 +28,19 @@ it for one dimension, two dimensions, or all three dimensions.
     %print_png('img/sound_field_imp_nfchoa_25d_dB_custom_grid.png');
 
 .. figure:: img/sound_field_wfs_3d_xyz_custom_grid.png
-   :align: center
+    :align: center
 
-   Sound pressure of a monochromatic point source synthesized by 3D |WFS|. The
-   plane wave has a frequency of 800 Hz and is travelling into the direction
-   (0,-1,0). The sound pressure is calculated only at the explicitly provided
-   grid points.
+    Sound pressure of a monochromatic point source synthesized by 3D |WFS|. The
+    plane wave has a frequency of 800 Hz and is travelling into the direction
+    (0,-1,0). The sound pressure is calculated only at the explicitly provided
+    grid points.
 
 .. figure:: img/sound_field_imp_nfchoa_25d_dB_custom_grid.png
-   :align: center
+    :align: center
 
-   Sound pressure in decibel of a broadband impulse point source synthesized by
-   2.5D |NFC-HOA|. The point source is placed at (0,2,0) m and a time snapshot
-   after 5 ms of the first active secondary source is shown. The sound pressure
-   is calculated only at the explicitly provided grid points.
+    Sound pressure in decibel of a broadband impulse point source synthesized by
+    2.5D |NFC-HOA|. The point source is placed at (0,2,0) m and a time snapshot
+    after 5 ms of the first active secondary source is shown. The sound pressure
+    is calculated only at the explicitly provided grid points.
 
 .. vim: filetype=rst spell:

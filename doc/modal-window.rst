@@ -38,31 +38,31 @@ causes a concentration of energy to fewer loudspeakers.
     %print_png('sound_field_imp_nfchoa_25d_dB_tukey.png');
 
 .. figure:: img/sound_field_imp_nfchoa_25d_dB_rect.png
-   :align: center
+    :align: center
 
-   Sound pressure in decibel of a broadband impulse plane wave synthesized by
-   2.5D |NFC-HOA| using a rectangular window. The plane wave propagates
-   into the direction of (0,-1,0).
+    Sound pressure in decibel of a broadband impulse plane wave synthesized by
+    2.5D |NFC-HOA| using a rectangular window. The plane wave propagates
+    into the direction of (0,-1,0).
 
 .. figure:: img/sound_field_imp_nfchoa_25d_dB_max-rE.png
-   :align: center
+    :align: center
 
-   Sound pressure in decibel of a broadband impulse plane wave synthesized by
-   2.5D |NFC-HOA| using a max-rE window. The plane wave propagates into the
-   direction of (0,-1,0).
+    Sound pressure in decibel of a broadband impulse plane wave synthesized by
+    2.5D |NFC-HOA| using a max-rE window. The plane wave propagates into the
+    direction of (0,-1,0).
 
 .. figure:: img/sound_field_imp_nfchoa_25d_dB_kaiser.png
-   :align: center
+    :align: center
 
-   Sound pressure in decibel of a broadband impulse plane wave synthesized by
-   2.5D |NFC-HOA| using a Kaiser window. The plane wave propagates into the
-   direction of (0,-1,0).
+    Sound pressure in decibel of a broadband impulse plane wave synthesized by
+    2.5D |NFC-HOA| using a Kaiser window. The plane wave propagates into the
+    direction of (0,-1,0).
 
 .. figure:: img/sound_field_imp_nfchoa_25d_dB_tukey.png
-   :align: center
+    :align: center
 
-   Sound pressure in decibel of a broadband impulse plane wave synthesized by
-   2.5D |NFC-HOA| using a modified Tukey window. The plane wave propagates into
-   the direction of (0,-1,0).
+    Sound pressure in decibel of a broadband impulse plane wave synthesized by
+    2.5D |NFC-HOA| using a modified Tukey window. The plane wave propagates into
+    the direction of (0,-1,0).
 
 .. vim: filetype=rst spell:

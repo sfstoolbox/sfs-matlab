@@ -45,21 +45,21 @@ with 3D |WFS|.
     %print_png('img/sound_field_wfs_3d_yz.png');
 
 .. figure:: img/sound_field_wfs_3d_xy.png
-   :align: center
+    :align: center
 
-   Sound pressure of a mono-chromatic plane wave synthesized by 3D |WFS|. The
-   plane wave has a frequency of 800Hz and is travelling into the direction
-   (0,-1,0). The plot shows the xy-plane.
+    Sound pressure of a mono-chromatic plane wave synthesized by 3D |WFS|. The
+    plane wave has a frequency of 800Hz and is travelling into the direction
+    (0,-1,0). The plot shows the xy-plane.
 
 .. figure:: img/sound_field_wfs_3d_xz.png
-   :align: center
+    :align: center
 
-   The same as in the figure before, but now showing the xz-plane.
+    The same as in the figure before, but now showing the xz-plane.
 
 .. figure:: img/sound_field_wfs_3d_yz.png
-   :align: center
+    :align: center
 
-   The same as in the figure before, but now showing the yz-plane.
+    The same as in the figure before, but now showing the yz-plane.
 
 You can see that the Toolbox is now projecting all the secondary source
 positions into the plane for plotting them. In addition the axis are
@@ -80,11 +80,11 @@ case no secondary sources will be added to the plot.
     %print_png('img/sound_field_wfs_3d_xyz.png');
 
 .. figure:: img/sound_field_wfs_3d_xyz.png
-   :align: center
+    :align: center
 
-   Sound pressure of a mono-chromatic plane wave synthesized by 3D |WFS|. The
-   plane wave has a frequency of 800Hz and is travelling into the direction
-   (0,-1,0). All three dimensions are shown.
+    Sound pressure of a mono-chromatic plane wave synthesized by 3D |WFS|. The
+    plane wave has a frequency of 800Hz and is travelling into the direction
+    (0,-1,0). All three dimensions are shown.
 
 In the next plot we use a two dimensional array, 2.5D |WFS| and a virtual
 point source located at (0 2.5 0) m. The 3D example showed you, that the
@@ -103,11 +103,11 @@ plot the results, by ``conf.plot.useplot = true;``.
     %print_png('img/sound_field_wfs_25d.png');
 
 .. figure:: img/sound_field_wfs_25d.png
-   :align: center
+    :align: center
 
-   Sound pressure of a mono-chromatic point source synthesized by 2.5D |WFS|. The
-   point source has a frequency of 800Hz and is placed at (0 2.5 0)m. Only the
-   active loudspeakers of the array are plotted.
+    Sound pressure of a mono-chromatic point source synthesized by 2.5D |WFS|.
+    The point source has a frequency of 800Hz and is placed at (0 2.5 0)m. Only
+    the active loudspeakers of the array are plotted.
 
 If you want to plot the whole loudspeaker array and not only the active
 secondary sources, you can do this by adding these commands. First we
@@ -126,12 +126,12 @@ only the active ones to the loudspeaker weights ``x0(:,7)``.
     %print_png('img/sound_field_wfs_25d_with_all_sources.png');
 
 .. figure:: img/sound_field_wfs_25d_with_all_sources.png
-   :align: center
+    :align: center
 
-   Sound pressure of a mono-chromatic point source synthesized by 2.5D |WFS|. The
-   point source has a frequency of 800Hz and is placed at (0 2.5 0)m. All
-   loudspeakers are plotted. Their color correspond to the loudspeaker weights,
-   where white stands for zero.
+    Sound pressure of a mono-chromatic point source synthesized by 2.5D |WFS|.
+    The point source has a frequency of 800Hz and is placed at (0 2.5 0)m. All
+    loudspeakers are plotted. Their color correspond to the loudspeaker weights,
+    where white stands for zero.
 
 
 Near-Field Compensated Higher Order Ambisonics
@@ -152,8 +152,8 @@ with 2.5D |NFC-HOA|.
 .. figure:: img/sound_field_nfchoa_25d.png
    :align: center
 
-   Sound pressure of a monochromatic plane wave synthesized by 2.5D |NFC-HOA|. The
-   plane wave has a frequency of 800 Hz and is traveling into the direction
+   Sound pressure of a monochromatic plane wave synthesized by 2.5D |NFC-HOA|.
+   The plane wave has a frequency of 800 Hz and is traveling into the direction
    (0,-1,0).
 
 Local Wave Field Synthesis
@@ -193,13 +193,13 @@ into ``SFS_config.m`` for all possible settings.
     %print_png('img/sound_field_localwfs_2d.png');
 
 .. figure:: img/sound_field_localwfs_2d.png
-   :align: center
+    :align: center
 
-   Sound pressure of a monochromatic plane wave synthesized by 2D local |WFS|. The
-   plane wave has a frequency of 7000 Hz and is traveling into the direction
-   (1,-1,0). The local |WFS| is created by using focused sources to create a
-   virtual circular loudspeaker array in he center of the actual loudspeaker
-   array.
+    Sound pressure of a monochromatic plane wave synthesized by 2D local |WFS|.
+    The plane wave has a frequency of 7000 Hz and is traveling into the
+    direction (1,-1,0). The local |WFS| is created by using focused sources to
+    create a virtual circular loudspeaker array in he center of the actual
+    loudspeaker array.
 
 Stereo
 ------
@@ -223,10 +223,10 @@ setting to work.
     %print_png('img/sound_field_stereo.png');
 
 .. figure:: img/sound_field_stereo.png
-   :align: center
+    :align: center
 
-   Sound pressure of a monochromatic phantom source generated by stereophony.
-   The phantom source has a frequency of 800 Hz and is placed at (0,2,0) by
-   amplitude panning.
+    Sound pressure of a monochromatic phantom source generated by stereophony.
+    The phantom source has a frequency of 800 Hz and is placed at (0,2,0) by
+    amplitude panning.
 
 .. vim: filetype=rst spell:

@@ -29,9 +29,9 @@ Binaural simulation of arbitrary loudspeaker arrays
 ---------------------------------------------------
 
 .. figure:: img/tu_berlin_hrtf.jpg
-   :align: center
+    :align: center
 
-   Setup of the |KEMAR| and a loudspeaker during a |HRTF| measurement.
+    Setup of the |KEMAR| and a loudspeaker during a |HRTF| measurement.
 
 If you use an |HRTF| data set, it has the advantage that it was recorded in
 anechoic conditions and the only parameter that matters is the relative position
@@ -107,9 +107,9 @@ Binaural simulation of a real setup
 -----------------------------------
 
 .. figure:: img/university_rostock_loudspeaker_array.jpg
-   :align: center
+    :align: center
 
-   Boxed shaped loudspeaker array at the University Rostock.
+    Boxed shaped loudspeaker array at the University Rostock.
 
 Besides simulating arbitrary loudspeaker configurations in an anechoic space,
 you can also do binaural simulations of real loudspeaker setups.  In the
@@ -179,13 +179,13 @@ simply use a Dirac impulse as |HRTF| as provided by ``dummy_irs()``.
     %print_png('img/impulse_response_wfs_25d.png');
 
 .. figure:: img/impulse_response_wfs_25d.png
-   :align: center
+    :align: center
 
-   Sound pressure of an impulse synthesized as a point source by 2.5D |WFS| at
-   (2.5, 0, 0) m. The sound pressure is observed by a virtual microphone at (0,
-   0, 0) m. The impulse is plotted including the delay offset of the WFS driving
-   function (green) and with a corrected delay that corresponds to the source
-   poisition (blue).
+    Sound pressure of an impulse synthesized as a point source by 2.5D |WFS| at
+    (2.5, 0, 0) m. The sound pressure is observed by a virtual microphone at
+    (0, 0, 0) m. The impulse is plotted including the delay offset of the WFS
+    driving function (green) and with a corrected delay that corresponds to the
+    source poisition (blue).
 
 The figure includes two versions of the impulse response at two different time
 instances. The green impulse response includes the processing delay that is
@@ -213,11 +213,11 @@ function.
     %print_png('img/impulse_response_wfs_25d_imp.png');
 
 .. figure:: img/impulse_response_wfs_25d_imp.png
-   :align: center
+    :align: center
 
-   Sound pressure of an impulse synthesized as a point source by 2.5D
-   |WFS| at (2.5, 0, 0) m. The sound pressure is observed by a virtual
-   microphone at (0, 0, 0) m.
+    Sound pressure of an impulse synthesized as a point source by 2.5D
+    |WFS| at (2.5, 0, 0) m. The sound pressure is observed by a virtual
+    microphone at (0, 0, 0) m.
 
 This time the delay offset of the driving function is automatically corrected
 for and the involved calculation uses inherently a fractional delay filter. The
@@ -263,11 +263,11 @@ the figure).
     %print_png('img/frequency_response_wfs_25d.png');
 
 .. figure:: img/frequency_response_wfs_25d.png
-   :align: center
+    :align: center
 
-   Sound pressure in decibel of a point source synthesized by 2.5D |WFS| for
-   different frequencies. The 2.5D |WFS| is performed with and without the
-   pre-equalization filter. The calculation is performed in the time domain.
+    Sound pressure in decibel of a point source synthesized by 2.5D |WFS| for
+    different frequencies. The 2.5D |WFS| is performed with and without the
+    pre-equalization filter. The calculation is performed in the time domain.
 
 The same can be done in the frequency domain, but in this case we are
 not able to set a maximum frequency of the pre-equalization filter and
@@ -284,12 +284,12 @@ the whole frequency range will be affected.
     %print_png('img/frequency_response_wfs_25d_mono.png');
 
 .. figure:: img/frequency_response_wfs_25d_mono.png
-   :align: center
+    :align: center
 
-   Sound pressure in decibel of a point source synthesized by 2.5D |WFS| for
-   different frequencies. The 2.5D |WFS| is performed only with the
-   pre-equalization filter active at all frequencies. The calculation is
-   performed in the frequency domain.
+    Sound pressure in decibel of a point source synthesized by 2.5D |WFS| for
+    different frequencies. The 2.5D |WFS| is performed only with the
+    pre-equalization filter active at all frequencies. The calculation is
+    performed in the frequency domain.
 
 Using the SoundScape Renderer with the SFS Toolbox
 --------------------------------------------------

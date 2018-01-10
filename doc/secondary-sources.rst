@@ -36,6 +36,31 @@ Linear array
 
     Linear loudspeaker array with a length of 3m consiting of 21 loudspeakers.
 
+You can also create logarithmic spacing for a linear array setting
+``conf.secondary_sources.logspread`` different from its default value of
+``1.0``. For values smaller than 1 the secondary sources will be more dense at
+the edges of the array, whereas for larger values they will be more dense at the
+center.
+
+.. sourcecode:: matlab
+
+    conf = SFS_config;
+    conf.secondary_sources.geometry = 'line';
+    conf.secondary_sources.number = 21;
+    conf.secondary_sources.logspread = 3.5;
+    x0 = secondary_source_positions(conf);
+    figure;
+    figsize(504,404,'px');
+    draw_loudspeakers(x0,conf);
+    axis([-2 2 -2 1]);
+    %print_png('img/secondary_sources_linear_log.png');
+
+.. figure:: img/secondary_sources_linear_log.png
+    :align: center
+
+    Linear loudspeaker array with a length of 3m consiting of 21 logarithmically
+    spaced loudspeakers.
+
 Circular array
 --------------
 

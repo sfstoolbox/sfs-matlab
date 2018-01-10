@@ -13,6 +13,15 @@ axis([-2 2 -2 1]);
 pause(1)
 print_png('secondary_sources_linear.png');
 
+conf.secondary_sources.logspread = 3.5;
+x0 = secondary_source_positions(conf);
+figure;
+figsize(540,404,'px');
+draw_loudspeakers(x0,conf);
+axis([-2 2 -2 1]);
+pause(1)
+print_png('secondary_sources_linear_log.png');
+
 % === circular ===
 conf.secondary_sources.geometry = 'circle';
 conf.secondary_sources.number = 56;

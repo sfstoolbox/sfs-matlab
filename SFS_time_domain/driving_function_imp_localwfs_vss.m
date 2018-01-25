@@ -38,7 +38,7 @@ function [d,x0,xv,idx,delay_offset] = driving_function_imp_localwfs_vss(x0,xs,sr
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2017 SFS Toolbox Developers                             *
+% Copyright (c) 2010-2018 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *

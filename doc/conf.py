@@ -12,7 +12,7 @@ from acronyms import acronyms  # |HRTF| etc.
 # -- GENERAL -------------------------------------------------------------
 
 project = 'SFS Toolbox'
-copyright = '2010-2017 SFS Toolbox Developers'
+copyright = '2010-2018 SFS Toolbox Developers'
 author = 'SFS Toolbox Developers'
 
 needs_sphinx = '1.3'  # minimal sphinx version

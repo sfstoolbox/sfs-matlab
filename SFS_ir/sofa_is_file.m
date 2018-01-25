@@ -19,7 +19,7 @@ function boolean = sofa_is_file(sofa)
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2017 SFS Toolbox Developers                             *
+% Copyright (c) 2010-2018 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *

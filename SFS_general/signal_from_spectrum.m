@@ -1,13 +1,13 @@
 function outsig = signal_from_spectrum(amplitude,phase,f,dim,conf)
 %SIGNAL_FROM_SPECTRUM time signal from single-sided spectrum
 %
-%   Usage: outsig = signal_from_spectrum(amplitude,phase,f,conf)
+%   Usage: outsig = signal_from_spectrum(amplitude,phase,f,[dim],conf)
 %
 %   Input parameters:
 %       amplitude   - the single-sided amplitude spectrum
 %       phase       - the single-sided phase spectrum / rad
 %       f           - the corresponding frequency vector
-%       dim         - dimension along which the fft is performed
+%       dim         - dimension along which the ifft is performed
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -77,6 +77,10 @@ fs = conf.fs;
 %% ===== Regenerating wave form from spectrum ============================
 % Provided number of frequency bins
 bins = length(f);
+if bins ~= Nx
+   error('%s: size of spectrum does not match length of frequency vector',...
+       upper(mfilename));
+end
 
 if f(end) == fs/2  % -> even time signal length
     % Length of the signal to generate

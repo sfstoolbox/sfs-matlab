@@ -80,7 +80,7 @@ useplot = conf.plot.useplot;
 compspec = fft(signal,[],1);
 
 % Length of the signal => number of points of fft
-bins = length(signal);
+bins = size(signal,1);
 
 if mod(bins,2)  % For odd signal length
     % Calculate corresponding frequency axis

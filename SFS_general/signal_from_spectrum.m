@@ -1,4 +1,4 @@
-function outsig = signal_from_spectrum(amplitude,phase,f,conf)
+function outsig = signal_from_spectrum(amplitude,phase,f,dim,conf)
 %SIGNAL_FROM_SPECTRUM time signal from single-sided spectrum
 %
 %   Usage: outsig = signal_from_spectrum(amplitude,phase,f,conf)
@@ -7,6 +7,7 @@ function outsig = signal_from_spectrum(amplitude,phase,f,conf)
 %       amplitude   - the single-sided amplitude spectrum
 %       phase       - the single-sided phase spectrum / rad
 %       f           - the corresponding frequency vector
+%       dim         - dimension along which the fft is performed
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -50,10 +51,24 @@ function outsig = signal_from_spectrum(amplitude,phase,f,conf)
 
 %% ===== Checking input arguments ========================================
 nargmin = 4;
-nargmax = 4;
+nargmax = 5;
 narginchk(nargmin,nargmax);
-[amplitude,phase] = column_vector(amplitude,phase);
+if nargin == nargmin
+   conf = dim;
+   dim = find(size(amplitude)~=1, 1);  % find first non-singleton dimension 
+else   
+   isargpositivescalar(dim); 
+end
+isargstruct(conf);
 
+Ndims = ndims(amplitude);
+dim = min(dim,Ndims);
+amplitude = permute(amplitude, [dim:Ndims, 1:dim-1]);  % move dim to first dimension
+phase = permute(phase, [dim:Ndims, 1:dim-1]);  % move dim to first dimension
+s = size(amplitude);
+Nx = s(1);
+amplitude = reshape(amplitude, Nx, []);  % squeeze all other dimensions
+phase = reshape(phase, Nx, []);  % squeeze all other dimensions
 
 %% ===== Configuration ===================================================
 fs = conf.fs;
@@ -67,21 +82,22 @@ if f(end) == fs/2  % -> even time signal length
     % Length of the signal to generate
     samples = 2 * (bins-1);
     % Rescaling (see spectrum_from_signal())
-    amplitude = [amplitude(1); amplitude(2:end-1)/2; amplitude(end)] * samples;
+    amplitude = [amplitude(1,:); amplitude(2:end-1,:)/2; amplitude(end,:)] ...
+        * samples;
     % Mirror the amplitude spectrum ( 2*pi periodic [0, fs[ )
-    amplitude = [amplitude; amplitude(end-1:-1:2)];
+    amplitude = [amplitude; amplitude(end-1:-1:2,:)];
     % Mirror the phase spectrum and build the inverse (complex conjugate)
-    phase = [phase; -1 * phase(end-1:-1:2)];
+    phase = [phase; -1 * phase(end-1:-1:2,:)];
 
 else  % -> odd time signal length
     % Length of the signal to generate
     samples = 2*bins - 1;
     % Rescaling (see signal_from_spectrum)
-    amplitude = [amplitude(1); amplitude(2:end)/2] * samples;
+    amplitude = [amplitude(1,:); amplitude(2:end,:)/2] * samples;
     % Mirror the amplitude spectrum ( 2*pi periodic [0, fs-bin] )
-    amplitude = [amplitude; amplitude(end:-1:2)];
+    amplitude = [amplitude; amplitude(end:-1:2,:)];
     % Mirror the phase spectrum and build the inverse (complex conjugate)
-    phase = [phase; -1*phase(end:-1:2)];
+    phase = [phase; -1*phase(end:-1:2,:)];
 end
 
 % Convert to complex spectrum
@@ -89,3 +105,8 @@ compspec = amplitude .* exp(1i*phase);
 
 % Build the inverse fft and assume spectrum is conjugate symmetric
 outsig = real(ifft(compspec));
+
+%% ===== Output ==========================================================
+% undo reshape and permute
+outsig = reshape(outsig, [samples, s(2:end)]);
+outsig = permute(outsig, [Ndims-dim+2:Ndims, 1:Ndims-dim+1]); 

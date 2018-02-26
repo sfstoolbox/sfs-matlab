@@ -1,10 +1,11 @@
-function varargout = spectrum_from_signal(signal,conf)
+function varargout = spectrum_from_signal(signal,dim,conf)
 %SPECTRUM_FROM_SIGNAL single-sided amplitude and phase spectra of signal
 %
-%   Usage: [amplitude,phase,f] = spectrum_from_signal(sig,conf)
+%   Usage: [amplitude,phase,f] = spectrum_from_signal(sig,[dim],conf)
 %
 %   Input parameters:
 %       signal      - one channel audio (time) signal
+%       dim         - dimension along which the fft is performed
 %       conf        - configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -52,11 +53,22 @@ function varargout = spectrum_from_signal(signal,conf)
 
 %% ===== Check input arguments ===========================================
 nargmin = 2;
-nargmax = 2;
+nargmax = 3;
 narginchk(nargmin,nargmax);
-signal = column_vector(signal);
+if nargin == nargmin
+   conf = dim;
+   dim = find(size(signal)~=1, 1);  % find first non-singleton dimension 
+else   
+   isargpositivescalar(dim); 
+end
 isargstruct(conf);
 
+Ndims = ndims(signal);
+dim = min(dim,Ndims);
+signal = permute(signal, [dim:Ndims, 1:dim-1]);  % move dim to first dimension
+s = size(signal);
+Nx = s(1);
+signal = reshape(signal, Nx, []);  % squeeze all other dimensions
 
 %% ===== Configuration ===================================================
 fs = conf.fs;
@@ -65,7 +77,7 @@ useplot = conf.plot.useplot;
 
 %% ===== Calcualate spectrum =============================================
 % Generate fast fourier transformation (=> complex output)
-compspec = fft(signal);
+compspec = fft(signal,[],1);
 
 % Length of the signal => number of points of fft
 bins = length(signal);
@@ -75,29 +87,23 @@ if mod(bins,2)  % For odd signal length
     f = fs/bins * (0:(bins-1)/2)';
     % Get amplitude and phase spectra and use only the first half of the
     %>spectrum [0, fs/2[
-    amplitude = abs(compspec(1:length(f)));
-    phase = angle(compspec(1:length(f)));
+    amplitude = abs(compspec(1:length(f),:));
+    phase = angle(compspec(1:length(f),:));
     % Scale the amplitude (factor two for mirrored frequencies
     %>divide by number of bins)
-    amplitude = [amplitude(1); 2*amplitude(2:end)] / bins;
+    amplitude = [amplitude(1,:); 2*amplitude(2:end,:)] / bins;
 
 else  % For even signal length
     % Calculate corresponding frequency axis
     f = fs/bins * (0:bins / 2)';
     % Get amplitude and phase spectra and use only the first half of the
     %>spectrum [0, fs/2]
-    amplitude = abs(compspec(1:length(f)));
-    phase = angle(compspec(1:length(f)));
+    amplitude = abs(compspec(1:length(f),:));
+    phase = angle(compspec(1:length(f),:));
     % Scale the amplitude (factor two for mirrored frequencies
     %>divide by number of bins)
-    amplitude = [amplitude(1); 2*amplitude(2:end-1); amplitude(end)] / bins;
+    amplitude = [amplitude(1,:); 2*amplitude(2:end-1,:); amplitude(end,:)] / bins;
 end
-
-% Return values
-if nargout>0, varargout{1}=amplitude; end
-if nargout>1, varargout{2}=phase; end
-if nargout>2, varargout{3}=f; end
-
 
 %% ===== Plotting ========================================================
 if nargout==0 || useplot
@@ -106,6 +112,22 @@ if nargout==0 || useplot
     semilogx(f,20 * log10(abs(amplitude))); xlim([1, fs/2]);
     grid on; xlabel('frequency / Hz'); ylabel('amplitude / dB')
     subplot(2,1,2)
-    semilogx(f,unwrap(phase)); xlim([1, fs/2]);
+    semilogx(f,unwrap(phase,[],1)); xlim([1, fs/2]);
     grid on; xlabel('frequency / Hz'); ylabel('phase / rad')
 end
+
+%% ===== Output ==========================================================
+% Return values
+if nargout>0
+    % undo reshape and permute
+    amplitude = reshape(amplitude, [length(f), s(2:end)]);
+    amplitude = permute(amplitude, [Ndims-dim+2:Ndims, 1:Ndims-dim+1]); 
+    varargout{1}=amplitude;
+end
+if nargout>1
+    % undo reshape and permute
+    phase = reshape(phase, [length(f), s(2:end)]);
+    phase = permute(phase, [Ndims-dim+2:Ndims, 1:Ndims-dim+1]);
+    varargout{2}=phase; 
+end
+if nargout>2, varargout{3}=f; end

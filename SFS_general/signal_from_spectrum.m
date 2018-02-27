@@ -110,6 +110,7 @@ compspec = amplitude .* exp(1i*phase);
 % Build the inverse fft and assume spectrum is conjugate symmetric
 outsig = real(ifft(compspec));
 
+
 %% ===== Output ==========================================================
 % undo reshape and permute
 outsig = reshape(outsig, [samples, s(2:end)]);

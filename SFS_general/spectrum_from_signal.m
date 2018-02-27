@@ -4,7 +4,7 @@ function varargout = spectrum_from_signal(signal,dim,conf)
 %   Usage: [amplitude,phase,f] = spectrum_from_signal(sig,[dim],conf)
 %
 %   Input parameters:
-%       signal      - one channel audio (time) signal
+%       signal      - multi channel audio (time) signal
 %       dim         - dimension along which the fft is performed
 %       conf        - configuration struct (see SFS_config)
 %
@@ -105,6 +105,7 @@ else  % For even signal length
     amplitude = [amplitude(1,:); 2*amplitude(2:end-1,:); amplitude(end,:)] / bins;
 end
 
+
 %% ===== Plotting ========================================================
 if nargout==0 || useplot
     figure; title('Spectrum');
@@ -115,6 +116,7 @@ if nargout==0 || useplot
     semilogx(f,unwrap(phase,[],1)); xlim([1, fs/2]);
     grid on; xlabel('frequency / Hz'); ylabel('phase / rad')
 end
+
 
 %% ===== Output ==========================================================
 % Return values

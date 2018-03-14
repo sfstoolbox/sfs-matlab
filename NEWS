@@ -1,3 +1,8 @@
+2.4.2 (14. March 2018)
+    - extend signal_from_spectrum and spectrum_from_signal to N-dim matrices
+    - remove obsolete *_localwfs functions
+    - add optional logarithmic spacing for linear secondary sources
+
 2.4.1 (28. September 2017)
     - add monochromatic implementation of LWFS using spatial bandwidth-limitation
     - add monochromatic circular expansion functions for ps and pw

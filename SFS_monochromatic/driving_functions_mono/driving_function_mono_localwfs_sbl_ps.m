@@ -84,7 +84,7 @@ end
 Nlr = ceil(Nce/2)*2;  % order of Linkwitz-Riley Filter
 wc = 2*pi*fc;  % angular cutoff frequency of Linkwitz-Riley Filter
 omega = 2*pi*f;  % angular frequency
-omega_vec = [-omega.^2; 1i*omega*wc; wc.^2];  % vector for evaluation of SOS
+omega_vec = [-omega.^2; 1i*omega; 1];  % vector for evaluation of SOS
 
 
 %% ===== Computation ==========================================================
@@ -110,7 +110,7 @@ Dwfs = zeros(N0,1);
 Dwfs(xdx) = driving_function_mono_wfs(x0(xdx,:),xs,'ps',f,conf);
 % Coefficients for lowpass filtering of WFS Driving signal
 % LR Lowpass filter (normalised cutoff-frequency)
-[zlp,plp,klp] = linkwitz_riley(Nlr,1,'low','s');
+[zlp,plp,klp] = linkwitz_riley(Nlr,wc,'low','s');
 % Lowpass filtering
 [sos,g] = zp2sos(zlp,plp,klp,'down','none');  % generate sos
 if isoctave
@@ -126,7 +126,7 @@ D = Dlwfs + Dwfs;  % Winter et al. (2017), eq. (15)
 
 % === Compensate Phase-Distortions by Inverse Allpass ===
 % Winter et al. (2017), eq. (17)
-[zap,pap,kap] = linkwitz_riley(Nlr,1,'all','s');  % LR Allpass filter
-[sos,g] = zp2sos(pap,zap,kap,'down','none');  % SOS of inverse of Allpass
+[zap,pap,kap] = linkwitz_riley(Nlr,wc,'all','s');  % LR Allpass filter
+[sos,g] = zp2sos(zap,pap,kap,'down','none');  % SOS of Allpass
 Hap = g.*prod( (sos(:,1:3)*omega_vec)./(sos(:,4:6)*omega_vec),1);
-D = D./Hap;
+D = D./Hap;  % apply inverse Allpass

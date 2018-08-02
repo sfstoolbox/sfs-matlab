@@ -65,22 +65,25 @@ x0 = x0./repmat(radii,[1,size(x0,2)]);
 % Center of the Sphere
 center = [0 0 0];
 
-% In case xs is colinear with or equals 1 point there is no interpolation needed
-eq_idx = findrows(x0,xs);
-if ~isempty(eq_idx) && size(eq_idx,1)<2
-    weights = 1;
+% Check dimensionality and rotate to principal axes
+[x0,xs,dim,eq_idx] = check_dimensionality(x0,xs);
+
+% In 1D case (xs is colinear with or equals one x0) no interpolation is needed
+if dim==1
     idx = eq_idx;
+    weights = 1;
     return
-elseif ~isempty(eq_idx) && ~size(eq_idx,1)<2
-    warning('%s: Grid is apparently colinear through origin.', upper(mfilename))
 end
 
-% Rotate to principal axes to enable 2D arrays
-[x0,xs,is_2d] = rotate_to_principal_axes(x0,xs);
+% In 2D case linear interpolation using neighboring x0 is sufficient
+if dim==2
+   [idx, weights] = findnearestneighbour(x0, xs, 2);
+   return
+end
 
 % Calculate dummy points to enable "partial" arrays
 dummy_points = augment_bounding_box(x0);
-if is_2d % Add dummy points in 2D case
+if dim==2.5 % Add dummy points in 2.5D case
     dummy_points = cat(1,dummy_points,[[0 0 1]; [0 0 -1]]);
 end
 if ~isempty(dummy_points)

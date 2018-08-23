@@ -28,7 +28,7 @@ function [x0, xs, dim, eq_idx] = check_dimensionality(x0, xs, tol, gamma)
 %
 
 if nargin < 3
-    tol = 1e-5; % in case no tolerance is provided as input arg
+    tol = 1e-6; % in case no tolerance is provided as input arg
     gamma = 0.1; % inverse of aspect ratio of principal axes
 end
 
@@ -36,9 +36,9 @@ end
 dim = 3;
 
 % Check for 1D case (equality\collinearity within tolerance) and return idx
-eq = vector_norm(bsxfun(@minus, x0,xs),2);
-[~,eq_idx] = min(eq);
-if eq(eq_idx)<=tol
+eq = vector_norm(bsxfun(@minus,x0,xs),2);
+eq_idx = find(eq<=tol);
+if ~isempty(eq_idx)
     dim = 1;
     warning('SFS:check_dimensionality',...
         '%s: Query point is apparently colinear with or equal to one grid point.', ...

@@ -71,7 +71,7 @@ center = [0 0 0];
 % In 1D case (xs is colinear with or equals one x0) no interpolation is needed
 if dim==1
     idx = eq_idx;
-    weights = 1;
+    weights = ones(1,size(idx,1)) / size(idx,1);
     return
 end
 

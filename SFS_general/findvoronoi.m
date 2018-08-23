@@ -81,19 +81,14 @@ if dim==2
    return
 end
 
-% Calculate dummy points to enable "partial" arrays
-dummy_points = augment_bounding_box(x0);
-if dim==2.5 % Add dummy points in 2.5D case
-    dummy_points = cat(1,dummy_points,[[0 0 1]; [0 0 -1]]);
-end
-if ~isempty(dummy_points)
-    dummy_indices = (1:size(dummy_points,1)) + size(x0,1);
-    x0 = [x0; dummy_points];
+% In 2.5D case order x0 with respect to azimuth angle
+if dim == 2.5
+    [x0, az] = sort_azimuth(x0);
 end
 
 %% ===== Computation =====================================================
-% Delaunay triangulation of convex hull with and without xs
-simplices_old = convhulln(x0);
+
+% Delaunay triangulation of convex hull with xs
 simplices_new = convhulln([x0; xs]);
 
 % Extract all neighbors of x0 sharing a triangle with xs, denoted as x0_s 
@@ -103,55 +98,71 @@ xs_tri = simplices_new(row, :);
 idx = unique(xs_tri(xs_tri ~= xs_idx));
 
 % Extract all triangles from the simplices with at least one x0_s as a vertex
-[simplices_new_s, simplices_old_s] = deal([]);
+simplices_new_s = [];
 for n = 1:size(idx)
     [row, ~] = find(simplices_new == idx(n));
-    [row_old, ~] = find(simplices_old == idx(n));
     simplices_new_s = cat(1,simplices_new_s,simplices_new(row,:));
-    simplices_old_s = cat(1,simplices_old_s,simplices_old(row_old,:));
 end
 simplices_new_s = unique(simplices_new_s,'rows');
-simplices_old_s = unique(simplices_old_s,'rows');
 
-% Compute spherical voronoi_regions for each x0_s
+% Compute new spherical voronoi_regions for each x0_s
 [regions_new_s, vertices_new_s] = calc_voronoi_regions([x0;xs],center, ...
     simplices_new_s);
-[regions_old_s, vertices_old_s] = calc_voronoi_regions([x0;xs],center, ...
-    simplices_old_s);
 
-% Prepare regions for calculation of the surface area
+% Prepare new regions for calculation of the surface area
 % Sorting the regions
 [regions_new_s] = sort_voronoi_vertices_of_regions(simplices_new_s, ... 
     regions_new_s);
-[regions_old_s] = sort_voronoi_vertices_of_regions(simplices_old_s, ...
-    regions_old_s);
+
+% Special 2.5D case handling: skip computation of old voronoi regions
+if dim ~= 2.5
+    % Delaunay triangulation of convex hull without xs
+    simplices_old = convhulln(x0);
+    
+    % Extract all triangles from the simplices with at least one x0_s as vertex
+    simplices_old_s = [];
+    for n = 1:size(idx)
+        [row_old, ~] = find(simplices_old == idx(n));
+        simplices_old_s = cat(1,simplices_old_s,simplices_old(row_old,:));
+    end
+    simplices_old_s = unique(simplices_old_s,'rows');
+    
+    % Compute old spherical voronoi_regions for each x0_s
+    [regions_old_s, vertices_old_s] = calc_voronoi_regions([x0;xs],center, ...
+        simplices_old_s);
+    
+    % Prepare old regions for calculation of the surface area
+    % Sorting the regions
+    [regions_old_s] = sort_voronoi_vertices_of_regions(simplices_old_s, ...
+        regions_old_s);
+    
+end
 
 % Surface area calculation
 [area_new, area_old] = deal(zeros(size(idx,1),1));
 for ii=1:size(idx,1)
     area_new(ii) = calc_surface_area( ...
         vertices_new_s(regions_new_s{idx(ii)},:),1);
-    area_old(ii) = calc_surface_area( ...
-        vertices_old_s(regions_old_s{idx(ii)},:),1);    
+    % Special 2.5D case handling: alternative calculation of old area
+    if dim ~= 2.5
+        area_old(ii) = calc_surface_area( ...
+            vertices_old_s(regions_old_s{idx(ii)},:),1);  
+    else
+        % Old area calculation based on area of spherical lune
+        az_diff = zeros(size(idx,1),1);
+        m = [size(idx,1) 1:size(idx) 1];
+        for n = 1:size(idx)
+            az_diff(n) = (az(m(n+2)) - az(m(n))) / 2;
+            if az_diff(n)<0
+                az_diff(n) = (az(m(n+2)) - az(m(n)) + 360) / 2;
+            end
+        end
+        area_old(:) = pi/90 * az_diff(:);
+    end
 end
 
 % Calculate weights
 weights = (area_old - area_new) ./ sum(area_old - area_new);
-
-if ~isempty(dummy_points)
-    % Remove possible dummies from selected points
-    dummy_mask = ismember(idx,dummy_indices);
-    if any(dummy_mask)
-        idx(dummy_mask) = [];
-        if ~weights(dummy_mask)==0
-            warning('%s: Requested point lies outside grid.', upper(mfilename))
-        end
-        weights(dummy_mask) = [];
-    end
-end
-
-% Normalise weights
-weights = weights./sum(weights);
 
 [weights,order] = sort(weights,'descend');
 idx = idx(order);
@@ -402,4 +413,18 @@ el2 = -(el2-pi/2);
 % long/lat is not the same as spherical coordinates - phi differs by pi/4
 sph_dist = 2 * asin( sqrt(( (1 - cos(el2 - el1))./2) ...
                           + sin(el1) .* sin(el2) .* ((1-cos(az2 - az1))./2)) );
+end
+
+% =========================================================================
+
+function [ x0, az ] = sort_azimuth( x0 )
+%SORT_AZIMUTH sorts x0 based on azimuth angle
+
+% Compute azimuth
+az = atan2d(x0(:,2), x0(:,1));
+% Sort azimuth
+[az, idx] = sort(az);
+% Reorder
+x0 = [x0(idx,1) x0(idx,2) x0(idx,3)];
+
 end

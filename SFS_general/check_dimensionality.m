@@ -49,7 +49,9 @@ else
 end
 
 % Check for 2D or 2.5D case and rotate to principal axes
-[~,S,V] = svd(x0);
+x0mean = mean(x0,1);
+[~,S,V] = svd(bsxfun(@minus,x0,x0mean));
+x0mean = x0mean*V;
 x0 = x0*V;
 xs = xs*V;
 S = diag(S);
@@ -57,8 +59,10 @@ if S(end)/S(end-1) < gamma
     dim = 2.5;
      warning('SFS:check_dimensionality',...
          '%s: Grid is apparently two-dimensional. ',upper(mfilename));
-    if xs(3) < tol % Check for 2D case
+    if abs(xs(3) - x0mean(3)) < tol % Check for 2D case
         dim = 2;
+        x0(:,3) = x0(:,3) - x0mean(3);
+        xs(3) = xs(3) - x0mean(3);
     end
 end
 

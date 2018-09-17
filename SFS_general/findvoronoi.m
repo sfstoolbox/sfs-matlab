@@ -83,12 +83,12 @@ end
 
 % In 2.5D case order x0 with respect to azimuth angle
 if dim == 2.5
-    [x0, az] = sort_azimuth(x0);
+    [x0_sorted, az] = sort_azimuth(x0);
 end
 
 %% ===== Computation =====================================================
 
-% Delaunay triangulation of convex hull with xs
+% Delaunay triangulation of convex hull with xs (new)
 simplices_new = convhulln([x0; xs]);
 
 % Extract all neighbors of x0 sharing a triangle with xs, denoted as x0_s 
@@ -116,7 +116,7 @@ simplices_new_s = unique(simplices_new_s,'rows');
 
 % Special 2.5D case handling: skip computation of old voronoi regions
 if dim ~= 2.5
-    % Delaunay triangulation of convex hull without xs
+    % Delaunay triangulation of convex hull without xs (old)
     simplices_old = convhulln(x0);
     
     % Extract all triangles from the simplices with at least one x0_s as vertex
@@ -197,15 +197,24 @@ end
 % Add center of sphere to each of the simplices
 tri = x0(simplices.', 1:end);
 tetrahedrons = [];
-for n=1:3:size(tri,1);
-    tetrahedrons = cat(3,tetrahedrons,cat(1,tri(n:n+2,:),center));
+n = 1:3:size(tri,1);
+for m=n
+    tetrahedrons = cat(3,tetrahedrons,cat(1,tri(m:m+2,:),center));
 end
+
+% Calculate surface normal of each triangle via cross product of triangle edges
+N = bsxfun(@cross,tri(n+1,:)-tri(n,:),tri(n+2,:)-tri(n,:));
+% Determine direction of projection into correct hemisphere
+project_dir = sign(vector_product(direction_vector(tri(n,:),[0 0 0]),N(:,:),2));
 
 % Calculate circumcenters of tetrahedrons
 circumcenters = calc_circumcenters(tetrahedrons);
 
 % Project circumcenters of the tetrahedrons to the surface of the unit
 % sphere and thereby get the voronoi vertices with shape [2n-4x3]
+% Consider the surface normal direction of each triangle for projection into the
+% correct hemisphere
+circumcenters = bsxfun(@times, circumcenters, project_dir);
 vertices = bsxfun(@rdivide,circumcenters,vector_norm(circumcenters,2));
 
 % Calculate regions from triangulation.

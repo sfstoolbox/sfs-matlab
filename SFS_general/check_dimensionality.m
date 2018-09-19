@@ -57,12 +57,19 @@ xs = xs*V;
 S = diag(S);
 if S(end)/S(end-1) < gamma
     dim = 2.5;
-     warning('SFS:check_dimensionality',...
-         '%s: Grid is apparently two-dimensional. ',upper(mfilename));
-    if abs(xs(3) - x0mean(3)) < tol % Check for 2D case
+    warning('SFS:check_dimensionality',...
+        '%s: Grid is apparently two-dimensional. ',upper(mfilename));
+    % Check for the case that grid lies in same plane as center of the sphere
+    [~,S_center,~] = svd([x0;[0 0 0]]);
+    S_center = diag(S_center);
+    % Check for 2D case
+    if abs(xs(3) - x0mean(3)) < tol
         dim = 2;
         x0(:,3) = x0(:,3) - x0mean(3);
         xs(3) = xs(3) - x0mean(3);
+    % Check for coplanarity of grid and center of the sphere, denoted as 2.55D
+    elseif S_center(end)/S_center(end-1) < gamma 
+        dim = 2.55;
     end
 end
 

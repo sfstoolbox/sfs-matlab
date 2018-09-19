@@ -71,7 +71,7 @@ center = [0 0 0];
 % In 1D case (xs is colinear with or equals one x0) no interpolation is needed
 if dim==1
     idx = eq_idx;
-    weights = ones(1,size(idx,1)) / size(idx,1);
+    weights = ones(size(idx,1),1) / size(idx,1);
     return
 end
 
@@ -83,7 +83,19 @@ end
 
 % In 2.5D case order x0 with respect to azimuth angle
 if dim == 2.5
-    [x0_sorted, az] = sort_azimuth(x0);
+    [~,idx_sorted,az] = sort_azimuth(x0);
+end
+
+% If the grid and the center of the unit sphere are coplanar in an otherwise
+% 2.5D case, dummy points are used as a workaround, preventing degenerate
+% tetrahedra as part of the calculation of the new voronoi vertices.
+% This case is denoted as 2.55D and is currently handled like a 3D case with
+% dummy points added to the grid.
+dummy_points = [];
+if dim == 2.55
+    dummy_points = [[0 0 -1];[0 0 1]]; % Add north and south pole
+    dummy_indices = (1:size(dummy_points,1)) + size(x0,1);
+    x0 = [x0;dummy_points];
 end
 
 %% ===== Computation =====================================================
@@ -91,7 +103,7 @@ end
 % Delaunay triangulation of convex hull with xs (new)
 simplices_new = convhulln([x0; xs]);
 
-% Extract all neighbors of x0 sharing a triangle with xs, denoted as x0_s 
+% Extract all neighbors of x0 sharing a triangle with xs, denoted as x0_s
 xs_idx = size([x0;xs], 1);
 [row, ~] = find(simplices_new == xs_idx);
 xs_tri = simplices_new(row, :);
@@ -150,19 +162,32 @@ for ii=1:size(idx,1)
     else
         % Old area calculation based on area of spherical lune
         az_diff = zeros(size(idx,1),1);
-        m = [size(idx,1) 1:size(idx) 1];
-        for n = 1:size(idx)
+        m = [size(idx,1) 1:size(idx,1) 1];
+        for n = 1:size(idx,1)
             az_diff(n) = (az(m(n+2)) - az(m(n))) / 2;
             if az_diff(n)<0
                 az_diff(n) = (az(m(n+2)) - az(m(n)) + 360) / 2;
             end
         end
         area_old(:) = pi/90 * az_diff(:);
+        area_old = area_old(circshift(idx_sorted,2));
     end
 end
 
 % Calculate weights
 weights = (area_old - area_new) ./ sum(area_old - area_new);
+
+% Remove possible dummies from selected points
+if ~isempty(dummy_points)
+    dummy_mask = ismember(idx,dummy_indices);
+    if any(dummy_mask)
+        idx(dummy_mask) = [];
+        if ~weights(dummy_mask)==0
+            warning('%s: Requested point lies outside grid.', upper(mfilename))
+        end
+        weights(dummy_mask) = [];
+    end
+end
 
 [weights,order] = sort(weights,'descend');
 idx = idx(order);
@@ -426,7 +451,7 @@ end
 
 % =========================================================================
 
-function [ x0, az ] = sort_azimuth( x0 )
+function [x0,idx,az] = sort_azimuth( x0 )
 %SORT_AZIMUTH sorts x0 based on azimuth angle
 
 % Compute azimuth
@@ -435,5 +460,4 @@ az = atan2d(x0(:,2), x0(:,1));
 [az, idx] = sort(az);
 % Reorder
 x0 = [x0(idx,1) x0(idx,2) x0(idx,3)];
-
 end

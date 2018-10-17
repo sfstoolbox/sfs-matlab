@@ -77,25 +77,24 @@ end
 
 % In 2D case linear interpolation using neighboring x0 is sufficient
 if dim==2
-   [idx, weights] = findnearestneighbour(x0, xs, 2);
+   [idx, weights] = findnearestneighbour(x0,xs,2);
    return
+end
+
+% If the grid and the center of the unit sphere are coplanar in an otherwise
+% 2.5D case, the computation of circumcenters as part of the calculation of the
+% voronoi vertices fails. This case is denoted as 2.55D and is currently handled
+% like a 2.5D case with special handling in calc_voronoi_vertices.
+if dim == 2.55
+    is_copl = 1;
+    dim = 2.5;
+else
+    is_copl = 0;
 end
 
 % In 2.5D case order x0 with respect to azimuth angle
 if dim == 2.5
     [~,idx_sorted,az] = sort_azimuth(x0);
-end
-
-% If the grid and the center of the unit sphere are coplanar in an otherwise
-% 2.5D case, dummy points are used as a workaround, preventing degenerate
-% tetrahedra as part of the calculation of the new voronoi vertices.
-% This case is denoted as 2.55D and is currently handled like a 3D case with
-% dummy points added to the grid.
-dummy_points = [];
-if dim == 2.55
-    dummy_points = [[0 0 -1];[0 0 1]]; % Add north and south pole
-    dummy_indices = (1:size(dummy_points,1)) + size(x0,1);
-    x0 = [x0;dummy_points];
 end
 
 %% ===== Computation =====================================================
@@ -119,7 +118,7 @@ simplices_new_s = unique(simplices_new_s,'rows');
 
 % Compute new spherical voronoi_regions for each x0_s
 [regions_new_s, vertices_new_s] = calc_voronoi_regions([x0;xs],center, ...
-    simplices_new_s);
+    simplices_new_s, is_copl, xs);
 
 % Prepare new regions for calculation of the surface area
 % Sorting the regions
@@ -141,7 +140,7 @@ if dim ~= 2.5
     
     % Compute old spherical voronoi_regions for each x0_s
     [regions_old_s, vertices_old_s] = calc_voronoi_regions([x0;xs],center, ...
-        simplices_old_s);
+        simplices_old_s, is_copl, xs);
     
     % Prepare old regions for calculation of the surface area
     % Sorting the regions
@@ -177,18 +176,6 @@ end
 % Calculate weights
 weights = (area_old - area_new) ./ sum(area_old - area_new);
 
-% Remove possible dummies from selected points
-if ~isempty(dummy_points)
-    dummy_mask = ismember(idx,dummy_indices);
-    if any(dummy_mask)
-        idx(dummy_mask) = [];
-        if ~weights(dummy_mask)==0
-            warning('%s: Requested point lies outside grid.', upper(mfilename))
-        end
-        weights(dummy_mask) = [];
-    end
-end
-
 [weights,order] = sort(weights,'descend');
 idx = idx(order);
 end
@@ -196,7 +183,7 @@ end
 
 %% ===== Functions =======================================================
 
-function [regions,vertices] = calc_voronoi_regions(x0,center,simplices)
+function [regions,vertices] = calc_voronoi_regions(x0,center,simplices,is_copl,xs)
 %CALC_VORONOI_REGIONS calculates the Voronoi vertices and regions of the given
 %points x0. In case specific simplices are provided as input argument, only
 %those will be included in the calculation.
@@ -206,6 +193,7 @@ function [regions,vertices] = calc_voronoi_regions(x0,center,simplices)
 %       center         - center of the sphere in R^3 [1x3]
 %       simplices      - pre-calculated simplices, each consisting of 
 %                        3 indices of the points given in x0 [Nx3]
+%       is_copl        - true, if grid and origin are coplanar, false otherwise
 %
 %   Output parameters:
 %       regions        - cell array consisting of the indices of the vertices
@@ -216,6 +204,9 @@ function [regions,vertices] = calc_voronoi_regions(x0,center,simplices)
 
 if nargin < 3
     simplices = convhulln(x0); % in case simplices are not provided as input arg
+end
+if nargin < 4
+    is_copl = 0;
 end
 
 % Tetrahedrons from Delaunay triangulation with shape [4x3x2n-4].
@@ -233,7 +224,23 @@ N = bsxfun(@cross,tri(n+1,:)-tri(n,:),tri(n+2,:)-tri(n,:));
 project_dir = sign(vector_product(direction_vector(tri(n,:),[0 0 0]),N(:,:),2));
 
 % Calculate circumcenters of tetrahedrons
-circumcenters = calc_circumcenters(tetrahedrons);
+% Special handling in case of coplanarity of grid and center of the sphere
+if ~is_copl
+    % Normal handling
+    circumcenters = calc_circumcenters(tetrahedrons);
+else
+    % Special handling
+    % Circumcenters lie directly at the center and are projected manually
+    circumcenters = zeros(size(n,2),3);
+    for ii = 1:size(n,2)
+        if project_dir(ii)==0
+            circumcenters(ii,:) = [0 0 sign(-xs(3))];
+            project_dir(ii) = 1;
+        else
+            circumcenters(ii,:) = calc_circumcenters(tetrahedrons(:,:,ii));
+        end
+    end
+end
 
 % Project circumcenters of the tetrahedrons to the surface of the unit
 % sphere and thereby get the voronoi vertices with shape [2n-4x3]

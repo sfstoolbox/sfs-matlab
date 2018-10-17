@@ -17,10 +17,11 @@ function [x0, xs, dim, eq_idx] = check_dimensionality(x0, xs, tol, gamma)
 %       eq_idx      - indice of point from point cloud equal to query point 
 %                     within tolerance specified in tol or -1 otherwise
 %
-%   1D:   xs is colinear with or equal to one x0
-%   2D:   all x0 and xs are in one plane
-%   2.5D: all x0 are in one plane, but xs is not
-%   3D:   otherwise
+%   1D:    xs is colinear with or equal to one x0
+%   2D:    all x0 and xs are in one plane
+%   2.5D:  all x0 are in one plane, but xs is not
+%   2.55D: 2.5D case with coplanarity of grid and the center of the sphere
+%   3D:    otherwise
 %
 %   See also: findvoronoi, test_interpolation_point_selection,
 %   rotate_to_principal_axes
@@ -59,16 +60,13 @@ if S(end)/S(end-1) < gamma
     dim = 2.5;
     warning('SFS:check_dimensionality',...
         '%s: Grid is apparently two-dimensional. ',upper(mfilename));
-    % Check for the case that grid lies in same plane as center of the sphere
-    [~,S_center,~] = svd([x0;[0 0 0]]);
-    S_center = diag(S_center);
     % Check for 2D case
     if abs(xs(3) - x0mean(3)) < tol
         dim = 2;
         x0(:,3) = x0(:,3) - x0mean(3);
         xs(3) = xs(3) - x0mean(3);
     % Check for coplanarity of grid and center of the sphere, denoted as 2.55D
-    elseif S_center(end)/S_center(end-1) < gamma 
+    elseif abs(x0mean(3)) < tol
         dim = 2.55;
     end
 end

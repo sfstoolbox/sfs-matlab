@@ -44,4 +44,4 @@ New releases are made using the following steps:
 
 .. _add release notes: https://github.com/sfstoolbox/sfs-matlab/tags
 .. _RTD: http://readthedocs.org/projects/sfs-matlab/builds/
-.. _Zenodo: https://zenodo.org/search?page=1&size=20&q=sound%20field%20synthesis%20toolbox&sort=bestmatch
+.. _Zenodo: https://zenodo.org/search?page=1&size=20&q=SFS%20Toolbox&sort=bestmatch

@@ -1,3 +1,6 @@
+2.4.3 (26. October 2018)
+    - fix bug where in LWFS-SBL, where inverse Allpass was inverted
+
 2.4.2 (14. March 2018)
     - extend signal_from_spectrum and spectrum_from_signal to N-dim matrices
     - remove obsolete *_localwfs functions

@@ -81,17 +81,6 @@ if dim==2
    return
 end
 
-% If the grid and the center of the unit sphere are coplanar in an otherwise
-% 2.5D case, the computation of circumcenters as part of the calculation of the
-% voronoi vertices fails. This case is denoted as 2.55D and is currently handled
-% like a 2.5D case with special handling in calc_voronoi_vertices.
-if dim == 2.55
-    is_copl = 1;
-    dim = 2.5;
-else
-    is_copl = 0;
-end
-
 % In 2.5D case order x0 with respect to azimuth angle
 if dim == 2.5
     [~,idx_sorted,az] = sort_azimuth(x0);
@@ -118,7 +107,7 @@ simplices_new_s = unique(simplices_new_s,'rows');
 
 % Compute new spherical voronoi_regions for each x0_s
 [regions_new_s, vertices_new_s] = calc_voronoi_regions([x0;xs],center, ...
-    simplices_new_s, is_copl, xs);
+    simplices_new_s);
 
 % Prepare new regions for calculation of the surface area
 % Sorting the regions
@@ -140,7 +129,7 @@ if dim ~= 2.5
     
     % Compute old spherical voronoi_regions for each x0_s
     [regions_old_s, vertices_old_s] = calc_voronoi_regions([x0;xs],center, ...
-        simplices_old_s, is_copl, xs);
+        simplices_old_s);
     
     % Prepare old regions for calculation of the surface area
     % Sorting the regions
@@ -183,7 +172,7 @@ end
 
 %% ===== Functions =======================================================
 
-function [regions,vertices] = calc_voronoi_regions(x0,center,simplices,is_copl,xs)
+function [regions,vertices] = calc_voronoi_regions(x0,center,simplices)
 %CALC_VORONOI_REGIONS calculates the Voronoi vertices and regions of the given
 %points x0. In case specific simplices are provided as input argument, only
 %those will be included in the calculation.
@@ -193,7 +182,6 @@ function [regions,vertices] = calc_voronoi_regions(x0,center,simplices,is_copl,x
 %       center         - center of the sphere in R^3 [1x3]
 %       simplices      - pre-calculated simplices, each consisting of 
 %                        3 indices of the points given in x0 [Nx3]
-%       is_copl        - true, if grid and origin are coplanar, false otherwise
 %
 %   Output parameters:
 %       regions        - cell array consisting of the indices of the vertices
@@ -204,9 +192,6 @@ function [regions,vertices] = calc_voronoi_regions(x0,center,simplices,is_copl,x
 
 if nargin < 3
     simplices = convhulln(x0); % in case simplices are not provided as input arg
-end
-if nargin < 4
-    is_copl = 0;
 end
 
 % Tetrahedrons from Delaunay triangulation with shape [4x3x2n-4].
@@ -220,22 +205,23 @@ end
 
 % Calculate surface normal of each triangle via cross product of triangle edges
 N = bsxfun(@cross,tri(n+1,:)-tri(n,:),tri(n+2,:)-tri(n,:));
+N = N./repmat(vector_norm(N,2),[1,size(N,2)]);
 % Determine direction of projection into correct hemisphere
-project_dir = sign(vector_product(direction_vector(tri(n,:),[0 0 0]),N(:,:),2));
+project_dir = sign(vector_product(direction_vector(tri(n,:),center),N(:,:),2));
 
 % Calculate circumcenters of tetrahedrons
-% Special handling in case of coplanarity of grid and center of the sphere
-if ~is_copl
+% Special handling in case of coplanarity of a triangle and center of the sphere
+if ~any(find(~project_dir))
     % Normal handling
     circumcenters = calc_circumcenters(tetrahedrons);
 else
     % Special handling
-    % Circumcenters lie directly at the center and are projected manually
+    % Circumcenters lie directly on the center and are projected manually
     circumcenters = zeros(size(n,2),3);
     for ii = 1:size(n,2)
         if project_dir(ii)==0
-            circumcenters(ii,:) = [0 0 sign(-xs(3))];
-            project_dir(ii) = 1;
+            circumcenters(ii,:) = N(ii,:);
+            project_dir(ii) = -1;
         else
             circumcenters(ii,:) = calc_circumcenters(tetrahedrons(:,:,ii));
         end
@@ -244,8 +230,8 @@ end
 
 % Project circumcenters of the tetrahedrons to the surface of the unit
 % sphere and thereby get the voronoi vertices with shape [2n-4x3]
-% Consider the surface normal direction of each triangle for projection into the
-% correct hemisphere
+% Consider the surface normal direction of each triangle for projection into
+% into correct hemisphere
 circumcenters = bsxfun(@times, circumcenters, project_dir);
 vertices = bsxfun(@rdivide,circumcenters,vector_norm(circumcenters,2));
 

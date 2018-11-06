@@ -63,6 +63,7 @@ basepath=basepath(1:end-12);
 % Add the base path and the needed sub-directories
 if exist('addpath')
     addpath(basepath);
+    addpath([basepath,'/SFS_aliasing']);
     addpath([basepath,'/SFS_analysis']);
     addpath([basepath,'/SFS_binaural_synthesis']);
     addpath([basepath,'/SFS_general']);
@@ -86,6 +87,7 @@ if exist('addpath')
     end
 else
     path(path,basepath);
+    path(path,[basepath,'/SFS_aliasing']);
     path(path,[basepath,'/SFS_analysis']);
     path(path,[basepath,'/SFS_binaural_synthesis']);
     path(path,[basepath,'/SFS_general']);

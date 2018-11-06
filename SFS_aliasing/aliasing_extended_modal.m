@@ -1,36 +1,26 @@
-function [fal,dx0] = aliasing_frequency(x0,conf)
-%ALIASING_FREQUENCY aliasing frequency for the given secondary sources
+function f = aliasing_extended_modal(x0, kSx0, x, minmax_kGt_fun, xc, M, conf)
+%ALIASING_EXTENDED_MODAL aliasing frequency for an extended listening area for 
+%an circular control area at xc with R=M/k where synthesis is focused on.
 %
-%   Usage: [fal,dx0] = aliasing_frequency([x0],conf)
+%   Usage: f = aliasing_extended_control(x0, kSx0, x, minmax_kGt_fun, minmax_kSt_fun, conf)
 %
-%   Input parameters:
-%       x0      - secondary sources / m
-%       conf    - configuration struct (see SFS_config)
+%   Input options:
+%       x0              - position, direction, and sampling distance of 
+%                         secondary sources [N0x7] / m
+%       kSx0            - normalised local wavenumber vector of virtual sound 
+%                         field [N0x3]
+%       x               - position for which aliasing frequency is calculated
+%                         [Nx3]
+%       minmax_kGt_fun  - function handle to determine the extremal value of 
+%                         the tangential component of k_G(x-x0)
+%                         [kGtmin, kGtmax] = minmax_kGt_fun(x0)
+%       xc              - center of circular control area
+%       M               - modal order which defines the radius R=M/k
+%       conf            - configuration struct (see SFS_config)
 %
 %   Output parameters:
-%       fal     - aliasing frequency / Hz
-%       dx0     - mean distance between secondary sources / m
+%       f   - aliasing frequency [Nx1]
 %
-%   ALIASING_FREQUENCY(x0,conf) returns the aliasing frequency for the given
-%   secondary sources. First the mean distance dx0 between the secondary sources
-%   is calculated, afterwards the aliasing frequency is calculated after Spors
-%   (2009) as fal = c/(2*dx0). If no secondary sources x0 are provided, they are
-%   first calculated by calling secondary_source_positions().
-%   For a calculation that includes the dependency on the listener position have
-%   a look at Start (1997).
-%
-%   See also: sound_field_mono_wfs, secondary_source_positions,
-%       secondary_source_distance
-%
-%   References:
-%       Spors and Ahrens (2009) - "Spatial sampling artifacts of wave field
-%       synthesis for the reproduction of virtual point sources", 126th
-%       Convention of the Audio Engineering Society, Paper 7744,
-%       http://www.aes.org/e-lib/browse.cfm?elib=14940
-%
-%       Start (1997) - "Direct Sound Enhancement by Wave Field Synthesis",
-%       PhD thesis, TU Delft,
-%       http://resolver.tudelft.nl/uuid:c80d5b58-67d3-4d84-9e73-390cd30bde0d
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -61,28 +51,31 @@ function [fal,dx0] = aliasing_frequency(x0,conf)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
+phik = cart2pol(kSx0(:,1),kSx0(:,2));  % azimuth angle of kS(x0)
+phin0 = cart2pol(x0(:,4),x0(:,5));  % azimuth angle of normal vector n0(x0)
 
-%% ===== Checking of input parameters ====================================
-nargmin = 1;
-nargmax = 2;
-narginchk(nargmin,nargmax);
-if nargin<nargmax
-    conf = x0;
-    x0 = [];
+% secondary source selection
+select = cos(phin0 - phik) >= 0;  
+x0 = x0(select,:);
+% k_St(x0) (tangential component of k_S(x0) )
+kSt = sin(phin0(select) - phik(select));  
+
+% sampling distance
+deltax0 = abs(x0(:,7));
+
+f = inf(size(x,1), 1);
+for xdx = 1:size(x,1);
+    % mininum and maximum values of k_Gt(x - x_0) 
+    % (tangential component of k_G(x-x0))
+    [kGtmin, kGtmax] = minmax_kGt_fun(x0,x(xdx,:));
+    % aliasing frequency for x0
+    f0 = conf.c./(deltax0.*max(abs(kSt-kGtmin),abs(kSt-kGtmax)));
+    % radius of local region at f0
+    rM = M.*conf.c./(2.*pi.*f0);
+    % mininum and maximum values of kSt(x_0) at f0
+    [kStmin, kStmax] = minmax_kt_circle(x0, xc, rM);
+    select = kSt > kStmin & kSt < kStmax;
+    if sum(select) ~= 0
+        f(xdx) = min(f0(select));
+    end
 end
-isargstruct(conf);
-
-
-%% ===== Configuration ==================================================
-c = conf.c;
-
-
-%% ===== Computation =====================================================
-% If no explicit secondary source distribution is given, calculate one
-if isempty(x0)
-    x0 = secondary_source_positions(conf);
-end
-% Get average distance between secondary sources
-dx0 = secondary_source_distance(x0);
-% Calculate aliasing frequency
-fal = c/(2*dx0);

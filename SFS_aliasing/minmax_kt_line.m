@@ -1,25 +1,4 @@
-function f = aliasing_extended_modal(x0, kSx0, x, minmax_kGt_fun, xc, M, conf)
-%ALIASING_EXTENDED_MODAL aliasing frequency for an extended listening area for 
-%an circular control area at xc with R=M/k where synthesis is focused on.
-%
-%   Usage: f = aliasing_extended_control(x0, kSx0, x, minmax_kGt_fun, minmax_kSt_fun, conf)
-%
-%   Input options:
-%       x0              - position, direction, and sampling distance of 
-%                         secondary sources [N0x7] / m
-%       kSx0            - normalised local wavenumber vector of virtual sound 
-%                         field [N0x3]
-%       x               - position for which aliasing frequency is calculated
-%                         [Nx3]
-%       minmax_kGt_fun  - function handle to determine the extremal value of 
-%                         the tangential component of k_G(x-x0)
-%                         [kGtmin, kGtmax] = minmax_kGt_fun(x0)
-%       xc              - center of circular control area
-%       M               - modal order which defines the radius R=M/k
-%       conf            - configuration struct (see SFS_config)
-%
-%   Output parameters:
-%       f   - aliasing frequency [Nx1]
+function [kGtmin, kGtmax] = minmax_kt_line(x0, xl, Ll, alphal)
 %
 
 %*****************************************************************************
@@ -51,31 +30,61 @@ function f = aliasing_extended_modal(x0, kSx0, x, minmax_kGt_fun, xc, M, conf)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
-phik = cart2pol(kSx0(:,1),kSx0(:,2));  % azimuth angle of kS(x0)
-phin0 = cart2pol(x0(:,4),x0(:,5));  % azimuth angle of normal vector n0(x0)
+%% ===== Main ============================================================
 
-% secondary source selection
-select = cos(phin0 - phik) >= 0;  
-x0 = x0(select,:);
-% k_St(x0) (tangential component of k_S(x0) )
-kSt = sin(phin0(select) - phik(select));  
+% intersection of:
+%            g1: x = xl + gamma * nl     -Ll/2 <= gamma <= Ll/2
+%  g2 (n0-axis): 0 = (x - x0)^T * n0
+%
+% -> gamma = ((x0 - xl)^T * n0) / (nl^T * n0)
 
-% sampling distance
-deltax0 = abs(x0(:,7));
+xl = bsxfun(@minus, xl, x0(:,1:3));  % shift xl about x0
+nl = [cos(alphal), sin(alphal), 0];  % direction vector of line
+n0 = x0(:,4:6);
+phin0 = cart2pol(n0(:,1),n0(:,2));
 
-f = inf(size(x,1), 1);
-for xdx = 1:size(x,1);
-    % mininum and maximum values of k_Gt(x - x_0) 
-    % (tangential component of k_G(x-x0))
-    [kGtmin, kGtmax] = minmax_kGt_fun(x0,x(xdx,:));
-    % aliasing frequency for x0
-    f0 = conf.c./(deltax0.*max(abs(kSt-kGtmin),abs(kSt-kGtmax)));
-    % radius of local region at f0
-    rM = M.*conf.c./(2.*pi.*f0);
-    % mininum and maximum values of kSt(x_0) at f0
-    [kStmin, kStmax] = minmax_kt_circle(x0, xc, rM);
-    select = kSt > kStmin & kSt < kStmax;
-    if sum(select) ~= 0
-        f(xdx) = min(f0(select));
-    end
+gamma = -(xl(:,1).*n0(:,1) + xl(:,2).*n0(:,2))./(n0*nl.');
+
+select = gamma <= 0 | gamma > Ll/2;
+gamma1(select) = +Ll/2;
+gamma1(~select) = gamma;
+
+select = gamma < -Ll/2 | gamma > 0;
+gamma2(select) = -Ll/2;
+gamma2(~select) = gamma;
+
+select = ~isinf(gamma1);
+if any(select)
+  x1(select,:) = bsxfun(@plus, xl(select,:), gamma1(select).*nl);
+elseif any(~select)
+  x1(~select,:) = sign(gamma1(~select))*nl;
 end
+
+select = ~isinf(gamma2);
+if any(select)
+  x2(select,:) = bsxfun(@plus, xl(select,:), gamma2(select).*nl);
+elseif any(~select)
+  x2(~select,:) = sign(gamma2(~select))*nl;
+end
+
+if abs(x1) < 1e-10
+  x1 = x2;
+  degenerated = true;
+else
+  degenerated = false;
+end
+if abs(x2) < 1e-10
+  x2 = x1;
+  if degenerated
+    error('degenerated case');
+  end
+end
+
+phi1 = cart2pol(x1(:,1),x1(:,2));
+phi2 = cart2pol(x2(:,1),x2(:,2));
+
+kGt1 = sin(phin0 - phi1);
+kGt2 = sin(phin0 - phi2);
+
+kGtmin = min(kGt1,kGt2);
+kGtmax = max(kGt1,kGt2);

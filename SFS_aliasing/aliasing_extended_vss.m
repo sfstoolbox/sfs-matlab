@@ -1,4 +1,4 @@
-function f = aliasing_extended_control(x0, kSx0, x, minmax_kGt_fun, minmax_kSt_fun, conf)
+function f = aliasing_extended_vss(x0, xv, kSxv,  x, minmax_kGt_fun, conf)
 %ALIASING_EXTENDED_CONTROL aliasing frequency for an extended listening area 
 %with an defined control area where the sound field synthesis is prioritized
 %
@@ -52,30 +52,71 @@ function f = aliasing_extended_control(x0, kSx0, x, minmax_kGt_fun, minmax_kSt_f
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
-
-phik = cart2pol(kSx0(:,1),kSx0(:,2));  % azimuth angle of kS(x0)
+phik = cart2pol(kSxv(:,1),kSxv(:,2));  % azimuth angle of kS(xv)
+phinv = cart2pol(xv(:,4),xv(:,5));  % azimuth angle of normal vector nv(xv)
 phin0 = cart2pol(x0(:,4),x0(:,5));  % azimuth angle of normal vector n0(x0)
 
-% secondary source selection
-select = cos(phin0 - phik) >= 0;  
-x0 = x0(select,:);
-% kSt(x0) (tangential component of kS(x0) )
-kSt = sin(phin0(select) - phik(select));  
-
-% mininum and maximum values of kSt(x_0)
-[kStmin, kStmax] = minmax_kSt_fun(x0);
-select = kSt >= kStmin & kSt <= kStmax;
-x0 = x0(select,:);
-kSt = kSt(select);
+% selection of virtual secondary source 
+select = cos(phinv - phik) >= 0;  
+xv = xv(select,:);
+% k_S,tv(xv) (tangential component of kS(xv) at xv )
+kStv = sin(phinv(select) - phik(select));  
 
 % sampling distance
 deltax0 = abs(x0(:,7));
+deltaxv = abs(xv(:,7));
 
 f = inf(size(x,1), 1);
+
+eps = 0.01;
 for xdx = 1:size(x,1);
-    % mininum and maximum values of k_Gt(x - x_0) 
-    % (tangential component of k_G(x-x0))
-    [kGtmin, kGtmax] = minmax_kGt_fun(x0,x(xdx,:));
-    % aliasing frequency for x
-    f(xdx) = conf.c./max(deltax0.*max(abs(kSt-kGtmin),abs(kSt-kGtmax)));
+  
+    % mininum and maximum values of k_G,tv(x-xv) 
+    % (tangential component of k_G(x-xv) at xv)
+    [kGtvmin, kGtvmax] = minmax_kGt_fun(xv,x(xdx,:));
+    lambda = max(deltaxv.*max(abs(kStv-kGtvmin),abs(kStv-kGtvmax)));
+    
+    % mininum and maximum values of k_G,t0(x-x0) 
+    % (tangential component of k_G(x-x0) at x0)
+    [kGt0min, kGt0max] = minmax_kGt_fun(x0,x(xdx,:));
+    
+    for vdx=1:size(xv,1)  % interate over all active xv
+        
+        vectorxvx0 = bsxfun(@minus, xv(vdx,1:3), x0(:,1:3));  % vector xv - x0
+        
+        % secondary source selection for ALL x0 and a single xv
+        active = vectorxvx0*xv(vdx,4:6).' >= 0;
+      
+        % polar angle and radius of vector (xv-x0)
+        phixvx0 = cart2pol(vectorxvx0(active,1),vectorxvx0(active,2));
+        
+        % k_FS,tv(xv-x0) (tangential component of k_FS(xv-x0) at xv)
+        kFStv = sin(phinv(vdx) - phixvx0); 
+        % k_FS,t0(xv-x0) (tangential component of k_FS(xv-x0) at x0)
+        kFSt0 = sin(phin0(active) - phixvx0); 
+        
+        % range for aliasing wavelength at x0 caused by discrete SSD (eta = 1)
+        lambda10_1 = abs(kFSt0 - kGt0min(active)).*deltax0(active);
+        lambda10_2 = abs(kFSt0 - kGt0max(active)).*deltax0(active);
+
+        lambda10min = min(lambda10_1,lambda10_2);
+        lambda10max = max(lambda10_1,lambda10_2);
+        
+        % aliasing wavelength at xv caused by discrete virtual SSD (zeta = 1)
+        lambda01 = abs((kStv(vdx) - kFStv).*deltaxv(vdx));
+        
+        % select the x0 where the virtual SSD wavelength is in the range of SSD 
+        % wavelength
+        select = lambda01 < (1+eps).*lambda10max & lambda10min < (1+eps).*lambda01;
+        if any(select)
+          lambda = max(lambda, max(lambda01(select)));
+        end
+        
+        select = lambda01 < eps;
+        if any(select)
+          lambda = max(lambda, max(lambda10max(select)));
+        end
+    end
+        
+    f(xdx) = conf.c./lambda;
 end

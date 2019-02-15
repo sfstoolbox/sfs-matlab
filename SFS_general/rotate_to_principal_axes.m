@@ -4,7 +4,7 @@ function [x0,xs,is_2d] = rotate_to_principal_axes(x0,xs,gamma)
 %   Input parameters:
 %       x0          - point cloud in R^3 [nx3]
 %       xs          - point in R^3 [1x3]
-%       gamma       - scalar in 0 < gamma << 1
+%       gamma       - scalar in 0 < gamma << 1 (default: 0.1)
 %
 %   Output parameters:
 %       x0          - point cloud in R^3
@@ -40,9 +40,17 @@ function [x0,xs,is_2d] = rotate_to_principal_axes(x0,xs,gamma)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
-if nargin < 3
+
+%% ===== Checking of input  parameters ==================================
+nargmin = 2;
+nargmax = 3;
+narginchk(nargmin,nargmax);
+if nargin < nargmax
     gamma = 0.1; % inverse of aspect ratio of principal axes
 end
+
+
+%% ===== Computation ====================================================
 is_2d = false;
 
 [~,S,V] = svd(x0);

@@ -1,6 +1,16 @@
 function dummy_points = augment_bounding_box(x0)
 %AUGMENT_BOUNDING_BOX yields dummy points such that the origin is contained in 
 % the cartesian bounding box of x0.
+%
+%   Usage: dummy_points = check_dimensionality(x0)
+%
+%   Input parameters:
+%       x0           - point cloud on a sphere around the origin / m [nx3]
+%
+%   Output parameters:
+%       dummy_points - original point cloud rotated to principal axes / m [nx3]
+%
+%   See also: findconvexcone
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -31,5 +41,13 @@ function dummy_points = augment_bounding_box(x0)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
+
+%% ===== Checking of input  parameters ==================================
+nargmin = 1;
+nargmax = 1;
+narginchk(nargmin,nargmax);
+
+
+%% ===== Computation ====================================================
 dummy_points = -diag(sign(max(x0)) + sign(min(x0)));
 dummy_points(~any(dummy_points,2),:) = [];

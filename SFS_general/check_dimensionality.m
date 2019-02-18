@@ -22,8 +22,7 @@ function [x0, xs, dim, eq_idx] = check_dimensionality(x0, xs, tol, gamma)
 %   2.5D:  all x0 are in one plane, but xs is not
 %   3D:    otherwise
 %
-%   See also: findvoronoi, test_interpolation_point_selection,
-%             rotate_to_principal_axes
+%   See also: findvoronoi, test_interpolation_point_selection
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *

@@ -1,7 +1,6 @@
 function status = test_interpolation_point_selection(modus)
 %TEST_INTERPOLATION_POINT_SELECTION tests the correctness of the methods
-%findconvexcone() and findvoronoi() for piecewise linear interpolation in
-%3D grids
+%findconvexcone() and findvoronoi() for interpolation in 3D grids
 %
 %   Usage: status = test_interpolation_point_selection(modus)
 %

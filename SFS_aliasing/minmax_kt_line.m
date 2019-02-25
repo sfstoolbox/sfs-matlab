@@ -1,36 +1,5 @@
-function [fal,dx0] = aliasing_frequency(x0,conf)
-%ALIASING_FREQUENCY aliasing frequency for the given secondary sources
+function [kGtmin, kGtmax] = minmax_kt_line(x0, xl, Ll, alphal)
 %
-%   Usage: [fal,dx0] = aliasing_frequency([x0],conf)
-%
-%   Input parameters:
-%       x0      - secondary sources / m
-%       conf    - configuration struct (see SFS_config)
-%
-%   Output parameters:
-%       fal     - aliasing frequency / Hz
-%       dx0     - mean distance between secondary sources / m
-%
-%   ALIASING_FREQUENCY(x0,conf) returns the aliasing frequency for the given
-%   secondary sources. First the mean distance dx0 between the secondary sources
-%   is calculated, afterwards the aliasing frequency is calculated after Spors
-%   (2009) as fal = c/(2*dx0). If no secondary sources x0 are provided, they are
-%   first calculated by calling secondary_source_positions().
-%   For a calculation that includes the dependency on the listener position have
-%   a look at Start (1997).
-%
-%   See also: sound_field_mono_wfs, secondary_source_positions,
-%       secondary_source_distance
-%
-%   References:
-%       Spors and Ahrens (2009) - "Spatial sampling artifacts of wave field
-%       synthesis for the reproduction of virtual point sources", 126th
-%       Convention of the Audio Engineering Society, Paper 7744,
-%       http://www.aes.org/e-lib/browse.cfm?elib=14940
-%
-%       Start (1997) - "Direct Sound Enhancement by Wave Field Synthesis",
-%       PhD thesis, TU Delft,
-%       http://resolver.tudelft.nl/uuid:c80d5b58-67d3-4d84-9e73-390cd30bde0d
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -61,28 +30,61 @@ function [fal,dx0] = aliasing_frequency(x0,conf)
 % http://sfstoolbox.org                                 sfstoolbox@gmail.com *
 %*****************************************************************************
 
+%% ===== Main ============================================================
 
-%% ===== Checking of input parameters ====================================
-nargmin = 1;
-nargmax = 2;
-narginchk(nargmin,nargmax);
-if nargin<nargmax
-    conf = x0;
-    x0 = [];
+% intersection of:
+%            g1: x = xl + gamma * nl     -Ll/2 <= gamma <= Ll/2
+%  g2 (n0-axis): 0 = (x - x0)^T * n0
+%
+% -> gamma = ((x0 - xl)^T * n0) / (nl^T * n0)
+
+xl = bsxfun(@minus, xl, x0(:,1:3));  % shift xl about x0
+nl = [cos(alphal), sin(alphal), 0];  % direction vector of line
+n0 = x0(:,4:6);
+phin0 = cart2pol(n0(:,1),n0(:,2));
+
+gamma = -(xl(:,1).*n0(:,1) + xl(:,2).*n0(:,2))./(n0*nl.');
+
+select = gamma <= 0 | gamma > Ll/2;
+gamma1(select) = +Ll/2;
+gamma1(~select) = gamma;
+
+select = gamma < -Ll/2 | gamma > 0;
+gamma2(select) = -Ll/2;
+gamma2(~select) = gamma;
+
+select = ~isinf(gamma1);
+if any(select)
+  x1(select,:) = bsxfun(@plus, xl(select,:), gamma1(select).*nl);
+elseif any(~select)
+  x1(~select,:) = sign(gamma1(~select))*nl;
 end
-isargstruct(conf);
 
-
-%% ===== Configuration ==================================================
-c = conf.c;
-
-
-%% ===== Computation =====================================================
-% If no explicit secondary source distribution is given, calculate one
-if isempty(x0)
-    x0 = secondary_source_positions(conf);
+select = ~isinf(gamma2);
+if any(select)
+  x2(select,:) = bsxfun(@plus, xl(select,:), gamma2(select).*nl);
+elseif any(~select)
+  x2(~select,:) = sign(gamma2(~select))*nl;
 end
-% Get average distance between secondary sources
-dx0 = secondary_source_distance(x0);
-% Calculate aliasing frequency
-fal = c/(2*dx0);
+
+if abs(x1) < 1e-10
+  x1 = x2;
+  degenerated = true;
+else
+  degenerated = false;
+end
+if abs(x2) < 1e-10
+  x2 = x1;
+  if degenerated
+    error('degenerated case');
+  end
+end
+
+phi1 = cart2pol(x1(:,1),x1(:,2));
+phi2 = cart2pol(x2(:,1),x2(:,2));
+
+kGt1 = sin(phin0 - phi1);
+kGt2 = sin(phin0 - phi2);
+
+kGtmin = min(kGt1,kGt2);
+kGtmax = max(kGt1,kGt2);

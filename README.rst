@@ -132,7 +132,7 @@ Audio Engineering Society*, 2012
 [ `pdf`_ ]
 [ `bibtex`_ ]
 
-Copyright (c) 2010-2018 SFS Toolbox Developers
+Copyright (c) 2010-2019 SFS Toolbox Developers
 
 .. _Issue Section: https://github.com/sfstoolbox/sfs-matlab/issues
 .. _official releases page: https://github.com/sfstoolbox/sfs-matlab/releases

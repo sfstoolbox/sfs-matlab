@@ -384,18 +384,28 @@ conf.localwfs_sbl.Npw = []; % integer
 % Settings regarding all the stuff with impulse responses from the SFS_ir and
 % SFS_binaural_synthesis folders
 %
-% Use interpolation to get the desired HRTF or BRIR for binaural simulation. If this
-% is disabled, the HRTF/BRIR returned by a nearest neighbour search is used instead.
+% Use interpolation to get the desired HRTF or BRIR for binaural simulation.
+% If this is disabled, the HRTF/BRIR returned by a nearest neighbour search is
+% used instead.
 conf.ir.useinterpolation = true; % boolean
-% You can choose the way the points for interpolation are selected. Depending on the
-% geometry of the measured HRTF/BRIR data set, the interpolation will be done between
-% two or three HRTFs. Available methods:
-%   'nearestneighbour'  - Interpolation between nearest neighbours. This only works
-%                         for interpolation points on a circle in the horizontal plane.
+% You can choose the way the points for interpolation are selected. Depending on 
+% the geometry of the measured HRTF/BRIR data set and the interpolation method,
+% a different number of HRTFs are selected for interpolation. See validation 
+% script test_interpolation_point_selection.m for examples. Available methods:
+%   'nearestneighbour'  - Interpolation between nearest neighbours. This only 
+%                         works for interpolation points on a circle in the
+%                         horizontal plane.
 %   'delaunay'          - Interpolation between surrounding points according to
-%                         Delaunay triangulation. This only works for interpolation
-%                         points on a sphere. See validation script
-%                         test_interpolation_point_selection.m for examples.
+%                         Delaunay triangulation. This only works for
+%                         interpolation points on a sphere.
+%   'voronoi'           - For spherical Voronoi interpolation, all coordinates
+%                         are projected on the unit sphere. Voronoi regions
+%                         (including their area) on the sphere are calculated
+%                         for all measured positions included in the HRTF/BRIR
+%                         data set. The query position is added to the point
+%                         cloud and the regions are calculated, again.
+%                         The weights result from the area "stolen" by the query
+%                         position from each of the other coordinates
 conf.ir.interpolationpointselection = 'nearestneighbour';
 % You can choose between the following interpolation methods:
 %   'simple'      - Interpolation in the time domain performed samplewise. This

@@ -95,7 +95,7 @@ case 'all'
         k = prod(p);
     else
         z = -p;
-        k = 1;
+        k = (-1).^(n/2);
     end
 end
 

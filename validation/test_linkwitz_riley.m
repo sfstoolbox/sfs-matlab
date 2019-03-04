@@ -106,7 +106,7 @@ semilogx( ...
   );
 legend('Lowpass', 'Highpass', 'Lowpass + Highpass', 'Allpass', 'Location', 'southwest');
 xlabel('f / Hz');
-ylabel('20 lg |H|')
+ylabel('20 lg |H| / dB')
 xlim([f(1), f(end)]);
 ylim([-90, 10]);
 end
@@ -120,6 +120,6 @@ semilogx( ...
   );
 legend('Lowpass', 'Highpass', 'Lowpass + Highpass', 'Allpass', 'Location', 'southwest');
 xlabel('f / Hz');
-ylabel('angle(H) / deg')
+ylabel('angle(H) / rad')
 xlim([f(1), f(end)]);
 end

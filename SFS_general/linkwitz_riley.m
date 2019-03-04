@@ -92,7 +92,7 @@ case 'all'
     p = p(:);  % octave creates row vectors
     if strcmp(domain,'z')
         z = 1./conj(p);
-        k = prod(p);
+        k = prod(p).*(-1).^(n/2);
     else
         z = -p;
         k = (-1).^(n/2);

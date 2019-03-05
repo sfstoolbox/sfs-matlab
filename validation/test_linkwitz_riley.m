@@ -58,14 +58,20 @@ Hz = Hs;  % z-domain frequency spectra
 
 for Nlr = [2 4 12]  % filter orders
   
-  for tdx = 1:3    
+  for tdx = 1:3
     % Laplace-Domain
     [zs,ps,ks] = linkwitz_riley(Nlr,2*pi*fc,ftype{tdx},'s');
     [soss,gs] = zp2sos(zs,ps,ks,'down','none');
     
     s = [-omega.^2; 1i*omega];
     s(3,:) = 1;
-    Hs(tdx,:) = gs.*prod( (soss(:,1:3)*s)./(soss(:,4:6)*s),1);
+    
+    if isoctave && strcmp(ftype{tdx}, 'low')
+      % WORKAROUND for Octave bug (https://savannah.gnu.org/bugs/?51936)
+      Hs(tdx,:) = gs.*prod( (soss(:,3:-1:1)*s)./(soss(:,4:6)*s),1);
+    else
+      Hs(tdx,:) = gs.*prod( (soss(:,1:3)*s)./(soss(:,4:6)*s),1);
+    end
     
     % z-Domain
     [zz,pz,kz] = linkwitz_riley(Nlr,fc./fs*2,ftype{tdx},'z');

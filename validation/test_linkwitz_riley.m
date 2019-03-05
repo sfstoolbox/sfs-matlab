@@ -13,7 +13,7 @@ function status = test_linkwitz_riley(modus)
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
 %                                                                            *
-% Copyright (c) 2010-2018 SFS Toolbox Developers                             *
+% Copyright (c) 2010-2019 SFS Toolbox Developers                             *
 %                                                                            *
 % Permission is hereby granted,  free of charge,  to any person  obtaining a *
 % copy of this software and associated documentation files (the "Software"), *
@@ -47,9 +47,9 @@ nargmax = 1;
 narginchk(nargmin,nargmax);
 
 %% ===== Main ============================================================
-fs = 44100;  % sampling frequency
-fc = 1000;  % crossover frequency
-f = logspace(-3,log10(fs/2),10000);  % frequeny-axis
+fs = 44100;  % sampling frequency in Hz
+fc = 1000;  % crossover frequency in Hz
+f = logspace(-3,log10(fs/2),10000);  % frequeny-axis in Hz
 omega = 2*pi*f;  % angular frequency
 
 ftype = {'low' 'high' 'all'};  % filter types

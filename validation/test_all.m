@@ -119,6 +119,10 @@ if modus
     test_modal_weighting(1);
     disp('Hit Enter to continue');
     pause
+    disp('Running "test_linkwitz_riley(1)"');
+    test_linkwitz_riley(1);
+    disp('Hit Enter to continue');
+    pause
     disp('Running "test_sphbesselh_zeros(1)"');
     test_sphbesselh_zeros(1);
 else
@@ -139,6 +143,7 @@ else
              test_imp_25d(0); ...
              test_spectrum_signal_conversion(0);
              test_modal_weighting(0);
+             test_linkwitz_riley(0);
              test_sphbesselh_zeros(0);
              %test_wfs_iir_prefilter(0); ... % needs DSP Tooblox
             ])

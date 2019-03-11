@@ -42,7 +42,7 @@ function ir = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 %   added at the beginning correspond to the actual radius of the measured
 %   impulse response.
 %
-%   For a description of the SOFA file format see: http://sofaconventions.org
+%   For a description of the SOFA file format see: https://sofaconventions.org
 %
 %   See also: SOFAload, sofa_get_header, sofa_get_data_fir, sofa_get_data_fire,
 %             interpolate_ir, ir_correct_distance
@@ -73,7 +73,7 @@ function ir = get_ir(sofa,X,head_orientation,xs,coordinate_system,conf)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
@@ -110,7 +110,7 @@ X_sofa = sofa_get_listener_position(header,'cartesian');
 % === Get Impulse Response ===
 if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
     %
-    % http://www.sofaconventions.org/mediawiki/index.php/SimpleFreeFieldHRIR
+    % https://www.sofaconventions.org/mediawiki/index.php/SimpleFreeFieldHRIR
     %
     % Returns a single impulse response for the desired position. The impulse
     % response is shifted in time and its amplitude is weighted according to the
@@ -145,7 +145,7 @@ if strcmp('SimpleFreeFieldHRIR',header.GLOBAL_SOFAConventions)
 
 elseif strcmp('MultiSpeakerBRIR',header.GLOBAL_SOFAConventions)
     %
-    % http://www.sofaconventions.org/mediawiki/index.php/MultiSpeakerBRIR
+    % https://www.sofaconventions.org/mediawiki/index.php/MultiSpeakerBRIR
     %
     % This looks for the nearest loudspeaker corresponding to the desired source
     % position. For that loudspeaker, the impulse reponse for the specified head

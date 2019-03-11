@@ -1,4 +1,4 @@
-# Definitions of acronyms that are used on http://matlab.sfstoolbox.org
+# Definitions of acronyms that are used on https://sfs-matlab.readthedocs.io/
 #
 # This uses the rst-epilog variable, which will be appended to every source
 # file by sphinx, see:

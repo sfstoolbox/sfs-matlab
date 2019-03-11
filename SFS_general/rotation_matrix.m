@@ -45,7 +45,7 @@ function R = rotation_matrix(phi,dim,orientation)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
@@ -67,7 +67,7 @@ isargpositivescalar(dim);
 
 
 %% ===== Computation ====================================================
-% Rotation matrix (see: http://en.wikipedia.org/wiki/Rotation_matrix)
+% Rotation matrix (see: https://en.wikipedia.org/wiki/Rotation_matrix)
 % get single matrix entries
 r1 = cos(phi);
 r4 = cos(phi);

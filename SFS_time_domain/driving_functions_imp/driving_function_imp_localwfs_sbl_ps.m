@@ -19,7 +19,7 @@ function [d,delay_offset] = driving_function_imp_localwfs_sbl_ps(x0,xs,conf)
 %       Winter, Hahn, Spors (2017), "Time-Domain Realisation of Model-Based
 %       Rendering for 2.5D Local Wave Field Synthesis Using Spatial
 %       Bandwidth-Limitation", 25th European Signal Processing Conference
-%       (EUSIPCO), pp. 718-722, http://bit.ly/2yMjlOw 
+%       (EUSIPCO), pp. 718-722, https://bit.ly/2yMjlOw 
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -47,7 +47,7 @@ function [d,delay_offset] = driving_function_imp_localwfs_sbl_ps(x0,xs,conf)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
 %*****************************************************************************
 
 

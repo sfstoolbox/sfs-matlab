@@ -41,7 +41,7 @@ function set_colormap(map)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
@@ -60,7 +60,7 @@ if ~ischar(map)
     colormap(map);
 elseif strcmp('default',map) || strcmp('moreland',map)
     % Default SFS Toolbox color: blue,white,red
-    % see: http://www.sandia.gov/~kmorel/documents/ColorMaps/
+    % see: http://www.kennethmoreland.com/color-advice/
     colormap(moreland(256));
 elseif strcmp('gray',map) || strcmp('grey',map) 
     colormap(flipud(colormap('gray')));

@@ -12,7 +12,7 @@ function m = moreland(n)
 %   MORELAND(N) returns an N-by-3 matrix containing a divergent colormap.
 %   Without a given N the same length as the current figure's colormap is used.
 %   For details on the colormap have a look at:
-%   http://www.sandia.gov/~kmorel/documents/ColorMaps/
+%   http://www.kennethmoreland.com/color-advice/
 %
 %   To change the colormap current figure run: colormap(moreland)
 %
@@ -46,7 +46,7 @@ function m = moreland(n)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
 %*****************************************************************************
 
 

@@ -26,7 +26,7 @@ function [x w v] = legpts(n,int,meth)
 %  See also chebpts and jacpts.
 
 %  Copyright 2011 by The University of Oxford and The Chebfun Developers.
-%  See http://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
+%  See https://www.maths.ox.ac.uk/chebfun/ for Chebfun information.
 %
 %  Redistribution and use in source and binary forms, with or without
 %  modification, are permitted provided that the following conditions are met:

@@ -13,7 +13,7 @@ function [points,weights] = get_spherical_grid(number,conf)
 %
 %   GET_SPHERICAL_GRID(number,conf) returns the points and weights for a grid on
 %   a sphere. The type of grid is specified by conf.secondary_sources.grid.
-%   For available grids, have a look at http://github.com/sfstoolbox/data.
+%   For available grids, have a look at https://github.com/sfstoolbox/data.
 %   It expects the grid files at SFS_basepath/data/spherical_grids. If the
 %   desired file is not available on the hard disk, the function tries to
 %   download it directly from github.
@@ -56,7 +56,7 @@ function [points,weights] = get_spherical_grid(number,conf)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
@@ -134,6 +134,6 @@ elseif strcmp('gauss',spherical_grid)
     weights = weights(:)*pi/number;
 else
     error(['%s: the given spherical grid is not available, have a look at ' ...
-        'http://github.com/sfstoolbox/data for avialable grids.'], ...
+        'https://github.com/sfstoolbox/data for avialable grids.'], ...
         upper(mfilename));
 end

@@ -18,10 +18,7 @@ function D = driving_function_mono_wfs_pw(x0,nx0,nk,f,conf)
 %   References:
 %       Schultz (2016) - "Sound Field Synthesis for Line Source Array
 %       Applications in Large-Scale Sound Reinforcement", PhD thesis,
-%       Universität Rostock,
-%       http://nbn-resolving.de/urn:nbn:de:gbv:28-diss2016-0078-1
-%
-%       http://sfstoolbox.org
+%       Universität Rostock, https://doi.org/10.18453/rosdok_id00001765
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -49,7 +46,7 @@ function D = driving_function_mono_wfs_pw(x0,nx0,nk,f,conf)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
 %*****************************************************************************
 
 

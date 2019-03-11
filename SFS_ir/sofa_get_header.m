@@ -11,7 +11,7 @@ function header = sofa_get_header(sofa)
 %
 %   SOFA_GET_HEADER(sofa) returns the header of the given SOFA file or struct.
 %   For the struct the SOFA file has to loaded before with SOFAload().
-%   For a description of the SOFA file format see: http://sofaconventions.org
+%   For a description of the SOFA file format see: https://sofaconventions.org
 %
 %   See also: sofa_get_data, sofa_is_file, get_ir, SOFAload 
 
@@ -41,7 +41,7 @@ function header = sofa_get_header(sofa)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
 %*****************************************************************************
 
 

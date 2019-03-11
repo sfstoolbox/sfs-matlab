@@ -13,16 +13,16 @@ with the `SoundScape Renderer`_.
 .. _SoundScape Renderer: http://spatialaudio.net/ssr
 
 Theory:
-    http://sfstoolbox.org/
+    https://sfs.readthedocs.io/
 
 Documentation:
-    http://matlab.sfstoolbox.org/
+    https://sfs-matlab.readthedocs.io/
 
 Source code and issue tracker:
-    http://github.com/sfstoolbox/sfs-matlab/
+    https://github.com/sfstoolbox/sfs-matlab/
 
 SFS Toolbox for Python:
-    http://python.sfstoolbox.org/
+    https://sfs-python.readthedocs.io/
 
 License:
     MIT -- see the file ``LICENSE`` for details.
@@ -35,7 +35,8 @@ Installation
 ``SFS_start`` which will add all needed paths to Matlab/Octave.  If
 you want to remove them again, run ``SFS_stop``.
 
-.. _Download the Toolbox: https://github.com/sfstoolbox/sfs-matlab/releases/latest
+.. _Download the Toolbox:
+    https://github.com/sfstoolbox/sfs-matlab/releases/latest
 
 
 Requirements
@@ -46,14 +47,14 @@ Matlab:
     versions the Toolbox should also work, but you need to add `narginchk.m`_ to
     the ``SFS_helper`` directory.
 
-.. _narginchk.m: http://gist.github.com/hagenw/5642886
+.. _narginchk.m: https://gist.github.com/hagenw/5642886
 
 Octave:
     You need Octave version 3.6 or newer to run the Toolbox. In addition,
     you will need the ``audio`` and ``signal`` packages from
     `octave-forge`_.
 
-.. _octave-forge: http://octave.sourceforge.net/
+.. _octave-forge: https://octave.sourceforge.io/
 
 audioread:
     If ``audioread()`` is not available in your Matlab or Octave version,
@@ -72,10 +73,12 @@ Backward compatibility:
     Toolbox. If you still need this you should download `the latest version with
     irs file support`_.
 
-.. _SOFA: http://sofaconventions.org/
+.. _SOFA: https://sofaconventions.org/
 .. _SOFA API for Matlab/Octave: https://github.com/sofacoustics/API_MO
-.. _irs file format: https://dev.qu.tu-berlin.de/projects/measurements/wiki/IRs_file_format
-.. _the latest version with irs file support: https://github.com/sfstoolbox/sfs-matlab/releases/tag/1.2.0
+.. _irs file format:
+    https://dev.qu.tu-berlin.de/projects/measurements/wiki/IRs_file_format
+.. _the latest version with irs file support:
+    https://github.com/sfstoolbox/sfs-matlab/releases/tag/1.2.0
 
 
 Getting started
@@ -113,7 +116,7 @@ can look like this:
 For a detailed description of all available features the SFS Toolbox, have a
 look at the `online documentation`_.
 
-.. _online documentation: http://matlab.sfstoolbox.org
+.. _online documentation: https://sfs-matlab.readthedocs.io/
 
 
 Credits and feedback

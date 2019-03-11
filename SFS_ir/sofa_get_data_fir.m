@@ -20,7 +20,7 @@ function ir = sofa_get_data_fir(sofa,idx)
 %   SOFA file or struct, specified by idx. If no idx is specified all data
 %   contained in sofa is returned.
 %   For the struct the SOFA file has to loaded before with SOFAload().
-%   For a description of the SOFA file format see: http://sofaconventions.org
+%   For a description of the SOFA file format see: https://sofaconventions.org
 %
 %   See also: sofa_get_data_fire, sofa_get_header, get_ir, SOFAload
 
@@ -50,7 +50,7 @@ function ir = sofa_get_data_fir(sofa,idx)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
 %*****************************************************************************
 
 

@@ -57,7 +57,7 @@ function varargout = wave_fronts_wfs(X,phi,xs,src,gnuplot,conf)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
@@ -141,7 +141,7 @@ if gnuplot
     vdB = zeros(nls,3);
     for ii = 1:nls
         % === Direction and amplitude in vector notation ===
-        % Rotation matrix (see: http://en.wikipedia.org/wiki/Rotation_matrix)
+        % Rotation matrix (see: https://en.wikipedia.org/wiki/Rotation_matrix)
         % RM = [cos(alpha) -sin(alpha); ...
         %       sin(alpha) cos(alpha)];
         RM = rotation_matrix(alpha(ii),3,'counterclockwise');

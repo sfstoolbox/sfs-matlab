@@ -41,7 +41,7 @@ function conf = SFS_config()
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
@@ -150,8 +150,8 @@ conf.dimension = '2.5D'; % string
 %
 % === Driving functions ===
 % Implementation of driving functions. For the default ones use 'default'. These
-% functions are described at http://sfstoolbox.org. For possible other flags
-% have a look into the driving functions as they can be quite specific.
+% functions are described at https://sfs.readthedocs.io/. For possible other
+% flags have a look into the driving functions as they can be quite specific.
 % Most users can safely use the 'default' flag here.
 conf.driving_functions = 'default'; % string
 %
@@ -259,12 +259,12 @@ conf.secondary_sources.x0 = []; % / m
 %   'equally_spaced_points' - Sphere with equal distance between grid points
 %   'gauss'                 - Gauss grid
 %   'fabian'                - grid of 3D HRTF measurement, available at
-%                             http://dx.doi.org/10.14279/depositonce-5718
+%                             https://doi.org/10.14279/depositonce-5718
 %
 % Note, that 'equally_spaced_points' and 'fabian' are precomputed grids that
 % will be automatically downloaded and cached on your disk. All available number
 % of secondary sources for those grids can be seen at:
-% http://github.com/sfstoolbox/data/tree/master/spherical_grids
+% https://github.com/sfstoolbox/data/tree/master/spherical_grids
 % An exception are Gauss grids, which are available via 'gauss' and will be
 % calculated on the fly allowing very high number of secondary sources.
 conf.secondary_sources.grid = 'equally_spaced_points'; % string
@@ -416,7 +416,7 @@ conf.ir.interpolationpointselection = 'nearestneighbour';
 %                   the phase information at low frequencies which is often the
 %                   case for measured HRTFs. Low frequencies can be corrected
 %                   according to theory, see e.g. the corrected KEMAR HRTFs published
-%                   at http://github.com/spatialaudio/lf-corrected-kemar-hrtfs.
+%                   at https://github.com/spatialaudio/lf-corrected-kemar-hrtfs.
 %                   The implementation of this method suffers from circular shifting,
 %                   see test_interpolation_methods.m in the validation folder. For
 %                   typical HRIRs with leading and trailing zeros, the error is
@@ -470,7 +470,7 @@ conf.plot.caxis = []; % [min max]
 % Default colormap to use
 % The Toolbox comes with two own color maps, if you set 'default' or 'moreland'
 % you will get a blue/red-colormap after
-% http://www.sandia.gov/~kmorel/documents/ColorMaps/
+% http://www.kennethmoreland.com/color-advice/
 % If you set 'gray' or 'grey' you will get a colormap ranging from white to
 % black. In addition you can add every other map you can specify in
 % Matlab/Octave. For example to get the Matlab default colormap set 'parula'.

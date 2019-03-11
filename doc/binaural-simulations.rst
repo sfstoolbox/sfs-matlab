@@ -8,12 +8,12 @@ reaching a listener sitting at a given point in the listening area for different
 spatial audio systems.
 
 In order to easily use different |HRTF| or |BRIR| sets the Toolbox uses the
-`SOFA file format <http://sofaconventions.org>`_. In order to use it you have to
-install the `SOFA API for Matlab/Octave
+`SOFA file format <https://sofaconventions.org>`_. In order to use it you have
+to install the `SOFA API for Matlab/Octave
 <https://github.com/sofacoustics/API_MO>`_ and run ``SOFAstart`` before you can
 use it inside the SFS Toolbox. If you are looking for different |HRTF|\ s and
 |BRIR|\ s, a large set of different impulse responses is available:
-http://www.sofaconventions.org/mediawiki/index.php/Files.
+https://www.sofaconventions.org/mediawiki/index.php/Files.
 
 The files dealing with the binaural simulations are in the folder
 ``SFS_binaural_synthesis``. Files dealing with |HRTF|\ s and |BRIR|\ s are in
@@ -120,7 +120,7 @@ additional information on the recordings are available for download, see
 has the advantage to be able to include all loudspeakers and head orientations
 in just one file.
 
-.. _doi:10.14279/depositonce-87.2: http://dx.doi.org/10.14279/depositonce-87.2
+.. _`doi:10.14279/depositonce-87.2`: https://doi.org/10.14279/depositonce-87.2
 
 .. sourcecode:: matlab
 

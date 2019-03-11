@@ -47,7 +47,7 @@ function plot_sound_field(P,X,Y,Z,x0,conf)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
@@ -221,7 +221,7 @@ switch sum(dimensions)
     point_size = [];
     if isoctave, point_size = 5; end % fix scatter plot point size for Octave
     scatter3(x1(:),x2(:),x3(:),point_size,limit_colors(P,p.caxis),'filled');
-    % Fix perspective of plot in Matlab (http://bit.ly/1LISaz9)
+    % Fix perspective of plot in Matlab (https://stackoverflow.com/q/17447404)
     set(gcf,'renderer','opengl');
     % Add color bar
     set_colorbar(conf);
@@ -246,7 +246,7 @@ end
 function P = limit_colors(P,caxis)
     % Limits the number of different values in P to 64.
     % This speeds up plotting with the scatter function in octave, see:
-    % http://savannah.gnu.org/bugs/?40663
+    % https://savannah.gnu.org/bugs/?40663
     %
     number_of_colors = 64;
     % First apply the caxis values

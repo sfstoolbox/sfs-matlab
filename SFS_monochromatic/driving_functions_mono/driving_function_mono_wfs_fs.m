@@ -32,8 +32,6 @@ function D = driving_function_mono_wfs_fs(x0,nx0,xs,f,conf)
 %
 %       Wierstorf (2014) - "Perceptual Assessment of Sound Field Synthesis",
 %       PhD thesis, TU Berlin, https://doi.org/10.14279/depositonce-4310
-%
-%       http://sfstoolbox.org
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -61,7 +59,7 @@ function D = driving_function_mono_wfs_fs(x0,nx0,xs,f,conf)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
 %*****************************************************************************
 
 

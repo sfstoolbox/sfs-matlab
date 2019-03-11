@@ -11,7 +11,7 @@ function m = magma(n)
 %
 %   MAGMA(N) returns an N-by-3 matrix containing a divergent colormap.
 %   Without a given N the same length as the current figure's colormap is used.
-%   For details on the colormap have a look at: http://bids.github.io/colormap/
+%   For details on the colormap have a look at: https://bids.github.io/colormap/
 %
 %   To change the colormap current figure run: colormap(magma)
 %
@@ -43,7 +43,7 @@ function m = magma(n)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
 %*****************************************************************************
 
 

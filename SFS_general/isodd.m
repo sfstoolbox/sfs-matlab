@@ -37,7 +37,7 @@ function bool = isodd(number)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
@@ -45,5 +45,5 @@ function bool = isodd(number)
 % Create answer
 bool = false( size(number) );
 % Look for odd numbers, use bitget() to overcome a mod() bug, see
-% http://bit.ly/1wcNYBI
+% https://bit.ly/1wcNYBI
 bool(bitget(number,1)==1) = true;

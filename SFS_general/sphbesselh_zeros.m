@@ -26,7 +26,7 @@ function [z,p] = sphbesselh_zeros(order)
 %       Campos, Calderon (2011) - "Approximate closed-form formulas for the
 %       zeros of the Bessel Polynomials", https://arxiv.org/abs/1105.0957
 %
-%       This implementation is based on scipy: http://bit.ly/2tPfePn
+%       This implementation is based on scipy: https://bit.ly/2tPfePn
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -54,7 +54,7 @@ function [z,p] = sphbesselh_zeros(order)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% http://sfstoolbox.org                                 sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
 %*****************************************************************************
 
 
@@ -84,7 +84,7 @@ r = campos_zeros(order);
 % Zeros of nth-order ordinary Bessel polynomial y_n are the same as for
 % the exponentially scaled modified Bessel function of second kind K_v:
 % \sqrt{2pi/x} * exp(1/x) * K_{n+0.5}(1/x) = y_n(x),
-% see for example http://bit.ly/2unx63m.
+% see for example https://bit.ly/2unx63m.
 % Hence, we define the target function and its first derivative as
 f  = @(x) besselk(order+0.5, 1./x, 1);
 fp = @(x) besselk(order-0.5, 1./x, 1)./2./x.^2  - ...
@@ -117,7 +117,7 @@ end
 %% ===== Auxiliary Functions =============================================
 function z0 = campos_zeros(n)
     % Approximate roots of ordinary Bessel polynomial of nth order, see
-    % Campos and Calderon (2011) and http://bit.ly/2txLJyM
+    % Campos and Calderon (2011) and https://bit.ly/2txLJyM
 
     if n == 1
         z0 = -1;
@@ -147,7 +147,7 @@ end
 
 function x = aberth(f,fp,x0,TOL,MAXITER)
     % Ehrlich-Aberth method to simulatenous approximation of roots,
-    % see http://bit.ly/2sOfeiT
+    % see https://bit.ly/2sOfeiT
     N = length(x0);
     beta = zeros(size(x0));
     x = x0;

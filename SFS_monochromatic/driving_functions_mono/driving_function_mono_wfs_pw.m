@@ -86,7 +86,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % D(x0,w) =  2 --- nk nx0  e^(-i w/c nk x0)
         %               c
         %
-        % See http://sfstoolbox.org/#equation-D.wfs.pw
+        % See https://sfs.rtfd.io/en/3.2/#equation-D.wfs.pw
         %
         D = 2.*1i.*omega./c .* vector_product(nk,nx0,2) ...
             .* exp(-1i.*omega./c.*vector_product(nk,x0,2));
@@ -119,7 +119,7 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D(x0,w) = 2g0 nk nx0 _ |---  e^(-i w/c nk x0)
         %                            \| c
         %
-        % See http://sfstoolbox.org/#equation-D.wfs.pw.2.5D
+        % See https://sfs.rtfd.io/en/3.2/#equation-D.wfs.pw.2.5D
         %
         D = 2.*g0 .* vector_product(nk,nx0,2) .* sqrt(1i.*omega./c) ...
             .* exp(-1i.*omega./c.*vector_product(nk,x0,2));

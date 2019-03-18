@@ -98,7 +98,7 @@ if strcmp('pw',src)
     % a = <
     %      \ 0, else
     %
-    % See http://sfstoolbox.org/#equation-wfs.pw.selection
+    % See https://sfs.rtfd.io/en/3.2/#equation-wfs.pw.selection
     %
     % Direction of plane wave (nk) is set above
     idx = nx0*nk(:) >= eps;
@@ -111,7 +111,7 @@ elseif strcmp('ps',src)
     % a = <
     %      \ 0, else
     %
-    % See http://sfstoolbox.org/#equation-wfs.ps.selection
+    % See https://sfs.rtfd.io/en/3.2/#equation-wfs.ps.selection
     %
     idx = sum(nx0.*x0,2) - nx0*xs(1:3).' >= -2*eps;
 
@@ -126,7 +126,7 @@ elseif strcmp('ls',src)
     % where v = x0-xs - <x0-xs,nxs > nxs,
     % and |nxs| = 1.
     %
-    % See http://sfstoolbox.org/#equation-wfs.ls.selection
+    % See https://sfs.rtfd.io/en/3.2/#equation-wfs.ls.selection
     %
     %NOTE: We don't check if we are in a 2D or 3D scenario and use xs(4:6)
     % whenever it is present. This can only provide problems if you use the
@@ -152,7 +152,7 @@ elseif strcmp('fs',src)
     % a = <
     %      \ 0, else
     %
-    % See http://sfstoolbox.org/#equation-wfs.fs.selection
+    % See https://sfs.rtfd.io/en/3.2/#equation-wfs.fs.selection
     %
     nxs = xs(4:6);  % vector for orientation of focused source
     xs = xs(1:3);  % vector for position of focused source

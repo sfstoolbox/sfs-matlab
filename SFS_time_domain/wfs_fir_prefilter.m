@@ -93,7 +93,7 @@ if strcmp('2.5D',dimension)
     %  H(f) = \ |------ for flow<=f<=fhigh
     %          \|  c
     %
-    %  See http://sfstoolbox.org/#equation-h.wfs.2.5D
+    %  See https://sfs.rtfd.io/en/3.2/#equation-h.wfs.2.5D
     %
     H(idxflow:idxfhigh) = sqrt(2*pi*f(idxflow:idxfhigh)/c);
     H(idxfhigh:end) = H(idxfhigh);
@@ -103,7 +103,7 @@ elseif strcmp('3D',dimension) || strcmp('2D',dimension)
     %  H(f) = ------ for flow<=f<=fhigh
     %           c
     %
-    %  See http://sfstoolbox.org/#equation-h.wfs
+    %  See https://sfs.rtfd.io/en/3.2/#equation-h.wfs
     %
     H(idxflow:idxfhigh) = 2*pi*f(idxflow:idxfhigh)/c;
     H(idxfhigh:end) = H(idxfhigh);

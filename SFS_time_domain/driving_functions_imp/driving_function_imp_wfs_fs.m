@@ -95,7 +95,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % d(x0,t) = h(t) * --- ----------- delta(t+|x0-xs|/c)
         %                  2pi  |x0-xs|^2
         %
-        % See https://sfs.rtfd.io/en/3.2/#equation-d.wfs.fs
+        % https://sfs.rtfd.io/en/3.2/d_wfs/#equation-td-wfs-focused-3d
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -110,7 +110,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % d(x0,t) = h(t) * _ |--- ------------- delta(t+|x0-xs|/c)
         %                   \|2pi |x0-xs|^(3/2)
         %
-        % See https://sfs.rtfd.io/en/3.2/#equation-d.wfs.fs.ls
+        % https://sfs.rtfd.io/en/3.2/d_wfs/#equation-td-wfs-focused-2d
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -167,7 +167,7 @@ elseif strcmp('2.5D',dimension)
         % d_2.5D(x0,t) = h_pre(-t) * g0 _ |---  ------------- delta(t+|x0-xs|/c)
         %                                \|2pi  |x0-xs|^(3/2)
         %
-        % See https://sfs.rtfd.io/en/3.2/#equation-d.wfs.fs.2.5D
+        % https://sfs.rtfd.io/en/3.2/d_wfs/#equation-td-wfs-focused-25d
         %
         % Delay and amplitude weight
         delay = -1./c .* r;

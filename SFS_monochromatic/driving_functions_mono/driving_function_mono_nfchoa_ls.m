@@ -97,7 +97,7 @@ if strcmp('2D',dimension)
         %             2pi r0  m=-N   (2)
         %                           Hm(w/c r0)
         %
-        % See https://sfs.rtfd.io/en/3.2/#equation-D.nfchoa.ls.2D
+        % https://sfs.rtfd.io/en/3.2/d_nfchoa/#equation-fd-nfchoa-line-2d
         %
         for m=-N:N
             D = D + 1 ./ (2.*pi.*r0) ...
@@ -125,8 +125,6 @@ elseif strcmp('2.5D',dimension)
         % D(phi0,w) = ---  /__  ------------------- e^(im(phi0-phi))
         %             2r0  m=-N        (2)
         %                         w/c h|m|(w/c r0)
-        %
-        % See https://sfs.rtfd.io/en/3.2/#equation-D.nfchoa.ls.2.5D
         %
         for m=-N:N
             D = D + 1 ./ (2.*r0) ...
@@ -165,8 +163,6 @@ elseif strcmp('3D',dimension)
         %                              w/c hn(w/c r0)
         %                m
         %             x Yn(beta0,alpha0)
-        %
-        % See https://sfs.rtfd.io/en/3.2/#equation-D.nfchoa.ls.3D
         %
         for n=-N:N
             for m=-n:n

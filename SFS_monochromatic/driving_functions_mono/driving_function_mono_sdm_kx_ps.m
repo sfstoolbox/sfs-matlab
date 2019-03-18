@@ -108,7 +108,7 @@ elseif strcmp('2.5D',dimension)
         %                     \ ----------_-_-_-_-_-_---------,       |kx|>|w/c|
         %                          K1( \|kx^2-(w/c)^2 yref )
         %
-        % See https://sfs.rtfd.io/en/3.2/#equation-D.sdm.ps.2.5D
+        % https://sfs.rtfd.io/en/3.2/d_nfchoa/#equation-fd-sdm-point-25d
         %
         D(idxpr) =  exp(1i*kx(idxpr)*xs(1)) .* ...
             besselh(1,2,sqrt( (omega/c)^2 - kx(idxpr).^2 )*abs(xref(2)-xs(2))) ./ ...

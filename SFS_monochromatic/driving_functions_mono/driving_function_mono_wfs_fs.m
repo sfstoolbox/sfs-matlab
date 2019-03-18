@@ -107,7 +107,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         % D(x0,w) = --- --- ----------- e^(i w/c |x0-xs|)
         %           2pi  c   |x0-xs|^2
         %
-        % See https://sfs.rtfd.io/en/3.2/#equation-D.wfs.fs
+        % https://sfs.rtfd.io/en/3.2/d_wfs/#equation-fd-wfs-focused-3d
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -140,8 +140,6 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         %              iw (x0-xs)nk  (1)/ w         \
         % D(x0,w) =  - -- --------- H1  | - |x0-xs| |
         %              2c  |x0-xs|      \ c         /
-        %
-        % See https://sfs.rtfd.io/en/3.2/#equation-D.wfs.fs.ls
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -199,7 +197,7 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D(x0,w) = g0  _ |---  _ |--- ------------- e^(i w/c |x0-xs|)
         %                     \|2pi   \| c  |x0-xs|^(3/2)
         %
-        % See https://sfs.rtfd.io/en/3.2/en/update_wfs_ps/#equation-D.wfs.fs.2.5D
+        % https://sfs.rtfd.io/en/3.2/d_wfs/#equation-fd-wfs-focused-25d
         %
         % Driving signal
         D = 1./sqrt(2.*pi) .* sqrt(-1i.*omega./c) .* g0 ...

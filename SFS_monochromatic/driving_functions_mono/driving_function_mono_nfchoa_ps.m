@@ -113,7 +113,7 @@ elseif strcmp('2.5D',dimension)
         %             2pi r0  m=-N   (2)
         %                           h|m|(w/c r0)
         %
-        % See https://sfs.rtfd.io/en/3.2/#equation-D.nfchoa.ps.2.5D
+        % https://sfs.rtfd.io/en/3.2/d_nfchoa/#equation-fd-nfchoa-point-25d
         for m=-N:N
             D = D + 1 ./ (2.*pi.*r0) ...
                 .* win(abs(m)+1) ...
@@ -144,7 +144,7 @@ elseif strcmp('3D',dimension)
         %                       m
         %                    x Yn(theta0,phi0)
         %
-        % See https://sfs.rtfd.io/en/3.2/#equation-D.nfchoa.ps.3D
+        % https://sfs.rtfd.io/en/3.2/d_nfchoa/#equation-fd-nfchoa-point-3d
         %
         for n=0:N
             for m=-n:n

@@ -1,3 +1,9 @@
+2.5.0 (18. March 2019)
+    - Add voronoi interpolation for impulse responses
+    - Fix phase offset of Linkwitz-Riley Allpass Filters
+    - Add modal window to monochromatic NFC-HOA driving functions
+    - Update equation links to https://sfs.rtfd.io/en/3.2/
+
 2.4.3 (26. October 2018)
     - fix bug where in LWFS-SBL, where inverse Allpass was inverted
 

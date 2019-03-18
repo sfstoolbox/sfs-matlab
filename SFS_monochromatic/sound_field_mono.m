@@ -130,7 +130,7 @@ for ii = 1:size(x0,1)
     % P(x,omega) = | D(x0,omega) G(x-x0,omega) dx0
     %              /
     %
-    % See http://sfstoolbox.org/#equation-single-layer
+    % See https://sfs.rtfd.io/en/3.2/#equation-single-layer
     %
     % x0(ii,7) is a weight for the single secondary sources which includes for
     % example a tapering window for WFS or a weighting of the sources for

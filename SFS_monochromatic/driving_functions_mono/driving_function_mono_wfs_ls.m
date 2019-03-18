@@ -85,7 +85,7 @@ if strcmp('2D',dimension)
         % D(x0,w) =  - -- -----------  H1  | - |x0-xs| |
         %              2c   |x0-xs|        \ c         /
         %
-        % See http://sfstoolbox.org/#equation-D.wfs.ls
+        % See https://sfs.rtfd.io/en/3.2/#equation-D.wfs.ls
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -122,7 +122,7 @@ elseif strcmp('2.5D',dimension)
         % D_2.5D(x0,w) =  - -- _ |---  -----------  H1  | - |x0-xs| |
         %                   2   \| c    |x0-xs|         \ c         /
         %
-        % See http://sfstoolbox.org/#equation-D.wfs.ls.2.5D
+        % See https://sfs.rtfd.io/en/3.2/#equation-D.wfs.ls.2.5D
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -152,8 +152,8 @@ elseif strcmp('3D',dimension)
         % where v = x0-xs - <x0-xs,nxs > nxs,
         % and |nxs| = 1.
         %
-        % See http://sfstoolbox.org/#equation-d.wfs.ls
-        % and http://sfstoolbox.org/#equation-v.ls
+        % See https://sfs.rtfd.io/en/3.2/#equation-d.wfs.ls
+        % and https://sfs.rtfd.io/en/3.2/#equation-v.ls
         %
         % v = (I - nxs'nxs)(x0-xs)
         % r = |v|

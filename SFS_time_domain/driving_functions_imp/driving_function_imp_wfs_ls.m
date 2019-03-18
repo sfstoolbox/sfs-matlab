@@ -21,7 +21,7 @@ function [delay,weight] = driving_function_imp_wfs_ls(x0,nx0,xs,conf)
 %   See also: sound_field_imp, sound_field_imp_wfs, driving_function_mono_wfs_ls
 %
 %   References:
-%       http://sfstoolbox.org
+%       https://sfs.rtfd.io/en/3.2
 
 %*****************************************************************************
 % The MIT License (MIT)                                                      *
@@ -88,7 +88,7 @@ if strcmp('2D',dimension)
         % d(x0,t) = h(t) * _ |--- ------------- delta(t-|x0-xs|/c)
         %                   \|2pi |x0-xs|^(3/2)
         %
-        % See http://sfstoolbox.org/#equation-d.wfs.ls
+        % See https://sfs.rtfd.io/en/3.2/#equation-d.wfs.ls
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -134,8 +134,8 @@ elseif strcmp('3D',dimension)
         % where v = x0-xs - <x0-xs,nxs > nxs,
         % and |nxs| = 1.
         %
-        % See http://sfstoolbox.org/#equation-d.wfs.ls
-        % and http://sfstoolbox.org/#equation-v.ls
+        % See https://sfs.rtfd.io/en/3.2/#equation-d.wfs.ls
+        % and https://sfs.rtfd.io/en/3.2/#equation-v.ls
         %
         % v = (I - nxs'nxs)(x0-xs)
         % r = |v|

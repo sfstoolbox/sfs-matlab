@@ -88,7 +88,7 @@ if strcmp('2D',dimension)
         % d(x0,t) = h(t) * _ |--- ------------- delta(t-|x0-xs|/c)
         %                   \|2pi |x0-xs|^(3/2)
         %
-        % See https://sfs.rtfd.io/en/3.2/#equation-d.wfs.ls
+        % https://sfs.rtfd.io/en/3.2/d_wfs/#equation-td-wfs-line
         %
         % r = |x0-xs|
         r = vector_norm(x0-xs,2);
@@ -134,8 +134,7 @@ elseif strcmp('3D',dimension)
         % where v = x0-xs - <x0-xs,nxs > nxs,
         % and |nxs| = 1.
         %
-        % See https://sfs.rtfd.io/en/3.2/#equation-d.wfs.ls
-        % and https://sfs.rtfd.io/en/3.2/#equation-v.ls
+        % https://sfs.rtfd.io/en/3.2/d_wfs/#equation-td-wfs-line
         %
         % v = (I - nxs'nxs)(x0-xs)
         % r = |v|

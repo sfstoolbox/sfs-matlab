@@ -103,7 +103,7 @@ elseif strcmp('2.5D',dimension)
         %                    H0  | - nky*xrefy |
         %                         \c          /
         %
-        % See https://sfs.rtfd.io/en/3.2/#equation-D.sdm.pw.2.5D
+        % https://sfs.rtfd.io/en/3.2/d_nfchoa/#equation-fd-sdm-plane-25d
         %
         D = 4*1i.*exp(-1i*omega/c.*nk(:,2).*xref(:,2)) ./ ...
             besselh(0,2,omega/c.*nk(:,2).*xref(:,2)) .* ...

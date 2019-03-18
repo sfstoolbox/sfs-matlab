@@ -74,7 +74,7 @@ if strcmp('ps',src)
     % G(x-xs,w) = --- -----------------
     %             4pi      |x-xs|
     %
-    % See https://sfs.rtfd.io/en/3.2/#equation-S.ps
+    % https://sfs.rtfd.io/en/3.2/sources/#equation-fd-point
     %
     G = 1/(4*pi) * exp(-1i*omega/c .* sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2)) ./ ...
             sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
@@ -85,8 +85,6 @@ elseif strcmp('dps',src)
     %  d                1   / iw       1    \   (x-xs) ns
     % ---- G(x-xs,w) = --- | ----- + ------- | ----------- e^(-i w/c |x-xs|)
     % d ns             4pi  \  c     |x-xs| /   |x-xs|^2
-    %
-    % See https://sfs.rtfd.io/en/3.2/#equation-S.dps
     %
     % r = |x-xs|
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
@@ -102,7 +100,7 @@ elseif strcmp('ls',src)
     % G(x-xs,w) =  - -  H0  |  - |x-xs|  |
     %                4       \ c        /
     %
-    % See https://sfs.rtfd.io/en/3.2/#equation-S.ls
+    % https://sfs.rtfd.io/en/3.2/sources/#equation-fd-line
     %
     G = -1i/4 * besselh(0,2,omega/c* ...
         sqrt( (x-xs(1)).^2 + (y-xs(2)).^2 + (z-xs(3)).^2 ));
@@ -112,7 +110,7 @@ elseif strcmp('pw',src)
     %
     % G(x,w) = e^(-i w/c n x)
     %
-    % See: https://sfs.rtfd.io/en/3.2/#equation-S.pw
+    % https://sfs.rtfd.io/en/3.2/sources/#equation-fd-plane
     %
     % Direction of plane wave
     nxs = xs(:,1:3) / norm(xs(:,1:3));

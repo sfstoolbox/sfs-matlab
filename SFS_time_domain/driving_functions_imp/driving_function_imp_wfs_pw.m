@@ -80,7 +80,7 @@ if strcmp('2D',dimension) || strcmp('3D',dimension)
         %
         % d_2D(x0,t) = h(t) * 2 nk nx0 delta(t - 1/c nk x0)
         %
-        % See https://sfs.rtfd.io/en/3.2/#equation-d.wfs.pw
+        % https://sfs.rtfd.io/en/3.2/d_wfs/#equation-td-wfs-plane
         %
         % Delay and amplitude weight
         delay = 1./c .* vector_product(nk,x0,2);
@@ -111,7 +111,7 @@ elseif strcmp('2.5D',dimension)
         %
         % d_2.5D(x0,t) = h(t) * 2 g0 nk nx0 delta(t - 1/c nk x0)
         %
-        % See https://sfs.rtfd.io/en/3.2/en/update_wfs_ps/#equation-d.wfs.pw.2.5D
+        % https://sfs.rtfd.io/en/3.2/d_wfs/#equation-td-wfs-plane-25d
         %
         % Delay and amplitude weight
         delay = 1./c .* vector_product(nk,x0,2);

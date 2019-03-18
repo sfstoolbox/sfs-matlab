@@ -76,7 +76,7 @@ if strcmp('ps',src)
     % g(x-xs,t) = ---------- delta(t - |x-xs|/c)
     %             4pi |x-xs|
     %
-    % See https://sfs.rtfd.io/en/3.2/#equation-s.ps
+    % https://sfs.rtfd.io/en/3.2/sources/#equation-td-point
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
     g = 1./(4*pi.*r);
@@ -89,8 +89,6 @@ elseif strcmp('dps',src)
     % g(x-xs,ns,t) = --- | F  | ---- | + ------  | --------- delta(t - |x-xs|/c)
     %                4pi  \    \ c  /    |x-xs| /  |x-xs|^2
     %
-    % See https://sfs.rtfd.io/en/3.2/#equation-s.dps
-    %
     to_be_implemented(mfilename);
 
 elseif strcmp('ls',src)
@@ -100,7 +98,7 @@ elseif strcmp('ls',src)
     % g(x-xs,t) = F |--  |  - |---  --_-_-_- delta(t - |x-xs|/c)
     %                \iw/    \|8pi  \||x-xs|
     %
-    % See https://sfs.rtfd.io/en/3.2/en/latest/#equation-s.ls
+    % https://sfs.rtfd.io/en/3.2/sources/#equation-td-line
     % Note, that the filter F^-1 is not implemented!!!!
     %
     r = sqrt((x-xs(1)).^2+(y-xs(2)).^2+(z-xs(3)).^2);
@@ -112,7 +110,7 @@ elseif strcmp('pw',src)
     %
     % g(x,t) = delta(t - nx/c)
     %
-    % See https://sfs.rtfd.io/en/3.2/#equation-s.pw
+    % https://sfs.rtfd.io/en/3.2/sources/#equation-td-plane
     %
     % direction of plane wave
     nxs = xs / norm(xs);

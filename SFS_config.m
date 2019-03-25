@@ -421,6 +421,8 @@ conf.ir.interpolationpointselection = 'nearestneighbour';
 %                   see test_interpolation_methods.m in the validation folder. For
 %                   typical HRIRs with leading and trailing zeros, the error is
 %                   negligible.
+%   'timedomain'  - Interpolation in the time domain with cross-correlation for
+%                   estimation of TOA differences.
 conf.ir.interpolationmethod = 'simple';
 %
 % If you have HRIRs in the form of the SimpleFreeFieldHRIR SOFA convention, zeros

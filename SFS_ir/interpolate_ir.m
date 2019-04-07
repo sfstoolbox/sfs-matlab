@@ -26,7 +26,7 @@ function ir = interpolate_ir(ir,weights,conf)
 %     'freqdomain'  - Interpolation in the frequency domain performed separately
 %                     for magnitude and phase.
 %     'timedomain'  - Interpolation in the time domain with cross-correlation for
-%                     estimation of TOA differences
+%                     estimation of time of arrival (TOA) differences
 %   Note that the given parameters are not checked if they all have the correct
 %   dimensions in order to save computational time, because this function could
 %   be called quite often.

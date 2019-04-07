@@ -422,7 +422,7 @@ conf.ir.interpolationpointselection = 'nearestneighbour';
 %                   typical HRIRs with leading and trailing zeros, the error is
 %                   negligible.
 %   'timedomain'  - Interpolation in the time domain with cross-correlation for
-%                   estimation of TOA differences.
+%                   estimation of time of arrival (TOA) differences.
 conf.ir.interpolationmethod = 'simple';
 %
 % If you have HRIRs in the form of the SimpleFreeFieldHRIR SOFA convention, zeros

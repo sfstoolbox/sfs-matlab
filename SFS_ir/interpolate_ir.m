@@ -146,7 +146,8 @@ if useinterpolation && length(weights)>1
             ir_shifted = zeros(N+max_shift,size(ir,1));
             for nn = 1:size(ir,1)
                 ir_shifted(:,nn) = [zeros(TOA_diff_to_last(nn),1); ...
-                    ir_upsampled(:,nn); zeros(max_shift-TOA_diff_to_last(nn),1)];
+                    ir_upsampled(:,nn); ...
+                    zeros(max_shift-TOA_diff_to_last(nn),1)];
             end
             
             % Interpolate aligned irs

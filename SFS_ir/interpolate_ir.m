@@ -8,7 +8,7 @@ function ir = interpolate_ir(ir,weights,conf)
 %                          M ... Number of measurements
 %                          C ... Number of channels
 %                          N ... Number of samples
-%       weights      - M weights for impulse reponses
+%       weights      - M weights for impulse reponses [M 1]
 %       conf         - configuration struct (see SFS_config)
 %
 %   Output parameters:
@@ -25,6 +25,8 @@ function ir = interpolate_ir(ir,weights,conf)
 %                     responses.
 %     'freqdomain'  - Interpolation in the frequency domain performed separately
 %                     for magnitude and phase.
+%     'timedomain'  - Interpolation in the time domain with cross-correlation for
+%                     estimation of time of arrival (TOA) differences
 %   Note that the given parameters are not checked if they all have the correct
 %   dimensions in order to save computational time, because this function could
 %   be called quite often.
@@ -122,6 +124,44 @@ if useinterpolation && length(weights)>1
         ir = ifft(magnitude.*exp(1i*phase),[],3);
         % Avoid round-off errors
         ir = real(ir);
+    case 'timedomain'
+        % See Hartung et al. (1999)
+        %
+        % Loop over channels
+        ir_results = zeros(1,size(ir,2),size(ir,3));
+        for n = 1:size(ir,2)
+            % Determine TOA differences
+            ir_upsampled = resample(squeeze(ir(:,n,:))',10,1);
+            for nn = 1:size(ir,1)
+                [~,idx_max(nn)] = ...
+                    max(xcorr(ir_upsampled(:,1),ir_upsampled(:,nn)));
+            end
+            N = size(ir_upsampled,1);
+            k = -(N-1):(N-1);
+            shifts = k(idx_max);
+            
+            % Shift all irs back to align with last ir
+            max_shift = max(shifts)-min(shifts);
+            TOA_diff_to_last = shifts-min(shifts);
+            ir_shifted = zeros(N+max_shift,size(ir,1));
+            for nn = 1:size(ir,1)
+                ir_shifted(:,nn) = [zeros(TOA_diff_to_last(nn),1); ...
+                    ir_upsampled(:,nn); ...
+                    zeros(max_shift-TOA_diff_to_last(nn),1)];
+            end
+            
+            % Interpolate aligned irs
+            ir_interp = sum(bsxfun(@times,ir_shifted,weights'),2);
+            
+            % Interpolate TOA differences and shift interpolated ir accordingly
+            TOA_diff_interp = round(TOA_diff_to_last*weights);
+            ir_interp = ...
+                ir_interp(TOA_diff_interp+1:end-(max_shift-TOA_diff_interp));
+
+            % Downsample and collect results per channel
+            ir_results(1,n,:) = resample(ir_interp,1,10);
+        end
+        ir = ir_results;
     otherwise
         error('%s: %s is an unknown interpolation method.', ...
             upper(mfilename),interpolationmethod);

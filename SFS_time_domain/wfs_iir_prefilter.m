@@ -73,7 +73,7 @@ function hpre = wfs_iir_prefilter(conf)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                                                 *
 % Revision: 07/02/2013 frank.schultz@uni-rostock.de initial development      *
 %*****************************************************************************
 

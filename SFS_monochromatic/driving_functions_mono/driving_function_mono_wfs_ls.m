@@ -46,7 +46,7 @@ function D = driving_function_mono_wfs_ls(x0,nx0,xs,f,conf)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                                                 *
 %*****************************************************************************
 
 

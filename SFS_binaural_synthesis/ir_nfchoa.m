@@ -51,7 +51,7 @@ function [ir,x0,delay] = ir_nfchoa(X,head_orientation,xs,src,sofa,conf)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                                                 *
 %*****************************************************************************
 
 

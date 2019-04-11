@@ -39,7 +39,7 @@ function status = test_hrtf_extrapolation(modus,hrtf_set)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                                                 *
 %*****************************************************************************
 
 

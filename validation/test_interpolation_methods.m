@@ -136,45 +136,43 @@ h_int3_td = interpolate_ir(irs3,weights,conf);
 
 % Plots
 % impulse responses
-figure
-    plot(0:N-1,squeeze(irs1(1,1,:)),'k'), hold on
-    plot(0:N-1,squeeze(irs1(2,1,:)),'b')
-    plot(0:N-1,squeeze(h_int1_simple(1,1,:)),'r')
-    plot(0:N-1,squeeze(h_int1_fd(1,1,:)),'m')
-    plot(0:N-1,squeeze(h_int1_td(1,1,:)),'c')
-    grid
-    xlabel('samples'), ylabel('amplitude')
-    legend('h_1','h_2','simple interp','freqdomain interp','timedomain interp')
-    title('Interpolation between Dirac impulses with one sample in between')
+ir_list = {
+    irs1(1,1,:)         , irs2(1,1,:)          , irs3(1,1,:)
+    irs1(2,1,:)         , irs2(2,1,:)          , irs3(2,1,:)
+    h_int1_simple(1,1,:), h_int2_simple(1,1,:) , h_int3_simple(1,1,:)
+    h_int1_fd(1,1,:)    , h_int2_fd(1,1,:)     , h_int3_fd(1,1,:)
+    h_int1_td(1,1,:)    , h_int2_td(1,1,:)     , h_int3_td(1,1,:)
+    };  % list of IRs
 
-figure
-    plot(0:N-1,squeeze(irs2(1,1,:)),'k'), hold on
-    plot(0:N-1,squeeze(irs2(2,1,:)),'b')
-    plot(0:N-1,squeeze(h_int2_simple(1,1,:)),'r')
-    plot(0:N-1,squeeze(h_int2_fd(1,1,:)),'m')
-    plot(0:N-1,squeeze(h_int2_td(1,1,:)),'c')
-    grid
-    xlabel('samples'), ylabel('amplitude')
-    legend('h_1','h_2','simple interp','freqdomain interp','timedomain interp')
-    title('Interpolation of neighbouring Dirac impulses at impulse response start')
+col = {'k' 'b' 'r' 'm' 'c'};
 
-figure
-    plot(0:N-1,squeeze(irs3(1,1,:)),'k'), hold on
-    plot(0:N-1,squeeze(irs3(2,1,:)),'b')
-    plot(0:N-1,squeeze(h_int3_simple(1,1,:)),'r')
-    plot(0:N-1,squeeze(h_int3_fd(1,1,:)),'m')
-    plot(0:N-1,squeeze(h_int3_td(1,1,:)),'c')
-    grid
-    xlabel('samples'), ylabel('amplitude')
-    legend('h_1','h_2','simple interp','freqdomain interp','timedomain interp')
-    title('Interpolation of neighbouring Dirac impulses in middle of impulse response')
+titlelabels = {
+    'Interpolation between Dirac impulses with one sample in between'
+    'Interpolation of neighbouring Dirac impulses at impulse response start'
+    'Interpolation of neighbouring Dirac impulses in middle of impulse response'
+    };
 
+t = 0:N-1;  % time-axis in samples
+
+for cdx=1:size(ir_list,2)
+    figure
+    for rdx=1:size(ir_list,1)
+        plot(t,squeeze(ir_list{rdx, cdx}), col{rdx})
+        hold on
+    end
+    hold off
+    grid
+    xlabel('samples')
+    ylabel('amplitude')
+    legend('h_1','h_2','simple interp','freqdomain interp','timedomain interp')
+    title(titlelabels{cdx})
+end
 
 %% ===== Interpolate HRIRs ===============================================
 % 1. Interpolate between close HRIRs
-idx0 = 181; %index for 0° azimuth
-idx1 = 182; %index for 1° azimuth
-idx2 = 183; %index for 2° azimuth
+idx0 = 181; %index for 0Â° azimuth
+idx1 = 182; %index for 1Â° azimuth
+idx2 = 183; %index for 2Â° azimuth
 x0_close = [hrtf.SourcePosition(idx0,:).' hrtf.SourcePosition(idx2,:).']/180*pi;
 % weights (for target point: xs_close = hrtf.SourcePosition(idx1,:).'/180*pi )
 weights_close = [.5; .5];
@@ -189,9 +187,9 @@ conf.ir.interpolationmethod = 'timedomain';
 hrir_close_td = interpolate_ir(hrir_close,weights_close,conf);
 
 % 2. Interpolate between distant HRIRs
-idx0 = 181; %index for 0° azimuth
-idx30 = 211; %index for 30° azimuth
-idx60 = 241; %index for 60° azimuth
+idx0 = 181; %index for 0Â° azimuth
+idx30 = 211; %index for 30Â° azimuth
+idx60 = 241; %index for 60Â° azimuth
 x0_dist = [hrtf.SourcePosition(idx0,:).' hrtf.SourcePosition(idx60,:).']/180*pi;
 % weights (for target point: xs_dist = hrtf.SourcePosition(idx30,:).'/180*pi )
 weights_dist = [.5; .5];
@@ -206,63 +204,53 @@ conf.ir.interpolationmethod = 'timedomain';
 hrir_dist_td = interpolate_ir(hrir_dist,weights_dist,conf);
 
 % Plots
-% impulse responses
-figure
-    plot(0:hrtf.API.N-1,squeeze(hrir_close(1,1,:)),'k'), hold on
-    plot(0:hrtf.API.N-1,squeeze(hrir_close(2,1,:)),'b')
-    plot(0:hrtf.API.N-1,squeeze(hrir_close_ref(1,1,:)),'g')
-    plot(0:hrtf.API.N-1,squeeze(hrir_close_simple(1,1,:)),'r')
-    plot(0:hrtf.API.N-1,squeeze(hrir_close_fd(1,1,:)),'m')
-    plot(0:hrtf.API.N-1,squeeze(hrir_close_td(1,1,:)),'c')
-    grid
-    xlabel('samples'), ylabel('amplitude')
-    axis([0 160 -0.6 0.6])
-    legend('hrir_1','hrir_2','hrir_{ref}','simple interp','freqdomain interp',...
-        'timedomain interp')
-    title('Interpolation of close HRIRs')
+hrir_list = {
+    hrir_close(1,1,:)       , hrir_dist(1,1,:)
+    hrir_close(2,1,:)       , hrir_dist(2,1,:)
+    hrir_close_ref(1,1,:)   , hrir_dist_ref(1,1,:)
+    hrir_close_simple(1,1,:), hrir_dist_simple(1,1,:)
+    hrir_close_fd(1,1,:)    , hrir_dist_fd(1,1,:)
+    hrir_close_td(1,1,:)    , hrir_dist_td(1,1,:)
+    };  % list of HRIRs
 
-figure
-    plot(0:hrtf.API.N-1,squeeze(hrir_dist(1,1,:)),'k'), hold on
-    plot(0:hrtf.API.N-1,squeeze(hrir_dist(2,1,:)),'b')
-    plot(0:hrtf.API.N-1,squeeze(hrir_dist_ref(1,1,:)),'g')
-    plot(0:hrtf.API.N-1,squeeze(hrir_dist_simple(1,1,:)),'r')
-    plot(0:hrtf.API.N-1,squeeze(hrir_dist_fd(1,1,:)),'m')
-    plot(0:hrtf.API.N-1,squeeze(hrir_dist_td(1,1,:)),'c')
-    grid
-    xlabel('samples'), ylabel('amplitude')
-    axis([0 160 -0.6 0.6])
-    legend('hrir_1','hrir_2','hrir_{ref}','simple interp','freqdomain interp',...
-        'timedomain interp')
-    title('Interpolation of distant HRIRs')
+col = {'k' 'b' 'g' 'r' 'm' 'c'};
+titlelabels = {'close', 'distant'};
+legendpos = {'northeast', 'southwest'};
 
-% magnitude responses
-f = (0:hrtf.API.N-1)/hrtf.API.N*hrtf.Data.SamplingRate;
-figure
-    semilogx(f,db(abs(fft(squeeze(hrir_close(1,1,:))))),'k'), hold on
-    semilogx(f,db(abs(fft(squeeze(hrir_close(2,1,:))))),'b')
-    semilogx(f,db(abs(fft(squeeze(hrir_close_ref(1,1,:))))),'g')
-    semilogx(f,db(abs(fft(squeeze(hrir_close_simple(1,1,:))))),'r')
-    semilogx(f,db(abs(fft(squeeze(hrir_close_fd(1,1,:))))),'m')
-    semilogx(f,db(abs(fft(squeeze(hrir_close_td(1,1,:))))),'c')
-    grid
-    xlabel('frequency in Hz'), ylabel('amplitude in dB')
-    axis([0 hrtf.Data.SamplingRate/2 -60 20])
-    legend('hrir_1','hrir_2','hrir_{ref}','simple interp','freqdomain interp',...
-        'timedomain interp','Location','SW')
-    title('Interpolation of close HRIRs')
+t = 0:hrtf.API.N-1;  % time-axis in samples
+f = (0:hrtf.API.N-1)/hrtf.API.N*hrtf.Data.SamplingRate;  % frequency axis
 
-figure
-    semilogx(f,db(abs(fft(squeeze(hrir_dist(1,1,:))))),'k'), hold on
-    semilogx(f,db(abs(fft(squeeze(hrir_dist(2,1,:))))),'b')
-    semilogx(f,db(abs(fft(squeeze(hrir_dist_ref(1,1,:))))),'g')
-    semilogx(f,db(abs(fft(squeeze(hrir_dist_simple(1,1,:))))),'r')
-    semilogx(f,db(abs(fft(squeeze(hrir_dist_fd(1,1,:))))),'m')
-    semilogx(f,db(abs(fft(squeeze(hrir_dist_td(1,1,:))))),'c')
-    grid
-    xlabel('frequency in Hz'), ylabel('amplitude in dB')
-    axis([0 hrtf.Data.SamplingRate/2 -60 20])
-    legend('hrir_1','hrir_2','hrir_{ref}','simple interp','freqdomain interp',...
-        'timedomain interp','Location','SW')
-    title('Interpolation of distant HRIRs')
+for pdx=1:2  % impulse responses or magnitude spectrum
+    for cdx=1:size(hrir_list,2)
+        figure
+        for rdx=1:size(hrir_list,1)
+            if pdx == 1
+                % impulse responses
+                plot(t,squeeze(hrir_list{rdx, cdx}),col{rdx})
+            else
+                % magnitude spectra
+                mag_spectrum = db(abs(fft(squeeze(hrir_list{rdx, cdx}))));
+                semilogx(f(2:end), mag_spectrum(2:end), col{rdx});
+            end
+            hold on
+        end
+        hold off
+
+        if pdx == 1
+            % impulse responses
+            xlabel('samples')
+            ylabel('amplitude')
+            axis([0 160 -0.6 0.6])
+        else
+            % magnitude spectra
+            xlabel('frequency in Hz')
+            ylabel('amplitude in dB')
+            axis([f(2) hrtf.Data.SamplingRate/2 -60 20])
+        end
+        legend('hrir_1','hrir_2','hrir_{ref}','simple interp', ...
+            'freqdomain interp', 'timedomain interp','Location', legendpos{pdx})
+        title(['Interpolation of ' titlelabels{cdx} ' HRIRs'])
+    end
+end
 
 status = true;

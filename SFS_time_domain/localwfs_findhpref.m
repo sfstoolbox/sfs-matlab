@@ -43,7 +43,7 @@ function [hpreflow,hprefhigh] = localwfs_findhpref(X,phi,xs,src,conf)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                                                 *
 %*****************************************************************************
 
 

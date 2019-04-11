@@ -47,7 +47,7 @@ function [dimensions,x1,x2,x3] = xyz_axes_selection(x,y,z)
 % The SFS Toolbox  allows to simulate and  investigate sound field synthesis *
 % methods like wave field synthesis or higher order ambisonics.              *
 %                                                                            *
-% https://sfs.readthedocs.io                            sfstoolbox@gmail.com *
+% https://sfs.readthedocs.io                                                 *
 %*****************************************************************************
 
 

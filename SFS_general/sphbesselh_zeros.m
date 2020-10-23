@@ -15,6 +15,12 @@ function [z,p] = sphbesselh_zeros(order)
 %   Hahn and Spors (2017) and the Python implementation in from scipy in
 %   signal.filter_design._bessel_zeros.
 %
+%   The zeros/roots of the spherical Hankel function of the second kind
+%   can be obtained based on the following relationship:
+%   Suppose z = x + iy is a zero for the spherical Hankel function
+%   of the first kind. Then z = -ix + y, and z = -ix -y are zeros
+%   for the the spherical Hankel function of the second kind.
+%
 %   See also: sphbesselh, driving_function_imp_nfchoa
 %
 %   References:
